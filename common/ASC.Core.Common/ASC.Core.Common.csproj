@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <ProjectGuid>{A51D0454-4AFA-46DE-89D4-B03D37E1816C}</ProjectGuid>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <FileUpgradeFlags />
+    <UpgradeBackupLocation />
+    <OutputPath>..\..\web\studio\ASC.Web.Studio\bin\</OutputPath>
+    <AssemblyTitle>ASC.Core.Common</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.Core.Common</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Notify\Jabber\IReverseJabberService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.100.18" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.101.9" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.100.18" />
+    <PackageReference Include="MailKit" Version="2.1.5.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+  </ItemGroup>
+</Project>

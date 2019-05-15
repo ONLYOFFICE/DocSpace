@@ -1,0 +1,6 @@
+﻿export { default as Community } from './Community/Community'
+export { default as Crm } from './Crm/Crm'
+export { default as Documents } from './Documents/Documents'
+export { default as Mail } from './Mail/Mail'
+export { default as People } from './People/People'
+export { default as Projects } from './Projects/Projects'
