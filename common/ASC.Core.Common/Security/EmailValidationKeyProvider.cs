@@ -24,11 +24,12 @@
 */
 
 
-using ASC.Core;
 using System;
-using System.Configuration;
 using System.Text;
+
+using ASC.Core;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 
 namespace ASC.Security.Cryptography
 {
@@ -65,7 +66,7 @@ namespace ASC.Security.Cryptography
             if (email == null) throw new ArgumentNullException("email");
             try
             {
-                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, ConfigurationManager.AppSettings["core.machinekey"]);
+                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, ConfigurationManager.AppSettings["core:machinekey"]);
             }
             catch (Exception e)
             {

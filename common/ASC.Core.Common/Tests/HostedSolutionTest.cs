@@ -27,9 +27,9 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
+    using ASC.Common.Utils;
     using ASC.Core.Tenants;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System.Configuration;
     using System.Linq;
 
     [TestClass]

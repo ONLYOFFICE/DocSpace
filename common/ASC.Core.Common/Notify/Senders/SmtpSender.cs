@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Net;
+
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
@@ -263,8 +263,8 @@ namespace ASC.Core.Notify.Senders
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = ConfigurationManager.AppSettings["mail.certificate-permit"] != null &&
-                                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail.certificate-permit"]);
+            var sslCertificatePermit = ConfigurationManager.AppSettings["mail:certificate-permit"] != null &&
+                                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail:certificate-permit"]);
 
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {

@@ -26,10 +26,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.Common;
 using System.Linq;
 using System.Security;
+
+using ASC.Common.Utils;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Core.Billing;
@@ -173,7 +174,7 @@ namespace ASC.Core
             return new MultiRegionalDbManager(GetRegions().Select(r => new DbManager(GetRegionService(r).DbId)));
         }
 
-        public ConnectionStringSettings GetRegionConnectionString(string region)
+        public System.Configuration.ConnectionStringSettings GetRegionConnectionString(string region)
         {
             return DbRegistry.GetConnectionString(GetRegionService(region).DbId);
         }
@@ -206,7 +207,7 @@ namespace ASC.Core
 
                         if (Convert.ToBoolean(ConfigurationManager.AppSettings["core.multi-hosted.config-only"] ?? "false"))
                         {
-                            foreach (ConnectionStringSettings cs in ConfigurationManager.ConnectionStrings)
+                            foreach (var cs in ConfigurationManager.ConnectionStrings)
                             {
                                 if (cs.Name.StartsWith(dbid + "."))
                                 {
@@ -225,7 +226,7 @@ namespace ASC.Core
                         {
 
                             var find = false;
-                            foreach (ConnectionStringSettings cs in ConfigurationManager.ConnectionStrings)
+                            foreach (var cs in ConfigurationManager.ConnectionStrings)
                             {
                                 if (cs.Name.StartsWith(dbid + "."))
                                 {
@@ -244,7 +245,7 @@ namespace ASC.Core
                             }
                             else
                             {
-                                foreach (ConnectionStringSettings connectionString in ConfigurationManager.ConnectionStrings)
+                                foreach (var connectionString in ConfigurationManager.ConnectionStrings)
                                 {
                                     try
                                     {
@@ -257,7 +258,7 @@ namespace ASC.Core
                                             db.ExecuteList(q)
                                                 .ForEach(r =>
                                                 {
-                                                    var cs = new ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
+                                                    var cs = new System.Configuration.ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
                                                     if (!DbRegistry.IsDatabaseRegistered(cs.Name))
                                                     {
                                                         DbRegistry.RegisterDatabase(cs.Name, cs);

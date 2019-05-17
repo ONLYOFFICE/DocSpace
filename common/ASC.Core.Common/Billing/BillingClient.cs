@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -34,7 +33,9 @@ using System.ServiceModel;
 using System.Web;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 
 namespace ASC.Core.Billing
 {
@@ -229,8 +230,8 @@ namespace ASC.Core.Billing
             {
                 return Request("SetPartnerStatus",
                                partnerId.Replace("-", ""),
-                               Tuple.Create("Security", ConfigurationManager.AppSettings["core.payment.security"]),
-                               Tuple.Create("ProductId", ConfigurationManager.AppSettings["core.payment-partners-product"]),
+                               Tuple.Create("Security", ConfigurationManager.AppSettings["core:payment:security"]),
+                               Tuple.Create("ProductId", ConfigurationManager.AppSettings["core:payment:partners-product"]),
                                Tuple.Create("Status", setAuthorized ? "1" : "0"),
                                Tuple.Create("RecreateSKey", "0"),
                                Tuple.Create("Renewal", (!setAuthorized || startDate == default(DateTime) || startDate == DateTime.MinValue

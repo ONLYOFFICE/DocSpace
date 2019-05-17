@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -36,6 +35,8 @@ using ASC.Common.Caching;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
+
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
@@ -90,15 +91,15 @@ namespace ASC.Core.Billing
         }
 
 
-        public TariffService(ConnectionStringSettings connectionString, IQuotaService quotaService, ITenantService tenantService)
+        public TariffService(System.Configuration.ConnectionStringSettings connectionString, IQuotaService quotaService, ITenantService tenantService)
             : base(connectionString, "tenant")
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             config = new CoreConfiguration(tenantService);
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
-            test = ConfigurationManager.AppSettings["core.payment-test"] == "true";
-            int.TryParse(ConfigurationManager.AppSettings["core.payment-delay"], out paymentDelay);
+            test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
+            int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);
         }
 
 

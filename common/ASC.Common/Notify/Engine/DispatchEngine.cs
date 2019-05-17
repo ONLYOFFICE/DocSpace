@@ -25,8 +25,9 @@
 
 
 using System;
-using System.Configuration;
+
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Notify.Messages;
 
 namespace ASC.Notify.Engine
@@ -45,7 +46,7 @@ namespace ASC.Notify.Engine
             if (context == null) throw new ArgumentNullException("context");
 
             this.context = context;
-            logOnly = "log".Equals(ConfigurationManager.AppSettings["core.notify.postman"], StringComparison.InvariantCultureIgnoreCase);
+            logOnly = "log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }
 

@@ -25,12 +25,11 @@
 
 
 using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using ASC.Common.Security;
-using Microsoft.Extensions.Configuration;
+using ASC.Common.Utils;
 
 namespace ASC.Security.Cryptography
 {
@@ -40,11 +39,10 @@ namespace ASC.Security.Cryptography
 
         static MachinePseudoKeys()
         {
-            var configuration = Common.DependencyInjection.CommonServiceProvider.GetService<IConfiguration>();
-            var key = configuration["core:machinekey"];
+            var key = ConfigurationManager.AppSettings["core:machinekey"];
             if (string.IsNullOrEmpty(key))
             {
-                key = configuration["asc:common.machinekey"];
+                key = ConfigurationManager.AppSettings["asc:common.machinekey"];
             }
             if (!string.IsNullOrEmpty(key))
             {

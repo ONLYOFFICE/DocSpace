@@ -50,7 +50,7 @@ namespace ASC.Core
 
         public bool Standalone
         {
-            get { return standalone ?? (bool)(standalone = ConfigurationManager.AppSettings["core.base-domain"] == "localhost"); }
+            get { return standalone ?? (bool)(standalone = ConfigurationManager.AppSettings["core:base-domain"] == "localhost"); }
         }
 
         public bool Personal
@@ -124,7 +124,7 @@ namespace ASC.Core
             {
                 if (basedomain == null)
                 {
-                    basedomain = ConfigurationManager.AppSettings["core.base-domain"] ?? string.Empty;
+                    basedomain = ConfigurationManager.AppSettings["core:base-domain"] ?? string.Empty;
                 }
 
                 string result;
@@ -203,7 +203,7 @@ namespace ASC.Core
                 if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
                     return t.PaymentId;
 
-                return ConfigurationManager.AppSettings["core.payment-region"] + tenant;
+                return ConfigurationManager.AppSettings["core:payment:region"] + tenant;
             }
         }
 

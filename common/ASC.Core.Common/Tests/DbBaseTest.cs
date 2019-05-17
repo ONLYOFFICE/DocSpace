@@ -28,8 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
-    using System.Configuration;
-
+    using ASC.Common.Utils;
 
     public class DbBaseTest<TDbService>
     {

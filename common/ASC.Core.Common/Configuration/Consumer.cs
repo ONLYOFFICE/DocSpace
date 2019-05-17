@@ -27,8 +27,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
+
+using ASC.Common.Utils;
 using ASC.Common.Caching;
 using ASC.Core.Tenants;
 using Autofac;
@@ -84,7 +85,7 @@ namespace ASC.Core.Common.Configuration
 
         static Consumer()
         {
-            OnlyDefault = ConfigurationManager.AppSettings["core.default-consumers"] == "true";
+            OnlyDefault = ConfigurationManager.AppSettings["core:default-consumers"] == "true";
         }
 
         public Consumer()

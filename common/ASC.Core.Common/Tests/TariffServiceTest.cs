@@ -28,7 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
-    using System.Configuration;
+    using ASC.Common.Utils;
     using ASC.Core.Billing;
     using ASC.Core.Data;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

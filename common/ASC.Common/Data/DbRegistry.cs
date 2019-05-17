@@ -26,12 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+
 using System.Data.Common;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Dialects;
-using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Data
 {
@@ -182,23 +180,16 @@ namespace ASC.Common.Data
                 {
                     if (!configured)
                     {
-                        var Configuration = DependencyInjection.CommonServiceProvider.GetService<IConfiguration>();
-                        var dbProviderFactories = Configuration.GetSection("DbProviderFactories");
-
-                        foreach (var ch in dbProviderFactories.GetChildren())
+                        foreach (var cs in Utils.ConfigurationManager.GetSettings<DbProviderFactoryCustom>("DbProviderFactories"))
                         {
-                            var cs = new DbProviderFactoryCustom();
-                            ch.Bind(cs);
                             DbProviderFactories.RegisterFactory(cs.Invariant, cs.Type);
                         }
 
-                        var connectionStrings = Configuration.GetSection("ConnectionStrings");
                         var factories = DbProviderFactories.GetFactoryClasses();
                         AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory); //SQLite
-                        foreach (var ch in connectionStrings.GetChildren())
+
+                        foreach (var cs in Utils.ConfigurationManager.ConnectionStrings)
                         {
-                            var cs = new ConnectionStringSettings();
-                            ch.Bind(cs);
                             var factory = factories.Rows.Find(cs.ProviderName);
                             if (factory == null)
                             {

@@ -26,14 +26,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+
+using ASC.Common.Utils;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
+
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
@@ -56,13 +58,13 @@ namespace ASC.Core.Notify.Signalr
         {
             Timeout = TimeSpan.FromSeconds(1);
             Log = LogManager.GetLogger("ASC");
-            CoreMachineKey = ConfigurationManager.AppSettings["core.machinekey"];
-            Url = ConfigurationManager.AppSettings["web.hub.internal"];
+            CoreMachineKey = ConfigurationManager.AppSettings["core:machinekey"];
+            Url = ConfigurationManager.AppSettings["web:hub:internal"];
             EnableSignalr = !string.IsNullOrEmpty(Url);
 
             try
             {
-                var replaceSetting = ConfigurationManager.AppSettings["jabber.replace-domain"];
+                var replaceSetting = ConfigurationManager.AppSettings["jabber:replace-domain"];
                 if (!string.IsNullOrEmpty(replaceSetting))
                 {
                     JabberReplaceDomain = true;

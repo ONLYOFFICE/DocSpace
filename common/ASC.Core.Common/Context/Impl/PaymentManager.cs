@@ -31,7 +31,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -59,8 +58,8 @@ namespace ASC.Core
             this.config = config;
             this.quotaService = quotaService;
             this.tariffService = tariffService;
-            partnerUrl = (ConfigurationManager.AppSettings["core.payment-partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-            partnerKey = (ConfigurationManager.AppSettings["core.machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
+            partnerUrl = (ConfigurationManager.AppSettings["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
+            partnerKey = (ConfigurationManager.AppSettings["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
         }
 
 
@@ -114,7 +113,7 @@ namespace ASC.Core
             var trial = quotaService.GetTenantQuotas().FirstOrDefault(q => q.Trial);
             if (trial != null)
             {
-                var uri = ConfigurationManager.AppSettings["core.payment-request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
+                var uri = ConfigurationManager.AppSettings["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
                 uri += uri.Contains('?') ? "&" : "?";
                 uri += "FIRSTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
                     "&LASTNAME=" + HttpUtility.UrlEncode(user.FirstName) +

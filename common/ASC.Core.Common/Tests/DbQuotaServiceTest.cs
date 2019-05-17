@@ -27,7 +27,6 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
-    using System.Configuration;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization.Json;

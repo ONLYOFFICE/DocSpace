@@ -36,14 +36,12 @@ using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
-using ASC.Common.Web;
 using ASC.Core.Billing;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using Microsoft.AspNetCore.Http.Features;
 
 namespace ASC.Core
 {

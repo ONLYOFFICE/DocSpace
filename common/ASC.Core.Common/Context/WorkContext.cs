@@ -24,14 +24,16 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+
+using ASC.Common.Utils;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Reflection;
+
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
@@ -104,7 +106,7 @@ namespace ASC.Core
                 INotifySender jabberSender = new NotifyServiceSender();
                 INotifySender emailSender = new NotifyServiceSender();
 
-                var postman = ConfigurationManager.AppSettings["core.notify.postman"];
+                var postman = ConfigurationManager.AppSettings["core:notify:postman"];
 
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -115,9 +117,9 @@ namespace ASC.Core
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
                         emailSender = new AWSSender();
-                        properties["accessKey"] = ConfigurationManager.AppSettings["ses.accessKey"];
-                        properties["secretKey"] = ConfigurationManager.AppSettings["ses.secretKey"];
-                        properties["refreshTimeout"] = ConfigurationManager.AppSettings["ses.refreshTimeout"];
+                        properties["accessKey"] = ConfigurationManager.AppSettings["ses:accessKey"];
+                        properties["secretKey"] = ConfigurationManager.AppSettings["ses:secretKey"];
+                        properties["refreshTimeout"] = ConfigurationManager.AppSettings["ses:refreshTimeout"];
                     }
                     else
                     {

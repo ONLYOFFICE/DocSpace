@@ -25,12 +25,11 @@
 
 
 using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Tenants;
@@ -51,7 +50,7 @@ namespace ASC.Core.Billing
 
         static LicenseReader()
         {
-            LicensePath = ConfigurationManager.AppSettings["license.file.path"];
+            LicensePath = ConfigurationManager.AppSettings["license:file:path"];
             LicensePathTemp = LicensePath + ".tmp";
         }
 
@@ -278,8 +277,8 @@ namespace ASC.Core.Billing
                 _date = DateTime.MaxValue;
                 try
                 {
-                    var versionDate = ConfigurationManager.AppSettings["version.release-date"];
-                    var sign = ConfigurationManager.AppSettings["version.release-date.sign"];
+                    var versionDate = ConfigurationManager.AppSettings["version:release:date"];
+                    var sign = ConfigurationManager.AppSettings["version:release:sign"];
 
                     if (!sign.StartsWith("ASC "))
                     {
@@ -296,7 +295,7 @@ namespace ASC.Core.Billing
                     var date = splitted[1];
                     var orighash = splitted[2];
 
-                    var skey = ConfigurationManager.AppSettings["core.machinekey"];
+                    var skey = ConfigurationManager.AppSettings["core:machinekey"];
 
                     using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
                     {

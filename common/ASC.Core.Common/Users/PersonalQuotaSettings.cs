@@ -25,8 +25,6 @@
 
 
 using System;
-using System.Configuration;
-using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
 

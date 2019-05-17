@@ -27,17 +27,18 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
+using ASC.Common.Utils;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
 using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Extensions;
@@ -56,7 +57,7 @@ namespace ASC.Common.Caching
             var configuration = ConfigurationManager.AppSettings["redisConnection"];
 
             if (string.IsNullOrEmpty(configuration))
-                throw new ConfigurationErrorsException("Unable to locate <redisConnection> settings into your configuration file. Take a look https://stackexchange.github.io/StackExchange.Redis/Configuration.html");
+                throw new System.Configuration.ConfigurationErrorsException("Unable to locate <redisConnection> settings into your configuration file. Take a look https://stackexchange.github.io/StackExchange.Redis/Configuration.html");
 
             var stringBuilder = new StringBuilder();
             using (var stream = new StringWriter(stringBuilder))

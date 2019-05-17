@@ -25,8 +25,9 @@
 
 
 using System;
-using System.Configuration;
 using System.Text.RegularExpressions;
+
+using ASC.Common.Utils;
 
 namespace ASC.Core.Tenants
 {
@@ -43,7 +44,7 @@ namespace ASC.Core.Tenants
             MinLength = 6;
 
             int defaultMinLength;
-            if (int.TryParse(ConfigurationManager.AppSettings["web.alias.min"], out defaultMinLength))
+            if (int.TryParse(ConfigurationManager.AppSettings["web:alias:min"], out defaultMinLength))
             {
                 MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }

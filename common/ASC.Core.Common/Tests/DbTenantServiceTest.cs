@@ -29,7 +29,7 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
-    using System.Configuration;
+    using ASC.Common.Utils;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
     using ASC.Core.Users;

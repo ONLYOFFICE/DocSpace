@@ -25,10 +25,11 @@
 
 
 using System;
-using System.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
+using ASC.Common.Utils;
 
 namespace ASC.Core.Tenants
 {
@@ -46,7 +47,7 @@ namespace ASC.Core.Tenants
 
         static TenantCookieSettings()
         {
-            IsVisibleSettings = !(ConfigurationManager.AppSettings["web.hide-settings"] ?? string.Empty)
+            IsVisibleSettings = !(ConfigurationManager.AppSettings["web:hide-settings"] ?? string.Empty)
                         .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
                         .Contains("CookieSettings", StringComparer.CurrentCultureIgnoreCase);
         }

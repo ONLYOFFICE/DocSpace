@@ -26,12 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using ASC.Common.Data.Sql;
 
 namespace ASC.Common.Data
@@ -58,7 +56,7 @@ namespace ASC.Common.Data
         {
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             DatabaseId = dbId;
-            databases = ConfigurationManager.ConnectionStrings.OfType<ConnectionStringSettings>()
+            databases = Utils.ConfigurationManager.ConnectionStrings
                                             .Where(c => c.Name.Equals(dbId, cmp) || c.Name.StartsWith(dbId + ".", cmp))
                                             .Select(
                                                 c =>

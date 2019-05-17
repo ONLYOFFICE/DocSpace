@@ -25,7 +25,8 @@
 
 
 using System;
-using System.Configuration;
+
+using ASC.Common.Utils;
 using Action = ASC.Common.Security.Authorizing.Action;
 using AuthConst = ASC.Common.Security.Authorizing.Constants;
 
@@ -38,7 +39,7 @@ namespace ASC.Core.Users
             get
             {
                 int count;
-                if (!int.TryParse(ConfigurationManager.AppSettings["core.users"], out count))
+                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out count))
                 {
                     count = 10000;
                 }
@@ -103,7 +104,7 @@ namespace ASC.Core.Users
         public static readonly UserInfo NamingPoster = new UserInfo
         {
             ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
-            FirstName = ConfigurationManager.AppSettings["core.system.poster.name"] ?? "ONLYOFFICE Poster",
+            FirstName = ConfigurationManager.AppSettings["core:system:poster:name"] ?? "ONLYOFFICE Poster",
             LastName = String.Empty,
             ActivationStatus = EmployeeActivationStatus.Activated
         };

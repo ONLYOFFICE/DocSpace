@@ -26,9 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Threading;
+
+using ASC.Common.Utils;
 
 namespace ASC.Core.Users
 {
@@ -116,7 +117,7 @@ namespace ASC.Core.Users
         {
             if (!forceFormatChecked)
             {
-                forceFormat = ConfigurationManager.AppSettings["core.user-display-format"];
+                forceFormat = ConfigurationManager.AppSettings["core:user-display-format"];
                 if (String.IsNullOrEmpty(forceFormat)) forceFormat = null;
                 forceFormatChecked = true;
             }

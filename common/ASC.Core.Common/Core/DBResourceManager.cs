@@ -28,7 +28,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -42,6 +41,7 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Common;
+using ASC.Common.Utils;
 
 namespace TMResourceData
 {
@@ -54,7 +54,7 @@ namespace TMResourceData
 
         static DBResourceManager()
         {
-            ResourcesFromDataBase = string.Equals(ConfigurationManager.AppSettings["resources.from-db"], "true");
+            ResourcesFromDataBase = string.Equals(ConfigurationManager.AppSettings["resources:from-db"], "true");
         }
 
         public DBResourceManager(string filename, Assembly assembly)
@@ -155,7 +155,7 @@ namespace TMResourceData
                 try
                 {
                     var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
-                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["resources.cache-timeout"] ?? defaultValue));
+                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["resources:cache-timeout"] ?? defaultValue));
                 }
                 catch (Exception err)
                 {
@@ -271,7 +271,7 @@ namespace TMResourceData
     {
         private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private static readonly ConcurrentDictionary<int, string> whiteLabelDictionary = new ConcurrentDictionary<int, string>();
-        private static readonly string replPattern = ConfigurationManager.AppSettings["resources.whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
+        private static readonly string replPattern = ConfigurationManager.AppSettings["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
         public static string DefaultLogoText = "";
 
 
