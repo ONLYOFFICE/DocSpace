@@ -1,14 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ASC.Common.Data;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Security.Authentication;
+using ASC.Security.Cryptography;
+using ASC.Web.Api.Handlers;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.Api
 {
@@ -24,10 +25,22 @@ namespace ASC.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddSingleton<MachinePseudoKeys>();
+            services.AddSingleton<Signature>();
+            services.AddSingleton<InstanceCrypto>();
+            services.AddSingleton<CookieStorage>();
+            services.AddSingleton<SecurityContext>();
+            services.AddSingleton<DbRegistry>();
+            services.AddSingleton<CoreContext>();
 
             services.AddControllers()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson()
+                .AddXmlSerializerFormatters();
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication("cookie")
+                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +55,7 @@ namespace ASC.Web.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

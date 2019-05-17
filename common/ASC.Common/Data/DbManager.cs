@@ -85,6 +85,7 @@ namespace ASC.Common.Data
             get { return Command.Connection; }
         }
 
+        DbRegistry DbRegistry { get => (DbRegistry)HttpContext.Current.RequestServices.GetService(typeof(DbRegistry)); }
 
         public DbManager(string databaseId, int? commandTimeout = null)
             : this(databaseId, true, commandTimeout)

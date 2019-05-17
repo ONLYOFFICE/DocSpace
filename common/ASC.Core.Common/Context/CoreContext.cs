@@ -34,16 +34,19 @@ using ASC.Core.Data;
 
 namespace ASC.Core
 {
-    public static class CoreContext
+    public class CoreContext
     {
-        static CoreContext()
+        public DbRegistry DbRegistry { get; set; }
+        public CoreContext(DbRegistry dbRegistry)
         {
+            DbRegistry = dbRegistry;
             ConfigureCoreContextByDefault();
         }
 
 
         public static CoreConfiguration Configuration { get; private set; }
 
+        public TenantManager TenantManager1 => TenantManager;
         public static TenantManager TenantManager { get; private set; }
 
         public static UserManager UserManager { get; private set; }
@@ -69,7 +72,7 @@ namespace ASC.Core
             }
         }
 
-        private static void ConfigureCoreContextByDefault()
+        private void ConfigureCoreContextByDefault()
         {
             var cs = DbRegistry.GetConnectionString("core");
             if (cs == null)

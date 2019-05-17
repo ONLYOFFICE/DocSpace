@@ -33,6 +33,5 @@
     <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.100.18" />
     <PackageReference Include="MailKit" Version="2.1.5.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
   </ItemGroup>
 </Project>

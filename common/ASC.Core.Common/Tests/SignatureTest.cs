@@ -35,7 +35,7 @@ namespace ASC.Core.Common.Tests
     public class SignatureTest
     {
         [TestMethod]
-        public void TestSignature()
+        public void TestSignature(Signature Signature)
         {
             var validObject = new { expire = DateTime.UtcNow.AddMinutes(15), key = "345jhndfg", ip = "192.168.1.1" };
             var encoded = Signature.Create(validObject, "ThE SeCret Key!");

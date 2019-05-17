@@ -31,10 +31,19 @@ using System.Data;
 using System.Data.Common;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Dialects;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Data
 {
-    public static class DbRegistry
+    public class DbProviderFactoryCustom
+    {
+        public string Name { get; set; }
+        public string Invariant { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+    }
+
+    public class DbRegistry
     {
         private const string DEFAULT = "DEFAULT";
         private static readonly object syncRoot = new object();
@@ -43,13 +52,16 @@ namespace ASC.Common.Data
         private static readonly IDictionary<string, ISqlDialect> dialects = new Dictionary<string, ISqlDialect>(StringComparer.InvariantCultureIgnoreCase);
         private static volatile bool configured = false;
 
-        static DbRegistry()
+        protected IConfiguration Configuration { get; set; }
+
+        public DbRegistry(IConfiguration configuration)
         {
+            Configuration = configuration;
             dialects["MySql.Data.MySqlClient.MySqlClientFactory"] = new MySQLDialect();
             dialects["System.Data.SQLite.SQLiteFactory"] = new SQLiteDialect();
         }
 
-        internal static void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
+        internal void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
         {
             if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
             if (providerFactory == null) throw new ArgumentNullException("providerFactory");
@@ -70,17 +82,17 @@ namespace ASC.Common.Data
             }
         }
 
-        internal static void RegisterDatabase(string databaseId, string providerInvariantName, string connectionString)
+        internal void RegisterDatabase(string databaseId, string providerInvariantName, string connectionString)
         {
             RegisterDatabase(databaseId, DbProviderFactories.GetFactory(providerInvariantName), connectionString);
         }
 
-        public static void RegisterDatabase(string databaseId, ConnectionStringSettings connectionString)
+        public void RegisterDatabase(string databaseId, ConnectionStringSettings connectionString)
         {
             RegisterDatabase(databaseId, connectionString.ProviderName, connectionString.ConnectionString);
         }
 
-        public static void UnRegisterDatabase(string databaseId)
+        public void UnRegisterDatabase(string databaseId)
         {
             if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
 
@@ -107,7 +119,7 @@ namespace ASC.Common.Data
             }
         }
 
-        public static bool IsDatabaseRegistered(string databaseId)
+        public bool IsDatabaseRegistered(string databaseId)
         {
             lock (syncRoot)
             {
@@ -115,7 +127,7 @@ namespace ASC.Common.Data
             }
         }
 
-        public static DbConnection CreateDbConnection(string databaseId)
+        public DbConnection CreateDbConnection(string databaseId)
         {
             Configure();
 
@@ -132,7 +144,7 @@ namespace ASC.Common.Data
             return connection;
         }
 
-        public static DbProviderFactory GetDbProviderFactory(string databaseId)
+        public DbProviderFactory GetDbProviderFactory(string databaseId)
         {
             Configure();
 
@@ -143,7 +155,7 @@ namespace ASC.Common.Data
             return providers.ContainsKey(databaseId) ? providers[databaseId] : null;
         }
 
-        public static ConnectionStringSettings GetConnectionString(string databaseId)
+        public ConnectionStringSettings GetConnectionString(string databaseId)
         {
             Configure();
 
@@ -154,7 +166,7 @@ namespace ASC.Common.Data
             return connnectionStrings.ContainsKey(databaseId) ? new ConnectionStringSettings(databaseId, connnectionStrings[databaseId], providers[databaseId].GetType().Name) : null;
         }
 
-        public static ISqlDialect GetSqlDialect(string databaseId)
+        public ISqlDialect GetSqlDialect(string databaseId)
         {
             var provider = GetDbProviderFactory(databaseId);
             if (provider != null && dialects.ContainsKey(provider.GetType().FullName))
@@ -165,7 +177,7 @@ namespace ASC.Common.Data
         }
 
 
-        public static void Configure()
+        public void Configure()
         {
             if (!configured)
             {
@@ -173,10 +185,22 @@ namespace ASC.Common.Data
                 {
                     if (!configured)
                     {
+                        var dbProviderFactories = Configuration.GetSection("DbProviderFactories");
+
+                        foreach (var ch in dbProviderFactories.GetChildren())
+                        {
+                            var cs = new DbProviderFactoryCustom();
+                            ch.Bind(cs);
+                            DbProviderFactories.RegisterFactory(cs.Invariant, cs.Type);
+                        }
+
+                        var connectionStrings = Configuration.GetSection("ConnectionStrings");
                         var factories = DbProviderFactories.GetFactoryClasses();
                         AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory); //SQLite
-                        foreach (ConnectionStringSettings cs in ConfigurationManager.ConnectionStrings)
+                        foreach (var ch in connectionStrings.GetChildren())
                         {
+                            var cs = new ConnectionStringSettings();
+                            ch.Bind(cs);
                             var factory = factories.Rows.Find(cs.ProviderName);
                             if (factory == null)
                             {

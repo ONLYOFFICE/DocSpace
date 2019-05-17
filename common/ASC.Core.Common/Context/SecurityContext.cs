@@ -36,18 +36,17 @@ using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
-using ASC.Common.Web;
 using ASC.Core.Billing;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
 {
-    public static class SecurityContext
+    public class SecurityContext
     {
         private static readonly ILog log = LogManager.GetLogger("ASC.Core");
 
@@ -64,15 +63,21 @@ namespace ASC.Core
 
         public static IPermissionResolver PermissionResolver { get; private set; }
 
+        protected IConfiguration configuration { get; set; }
+        protected CookieStorage cookieStorage { get; set; }
+        protected CoreContext CoreContext { get; set; }
 
-        static SecurityContext()
+        public SecurityContext(IConfiguration configuration, CookieStorage cookieStorage, CoreContext coreContext)
         {
+            this.configuration = configuration;
+            this.cookieStorage = cookieStorage;
+            CoreContext = coreContext;
+
             var azManager = new AzManager(new RoleProvider(), new PermissionProvider());
             PermissionResolver = new PermissionResolver(azManager);
         }
 
-
-        public static string AuthenticateMe(string login, string password)
+        public string AuthenticateMe(string login, string password)
         {
             if (login == null) throw new ArgumentNullException("login");
             if (password == null) throw new ArgumentNullException("password");
@@ -83,7 +88,7 @@ namespace ASC.Core
             return AuthenticateMe(new UserAccount(u, tenantid));
         }
 
-        public static bool AuthenticateMe(string cookie)
+        public bool AuthenticateMe(string cookie)
         {
             if (!string.IsNullOrEmpty(cookie))
             {
@@ -107,9 +112,9 @@ namespace ASC.Core
                     }
                     log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out tenant, out userid, out login, out password, out indexTenant, out expire, out indexUser))
+                else if (cookieStorage.DecryptCookie(cookie, out tenant, out userid, out login, out password, out indexTenant, out expire, out indexUser))
                 {
-                    if (tenant != CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    if (tenant != CoreContext.TenantManager1.GetCurrentTenant().TenantId)
                     {
                         return false;
                     }
@@ -175,7 +180,7 @@ namespace ASC.Core
             return false;
         }
 
-        public static string AuthenticateMe(IAccount account)
+        public string AuthenticateMe(IAccount account)
         {
             if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
 
@@ -215,7 +220,7 @@ namespace ASC.Core
                 roles.Add(Role.Users);
 
                 account = new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId);
-                cookie = CookieStorage.EncryptCookie(CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = cookieStorage.EncryptCookie(CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             Principal = new GenericPrincipal(account, roles.ToArray());
@@ -223,7 +228,7 @@ namespace ASC.Core
             return cookie;
         }
 
-        public static string AuthenticateMe(Guid userId)
+        public string AuthenticateMe(Guid userId)
         {
             return AuthenticateMe(CoreContext.Authentication.GetAccountByID(userId));
         }

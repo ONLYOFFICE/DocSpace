@@ -44,6 +44,7 @@ namespace ASC.Core
         private readonly String dbid;
         private volatile bool initialized = false;
 
+        DbRegistry DbRegistry { get; set; }
 
         public MultiRegionHostedSolution(string dbid)
         {
