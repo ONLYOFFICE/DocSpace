@@ -1,12 +1,10 @@
-using ASC.Common.Data;
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Security.Authentication;
-using ASC.Security.Cryptography;
 using ASC.Web.Api.Handlers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +20,6 @@ namespace ASC.Web.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
@@ -31,11 +28,14 @@ namespace ASC.Web.Api
 
             services.AddHttpContextAccessor();
 
-            services.AddAuthentication("cookie")
-                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
+            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
+
+            services.AddMvc(config =>
+            {
+                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -48,7 +48,6 @@ namespace ASC.Web.Api
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

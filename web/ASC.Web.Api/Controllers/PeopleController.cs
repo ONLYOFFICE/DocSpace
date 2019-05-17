@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ASC.Employee.Core.Controllers
 {
-    [FormatFilter]
     [Route("api/2.0/[controller]")]
     [ApiController]
-    [Authorize]
     public class PeopleController : ControllerBase
     {
         // GET api/values
