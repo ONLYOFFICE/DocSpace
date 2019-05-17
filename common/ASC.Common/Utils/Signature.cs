@@ -35,16 +35,14 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace ASC.Common.Utils
 {
-    public class Signature
+    public static class Signature
     {
-        protected MachinePseudoKeys MachinePseudoKeys { get; set; }
-        public Signature(MachinePseudoKeys machinePseudoKeys) => MachinePseudoKeys = machinePseudoKeys;
-        public string Create<T>(T obj)
+        public static string Create<T>(T obj)
         {
             return Create(obj, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
         }
 
-        public string Create<T>(T obj, string secret)
+        public static string Create<T>(T obj, string secret)
         {
             var serializer = new JavaScriptSerializer();
             var str = serializer.Serialize(obj);
@@ -52,17 +50,17 @@ namespace ASC.Common.Utils
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
         }
 
-        public T Read<T>(string signature)
+        public static T Read<T>(string signature)
         {
             return Read<T>(signature, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
         }
 
-        public T Read<T>(string signature, string secret)
+        public static T Read<T>(string signature, string secret)
         {
             return Read<T>(signature, secret, true);
         }
 
-        public T Read<T>(string signature, string secret, bool useSecret)
+        public static T Read<T>(string signature, string secret, bool useSecret)
         {
             try
             {
@@ -78,15 +76,15 @@ namespace ASC.Common.Utils
             catch (Exception)
             {
             }
-            return default;
+            return default(T);
         }
 
-        private string GetHashBase64(string str)
+        private static string GetHashBase64(string str)
         {
             return Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(str)));
         }
 
-        private string GetHashBase64MD5(string str)
+        private static string GetHashBase64MD5(string str)
         {
             return Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(str)));
         }

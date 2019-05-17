@@ -35,20 +35,16 @@ using System.Text;
 
 namespace ASC.Security.Cryptography
 {
-    public class InstanceCrypto
+    public static class InstanceCrypto
     {
-        protected MachinePseudoKeys MachinePseudoKeys { get; set; }
-
-        public InstanceCrypto(MachinePseudoKeys machinePseudoKeys) => MachinePseudoKeys = machinePseudoKeys;
-
-        public string Encrypt(string data)
+        public static string Encrypt(string data)
         {
             return Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(data)));
         }
 
-        public byte[] Encrypt(byte[] data)
+        public static byte[] Encrypt(byte[] data)
         {
-            var hasher = Rijndael.Create();
+            Rijndael hasher = Rijndael.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
             using (var ms = new MemoryStream())
@@ -61,14 +57,14 @@ namespace ASC.Security.Cryptography
             }
         }
 
-        public string Decrypt(string data)
+        public static string Decrypt(string data)
         {
             return Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(data)));
         }
 
-        public byte[] Decrypt(byte[] data)
+        public static byte[] Decrypt(byte[] data)
         {
-            var hasher = Rijndael.Create();
+            Rijndael hasher = Rijndael.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
@@ -84,7 +80,7 @@ namespace ASC.Security.Cryptography
             }
         }
 
-        private byte[] EKey()
+        private static byte[] EKey()
         {
             return MachinePseudoKeys.GetMachineConstant(32);
         }

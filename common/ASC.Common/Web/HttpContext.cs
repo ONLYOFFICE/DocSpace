@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ASC.Common.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Common
 {
@@ -9,6 +10,7 @@ namespace ASC.Common
         public static void Configure(IHttpContextAccessor httpContextAccessor)
         {
             m_httpContextAccessor = httpContextAccessor;
+            CommonServiceProvider.Current = httpContextAccessor.HttpContext.RequestServices;
         }
 
         public static Microsoft.AspNetCore.Http.HttpContext Current

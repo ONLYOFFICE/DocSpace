@@ -35,14 +35,11 @@ using ASC.Common.Web;
 
 namespace ASC.Core.Security.Authentication
 {
-    public class CookieStorage
+    class CookieStorage
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
-        protected InstanceCrypto InstanceCrypto { get; set; }
 
-        public CookieStorage(InstanceCrypto instanceCrypto) => InstanceCrypto = instanceCrypto;
-
-        public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
+        public static bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
         {
             tenant = Tenant.DEFAULT_TENANT;
             userid = Guid.Empty;
@@ -72,7 +69,7 @@ namespace ASC.Core.Security.Authentication
 
                 return true;
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 LogManager.GetLogger("ASC.Core").ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, login {3}, pass {4}, indexTenant {5}, expire {6}: {7}",
                     cookie, tenant, userid, login, password, indexTenant, expire.ToString(DateTimeFormat), err);
@@ -81,7 +78,7 @@ namespace ASC.Core.Security.Authentication
         }
 
 
-        public string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
+        public static string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
         {
             var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
             var expires = TenantCookieSettings.GetExpiresTime(tenant);
@@ -89,7 +86,7 @@ namespace ASC.Core.Security.Authentication
             return EncryptCookie(tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
         }
 
-        public string EncryptCookie(int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
+        public static string EncryptCookie(int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
         {
             var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}",
                 (login ?? string.Empty).ToLowerInvariant(),
@@ -105,7 +102,7 @@ namespace ASC.Core.Security.Authentication
         }
 
 
-        private string GetUserDepenencySalt()
+        private static string GetUserDepenencySalt()
         {
             var data = string.Empty;
             try

@@ -59,8 +59,6 @@ namespace ASC.Core
             private set;
         }
 
-        public CookieStorage CookieStorage { get; set; }
-
         public HostedSolution(ConnectionStringSettings connectionString)
             : this(connectionString, null)
         {

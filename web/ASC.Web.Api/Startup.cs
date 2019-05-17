@@ -25,14 +25,6 @@ namespace ASC.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<MachinePseudoKeys>();
-            services.AddSingleton<Signature>();
-            services.AddSingleton<InstanceCrypto>();
-            services.AddSingleton<CookieStorage>();
-            services.AddSingleton<SecurityContext>();
-            services.AddSingleton<DbRegistry>();
-            services.AddSingleton<CoreContext>();
-
             services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();

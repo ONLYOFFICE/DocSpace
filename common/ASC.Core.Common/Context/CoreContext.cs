@@ -34,19 +34,16 @@ using ASC.Core.Data;
 
 namespace ASC.Core
 {
-    public class CoreContext
+    public static class CoreContext
     {
-        public DbRegistry DbRegistry { get; set; }
-        public CoreContext(DbRegistry dbRegistry)
+        static CoreContext()
         {
-            DbRegistry = dbRegistry;
             ConfigureCoreContextByDefault();
         }
 
 
         public static CoreConfiguration Configuration { get; private set; }
 
-        public TenantManager TenantManager1 => TenantManager;
         public static TenantManager TenantManager { get; private set; }
 
         public static UserManager UserManager { get; private set; }
@@ -72,7 +69,7 @@ namespace ASC.Core
             }
         }
 
-        private void ConfigureCoreContextByDefault()
+        private static void ConfigureCoreContextByDefault()
         {
             var cs = DbRegistry.GetConnectionString("core");
             if (cs == null)
@@ -83,7 +80,7 @@ namespace ASC.Core
             var tenantService = new CachedTenantService(new DbTenantService(cs));
             var userService = new CachedUserService(new DbUserService(cs));
             var azService = new CachedAzService(new DbAzService(cs));
-            var quotaService = QuotaCacheEnabled ? (IQuotaService) new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
+            var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
             var subService = new CachedSubscriptionService(new DbSubscriptionService(cs));
             var tariffService = new TariffService(cs, quotaService, tenantService);
 

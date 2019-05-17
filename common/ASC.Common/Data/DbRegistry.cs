@@ -43,7 +43,7 @@ namespace ASC.Common.Data
         public string Type { get; set; }
     }
 
-    public class DbRegistry
+    public static class DbRegistry
     {
         private const string DEFAULT = "DEFAULT";
         private static readonly object syncRoot = new object();
@@ -52,16 +52,13 @@ namespace ASC.Common.Data
         private static readonly IDictionary<string, ISqlDialect> dialects = new Dictionary<string, ISqlDialect>(StringComparer.InvariantCultureIgnoreCase);
         private static volatile bool configured = false;
 
-        protected IConfiguration Configuration { get; set; }
-
-        public DbRegistry(IConfiguration configuration)
+        static DbRegistry()
         {
-            Configuration = configuration;
             dialects["MySql.Data.MySqlClient.MySqlClientFactory"] = new MySQLDialect();
             dialects["System.Data.SQLite.SQLiteFactory"] = new SQLiteDialect();
         }
 
-        internal void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
+        internal static void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
         {
             if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
             if (providerFactory == null) throw new ArgumentNullException("providerFactory");
@@ -82,17 +79,17 @@ namespace ASC.Common.Data
             }
         }
 
-        internal void RegisterDatabase(string databaseId, string providerInvariantName, string connectionString)
+        internal static void RegisterDatabase(string databaseId, string providerInvariantName, string connectionString)
         {
             RegisterDatabase(databaseId, DbProviderFactories.GetFactory(providerInvariantName), connectionString);
         }
 
-        public void RegisterDatabase(string databaseId, ConnectionStringSettings connectionString)
+        public static void RegisterDatabase(string databaseId, ConnectionStringSettings connectionString)
         {
             RegisterDatabase(databaseId, connectionString.ProviderName, connectionString.ConnectionString);
         }
 
-        public void UnRegisterDatabase(string databaseId)
+        public static void UnRegisterDatabase(string databaseId)
         {
             if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
 
@@ -119,7 +116,7 @@ namespace ASC.Common.Data
             }
         }
 
-        public bool IsDatabaseRegistered(string databaseId)
+        public static bool IsDatabaseRegistered(string databaseId)
         {
             lock (syncRoot)
             {
@@ -127,7 +124,7 @@ namespace ASC.Common.Data
             }
         }
 
-        public DbConnection CreateDbConnection(string databaseId)
+        public static DbConnection CreateDbConnection(string databaseId)
         {
             Configure();
 
@@ -135,7 +132,7 @@ namespace ASC.Common.Data
             {
                 databaseId = DEFAULT;
             }
-            
+
             var connection = providers[databaseId].CreateConnection();
             if (connnectionStrings.ContainsKey(databaseId))
             {
@@ -144,7 +141,7 @@ namespace ASC.Common.Data
             return connection;
         }
 
-        public DbProviderFactory GetDbProviderFactory(string databaseId)
+        public static DbProviderFactory GetDbProviderFactory(string databaseId)
         {
             Configure();
 
@@ -155,7 +152,7 @@ namespace ASC.Common.Data
             return providers.ContainsKey(databaseId) ? providers[databaseId] : null;
         }
 
-        public ConnectionStringSettings GetConnectionString(string databaseId)
+        public static ConnectionStringSettings GetConnectionString(string databaseId)
         {
             Configure();
 
@@ -166,7 +163,7 @@ namespace ASC.Common.Data
             return connnectionStrings.ContainsKey(databaseId) ? new ConnectionStringSettings(databaseId, connnectionStrings[databaseId], providers[databaseId].GetType().Name) : null;
         }
 
-        public ISqlDialect GetSqlDialect(string databaseId)
+        public static ISqlDialect GetSqlDialect(string databaseId)
         {
             var provider = GetDbProviderFactory(databaseId);
             if (provider != null && dialects.ContainsKey(provider.GetType().FullName))
@@ -177,7 +174,7 @@ namespace ASC.Common.Data
         }
 
 
-        public void Configure()
+        public static void Configure()
         {
             if (!configured)
             {
@@ -185,6 +182,7 @@ namespace ASC.Common.Data
                 {
                     if (!configured)
                     {
+                        var Configuration = DependencyInjection.CommonServiceProvider.GetService<IConfiguration>();
                         var dbProviderFactories = Configuration.GetSection("DbProviderFactories");
 
                         foreach (var ch in dbProviderFactories.GetChildren())

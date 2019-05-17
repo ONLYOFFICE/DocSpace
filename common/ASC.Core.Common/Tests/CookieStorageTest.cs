@@ -35,7 +35,7 @@ namespace ASC.Core.Common.Tests
     public class CookieStorageTest
     {
         [TestMethod]
-        public void Validate(CookieStorage CookieStorage)
+        public void Validate()
         {
             var t1 = 1;
             var id1 = Guid.NewGuid();

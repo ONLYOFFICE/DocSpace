@@ -12,32 +12,25 @@ namespace ASC.Web.Api.Handlers
 {
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        protected SecurityContext SecurityContext { get; set; }
-
-        protected IHttpContextAccessor HttpContextAccessor { get; set; }
-
         public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
 
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, SecurityContext securityContext, IHttpContextAccessor httpContextAccessor) 
+        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpContextAccessor httpContextAccessor) 
             : this(options, logger, encoder, clock)
         {
-            SecurityContext = securityContext;
-            HttpContextAccessor = httpContextAccessor;
+            Common.HttpContext.Configure(httpContextAccessor);
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            ASC.Common.HttpContext.Configure(HttpContextAccessor);
-            SecurityContext.AuthenticateMe(Context.Request.Cookies["asc_auth_key"]);
+            var result = SecurityContext.AuthenticateMe(Context.Request.Cookies["asc_auth_key"]);
 
             return Task.FromResult(
-             AuthenticateResult.Success(
-                new AuthenticationTicket(
-                    new ClaimsPrincipal(Thread.CurrentPrincipal),
-                    new AuthenticationProperties(),
-                    Scheme.Name)));
+             result ?  
+             AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(Thread.CurrentPrincipal), new AuthenticationProperties(), Scheme.Name)) : 
+             AuthenticateResult.Fail("fail")
+             );
         }
     }
 }

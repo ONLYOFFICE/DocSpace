@@ -34,13 +34,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Security.Cryptography
 {
-    public class MachinePseudoKeys
+    public static class MachinePseudoKeys
     {
-        private byte[] confkey = null;
+        private static readonly byte[] confkey = null;
 
-
-        public MachinePseudoKeys(IConfiguration configuration)
+        static MachinePseudoKeys()
         {
+            var configuration = Common.DependencyInjection.CommonServiceProvider.GetService<IConfiguration>();
             var key = configuration["core:machinekey"];
             if (string.IsNullOrEmpty(key))
             {
@@ -53,7 +53,7 @@ namespace ASC.Security.Cryptography
         }
 
 
-        public byte[] GetMachineConstant()
+        public static byte[] GetMachineConstant()
         {
             if (confkey != null)
             {
@@ -65,10 +65,10 @@ namespace ASC.Security.Cryptography
             return BitConverter.GetBytes(fi.CreationTime.ToOADate());
         }
 
-        public byte[] GetMachineConstant(int bytesCount)
+        public static byte[] GetMachineConstant(int bytesCount)
         {
-            var cnst = Enumerable.Repeat<byte>(0, sizeof (int)).Concat(GetMachineConstant()).ToArray();
-            var icnst = BitConverter.ToInt32(cnst, cnst.Length - sizeof (int));
+            var cnst = Enumerable.Repeat<byte>(0, sizeof(int)).Concat(GetMachineConstant()).ToArray();
+            var icnst = BitConverter.ToInt32(cnst, cnst.Length - sizeof(int));
             var rnd = new AscRandom(icnst);
             var buff = new byte[bytesCount];
             rnd.NextBytes(buff);
