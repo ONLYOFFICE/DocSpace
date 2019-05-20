@@ -1,6 +1,5 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { Button } from 'asc-web-components';
@@ -10,7 +9,8 @@ const colStyle = { margin: '0 8px 0 8px' };
 const rowStyle = { margin: '4px 0 4px 0' };
 
 storiesOf('Components|Button', module)
-  .addDecorator(withKnobs)
+  // To set a default viewport for all the stories for this component
+  .addParameters({ viewport: { defaultViewport: 'responsive' }})
   .addDecorator(withReadme(Readme))
   .add('all', () => (
     <>
