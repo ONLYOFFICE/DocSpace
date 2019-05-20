@@ -1,26 +1,57 @@
 {
-  "name": "asc.web.components-example",
-  "homepage": "https://AlexeySafronov.github.io/asc.web.components",
-  "version": "0.0.0",
-  "license": "MIT",
+  "name": "asc-web-components-example",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "prop-types": "^15.6.2",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
-    "react-scripts": "^1.1.4",
-    "asc.web.components": "file:.."
+    "asc-web-components": "file:..",
+    "bootstrap": "^4.3.1",
+    "node-sass": "^4.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "reactstrap": "^8.0.0",
+    "styled-components": "^4.2.0",
+    "lodash": "4.17.11",
+    "lodash-es": "4.17.11"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook"
+    "start": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "storybook:start": "start-storybook -p 9002 -s docs/assets",
+    "storybook:build": "NODE_ENV=production build-storybook -o .public -s docs/assets"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
+    "@storybook/addon-actions": "^5.0.11",
+    "@storybook/addon-knobs": "^5.0.11",
+    "@storybook/addon-links": "^5.0.11",
+    "@storybook/addon-options": "^5.0.11",
+    "@storybook/addon-storysource": "^5.0.11",
+    "@storybook/addons": "^5.0.11",
+    "@storybook/cli": "^5.0.11",
     "@storybook/react": "^5.0.11",
-    "babel-loader": "^8.0.6"
+    "babel-loader": "^8.0.6",
+    "install-peers": "^1.0.3",
+    "jquery": "^3.4.1",
+    "prettier": "^1.17.1",
+    "react-intl": "^2.9.0",
+    "storybook-readme": "^5.0.3",
+    "tsutils": "^3.10.0",
+    "typescript": "^3.4.5"
   }
 }

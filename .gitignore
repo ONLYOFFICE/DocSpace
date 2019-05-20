@@ -7,3 +7,4 @@
 .vscode/
 *-lock.json
 *.lock
+**/node_modules/
