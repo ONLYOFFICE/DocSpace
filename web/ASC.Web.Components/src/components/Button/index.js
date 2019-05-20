@@ -86,7 +86,7 @@ const Button = props => {
   return <StyledButton {...props} />;
 };
 
-Button.PropTypes = {
+Button.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   primary: PropTypes.bool,
   disabled: PropTypes.bool,

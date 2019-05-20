@@ -9,7 +9,7 @@ const Input = props => {
     );
 }
 
-Input.PropTypes = {
+Input.propTypes = {
     value: PropTypes.string
 }
 

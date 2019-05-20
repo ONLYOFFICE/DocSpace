@@ -100,7 +100,7 @@ var Button = function Button(props) {
     __self: this
   }));
 };
-Button.PropTypes = {
+Button.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   primary: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -123,7 +123,7 @@ var Input = function Input(props) {
     __self: this
   });
 };
-Input.PropTypes = {
+Input.propTypes = {
   value: PropTypes.string
 };
 
