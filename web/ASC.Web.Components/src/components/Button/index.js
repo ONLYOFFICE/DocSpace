@@ -22,7 +22,8 @@ const hoveredCss = css`
 `;
 
 const StyledButton = styled.button.attrs((props) => ({
-  disabled: props.isDisabled ? 'disabled' : ''
+  disabled: props.isDisabled ? 'disabled' : '',
+  tabIndex: props.tabIndex
 }))`
   height: ${props =>
     (props.size === 'huge' && '40px') ||
@@ -104,6 +105,7 @@ const Button = props => {
 Button.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   primary: PropTypes.bool,
+  tabIndex: PropTypes.number,
   isActivated: PropTypes.bool,
   isHovered: PropTypes.bool,
   isDisabled: PropTypes.bool,
@@ -115,7 +117,8 @@ Button.defaultProps = {
   isActivated: false,
   isHovered: false,
   isDisabled: false,
-  size: 'base'
+  size: 'base',
+  tabIndex: -1
 };
 
 export default Button;
