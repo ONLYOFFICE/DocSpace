@@ -3,6 +3,21 @@ import 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
 function _extends() {
   _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -147,14 +162,14 @@ Button.defaultProps = {
 
 var _jsxFileName$1 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\TextInput\\index.js";
 function _templateObject$1() {
-  var data = _taggedTemplateLiteral(["\n  -webkit-appearance: none;\n  border-radius: 3px;\n  box-shadow: none;\n  box-sizing: border-box;\n  border: solid 1px #c7c7c7;\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  background-color: #fff;\n  color: #434341;\n  display: flex;\n  font-family: 'Open Sans', sans-serif;\n  font-size: 18px;  \n  flex: 1 1 0%;\n  outline: none;\n  overflow: hidden;\n  padding: 8px 20px;\n  transition: all 0.2s ease 0s;\n  width: ", ";\n\n    ::-webkit-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    ::-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-ms-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n"]);
+  var data = _taggedTemplateLiteral(["\n  -webkit-appearance: none;\n  border-radius: 3px;\n  box-shadow: none;\n  box-sizing: border-box;\n  border: solid 1px;\n  border-color: ", ";\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  background-color: ", ";\n  color: ", "; ;\n  display: flex;\n  font-family: 'Open Sans', sans-serif;\n  font-size: 18px;  \n  flex: 1 1 0%;\n  outline: none;\n  overflow: hidden;\n  padding: 8px 20px;\n  transition: all 0.2s ease 0s;\n  width: ", ";\n\n    ::-webkit-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    ::-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-ms-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n"]);
   _templateObject$1 = function _templateObject() {
     return data;
   };
   return data;
 }
 var StyledInput = styled.input.attrs(function (props) {
-  return {
+  return _defineProperty({
     id: props.id,
     name: props.name,
     type: "text",
@@ -169,9 +184,15 @@ var StyledInput = styled.input.attrs(function (props) {
     autoFocus: props.isAutoFocussed,
     autoComplete: props.autoComplete,
     tabIndex: props.tabIndex
-  };
+  }, "disabled", props.isDisabled ? 'disabled' : '');
 })(_templateObject$1(), function (props) {
-  return props.size === 'base' ? '100px' : props.size === 'middle' ? '200px' : props.size === 'big' ? '358px' : props.size === 'huge' ? '500px' : '100%';
+  return props.hasError && '#c30' || props.hasWarning && '#f1ca92' || '#c7c7c7';
+}, function (props) {
+  return props.isDisabled ? '#efefef' : '#fff';
+}, function (props) {
+  return props.isDisabled ? '#666562' : '#434341';
+}, function (props) {
+  return props.size === 'base' && '135px' || props.size === 'middle' && '300px' || props.size === 'big' && '350px' || props.size === 'huge' && '500px' || props.size === 'scale' && '100%';
 });
 var TextInput = function TextInput(props) {
   return jsx(StyledInput, _extends({}, props, {

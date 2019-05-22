@@ -6,7 +6,7 @@ const StyledInput = styled.input.attrs((props) => ({
     id: props.id,
     name: props.name,
     type: "text",
-    value:props.value,
+    value: props.value,
     placeholder: props.placeholder,
     maxLength: props.maxLength,
     onChange: props.onChange,
@@ -16,18 +16,20 @@ const StyledInput = styled.input.attrs((props) => ({
     readOnly: props.isReadOnly,
     autoFocus: props.isAutoFocussed,
     autoComplete: props.autoComplete,
-    tabIndex: props.tabIndex
+    tabIndex: props.tabIndex,
+    disabled: props.isDisabled ? 'disabled' : ''
 
-  }))`
+}))`
   -webkit-appearance: none;
   border-radius: 3px;
   box-shadow: none;
   box-sizing: border-box;
-  border: solid 1px #c7c7c7;
+  border: solid 1px;
+  border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || '#c7c7c7'};
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  background-color: #fff;
-  color: #434341;
+  background-color: ${props => props.isDisabled ? '#efefef' : '#fff'};
+  color: ${props => props.isDisabled ? '#666562' : '#434341'}; ;
   display: flex;
   font-family: 'Open Sans', sans-serif;
   font-size: 18px;  
@@ -36,15 +38,13 @@ const StyledInput = styled.input.attrs((props) => ({
   overflow: hidden;
   padding: 8px 20px;
   transition: all 0.2s ease 0s;
-  width: ${props => props.size === 'base' 
-                ? '100px' 
-                : (props.size === 'middle' 
-                    ? '200px' 
-                    : (props.size === 'big' 
-                        ? '358px' 
-                        : (props.size === 'huge' 
-                            ? '500px' 
-                            : '100%')))};
+  width: ${props =>
+        (props.size === 'base' && '135px') ||
+        (props.size === 'middle' && '300px') ||
+        (props.size === 'big' && '350px') ||
+        (props.size === 'huge' && '500px') ||
+        (props.size === 'scale' && '100%')
+    };
 
     ::-webkit-input-placeholder {
         color: #b2b2b2;
@@ -76,7 +76,7 @@ const TextInput = props => {
 }
 
 TextInput.propTypes = {
-    
+
     id: PropTypes.string,
     name: PropTypes.string,
     value: PropTypes.string.isRequired,
@@ -89,7 +89,7 @@ TextInput.propTypes = {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     onFocus: PropTypes.func,
-    
+
     isAutoFocussed: PropTypes.bool,
     isDisabled: PropTypes.bool,
     isReadOnly: PropTypes.bool,
