@@ -18,14 +18,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.ServiceModel">
-      <HintPath>C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.ServiceModel.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Extensions">
-      <HintPath>C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Web.Extensions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Utils\TimeZoneConverter\windowsZones.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -27,11 +27,10 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.Script.Serialization;
-
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
 {
@@ -44,8 +43,7 @@ namespace ASC.Common.Utils
 
         public static string Create<T>(T obj, string secret)
         {
-            var serializer = new JavaScriptSerializer();
-            var str = serializer.Serialize(obj);
+            var str = JsonConvert.SerializeObject(obj);
             var payload = GetHashBase64(str + secret) + "?" + str;
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
         }
@@ -70,7 +68,7 @@ namespace ASC.Common.Utils
                     )
                 {
                     //Sig correct
-                    return new JavaScriptSerializer().Deserialize<T>(payloadParts[1]);
+                    return JsonConvert.DeserializeObject<T>(payloadParts[1]);
                 }
             }
             catch (Exception)
