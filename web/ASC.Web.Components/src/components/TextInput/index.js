@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 const StyledInput = styled.input.attrs((props) => ({
     id: props.id,
     name: props.name,
-    type: "text",
+    type:  props.type,
     value: props.value,
     placeholder: props.placeholder,
     maxLength: props.maxLength,
@@ -68,17 +68,12 @@ const StyledInput = styled.input.attrs((props) => ({
 
 `;
 
-const TextInput = props => {
-
-    return (
-        <StyledInput {...props} />
-    );
-}
+const TextInput = props => <StyledInput {...props} />
 
 TextInput.propTypes = {
-
     id: PropTypes.string,
     name: PropTypes.string,
+    type: PropTypes.oneOf(['text', 'password']),
     value: PropTypes.string.isRequired,
     maxLength: PropTypes.number,
     placeholder: PropTypes.string,
@@ -96,6 +91,17 @@ TextInput.propTypes = {
     hasError: PropTypes.bool,
     hasWarning: PropTypes.bool,
     autoComplete: PropTypes.string
+}
+
+TextInput.defaultProps = {
+    type: 'text',
+    value: '',
+    maxLength: 255,
+    size: 'middle',
+    tabIndex: -1,
+    hasError: false,
+    hasWarning: false,
+    autoComplete: 'off'
 }
 
 export default TextInput
