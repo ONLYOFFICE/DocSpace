@@ -37,6 +37,7 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Billing;
+using ASC.Core.Common.Security;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
@@ -270,11 +271,12 @@ namespace ASC.Core
 
         private static IPrincipal Principal
         {
-            get { return Thread.CurrentPrincipal; }
+            get => Thread.CurrentPrincipal ?? HttpContext.Current?.User;
             set
             {
-                Thread.CurrentPrincipal = value;
-                if (HttpContext.Current != null) HttpContext.Current.User = new System.Security.Claims.ClaimsPrincipal(value);
+                var principal = new CustomClaimsPrincipal(value);
+                Thread.CurrentPrincipal = principal;
+                if (HttpContext.Current != null) HttpContext.Current.User = principal;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ASC.Core;
+using ASC.Web.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Employee.Core.Controllers
@@ -7,11 +8,10 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class PeopleController : ControllerBase
     {
-        // GET api/values
         [HttpGet("{action}.{format?}")]
-        public ActionResult<IEnumerable<string>> Self()
+        public EmployeeWraper Self()
         {
-            return new string[] { "value1", "value2" };
+            return new EmployeeWraper(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
         }
     }
 }
