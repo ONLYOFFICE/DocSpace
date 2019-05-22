@@ -27,8 +27,8 @@ namespace ASC.Web.Api.Handlers
             var result = SecurityContext.AuthenticateMe(Context.Request.Cookies["asc_auth_key"]);
 
             return Task.FromResult(
-             result ?  
-             AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(Thread.CurrentPrincipal), new AuthenticationProperties(), Scheme.Name)) : 
+             result ?
+             AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
              AuthenticateResult.Fail("fail")
              );
         }
