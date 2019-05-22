@@ -8,3 +8,4 @@
 *-lock.json
 *.lock
 **/node_modules/
+**/storybook-static/

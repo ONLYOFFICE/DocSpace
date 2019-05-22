@@ -16,9 +16,7 @@
   },
   "scripts": {
     "start": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "storybook:start": "start-storybook -p 9002 -s docs/assets",
-    "storybook:build": "NODE_ENV=production build-storybook -o .public -s docs/assets"
+    "build-storybook": "build-storybook -c .storybook -o .out"
   },
   "eslintConfig": {
     "extends": "react-app"
