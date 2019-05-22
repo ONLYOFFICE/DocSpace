@@ -5,10 +5,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var core = require('@emotion/core');
-require('react');
+var react = require('react');
+var react__default = _interopDefault(react);
 var styled = require('styled-components');
 var styled__default = _interopDefault(styled);
 var PropTypes = _interopDefault(require('prop-types'));
+var reactstrap = require('reactstrap');
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -53,6 +55,44 @@ function _taggedTemplateLiteral(strings, raw) {
       value: Object.freeze(raw)
     }
   }));
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArrayLimit(arr, i) {
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance");
 }
 
 var _jsxFileName = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Button\\index.js";
@@ -117,7 +157,8 @@ var hoveredCss = styled.css(_templateObject3(), function (props) {
 });
 var StyledButton = styled__default.button.attrs(function (props) {
   return {
-    disabled: props.isDisabled ? 'disabled' : ''
+    disabled: props.isDisabled ? 'disabled' : '',
+    tabIndex: props.tabIndex
   };
 })(_templateObject4(), function (props) {
   return props.size === 'huge' && '40px' || props.size === 'big' && '32px' || props.size === 'middle' && '24px' || props.size === 'base' && '21px';
@@ -146,7 +187,7 @@ var Button = function Button(props) {
   return core.jsx(StyledButton, _extends({}, props, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 101
+      lineNumber: 102
     },
     __self: this
   }));
@@ -154,6 +195,7 @@ var Button = function Button(props) {
 Button.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   primary: PropTypes.bool,
+  tabIndex: PropTypes.number,
   isActivated: PropTypes.bool,
   isHovered: PropTypes.bool,
   isDisabled: PropTypes.bool,
@@ -164,7 +206,8 @@ Button.defaultProps = {
   isActivated: false,
   isHovered: false,
   isDisabled: false,
-  size: 'base'
+  size: 'base',
+  tabIndex: -1
 };
 
 var _jsxFileName$1 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\TextInput\\index.js";
@@ -179,7 +222,7 @@ var StyledInput = styled__default.input.attrs(function (props) {
   return _defineProperty({
     id: props.id,
     name: props.name,
-    type: "text",
+    type: props.type,
     value: props.value,
     placeholder: props.placeholder,
     maxLength: props.maxLength,
@@ -205,7 +248,7 @@ var TextInput = function TextInput(props) {
   return core.jsx(StyledInput, _extends({}, props, {
     __source: {
       fileName: _jsxFileName$1,
-      lineNumber: 74
+      lineNumber: 71
     },
     __self: this
   }));
@@ -213,6 +256,7 @@ var TextInput = function TextInput(props) {
 TextInput.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
+  type: PropTypes.oneOf(['text', 'password']),
   value: PropTypes.string.isRequired,
   maxLength: PropTypes.number,
   placeholder: PropTypes.string,
@@ -228,6 +272,184 @@ TextInput.propTypes = {
   hasWarning: PropTypes.bool,
   autoComplete: PropTypes.string
 };
+TextInput.defaultProps = {
+  type: 'text',
+  value: '',
+  maxLength: 255,
+  size: 'middle',
+  tabIndex: -1,
+  hasError: false,
+  hasWarning: false,
+  autoComplete: 'off'
+};
+
+var _jsxFileName$2 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Forms\\Login\\index.js";
+function _templateObject$2() {
+  var data = _taggedTemplateLiteral(["\n    margin: 23px 0 0;\n"]);
+  _templateObject$2 = function _templateObject() {
+    return data;
+  };
+  return data;
+}
+var FormRow = styled__default(reactstrap.Row)(_templateObject$2());
+var LoginForm = function LoginForm(props) {
+  var loginPlaceholder = props.loginPlaceholder,
+      passwordPlaceholder = props.passwordPlaceholder,
+      buttonText = props.buttonText,
+      onSubmit = props.onSubmit,
+      errorText = props.errorText;
+  var _useState = react.useState(''),
+      _useState2 = _slicedToArray(_useState, 2),
+      login = _useState2[0],
+      setLogin = _useState2[1];
+  var _useState3 = react.useState(true),
+      _useState4 = _slicedToArray(_useState3, 2),
+      loginValid = _useState4[0],
+      setLoginValid = _useState4[1];
+  var _useState5 = react.useState(''),
+      _useState6 = _slicedToArray(_useState5, 2),
+      password = _useState6[0],
+      setPassword = _useState6[1];
+  var _useState7 = react.useState(true),
+      _useState8 = _slicedToArray(_useState7, 2),
+      passwordValid = _useState8[0],
+      setPasswordValid = _useState8[1];
+  var validateAndSubmit = function validateAndSubmit(event) {
+    if (!login.trim()) setLoginValid(false);
+    if (!password.trim()) setPasswordValid(false);
+    if (loginValid && passwordValid) return onSubmit(event, {
+      login: login,
+      password: password
+    });
+    return false;
+  };
+  return core.jsx(reactstrap.Container, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 33
+    },
+    __self: this
+  }, core.jsx(FormRow, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 34
+    },
+    __self: this
+  }, core.jsx(reactstrap.Col, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 35
+    },
+    __self: this
+  }, core.jsx(TextInput, {
+    id: "login",
+    name: "login",
+    hasError: !loginValid,
+    value: login,
+    placeholder: loginPlaceholder,
+    size: "big",
+    isAutoFocussed: true,
+    tabIndex: 1,
+    onChange: function onChange(event) {
+      setLogin(event.target.value);
+      setLoginValid(true);
+    },
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 36
+    },
+    __self: this
+  }))), core.jsx(FormRow, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 51
+    },
+    __self: this
+  }, core.jsx(reactstrap.Col, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 52
+    },
+    __self: this
+  }, core.jsx(TextInput, {
+    id: "password",
+    name: "password",
+    type: "password",
+    hasError: !passwordValid,
+    value: password,
+    placeholder: passwordPlaceholder,
+    size: "big",
+    tabIndex: 2,
+    onChange: function onChange(event) {
+      setPassword(event.target.value);
+      setPasswordValid(true);
+    },
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 53
+    },
+    __self: this
+  }))), core.jsx(FormRow, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 68
+    },
+    __self: this
+  }, core.jsx(reactstrap.Col, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 69
+    },
+    __self: this
+  }, core.jsx(Button, {
+    primary: true,
+    size: "big",
+    tabIndex: 3,
+    onClick: validateAndSubmit,
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 70
+    },
+    __self: this
+  }, buttonText))), core.jsx(reactstrap.Collapse, {
+    isOpen: errorText,
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 73
+    },
+    __self: this
+  }, core.jsx(reactstrap.Row, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 74
+    },
+    __self: this
+  }, core.jsx(reactstrap.Col, {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 75
+    },
+    __self: this
+  }, core.jsx("span", {
+    __source: {
+      fileName: _jsxFileName$2,
+      lineNumber: 76
+    },
+    __self: this
+  }, errorText)))));
+};
+LoginForm.propTypes = {
+  loginPlaceholder: PropTypes.string.isRequired,
+  passwordPlaceholder: PropTypes.string.isRequired,
+  buttonText: PropTypes.string.isRequired,
+  errorText: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired
+};
+LoginForm.defaultProps = {
+  login: '',
+  password: ''
+};
 
 exports.Button = Button;
+exports.LoginForm = LoginForm;
 exports.TextInput = TextInput;
