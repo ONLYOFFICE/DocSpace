@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "start-storybook -p 6006",
-    "build-storybook": "build-storybook -c .storybook -o .out"
+    "build-storybook": "build-storybook -c .storybook -o storybook-static"
   },
   "eslintConfig": {
     "extends": "react-app"
