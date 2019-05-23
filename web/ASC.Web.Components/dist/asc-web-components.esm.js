@@ -2,7 +2,7 @@ import { jsx } from '@emotion/core';
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { Row, Container, Col, Collapse } from 'reactstrap';
+import { Row, Container, Col, Collapse, Navbar } from 'reactstrap';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -442,4 +442,28 @@ LoginForm.defaultProps = {
   password: ''
 };
 
-export { Button, LoginForm, TextInput };
+var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Nav\\index.js";
+function _templateObject$3() {
+  var data = _taggedTemplateLiteral(["\n    background: #0f4071;\n    color: #c5c5c5;\n    height: 48px;\n    padding-top: 4px;\n    z-index: 1;\n"]);
+  _templateObject$3 = function _templateObject() {
+    return data;
+  };
+  return data;
+}
+var StyledNav = styled(Navbar)(_templateObject$3());
+var Nav = function Nav(props) {
+  var children = props.children;
+  return jsx(StyledNav, {
+    dark: true,
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 19
+    },
+    __self: this
+  }, children);
+};
+Nav.propTypes = {
+  text: PropTypes.string
+};
+
+export { Button, LoginForm, Nav, TextInput };
