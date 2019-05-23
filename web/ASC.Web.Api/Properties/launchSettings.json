@@ -12,19 +12,13 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": false,
-      "launchUrl": "api/modules",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      "launchUrl": "api/modules"
     },
     "ASC.Web.Api": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/modules",
-      "applicationUrl": "http://localhost:8080",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      "applicationUrl": "http://localhost:8080"
     }
   }
 }

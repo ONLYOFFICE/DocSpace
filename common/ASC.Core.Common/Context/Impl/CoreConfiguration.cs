@@ -27,9 +27,9 @@
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 using System;
-using System.Configuration;
 using System.Text;
 using Newtonsoft.Json;
+using ASC.Common.Utils;
 
 namespace ASC.Core
 {
