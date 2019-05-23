@@ -13,7 +13,7 @@ Buttons are used for a action on a page.
 #### Usage
 
 ```js
-<Button primary={true} size='big' disabled={true} onClick={() => alert('Button clicked')}>Save message</Button>
+<Button primary={true} size='big' isDisabled={true} onClick={() => alert('Button clicked')}>Save message</Button>
 ```
 
 #### Properties

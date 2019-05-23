@@ -13,7 +13,7 @@ Huge Button is used for a action on a page.
 #### Usage
 
 ```js
-<Button size='huge' disabled={false} onClick={() => alert('Button clicked')}>OK</Button>
+<Button size='huge' isDisabled={false} onClick={() => alert('Button clicked')}>OK</Button>
 ```
 
 #### Properties
@@ -21,7 +21,7 @@ Huge Button is used for a action on a page.
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `primary`          | `bool`   |    -     | -                           | -         | Tells when the button should be primary                                  |
-| `disabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
+| `isDisabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
 | `onClick`          | `func`   |    ✅    | -                           | -         | What the button will trigger when clicked                                              |
 | `size`             | `oneOf`  |    -     | `base`, `middle`, `big`, `huge`             | `base`     | -                                                                     |
 

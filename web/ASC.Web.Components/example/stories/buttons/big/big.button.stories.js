@@ -15,7 +15,7 @@ storiesOf('Components|Button', module)
     <Button
       size={select('size', sizeOptions, 'big')}
       primary={boolean('primary', true)}
-      disabled={boolean('disable', false)}
+      isDisabled={boolean('isDisabled', false)}
       onClick={action('clicked')}
     >
       {text('Label', 'Big button')}

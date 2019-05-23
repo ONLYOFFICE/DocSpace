@@ -13,7 +13,7 @@ Middle Button is used for a action on a page.
 #### Usage
 
 ```js
-<Button size='middle' disabled={false} onClick={() => alert('Button clicked')}>OK</Button>
+<Button size='middle' isDisabled={false} onClick={() => alert('Button clicked')}>OK</Button>
 ```
 
 #### Properties
