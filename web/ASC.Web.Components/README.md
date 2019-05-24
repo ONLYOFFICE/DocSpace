@@ -28,4 +28,4 @@ class Example extends Component {
 
 ## License
 
-MIT © [AlexeySafronov](https://github.com/AlexeySafronov)
+AGPL-3.0 © Ascensio System SIA
