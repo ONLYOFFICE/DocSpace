@@ -2,7 +2,6 @@ import React from 'react'
 import { Navbar } from 'reactstrap'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import './styles.scss'
 
 const StyledNav = styled(Navbar)`
     background: #0f4071;
@@ -12,7 +11,7 @@ const StyledNav = styled(Navbar)`
     z-index: 1;
 `;
 
-const Nav = props => {
+const NavMenu = props => {
     const { children } = props;
 
     return (
@@ -20,8 +19,11 @@ const Nav = props => {
     );
 }
 
-Nav.propTypes = {
-    text: PropTypes.string
+NavMenu.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ])
 }
 
-export default Nav
+export default NavMenu

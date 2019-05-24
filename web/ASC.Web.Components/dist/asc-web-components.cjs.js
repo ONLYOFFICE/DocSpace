@@ -450,7 +450,7 @@ LoginForm.defaultProps = {
   password: ''
 };
 
-var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Nav\\index.js";
+var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\NavMenu\\index.js";
 function _templateObject$3() {
   var data = _taggedTemplateLiteral(["\n    background: #0f4071;\n    color: #c5c5c5;\n    height: 48px;\n    padding-top: 4px;\n    z-index: 1;\n"]);
   _templateObject$3 = function _templateObject() {
@@ -459,22 +459,22 @@ function _templateObject$3() {
   return data;
 }
 var StyledNav = styled__default(reactstrap.Navbar)(_templateObject$3());
-var Nav = function Nav(props) {
+var NavMenu = function NavMenu(props) {
   var children = props.children;
   return core.jsx(StyledNav, {
     dark: true,
     __source: {
       fileName: _jsxFileName$3,
-      lineNumber: 19
+      lineNumber: 18
     },
     __self: this
   }, children);
 };
-Nav.propTypes = {
-  text: PropTypes.string
+NavMenu.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
 };
 
 exports.Button = Button;
 exports.LoginForm = LoginForm;
-exports.Nav = Nav;
+exports.NavMenu = NavMenu;
 exports.TextInput = TextInput;

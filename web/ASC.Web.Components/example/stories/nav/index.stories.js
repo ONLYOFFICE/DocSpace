@@ -1,8 +1,8 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Nav } from 'asc-web-components';
+import { NavMenu } from 'asc-web-components';
 
-storiesOf('Components|Nav', module)
+storiesOf('Components|NavMenu', module)
   .add('base', () => (
-      <Nav></Nav>
+      <NavMenu></NavMenu>
   ));
