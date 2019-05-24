@@ -2,7 +2,7 @@
   "name": "asc-web-components",
   "version": "1.0.0",
   "description": "Ascensio System SIA component library",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "main": "dist/asc-web-components.cjs.js",
   "module": "dist/asc-web-components.esm.js",
   "engines": {
