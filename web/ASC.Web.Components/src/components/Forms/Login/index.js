@@ -32,14 +32,14 @@ const LoginForm = props => {
     return (
         <Container>
             <FormRow>
-                <Col>
+                <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <TextInput
                         id="login"
                         name="login"
                         hasError={!loginValid}
                         value={login}
                         placeholder={loginPlaceholder}
-                        size='big'
+                        size='scale'
                         isAutoFocussed={true}
                         tabIndex={1}
                         onChange={event => { 
@@ -49,7 +49,7 @@ const LoginForm = props => {
                 </Col>
             </FormRow>
             <FormRow>
-                <Col>
+                <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <TextInput
                         id="password"
                         name="password"
@@ -57,7 +57,7 @@ const LoginForm = props => {
                         hasError={!passwordValid}
                         value={password}
                         placeholder={passwordPlaceholder}
-                        size='big'
+                        size='scale'
                         tabIndex={2}
                         onChange={event => { 
                             setPassword(event.target.value);
@@ -66,12 +66,12 @@ const LoginForm = props => {
                 </Col>
             </FormRow>
             <FormRow>
-                <Col>
+                <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <Button primary size='big' tabIndex={3} onClick={validateAndSubmit}>{buttonText}</Button>
                 </Col>
             </FormRow>
             <Collapse isOpen={errorText}>
-                <Row >
+                <Row>
                     <Col>
                         <span>{errorText}</span>
                     </Col>

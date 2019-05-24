@@ -328,6 +328,11 @@ var LoginForm = function LoginForm(props) {
     },
     __self: this
   }, jsx(Col, {
+    sm: "12",
+    md: {
+      size: 6,
+      offset: 3
+    },
     __source: {
       fileName: _jsxFileName$2,
       lineNumber: 35
@@ -339,7 +344,7 @@ var LoginForm = function LoginForm(props) {
     hasError: !loginValid,
     value: login,
     placeholder: loginPlaceholder,
-    size: "big",
+    size: "scale",
     isAutoFocussed: true,
     tabIndex: 1,
     onChange: function onChange(event) {
@@ -358,6 +363,11 @@ var LoginForm = function LoginForm(props) {
     },
     __self: this
   }, jsx(Col, {
+    sm: "12",
+    md: {
+      size: 6,
+      offset: 3
+    },
     __source: {
       fileName: _jsxFileName$2,
       lineNumber: 52
@@ -370,7 +380,7 @@ var LoginForm = function LoginForm(props) {
     hasError: !passwordValid,
     value: password,
     placeholder: passwordPlaceholder,
-    size: "big",
+    size: "scale",
     tabIndex: 2,
     onChange: function onChange(event) {
       setPassword(event.target.value);
@@ -388,6 +398,11 @@ var LoginForm = function LoginForm(props) {
     },
     __self: this
   }, jsx(Col, {
+    sm: "12",
+    md: {
+      size: 6,
+      offset: 3
+    },
     __source: {
       fileName: _jsxFileName$2,
       lineNumber: 69
