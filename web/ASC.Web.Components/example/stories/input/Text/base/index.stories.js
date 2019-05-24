@@ -14,7 +14,7 @@ const sizeOptions = ['base', 'middle', 'big', 'huge', 'scale'];
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('Text', () => (
+  .add('text', () => (
       <Value
         defaultValue=""
         render={(value, onChange) => (

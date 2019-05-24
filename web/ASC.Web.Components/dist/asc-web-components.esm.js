@@ -87,7 +87,7 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance");
 }
 
-var _jsxFileName = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Button\\index.js";
+var _jsxFileName = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\button\\index.js";
 function _templateObject7() {
   var data = _taggedTemplateLiteral(["\n    &:hover {\n      ", "\n    }"]);
   _templateObject7 = function _templateObject7() {
@@ -202,7 +202,7 @@ Button.defaultProps = {
   tabIndex: -1
 };
 
-var _jsxFileName$1 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\TextInput\\index.js";
+var _jsxFileName$1 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\text-input\\index.js";
 function _templateObject$1() {
   var data = _taggedTemplateLiteral(["\n  -webkit-appearance: none;\n  border-radius: 3px;\n  box-shadow: none;\n  box-sizing: border-box;\n  border: solid 1px;\n  border-color: ", ";\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  background-color: ", ";\n  color: ", "; ;\n  display: flex;\n  font-family: 'Open Sans', sans-serif;\n  font-size: 18px;  \n  flex: 1 1 0%;\n  outline: none;\n  overflow: hidden;\n  padding: 8px 20px;\n  transition: all 0.2s ease 0s;\n  width: ", ";\n\n    ::-webkit-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    ::-moz-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n    :-ms-input-placeholder {\n        color: #b2b2b2;\n        font-family: 'Open Sans',sans-serif\n    }\n\n"]);
   _templateObject$1 = function _templateObject() {
@@ -275,7 +275,7 @@ TextInput.defaultProps = {
   autoComplete: 'off'
 };
 
-var _jsxFileName$2 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\Forms\\Login\\index.js";
+var _jsxFileName$2 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\forms\\login\\index.js";
 function _templateObject$2() {
   var data = _taggedTemplateLiteral(["\n    margin: 23px 0 0;\n"]);
   _templateObject$2 = function _templateObject() {
@@ -442,7 +442,7 @@ LoginForm.defaultProps = {
   password: ''
 };
 
-var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\NavMenu\\index.js";
+var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\nav-menu\\index.js";
 function _templateObject$3() {
   var data = _taggedTemplateLiteral(["\n    background: #0f4071;\n    color: #c5c5c5;\n    height: 48px;\n    padding-top: 4px;\n    z-index: 1;\n"]);
   _templateObject$3 = function _templateObject() {

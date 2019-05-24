@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Collapse, Container, Row, Col } from 'reactstrap';
 import styled from 'styled-components';
-import Button from '../../Button';
-import TextInput from '../../TextInput';
+import Button from '../../button';
+import TextInput from '../../text-input';
 
 const FormRow = styled(Row)`
     margin: 23px 0 0;

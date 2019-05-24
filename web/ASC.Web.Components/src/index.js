@@ -1,4 +1,4 @@
-export { default as Button } from './components/Button/'
-export { default as TextInput } from './components/TextInput/'
-export { default as LoginForm } from './components/Forms/Login'
-export { default as NavMenu } from './components/NavMenu'
+export { default as Button } from './components/button'
+export { default as TextInput } from './components/text-input'
+export { default as LoginForm } from './components/forms/login'
+export { default as NavMenu } from './components/nav-menu'
