@@ -4,7 +4,6 @@ using ASC.Core.Users;
 
 namespace ASC.Web.Api.Models
 {
-    //[DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraper
     {
         protected EmployeeWraper()

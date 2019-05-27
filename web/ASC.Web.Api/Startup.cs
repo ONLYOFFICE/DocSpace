@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ASC.Web.Api.Handlers;
+using ASC.Web.Api.Middleware;
 
 namespace ASC.Web.Api
 {
@@ -24,7 +25,7 @@ namespace ASC.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(s=> s.UseCamelCasing(true))
                 .AddXmlSerializerFormatters();
 
             services.AddHttpContextAccessor();
@@ -51,6 +52,8 @@ namespace ASC.Web.Api
             app.UseRouting();
 
             app.UseAuthentication();
+
+            app.UseResponseWrapper();
 
             app.UseEndpoints(endpoints =>
             {
