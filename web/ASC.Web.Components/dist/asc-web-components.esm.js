@@ -2,7 +2,7 @@ import { jsx } from '@emotion/core';
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { Row, Container, Col, Collapse, NavbarBrand, Navbar } from 'reactstrap';
+import { Row, Container, Col, Collapse, NavbarBrand, Navbar, CardImg, CardTitle, Card, CardBody } from 'reactstrap';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -535,4 +535,185 @@ NavMenu.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
 };
 
-export { Button, LoginForm, NavLogo, NavMenu, TextInput };
+var _jsxFileName$5 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\module-tile\\index.js";
+function _templateObject6$1() {
+  var data = _taggedTemplateLiteral(["\n    border: none;\n\n    &:hover {\n        .selectable {\n            text-decoration: underline;\n            cursor: pointer;\n        }\n    }\n"]);
+  _templateObject6$1 = function _templateObject6() {
+    return data;
+  };
+  return data;
+}
+function _templateObject5$1() {
+  var data = _taggedTemplateLiteral(["\n    font-size: 13px; \n    color: black;\n"]);
+  _templateObject5$1 = function _templateObject5() {
+    return data;
+  };
+  return data;
+}
+function _templateObject4$1() {
+  var data = _taggedTemplateLiteral(["\n    font-size: 36px; \n    color: black;\n"]);
+  _templateObject4$1 = function _templateObject4() {
+    return data;
+  };
+  return data;
+}
+function _templateObject3$1() {
+  var data = _taggedTemplateLiteral(["\n    font-size: 18px; \n    color: black;\n    text-decoration: none;\n    clear: both;\n"]);
+  _templateObject3$1 = function _templateObject3() {
+    return data;
+  };
+  return data;
+}
+function _templateObject2$1() {
+  var data = _taggedTemplateLiteral(["\n    border: none;\n    height: 100px;\n    width: 100px;\n"]);
+  _templateObject2$1 = function _templateObject2() {
+    return data;
+  };
+  return data;
+}
+function _templateObject$5() {
+  var data = _taggedTemplateLiteral(["\n    border: none;\n    height: 241px;\n    width: 240px;\n"]);
+  _templateObject$5 = function _templateObject() {
+    return data;
+  };
+  return data;
+}
+var PrimaryImage = styled(CardImg)(_templateObject$5());
+var NotPrimaryImage = styled(CardImg)(_templateObject2$1());
+var DescriptionText = styled(CardTitle)(_templateObject3$1());
+var PrimaryTitle = styled(CardTitle)(_templateObject4$1());
+var NotPrimaryTitle = styled(CardTitle)(_templateObject5$1());
+var TileCard = styled(Card)(_templateObject6$1());
+var ModuleTile = function ModuleTile(props) {
+  var title = props.title,
+      imageUrl = props.imageUrl,
+      link = props.link,
+      description = props.description,
+      isPrimary = props.isPrimary,
+      _onClick = props.onClick;
+  return jsx(TileCard, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 50
+    },
+    __self: this
+  }, isPrimary ? jsx(Row, {
+    className: "justify-content-md-center",
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 52
+    },
+    __self: this
+  }, jsx(Col, {
+    md: "auto",
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 53
+    },
+    __self: this
+  }, jsx(PrimaryImage, {
+    className: "selectable",
+    src: imageUrl,
+    onClick: function onClick(event) {
+      return _onClick(event, link);
+    },
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 54
+    },
+    __self: this
+  })), jsx(Col, {
+    md: "6",
+    className: "align-middle",
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 56
+    },
+    __self: this
+  }, jsx(CardBody, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 57
+    },
+    __self: this
+  }, jsx(PrimaryTitle, {
+    className: "selectable",
+    onClick: function onClick(event) {
+      return _onClick(event, link);
+    },
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 58
+    },
+    __self: this
+  }, title), jsx(DescriptionText, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 59
+    },
+    __self: this
+  }, description)))) : jsx(CardBody, {
+    className: "text-center selectable",
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 64
+    },
+    __self: this
+  }, jsx(Row, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 65
+    },
+    __self: this
+  }, jsx(Col, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 66
+    },
+    __self: this
+  }, jsx(NotPrimaryImage, {
+    src: imageUrl,
+    onClick: function onClick(event) {
+      return _onClick(event, link);
+    },
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 67
+    },
+    __self: this
+  }))), jsx(Row, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 70
+    },
+    __self: this
+  }, jsx(Col, {
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 71
+    },
+    __self: this
+  }, jsx(NotPrimaryTitle, {
+    onClick: function onClick(event) {
+      return _onClick(event, link);
+    },
+    __source: {
+      fileName: _jsxFileName$5,
+      lineNumber: 72
+    },
+    __self: this
+  }, title)))));
+};
+ModuleTile.propTypes = {
+  title: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  isPrimary: PropTypes.bool
+};
+ModuleTile.defaultProps = {
+  isPrimary: false,
+  description: ''
+};
+
+export { Button, LoginForm, ModuleTile, NavLogo, NavMenu, TextInput };
