@@ -2,7 +2,7 @@ import { jsx } from '@emotion/core';
 import { useState } from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { Row, Container, Col, Collapse, Navbar } from 'reactstrap';
+import { Row, Container, Col, Collapse, NavbarBrand, Navbar } from 'reactstrap';
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -457,28 +457,82 @@ LoginForm.defaultProps = {
   password: ''
 };
 
-var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\nav-menu\\index.js";
+var _jsxFileName$3 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\nav-logo\\index.js";
 function _templateObject$3() {
-  var data = _taggedTemplateLiteral(["\n    background: #0f4071;\n    color: #c5c5c5;\n    height: 48px;\n    padding-top: 4px;\n    z-index: 1;\n"]);
+  var data = _taggedTemplateLiteral(["\n    cursor: pointer;\n    padding: 4px 0 5px;\n    margin: 0 24px 0 0;\n"]);
   _templateObject$3 = function _templateObject() {
     return data;
   };
   return data;
 }
-var StyledNav = styled(Navbar)(_templateObject$3());
+var StyledNavLogo = styled(NavbarBrand)(_templateObject$3());
+var NavLogo = function NavLogo(props) {
+  var logoUrl = props.logoUrl,
+      href = props.href;
+  return jsx(StyledNavLogo, {
+    href: href,
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 15
+    },
+    __self: this
+  }, jsx("svg", {
+    height: 23,
+    width: 142,
+    xmlns: "http://www.w3.org/2000/svg",
+    xmlnsXlink: "http://www.w3.org/1999/xlink",
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 16
+    },
+    __self: this
+  }, jsx("image", {
+    xlinkHref: logoUrl,
+    __source: {
+      fileName: _jsxFileName$3,
+      lineNumber: 22
+    },
+    __self: this
+  })));
+};
+NavLogo.propTypes = {
+  logoUrl: PropTypes.string.isRequired
+};
+
+var _jsxFileName$4 = "D:\\GitHub\\CommunityServer-AspNetCore\\web\\ASC.Web.Components\\src\\components\\nav-menu\\index.js";
+function _templateObject$4() {
+  var data = _taggedTemplateLiteral(["\n    background: #0f4071;\n    color: #c5c5c5;\n    height: 48px;\n    padding-top: 4px;\n    z-index: 1;\n"]);
+  _templateObject$4 = function _templateObject() {
+    return data;
+  };
+  return data;
+}
+var StyledNav = styled(Navbar)(_templateObject$4());
 var NavMenu = function NavMenu(props) {
-  var children = props.children;
+  var href = props.href,
+      logoUrl = props.logoUrl,
+      children = props.children;
   return jsx(StyledNav, {
     dark: true,
     __source: {
-      fileName: _jsxFileName$3,
-      lineNumber: 18
+      fileName: _jsxFileName$4,
+      lineNumber: 19
     },
     __self: this
-  }, children);
+  }, jsx(NavLogo, {
+    logoUrl: logoUrl,
+    href: href,
+    __source: {
+      fileName: _jsxFileName$4,
+      lineNumber: 20
+    },
+    __self: this
+  }), children);
 };
 NavMenu.propTypes = {
+  href: PropTypes.string.isRequired,
+  logoUrl: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
 };
 
-export { Button, LoginForm, NavMenu, TextInput };
+export { Button, LoginForm, NavLogo, NavMenu, TextInput };
