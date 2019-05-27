@@ -6,6 +6,6 @@ import { NavMenu } from 'asc-web-components';
 
 storiesOf('Components|NavMenu', module)
   .add('base', () => (
-      <NavMenu logoUrl="/light_small_general.svg" href="/?path=/story/components-navmenu--base" >
+      <NavMenu logoUrl="./light_small_general.svg" href="/?path=/story/components-navmenu--base" >
       </NavMenu>
   ));
