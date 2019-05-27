@@ -9,3 +9,4 @@
 *.lock
 **/node_modules/
 **/storybook-static/
+/web/ASC.Web.Components/dist
