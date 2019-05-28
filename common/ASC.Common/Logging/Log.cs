@@ -30,9 +30,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using ASC.Common.DependencyInjection;
 using Autofac;
+using Autofac.Configuration;
 using log4net.Config;
 using log4net.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
 namespace ASC.Common.Logging
@@ -779,6 +781,23 @@ namespace ASC.Common.Logging
             }
 
             return result;
+        }
+    }
+
+    public static class LogExtension
+    {
+        public static IServiceCollection AddLogManager(this IServiceCollection services, IConfiguration configuration)
+        {
+            var module = new ConfigurationModule(configuration);
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(module);
+
+            var container = builder.Build();
+
+            services.AddSingleton(container)
+                .AddSingleton<LogManager>();
+
+            return services;
         }
     }
 }

@@ -13,9 +13,6 @@ using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
 using ASC.Web.Api.Middleware;
 
-using Autofac;
-using Autofac.Configuration;
-
 
 namespace ASC.Web.Api
 {
@@ -45,14 +42,7 @@ namespace ASC.Web.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            var module = new ConfigurationModule(Configuration);
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(module);
-
-            var container = builder.Build();
-
-            services.AddSingleton(container);
-            services.AddSingleton<LogManager>();
+            services.AddLogManager(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
