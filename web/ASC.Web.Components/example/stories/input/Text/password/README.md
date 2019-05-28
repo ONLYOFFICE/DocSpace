@@ -13,7 +13,7 @@ Input description
 #### Usage
 
 ```js
-<TextInput value="text" onChange={event => alert(event.target.value)} />;
+<TextInput value="text" type="password" onChange={event => alert(event.target.value)} />;
 ```
 
 #### Properties
@@ -36,6 +36,7 @@ Input description
 | `type`          | `string`        |          | `text`, `password` | `text` | Supported type of the input fields.                         |
 | `size`          | `string`        |          | `base`, `middle`, `big`, `huge` | `base` | Supported size of the input fields.                         |
 | `scale`           | `bool`   |    -     | -                            | -       | Indicates the input field has scale                                                                |
+
 
 ### Main Functions and use cases are:
 

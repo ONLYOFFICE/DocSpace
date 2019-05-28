@@ -39,7 +39,8 @@ const LoginForm = props => {
                         hasError={!loginValid}
                         value={login}
                         placeholder={loginPlaceholder}
-                        size='scale'
+                        size='huge'
+                        scale={true}
                         isAutoFocussed={true}
                         tabIndex={1}
                         onChange={event => { 
@@ -57,7 +58,8 @@ const LoginForm = props => {
                         hasError={!passwordValid}
                         value={password}
                         placeholder={passwordPlaceholder}
-                        size='scale'
+                        size='huge'
+                        scale={true}
                         tabIndex={2}
                         onChange={event => { 
                             setPassword(event.target.value);

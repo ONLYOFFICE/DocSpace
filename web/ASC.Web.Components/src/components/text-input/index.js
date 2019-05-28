@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyledInput = styled.input.attrs((props) => ({
     id: props.id,
@@ -29,21 +29,31 @@ const StyledInput = styled.input.attrs((props) => ({
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   background-color: ${props => props.isDisabled ? '#efefef' : '#fff'};
-  color: ${props => props.isDisabled ? '#666562' : '#434341'}; ;
+  color: ${props => props.isDisabled ? '#666562' : '#434341'};
   display: flex;
   font-family: 'Open Sans', sans-serif;
-  font-size: 18px;  
+  font-size: ${props =>
+    (props.size === 'base' && '12px') ||
+    (props.size === 'middle' && '14px') ||
+    (props.size === 'big' && '16px') ||
+    (props.size === 'huge' && '18px')
+  };
   flex: 1 1 0%;
   outline: none;
   overflow: hidden;
-  padding: 8px 20px;
+  padding: ${props =>
+    (props.size === 'base' && '4px 8px') ||
+    (props.size === 'middle' && '8px 12px') ||
+    (props.size === 'big' && '8px 16px') ||
+    (props.size === 'huge' && '8px 20px')
+  };
   transition: all 0.2s ease 0s;
   width: ${props =>
+        (props.scale && '100%') ||
         (props.size === 'base' && '135px') ||
         (props.size === 'middle' && '300px') ||
         (props.size === 'big' && '350px') ||
-        (props.size === 'huge' && '500px') ||
-        (props.size === 'scale' && '100%')
+        (props.size === 'huge' && '500px')
     };
 
     ::-webkit-input-placeholder {
@@ -79,7 +89,8 @@ TextInput.propTypes = {
     placeholder: PropTypes.string,
     tabIndex: PropTypes.number,
 
-    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'scale']),
+    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
+    scale: PropTypes.bool,
 
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
@@ -97,7 +108,8 @@ TextInput.defaultProps = {
     type: 'text',
     value: '',
     maxLength: 255,
-    size: 'middle',
+    size: 'base',
+    scale: false,
     tabIndex: -1,
     hasError: false,
     hasWarning: false,

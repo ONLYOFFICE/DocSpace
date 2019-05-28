@@ -13,12 +13,13 @@ const sizeOptions = ['base', 'middle', 'big', 'huge'];
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('text', () => (
+  .add('password', () => (
     <Section>
       <Value
-        defaultValue="text sample"
+        defaultValue="password sample"
         render={(value, onChange) => (
           <TextInput
+            type="password"
             id={text('id', '')}
             name={text('name', '')}
             value={text('value', value)}
