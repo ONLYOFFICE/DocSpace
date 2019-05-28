@@ -32,7 +32,7 @@ using ASC.Common.DependencyInjection;
 using Autofac;
 using log4net.Config;
 using log4net.Core;
-using log4net.Util;
+using Microsoft.Extensions.Configuration;
 using NLog;
 
 namespace ASC.Common.Logging
@@ -754,27 +754,28 @@ namespace ASC.Common.Logging
 
     public class LogManager
     {
-        internal static IContainer Builder { get; set; }
+        internal IContainer Builder { get; set; }
 
         internal static ConcurrentDictionary<string, ILog> Logs;
 
         static LogManager()
         {
-            var container = AutofacConfigLoader.Load("core");
-            if (container != null)
-            {
-                Builder = container.Build();
-            }
-
             Logs = new ConcurrentDictionary<string, ILog>();
+        }
+
+        public LogManager(IContainer builder)
+        {
+            Builder = builder;
         }
 
         public static ILog GetLogger(string name)
         {
+            var logManager = CommonServiceProvider.GetService<LogManager>();
+
             ILog result;
             if (!Logs.TryGetValue(name, out result))
             {
-                result = Logs.AddOrUpdate(name, Builder != null ? Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
+                result = Logs.AddOrUpdate(name, logManager.Builder != null ? logManager.Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
             }
 
             return result;
