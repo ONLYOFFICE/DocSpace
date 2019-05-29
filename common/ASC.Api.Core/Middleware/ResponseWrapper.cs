@@ -29,6 +29,7 @@ namespace ASC.Web.Api.Middleware
             var currentBody = context.Response.Body;
 
             using var memoryStream = new MemoryStream();
+
             context.Response.Body = memoryStream;
 
             await next(context);
