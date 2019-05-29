@@ -9,11 +9,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using System.Runtime.Loader;
-
+using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
 using ASC.Web.Api.Middleware;
+
 using System.Linq;
 using System.Reflection;
 using System.IO;
@@ -39,14 +39,16 @@ namespace ASC.Web.Api
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
 
-            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ASC*.dll").Select(Assembly.LoadFrom);
-
             var builder = services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
+            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")
+                                .Select(Assembly.LoadFrom)
+                                .Where(r => r.GetCustomAttribute<CustomApiAttribute>() != null);
 
             foreach (var a in assemblies) {
                 builder.AddApplicationPart(a);
