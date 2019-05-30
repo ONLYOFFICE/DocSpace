@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System.Net;
+using System.Security.Authentication;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,11 +28,11 @@ namespace ASC.Web.Api.Handlers
         {
             var result = SecurityContext.AuthenticateMe(Context.Request.Cookies["asc_auth_key"]);
 
-            return Task.FromResult(
-             result ?
-             AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
-             AuthenticateResult.Fail("fail")
-             );
+            if (!result)
+            {
+                throw new AuthenticationException(HttpStatusCode.Unauthorized.ToString());
+            }
+            return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
         }
     }
 }

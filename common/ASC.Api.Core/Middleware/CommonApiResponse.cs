@@ -6,42 +6,56 @@ using System.Runtime.Serialization;
 namespace ASC.Api.Core.Middleware
 {
     [DataContract]
-    public class CommonApiResponse
+    public abstract class CommonApiResponse
     {
-        [DataMember(EmitDefaultValue = false)]
-        public int? Count { get; set; }
-
         [DataMember]
         public int Status { get; set; }
 
         [DataMember]
         public HttpStatusCode StatusCode { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
-        public object Response { get; set; }
+        protected CommonApiResponse(HttpStatusCode statusCode)
+        {
+            StatusCode = statusCode;
+        }
 
+        public static SuccessApiResponse Create(HttpStatusCode statusCode, object response)
+        {
+            return new SuccessApiResponse(statusCode, response);
+        }
+
+        public static ErrorApiResponse CreateError(HttpStatusCode statusCode, Exception error)
+        {
+            return new ErrorApiResponse(statusCode, error);
+        }
+    }
+
+    [DataContract]
+    public class ErrorApiResponse : CommonApiResponse
+    {
         [DataMember(EmitDefaultValue = false)]
         public CommonApiError Error { get; set; }
 
-        protected CommonApiResponse(HttpStatusCode statusCode, object response = null, Exception error = null)
+        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error) : base(statusCode)
         {
-            Status = Convert.ToInt32((int)statusCode >= 400);
-            StatusCode = statusCode;
+            Status = 1;
+            Error = CommonApiError.FromException(error);
+        }
+    }
+
+    [DataContract]
+    public class SuccessApiResponse : CommonApiResponse
+    {
+        [DataMember(EmitDefaultValue = false)]
+        public int? Count { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public object Response { get; set; }
+
+        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response) : base(statusCode)
+        {
+            Status = 0;
             Response = response;
-            if (error != null)
-            {
-                Error = CommonApiError.FromException(error);
-            }
-        }
-
-        public static CommonApiResponse Create(HttpStatusCode statusCode, object response = null)
-        {
-            return new CommonApiResponse(statusCode, response);
-        }
-
-        public static CommonApiResponse CreateError(HttpStatusCode statusCode, Exception error = null)
-        {
-            return new CommonApiResponse(statusCode, error: error);
         }
     }
 
