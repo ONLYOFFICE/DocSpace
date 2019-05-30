@@ -8,10 +8,10 @@ namespace ASC.Api.Core.Middleware
     [DataContract]
     public abstract class CommonApiResponse
     {
-        [DataMember]
+        [DataMember(Order = 1)]
         public int Status { get; set; }
 
-        [DataMember]
+        [DataMember(Order = 2)]
         public HttpStatusCode StatusCode { get; set; }
 
         protected CommonApiResponse(HttpStatusCode statusCode)
@@ -33,7 +33,7 @@ namespace ASC.Api.Core.Middleware
     [DataContract]
     public class ErrorApiResponse : CommonApiResponse
     {
-        [DataMember(EmitDefaultValue = false)]
+        [DataMember(EmitDefaultValue = false, Order = 3)]
         public CommonApiError Error { get; set; }
 
         protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error) : base(statusCode)
@@ -46,10 +46,10 @@ namespace ASC.Api.Core.Middleware
     [DataContract]
     public class SuccessApiResponse : CommonApiResponse
     {
-        [DataMember(EmitDefaultValue = false)]
+        [DataMember(EmitDefaultValue = false, Order = 0)]
         public int? Count { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
+        [DataMember(EmitDefaultValue = false, Order = 3)]
         public object Response { get; set; }
 
         protected internal SuccessApiResponse(HttpStatusCode statusCode, object response) : base(statusCode)

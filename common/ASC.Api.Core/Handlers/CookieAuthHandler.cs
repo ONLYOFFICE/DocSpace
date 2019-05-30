@@ -26,7 +26,8 @@ namespace ASC.Web.Api.Handlers
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var result = SecurityContext.AuthenticateMe(Context.Request.Cookies["asc_auth_key"]);
+            var token = Context.Request.Cookies["asc_auth_key"] ?? Context.Request.Headers["Authorization"];
+            var result = SecurityContext.AuthenticateMe(token);
 
             if (!result)
             {
