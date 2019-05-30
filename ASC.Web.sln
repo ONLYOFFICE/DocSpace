@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Common", "common\ASC.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Core.Common", "common\ASC.Core.Common\ASC.Core.Common.csproj", "{A51D0454-4AFA-46DE-89D4-B03D37E1816C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.People", "products\ASC.People\ASC.People.csproj", "{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Api.Core", "common\ASC.Api.Core\ASC.Api.Core.csproj", "{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A51D0454-4AFA-46DE-89D4-B03D37E1816C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

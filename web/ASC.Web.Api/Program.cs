@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Api
 {
@@ -15,6 +16,9 @@ namespace ASC.Web.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+            .ConfigureAppConfiguration((hostingContext, config) => {
+                config.AddJsonFile("autofac.json");
+            });
     }
 }
