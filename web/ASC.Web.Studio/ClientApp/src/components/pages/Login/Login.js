@@ -43,8 +43,8 @@ const LoginForm = props => {
         };
 
         login(payload)
-            .then(function (response) {
-                console.log("auth success", response, match, location, history);
+            .then(function () {
+                console.log("auth success", match, location, history);
                 setIsLoading(false)
                 history.push('/');
             })

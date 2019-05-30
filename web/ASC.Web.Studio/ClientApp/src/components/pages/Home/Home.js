@@ -1,61 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { getModules } from '../../../actions/getModulesActions';
 import PropTypes from 'prop-types';
 import { Container, Col, Row, Collapse } from 'reactstrap';
 import { ModuleTile } from 'asc-web-components';
 
-const PrimaryTile = ({ modules }) => (
-    <Row>
-        {
-            modules.filter(m => m.isPrimary).map(module => (
-                <Col key={0}>
-                    <ModuleTile {...module} />
-                </Col>
-            ))
-        }
-    </Row>
-);
-
-const NotPrimaryTiles = ({ modules }) => {
+const Tiles = ({ modules, isPrimary }) => {
     let index = 0;
     return (
         <Row>
-            {modules.filter(m => !m.isPrimary).map(module => (
-                <Col key={++index}>
-                    <ModuleTile {...module} />
-                </Col>
-            ))
+            {
+                modules.filter(m => m.isPrimary === isPrimary).map(module => (
+                    <Col key={++index}>
+                        <ModuleTile {...module} />
+                    </Col>
+                ))
             }
         </Row>
     );
 };
 
-const Home = props => {
-    const [modules, setModules] = useState([]);
-    const [errorText, setErrorText] = useState("");
-    const { getModules } = props;
+Tiles.propTypes = {
+    modules: PropTypes.array.isRequired,
+    isPrimary: PropTypes.bool.isRequired
+};
 
-    useEffect(() => {
-        getModules()
-            .then((res) => {
-                console.log("getModules success", res);
-                setModules(res.data.response);
-            })
-            .catch(e => {
-                console.error("getModules error", e);
-                setErrorText(e.message);
-            });;
-    }, [getModules]);
+const Home = props => {
+    const { modules } = props;
 
     return (
         <Container>
-            <PrimaryTile modules={modules} />
-            <NotPrimaryTiles modules={modules} />
-            <Collapse isOpen={!!errorText}>
+            <Tiles modules={modules} isPrimary={true} />
+            <Tiles modules={modules} isPrimary={false} />
+            <Collapse isOpen={!modules || !modules.length}>
                 <Row style={{ margin: "23px 0 0" }}>
                     <Col sm="12" md={{ size: 6, offset: 3 }}>
-                        <div className="alert alert-danger">{errorText}</div>
+                        <div className="alert alert-danger">No one modules available</div>
                     </Col>
                 </Row>
             </Collapse>
@@ -64,7 +43,13 @@ const Home = props => {
 };
 
 Home.propTypes = {
-    getModules: PropTypes.func.isRequired,
+    modules: PropTypes.array.isRequired,
+};
+
+function mapStateToProps(state) {
+    return {
+        modules: state.auth.modules
+    };
 }
 
-export default connect(null, { getModules })(Home);
+export default connect(mapStateToProps)(Home);
