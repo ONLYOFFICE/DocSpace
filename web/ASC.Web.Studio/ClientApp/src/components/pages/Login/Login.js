@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Collapse, Container, Row, Col, Card, CardBody, CardTitle, CardText, CardImg } from 'reactstrap';
+import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
 import { Button, TextInput } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../actions/authActions';
