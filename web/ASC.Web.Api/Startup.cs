@@ -45,7 +45,7 @@ namespace ASC.Web.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")
+            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ASC*.dll")
                                 .Select(Assembly.LoadFrom)
                                 .Where(r => r.GetCustomAttribute<CustomApiAttribute>() != null);
 
