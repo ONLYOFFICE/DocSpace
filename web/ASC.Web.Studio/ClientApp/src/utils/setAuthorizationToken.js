@@ -8,8 +8,16 @@ export default function setAuthorizationToken(token) {
     if (token) {
         //localStorage.setItem(AUTH_KEY, token);
         //axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        const current = new Date();
+        const nextYear = new Date();
+
+        nextYear.setFullYear(current.getFullYear() + 1);
+
         axios.defaults.withCredentials = true;
-        cookies.set(AUTH_KEY, token);
+        cookies.set(AUTH_KEY, token, {
+            path: '/',
+            expires: nextYear,
+        });
     }
     else {
         axios.defaults.withCredentials = false
