@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { Container, Col, Row } from 'reactstrap';
-// import { useTranslation, withTranslation, Trans } from 'react-i18next';
-import ModuleTile from '../../ui/ModuleTile/ModuleTile';
-import ModuleContext from '../../context/ModuleContext';
-
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { getModules } from '../../../actions/getModulesActions';
+import PropTypes from 'prop-types';
+import { Container, Col, Row, Collapse } from 'reactstrap';
+import { ModuleTile } from 'asc-web-components';
 
 const PrimaryTile = ({ modules }) => (
     <Row>
@@ -20,36 +20,51 @@ const PrimaryTile = ({ modules }) => (
 const NotPrimaryTiles = ({ modules }) => {
     let index = 0;
     return (
-    <Row>
-        {modules.filter(m => !m.isPrimary).map(module => (
-            <Col key={++index}>
-                <ModuleTile {...module} />
-            </Col>
-        ))
-        }
-    </Row>
-);
+        <Row>
+            {modules.filter(m => !m.isPrimary).map(module => (
+                <Col key={++index}>
+                    <ModuleTile {...module} />
+                </Col>
+            ))
+            }
+        </Row>
+    );
 };
 
 const Home = props => {
-    const context = useContext(ModuleContext);
-    const { modules, isFetching } = context;
+    const [modules, setModules] = useState([]);
+    const [errorText, setErrorText] = useState("");
+    const { getModules } = props;
+
+    useEffect(() => {
+        getModules()
+            .then((res) => {
+                console.log("getModules success", res);
+                setModules(res.data.response);
+            })
+            .catch(e => {
+                console.error("getModules error", e);
+                setErrorText(e.message);
+            });;
+    }, [getModules]);
 
     return (
         <Container>
-            {isFetching ? (
-                <Row>
-                    Loading...
-                    </Row>
-            ) : (
-                    <>
-                        <PrimaryTile modules={modules} />
-                        <NotPrimaryTiles modules={modules} />
-                    </>
-                )
-            }
+            <PrimaryTile modules={modules} />
+            <NotPrimaryTiles modules={modules} />
+            <Collapse isOpen={!!errorText}>
+                <Row style={{ margin: "23px 0 0" }}>
+                    <Col sm="12" md={{ size: 6, offset: 3 }}>
+                        <div className="alert alert-danger">{errorText}</div>
+                    </Col>
+                </Row>
+            </Collapse>
         </Container>
     );
+};
+
+Home.propTypes = {
+    getModules: PropTypes.func.isRequired,
 }
 
-export default Home;
+export default connect(null, { getModules })(Home);

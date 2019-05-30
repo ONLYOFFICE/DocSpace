@@ -18,15 +18,11 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="ClientApp\src\components\**" />
-    <Compile Remove="ClientApp\src\store\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="ClientApp\src\components\**" />
-    <Content Remove="ClientApp\src\store\**" />
     <EmbeddedResource Remove="ClientApp\src\components\**" />
-    <EmbeddedResource Remove="ClientApp\src\store\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="ClientApp\src\components\**" />
-    <None Remove="ClientApp\src\store\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 

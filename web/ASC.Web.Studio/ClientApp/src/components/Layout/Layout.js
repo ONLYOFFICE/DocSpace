@@ -1,16 +1,20 @@
 import React from 'react';
 import { Container } from 'reactstrap';
-import NavMenu from '../ui/NavMenu/NavMenu';
+import { NavMenu } from 'asc-web-components';
 
-const Layout = props => (
-    <>
-        <header>
-            <NavMenu />
-        </header>
-        <Container>
-            {props.children}
-        </Container>
-    </>
-);
+const Layout = props => {
+    const { children } = props;
+
+    return (
+        <>
+            <header>
+                <NavMenu logoUrl="images/light_small_general.svg" href="/" />
+            </header>
+            <Container>
+                {children}
+            </Container>
+        </>
+    )
+};
 
 export default Layout;
