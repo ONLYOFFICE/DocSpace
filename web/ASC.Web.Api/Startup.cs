@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Reflection;
+using System.IO;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -12,11 +15,7 @@ using Microsoft.Extensions.Hosting;
 using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
-using ASC.Web.Api.Middleware;
-
-using System.Linq;
-using System.Reflection;
-using System.IO;
+using ASC.Api.Core.Middleware;
 
 namespace ASC.Web.Api
 {
@@ -46,11 +45,12 @@ namespace ASC.Web.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.dll")
+            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ASC*.dll")
                                 .Select(Assembly.LoadFrom)
                                 .Where(r => r.GetCustomAttribute<CustomApiAttribute>() != null);
 
-            foreach (var a in assemblies) {
+            foreach (var a in assemblies)
+            {
                 builder.AddApplicationPart(a);
             }
 
