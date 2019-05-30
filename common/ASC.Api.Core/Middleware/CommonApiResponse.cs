@@ -28,7 +28,10 @@ namespace ASC.Api.Core.Middleware
             Status = Convert.ToInt32((int)statusCode >= 400);
             StatusCode = statusCode;
             Response = response;
-            Error = CommonApiError.FromException(error);
+            if (error != null)
+            {
+                Error = CommonApiError.FromException(error);
+            }
         }
 
         public static CommonApiResponse Create(HttpStatusCode statusCode, object response = null)
