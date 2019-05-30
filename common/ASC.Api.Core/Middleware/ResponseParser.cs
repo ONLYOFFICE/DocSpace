@@ -13,47 +13,50 @@ namespace ASC.Api.Core.Middleware
     {
         public abstract object Deserialize(string response);
 
-        public abstract string Serialize(CommonApiResponse response);
+        public abstract string Serialize(SuccessApiResponse response);
 
-        public string WrapAndWrite(HttpStatusCode statusCode, string response)
+        public abstract string Serialize(ErrorApiResponse response);
+
+        public string WrapAndWrite(HttpStatusCode statusCode, string response, Exception error = null)
         {
-            switch (statusCode)
+            if (error != null)
             {
-                case HttpStatusCode.Unauthorized:
-                    var result1 = CommonApiResponse.CreateError(statusCode, new UnauthorizedAccessException());
-                    return Serialize(result1);
-                default:
-                    var result = CommonApiResponse.Create(statusCode, Deserialize(response));
-                    return Serialize(result);
+                var result = CommonApiResponse.CreateError(statusCode, error);
+                return Serialize(result);
             }
-        }
-
-        public string WrapAndWrite(HttpStatusCode statusCode, Exception error)
-        {
-            var result = CommonApiResponse.CreateError(statusCode, error);
-            return Serialize(result);
+            else
+            {
+                var result = CommonApiResponse.Create(statusCode, Deserialize(response));
+                return Serialize(result);
+            }
         }
     }
 
     class JsonResponseParser : ResponseParser
     {
+        public JsonSerializerSettings Settings { get; }
+        public JsonResponseParser()
+        {
+            Settings = new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            };
+        }
+
         public override object Deserialize(string response)
         {
             return JsonConvert.DeserializeObject(response);
         }
 
-        public override string Serialize(CommonApiResponse response)
+        public override string Serialize(SuccessApiResponse response)
         {
-            if (response.Status == 0)
-            {
-                response.Count = response.Response is JObject ? 1 : ((response.Response as JArray)?.Count ?? 0);
-            }
-            var settings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            response.Count = response.Response is JObject ? 1 : ((response.Response as JArray)?.Count ?? 0);
+            return JsonConvert.SerializeObject(response, Settings);
+        }
 
-            };
-            return JsonConvert.SerializeObject(response, settings);
+        public override string Serialize(ErrorApiResponse response)
+        {
+            return JsonConvert.SerializeObject(response, Settings);
         }
     }
     class XmlResponseParser : ResponseParser
@@ -63,38 +66,30 @@ namespace ASC.Api.Core.Middleware
             return XDocument.Parse(response);
         }
 
-        public override string Serialize(CommonApiResponse response)
+        public override string Serialize(SuccessApiResponse response)
         {
             var count = 0;
 
             var result = new XElement("result");
             var responseElements = new List<XElement>();
-
-            if (response.Response != null)
+            var root = ((XDocument)response.Response).Root;
+            if (root.Name.LocalName.StartsWith("ArrayOf"))
             {
-                var root = ((XDocument)response.Response).Root;
-                if (root.Name.LocalName.StartsWith("ArrayOf"))
-                {
-                    var elements = root.Elements();
+                var elements = root.Elements();
 
-                    foreach (var e in elements)
-                    {
-                        responseElements.Add(GetResponse(e));
-                    }
-
-                    count = elements.Count();
-                }
-                else
+                foreach (var e in elements)
                 {
-                    count = 1;
-                    responseElements.Add(GetResponse(root));
+                    responseElements.Add(GetResponse(e));
                 }
-                result.Add(new XElement(nameof(response.Count).ToCamelCase(), count));
+
+                count = elements.Count();
             }
-            else if (response.Error != null)
+            else
             {
-                responseElements.Add(new XElement(nameof(response.Error).ToCamelCase(), response.Error));
+                count = 1;
+                responseElements.Add(GetResponse(root));
             }
+            result.Add(new XElement(nameof(response.Count).ToCamelCase(), count));
 
             result.Add(new XElement(nameof(response.Status).ToCamelCase(), response.Status));
             result.Add(new XElement(nameof(response.StatusCode).ToCamelCase(), (int)response.StatusCode));
@@ -107,23 +102,35 @@ namespace ASC.Api.Core.Middleware
             {
                 return ToLowerCamelCase(new XElement(nameof(response.Response).ToCamelCase(), xElement.Elements().Select(ToLowerCamelCase)));
             }
+        }
 
-            XElement ToLowerCamelCase(XElement xElement)
+        public override string Serialize(ErrorApiResponse response)
+        {
+            var result = new XElement("result");
+            result.Add(new XElement(nameof(response.Status).ToCamelCase(), response.Status));
+            result.Add(new XElement(nameof(response.StatusCode).ToCamelCase(), (int)response.StatusCode));
+            result.Add(new XElement(nameof(response.Error).ToCamelCase(), response.Error));
+
+            var doc = new XDocument(result);
+
+            return doc.ToString();
+        }
+
+        XElement ToLowerCamelCase(XElement xElement)
+        {
+            var lowerXElement = new XElement(xElement.Name.LocalName.ToCamelCase());
+
+            var elements = xElement.Elements();
+            if (elements.Any())
             {
-                var lowerXElement = new XElement(xElement.Name.LocalName.ToCamelCase());
-
-                var elements = xElement.Elements();
-                if (elements.Any())
-                {
-                    lowerXElement.Add(elements.Select(ToLowerCamelCase));
-                }
-                else
-                {
-                    lowerXElement.Add(xElement.Nodes());
-                }
-
-                return lowerXElement;
+                lowerXElement.Add(elements.Select(ToLowerCamelCase));
             }
+            else
+            {
+                lowerXElement.Add(xElement.Nodes());
+            }
+
+            return lowerXElement;
         }
     }
 

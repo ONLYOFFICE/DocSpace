@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,11 @@ namespace ASC.Api.Core.Middleware
             {
                 await next(context);
             }
+            catch(AuthenticationException exception)
+            {
+                context.Response.StatusCode = 401;
+                error = exception;
+            }
             catch(Exception exception)
             {
                 context.Response.StatusCode = 500;
@@ -53,14 +59,7 @@ namespace ASC.Api.Core.Middleware
             }
 
             var readToEnd = new StreamReader(memoryStream).ReadToEnd();
-            if(error != null)
-            {
-                await context.Response.WriteAsync(responseParser.WrapAndWrite((HttpStatusCode)context.Response.StatusCode, error));
-            }
-            else
-            {
-                await context.Response.WriteAsync(responseParser.WrapAndWrite((HttpStatusCode)context.Response.StatusCode, readToEnd));
-            }
+            await context.Response.WriteAsync(responseParser.WrapAndWrite((HttpStatusCode)context.Response.StatusCode, readToEnd, error));
         }
 
     }
