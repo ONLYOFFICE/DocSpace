@@ -24,7 +24,7 @@ const Layout = props => {
                                 {auth.user.displayName}
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <DropdownItem href="/profile">Profile</DropdownItem>
+                                <DropdownItem onClick={() => history.push("/products/people/profile")}>Profile</DropdownItem>
                                 <DropdownItem onClick={logout}>Sign Out</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
