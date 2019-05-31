@@ -29,11 +29,11 @@ namespace ASC.Web.Api.Handlers
             var token = Context.Request.Cookies["asc_auth_key"] ?? Context.Request.Headers["Authorization"];
             var result = SecurityContext.AuthenticateMe(token);
 
-            if (!result)
-            {
-                throw new AuthenticationException(HttpStatusCode.Unauthorized.ToString());
-            }
-            return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
+            return Task.FromResult(
+                     result ?
+                     AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
+                     AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString()))
+                     );
         }
     }
 }

@@ -72,9 +72,9 @@ namespace ASC.Web.Api
 
             app.UseRouting();
 
-            app.UseResponseWrapper();
-
             app.UseAuthentication();
+
+            app.UseResponseWrapper();
 
             app.UseEndpoints(endpoints =>
             {

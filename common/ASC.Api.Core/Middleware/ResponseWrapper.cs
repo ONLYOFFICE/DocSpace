@@ -30,6 +30,11 @@ namespace ASC.Api.Core.Middleware
             try
             {
                 await next(context);
+
+                if(context.Response.StatusCode == 401)
+                {
+                    error = new AuthenticationException(HttpStatusCode.Unauthorized.ToString());
+                }
             }
             catch(AuthenticationException exception)
             {
