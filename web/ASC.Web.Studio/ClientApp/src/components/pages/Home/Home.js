@@ -28,7 +28,7 @@ const Home = props => {
     const { modules } = props;
 
     return (
-        <Container>
+        <Container style={{ paddingTop: '62px' }}>
             <Tiles modules={modules} isPrimary={true} />
             <Tiles modules={modules} isPrimary={false} />
             <Collapse isOpen={!modules || !modules.length}>
