@@ -14,9 +14,10 @@ function onClick(e) {
 
 const rowStyle = { marginTop: 8 };
 
-storiesOf('Components|Button', module)
+storiesOf('Components|Buttons', module)
   // To set a default viewport for all the stories for this component
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
+  .addParameters({ viewport: { defaultViewport: 'responsive' }})
+  .addParameters({ options: { showAddonPanel: false }})
   .addDecorator(withReadme(Readme))
   .add('all', () => (
     <>

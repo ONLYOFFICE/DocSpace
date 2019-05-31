@@ -9,7 +9,7 @@ import Section from '../../../.storybook/decorators/section';
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
 
-storiesOf('Components|Button', module)
+storiesOf('Components|Buttons', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base', () => (
