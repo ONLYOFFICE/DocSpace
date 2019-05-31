@@ -31,9 +31,11 @@ const Layout = props => {
                         )}
                 </NavMenu>
             </header>
-            <Container>
-                {children}
-            </Container>
+            <main class="main">
+                <Container fluid>
+                    {children}
+                </Container>
+            </main>
         </>
     )
 };
