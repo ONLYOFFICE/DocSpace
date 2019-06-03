@@ -13,7 +13,7 @@ namespace ASC.Web.Api.Models
         public EmployeeWraper(UserInfo userInfo)
         {
             Id = userInfo.ID;
-            DisplayName = "";
+            DisplayName = string.Format("{0} {1}", userInfo.FirstName, userInfo.LastName);
             if (!string.IsNullOrEmpty(userInfo.Title))
             {
                 Title = userInfo.Title;
