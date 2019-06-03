@@ -31,9 +31,5 @@ export function login(data) {
                 setAuthorizationToken(token);
             })
             .then(() => getUserInfo(dispatch));
-            /*.then(api.getUser)
-            .then((res) => dispatch(setCurrentUser(res.data.response)))
-            .then(api.getModulesList)
-            .then((res) => dispatch(setModules(res.data.response)));*/
     }
 };
