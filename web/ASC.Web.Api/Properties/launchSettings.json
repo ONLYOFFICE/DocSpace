@@ -4,7 +4,7 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:8080",
+      "applicationUrl": "http://localhost:5000",
       "sslPort": 0
     }
   },
@@ -18,7 +18,7 @@
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/modules",
-      "applicationUrl": "http://localhost:8080"
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }
