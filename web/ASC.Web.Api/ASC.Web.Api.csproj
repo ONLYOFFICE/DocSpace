@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy $(SolutionDir)products\ASC.People\bin\Debug\netcoreapp3.0\ASC.People.dll $(OutDir)ASC.People.dll /Y" />
+  </Target>
+
 </Project>
