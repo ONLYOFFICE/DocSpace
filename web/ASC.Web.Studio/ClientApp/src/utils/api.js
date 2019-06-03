@@ -7,7 +7,7 @@ const PREFIX = 'api';
 const VERSION = '2.0';
 const API_URL = `${BASE_URL}:${PORT}/${PREFIX}/${VERSION}`;
 
-const IS_FAKE = true;
+const IS_FAKE = false;
 
 export function login(data) {
     return axios.post(`${API_URL}/authentication`, data);
