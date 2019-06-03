@@ -53,6 +53,7 @@
     "babel-plugin-macros": "^2.5.1",
     "babel-plugin-module-rewrite": "0.2.0",
     "babel-plugin-react-intl": "3.0.1",
+    "babel-plugin-styled-components": "^1.10.0",
     "babel-plugin-transform-dynamic-import": "2.1.0",
     "babel-plugin-transform-react-remove-prop-types": "0.4.24",
     "babel-plugin-transform-rename-import": "2.3.0",
