@@ -56,7 +56,7 @@ const LoginForm = props => {
     };
 
     return (
-        <Container fluid style={{ marginTop: "70px" }}>
+        <Container style={{ marginTop: "70px" }}>
             <Row style={{ margin: "23px 0 0" }}>
                 <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <Card style={{ border: 'none' }}>
