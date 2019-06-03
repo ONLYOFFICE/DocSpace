@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as fakeApi from './fakeApi';
 
-const BASE_URL = 'http://localhost';
+const BASE_URL = `${window.location.protocol}//${window.location.hostname}`;
 const PORT = '5000';
 const PREFIX = 'api';
 const VERSION = '2.0';
