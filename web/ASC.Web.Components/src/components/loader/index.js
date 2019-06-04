@@ -2,8 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Oval } from "./items/oval";
-import { DualRing } from "./items/dual-ring";
+import { Oval } from "./types/oval";
+import { DualRing } from "./types/dual-ring";
 
 const Loader = (props) =>  {
     const { type, color, label, className } = props;
