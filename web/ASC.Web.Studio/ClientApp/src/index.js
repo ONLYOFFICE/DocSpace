@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import setAuthorizationToken from './utils/setAuthorizationToken';
 import { AUTH_KEY } from './helpers/constants';
 import store from './store/store';
-import 'bootstrap/dist/css/bootstrap.css';
+import './custom.scss';
 import App from './App';
 import './i18n'
 
