@@ -15,11 +15,11 @@ export const DualRing = ({ width, height, color, label }) => (
       ng-attr-stroke="{{config.c1}}" 
       ng-attr-stroke-dasharray="{{config.dasharray}}" 
       fill="none" 
-      stroke-linecap="round" 
+      strokeLinecap="round" 
       r="40" 
-      stroke-width="8" 
+      strokeWidth="8" 
       stroke={color} 
-      stroke-dasharray="62.83185307179586 62.83185307179586" 
+      strokeDasharray="62.83185307179586 62.83185307179586" 
       transform="rotate(32.3864 50 50)">
         <animateTransform 
           attributeName="transform" 
@@ -39,12 +39,12 @@ export const DualRing = ({ width, height, color, label }) => (
       ng-attr-stroke-dasharray="{{config.dasharray2}}" 
       ng-attr-stroke-dashoffset="{{config.dashoffset2}}" 
       fill="none" 
-      stroke-linecap="round" 
+      strokeLinecap="round" 
       r="20" 
-      stroke-width="4" 
+      strokeWidth="4" 
       stroke={color}
-      stroke-dasharray="29.845130209103033 29.845130209103033" 
-      stroke-dashoffset="29.845130209103033" 
+      strokeDasharray="29.845130209103033 29.845130209103033" 
+      strokeDashoffset="29.845130209103033" 
       transform="rotate(-360 -8.10878e-8 -8.10878e-8)">
         <animateTransform 
           attributeName="transform" 
