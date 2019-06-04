@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using ASC.Data.Storage;
 
 public static class StreamExtension
@@ -72,6 +73,18 @@ public static class StreamExtension
         while ((readed = srcStream.Read(buffer, 0, BufferSize)) > 0)
         {
             dstStream.Write(buffer, 0, readed);
+        }
+    }
+    public static async Task StreamCopyToAsync(this Stream srcStream, Stream dstStream)
+    {
+        if (srcStream == null) throw new ArgumentNullException("srcStream");
+        if (dstStream == null) throw new ArgumentNullException("dstStream");
+
+        var buffer = new byte[BufferSize];
+        int readed;
+        while ((readed = await srcStream.ReadAsync(buffer, 0, BufferSize)) > 0)
+        {
+            await dstStream.WriteAsync(buffer, 0, readed);
         }
     }
 
