@@ -17,6 +17,10 @@ html, body {
         height: 100%;
         overflow: hidden;
 
-
+        .pageLoader {
+            position: fixed;
+            left: calc(50% - 32px);
+            top: 35%;
+        }
     }
 }

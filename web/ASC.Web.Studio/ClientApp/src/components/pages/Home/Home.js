@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Container, Col, Row, Collapse } from 'reactstrap';
-import { ModuleTile } from 'asc-web-components';
+import { ModuleTile, Loader } from 'asc-web-components';
 
 const Tiles = ({ modules, isPrimary, history }) => {
     let index = 0;
@@ -13,7 +13,7 @@ const Tiles = ({ modules, isPrimary, history }) => {
             {
                 modules.filter(m => m.isPrimary === isPrimary).map(module => (
                     <Col key={++index}>
-                        <ModuleTile {...module} onClick={() => history.push(module.link) } />
+                        <ModuleTile {...module} onClick={() => history.push(module.link)} />
                     </Col>
                 ))
             }
@@ -28,31 +28,39 @@ Tiles.propTypes = {
 };
 
 const Home = props => {
-    const { modules, history } = props;
+    const { modules, history, isLoaded } = props;
 
     return (
-        <Container style={{ paddingTop: '62px' }}>
-            <Tiles modules={modules} isPrimary={true} history={history} />
-            <Tiles modules={modules} isPrimary={false} history={history} />
-            <Collapse isOpen={!modules || !modules.length}>
-                <Row style={{ margin: "23px 0 0" }}>
-                    <Col sm="12" md={{ size: 6, offset: 3 }}>
-                        <div className="alert alert-danger">No one modules available</div>
-                    </Col>
-                </Row>
-            </Collapse>
-        </Container>
+        !isLoaded
+            ? (
+                <Loader className="pageLoader" type="dual-ring" height={64} width={64} label="Loading..." color="#63686a" />
+            )
+            : (
+                <Container style={{ paddingTop: '62px' }}>
+                    <Tiles modules={modules} isPrimary={true} history={history} />
+                    <Tiles modules={modules} isPrimary={false} history={history} />
+                    <Collapse isOpen={!modules || !modules.length}>
+                        <Row style={{ margin: "23px 0 0" }}>
+                            <Col sm="12" md={{ size: 6, offset: 3 }}>
+                                <div className="alert alert-danger">No one modules available</div>
+                            </Col>
+                        </Row>
+                    </Collapse>
+                </Container>
+            )
     );
 };
 
 Home.propTypes = {
     modules: PropTypes.array.isRequired,
-    history: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired,
+    isLoaded: PropTypes.bool
 };
 
 function mapStateToProps(state) {
     return {
-        modules: state.auth.modules
+        modules: state.auth.modules,
+        isLoaded: state.auth.isLoaded
     };
 }
 
