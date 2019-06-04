@@ -6,7 +6,7 @@ import { Oval } from "./items/oval";
 import { DualRing } from "./items/dual-ring";
 
 const Loader = (props) =>  {
-    const { type, color, label } = props;
+    const { type, color, label, className } = props;
   
     const svgRenderer = type => {
       switch (type) {
@@ -16,15 +16,13 @@ const Loader = (props) =>  {
           return <DualRing {...props} />;
         default:
           return (
-            <div aria-busy="true">
               <span style={{ color: color }}>{label}</span>
-            </div>
           );
       }
     };
   
     return (
-        <div aria-busy="true">{svgRenderer(type)}</div>
+        <div aria-busy="true" className={className}>{svgRenderer(type)}</div>
     );
   };
 
@@ -33,7 +31,8 @@ const Loader = (props) =>  {
     type: PropTypes.oneOf(['base', 'oval', 'dual-ring']),
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    label: PropTypes.string
+    label: PropTypes.string,
+    className: PropTypes.string
   };
 
   Loader.defaultProps = {
