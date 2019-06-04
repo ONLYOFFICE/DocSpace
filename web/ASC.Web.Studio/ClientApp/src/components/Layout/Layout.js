@@ -2,17 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Container, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Container, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row } from 'reactstrap';
 import { NavMenu } from 'asc-web-components';
-import setAuthorizationToken from '../../utils/setAuthorizationToken';
+import { logout } from '../../actions/authActions';
 
 const Layout = props => {
-    const { auth, children, history } = props;
-
-    const logout = () => {
-        setAuthorizationToken();
-        history.push('/');
-    };
+    const { auth, logout, children, history } = props;
 
     return (
         <>
@@ -25,15 +20,20 @@ const Layout = props => {
                             </DropdownToggle>
                             <DropdownMenu right>
                                 <DropdownItem onClick={() => history.push("/products/people/profile")}>Profile</DropdownItem>
-                                <DropdownItem onClick={logout}>Sign Out</DropdownItem>
+                                <DropdownItem onClick={() => {
+                                    logout();
+                                    history.push('/');
+                                }}>Sign Out</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         )}
                 </NavMenu>
             </header>
             <main className="main">
-                <Container fluid>
-                    {children}
+                <Container fluid className="mainPageContent">
+                    <Row>
+                        {children}
+                    </Row>
                 </Container>
             </main>
         </>
@@ -41,7 +41,8 @@ const Layout = props => {
 };
 
 Layout.propTypes = {
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    logout: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -50,4 +51,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(withRouter(Layout));
+export default connect(mapStateToProps, { logout })(withRouter(Layout));

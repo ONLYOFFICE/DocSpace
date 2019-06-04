@@ -1,10 +1,11 @@
-import { SET_CURRENT_USER, SET_MODULES } from '../actions/actionTypes';
+import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from '../actions/actionTypes';
 import isEmpty from 'lodash/isEmpty';
 
 const initialState = {
     isAuthenticated: false,
+    isLoaded: false,
     user: {},
-    modules: []
+    modules: []    
 }
 
 const auth = (state = initialState, action) => {
@@ -18,6 +19,12 @@ const auth = (state = initialState, action) => {
             return Object.assign({}, state, {
                 modules: action.modules
             });
+        case SET_IS_LOADED:
+            return Object.assign({}, state, {
+                isLoaded: action.isLoaded
+            });
+        case LOGOUT:
+            return initialState;
         default:
             return state;
     }

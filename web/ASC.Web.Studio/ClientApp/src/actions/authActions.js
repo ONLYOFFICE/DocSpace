@@ -1,5 +1,5 @@
 import * as api from '../utils/api';
-import { SET_CURRENT_USER, SET_MODULES } from './actionTypes';
+import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from './actionTypes';
 import setAuthorizationToken from '../utils/setAuthorizationToken';
 
 export function setCurrentUser(user) {
@@ -16,11 +16,26 @@ export function setModules(modules) {
     };
 };
 
+export function setIsLoaded(isLoaded) {
+    return {
+        type: SET_IS_LOADED,
+        isLoaded
+    };
+};
+
+
+export function setLogout() {
+    return {
+        type: LOGOUT
+    };
+};
+
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
         .then(api.getModulesList)
-        .then((res) => dispatch(setModules(res.data.response)));
+        .then((res) => dispatch(setModules(res.data.response)))
+        .then(() => dispatch(setIsLoaded(true)));
 };
 
 export function login(data) {
@@ -32,4 +47,12 @@ export function login(data) {
             })
             .then(() => getUserInfo(dispatch));
     }
+};
+
+
+export function logout() {
+    return dispatch => {
+        setAuthorizationToken();
+        return dispatch(setLogout());
+    };
 };
