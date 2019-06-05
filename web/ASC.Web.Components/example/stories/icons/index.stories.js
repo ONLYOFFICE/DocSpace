@@ -5,8 +5,7 @@ import styled from '@emotion/styled';
 import { withKnobs, select, color } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
-import {CalendarIcon, PeopleIcon} from 'asc-web-components';
-
+import {Icons} from 'asc-web-components';
 
 const IconList = styled.div`
   display: grid;
@@ -26,29 +25,25 @@ const IconContainer = styled.div`
 `;
 
 const sizeOptions = ['small', 'medium', 'big'];
+const iconNames = Object.keys(Icons);
 
 storiesOf('Components|Icons', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('All Icons', () => (
+  .add('all icons', () => (
     <IconList>
-      <IconItem>
-        <IconContainer>
-          <CalendarIcon
-            size={select('size', sizeOptions, 'medium')}
-            color={color('color', "dimgray")}
-          />
-        </IconContainer>
-        <span>{CalendarIcon.displayName}</span>
-      </IconItem>
-      <IconItem>
-        <IconContainer>
-          <PeopleIcon
-            size={select('size', sizeOptions, 'medium')}
-            color={color('color', "dimgray")}
-          />
-        </IconContainer>
-        <span>{PeopleIcon.displayName}</span>
-      </IconItem>
+      {Object.values(Icons).map((Icon, index) => {
+        return (
+          <IconItem key={index}>
+            <IconContainer>
+              <Icon
+                size={select('size', sizeOptions, 'medium')}
+                color={color('color', "dimgray")}
+              />
+            </IconContainer>
+            <span>{iconNames[index]}</span>
+          </IconItem>
+        );
+      })}
     </IconList>
   ));
