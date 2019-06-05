@@ -4,7 +4,9 @@ import json from "rollup-plugin-json";
 import babel from "rollup-plugin-babel";
 import cleanup from "rollup-plugin-cleanup";
 import replace from "rollup-plugin-replace";
+import postcss from 'rollup-plugin-postcss';
 import svgrPlugin from "@svgr/rollup";
+import reactSvg from "rollup-plugin-react-svg";
 import pkg from "./package.json";
 
 const getBabelPreset = require("./scripts/get-babel-preset");
@@ -49,6 +51,21 @@ const configureRollupPlugins = (options = {}) => [
         { cleanupIDs: false }
       ]
     }
+  }),
+  reactSvg({
+    svgo: {
+      plugins: [], // passed to svgo
+      multipass: true
+    },
+
+    jsx: false,
+
+    include: null,
+
+    exclude: null
+  }),
+  postcss({
+    extensions: ['.css'],
   }),
   // To remove comments, trim trailing spaces, compact empty lines,
   // and normalize line endings
