@@ -774,10 +774,9 @@ namespace ASC.Common.Logging
         {
             var logManager = CommonServiceProvider.GetService<LogManager>();
 
-            ILog result;
-            if (!Logs.TryGetValue(name, out result))
+            if (!Logs.TryGetValue(name, out var result))
             {
-                result = Logs.AddOrUpdate(name, logManager.Builder != null ? logManager.Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
+                result = Logs.AddOrUpdate(name, logManager != null && logManager.Builder != null ? logManager.Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
             }
 
             return result;

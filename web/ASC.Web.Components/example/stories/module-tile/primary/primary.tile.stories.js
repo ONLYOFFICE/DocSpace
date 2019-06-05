@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { Container, Row, Col } from 'reactstrap';
 import { ModuleTile } from 'asc-web-components';
 import withReadme from 'storybook-readme/with-readme';
-import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
 const rowStyle = { marginTop: 8 };

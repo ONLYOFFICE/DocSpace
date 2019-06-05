@@ -1,55 +1,67 @@
-import React, { useContext } from 'react';
-import { Container, Col, Row } from 'reactstrap';
-// import { useTranslation, withTranslation, Trans } from 'react-i18next';
-import ModuleTile from '../../ui/ModuleTile/ModuleTile';
-import ModuleContext from '../../context/ModuleContext';
+import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { withRouter } from "react-router";
+import { Container, Col, Row, Collapse } from 'reactstrap';
+import { ModuleTile, Loader } from 'asc-web-components';
 
-
-const PrimaryTile = ({ modules }) => (
-    <Row>
-        {
-            modules.filter(m => m.isPrimary).map(module => (
-                <Col key={0}>
-                    <ModuleTile {...module} />
-                </Col>
-            ))
-        }
-    </Row>
-);
-
-const NotPrimaryTiles = ({ modules }) => {
+const Tiles = ({ modules, isPrimary, history }) => {
     let index = 0;
+
     return (
-    <Row>
-        {modules.filter(m => !m.isPrimary).map(module => (
-            <Col key={++index}>
-                <ModuleTile {...module} />
-            </Col>
-        ))
-        }
-    </Row>
-);
+        <Row>
+            {
+                modules.filter(m => m.isPrimary === isPrimary).map(module => (
+                    <Col key={++index}>
+                        <ModuleTile {...module} onClick={() => history.push(module.link)} />
+                    </Col>
+                ))
+            }
+        </Row>
+    );
+};
+
+Tiles.propTypes = {
+    modules: PropTypes.array.isRequired,
+    isPrimary: PropTypes.bool.isRequired,
+    history: PropTypes.object.isRequired
 };
 
 const Home = props => {
-    const context = useContext(ModuleContext);
-    const { modules, isFetching } = context;
+    const { modules, history, isLoaded } = props;
 
     return (
-        <Container>
-            {isFetching ? (
-                <Row>
-                    Loading...
-                    </Row>
-            ) : (
-                    <>
-                        <PrimaryTile modules={modules} />
-                        <NotPrimaryTiles modules={modules} />
-                    </>
-                )
-            }
-        </Container>
+        !isLoaded
+            ? (
+                <Loader className="pageLoader" type="rombs" size={40} />
+            )
+            : (
+                <Container style={{ paddingTop: '62px' }}>
+                    <Tiles modules={modules} isPrimary={true} history={history} />
+                    <Tiles modules={modules} isPrimary={false} history={history} />
+                    <Collapse isOpen={!modules || !modules.length}>
+                        <Row style={{ margin: "23px 0 0" }}>
+                            <Col sm="12" md={{ size: 6, offset: 3 }}>
+                                <div className="alert alert-danger">No one modules available</div>
+                            </Col>
+                        </Row>
+                    </Collapse>
+                </Container>
+            )
     );
+};
+
+Home.propTypes = {
+    modules: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired,
+    isLoaded: PropTypes.bool
+};
+
+function mapStateToProps(state) {
+    return {
+        modules: state.auth.modules,
+        isLoaded: state.auth.isLoaded
+    };
 }
 
-export default Home;
+export default connect(mapStateToProps)(withRouter(Home));

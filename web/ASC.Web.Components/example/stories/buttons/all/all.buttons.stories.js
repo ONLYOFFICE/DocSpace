@@ -14,9 +14,10 @@ function onClick(e) {
 
 const rowStyle = { marginTop: 8 };
 
-storiesOf('Components|Button', module)
+storiesOf('Components|Buttons', module)
   // To set a default viewport for all the stories for this component
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
+  .addParameters({ viewport: { defaultViewport: 'responsive' }})
+  .addParameters({ options: { showAddonPanel: false }})
   .addDecorator(withReadme(Readme))
   .add('all', () => (
     <>
@@ -31,25 +32,25 @@ storiesOf('Components|Button', module)
           <Col><Button size="huge" primary isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="huge" primary isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="huge" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" primary isDisabled>Save it button</Button></Col>
+          <Col><Button size="huge" primary isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button size="big" primary isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="big" primary isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="big" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" primary isDisabled>Save it button</Button></Col>
+          <Col><Button size="big" primary isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button size="middle" primary isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="middle" primary isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="middle" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" primary isDisabled>Save it button</Button></Col>
+          <Col><Button size="middle" primary isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button primary isActivated onClick={onClick}>Ok</Button></Col>
           <Col><Button primary isHovered onClick={onClick}>Ok</Button></Col>
           <Col><Button primary isClicked onClick={onClick}>Ok</Button></Col>
-          <Col><Button primary isDisabled>Ok</Button></Col>
+          <Col><Button primary isDisabled onClick={onClick}>Ok</Button></Col>
         </Row>
       </Container>
       <Container>
@@ -57,25 +58,25 @@ storiesOf('Components|Button', module)
           <Col><Button size="huge" isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="huge" isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="huge" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" isDisabled>Save it button</Button></Col>
+          <Col><Button size="huge" isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button size="big" isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="big" isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="big" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" isDisabled>Save it button</Button></Col>
+          <Col><Button size="big" isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button size="middle" isActivated onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="middle" isHovered onClick={onClick}>Save it button</Button></Col>
           <Col><Button size="middle" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" isDisabled>Save it button</Button></Col>
+          <Col><Button size="middle" isDisabled onClick={onClick}>Save it button</Button></Col>
         </Row>
         <Row style={rowStyle}>
           <Col><Button isActivated onClick={onClick}>Ok</Button></Col>
           <Col><Button isHovered onClick={onClick}>Ok</Button></Col>
           <Col><Button isClicked onClick={onClick}>Ok</Button></Col>
-          <Col><Button isDisabled>Ok</Button></Col>
+          <Col><Button isDisabled onClick={onClick}>Ok</Button></Col>
         </Row>
       </Container>
     </>

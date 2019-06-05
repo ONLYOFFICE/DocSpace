@@ -1,5 +1,5 @@
 import React from 'react';
-import { configure } from '@storybook/react';
+import { addParameters, configure } from '@storybook/react';
 import { addDecorator } from '@storybook/react';
 import { withConsole } from '@storybook/addon-console';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,6 +11,15 @@ function loadStories() {
 }
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));
+
+addParameters({
+  options:
+  {
+    name: 'ASC Storybook',
+    sortStoriesByKind: true,
+    showAddonPanel: true
+  }
+});
 
 configure(loadStories, module);
 

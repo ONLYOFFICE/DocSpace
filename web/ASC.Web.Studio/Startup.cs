@@ -1,3 +1,5 @@
+using ASC.Common.Logging;
+using ASC.Data.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -21,6 +23,7 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
+            services.AddMvc();
             /*services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();*/
 
@@ -29,6 +32,8 @@ namespace ASC.Web.Studio
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddLogManager(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +48,13 @@ namespace ASC.Web.Studio
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseRouting();
+
+            app.UseCors(builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -54,6 +65,11 @@ namespace ASC.Web.Studio
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });*/
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.InitializeHttpHandlers();
+            });
 
             app.UseSpa(spa =>
             {

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "asc-web-components": "file:../../ASC.Web.Components/",
+    "axios": "^0.18.0",
     "bootstrap": "4.3.1",
     "connected-react-router": "6.4.0",
     "history": "4.9.0",
@@ -11,8 +13,8 @@
     "i18next-xhr-backend": "2.0.1",
     "jquery": "3.4.1",
     "merge": "^1.2.1",
-    "oidc-client": "^1.7.1",
     "node-sass": "^4.12.0",
+    "oidc-client": "^1.7.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -24,8 +26,9 @@
     "reactstrap": "8.0.0",
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
-    "rimraf": "^2.6.3",
-    "asc.web.components": "file:../../ASC.Web.Components"
+    "universal-cookie": "^4.0.0",
+    "lodash": "4.17.11",
+    "lodash-es": "4.17.11"
   },
   "devDependencies": {
     "ajv": "^6.10.0",
@@ -36,7 +39,9 @@
     "eslint-plugin-flowtype": "^3.8.2",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-react": "^7.13.0"
+    "eslint-plugin-react": "^7.13.0",
+    "redux-devtools-extension": "^2.13.8",
+    "rimraf": "2.6.3"
   },
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
