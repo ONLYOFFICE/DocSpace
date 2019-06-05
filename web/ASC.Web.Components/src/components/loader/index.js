@@ -7,7 +7,7 @@ import { DualRing } from "./types/dual-ring";
 import { Rombs } from "./types/rombs";
 
 const Loader = (props) =>  {
-    const { type, color, label, className } = props;
+    const { type, color, size, label, className } = props;
   
     const svgRenderer = type => {
       switch (type) {
@@ -19,7 +19,7 @@ const Loader = (props) =>  {
           return <Rombs {...props} />;
         default:
           return (
-              <span style={{ color: color }}>{label}</span>
+              <span style={{ color: color, fontSize: size }}>{label}</span>
           );
       }
     };
@@ -32,17 +32,15 @@ const Loader = (props) =>  {
   Loader.propTypes = {
     color: PropTypes.string,
     type: PropTypes.oneOf(['base', 'oval', 'dual-ring', 'rombs']),
-    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     label: PropTypes.string,
     className: PropTypes.string
   };
 
   Loader.defaultProps = {
-    color: "#71238",
+    color: "#63686a",
     type: "base",
-    height: 80,
-    width: 80,
+    size: 40,
     label: "Loading content, please wait."
   };
 
