@@ -33,7 +33,7 @@ const Home = props => {
     return (
         !isLoaded
             ? (
-                <Loader className="pageLoader" type="dual-ring" height={64} width={64} label="Loading..." color="#63686a" />
+                <Loader className="pageLoader" type="rombs" size={40} />
             )
             : (
                 <Container style={{ paddingTop: '62px' }}>

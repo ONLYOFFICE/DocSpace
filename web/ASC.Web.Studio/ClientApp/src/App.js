@@ -14,7 +14,7 @@ const App = () => {
     return (
         <BrowserRouter>
             <Layout>
-                <Suspense fallback={<Loader className="pageLoader" type="dual-ring" height={64} width={64} label="Loading..." color="#63686a" />}>
+                <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
                     <Switch>
                         <Route exact path='/login' component={Login} />
                         <PrivateRoute exact path='/' component={Home} />
