@@ -33,11 +33,18 @@ storiesOf('Components|Icons', module)
   .add('all icons', () => (
     <IconList>
       {Object.values(Icons).map((Icon, index) => {
+        const sizeValue = select('size', ['small', 'medium', 'big', 'scale'], 'big');
+        const containerWidth =
+          sizeValue === 'scale'
+            ? {
+                width: `${select('container width', ['100', '200', '300', '400'], '100')}px`,
+              }
+            : {};
         return (
           <IconItem key={index}>
-            <IconContainer>
+            <IconContainer style={containerWidth}>
               <Icon
-                size={select('size', sizeOptions, 'medium')}
+                size={sizeValue}
                 color={color('color', "dimgray")}
               />
             </IconContainer>
