@@ -1,4 +1,4 @@
-# Loaders: Loader
+# Loaders: Dual-Ring
 
 ## Usage
 
@@ -13,7 +13,7 @@ Loader component is used for displaying loading actions on a page.
 #### Usage
 
 ```js
-<Loader color="black" width={64} height={64} type="oval" label="Loading..." />
+<Loader color="black" size={40} type="dual-ring" label="Loading..." />
 ```
 
 #### Properties
@@ -21,9 +21,8 @@ Loader component is used for displaying loading actions on a page.
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `color`          | `string`   |    -     | -                           | -         | Svg color                                  |
-| `type`             | `oneOf`  |    -     | `base`, `oval`, `dual-ring` | `base`     | -                                                                     |
-| `height`         | `string` or `string`   |    -     | -               | -         | Svg height                                |
-| `width`         | `string` or `string`   |    -     | -                | -         | Svg width                              |
+| `type`             | `oneOf`  |    -     | `base`, `oval`, `dual-ring`, `rombs` | `base`     | -                                                                     |
+| `size`         | `number` or `string`   |    -     | -               | -         | Svg height and width value                                |
 | `label`          | `string`   |    -    | -                           | -         | Svg aria-lable or text label                                             |
 
 

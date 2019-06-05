@@ -1,9 +1,9 @@
 import React from "react";
 
-export const Oval = ({ width, height, color, label }) => (
+export const Oval = ({ size, color, label }) => (
   <svg
-    width={width}
-    height={height}
+    width={size}
+    height={size}
     viewBox="0 0 38 38"
     xmlns="http://www.w3.org/2000/svg"
     stroke={color}
