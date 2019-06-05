@@ -27,6 +27,15 @@ namespace ASC.Common.Utils
 
             return result;
         }
+        public static T GetSetting<T> (string section) where T : new ()
+        {
+            var sectionSettings = AppSettings.GetSection(section);
+
+            var cs = new T();
+            sectionSettings.Bind(cs);
+
+            return cs;
+        }
     }
 
     public class ConnectionStringCollection : IEnumerable<ConnectionStringSettings>

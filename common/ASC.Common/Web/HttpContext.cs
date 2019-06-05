@@ -5,20 +5,17 @@ namespace ASC.Common
 {
     public static class HttpContext
     {
-        private static IHttpContextAccessor m_httpContextAccessor;
-
         public static void Configure(IHttpContextAccessor httpContextAccessor)
         {
-            m_httpContextAccessor = httpContextAccessor;
+            Current = httpContextAccessor.HttpContext;
             CommonServiceProvider.Current = httpContextAccessor.HttpContext.RequestServices;
         }
-
-        public static Microsoft.AspNetCore.Http.HttpContext Current
+        public static void Configure(Microsoft.AspNetCore.Http.HttpContext context)
         {
-            get
-            {
-                return m_httpContextAccessor.HttpContext;
-            }
+            Current = context;
+            CommonServiceProvider.Current = context.RequestServices;
         }
+
+        public static Microsoft.AspNetCore.Http.HttpContext Current { get; private set; }
     }
 }

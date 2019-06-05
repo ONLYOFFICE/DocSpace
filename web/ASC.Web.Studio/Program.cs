@@ -19,6 +19,11 @@ namespace ASC.Web.Studio
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+            .ConfigureAppConfiguration((hostingContext, config) => {
+                config
+                .AddJsonFile("autofac.json")
+                .AddJsonFile("storage.json");
+            });
     }
 }
