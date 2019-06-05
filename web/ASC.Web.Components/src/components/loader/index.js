@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import { Oval } from "./types/oval";
 import { DualRing } from "./types/dual-ring";
+import { Rombs } from "./types/rombs";
 
 const Loader = (props) =>  {
     const { type, color, label, className } = props;
@@ -14,6 +15,8 @@ const Loader = (props) =>  {
           return <Oval {...props} />;
         case "dual-ring":
           return <DualRing {...props} />;
+        case "rombs":
+          return <Rombs {...props} />;
         default:
           return (
               <span style={{ color: color }}>{label}</span>
@@ -28,7 +31,7 @@ const Loader = (props) =>  {
 
   Loader.propTypes = {
     color: PropTypes.string,
-    type: PropTypes.oneOf(['base', 'oval', 'dual-ring']),
+    type: PropTypes.oneOf(['base', 'oval', 'dual-ring', 'rombs']),
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     label: PropTypes.string,

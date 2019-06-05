@@ -40,4 +40,11 @@ storiesOf('Components|Loaders', module)
         height={number('height', 64)}
         label={text('label', "Loading content, please wait.")} />
     </Section>
+  ))
+  .add('rombs', () => (
+    <Section>
+      <Loader 
+        type={select('type', typeOptions, 'rombs')}  
+        size={number('size', 40)} />
+    </Section>
   ));
