@@ -6,7 +6,6 @@ import cleanup from "rollup-plugin-cleanup";
 import replace from "rollup-plugin-replace";
 import postcss from 'rollup-plugin-postcss';
 import svgrPlugin from "@svgr/rollup";
-import reactSvg from "rollup-plugin-react-svg";
 import pkg from "./package.json";
 
 const getBabelPreset = require("./scripts/get-babel-preset");
@@ -51,18 +50,6 @@ const configureRollupPlugins = (options = {}) => [
         { cleanupIDs: false }
       ]
     }
-  }),
-  reactSvg({
-    svgo: {
-      plugins: [], // passed to svgo
-      multipass: true
-    },
-
-    jsx: false,
-
-    include: null,
-
-    exclude: null
   }),
   postcss({
     extensions: ['.css'],
