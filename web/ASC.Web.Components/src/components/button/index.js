@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+import Loader from '../loader';
 
 const activatedCss = css`
   background-color: ${props => (props.primary ? '#1f97ca' : '#e2e2e2')};
@@ -22,7 +23,7 @@ const hoveredCss = css`
 `;
 
 const StyledButton = styled.button.attrs((props) => ({
-  disabled: props.isDisabled ? 'disabled' : '',
+  disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
   height: ${props =>
@@ -41,7 +42,7 @@ const StyledButton = styled.button.attrs((props) => ({
 
   color: ${props => (props.primary && '#ffffff') || (!props.isDisabled ? '#666666' : '#999')};
 
-  background-color: ${props => (!props.isDisabled ? (props.primary ? '#2da7db' : '#ebebeb') : (props.primary ? '#a6dcf2' : '#f7f7f7')) };
+  background-color: ${props => (!props.isDisabled || props.isLoading ? (props.primary ? '#2da7db' : '#ebebeb') : (props.primary ? '#a6dcf2' : '#f7f7f7'))};
 
   padding: ${props =>
     (props.size === 'huge' && (props.primary ? '12px 30px 13px' : '11px 30px 12px')) ||
@@ -50,7 +51,7 @@ const StyledButton = styled.button.attrs((props) => ({
     (props.size === 'base' && (props.primary ? '4px 13px' : '3px 12px'))
   };
 
-  cursor: ${props => props.isDisabled ? 'default !important' : 'pointer'};
+  cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
 
   font-family: 'Open Sans', sans-serif;
   border: none;
@@ -72,22 +73,25 @@ const StyledButton = styled.button.attrs((props) => ({
   -moz-user-select: none;
   -webkit-user-select: none;
   stroke: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   ${props =>
     !props.primary &&
     css`
       border-width: 1px;
       border-style: solid;
-      border-color: ${props => !props.isDisabled ? '#c4c4c4' : '#ebebeb'};
+      border-color: ${props => (!props.isDisabled && !props.isLoading) ? '#c4c4c4' : '#ebebeb'};
     `}
   
-  ${props => !props.isDisabled && (props.isActivated ? `${activatedCss}` : css`
+  ${props => (!props.isDisabled && !props.isLoading) && (props.isActivated ? `${activatedCss}` : css`
     &:active {
       ${activatedCss}
     }`)
   }
 
-  ${props => !props.isDisabled && (props.isHovered ? `${hoveredCss}` : css`
+  ${props => (!props.isDisabled && !props.isLoading) && (props.isHovered ? `${hoveredCss}` : css`
     &:hover {
       ${hoveredCss}
     }`)
@@ -98,17 +102,44 @@ const StyledButton = styled.button.attrs((props) => ({
   }
 `;
 
+const ButtonLoader = styled(Loader)`
+  display: inline-block;
+  margin-right: 8px;
+`;
+
+const getLoaderSize = (btnSize) => {
+  switch (btnSize) {
+    case 'big':
+      return 16;
+    case 'huge':
+      return 18;
+    default:
+      return 14;
+  }
+
+}
+
 const Button = props => {
-  return <StyledButton {...props} />;
+  const { isLoading, label, primary, size } = props;
+  return (
+    <StyledButton {...props}>
+      {isLoading && <ButtonLoader type="oval" size={getLoaderSize(size)} color={primary ? "white" : 'black'} />}
+      {label}
+    </StyledButton>
+  );
 };
 
 Button.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   primary: PropTypes.bool,
+  label: PropTypes.string,
+
   tabIndex: PropTypes.number,
   isActivated: PropTypes.bool,
   isHovered: PropTypes.bool,
+  isPressed: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  isLoading: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
 };
 
@@ -116,9 +147,12 @@ Button.defaultProps = {
   primary: false,
   isActivated: false,
   isHovered: false,
+  isPressed: false,
   isDisabled: false,
+  isLoading: false,
   size: 'base',
-  tabIndex: -1
+  tabIndex: -1,
+  label: ''
 };
 
 export default Button;

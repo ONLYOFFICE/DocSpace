@@ -12,14 +12,15 @@ const sizeOptions = ['base', 'middle', 'big', 'huge'];
 storiesOf('Components|Buttons', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('huge', () => (
+  .add('withLoading', () => (
     <Section>
       <Button
-        size={select('size', sizeOptions, 'huge')}
+        size={select('size', sizeOptions, 'base')}
         primary={boolean('primary', true)}
         isDisabled={boolean('isDisabled', false)}
         onClick={action('clicked')}
-        label={text('label', 'Base button')}
+        isLoading={boolean('isLoading', true)}
+        label={text('label', 'Loading...')}
       />
     </Section>
   ));

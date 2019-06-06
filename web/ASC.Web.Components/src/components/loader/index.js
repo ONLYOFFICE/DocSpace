@@ -7,7 +7,7 @@ import { DualRing } from "./types/dual-ring";
 import { Rombs } from "./types/rombs";
 
 const Loader = (props) =>  {
-    const { type, color, size, label, className } = props;
+    const { type, color, size, label, className, style } = props;
   
     const svgRenderer = type => {
       switch (type) {
@@ -19,13 +19,13 @@ const Loader = (props) =>  {
           return <Rombs {...props} />;
         default:
           return (
-              <span style={{ color: color, fontSize: size }}>{label}</span>
+              <span style={{...style, color: color, fontSize: size }}>{label}</span>
           );
       }
     };
   
     return (
-        <div aria-busy="true" className={className}>{svgRenderer(type)}</div>
+        <div aria-busy="true" className={className} style={style}>{svgRenderer(type)}</div>
     );
   };
 
