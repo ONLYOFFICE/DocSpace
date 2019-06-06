@@ -1,4 +1,6 @@
+using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Data.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,7 +35,8 @@ namespace ASC.Web.Studio
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddLogManager(Configuration);
+            services.AddHttpContextAccessor()
+                .AddLogManager(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +68,9 @@ namespace ASC.Web.Studio
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });*/
+
+            app.InitCommonServiceProvider()
+                .InitConfigurationManager();
 
             app.UseEndpoints(endpoints =>
             {

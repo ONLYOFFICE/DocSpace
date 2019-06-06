@@ -1,15 +1,21 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Common.DependencyInjection
 {
     public static class CommonServiceProvider
     {
-        public static IServiceProvider Current { get; set; }
+        public static T GetService<T>() => ServiceProvider.GetService<T>();
 
-        public static T GetService<T>() => Current.GetService<T>();
+        private static IServiceProvider ServiceProvider { get; set; }
 
-        public static IHostingEnvironment HostingEnvironment { get => Current.GetService<IHostingEnvironment>(); }
+        public static IApplicationBuilder InitCommonServiceProvider(this IApplicationBuilder app)
+        {
+            ServiceProvider = app.ApplicationServices;
+            return app;
+        }
+
+
     }
 }

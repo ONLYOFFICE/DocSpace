@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using ASC.Common.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
@@ -61,12 +62,13 @@ namespace ASC.Data.Storage
                 virtPath = "";
             }
 
+            var webHostEnvironment = CommonServiceProvider.GetService<IWebHostEnvironment>();
             if (virtPath.StartsWith("~") && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
-                if (!string.IsNullOrEmpty(CommonServiceProvider.HostingEnvironment.WebRootPath) && CommonServiceProvider.HostingEnvironment.WebRootPath.Length > 1)
+                if (!string.IsNullOrEmpty(webHostEnvironment.WebRootPath) && webHostEnvironment.WebRootPath.Length > 1)
                 {
-                    rootPath = CommonServiceProvider.HostingEnvironment.WebRootPath.Trim('/');
+                    rootPath = webHostEnvironment.WebRootPath.Trim('/');
                 }
                 virtPath = virtPath.Replace("~", rootPath);
             }
@@ -85,6 +87,8 @@ namespace ASC.Data.Storage
         {
             physPath = Normalize(physPath, false).TrimStart('~');
 
+            var webHostEnvironment = CommonServiceProvider.GetService<IWebHostEnvironment>();
+
             if (physPath.Contains(Constants.STORAGE_ROOT_PARAM))
             {
                 physPath = physPath.Replace(Constants.STORAGE_ROOT_PARAM, storageConfig[Constants.STORAGE_ROOT_PARAM]);
@@ -92,7 +96,7 @@ namespace ASC.Data.Storage
 
             if (!Path.IsPathRooted(physPath))
             {
-                physPath = Path.GetFullPath(Path.Combine(CommonServiceProvider.HostingEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
+                physPath = Path.GetFullPath(Path.Combine(webHostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
         }

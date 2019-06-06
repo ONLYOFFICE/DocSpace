@@ -83,7 +83,7 @@ namespace ASC.Data.Storage
             var store = DataStoreCache.Get(tenant, module);
             if (store == null)
             {
-                var section = Configuration.Storage.Instance();
+                var section = StorageConfigFactory.Instance;
                 if (section == null)
                 {
                     throw new InvalidOperationException("config section not found");
@@ -103,7 +103,7 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TennantPath.CreatePath(tenant);
 
-            var section = Configuration.Storage.Instance();
+            var section = StorageConfigFactory.Instance;
             if (section == null)
             {
                 throw new InvalidOperationException("config section not found");
@@ -116,7 +116,7 @@ namespace ASC.Data.Storage
 
         public static IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
         {
-            var section = Configuration.Storage.Instance();
+            var section = StorageConfigFactory.Instance;
             return section.Module
                 .Where(x => x.Visible)
                 .Where(x=> !exceptDisabledMigration || !x.DisableMigrate)
@@ -125,7 +125,7 @@ namespace ASC.Data.Storage
 
         public static IEnumerable<string> GetDomainList(string configpath, string modulename)
         {
-            var section = Configuration.Storage.Instance();
+            var section = StorageConfigFactory.Instance;
             if (section == null)
             {
                 throw new ArgumentException("config section not found");
@@ -146,9 +146,7 @@ namespace ASC.Data.Storage
             //    throw new InvalidOperationException("Application not hosted.");
             //}
 
-           CommonServiceProvider.Current = builder.ServiceProvider;
-
-           var section = Configuration.Storage.Instance();
+           var section = StorageConfigFactory.Instance;
             if (section != null)
             {
                 //old scheme
@@ -226,7 +224,7 @@ namespace ASC.Data.Storage
 
         private static IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
         {
-            var storage = Configuration.Storage.Instance();
+            var storage = StorageConfigFactory.Instance;
             var moduleElement = storage.GetModuleElement(module);
             if (moduleElement == null)
             {

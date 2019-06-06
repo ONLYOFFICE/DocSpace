@@ -16,6 +16,11 @@ using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
 using ASC.Api.Core.Middleware;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common;
+using ASC.Common;
+using ASC.Common.DependencyInjection;
 
 namespace ASC.Web.Api
 {
@@ -80,6 +85,9 @@ namespace ASC.Web.Api
             {
                 endpoints.MapControllers();
             });
+
+            app.InitCommonServiceProvider()
+                .InitConfigurationManager();
         }
     }
 }
