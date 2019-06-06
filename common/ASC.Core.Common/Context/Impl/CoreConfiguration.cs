@@ -38,7 +38,7 @@ namespace ASC.Core
         private readonly ITenantService tenantService;
         private bool? standalone;
         private bool? personal;
-        private bool? r7Office;
+        private bool? customMode;
         private long? personalMaxSpace;
         private string basedomain;
 
@@ -58,9 +58,9 @@ namespace ASC.Core
             get { return personal ?? (bool)(personal = ConfigurationManager.AppSettings["core.personal"] == "true"); }
         }
 
-        public bool R7Office
+        public bool CustomMode
         {
-            get { return r7Office ?? (bool)(r7Office = ConfigurationManager.AppSettings["core.r7office"] == "true"); }
+            get { return customMode ?? (bool)(customMode = ConfigurationManager.AppSettings["core.custom-mode"] == "true"); }
         }
 
         public long PersonalMaxSpace
