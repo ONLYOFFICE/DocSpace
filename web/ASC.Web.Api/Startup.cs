@@ -39,6 +39,8 @@ namespace ASC.Web.Api
                 .AddNewtonsoftJson(s=> s.UseCamelCasing(true))
                 .AddXmlSerializerFormatters();
 
+            services.AddMemoryCache();
+
             services.AddHttpContextAccessor();
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });

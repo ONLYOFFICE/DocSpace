@@ -26,6 +26,8 @@ namespace ASC.Web.Studio
             services.AddCors();
 
             services.AddMvc();
+            services.AddMemoryCache();
+
             /*services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();*/
 
