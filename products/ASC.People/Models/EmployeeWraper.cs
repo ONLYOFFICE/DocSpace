@@ -1,6 +1,8 @@
 ﻿using System;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Web.Core.Users;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Api.Models
 {
@@ -13,7 +15,7 @@ namespace ASC.Web.Api.Models
         public EmployeeWraper(UserInfo userInfo)
         {
             Id = userInfo.ID;
-            DisplayName = string.Format("{0} {1}", userInfo.FirstName, userInfo.LastName);
+            DisplayName = DisplayUserSettings.GetFullUserName(userInfo);
             if (!string.IsNullOrEmpty(userInfo.Title))
             {
                 Title = userInfo.Title;
@@ -21,7 +23,7 @@ namespace ASC.Web.Api.Models
 
             //if (EmployeeWraperFull.CheckContext(context, "avatarSmall"))
             //{
-            //    AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+            AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
             //}
         }
 
@@ -37,9 +39,9 @@ namespace ASC.Web.Api.Models
         {
             get
             {
-                //if (Id == Guid.Empty) return string.Empty;
-                //var profileUrl = CommonLinkUtility.GetUserProfile(Id.ToString(), false);
-                return string.Empty;
+                if (Id == Guid.Empty) return string.Empty;
+                var profileUrl = CommonLinkUtility.GetUserProfile(Id.ToString(), false);
+                return profileUrl;
             }
         }
 

@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Web.Studio", "web\ASC.Web.Studio\ASC.Web.Studio.csproj", "{90183112-BCD6-4E16-9CA2-12231930DAB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Web.Api", "web\ASC.Web.Api\ASC.Web.Api.csproj", "{4AA9F8E3-2F48-44DA-B6C5-37ED7A4739C1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926} = {BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Common", "common\ASC.Common\ASC.Common.csproj", "{EB8F47B3-39DE-4B7D-8EC6-01726368B45D}"
 EndProject
@@ -19,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage", "common\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.FederatedLogin", "common\ASC.FederatedLogin\ASC.FederatedLogin.csproj", "{481B0D9C-B2F8-4DE9-8597-BA8D24585099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Web.Core", "web\ASC.Web.Core\ASC.Web.Core.csproj", "{02C40A64-FE22-41D0-9037-69F0D6F787A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Web.Core", "web\ASC.Web.Core\ASC.Web.Core.csproj", "{02C40A64-FE22-41D0-9037-69F0D6F787A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.VoipService", "common\ASC.VoipService\ASC.VoipService.csproj", "{988536C1-4B89-4649-8F77-5C16F55D95D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.VoipService", "common\ASC.VoipService\ASC.VoipService.csproj", "{988536C1-4B89-4649-8F77-5C16F55D95D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
