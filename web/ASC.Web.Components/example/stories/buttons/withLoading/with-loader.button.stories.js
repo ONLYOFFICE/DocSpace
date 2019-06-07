@@ -12,7 +12,7 @@ const sizeOptions = ['base', 'middle', 'big', 'huge'];
 storiesOf('Components|Buttons', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('withLoading', () => (
+  .add('with loader', () => (
     <Section>
       <Button
         size={select('size', sizeOptions, 'base')}
