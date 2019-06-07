@@ -69,10 +69,10 @@ storiesOf('Components|Buttons', module)
         {Object.values(getButtons()).map((btnSize, i) => {
           console.log(btnSize);
           return (
-            <Row style={rowStyle}>
+            <Row style={rowStyle} key={`row${i}`}>
               {Object.values(btnSize.buttons).map((btn, j) => (
-                <Col key={i}>
-                  <Button key={j} {...btn} />
+                <Col key={`col${i}${j}`}>
+                  <Button key={`btn${i}${j}`} {...btn} />
                 </Col>))}
             </Row>
           )
