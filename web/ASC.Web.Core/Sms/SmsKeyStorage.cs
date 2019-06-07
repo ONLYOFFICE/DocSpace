@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Globalization;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 
@@ -45,19 +45,19 @@ namespace ASC.Web.Core.Sms
 
         static SmsKeyStorage()
         {
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms.keylength"], out KeyLength))
+            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keylength"], out KeyLength))
             {
                 KeyLength = 6;
             }
 
             int store;
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms.keystore"], out store))
+            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keystore"], out store))
             {
                 store = 10;
             }
             StoreInterval = TimeSpan.FromMinutes(store);
 
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms.keycount"], out AttemptCount))
+            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keycount"], out AttemptCount))
             {
                 AttemptCount = 5;
             }

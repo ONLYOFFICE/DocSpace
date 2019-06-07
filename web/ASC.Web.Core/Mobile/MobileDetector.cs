@@ -25,11 +25,10 @@
 
 
 using System;
-using System.Configuration;
 using System.Text.RegularExpressions;
-using System.Web;
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 
 namespace ASC.Web.Core.Mobile
 {
@@ -48,9 +47,9 @@ namespace ASC.Web.Core.Mobile
 
         static MobileDetector()
         {
-            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["mobile.regex"]))
+            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["mobile:regex"]))
             {
-                uaMobileRegex = new Regex(ConfigurationManager.AppSettings["mobile.regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+                uaMobileRegex = new Regex(ConfigurationManager.AppSettings["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
             }
         }
 

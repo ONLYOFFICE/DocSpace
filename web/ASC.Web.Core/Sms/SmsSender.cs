@@ -25,10 +25,10 @@
 
 
 using System;
-using System.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 
@@ -54,7 +54,7 @@ namespace ASC.Web.Core.Sms
                 throw new MethodAccessException();
             }
 
-            if ("log".Equals(ConfigurationManager.AppSettings["core.notify.postman"], StringComparison.InvariantCultureIgnoreCase))
+            if ("log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
             {
                 var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
                 var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;

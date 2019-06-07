@@ -25,11 +25,11 @@
 
 
 using System;
-using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage;
@@ -69,7 +69,7 @@ namespace ASC.Web.Core.WhiteLabel
         public void RestoreDefaultTenantName()
         {
             var currentTenant = CoreContext.TenantManager.GetCurrentTenant();
-            currentTenant.Name = ConfigurationManager.AppSettings["web.portal-name"] ?? "Cloud Office Applications";
+            currentTenant.Name = ConfigurationManager.AppSettings["web:portal-name"] ?? "Cloud Office Applications";
             CoreContext.TenantManager.SaveTenant(currentTenant);
         }
 

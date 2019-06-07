@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Security;
@@ -33,6 +32,7 @@ using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -55,7 +55,7 @@ namespace ASC.Web.Core.Mail
 
         private static string GetDefaultDatabase()
         {
-            var value = ConfigurationManager.AppSettings["mail.database-name"];
+            var value = ConfigurationManager.AppSettings["mail:database-name"];
             return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
         }
 
@@ -66,7 +66,7 @@ namespace ASC.Web.Core.Mail
         
         private static DbManager GetDb(string dbid, string connectionString)
         {
-            var connectionSettings = new ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
+            var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
 
             if (DbRegistry.IsDatabaseRegistered(connectionSettings.Name))
             {

@@ -24,11 +24,11 @@
 */
 
 
-using ASC.FederatedLogin.Profile;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
+using ASC.Common.Utils;
+using ASC.FederatedLogin.Profile;
 
 namespace ASC.FederatedLogin
 {
@@ -53,7 +53,7 @@ namespace ASC.FederatedLogin
 
         public MultiRegionAccountLinker(String databaseId)
         {
-            foreach (ConnectionStringSettings connection in ConfigurationManager.ConnectionStrings)
+            foreach (var connection in ConfigurationManager.ConnectionStrings)
             {
                 if (connection.Name.StartsWith(databaseId))
                     _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name));

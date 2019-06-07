@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
@@ -31,7 +32,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,9 +51,9 @@ namespace ASC.Web.Core.Helpers
 
         static ApiSystemHelper()
         {
-            ApiSystemUrl = ConfigurationManager.AppSettings["web.api-system"];
-            ApiCacheUrl = ConfigurationManager.AppSettings["web.api-cache"];
-            Skey = ConfigurationManager.AppSettings["core.machinekey"];
+            ApiSystemUrl = ConfigurationManager.AppSettings["web:api-system"];
+            ApiCacheUrl = ConfigurationManager.AppSettings["web:api-cache"];
+            Skey = ConfigurationManager.AppSettings["core:machinekey"];
         }
 
 
