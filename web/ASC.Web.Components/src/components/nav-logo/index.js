@@ -10,23 +10,25 @@ const StyledNavLogo = styled(NavbarBrand)`
 `;
 
 const NavLogo = props => {
-    const { logoUrl, href } = props;
+    const { imageUrl, href, onClick } = props;
     return (
-        <StyledNavLogo href={href}>
+        <StyledNavLogo href={href} onClick={onClick}>
             <svg
                 height={23}
                 width={142}
                 xmlns="http://www.w3.org/2000/svg"
                 xmlnsXlink="http://www.w3.org/1999/xlink">
                 
-                <image xlinkHref={logoUrl} />
+                <image xlinkHref={imageUrl} />
             </svg>
         </StyledNavLogo>
     );
 }
 
 NavLogo.propTypes = {
-    logoUrl: PropTypes.string.isRequired
+    imageUrl: PropTypes.string.isRequired,
+    href: PropTypes.string,
+    onClick: PropTypes.func
 }
 
 export default NavLogo
