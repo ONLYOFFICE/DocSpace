@@ -25,8 +25,8 @@
 
 
 using System;
-using System.Web;
 using ASC.Common;
+using ASC.Common.Utils;
 using ASC.Data.Storage;
 
 namespace ASC.Web.Core.Utility.Skins
@@ -68,7 +68,7 @@ namespace ASC.Web.Core.Utility.Skins
 
         private static string GetPartImageFolderRel(Guid partID)
         {
-            var folderName = "/skins/default/images";
+            var folderName = ConfigurationManager.AppSettings["web:images"];
             string itemFolder = null;
             if (!Guid.Empty.Equals(partID))
             {
