@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
+import { Icons } from '../icons'
 
 const backgroundColor = '#ebebeb',
     disabledBackgroundColor = '#f7f7f7',
@@ -148,23 +149,29 @@ const StyledDropdownItem = styled.button`
     }
 `;
 
-const Caret = styled.span`
-    display: inline-block;
-    width: 0px;
-    height: 0px;
+const Caret = styled(Icons.TreeExpanderDownIcon)`
+    width: 10px;
     margin-left: 4px;
-    vertical-align: middle;
-    border-top: 4px dashed ${props => props.primary ? primaryTextColor : textColor};
-    border-right: 4px solid transparent;
-    border-left: 4px solid transparent;
 
-    ${props => props.isCheckbox && css`
-        margin-top: -4px;
-    `}
+    ${props => props.isCheckbox && (props.splitted
+        ? css`
+            margin-top: -4px;
+            margin-left: 0;
+            ` 
+        : css`
+            margin-top: -6px;
+            `)
+    }
 
-    ${props => props.splitted && css`
-        margin-left: 0;
-    `}
+    ${props => !props.isCheckbox && (props.splitted 
+        ? css`
+            margin-top: -2px;
+            margin-left: 0;
+            `
+        : css`
+            margin-top: -3px;
+            `)
+    }
 `;
 
 const clickAction = (e) => {
@@ -202,20 +209,30 @@ const GroupButton = (props) => {
 
     const splittedDropButton =
         <>
-            <StyledButton onClick={clickAction} {...props}>
+            <StyledButton {...props} onClick={clickAction}>
                 {text}
                 {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
             </StyledButton>
-            <StyledDropdownToggle onClick={() => { disabled ? false : toggle(!isOpen) }} {...props}>
-                <Caret splitted={splitted} primary={primary} />
+            <StyledDropdownToggle {...props} onClick={() => { disabled ? false : toggle(!isOpen) }}>
+                <Caret 
+                    splitted={splitted} 
+                    isCheckbox={isCheckbox} 
+                    size='small' 
+                    color={primary && primaryTextColor || (disabled ? disabledTextColor : textColor)} 
+                />
             </StyledDropdownToggle>
         </>;
 
     const singleDropButton =
-        <StyledDropdownToggle onClick={() => { disabled ? false : toggle(!isOpen) }} {...props}>
+        <StyledDropdownToggle {...props} onClick={() => { disabled ? false : toggle(!isOpen) }}>
             {text}
             {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
-            <Caret isCheckbox={isCheckbox} primary={primary} />
+            <Caret 
+                splitted={splitted} 
+                isCheckbox={isCheckbox}
+                size='small'
+                color={primary && primaryTextColor || (disabled ? disabledTextColor : textColor)} 
+            />
         </StyledDropdownToggle>;
 
     return (
@@ -224,7 +241,7 @@ const GroupButton = (props) => {
                 ? (splitted
                     ? { ...splittedDropButton }
                     : { ...singleDropButton })
-                : <StyledDropdownToggle onClick={clickAction} {...props}>
+                : <StyledDropdownToggle {...props} onClick={clickAction}>
                     {text}
                     {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
                 </StyledDropdownToggle>
