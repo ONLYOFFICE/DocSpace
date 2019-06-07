@@ -27,6 +27,8 @@ namespace ASC.Web.Studio
 
             services.AddMvc();
             services.AddMemoryCache();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
             /*services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();*/
@@ -63,7 +65,7 @@ namespace ASC.Web.Studio
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
+            app.UseSession();
             /*app.UseMvc(routes =>
             {
                 routes.MapRoute(

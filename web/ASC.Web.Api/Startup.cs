@@ -41,6 +41,9 @@ namespace ASC.Web.Api
 
             services.AddMemoryCache();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddHttpContextAccessor();
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
@@ -79,6 +82,8 @@ namespace ASC.Web.Api
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthentication();
 
             app.UseResponseWrapper();
@@ -87,6 +92,7 @@ namespace ASC.Web.Api
             {
                 endpoints.MapControllers();
             });
+
 
             app.InitCommonServiceProvider()
                 .InitConfigurationManager();

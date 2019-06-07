@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Jabber\JabberServiceClient.cs" />
+    <Compile Remove="ModuleManagement\Module.cs" />
+    <Compile Remove="Product.cs" />
+    <Compile Remove="Utility\SearchHandlerManager.cs" />
+    <Compile Remove="WebZones\IRenderCustomNavigation.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+    <ProjectReference Include="..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
+    <ProjectReference Include="..\..\common\ASC.VoipService\ASC.VoipService.csproj" />
+  </ItemGroup>
+
+</Project>
