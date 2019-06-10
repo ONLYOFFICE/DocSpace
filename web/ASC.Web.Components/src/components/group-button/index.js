@@ -149,7 +149,7 @@ const StyledDropdownItem = styled.button`
     }
 `;
 
-const Caret = styled(Icons.TreeExpanderDownIcon)`
+const Caret = styled(Icons.ExpanderDownIcon)`
     width: 10px;
     margin-left: 4px;
 
