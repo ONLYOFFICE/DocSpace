@@ -22,6 +22,7 @@ using ASC.Core.Common;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Core;
+using ASC.Data.Storage.Configuration;
 
 namespace ASC.Web.Api
 {
@@ -65,8 +66,9 @@ namespace ASC.Web.Api
                 builder.AddApplicationPart(a);
             }
 
-            services.AddLogManager(Configuration);
-            services.AddWebItemManager();
+            services.AddLogManager(Configuration)
+                    .AddStorage()
+                    .AddWebItemManager();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
