@@ -27,3 +27,4 @@ Base Button is used for a group action on a page.
 | `isDropdown`       | `bool`   |    -     | -                           | `false`        | Tells when the button should present a dropdown state             |
 | `splitted`         | `bool`   |    -     | -                           | `false`        | Tells when the button should present a dropdown state with button |
 | `opened`           | `bool`   |    -     | -                           | `false`        | Tells when the button should be opened by default                 |
+| `clickAction`      | `func`   |    -     | -                           | -              | What the button will trigger when clicked                         |

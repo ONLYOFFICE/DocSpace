@@ -174,10 +174,6 @@ const Caret = styled(Icons.ExpanderDownIcon)`
     }
 `;
 
-const clickAction = (e) => {
-    console.log('Button "' + e.target.innerText + '" clicked!');
-}
-
 const useOuterClickNotifier = (onOuterClick, ref) => {
     useEffect(() => { 
         const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
@@ -193,7 +189,7 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
 }
 
 const GroupButton = (props) => {
-    const { text, children, splitted, isDropdown, isCheckbox, opened, disabled, primary } = props;
+    const { text, children, splitted, isDropdown, isCheckbox, opened, disabled, primary, clickAction } = props;
     const [isOpen, toggle] = useState(opened);
     const ref = useRef(null);
 
@@ -261,7 +257,8 @@ GroupButton.propTypes = {
     splitted: PropTypes.bool,
     isCheckbox: PropTypes.bool,
     isDropdown: PropTypes.bool,
-    tabIndex: PropTypes.number
+    tabIndex: PropTypes.number,
+    clickAction: PropTypes.func
 };
 
 GroupButton.defaultProps = {
@@ -274,7 +271,8 @@ GroupButton.defaultProps = {
     splitted: false,
     isCheckbox: false,
     isDropdown: false,
-    tabIndex: -1
+    tabIndex: -1,
+    clickAction: (e) => console.log('Button "' + e.target.innerText + '" clicked!')
 };
 
 export default GroupButton
