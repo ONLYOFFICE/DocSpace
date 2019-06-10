@@ -16,6 +16,11 @@ using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
 using ASC.Api.Core.Middleware;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common;
+using ASC.Common;
+using ASC.Common.DependencyInjection;
 
 namespace ASC.Web.Api
 {
@@ -33,6 +38,11 @@ namespace ASC.Web.Api
             services.AddControllers()
                 .AddNewtonsoftJson(s=> s.UseCamelCasing(true))
                 .AddXmlSerializerFormatters();
+
+            services.AddMemoryCache();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
             services.AddHttpContextAccessor();
 
@@ -72,6 +82,8 @@ namespace ASC.Web.Api
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseAuthentication();
 
             app.UseResponseWrapper();
@@ -80,6 +92,10 @@ namespace ASC.Web.Api
             {
                 endpoints.MapControllers();
             });
+
+
+            app.InitCommonServiceProvider()
+                .InitConfigurationManager();
         }
     }
 }

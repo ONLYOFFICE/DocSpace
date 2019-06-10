@@ -28,7 +28,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using ASC.Common.DependencyInjection;
+using ASC.Common.Utils;
 using Autofac;
 using Autofac.Configuration;
 using log4net.Config;
@@ -772,7 +772,7 @@ namespace ASC.Common.Logging
 
         public static ILog GetLogger(string name)
         {
-            var logManager = CommonServiceProvider.GetService<LogManager>();
+            var logManager = ConfigurationManager.LogManager;
 
             if (!Logs.TryGetValue(name, out var result))
             {

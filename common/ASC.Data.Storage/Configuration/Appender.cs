@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Utils;
 
 namespace ASC.Data.Storage.Configuration
 {
+    public static class StorageConfigFactory
+    {
+        public static Storage Instance
+        {
+            get
+            {
+                return ConfigurationManager.GetSetting<Storage>("Storage");
+            }
+        }
+    }
+
     public class Storage
     {
         public IEnumerable<Appender> Appender { get; set; }
         public IEnumerable<Handler> Handler { get; set; }
         public IEnumerable<Module> Module { get; set; }
-
-        private static Storage instance;
-        public static Storage Instance()
-        {
-            return instance ?? (instance = Common.Utils.ConfigurationManager.GetSetting<Storage>("Storage"));
-        }
 
         public Module GetModuleElement(string name)
         {
@@ -71,3 +77,4 @@ namespace ASC.Data.Storage.Configuration
         public IEnumerable<Module> Domain { get; set; }
     }
 }
+

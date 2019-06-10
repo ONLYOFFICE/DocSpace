@@ -1,7 +1,5 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import withReadme from 'storybook-readme/with-readme';
-import Readme from './README.md';
 import { Container, Row, Col } from 'reactstrap';
 import { Button } from 'asc-web-components';
 
@@ -12,72 +10,74 @@ function onClick(e) {
   console.log("onClick", text);
 }
 
-const rowStyle = { marginTop: 8 };
+const rowStyle = {
+  marginTop: 8
+};
+
+const getButtons = () => {
+  const primary = [true, false];
+  const sizes = ['huge', 'big', 'middle', 'base'];
+  const states = ['isActivated', 'isHovered', 'isPressed', 'isDisabled', 'isLoading'];
+
+  const baseButton = {
+    size: 'base',
+    primary: true,
+    isActivated: false,
+    isHovered: false,
+    isPressed: false,
+    isDisabled: false,
+    isLoading: false,
+    onClick: onClick,
+    label: "base button"
+  };
+
+  let buttons = [];
+  primary.forEach(type => {
+    baseButton.primary = type;
+    sizes.forEach(size => {
+      let sizeButtons = [];
+      states.forEach(state => {
+        let btn = { ...baseButton, size: size, label: `${size} button` }
+        btn[state] = true;
+        sizeButtons.push(btn);
+      })
+      buttons.push({
+        size: size,
+        buttons: sizeButtons
+      });
+    });
+  });
+
+  return buttons;
+};
 
 storiesOf('Components|Buttons', module)
   // To set a default viewport for all the stories for this component
-  .addParameters({ viewport: { defaultViewport: 'responsive' }})
-  .addParameters({ options: { showAddonPanel: false }})
-  .addDecorator(withReadme(Readme))
+  .addParameters({ viewport: { defaultViewport: 'responsive' } })
+  .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (
     <>
-      <Container>
+      <Container fluid>
         <Row style={rowStyle}>
           <Col>Active</Col>
           <Col>Hover</Col>
           <Col>Click*(otional)</Col>
           <Col>Disable</Col>
+          <Col>Loading</Col>
         </Row>
-        <Row style={rowStyle}>
-          <Col><Button size="huge" primary isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" primary isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" primary isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button size="big" primary isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" primary isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" primary isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button size="middle" primary isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" primary isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" primary isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" primary isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button primary isActivated onClick={onClick}>Ok</Button></Col>
-          <Col><Button primary isHovered onClick={onClick}>Ok</Button></Col>
-          <Col><Button primary isClicked onClick={onClick}>Ok</Button></Col>
-          <Col><Button primary isDisabled onClick={onClick}>Ok</Button></Col>
-        </Row>
-      </Container>
-      <Container>
-        <Row style={rowStyle}>
-          <Col><Button size="huge" isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="huge" isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button size="big" isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="big" isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button size="middle" isActivated onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" isHovered onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" isClicked onClick={onClick}>Save it button</Button></Col>
-          <Col><Button size="middle" isDisabled onClick={onClick}>Save it button</Button></Col>
-        </Row>
-        <Row style={rowStyle}>
-          <Col><Button isActivated onClick={onClick}>Ok</Button></Col>
-          <Col><Button isHovered onClick={onClick}>Ok</Button></Col>
-          <Col><Button isClicked onClick={onClick}>Ok</Button></Col>
-          <Col><Button isDisabled onClick={onClick}>Ok</Button></Col>
-        </Row>
+
+        {Object.values(getButtons()).map((btnSize, i) => {
+          console.log(btnSize);
+          return (
+            <Row style={rowStyle} key={`row${i}`}>
+              {Object.values(btnSize.buttons).map((btn, j) => (
+                <Col key={`col${i}${j}`}>
+                  <Button key={`btn${i}${j}`} {...btn} />
+                </Col>))}
+            </Row>
+          )
+        })}
+
       </Container>
     </>
   ));

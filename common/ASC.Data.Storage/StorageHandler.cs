@@ -58,7 +58,6 @@ namespace ASC.Data.Storage.DiscStorage
 
         public async Task Invoke(HttpContext context)
         {
-            Common.HttpContext.Configure(context);
             //TODO
             //if (_checkAuth && !SecurityContext.IsAuthenticated)
             //{

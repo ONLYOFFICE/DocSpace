@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Container, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row } from 'reactstrap';
-import { NavMenu } from 'asc-web-components';
+import { NavMenu, NavLogo } from 'asc-web-components';
 import { logout } from '../../actions/authActions';
 
 const Layout = props => {
@@ -12,7 +12,8 @@ const Layout = props => {
     return (
         <>
             <header>
-                <NavMenu logoUrl="images/light_small_general.svg" href="/">
+                <NavMenu>
+                    <NavLogo imageUrl="images/light_small_general.svg" onClick={() => history.push('/')} />
                     {auth.isAuthenticated && (
                         <UncontrolledDropdown inNavbar size="sm">
                             <DropdownToggle caret nav style={{ fontFamily: '"Open Sans", sans-serif', fontSize: '12px', color: '#c5c5c5',  }}>

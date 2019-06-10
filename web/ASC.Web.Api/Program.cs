@@ -19,6 +19,7 @@ namespace ASC.Web.Api
                 })
             .ConfigureAppConfiguration((hostingContext, config) => {
                 config.AddJsonFile("autofac.json");
+                config.AddJsonFile("storage.json");
             });
     }
 }

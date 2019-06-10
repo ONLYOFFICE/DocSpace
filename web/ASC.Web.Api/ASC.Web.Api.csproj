@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">
-    <Exec Command="copy $(SolutionDir)products\ASC.People\bin\Debug\netcoreapp3.0\ASC.People.dll $(OutDir)ASC.People.dll /Y" />
+    <Exec Command="copy $(SolutionDir)products\ASC.People\bin\Debug\netcoreapp3.0\*.dll $(OutDir) /Y" />
   </Target>
 
 </Project>

@@ -26,13 +26,12 @@
 
 using System;
 using System.Linq;
-using System.Configuration;
 using System.Threading.Tasks;
-using ASC.Data.Storage.Configuration;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using ASC.Core;
+using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Storage.S3
 {
@@ -122,7 +121,7 @@ namespace ASC.Data.Storage.S3
         {
             if (!configured)
             {
-                var config = Configuration.Storage.Instance();
+                var config = StorageConfigFactory.Instance;
                 var handler = config.GetHandler("s3");
                 if (handler != null)
                 {

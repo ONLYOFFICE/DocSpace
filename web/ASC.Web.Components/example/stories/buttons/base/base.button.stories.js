@@ -19,8 +19,7 @@ storiesOf('Components|Buttons', module)
         primary={boolean('primary', true)}
         isDisabled={boolean('isDisabled', false)}
         onClick={action('clicked')}
-      >
-        {text('Label', 'Base button')}
-      </Button>
+        label={text('label', 'Base button')}
+      />
     </Section>
   ));

@@ -24,17 +24,17 @@
 */
 
 
-using ASC.Data.Storage.Configuration;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
 using ASC.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Data.Storage.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Data.Storage
 {
@@ -46,7 +46,7 @@ namespace ASC.Data.Storage
 
         static WebPath()
         {
-            var section = Configuration.Storage.Instance();
+            var section = StorageConfigFactory.Instance;
             if (section != null)
             {
                 Appenders = section.Appender;
@@ -93,8 +93,9 @@ namespace ASC.Data.Storage
                 }
             }
             
-            if (Appenders.Any()) {
-                var avaliableAppenders = Appenders.Where(x => x.Extensions.Split('|').Contains(ext) || String.IsNullOrEmpty(ext)).ToList();
+            if (Appenders.Any())
+            {
+                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || String.IsNullOrEmpty(ext)).ToList();
                 var avaliableAppendersCount = avaliableAppenders.LongCount();
 
                 Appender appender;
@@ -156,7 +157,7 @@ namespace ASC.Data.Storage
                 if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContext.Current != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(Path.Combine(CommonServiceProvider.HostingEnvironment.ContentRootPath, path));
+                    Existing[path] = File.Exists(Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {

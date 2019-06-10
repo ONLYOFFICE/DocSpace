@@ -112,9 +112,11 @@ const LoginForm = props => {
                     <Button
                         primary
                         size='big'
+                        label={isLoading ? "Loading..." : "Sign In"}
                         tabIndex={3}
                         isDisabled={isLoading}
-                        onClick={onSubmit}>Sign In</Button>
+                        isLoading={isLoading}
+                        onClick={onSubmit} />
                 </Col>
             </Row>
             <Collapse isOpen={ !!errorText }>

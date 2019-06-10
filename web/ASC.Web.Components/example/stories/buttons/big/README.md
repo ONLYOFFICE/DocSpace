@@ -13,7 +13,7 @@ Big Button is used for a action on a page.
 #### Usage
 
 ```js
-<Button size='big' isDisabled={false} onClick={() => alert('Button clicked')}>OK</Button>
+<Button size='big' isDisabled={false} onClick={() => alert('Button clicked')} label="OK" />
 ```
 
 #### Properties
@@ -23,5 +23,5 @@ Big Button is used for a action on a page.
 | `primary`          | `bool`   |    -     | -                           | -         | Tells when the button should be primary                                  |
 | `isDisabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
 | `onClick`          | `func`   |    ✅    | -                           | -         | What the button will trigger when clicked                                              |
-| `size`             | `oneOf`  |    -     | `base`, `middle`, `big`, `huge`             | `base`     | -                                                                     |
-
+| `size`             | `oneOf`  |    -     | `base`, `middle`, `big`, `huge`             | `base`     | Size of button      |
+| `label`             | `string`  |    -     | -             | -     | Button text                     |

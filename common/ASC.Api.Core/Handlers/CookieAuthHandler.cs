@@ -21,7 +21,7 @@ namespace ASC.Web.Api.Handlers
         public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpContextAccessor httpContextAccessor) 
             : this(options, logger, encoder, clock)
         {
-            Common.HttpContext.Configure(httpContextAccessor);
+
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
