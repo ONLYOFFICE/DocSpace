@@ -34,6 +34,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Web.Core.WebZones;
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -115,6 +116,7 @@ namespace ASC.Web.Core
         private static WebItemManager instance;
         public static WebItemManager Instance { get { return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>()); } }
         private ApplicationPartManager ApplicationPartManager { get; }
+        public IContainer Container { get; }
 
         public IWebItem this[Guid id]
         {
@@ -126,27 +128,23 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(ApplicationPartManager applicationPartManager)
+        public WebItemManager(IContainer container)
         {
-            ApplicationPartManager = applicationPartManager;
+            Container = container;
         }
 
         public void LoadItems()
         {
-            foreach (var ap in ApplicationPartManager.ApplicationParts.OfType<AssemblyPart>().Where(r => r.Assembly.GetCustomAttribute<ProductAttribute>() != null))
+            foreach (var webitem in Container.Resolve<IEnumerable<IWebItem>>())
             {
-                var file = ap.Name;
+                var file = webitem.ID.ToString();
                 try
                 {
                     if (DisabledWebItem(file)) continue;
 
-                    var webitems = LoadWebItem(ap.Assembly);
-                    foreach (var webitem in webitems)
+                    if (RegistryItem(webitem))
                     {
-                        if (RegistryItem(webitem))
-                        {
-                            log.DebugFormat("Web item {0} loaded", webitem.Name);
-                        }
+                        log.DebugFormat("Web item {0} loaded", webitem.Name);
                     }
                 }
                 catch (Exception exc)
@@ -243,12 +241,6 @@ namespace ASC.Web.Core
         public List<T> GetItemsAll<T>() where T : IWebItem
         {
             return GetItemsAll().OfType<T>().ToList();
-        }
-
-        private IEnumerable<IWebItem> LoadWebItem(Assembly assembly)
-        {
-            var attributes = assembly.GetCustomAttributes(typeof(ProductAttribute), false).Cast<ProductAttribute>();
-            return attributes.Where(r=> r != null).Select(productAttribute => (IWebItem)Activator.CreateInstance(productAttribute.Type));
         }
 
         private bool DisabledWebItem(string name)

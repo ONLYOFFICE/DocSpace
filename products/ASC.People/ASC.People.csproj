@@ -8,6 +8,10 @@
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <AssemblyTitle>ASC.People</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.People</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,8 +29,7 @@
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
-
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />

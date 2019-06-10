@@ -40,9 +40,11 @@ namespace ASC.Web.Studio
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddAutofac(Configuration);
+
             services.AddHttpContextAccessor()
                 .AddStorage()
-                .AddLogManager(Configuration);
+                .AddLogManager();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

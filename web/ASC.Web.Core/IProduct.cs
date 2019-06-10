@@ -29,7 +29,7 @@ using ASC.Web.Core.WebZones;
 
 namespace ASC.Web.Core
 {
-    [WebZoneAttribute(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
+    [WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
     public interface IProduct : IWebItem
     {
         Guid ProductID { get; }
