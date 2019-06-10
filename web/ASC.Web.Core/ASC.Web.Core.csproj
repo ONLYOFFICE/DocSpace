@@ -10,7 +10,6 @@
   <ItemGroup>
     <Compile Remove="Jabber\JabberServiceClient.cs" />
     <Compile Remove="ModuleManagement\Module.cs" />
-    <Compile Remove="Product.cs" />
     <Compile Remove="Utility\SearchHandlerManager.cs" />
     <Compile Remove="WebZones\IRenderCustomNavigation.cs" />
   </ItemGroup>

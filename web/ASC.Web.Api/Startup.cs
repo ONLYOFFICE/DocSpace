@@ -21,6 +21,7 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Web.Core;
 
 namespace ASC.Web.Api
 {
@@ -57,7 +58,7 @@ namespace ASC.Web.Api
 
             var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ASC*.dll")
                                 .Select(Assembly.LoadFrom)
-                                .Where(r => r.GetCustomAttribute<CustomApiAttribute>() != null);
+                                .Where(r => r.GetCustomAttribute<ProductAttribute>() != null);
 
             foreach (var a in assemblies)
             {
@@ -65,6 +66,7 @@ namespace ASC.Web.Api
             }
 
             services.AddLogManager(Configuration);
+            services.AddWebItemManager();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -95,7 +97,8 @@ namespace ASC.Web.Api
 
 
             app.InitCommonServiceProvider()
-                .InitConfigurationManager();
+                .InitConfigurationManager()
+                .UseWebItemManager();
         }
     }
 }

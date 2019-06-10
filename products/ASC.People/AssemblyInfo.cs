@@ -1,4 +1,4 @@
-﻿
-using ASC.Api.Core;
+﻿using ASC.People;
+using ASC.Web.Core;
 
-[assembly: CustomApi]
+[assembly: Product(typeof(PeopleProduct))]
