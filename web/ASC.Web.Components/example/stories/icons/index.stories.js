@@ -24,7 +24,6 @@ const IconContainer = styled.div`
   margin: 16px 0;
 `;
 
-const sizeOptions = ['small', 'medium', 'big'];
 const iconNames = Object.keys(Icons);
 
 storiesOf('Components|Icons', module)
