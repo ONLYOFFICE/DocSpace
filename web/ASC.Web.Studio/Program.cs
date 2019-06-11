@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Studio
 {
@@ -17,13 +11,16 @@ namespace ASC.Web.Studio
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-            .ConfigureAppConfiguration((hostingContext, config) => {
-                config
-                .AddJsonFile("autofac.json")
-                .AddJsonFile("storage.json");
-            });
+        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(w=>
+                {
+                    w.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((hostingContext, config) => {
+                    config
+                        .AddJsonFile("autofac.json")
+                        .AddJsonFile("storage.json");
+                });
     }
 }
