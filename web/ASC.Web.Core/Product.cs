@@ -27,12 +27,12 @@
 using System;
 using System.IO;
 using ASC.Data.Storage;
-using ASC.Web.Core.Client.HttpHandlers;
+//using ASC.Web.Core.Client.HttpHandlers;
 using ASC.Web.Core.WebZones;
 
 namespace ASC.Web.Core
 {
-    [WebZoneAttribute(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
+    [WebZone(WebZoneType.TopNavigationProductList | WebZoneType.StartProductList)]
     public abstract class Product : IProduct
     {
         public abstract Guid ProductID { get; }
@@ -61,7 +61,7 @@ namespace ASC.Web.Core
 
         Guid IWebItem.ID { get { return ProductID; } }
 
-        public virtual ClientScriptLocalization ClientScriptLocalization { get; protected set; }
+        //public virtual ClientScriptLocalization ClientScriptLocalization { get; protected set; }
 
         public string GetResourcePath(string relativePath)
         {

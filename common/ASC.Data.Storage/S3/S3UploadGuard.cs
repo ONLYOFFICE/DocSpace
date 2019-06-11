@@ -30,8 +30,8 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
+using ASC.Common.DependencyInjection;
 using ASC.Core;
-using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Storage.S3
 {
@@ -121,7 +121,7 @@ namespace ASC.Data.Storage.S3
         {
             if (!configured)
             {
-                var config = StorageConfigFactory.Instance;
+                var config = CommonServiceProvider.GetService<Configuration.Storage>();
                 var handler = config.GetHandler("s3");
                 if (handler != null)
                 {

@@ -1,6 +1,5 @@
 using System.Linq;
-using System.Reflection;
-using System.IO;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -12,15 +11,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Web.Api.Handlers;
 using ASC.Api.Core.Middleware;
 using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Common;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Web.Core;
+using ASC.Data.Storage.Configuration;
+
+using Autofac;
+
 
 namespace ASC.Web.Api
 {
@@ -55,16 +55,18 @@ namespace ASC.Web.Api
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
-            var assemblies = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ASC*.dll")
-                                .Select(Assembly.LoadFrom)
-                                .Where(r => r.GetCustomAttribute<CustomApiAttribute>() != null);
+            var container = services.AddAutofac(Configuration);
+
+            var assemblies = container.Resolve<IEnumerable<IWebItem>>().Select(r=> r.GetType().Assembly).Distinct();
 
             foreach (var a in assemblies)
             {
                 builder.AddApplicationPart(a);
             }
 
-            services.AddLogManager(Configuration);
+            services.AddLogManager()
+                    .AddStorage()
+                    .AddWebItemManager();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -95,7 +97,8 @@ namespace ASC.Web.Api
 
 
             app.InitCommonServiceProvider()
-                .InitConfigurationManager();
+                .InitConfigurationManager()
+                .UseWebItemManager();
         }
     }
 }

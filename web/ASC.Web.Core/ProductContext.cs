@@ -30,10 +30,6 @@ namespace ASC.Web.Core
 {
     public class ProductContext : WebItemContext
     {
-        public string MasterPageFile { get; set; }
-
-        public string ProductHTMLOverview { get; set; }
-
         private IProductSubscriptionManager _sunscriptionManager;
 
         public new IProductSubscriptionManager SubscriptionManager

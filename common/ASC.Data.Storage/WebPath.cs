@@ -46,7 +46,7 @@ namespace ASC.Data.Storage
 
         static WebPath()
         {
-            var section = StorageConfigFactory.Instance;
+            var section = CommonServiceProvider.GetService<Configuration.Storage>();
             if (section != null)
             {
                 Appenders = section.Appender;

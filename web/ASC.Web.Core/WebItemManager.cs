@@ -33,9 +33,12 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Web.Core.Utility;
 using ASC.Web.Core.WebZones;
+using Autofac;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core
 {
@@ -49,11 +52,16 @@ namespace ASC.Web.Core
 
     public class WebItemManager
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Web");
+        private static readonly ILog log;
 
         private readonly Dictionary<Guid, IWebItem> items = new Dictionary<Guid, IWebItem>();
-        private static readonly string disableItem = ConfigurationManager.AppSettings["web.disabled-items"] + ",";
+        private static readonly List<string> disableItem;
 
+        static WebItemManager()
+        {
+            log = LogManager.GetLogger("ASC.Web");
+            disableItem = (ConfigurationManager.AppSettings["web:disabled-items"] ?? "").Split(",").ToList();
+    }
 
         public static Guid CommunityProductID
         {
@@ -105,7 +113,10 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        public static WebItemManager Instance { get; private set; }
+        private static WebItemManager instance;
+        public static WebItemManager Instance { get { return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>()); } }
+        private ApplicationPartManager ApplicationPartManager { get; }
+        public IContainer Container { get; }
 
         public IWebItem this[Guid id]
         {
@@ -117,31 +128,23 @@ namespace ASC.Web.Core
             }
         }
 
-        static WebItemManager()
+        public WebItemManager(IContainer container)
         {
-            Instance = new WebItemManager();
-        }
-
-        private WebItemManager()
-        {
+            Container = container;
         }
 
         public void LoadItems()
         {
-            foreach (var file in GetFiles())
+            foreach (var webitem in Container.Resolve<IEnumerable<IWebItem>>())
             {
+                var file = webitem.ID.ToString();
                 try
                 {
-                    if (EnabledWebItem(file))
+                    if (DisabledWebItem(file)) continue;
+
+                    if (RegistryItem(webitem))
                     {
-                        var webitems = LoadWebItem(file);
-                        foreach (var webitem in webitems)
-                        {
-                            if (RegistryItem(webitem))
-                            {
-                                log.DebugFormat("Web item {0} loaded", webitem.Name);
-                            }
-                        }
+                        log.DebugFormat("Web item {0} loaded", webitem.Name);
                     }
                 }
                 catch (Exception exc)
@@ -165,14 +168,14 @@ namespace ASC.Web.Core
                     {
                         ((IProduct)webitem).Init();
                     }
-                    if (webitem is IModule)
+                    
+                    if (webitem is IModule module)
                     {
-                        //TODO
-                        //var module = (IModule)webitem;
-                        //if (module.Context != null && module.Context.SearchHandler != null)
-                        //{
-                        //    SearchHandlerManager.Registry(module.Context.SearchHandler);
-                        //}
+                        if (module.Context != null && module.Context.SearchHandler != null)
+                        {
+                            //TODO
+                            //SearchHandlerManager.Registry(module.Context.SearchHandler);
+                        }
                     }
 
                     items.Add(webitem.ID, webitem);
@@ -240,28 +243,23 @@ namespace ASC.Web.Core
             return GetItemsAll().OfType<T>().ToList();
         }
 
-        private IEnumerable<IWebItem> LoadWebItem(string file)
+        private bool DisabledWebItem(string name)
         {
-            var assembly = Assembly.LoadFrom(file);
-            var attributes = assembly.GetCustomAttributes(typeof(ProductAttribute), false).Cast<ProductAttribute>();
-            return attributes.Where(r=> r != null).Select(productAttribute => (IWebItem)Activator.CreateInstance(productAttribute.Type));
+            return disableItem.Contains(name);
         }
+    }
 
-        private IEnumerable<string> GetFiles()
+    public static class WebItemManagerExtension
+    {
+        public static IServiceCollection AddWebItemManager(this IServiceCollection services)
         {
-            const string pattern = "ASC.Web.*.dll";
-            if (HttpContext.Current != null)
-            {
-                return Directory.GetFiles(Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, "~/bin"), pattern);
-            }
-            return Directory.GetFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), pattern);
+            services.AddSingleton<WebItemManager>();
+            return services;
         }
-
-        private bool EnabledWebItem(string file)
+        public static IApplicationBuilder UseWebItemManager(this IApplicationBuilder applicationBuilder)
         {
-            var parts = file.Split('.');
-            var name = 1 < parts.Length ? parts[parts.Length - 2] + "," : string.Empty;
-            return disableItem.IndexOf(name, StringComparison.InvariantCultureIgnoreCase) == -1;
+            WebItemManager.Instance.LoadItems();
+            return applicationBuilder;
         }
     }
 }

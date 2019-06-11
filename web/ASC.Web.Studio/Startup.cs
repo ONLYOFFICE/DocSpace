@@ -2,6 +2,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Storage;
+using ASC.Data.Storage.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -39,8 +40,11 @@ namespace ASC.Web.Studio
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddAutofac(Configuration);
+
             services.AddHttpContextAccessor()
-                .AddLogManager(Configuration);
+                .AddStorage()
+                .AddLogManager();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

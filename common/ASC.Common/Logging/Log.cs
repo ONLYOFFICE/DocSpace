@@ -785,18 +785,9 @@ namespace ASC.Common.Logging
 
     public static class LogExtension
     {
-        public static IServiceCollection AddLogManager(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddLogManager(this IServiceCollection services)
         {
-            var module = new ConfigurationModule(configuration);
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(module);
-
-            var container = builder.Build();
-
-            services.AddSingleton(container)
-                .AddSingleton<LogManager>();
-
-            return services;
+            return services.AddSingleton<LogManager>();
         }
     }
 }

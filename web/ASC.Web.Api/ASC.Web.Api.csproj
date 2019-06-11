@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildingInsideVisualStudio)' == 'true'">

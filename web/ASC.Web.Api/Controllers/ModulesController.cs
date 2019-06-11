@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core;
+using ASC.Web.Core.WebZones;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
@@ -14,7 +16,7 @@ namespace ASC.Web.Api.Controllers
         [FormatIndexRoute(false)]
         public IEnumerable<Module> GetAll()
         {
-            return new List<Module> {
+            var result = new List<Module>(){
                 new Module {
                     Title = "Documents",
                     Link = "/products/files/",
@@ -38,16 +40,24 @@ namespace ASC.Web.Api.Controllers
                     ImageUrl = "images/mail_logolarge.png"
                 },
                 new Module {
-                    Title = "People",
-                    Link = "/products/people/",
-                    ImageUrl = "images/people_logolarge.png"
-                },
-                new Module {
                     Title = "Community",
                     Link = "products/community/",
                     ImageUrl = "images/community_logolarge.png"
                 }
             };
+
+            foreach (var a in WebItemManager.Instance.GetItems(WebZoneType.StartProductList))
+            {
+                result.Add(new Module() {
+                    Title = a.Name,
+                    Description = a.Description,
+                    ImageUrl = a.Context.LargeIconFileName,
+                    Link = a.StartURL
+                });
+            }
+
+
+            return result;
         }
     }
 }
