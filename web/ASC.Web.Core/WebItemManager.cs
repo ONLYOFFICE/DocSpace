@@ -33,6 +33,7 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core.Users;
 using ASC.Web.Core.WebZones;
 using Autofac;
 using Microsoft.AspNetCore.Builder;
@@ -260,6 +261,16 @@ namespace ASC.Web.Core
         {
             WebItemManager.Instance.LoadItems();
             return applicationBuilder;
+        }
+    }
+
+    public static class UserInfoExtension
+    {
+        public static List<string> GetListAdminModules(this UserInfo ui)
+        {
+            var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
+
+            return (from product in products where WebItemSecurity.IsProductAdministrator(product.ID, ui.ID) select product.ProductClassName).ToList();
         }
     }
 }

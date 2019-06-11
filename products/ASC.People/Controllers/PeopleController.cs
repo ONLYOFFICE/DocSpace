@@ -25,13 +25,13 @@ namespace ASC.Employee.Core.Controllers
         {
             if (CoreContext.Configuration.Personal) throw new Exception("Method not available");
             var query = CoreContext.UserManager.GetUsers(status).AsEnumerable();
-            return query.Select(x => new EmployeeWraper(x));
+            return query.Select(x => new EmployeeWraperFull(x));
         }
 
         [FormatRoute("{action}")]
         public EmployeeWraper Self()
         {
-            return new EmployeeWraper(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
+            return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
         }
     }
 }
