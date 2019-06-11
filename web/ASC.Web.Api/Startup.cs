@@ -96,9 +96,9 @@ namespace ASC.Web.Api
             });
 
 
-            app.InitCommonServiceProvider()
-                .InitConfigurationManager()
-                .UseWebItemManager();
+            CommonServiceProvider.Init(app.ApplicationServices);
+            ConfigurationManager.Init(app.ApplicationServices);
+            app.UseWebItemManager();
         }
     }
 }

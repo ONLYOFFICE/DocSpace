@@ -10,12 +10,9 @@ namespace ASC.Common.DependencyInjection
 
         private static IServiceProvider ServiceProvider { get; set; }
 
-        public static IApplicationBuilder InitCommonServiceProvider(this IApplicationBuilder app)
+        public static void Init(IServiceProvider serviceProvider)
         {
-            ServiceProvider = app.ApplicationServices;
-            return app;
+            ServiceProvider = serviceProvider;
         }
-
-
     }
 }
