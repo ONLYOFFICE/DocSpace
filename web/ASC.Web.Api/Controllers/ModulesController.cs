@@ -11,9 +11,7 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class ModulesController : ControllerBase
     {
-        // GET: api/Modules
-        [FormatIndexRoute()]
-        [FormatIndexRoute(false)]
+        [FormatRoute, FormatRoute(false)]
         public IEnumerable<Module> GetAll()
         {
             var result = new List<Module>(){

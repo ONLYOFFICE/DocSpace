@@ -246,14 +246,19 @@ namespace ASC.Api.Core
                                  SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
         }
 
-        public bool Check(string field)
-        {
-            return Fields == null || (Fields != null && Fields.Contains(field));
-        }
+
 
         public static implicit operator ApiContext(HttpContext  httpContext)
         {
             return new ApiContext(httpContext);
+        }
+    }
+
+    public static class ApiContextExtension
+    {
+        public static bool Check(this ApiContext context, string field)
+        {
+            return context == null || context.Fields == null || (context.Fields != null && context.Fields.Contains(field));
         }
     }
 }

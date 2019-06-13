@@ -772,11 +772,14 @@ namespace ASC.Common.Logging
 
         public static ILog GetLogger(string name)
         {
-            var logManager = ConfigurationManager.LogManager;
+            return ConfigurationManager.LogManager.Get(name);
+        }
 
+        public ILog Get(string name)
+        {
             if (!Logs.TryGetValue(name, out var result))
             {
-                result = Logs.AddOrUpdate(name, logManager != null && logManager.Builder != null ? logManager.Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
+                result = Logs.AddOrUpdate(name, Builder != null ? Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
             }
 
             return result;
