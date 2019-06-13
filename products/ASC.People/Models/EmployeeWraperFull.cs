@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core;
@@ -121,8 +122,12 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraperFull(UserInfo userInfo)
-            : base(userInfo)
+        public EmployeeWraperFull(UserInfo userInfo) : this(userInfo, null)
+        {
+        }
+
+        public EmployeeWraperFull(UserInfo userInfo, ApiContext httpContext)
+            : base(userInfo, httpContext)
         {
             UserName = userInfo.UserName;
             IsVisitor = userInfo.IsVisitor();
@@ -164,8 +169,8 @@ namespace ASC.Web.Api.Models
 
             FillConacts(userInfo);
 
-            //if (CheckContext(context, "groups") || CheckContext(context, "department"))
-            //{
+            if (httpContext.Check("groups") || httpContext.Check("department"))
+            {
                 var groups = CoreContext.UserManager.GetUserGroups(userInfo.ID).Select(x => new GroupWrapperSummary(x)).ToList();
 
                 if (groups.Any())
@@ -177,27 +182,27 @@ namespace ASC.Web.Api.Models
                 {
                     Department = "";
                 }
-            //}
+            }
 
-            //if (CheckContext(context, "avatarMedium"))
-            //{
+            if (httpContext.Check("avatarMedium"))
+            {
                 AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
-            //}
+            }
 
-            //if (CheckContext(context, "avatar"))
-            //{
+            if (httpContext.Check("avatar"))
+            {
                 Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
-            //}
+            }
 
             IsAdmin = userInfo.IsAdmin();
 
-            //if (CheckContext(context, "listAdminModules"))
-            //{
+            if (httpContext.Check("listAdminModules"))
+            {
                 var listAdminModules = userInfo.GetListAdminModules();
 
                 if (listAdminModules.Any())
                     ListAdminModules = listAdminModules;
-            //}
+            }
 
             IsOwner = userInfo.IsOwner();
 
@@ -221,12 +226,6 @@ namespace ASC.Web.Api.Models
                 Contacts = contacts;
             }
         }
-
-        //public static bool CheckContext(ApiContext context, string field)
-        //{
-        //    return context == null || context.Fields == null ||
-        //           (context.Fields != null && context.Fields.Contains(field));
-        //}
 
         public static EmployeeWraperFull GetFull(Guid userId)
         {

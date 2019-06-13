@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
@@ -40,8 +41,12 @@ namespace ASC.Web.Api.Models
         {
         }
 
-
         public EmployeeWraper(UserInfo userInfo)
+    : this(userInfo, null)
+        {
+        }
+
+        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext)
         {
             Id = userInfo.ID;
             DisplayName = DisplayUserSettings.GetFullUserName(userInfo);
@@ -50,10 +55,10 @@ namespace ASC.Web.Api.Models
                 Title = userInfo.Title;
             }
 
-            //if (EmployeeWraperFull.CheckContext(context, "avatarSmall"))
-            //{
+            if (httpContext.Check("avatarSmall"))
+            {
                 AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
-            //}
+            }
         }
 
         [DataMember(Order = 1)]
@@ -87,7 +92,7 @@ namespace ASC.Web.Api.Models
             }
             catch (Exception)
             {
-                return Get(ASC.Core.Users.Constants.LostUser);
+                return Get(Constants.LostUser);
             }
         }
 

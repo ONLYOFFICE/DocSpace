@@ -1,8 +1,6 @@
 ﻿using System.Net;
 using System.Security.Authentication;
-using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
 using ASC.Core;
 using Microsoft.AspNetCore.Authentication;
