@@ -24,62 +24,47 @@
 */
 
 
+using ASC.Common.Caching;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
-namespace ASC.Notify.Patterns
+namespace ASC.IPSecurity
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public class IPRestrictionsService
     {
-        public string Tag
+        private const string cacheKey = "iprestrictions";
+        private static readonly ICache cache = AscCache.Memory;
+        private static readonly ICacheNotify notify = AscCache.Notify;
+        private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
+
+
+        static IPRestrictionsService()
         {
-            get;
-            private set;
+            notify.Subscribe<IPRestriction>((r, a) => cache.Remove(GetCacheKey(r.TenantId)));
         }
 
-        public object Value
+
+        public static IEnumerable<IPRestriction> Get(int tenant)
         {
-            get;
-            private set;
+            var key = GetCacheKey(tenant);
+            var restrictions = cache.Get<List<IPRestriction>>(key);
+            if (restrictions == null)
+            {
+                cache.Insert(key, restrictions = IPRestrictionsRepository.Get(tenant), timeout);
+            }
+            return restrictions;
         }
 
-        public TagValue(string tag, object value)
+        public static IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
         {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
+            var restrictions = IPRestrictionsRepository.Save(ips, tenant);
+            notify.Publish(new IPRestriction { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
+            return restrictions;
         }
 
-        public object Value
+        private static string GetCacheKey(int tenant)
         {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            return cacheKey + tenant;
         }
     }
 }

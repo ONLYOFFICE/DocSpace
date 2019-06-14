@@ -24,62 +24,25 @@
 */
 
 
-using System;
-using System.Diagnostics;
+using ASC.Web.Core.PublicResources;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Web.Studio.Utility
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public static class TransferResourceHelper
     {
-        public string Tag
+        public static string GetRegionDescription(string region)
         {
-            get;
-            private set;
-        }
+            region = region.ToLower().Trim();
 
-        public object Value
-        {
-            get;
-            private set;
-        }
+            switch (region)
+            {
+                case "eu": return Resource.EuServerRegion;
+                case "us": return Resource.UsServerRegion;
+                case "sg": return Resource.SgServerRegion;
+                case "org": return Resource.OrgServerRegion;
+            }
 
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            return string.Empty;
         }
     }
 }

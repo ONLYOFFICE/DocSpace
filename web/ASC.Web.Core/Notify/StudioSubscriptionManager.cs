@@ -25,61 +25,61 @@
 
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using ASC.Web.Core.Subscriptions;
+using ASC.Notify.Model;
+using ASC.Web.Core.PublicResources;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Web.Studio.Core.Notify
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    internal class StudioSubscriptionManager : ISubscriptionManager
     {
-        public string Tag
+        private static StudioSubscriptionManager _instance = new StudioSubscriptionManager();
+
+        public static StudioSubscriptionManager Instance
         {
-            get;
-            private set;
+            get { return _instance; }
         }
 
-        public object Value
+        private StudioSubscriptionManager()
+        { }
+
+        #region ISubscriptionManager Members
+
+        public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
         {
-            get;
-            private set;
+            return new List<SubscriptionObject>();
         }
 
-        public TagValue(string tag, object value)
+        public List<SubscriptionType> GetSubscriptionTypes()
         {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
+            var types = new List<SubscriptionType>();
+            types.Add(new SubscriptionType()
+            {
+                ID = new Guid("{148B5E30-C81A-4ff8-B749-C46BAE340093}"),
+                Name = Resource.WhatsNewSubscriptionName,
+                NotifyAction = Actions.SendWhatsNew,
+                Single = true
+            });
 
-            Tag = tag;
-            Value = value;
-        }
-    }
+            var astype = new SubscriptionType()
+            {
+                ID = new Guid("{A4FFC01F-BDB5-450e-88C4-03FED17D67C5}"),
+                Name = Resource.AdministratorNotifySenderTypeName,
+                NotifyAction = Actions.SendWhatsNew,
+                Single = false
+            };
+            
+            types.Add(astype);
 
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
+            return types;
         }
 
-        public object Value
+        public ISubscriptionProvider SubscriptionProvider
         {
-            get { return action(); }
+            get { return StudioNotifyHelper.SubscriptionProvider; }
         }
 
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
-        }
+        #endregion
     }
 }

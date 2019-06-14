@@ -25,61 +25,50 @@
 
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Core;
+using ASC.Core.Billing;
+using ASC.Core.Tenants;
+using ASC.Core.Users;
+using ASC.Web.Studio.Utility;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Web.Studio.UserControls.Statistics
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public static class TenantStatisticsProvider
     {
-        public string Tag
+        public static bool IsNotPaid()
         {
-            get;
-            private set;
+            Tariff tariff;
+            return TenantExtra.EnableTarrifSettings
+                   && ((tariff = TenantExtra.GetCurrentTariff()).State >= TariffState.NotPaid
+                       || TenantExtra.Enterprise && !TenantExtra.EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
         }
 
-        public object Value
+        public static int GetUsersCount()
         {
-            get;
-            private set;
+            return CoreContext.UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
         }
 
-        public TagValue(string tag, object value)
+        public static long GetUsedSize()
         {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
+            return GetUsedSize(TenantProvider.CurrentTenantID);
         }
 
-        public object Value
+        public static long GetUsedSize(int tenant)
         {
-            get { return action(); }
+            return GetQuotaRows(tenant).Sum(r => r.Counter);
         }
 
-        public TagActionValue(string name, Func<string> action)
+        public static long GetUsedSize(Guid moduleId)
         {
-            Tag = name;
-            this.action = action;
+            return GetQuotaRows(TenantProvider.CurrentTenantID).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
+        }
+
+        public static IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
+        {
+            return CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+                .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
         }
     }
 }

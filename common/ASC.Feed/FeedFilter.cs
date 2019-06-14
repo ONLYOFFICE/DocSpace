@@ -25,61 +25,24 @@
 
 
 using System;
-using System.Diagnostics;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Feed
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public struct FeedFilter
     {
-        public string Tag
+        public TimeInterval Time { get; private set; }
+
+        public int Tenant { get; set; }
+
+        public FeedFilter(TimeInterval time) : this()
         {
-            get;
-            private set;
+            Time = time;
         }
 
-        public object Value
+        public FeedFilter(DateTime from, DateTime to)
+            : this()
         {
-            get;
-            private set;
-        }
-
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            Time = new TimeInterval(from, to);
         }
     }
 }

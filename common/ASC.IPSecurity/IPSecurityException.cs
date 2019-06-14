@@ -25,61 +25,29 @@
 
 
 using System;
-using System.Diagnostics;
+using System.Runtime.Serialization;
 
-namespace ASC.Notify.Patterns
+namespace ASC.IPSecurity
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public class IPSecurityException : Exception
     {
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get;
-            private set;
-        }
-
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
+        public IPSecurityException()
         {
         }
-    }
 
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
+        public IPSecurityException(string message)
+            : base(message)
         {
-            get;
-            private set;
         }
 
-        public object Value
+        public IPSecurityException(string message, Exception innerException)
+            : base(message, innerException)
         {
-            get { return action(); }
         }
 
-        public TagActionValue(string name, Func<string> action)
+        public IPSecurityException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
-            Tag = name;
-            this.action = action;
         }
     }
 }

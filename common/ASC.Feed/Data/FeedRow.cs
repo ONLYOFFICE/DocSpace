@@ -25,61 +25,56 @@
 
 
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Feed.Data
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public class FeedRow
     {
-        public string Tag
-        {
-            get;
-            private set;
+        public Aggregator.Feed Feed { get; private set; }
+
+        public string Id { get { return Feed.Id; } }
+
+        public bool ClearRightsBeforeInsert { get { return Feed.Variate; } }
+
+        public int Tenant { get; set; }
+
+        public string ProductId { get; set; }
+
+        public string ModuleId { get { return Feed.Module; } }
+
+        public Guid AuthorId { get { return Feed.AuthorId; } }
+
+        public Guid ModifiedById { get { return Feed.ModifiedBy; } }
+
+        public DateTime CreatedDate { get { return Feed.CreatedDate; } }
+
+        public DateTime ModifiedDate { get { return Feed.ModifiedDate; } }
+
+        public string GroupId { get { return Feed.GroupId; } }
+
+        public string Json {
+            get
+            {
+                return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                });
+            }
         }
 
-        public object Value
+        public string Keywords { get { return Feed.Keywords; } }
+
+        public DateTime AggregatedDate { get; set; }
+
+        public IList<Guid> Users { get; set; }
+
+
+        public FeedRow(Aggregator.Feed feed)
         {
-            get;
-            private set;
-        }
-
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            Users = new List<Guid>();
+            Feed = feed;
         }
     }
 }

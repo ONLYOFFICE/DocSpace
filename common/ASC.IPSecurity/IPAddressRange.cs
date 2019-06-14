@@ -24,62 +24,48 @@
 */
 
 
-using System;
-using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 
-namespace ASC.Notify.Patterns
+namespace ASC.IPSecurity
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    class IPAddressRange
     {
-        public string Tag
+        private readonly AddressFamily addressFamily;
+        private readonly byte[] lowerBytes;
+        private readonly byte[] upperBytes;
+
+        public IPAddressRange(IPAddress lower, IPAddress upper)
         {
-            get;
-            private set;
+            addressFamily = lower.AddressFamily;
+            lowerBytes = lower.GetAddressBytes();
+            upperBytes = upper.GetAddressBytes();
         }
 
-        public object Value
+        public bool IsInRange(IPAddress address)
         {
-            get;
-            private set;
-        }
+            if (address.AddressFamily != addressFamily)
+            {
+                return false;
+            }
 
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
+            var addressBytes = address.GetAddressBytes();
 
-            Tag = tag;
-            Value = value;
-        }
-    }
+            bool lowerBoundary = true, upperBoundary = true;
 
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
+            for (var i = 0; i < lowerBytes.Length &&
+                            (lowerBoundary || upperBoundary); i++)
+            {
+                if ((lowerBoundary && addressBytes[i] < lowerBytes[i]) || (upperBoundary && addressBytes[i] > upperBytes[i]))
+                {
+                    return false;
+                }
 
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
+                lowerBoundary &= (addressBytes[i] == lowerBytes[i]);
+                upperBoundary &= (addressBytes[i] == upperBytes[i]);
+            }
 
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            return true;
         }
     }
 }

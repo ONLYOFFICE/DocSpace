@@ -28,6 +28,7 @@ using System;
 using System.Web;
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Common.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using HttpContext = ASC.Common.HttpContext;
@@ -146,9 +147,7 @@ namespace ASC.Core.Common
         {
             if (_vpath == null)
             {
-                Uri originalUri = ASC.Common.HttpContext.Current.Request.GetUrlRewriter();
-                var absoluteUrl = UriHelper.BuildAbsolute(originalUri.Scheme, new HostString(originalUri.Host, originalUri.Port), virtualPath);
-                return absoluteUrl;
+                return VirtualPathUtility.ToAbsolute(virtualPath);
             }
 
             if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/"))

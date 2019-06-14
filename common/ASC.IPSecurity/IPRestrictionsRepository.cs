@@ -24,62 +24,55 @@
 */
 
 
+using ASC.Common.Data;
+using ASC.Common.Data.Sql;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace ASC.Notify.Patterns
+namespace ASC.IPSecurity
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    internal class IPRestrictionsRepository
     {
-        public string Tag
+        private const string dbId = "core";
+
+
+        public static List<IPRestriction> Get(int tenant)
         {
-            get;
-            private set;
+            using (var db = new DbManager(dbId))
+            {
+                return db
+                    .ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
+                    .ConvertAll(r => new IPRestriction
+                    {
+                        Id = Convert.ToInt32(r[0]),
+                        Ip = Convert.ToString(r[1]),
+                        TenantId = tenant,
+                    });
+            }
         }
 
-        public object Value
+        public static List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            get;
-            private set;
-        }
+            using (var db = new DbManager(dbId))
+            using (var tx = db.BeginTransaction())
+            {
+                var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
+                db.ExecuteNonQuery(d);
 
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
+                var ipsList = ips.ToList();
+                foreach (var ip in ipsList)
+                {
+                    var i = new SqlInsert("tenants_iprestrictions")
+                        .InColumnValue("tenant", tenant)
+                        .InColumnValue("ip", ip);
 
-            Tag = tag;
-            Value = value;
-        }
-    }
+                    db.ExecuteNonQuery(i);
+                }
 
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+                tx.Commit();
+                return ipsList;
+            }
         }
     }
 }

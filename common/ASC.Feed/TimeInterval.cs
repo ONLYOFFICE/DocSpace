@@ -25,61 +25,30 @@
 
 
 using System;
-using System.Diagnostics;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Feed
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public struct TimeInterval
     {
-        public string Tag
+        private readonly DateTime fromTime;
+        private readonly DateTime toTime;
+
+
+        public DateTime From 
         {
-            get;
-            private set;
+            get { return fromTime; }
         }
 
-        public object Value
+        public DateTime To
         {
-            get;
-            private set;
+            get { return toTime != default(DateTime) ? toTime : DateTime.MaxValue; }
         }
 
-        public TagValue(string tag, object value)
+
+        public TimeInterval(DateTime fromTime, DateTime toTime)
         {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
+            this.fromTime = fromTime;
+            this.toTime = toTime;
         }
     }
 }

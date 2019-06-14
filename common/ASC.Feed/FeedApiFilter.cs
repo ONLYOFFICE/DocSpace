@@ -25,61 +25,18 @@
 
 
 using System;
-using System.Diagnostics;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Feed
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public class FeedApiFilter
     {
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get;
-            private set;
-        }
-
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
-        }
+        public string Product { get; set; }
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public int Offset { get; set; }
+        public int Max { get; set; }
+        public Guid Author { get; set; }
+        public string[] SearchKeys { get; set; }
+        public bool OnlyNew { get; set; }
     }
 }

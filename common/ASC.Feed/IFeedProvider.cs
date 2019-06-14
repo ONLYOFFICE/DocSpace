@@ -24,62 +24,12 @@
 */
 
 
-using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
-namespace ASC.Notify.Patterns
+namespace ASC.Feed
 {
-    [DebuggerDisplay("{Tag}: {Value}")]
-    public class TagValue : ITagValue
+    public interface IFeedProvider<T>
     {
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get;
-            private set;
-        }
-
-        public TagValue(string tag, object value)
-        {
-            if (string.IsNullOrEmpty(tag)) throw new ArgumentNullException("tag");
-
-            Tag = tag;
-            Value = value;
-        }
-    }
-
-    public class AdditionalSenderTag : TagValue
-    {
-        public AdditionalSenderTag(string senderName)
-            : base("__AdditionalSender", senderName)
-        {
-        }
-    }
-
-    public class TagActionValue : ITagValue
-    {
-        private readonly Func<string> action;
-
-        public string Tag
-        {
-            get;
-            private set;
-        }
-
-        public object Value
-        {
-            get { return action(); }
-        }
-
-        public TagActionValue(string name, Func<string> action)
-        {
-            Tag = name;
-            this.action = action;
-        }
+        IEnumerable<T> GetFeed(FeedFilter filter);
     }
 }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
@@ -49,7 +50,7 @@ namespace ASC.MessagingSystem
             {
                 return new EventMessage
                     {
-                        IP = request != null ? request.Headers[forwardedHeader].ToString() ?? request.HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress.ToString() : null,
+                        IP = request != null ? request.Headers[forwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                         Initiator = initiator,
                         Date = DateTime.UtcNow,
                         TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
