@@ -15,8 +15,7 @@ namespace ASC.Web.Api.Controllers
     [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
-        [FormatIndexRoute]
-        [FormatIndexRoute(false)]
+        [Read, Read(false)]
         [HttpPost]
         public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
         {

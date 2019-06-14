@@ -1,79 +1,27 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Security.Authentication;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ASC.Api.Core.Middleware
 {
-    public class ResponseWrapper
+    public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
     {
-        private readonly RequestDelegate next;
-
-        public ResponseWrapper(RequestDelegate next)
+        public override void OnException(ExceptionContext context)
         {
-            this.next = next;
+            context.Result = new ObjectResult(new ErrorApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, context.Exception));
         }
-
-        public async Task Invoke(HttpContext context)
-        {
-            Exception error = null;
-            var currentBody = context.Response.Body;
-
-            using var memoryStream = new MemoryStream();
-
-            context.Response.Body = memoryStream;
-
-            try
-            {
-                await next(context);
-
-                if(context.Response.StatusCode == 401)
-                {
-                    error = new AuthenticationException(HttpStatusCode.Unauthorized.ToString());
-                }
-            }
-            catch(AuthenticationException exception)
-            {
-                context.Response.StatusCode = 401;
-                error = exception;
-            }
-            catch(Exception exception)
-            {
-                context.Response.StatusCode = 500;
-                error = exception;
-            }
-
-            context.Response.Body = currentBody;
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            ResponseParser responseParser;
-
-            switch (context.Request.RouteValues["format"])
-            {
-                case "xml":
-                    responseParser = new XmlResponseParser();
-                    break;
-                case "json":
-                default:
-                    responseParser = new JsonResponseParser();
-                    break;
-            }
-
-            var readToEnd = new StreamReader(memoryStream).ReadToEnd();
-            await context.Response.WriteAsync(responseParser.WrapAndWrite((HttpStatusCode)context.Response.StatusCode, readToEnd, error));
-        }
-
     }
 
-    public static class ResponseWrapperExtensions
+    public class CustomResponseFilterAttribute : ResultFilterAttribute
     {
-        public static IApplicationBuilder UseResponseWrapper(this IApplicationBuilder builder)
+        public override void OnResultExecuting(ResultExecutingContext context)
         {
-            return builder.UseMiddleware<ResponseWrapper>();
+            if (context.Result is ObjectResult result)
+            {
+                result.Value = new SuccessApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, result.Value);
+            }
+
+            base.OnResultExecuting(context);
         }
     }
 }

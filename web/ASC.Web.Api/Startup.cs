@@ -51,8 +51,10 @@ namespace ASC.Web.Api
             var builder = services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
                 config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new CustomResponseFilterAttribute());
+                config.Filters.Add(new CustomExceptionFilterAttribute());
+                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
             });
 
             var container = services.AddAutofac(Configuration);
@@ -88,17 +90,15 @@ namespace ASC.Web.Api
 
             app.UseAuthentication();
 
-            app.UseResponseWrapper();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
 
-            app.InitCommonServiceProvider()
-                .InitConfigurationManager()
-                .UseWebItemManager();
+            CommonServiceProvider.Init(app.ApplicationServices);
+            ConfigurationManager.Init(app.ApplicationServices);
+            app.UseWebItemManager();
         }
     }
 }
