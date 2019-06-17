@@ -25,8 +25,8 @@
 
 
 using System;
-using System.Configuration;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 
 namespace ASC.MessagingSystem.DbSender
 {
@@ -38,7 +38,7 @@ namespace ASC.MessagingSystem.DbSender
         {
             get
             {
-                var setting = ConfigurationManager.AppSettings["messaging.enabled"];
+                var setting = ConfigurationManager.AppSettings["messaging:enabled"];
                 return !string.IsNullOrEmpty(setting) && setting == "true";
             }
         }

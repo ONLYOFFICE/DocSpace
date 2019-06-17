@@ -163,7 +163,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 
-        public static UserInfo SendUserPassword(string email)
+        public static UserInfo SendUserPassword(string email, MessageService messageService)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
@@ -196,7 +196,7 @@ namespace ASC.Web.Core.Users
             StudioNotifyService.Instance.UserPasswordChange(userInfo);
 
             var displayUserName = userInfo.DisplayUserName(false);
-            MessageService.Send(HttpContext.Current.Request, MessageAction.UserSentPasswordChangeInstructions, displayUserName);
+            messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;
         }

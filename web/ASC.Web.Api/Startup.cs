@@ -20,7 +20,7 @@ using ASC.Web.Core;
 using ASC.Data.Storage.Configuration;
 
 using Autofac;
-
+using ASC.MessagingSystem;
 
 namespace ASC.Web.Api
 {
@@ -68,7 +68,8 @@ namespace ASC.Web.Api
 
             services.AddLogManager()
                     .AddStorage()
-                    .AddWebItemManager();
+                    .AddWebItemManager()
+                    .AddTransient<MessageService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

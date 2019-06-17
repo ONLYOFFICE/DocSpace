@@ -35,11 +35,13 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
         public ApiContext ApiContext { get; }
+        public MessageService MessageService { get; }
 
-        public PeopleController(Common.Logging.LogManager logManager)
+        public PeopleController(Common.Logging.LogManager logManager, MessageService messageService)
         {
             LogManager = logManager;
             ApiContext = HttpContext;
+            MessageService = messageService;
         }
 
         [Read, Read(false)]
@@ -343,7 +345,7 @@ namespace ASC.Employee.Core.Controllers
             user = UserManagerWrapper.AddUser(user, memberModel.Password, false, true, memberModel.IsVisitor);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            MessageService.Send(Request, messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             UpdateDepartments(memberModel.Department, user);
 
@@ -495,12 +497,12 @@ namespace ASC.Employee.Core.Controllers
             }
 
             CoreContext.UserManager.SaveUserInfo(user, memberModel.IsVisitor);
-            MessageService.Send(Request, MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
                 CookiesManager.ResetUserCookie(user.ID);
-                MessageService.Send(Common.HttpContext.Current.Request, MessageAction.CookieSettingsUpdated);
+                MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
             return new EmployeeWraperFull(user);
@@ -528,7 +530,7 @@ namespace ASC.Employee.Core.Controllers
             CoreContext.UserManager.DeleteUser(user.ID);
             //QueueWorker.StartRemove(Common.HttpContext.Current, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
 
-            MessageService.Send(Request, MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+            MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
             return new EmployeeWraperFull(user);
         }
@@ -598,7 +600,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             CoreContext.UserManager.SaveUserInfo(user);
-            MessageService.Send(Request, MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             return new ThumbnailsDataWrapper(user.ID);
         }
@@ -616,7 +618,7 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager.RemovePhoto(user.ID);
 
             CoreContext.UserManager.SaveUserInfo(user);
-            MessageService.Send(Request, MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             return new ThumbnailsDataWrapper(user.ID);
         }
@@ -649,7 +651,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             CoreContext.UserManager.SaveUserInfo(user);
-            MessageService.Send(Common.HttpContext.Current.Request, MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             return new ThumbnailsDataWrapper(user.ID);
         }
@@ -659,7 +661,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("password"), Create("password", false)]
         public string SendUserPassword(string email)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(email);
+            var userInfo = UserManagerWrapper.SendUserPassword(email, MessageService);
 
             return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
         }
@@ -690,10 +692,10 @@ namespace ASC.Employee.Core.Controllers
             if (!string.IsNullOrEmpty(memberModel.Password))
             {
                 SecurityContext.SetUserPassword(userid, memberModel.Password);
-                MessageService.Send(Common.HttpContext.Current.Request, MessageAction.UserUpdatedPassword);
+                MessageService.Send(MessageAction.UserUpdatedPassword);
 
                 CookiesManager.ResetUserCookie(userid);
-                MessageService.Send(Common.HttpContext.Current.Request, MessageAction.CookieSettingsUpdated);
+                MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
             return new EmployeeWraperFull(GetUserInfo(userid.ToString()));
@@ -767,7 +769,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(Request, MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
+            MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
 
             return users.Select(user => new EmployeeWraperFull(user));
         }
@@ -803,12 +805,12 @@ namespace ASC.Employee.Core.Controllers
                         CoreContext.UserManager.SaveUserInfo(user);
 
                         CookiesManager.ResetUserCookie(user.ID);
-                        MessageService.Send(Common.HttpContext.Current.Request, MessageAction.CookieSettingsUpdated);
+                        MessageService.Send(MessageAction.CookieSettingsUpdated);
                         break;
                 }
             }
 
-            MessageService.Send(Request, MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
 
             return users.Select(user => new EmployeeWraperFull(user));
         }
@@ -843,7 +845,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(Request, MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
+            MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false)));
 
             return users.Select(user => new EmployeeWraperFull(user));
         }
@@ -871,7 +873,7 @@ namespace ASC.Employee.Core.Controllers
                 //QueueWorker.StartRemove(HttpContext.Current, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
             }
 
-            MessageService.Send(Request, MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
+            MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
 
             return users.Select(user => new EmployeeWraperFull(user));
         }
@@ -886,7 +888,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             StudioNotifyService.Instance.SendMsgProfileDeletion(user);
-            MessageService.Send(Common.HttpContext.Current.Request, MessageAction.UserSentDeleteInstructions);
+            MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
         }
@@ -900,7 +902,7 @@ namespace ASC.Employee.Core.Controllers
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {
                 GetLinker().AddLink(SecurityContext.CurrentAccount.ID.ToString(), profile);
-                MessageService.Send(Common.HttpContext.Current.Request, MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
+                MessageService.Send(MessageAction.UserLinkedSocialAccount, GetMeaningfulProviderName(profile.Provider));
             }
             else
             {
@@ -916,7 +918,7 @@ namespace ASC.Employee.Core.Controllers
         public void UnlinkAccount(string provider)
         {
             GetLinker().RemoveProvider(SecurityContext.CurrentAccount.ID.ToString(), provider);
-            MessageService.Send(Common.HttpContext.Current.Request, MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
+            MessageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
         }
 
         private static AccountLinker GetLinker()
