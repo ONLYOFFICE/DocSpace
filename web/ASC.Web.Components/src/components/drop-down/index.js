@@ -21,6 +21,8 @@ const StyledDropdown = styled.div`
 `;
 
 const StyledDropdownItem = styled.button`
+    width: 100%;
+    text-align: left;
     background: none;
     border: 0;
     color: #333333;
@@ -44,6 +46,8 @@ const StyledDropdownItem = styled.button`
 
     &:hover{
         background-color: #e9e9e9;
+        width: 100%;
+        text-align: left;
         border-radius: 2px;
         -moz-border-radius: 2px;
         -webkit-border-radius: 2px;
