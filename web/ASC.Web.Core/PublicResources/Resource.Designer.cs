@@ -22,7 +22,7 @@ namespace ASC.Web.Core.PublicResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Core.PublicResources.Resource", typeof(Resource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to address.
         /// </summary>
-        internal static string AboutCompanyAddressTitle {
+        public static string AboutCompanyAddressTitle {
             get {
                 return ResourceManager.GetString("AboutCompanyAddressTitle", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to email.
         /// </summary>
-        internal static string AboutCompanyEmailTitle {
+        public static string AboutCompanyEmailTitle {
             get {
                 return ResourceManager.GetString("AboutCompanyEmailTitle", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Copyright.
         /// </summary>
-        internal static string AboutCompanyLicensor {
+        public static string AboutCompanyLicensor {
             get {
                 return ResourceManager.GetString("AboutCompanyLicensor", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to tel..
         /// </summary>
-        internal static string AboutCompanyTelTitle {
+        public static string AboutCompanyTelTitle {
             get {
                 return ResourceManager.GetString("AboutCompanyTelTitle", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to About this program.
         /// </summary>
-        internal static string AboutCompanyTitle {
+        public static string AboutCompanyTitle {
             get {
                 return ResourceManager.GetString("AboutCompanyTitle", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
-        internal static string AboutCompanyVersion {
+        public static string AboutCompanyVersion {
             get {
                 return ResourceManager.GetString("AboutCompanyVersion", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to See how ONLYOFFICE™ compares to Google Drive and Office365 word processors:.
         /// </summary>
-        internal static string AboutPersonalCompareText {
+        public static string AboutPersonalCompareText {
             get {
                 return ResourceManager.GetString("AboutPersonalCompareText", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™ Personal enables you to:.
         /// </summary>
-        internal static string AboutPersonalEnableHeader {
+        public static string AboutPersonalEnableHeader {
             get {
                 return ResourceManager.GetString("AboutPersonalEnableHeader", resourceCulture);
             }
@@ -140,7 +140,7 @@ namespace ASC.Web.Core.PublicResources {
         ///{0}Embed documents to your web page.{1}
         ///{0}View files from your iOS or Android tablet.{1}.
         /// </summary>
-        internal static string AboutPersonalEnableText {
+        public static string AboutPersonalEnableText {
             get {
                 return ResourceManager.GetString("AboutPersonalEnableText", resourceCulture);
             }
@@ -149,7 +149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to For more information, please proceed to the official website {0}www.onlyoffice.com{1}.
         /// </summary>
-        internal static string AboutPersonalMoreInfoText {
+        public static string AboutPersonalMoreInfoText {
             get {
                 return ResourceManager.GetString("AboutPersonalMoreInfoText", resourceCulture);
             }
@@ -158,7 +158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Any questions?.
         /// </summary>
-        internal static string AboutPersonalQuestionHeader {
+        public static string AboutPersonalQuestionHeader {
             get {
                 return ResourceManager.GetString("AboutPersonalQuestionHeader", resourceCulture);
             }
@@ -167,7 +167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Feel free to contact us at {0}personal@onlyoffice.com{2} or join {1}our Facebook community{2}!.
         /// </summary>
-        internal static string AboutPersonalQuestionText {
+        public static string AboutPersonalQuestionText {
             get {
                 return ResourceManager.GetString("AboutPersonalQuestionText", resourceCulture);
             }
@@ -176,7 +176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to What makes ONLYOFFICE™ processors the best?.
         /// </summary>
-        internal static string AboutPersonalTheBestHeader {
+        public static string AboutPersonalTheBestHeader {
             get {
                 return ResourceManager.GetString("AboutPersonalTheBestHeader", resourceCulture);
             }
@@ -185,7 +185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}If you are a user:{1} they combine the formatting quality of MS Office &amp; online collaboration of Google Docs..
         /// </summary>
-        internal static string AboutPersonalTheBestText1 {
+        public static string AboutPersonalTheBestText1 {
             get {
                 return ResourceManager.GetString("AboutPersonalTheBestText1", resourceCulture);
             }
@@ -194,7 +194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}If you are a tech enthusiast:{1} they&apos;re built with the use of HTML5 element, Canvas..
         /// </summary>
-        internal static string AboutPersonalTheBestText2 {
+        public static string AboutPersonalTheBestText2 {
             get {
                 return ResourceManager.GetString("AboutPersonalTheBestText2", resourceCulture);
             }
@@ -203,7 +203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Would like to use ONLYOFFICE™ in your company?.
         /// </summary>
-        internal static string AboutPersonalUseHeader {
+        public static string AboutPersonalUseHeader {
             get {
                 return ResourceManager.GetString("AboutPersonalUseHeader", resourceCulture);
             }
@@ -212,7 +212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™ Personal rises from ONLYOFFICE™ - collaborative suite for small and medium business. Apart from document processors, ONLYOFFICE™ includes project and document management toolset, CRM system and Email aggregator..
         /// </summary>
-        internal static string AboutPersonalUseText {
+        public static string AboutPersonalUseText {
             get {
                 return ResourceManager.GetString("AboutPersonalUseText", resourceCulture);
             }
@@ -221,7 +221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to What is ONLYOFFICE™ Personal:.
         /// </summary>
-        internal static string AboutPersonalWhatIsItHeader {
+        public static string AboutPersonalWhatIsItHeader {
             get {
                 return ResourceManager.GetString("AboutPersonalWhatIsItHeader", resourceCulture);
             }
@@ -230,7 +230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™ Personal is a suite of online processors for text documents, spreadsheets and presentations with co-editing and commenting capabilities. It is free for individual use..
         /// </summary>
-        internal static string AboutPersonalWhatIsItText {
+        public static string AboutPersonalWhatIsItText {
             get {
                 return ResourceManager.GetString("AboutPersonalWhatIsItText", resourceCulture);
             }
@@ -239,7 +239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        internal static string AboutTitle {
+        public static string AboutTitle {
             get {
                 return ResourceManager.GetString("AboutTitle", resourceCulture);
             }
@@ -248,7 +248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Rights.
         /// </summary>
-        internal static string AccessRights {
+        public static string AccessRights {
             get {
                 return ResourceManager.GetString("AccessRights", resourceCulture);
             }
@@ -257,7 +257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access to {0} module is given to.
         /// </summary>
-        internal static string AccessRightsAccessToProduct {
+        public static string AccessRightsAccessToProduct {
             get {
                 return ResourceManager.GetString("AccessRightsAccessToProduct", resourceCulture);
             }
@@ -266,7 +266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!group}.
         /// </summary>
-        internal static string AccessRightsAddGroup {
+        public static string AccessRightsAddGroup {
             get {
                 return ResourceManager.GetString("AccessRightsAddGroup", resourceCulture);
             }
@@ -275,7 +275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!user}.
         /// </summary>
-        internal static string AccessRightsAddUser {
+        public static string AccessRightsAddUser {
             get {
                 return ResourceManager.GetString("AccessRightsAddUser", resourceCulture);
             }
@@ -284,7 +284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to All {!users}.
         /// </summary>
-        internal static string AccessRightsAllUsers {
+        public static string AccessRightsAllUsers {
             get {
                 return ResourceManager.GetString("AccessRightsAllUsers", resourceCulture);
             }
@@ -293,7 +293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change Portal Owner.
         /// </summary>
-        internal static string AccessRightsChangeOwnerButtonText {
+        public static string AccessRightsChangeOwnerButtonText {
             get {
                 return ResourceManager.GetString("AccessRightsChangeOwnerButtonText", resourceCulture);
             }
@@ -302,7 +302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Changes will be applied after the confirmation via email..
         /// </summary>
-        internal static string AccessRightsChangeOwnerConfirmText {
+        public static string AccessRightsChangeOwnerConfirmText {
             get {
                 return ResourceManager.GetString("AccessRightsChangeOwnerConfirmText", resourceCulture);
             }
@@ -311,7 +311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To change the Portal owner please choose the Name of the new Portal owner below..
         /// </summary>
-        internal static string AccessRightsChangeOwnerText {
+        public static string AccessRightsChangeOwnerText {
             get {
                 return ResourceManager.GetString("AccessRightsChangeOwnerText", resourceCulture);
             }
@@ -320,7 +320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} module is disabled and is not shown on the portal. To enable it, refer to the Modules &amp; Tools section of the Portal Settings.
         /// </summary>
-        internal static string AccessRightsDisabledProduct {
+        public static string AccessRightsDisabledProduct {
             get {
                 return ResourceManager.GetString("AccessRightsDisabledProduct", resourceCulture);
             }
@@ -329,7 +329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {!user} list is empty.
         /// </summary>
-        internal static string AccessRightsEmptyUserList {
+        public static string AccessRightsEmptyUserList {
             get {
                 return ResourceManager.GetString("AccessRightsEmptyUserList", resourceCulture);
             }
@@ -338,7 +338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Full access.
         /// </summary>
-        internal static string AccessRightsFullAccess {
+        public static string AccessRightsFullAccess {
             get {
                 return ResourceManager.GetString("AccessRightsFullAccess", resourceCulture);
             }
@@ -347,7 +347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Have the same access rights as the portal owner, except the right to|Change portal owner|Deactivate or delete portal.
         /// </summary>
-        internal static string AccessRightsFullAccessOpportunities {
+        public static string AccessRightsFullAccessOpportunities {
             get {
                 return ResourceManager.GetString("AccessRightsFullAccessOpportunities", resourceCulture);
             }
@@ -356,7 +356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal owner can.
         /// </summary>
-        internal static string AccessRightsOwnerCan {
+        public static string AccessRightsOwnerCan {
             get {
                 return ResourceManager.GetString("AccessRightsOwnerCan", resourceCulture);
             }
@@ -365,7 +365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Do the same as module administrators|Appoint module administrators|Set modules access rights|Manage portal configuration|Manage user accounts|Change portal owner|Backup portal data|Deactivate or delete portal.
         /// </summary>
-        internal static string AccessRightsOwnerOpportunities {
+        public static string AccessRightsOwnerOpportunities {
             get {
                 return ResourceManager.GetString("AccessRightsOwnerOpportunities", resourceCulture);
             }
@@ -374,7 +374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} administrators can.
         /// </summary>
-        internal static string AccessRightsProductAdminsCan {
+        public static string AccessRightsProductAdminsCan {
             get {
                 return ResourceManager.GetString("AccessRightsProductAdminsCan", resourceCulture);
             }
@@ -383,7 +383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} {!users} can.
         /// </summary>
-        internal static string AccessRightsProductUsersCan {
+        public static string AccessRightsProductUsersCan {
             get {
                 return ResourceManager.GetString("AccessRightsProductUsersCan", resourceCulture);
             }
@@ -392,7 +392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} {!users} having different access rights can.
         /// </summary>
-        internal static string AccessRightsProductUsersWithRightsCan {
+        public static string AccessRightsProductUsersWithRightsCan {
             get {
                 return ResourceManager.GetString("AccessRightsProductUsersWithRightsCan", resourceCulture);
             }
@@ -401,7 +401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Users} from list.
         /// </summary>
-        internal static string AccessRightsUsersFromList {
+        public static string AccessRightsUsersFromList {
             get {
                 return ResourceManager.GetString("AccessRightsUsersFromList", resourceCulture);
             }
@@ -410,7 +410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your account is almost active now.
         /// </summary>
-        internal static string AccountActivationTitle {
+        public static string AccountActivationTitle {
             get {
                 return ResourceManager.GetString("AccountActivationTitle", resourceCulture);
             }
@@ -419,7 +419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
-        internal static string AccountControlPageTitle {
+        public static string AccountControlPageTitle {
             get {
                 return ResourceManager.GetString("AccountControlPageTitle", resourceCulture);
             }
@@ -428,7 +428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Deactivation.
         /// </summary>
-        internal static string AccountDeactivation {
+        public static string AccountDeactivation {
             get {
                 return ResourceManager.GetString("AccountDeactivation", resourceCulture);
             }
@@ -437,7 +437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your {0}Avangate account{1}..
         /// </summary>
-        internal static string AccountDeactivationConfirmMsg {
+        public static string AccountDeactivationConfirmMsg {
             get {
                 return ResourceManager.GetString("AccountDeactivationConfirmMsg", resourceCulture);
             }
@@ -446,7 +446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A link to confirm the operation has been sent to :email (the email address of the portal owner)..
         /// </summary>
-        internal static string AccountDeactivationMsg {
+        public static string AccountDeactivationMsg {
             get {
                 return ResourceManager.GetString("AccountDeactivationMsg", resourceCulture);
             }
@@ -455,7 +455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Deletion.
         /// </summary>
-        internal static string AccountDeletion {
+        public static string AccountDeletion {
             get {
                 return ResourceManager.GetString("AccountDeletion", resourceCulture);
             }
@@ -464,7 +464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A link to confirm the operation has been sent to :email (the email address of the portal owner)..
         /// </summary>
-        internal static string AccountDeletionMsg {
+        public static string AccountDeletionMsg {
             get {
                 return ResourceManager.GetString("AccountDeletionMsg", resourceCulture);
             }
@@ -473,7 +473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Action.
         /// </summary>
-        internal static string Action {
+        public static string Action {
             get {
                 return ResourceManager.GetString("Action", resourceCulture);
             }
@@ -482,7 +482,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
-        internal static string Actions {
+        public static string Actions {
             get {
                 return ResourceManager.GetString("Actions", resourceCulture);
             }
@@ -491,7 +491,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send code again.
         /// </summary>
-        internal static string ActivateAgainGetCodeButton {
+        public static string ActivateAgainGetCodeButton {
             get {
                 return ResourceManager.GetString("ActivateAgainGetCodeButton", resourceCulture);
             }
@@ -500,7 +500,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter code.
         /// </summary>
-        internal static string ActivateCodeLabel {
+        public static string ActivateCodeLabel {
             get {
                 return ResourceManager.GetString("ActivateCodeLabel", resourceCulture);
             }
@@ -509,7 +509,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Activate the email once again.
         /// </summary>
-        internal static string ActivateEmailAgain {
+        public static string ActivateEmailAgain {
             get {
                 return ResourceManager.GetString("ActivateEmailAgain", resourceCulture);
             }
@@ -518,7 +518,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Validation code field cannot be empty.
         /// </summary>
-        internal static string ActivateMobilePhoneEmptyCode {
+        public static string ActivateMobilePhoneEmptyCode {
             get {
                 return ResourceManager.GetString("ActivateMobilePhoneEmptyCode", resourceCulture);
             }
@@ -527,7 +527,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter mobile phone number.
         /// </summary>
-        internal static string ActivateMobilePhoneEmptyPhoneNumber {
+        public static string ActivateMobilePhoneEmptyPhoneNumber {
             get {
                 return ResourceManager.GetString("ActivateMobilePhoneEmptyPhoneNumber", resourceCulture);
             }
@@ -536,7 +536,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
-        internal static string ActivateSendButton {
+        public static string ActivateSendButton {
             get {
                 return ResourceManager.GetString("ActivateSendButton", resourceCulture);
             }
@@ -545,7 +545,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Validation code field cannot be empty.
         /// </summary>
-        internal static string ActivateTfaAppEmptyCode {
+        public static string ActivateTfaAppEmptyCode {
             get {
                 return ResourceManager.GetString("ActivateTfaAppEmptyCode", resourceCulture);
             }
@@ -554,7 +554,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string AddButton {
+        public static string AddButton {
             get {
                 return ResourceManager.GetString("AddButton", resourceCulture);
             }
@@ -563,7 +563,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Content.
         /// </summary>
-        internal static string AddContentTitle {
+        public static string AddContentTitle {
             get {
                 return ResourceManager.GetString("AddContentTitle", resourceCulture);
             }
@@ -572,7 +572,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create new {!group}.
         /// </summary>
-        internal static string AddDepartmentDlgTitle {
+        public static string AddDepartmentDlgTitle {
             get {
                 return ResourceManager.GetString("AddDepartmentDlgTitle", resourceCulture);
             }
@@ -581,7 +581,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Groups.
         /// </summary>
-        internal static string AddGroupsForSharingButton {
+        public static string AddGroupsForSharingButton {
             get {
                 return ResourceManager.GetString("AddGroupsForSharingButton", resourceCulture);
             }
@@ -590,7 +590,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add allowed IP address.
         /// </summary>
-        internal static string AddIPRestrictionBtn {
+        public static string AddIPRestrictionBtn {
             get {
                 return ResourceManager.GetString("AddIPRestrictionBtn", resourceCulture);
             }
@@ -599,7 +599,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Comment.
         /// </summary>
-        internal static string AddNewCommentButton {
+        public static string AddNewCommentButton {
             get {
                 return ResourceManager.GetString("AddNewCommentButton", resourceCulture);
             }
@@ -608,7 +608,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add to.
         /// </summary>
-        internal static string AddTo {
+        public static string AddTo {
             get {
                 return ResourceManager.GetString("AddTo", resourceCulture);
             }
@@ -617,7 +617,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add to portal.
         /// </summary>
-        internal static string AddToPortalBtn {
+        public static string AddToPortalBtn {
             get {
                 return ResourceManager.GetString("AddToPortalBtn", resourceCulture);
             }
@@ -626,7 +626,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add trusted domain.
         /// </summary>
-        internal static string AddTrustedDomainButton {
+        public static string AddTrustedDomainButton {
             get {
                 return ResourceManager.GetString("AddTrustedDomainButton", resourceCulture);
             }
@@ -635,7 +635,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!Users}.
         /// </summary>
-        internal static string AddUsersCaption {
+        public static string AddUsersCaption {
             get {
                 return ResourceManager.GetString("AddUsersCaption", resourceCulture);
             }
@@ -644,7 +644,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!Users}.
         /// </summary>
-        internal static string AddUsersForSharingButton {
+        public static string AddUsersForSharingButton {
             get {
                 return ResourceManager.GetString("AddUsersForSharingButton", resourceCulture);
             }
@@ -653,7 +653,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string Administration {
+        public static string Administration {
             get {
                 return ResourceManager.GetString("Administration", resourceCulture);
             }
@@ -662,7 +662,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Administrator.
         /// </summary>
-        internal static string Administrator {
+        public static string Administrator {
             get {
                 return ResourceManager.GetString("Administrator", resourceCulture);
             }
@@ -671,7 +671,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Administrator Notifications.
         /// </summary>
-        internal static string AdministratorNotifySenderTypeName {
+        public static string AdministratorNotifySenderTypeName {
             get {
                 return ResourceManager.GetString("AdministratorNotifySenderTypeName", resourceCulture);
             }
@@ -680,7 +680,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send message.
         /// </summary>
-        internal static string AdminMessageButton {
+        public static string AdminMessageButton {
             get {
                 return ResourceManager.GetString("AdminMessageButton", resourceCulture);
             }
@@ -689,7 +689,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No access to the portal?.
         /// </summary>
-        internal static string AdminMessageDescription {
+        public static string AdminMessageDescription {
             get {
                 return ResourceManager.GetString("AdminMessageDescription", resourceCulture);
             }
@@ -698,7 +698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email address that can be used to contact you.
         /// </summary>
-        internal static string AdminMessageEmail {
+        public static string AdminMessageEmail {
             get {
                 return ResourceManager.GetString("AdminMessageEmail", resourceCulture);
             }
@@ -707,7 +707,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Contact the portal administration.
         /// </summary>
-        internal static string AdminMessageLink {
+        public static string AdminMessageLink {
             get {
                 return ResourceManager.GetString("AdminMessageLink", resourceCulture);
             }
@@ -716,7 +716,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your message was successfully sent. You will be contacted by the portal administrator..
         /// </summary>
-        internal static string AdminMessageSent {
+        public static string AdminMessageSent {
             get {
                 return ResourceManager.GetString("AdminMessageSent", resourceCulture);
             }
@@ -725,7 +725,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
-        internal static string AdminMessageSettingsEnable {
+        public static string AdminMessageSettingsEnable {
             get {
                 return ResourceManager.GetString("AdminMessageSettingsEnable", resourceCulture);
             }
@@ -734,7 +734,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Administrator Message Settings.
         /// </summary>
-        internal static string AdminMessageSettingsTitle {
+        public static string AdminMessageSettingsTitle {
             get {
                 return ResourceManager.GetString("AdminMessageSettingsTitle", resourceCulture);
             }
@@ -743,7 +743,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please describe your issue.
         /// </summary>
-        internal static string AdminMessageSituation {
+        public static string AdminMessageSituation {
             get {
                 return ResourceManager.GetString("AdminMessageSituation", resourceCulture);
             }
@@ -752,7 +752,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to If you are an existing {!user} and have problems accessing this portal or you want to register as the portal new {!user}, please contact the portal administrator using the form below..
         /// </summary>
-        internal static string AdminMessageTitle {
+        public static string AdminMessageTitle {
             get {
                 return ResourceManager.GetString("AdminMessageTitle", resourceCulture);
             }
@@ -761,7 +761,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Administrators.
         /// </summary>
-        internal static string AdminSettings {
+        public static string AdminSettings {
             get {
                 return ResourceManager.GetString("AdminSettings", resourceCulture);
             }
@@ -770,7 +770,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Affiliate Status.
         /// </summary>
-        internal static string AffilliateStatus {
+        public static string AffilliateStatus {
             get {
                 return ResourceManager.GetString("AffilliateStatus", resourceCulture);
             }
@@ -779,7 +779,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Any domains.
         /// </summary>
-        internal static string AllMailDomains {
+        public static string AllMailDomains {
             get {
                 return ResourceManager.GetString("AllMailDomains", resourceCulture);
             }
@@ -788,7 +788,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to All rights reserved.
         /// </summary>
-        internal static string AllRightsReserved {
+        public static string AllRightsReserved {
             get {
                 return ResourceManager.GetString("AllRightsReserved", resourceCulture);
             }
@@ -797,7 +797,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to &amp;copy; Ascensio System SIA {0}. All rights reserved..
         /// </summary>
-        internal static string AllRightsReservedText {
+        public static string AllRightsReservedText {
             get {
                 return ResourceManager.GetString("AllRightsReservedText", resourceCulture);
             }
@@ -806,7 +806,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reply.
         /// </summary>
-        internal static string AnswerButton {
+        public static string AnswerButton {
             get {
                 return ResourceManager.GetString("AnswerButton", resourceCulture);
             }
@@ -815,7 +815,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Answer.
         /// </summary>
-        internal static string AnswerCallBtn {
+        public static string AnswerCallBtn {
             get {
                 return ResourceManager.GetString("AnswerCallBtn", resourceCulture);
             }
@@ -824,7 +824,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Applications.
         /// </summary>
-        internal static string Apps {
+        public static string Apps {
             get {
                 return ResourceManager.GetString("Apps", resourceCulture);
             }
@@ -833,7 +833,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Extend your web office functionality using the third party applications. Contact your portal administrator to enable the apps you need..
         /// </summary>
-        internal static string AppsDescription {
+        public static string AppsDescription {
             get {
                 return ResourceManager.GetString("AppsDescription", resourceCulture);
             }
@@ -842,7 +842,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Find out more information in our {0}Help Center{1}.
         /// </summary>
-        internal static string AppsDescriptionHelp {
+        public static string AppsDescriptionHelp {
             get {
                 return ResourceManager.GetString("AppsDescriptionHelp", resourceCulture);
             }
@@ -851,7 +851,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to as the main..
         /// </summary>
-        internal static string AsMain {
+        public static string AsMain {
             get {
                 return ResourceManager.GetString("AsMain", resourceCulture);
             }
@@ -860,7 +860,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Social link.
         /// </summary>
-        internal static string AssociateAccount {
+        public static string AssociateAccount {
             get {
                 return ResourceManager.GetString("AssociateAccount", resourceCulture);
             }
@@ -869,7 +869,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
-        internal static string AssociateAccountConnect {
+        public static string AssociateAccountConnect {
             get {
                 return ResourceManager.GetString("AssociateAccountConnect", resourceCulture);
             }
@@ -878,7 +878,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connected.
         /// </summary>
-        internal static string AssociateAccountConnected {
+        public static string AssociateAccountConnected {
             get {
                 return ResourceManager.GetString("AssociateAccountConnected", resourceCulture);
             }
@@ -887,7 +887,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
-        internal static string AssociateAccountDisconnect {
+        public static string AssociateAccountDisconnect {
             get {
                 return ResourceManager.GetString("AssociateAccountDisconnect", resourceCulture);
             }
@@ -896,7 +896,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Not connected.
         /// </summary>
-        internal static string AssociateAccountNotConnected {
+        public static string AssociateAccountNotConnected {
             get {
                 return ResourceManager.GetString("AssociateAccountNotConnected", resourceCulture);
             }
@@ -905,7 +905,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to at.
         /// </summary>
-        internal static string AtTime {
+        public static string AtTime {
             get {
                 return ResourceManager.GetString("AtTime", resourceCulture);
             }
@@ -914,7 +914,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access.
         /// </summary>
-        internal static string AuthDocsAccess {
+        public static string AuthDocsAccess {
             get {
                 return ResourceManager.GetString("AuthDocsAccess", resourceCulture);
             }
@@ -923,7 +923,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit and collaborate on-the-go with ONLYOFFICE for IOS and Android.
         /// </summary>
-        internal static string AuthDocsAccessAndroidIOSText {
+        public static string AuthDocsAccessAndroidIOSText {
             get {
                 return ResourceManager.GetString("AuthDocsAccessAndroidIOSText", resourceCulture);
             }
@@ -932,7 +932,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Offline.
         /// </summary>
-        internal static string AuthDocsAccessOffline {
+        public static string AuthDocsAccessOffline {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOffline", resourceCulture);
             }
@@ -941,7 +941,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No internet connection? Switch to {0} and edit offline from anywhere..
         /// </summary>
-        internal static string AuthDocsAccessOfflineText {
+        public static string AuthDocsAccessOfflineText {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOfflineText", resourceCulture);
             }
@@ -950,7 +950,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
-        internal static string AuthDocsAccessOnline {
+        public static string AuthDocsAccessOnline {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnline", resourceCulture);
             }
@@ -959,7 +959,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Work online from any browser and operating system without formatting loss..
         /// </summary>
-        internal static string AuthDocsAccessOnlineText {
+        public static string AuthDocsAccessOnlineText {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnlineText", resourceCulture);
             }
@@ -968,7 +968,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Desktop.
         /// </summary>
-        internal static string AuthDocsAccessOnlyofficeDesktop {
+        public static string AuthDocsAccessOnlyofficeDesktop {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnlyofficeDesktop", resourceCulture);
             }
@@ -977,7 +977,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE for iOS.
         /// </summary>
-        internal static string AuthDocsAccessOnlyofficeIOS {
+        public static string AuthDocsAccessOnlyofficeIOS {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnlyofficeIOS", resourceCulture);
             }
@@ -986,7 +986,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to On mobile.
         /// </summary>
-        internal static string AuthDocsAccessOnMobile {
+        public static string AuthDocsAccessOnMobile {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnMobile", resourceCulture);
             }
@@ -995,7 +995,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit and collaborate on-the-go with {0}..
         /// </summary>
-        internal static string AuthDocsAccessOnMobileText {
+        public static string AuthDocsAccessOnMobileText {
             get {
                 return ResourceManager.GetString("AuthDocsAccessOnMobileText", resourceCulture);
             }
@@ -1004,7 +1004,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE is fully compatible with Office formats and supports DOC, DOCX, ODT, RTF, TXT, PDF, HTML, EPUB, DjVu, XLS, XLSX, ODS, CSV, PPT, PPTX and ODP..
         /// </summary>
-        internal static string AuthDocsCapabilitiesTextOne {
+        public static string AuthDocsCapabilitiesTextOne {
             get {
                 return ResourceManager.GetString("AuthDocsCapabilitiesTextOne", resourceCulture);
             }
@@ -1013,7 +1013,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use addons to make the most of your editing: insert videos, edit pictures, translate texts and much more..
         /// </summary>
-        internal static string AuthDocsCapabilitiesTextThree {
+        public static string AuthDocsCapabilitiesTextThree {
             get {
                 return ResourceManager.GetString("AuthDocsCapabilitiesTextThree", resourceCulture);
             }
@@ -1022,7 +1022,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to All formatting tools are at your hand along with every desired object, from autoshapes and charts to mathematical equations and Text Art..
         /// </summary>
-        internal static string AuthDocsCapabilitiesTextTwo {
+        public static string AuthDocsCapabilitiesTextTwo {
             get {
                 return ResourceManager.GetString("AuthDocsCapabilitiesTextTwo", resourceCulture);
             }
@@ -1031,7 +1031,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Check your email inbox to confirm the account..
         /// </summary>
-        internal static string AuthDocsCheckEmail {
+        public static string AuthDocsCheckEmail {
             get {
                 return ResourceManager.GetString("AuthDocsCheckEmail", resourceCulture);
             }
@@ -1040,7 +1040,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to on your {0}Chromebook{1}..
         /// </summary>
-        internal static string AuthDocsChromebook {
+        public static string AuthDocsChromebook {
             get {
                 return ResourceManager.GetString("AuthDocsChromebook", resourceCulture);
             }
@@ -1049,7 +1049,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Chrome Web Store Rating.
         /// </summary>
-        internal static string AuthDocsChromeStore {
+        public static string AuthDocsChromeStore {
             get {
                 return ResourceManager.GetString("AuthDocsChromeStore", resourceCulture);
             }
@@ -1058,7 +1058,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to 100% compatible with Microsoft Office formats.
         /// </summary>
-        internal static string AuthDocsCompatibleText {
+        public static string AuthDocsCompatibleText {
             get {
                 return ResourceManager.GetString("AuthDocsCompatibleText", resourceCulture);
             }
@@ -1067,7 +1067,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
-        internal static string AuthDocsCreate {
+        public static string AuthDocsCreate {
             get {
                 return ResourceManager.GetString("AuthDocsCreate", resourceCulture);
             }
@@ -1076,7 +1076,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Captivating presentations.
         /// </summary>
-        internal static string AuthDocsCreateCaptivatingPres {
+        public static string AuthDocsCreateCaptivatingPres {
             get {
                 return ResourceManager.GetString("AuthDocsCreateCaptivatingPres", resourceCulture);
             }
@@ -1085,7 +1085,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose from multiple layouts and style options, create schemes and infographics for any purpose, present comfortably with Presenter View..
         /// </summary>
-        internal static string AuthDocsCreateCaptivatingPresText {
+        public static string AuthDocsCreateCaptivatingPresText {
             get {
                 return ResourceManager.GetString("AuthDocsCreateCaptivatingPresText", resourceCulture);
             }
@@ -1094,7 +1094,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Professional spreadsheets.
         /// </summary>
-        internal static string AuthDocsCreateProfSpreadsheets {
+        public static string AuthDocsCreateProfSpreadsheets {
             get {
                 return ResourceManager.GetString("AuthDocsCreateProfSpreadsheets", resourceCulture);
             }
@@ -1103,7 +1103,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Organize your data with multiple cell and row actions and perform complex calculations with Organize your data with multiple cell and row actions and perform complex calculations with over 430 formulas. Apply styles and templates to put finishing touches..
         /// </summary>
-        internal static string AuthDocsCreateProfSpreadsheetsText {
+        public static string AuthDocsCreateProfSpreadsheetsText {
             get {
                 return ResourceManager.GetString("AuthDocsCreateProfSpreadsheetsText", resourceCulture);
             }
@@ -1112,7 +1112,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sterling documents.
         /// </summary>
-        internal static string AuthDocsCreateSterlingDocuments {
+        public static string AuthDocsCreateSterlingDocuments {
             get {
                 return ResourceManager.GetString("AuthDocsCreateSterlingDocuments", resourceCulture);
             }
@@ -1121,7 +1121,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enjoy professional writing capabilities with Review features, page appearance settings and additional layout elements like footnotes and drop caps..
         /// </summary>
-        internal static string AuthDocsCreateSterlingDocumentsText {
+        public static string AuthDocsCreateSterlingDocumentsText {
             get {
                 return ResourceManager.GetString("AuthDocsCreateSterlingDocumentsText", resourceCulture);
             }
@@ -1130,7 +1130,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Customer experience.
         /// </summary>
-        internal static string AuthDocsCustomerExperience {
+        public static string AuthDocsCustomerExperience {
             get {
                 return ResourceManager.GetString("AuthDocsCustomerExperience", resourceCulture);
             }
@@ -1139,7 +1139,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit word docs, spreadsheets and presentations online.
         /// </summary>
-        internal static string AuthDocsEditText {
+        public static string AuthDocsEditText {
             get {
                 return ResourceManager.GetString("AuthDocsEditText", resourceCulture);
             }
@@ -1148,7 +1148,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your email.
         /// </summary>
-        internal static string AuthDocsEmailHint {
+        public static string AuthDocsEmailHint {
             get {
                 return ResourceManager.GetString("AuthDocsEmailHint", resourceCulture);
             }
@@ -1157,7 +1157,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Or sign in with.
         /// </summary>
-        internal static string AuthDocsEnterViaSocial {
+        public static string AuthDocsEnterViaSocial {
             get {
                 return ResourceManager.GetString("AuthDocsEnterViaSocial", resourceCulture);
             }
@@ -1166,7 +1166,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Extend.
         /// </summary>
-        internal static string AuthDocsExtend {
+        public static string AuthDocsExtend {
             get {
                 return ResourceManager.GetString("AuthDocsExtend", resourceCulture);
             }
@@ -1175,7 +1175,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Already keeping files in cloud storages like {0} or {1}?.
         /// </summary>
-        internal static string AuthDocsExtendKeeping {
+        public static string AuthDocsExtendKeeping {
             get {
                 return ResourceManager.GetString("AuthDocsExtendKeeping", resourceCulture);
             }
@@ -1184,7 +1184,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connect third-party services to create an integrated document management space and work with your documents directly from any cloud..
         /// </summary>
-        internal static string AuthDocsExtendKeepingText {
+        public static string AuthDocsExtendKeepingText {
             get {
                 return ResourceManager.GetString("AuthDocsExtendKeepingText", resourceCulture);
             }
@@ -1193,7 +1193,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Forgot password?.
         /// </summary>
-        internal static string AuthDocsForgotPswd {
+        public static string AuthDocsForgotPswd {
             get {
                 return ResourceManager.GetString("AuthDocsForgotPswd", resourceCulture);
             }
@@ -1202,7 +1202,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Free of charge.
         /// </summary>
-        internal static string AuthDocsFreeChargeText {
+        public static string AuthDocsFreeChargeText {
             get {
                 return ResourceManager.GetString("AuthDocsFreeChargeText", resourceCulture);
             }
@@ -1211,7 +1211,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to It is Free.
         /// </summary>
-        internal static string AuthDocsItsFree {
+        public static string AuthDocsItsFree {
             get {
                 return ResourceManager.GetString("AuthDocsItsFree", resourceCulture);
             }
@@ -1220,7 +1220,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Log in.
         /// </summary>
-        internal static string AuthDocsLogIn {
+        public static string AuthDocsLogIn {
             get {
                 return ResourceManager.GetString("AuthDocsLogIn", resourceCulture);
             }
@@ -1229,7 +1229,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Personal is a free online editing suite for text documents, spreadsheets and presentations with an individual cloud storage..
         /// </summary>
-        internal static string AuthDocsMetaDescription {
+        public static string AuthDocsMetaDescription {
             get {
                 return ResourceManager.GetString("AuthDocsMetaDescription", resourceCulture);
             }
@@ -1238,7 +1238,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to edit word online, word editor online, word online free, word office online.
         /// </summary>
-        internal static string AuthDocsMetaKeywords {
+        public static string AuthDocsMetaKeywords {
             get {
                 return ResourceManager.GetString("AuthDocsMetaKeywords", resourceCulture);
             }
@@ -1247,7 +1247,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Not registered yet?.
         /// </summary>
-        internal static string AuthDocsNotRegistered {
+        public static string AuthDocsNotRegistered {
             get {
                 return ResourceManager.GetString("AuthDocsNotRegistered", resourceCulture);
             }
@@ -1256,7 +1256,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Or sign in with.
         /// </summary>
-        internal static string AuthDocsOr {
+        public static string AuthDocsOr {
             get {
                 return ResourceManager.GetString("AuthDocsOr", resourceCulture);
             }
@@ -1265,7 +1265,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Right in your browser.
         /// </summary>
-        internal static string AuthDocsRightBrowserText {
+        public static string AuthDocsRightBrowserText {
             get {
                 return ResourceManager.GetString("AuthDocsRightBrowserText", resourceCulture);
             }
@@ -1274,7 +1274,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your activation email has been sent to .
         /// </summary>
-        internal static string AuthDocsSendActivationEmail {
+        public static string AuthDocsSendActivationEmail {
             get {
                 return ResourceManager.GetString("AuthDocsSendActivationEmail", resourceCulture);
             }
@@ -1283,7 +1283,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Share and collaborate.
         /// </summary>
-        internal static string AuthDocsShareСollaborate {
+        public static string AuthDocsShareСollaborate {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborate", resourceCulture);
             }
@@ -1292,7 +1292,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Discuss the process.
         /// </summary>
-        internal static string AuthDocsShareСollaborateDiscuss {
+        public static string AuthDocsShareСollaborateDiscuss {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateDiscuss", resourceCulture);
             }
@@ -1301,7 +1301,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to With comments and chat, discuss the editing process and communicate without leaving the editor..
         /// </summary>
-        internal static string AuthDocsShareСollaborateDiscussText {
+        public static string AuthDocsShareСollaborateDiscussText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateDiscussText", resourceCulture);
             }
@@ -1310,7 +1310,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Embed your documents.
         /// </summary>
-        internal static string AuthDocsShareСollaborateEmberDocuments {
+        public static string AuthDocsShareСollaborateEmberDocuments {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateEmberDocuments", resourceCulture);
             }
@@ -1319,7 +1319,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add documents wherever you want, be it a blog or a website, using special embedding properties..
         /// </summary>
-        internal static string AuthDocsShareСollaborateEmberDocumentsText {
+        public static string AuthDocsShareСollaborateEmberDocumentsText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateEmberDocumentsText", resourceCulture);
             }
@@ -1328,7 +1328,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite users for collaboration.
         /// </summary>
-        internal static string AuthDocsShareСollaborateInviteUsers {
+        public static string AuthDocsShareСollaborateInviteUsers {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateInviteUsers", resourceCulture);
             }
@@ -1337,7 +1337,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite anyone via external links to edit documents together or get reviews on your work.
         /// </summary>
-        internal static string AuthDocsShareСollaborateInviteUsersText {
+        public static string AuthDocsShareСollaborateInviteUsersText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateInviteUsersText", resourceCulture);
             }
@@ -1346,7 +1346,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Navigate through document history.
         /// </summary>
-        internal static string AuthDocsShareСollaborateNavigateHistory {
+        public static string AuthDocsShareСollaborateNavigateHistory {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateNavigateHistory", resourceCulture);
             }
@@ -1355,7 +1355,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Check Version History to see and control each input by everyone in your document..
         /// </summary>
-        internal static string AuthDocsShareСollaborateNavigateHistoryText {
+        public static string AuthDocsShareСollaborateNavigateHistoryText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateNavigateHistoryText", resourceCulture);
             }
@@ -1364,7 +1364,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Review the results.
         /// </summary>
-        internal static string AuthDocsShareСollaborateReviewResults {
+        public static string AuthDocsShareСollaborateReviewResults {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateReviewResults", resourceCulture);
             }
@@ -1373,7 +1373,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use Track Changes mode to highlight your inputs. Different preview modes will help you see how your texts would look with or without changes..
         /// </summary>
-        internal static string AuthDocsShareСollaborateReviewResultsText {
+        public static string AuthDocsShareСollaborateReviewResultsText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateReviewResultsText", resourceCulture);
             }
@@ -1382,7 +1382,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select the right co-editing mode.
         /// </summary>
-        internal static string AuthDocsShareСollaborateSelectRight {
+        public static string AuthDocsShareСollaborateSelectRight {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateSelectRight", resourceCulture);
             }
@@ -1391,7 +1391,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose Fast mode to work in real time or Strict mode to edit parts of the document privately..
         /// </summary>
-        internal static string AuthDocsShareСollaborateSelectRightText {
+        public static string AuthDocsShareСollaborateSelectRightText {
             get {
                 return ResourceManager.GetString("AuthDocsShareСollaborateSelectRightText", resourceCulture);
             }
@@ -1400,7 +1400,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sign Up.
         /// </summary>
-        internal static string AuthDocsSignUp {
+        public static string AuthDocsSignUp {
             get {
                 return ResourceManager.GetString("AuthDocsSignUp", resourceCulture);
             }
@@ -1409,7 +1409,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Thank you for registering your Personal ONLYOFFICE™..
         /// </summary>
-        internal static string AuthDocsThanksRegistration {
+        public static string AuthDocsThanksRegistration {
             get {
                 return ResourceManager.GetString("AuthDocsThanksRegistration", resourceCulture);
             }
@@ -1418,7 +1418,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your personal online office.
         /// </summary>
-        internal static string AuthDocsTitle {
+        public static string AuthDocsTitle {
             get {
                 return ResourceManager.GetString("AuthDocsTitle", resourceCulture);
             }
@@ -1427,7 +1427,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Personal online office.
         /// </summary>
-        internal static string AuthDocsTitlePage {
+        public static string AuthDocsTitlePage {
             get {
                 return ResourceManager.GetString("AuthDocsTitlePage", resourceCulture);
             }
@@ -1436,7 +1436,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authentication.
         /// </summary>
-        internal static string Authentication {
+        public static string Authentication {
             get {
                 return ResourceManager.GetString("Authentication", resourceCulture);
             }
@@ -1445,7 +1445,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authorization.
         /// </summary>
-        internal static string Authorization {
+        public static string Authorization {
             get {
                 return ResourceManager.GetString("Authorization", resourceCulture);
             }
@@ -1454,7 +1454,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authorization Keys.
         /// </summary>
-        internal static string AuthorizationKeys {
+        public static string AuthorizationKeys {
             get {
                 return ResourceManager.GetString("AuthorizationKeys", resourceCulture);
             }
@@ -1463,7 +1463,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
-        internal static string AuthorizationKeysEnableButton {
+        public static string AuthorizationKeysEnableButton {
             get {
                 return ResourceManager.GetString("AuthorizationKeysEnableButton", resourceCulture);
             }
@@ -1472,7 +1472,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to How It Works?.
         /// </summary>
-        internal static string AuthorizationKeysHelpHeader {
+        public static string AuthorizationKeysHelpHeader {
             get {
                 return ResourceManager.GetString("AuthorizationKeysHelpHeader", resourceCulture);
             }
@@ -1481,7 +1481,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to For more detailed instructions about connecting this service, please refer to our {0}Help Center{1} that provides all the necessary information..
         /// </summary>
-        internal static string AuthorizationKeysHelpText {
+        public static string AuthorizationKeysHelpText {
             get {
                 return ResourceManager.GetString("AuthorizationKeysHelpText", resourceCulture);
             }
@@ -1490,7 +1490,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to If you still have some questions on how to connect this service or need technical assistance, please feel free to contact our {0}Support Team{1}..
         /// </summary>
-        internal static string AuthorizationKeysSupportText {
+        public static string AuthorizationKeysSupportText {
             get {
                 return ResourceManager.GetString("AuthorizationKeysSupportText", resourceCulture);
             }
@@ -1499,7 +1499,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authorization keys is the option which allows you to connect your ONLYOFFICE™ portal with the third party services like DropBox, Facebook, Twitter etc. Connect your portal with Facebook, Linkedin or Twitter if you don&apos;t want to introduce your portal credentials every time you enter it. Link it up with such services like DropBox, OneDrive, etc. to transfer the documents from all those storages to ONLYOFFICE™ Documents module..
         /// </summary>
-        internal static string AuthorizationKeysText {
+        public static string AuthorizationKeysText {
             get {
                 return ResourceManager.GetString("AuthorizationKeysText", resourceCulture);
             }
@@ -1508,7 +1508,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Terms of Service.
         /// </summary>
-        internal static string AuthTermsService {
+        public static string AuthTermsService {
             get {
                 return ResourceManager.GetString("AuthTermsService", resourceCulture);
             }
@@ -1517,7 +1517,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
-        internal static string AutoBackupOff {
+        public static string AutoBackupOff {
             get {
                 return ResourceManager.GetString("AutoBackupOff", resourceCulture);
             }
@@ -1526,7 +1526,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
-        internal static string AutoBackupOn {
+        public static string AutoBackupOn {
             get {
                 return ResourceManager.GetString("AutoBackupOn", resourceCulture);
             }
@@ -1535,7 +1535,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this option for automatic backup of the portal data..
         /// </summary>
-        internal static string AutoBackupText {
+        public static string AutoBackupText {
             get {
                 return ResourceManager.GetString("AutoBackupText", resourceCulture);
             }
@@ -1544,7 +1544,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Automatic backup.
         /// </summary>
-        internal static string AutoDataBackup {
+        public static string AutoDataBackup {
             get {
                 return ResourceManager.GetString("AutoDataBackup", resourceCulture);
             }
@@ -1553,7 +1553,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {0}Automatic backup{1} option is used to automate the portal data backup process to be able to restore it later on a local server or SaaS portal. Choose the data storage, automatic backup period and maximal number of saved copies.{2}{0}Note:{1} before you can save the backup data to a third party account (DropBox, Box.com, OneDrive or Google Drive), you will need to connect this account to ONLYOFFICE Common Documents folder..
         /// </summary>
-        internal static string AutoDataBackupHelp {
+        public static string AutoDataBackupHelp {
             get {
                 return ResourceManager.GetString("AutoDataBackupHelp", resourceCulture);
             }
@@ -1562,7 +1562,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Go to title page.
         /// </summary>
-        internal static string BackToHomeLink {
+        public static string BackToHomeLink {
             get {
                 return ResourceManager.GetString("BackToHomeLink", resourceCulture);
             }
@@ -1571,7 +1571,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Backup.
         /// </summary>
-        internal static string Backup {
+        public static string Backup {
             get {
                 return ResourceManager.GetString("Backup", resourceCulture);
             }
@@ -1580,7 +1580,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Amazon Cloud.
         /// </summary>
-        internal static string BackupCloud {
+        public static string BackupCloud {
             get {
                 return ResourceManager.GetString("BackupCloud", resourceCulture);
             }
@@ -1589,7 +1589,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Third Party Storage.
         /// </summary>
-        internal static string BackupConsumerStorage {
+        public static string BackupConsumerStorage {
             get {
                 return ResourceManager.GetString("BackupConsumerStorage", resourceCulture);
             }
@@ -1598,7 +1598,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The maximal number of backup copies to be stored.
         /// </summary>
-        internal static string BackupCopyCount {
+        public static string BackupCopyCount {
             get {
                 return ResourceManager.GetString("BackupCopyCount", resourceCulture);
             }
@@ -1607,7 +1607,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE documents.
         /// </summary>
-        internal static string BackupDocsTeamlab {
+        public static string BackupDocsTeamlab {
             get {
                 return ResourceManager.GetString("BackupDocsTeamlab", resourceCulture);
             }
@@ -1616,7 +1616,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dropbox, Box, OneDrive, Google Drive....
         /// </summary>
-        internal static string BackupDocsThirdparty {
+        public static string BackupDocsThirdparty {
             get {
                 return ResourceManager.GetString("BackupDocsThirdparty", resourceCulture);
             }
@@ -1625,7 +1625,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Download the backup.
         /// </summary>
-        internal static string BackupDownloadByLink {
+        public static string BackupDownloadByLink {
             get {
                 return ResourceManager.GetString("BackupDownloadByLink", resourceCulture);
             }
@@ -1634,7 +1634,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make copy.
         /// </summary>
-        internal static string BackupMakeCopyBtn {
+        public static string BackupMakeCopyBtn {
             get {
                 return ResourceManager.GetString("BackupMakeCopyBtn", resourceCulture);
             }
@@ -1643,7 +1643,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Include Mail in backup.
         /// </summary>
-        internal static string BackupMakeWithMail {
+        public static string BackupMakeWithMail {
             get {
                 return ResourceManager.GetString("BackupMakeWithMail", resourceCulture);
             }
@@ -1652,7 +1652,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No third-party services are connected.{0}Go to the &quot;Documents&quot; module to connect..
         /// </summary>
-        internal static string BackupNotAvailableThirdServices {
+        public static string BackupNotAvailableThirdServices {
             get {
                 return ResourceManager.GetString("BackupNotAvailableThirdServices", resourceCulture);
             }
@@ -1663,7 +1663,7 @@ namespace ASC.Web.Core.PublicResources {
         ///                                        be active for 24 hours after the time it was requested.
         ///                                      .
         /// </summary>
-        internal static string BackupReadyText {
+        public static string BackupReadyText {
             get {
                 return ResourceManager.GetString("BackupReadyText", resourceCulture);
             }
@@ -1672,7 +1672,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage.
         /// </summary>
-        internal static string BackupStorage {
+        public static string BackupStorage {
             get {
                 return ResourceManager.GetString("BackupStorage", resourceCulture);
             }
@@ -1681,7 +1681,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Temporary.
         /// </summary>
-        internal static string BackupTempTeamlab {
+        public static string BackupTempTeamlab {
             get {
                 return ResourceManager.GetString("BackupTempTeamlab", resourceCulture);
             }
@@ -1690,7 +1690,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this option if you want to get all data contained on the portal as a file..
         /// </summary>
-        internal static string BackupText {
+        public static string BackupText {
             get {
                 return ResourceManager.GetString("BackupText", resourceCulture);
             }
@@ -1699,7 +1699,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage.
         /// </summary>
-        internal static string BackupThirdStorage {
+        public static string BackupThirdStorage {
             get {
                 return ResourceManager.GetString("BackupThirdStorage", resourceCulture);
             }
@@ -1708,7 +1708,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You need to connect your third party account (DropBox, Box.com, OneDrive or Google Drive) to ONLYOFFICE Common Documents folder before you will be able to save your backup there..
         /// </summary>
-        internal static string BackupThirdStorageDisable {
+        public static string BackupThirdStorageDisable {
             get {
                 return ResourceManager.GetString("BackupThirdStorageDisable", resourceCulture);
             }
@@ -1717,7 +1717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!Group}.
         /// </summary>
-        internal static string BindDepartmentButton {
+        public static string BindDepartmentButton {
             get {
                 return ResourceManager.GetString("BindDepartmentButton", resourceCulture);
             }
@@ -1726,7 +1726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Date of Birth.
         /// </summary>
-        internal static string Birthdate {
+        public static string Birthdate {
             get {
                 return ResourceManager.GetString("Birthdate", resourceCulture);
             }
@@ -1735,7 +1735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
-        internal static string Browse {
+        public static string Browse {
             get {
                 return ResourceManager.GetString("Browse", resourceCulture);
             }
@@ -1744,7 +1744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Browser.
         /// </summary>
-        internal static string Browser {
+        public static string Browser {
             get {
                 return ResourceManager.GetString("Browser", resourceCulture);
             }
@@ -1753,7 +1753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add new contact.
         /// </summary>
-        internal static string BtnAddNewContact {
+        public static string BtnAddNewContact {
             get {
                 return ResourceManager.GetString("BtnAddNewContact", resourceCulture);
             }
@@ -1762,7 +1762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
-        internal static string ButtonSmsDisable {
+        public static string ButtonSmsDisable {
             get {
                 return ResourceManager.GetString("ButtonSmsDisable", resourceCulture);
             }
@@ -1771,7 +1771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to By SMS.
         /// </summary>
-        internal static string ButtonSmsEnable {
+        public static string ButtonSmsEnable {
             get {
                 return ResourceManager.GetString("ButtonSmsEnable", resourceCulture);
             }
@@ -1780,7 +1780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to By authenticator app.
         /// </summary>
-        internal static string ButtonTfaAppEnable {
+        public static string ButtonTfaAppEnable {
             get {
                 return ResourceManager.GetString("ButtonTfaAppEnable", resourceCulture);
             }
@@ -1789,7 +1789,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Call.
         /// </summary>
-        internal static string CallBtn {
+        public static string CallBtn {
             get {
                 return ResourceManager.GetString("CallBtn", resourceCulture);
             }
@@ -1798,7 +1798,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Call is over.
         /// </summary>
-        internal static string CallCompleteStatus {
+        public static string CallCompleteStatus {
             get {
                 return ResourceManager.GetString("CallCompleteStatus", resourceCulture);
             }
@@ -1807,7 +1807,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connecting.
         /// </summary>
-        internal static string CallConnectStatus {
+        public static string CallConnectStatus {
             get {
                 return ResourceManager.GetString("CallConnectStatus", resourceCulture);
             }
@@ -1816,7 +1816,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Call is in progress.
         /// </summary>
-        internal static string CallGoingStatus {
+        public static string CallGoingStatus {
             get {
                 return ResourceManager.GetString("CallGoingStatus", resourceCulture);
             }
@@ -1825,7 +1825,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incoming.
         /// </summary>
-        internal static string CallIncomingStatus {
+        public static string CallIncomingStatus {
             get {
                 return ResourceManager.GetString("CallIncomingStatus", resourceCulture);
             }
@@ -1834,7 +1834,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static string CancelButton {
+        public static string CancelButton {
             get {
                 return ResourceManager.GetString("CancelButton", resourceCulture);
             }
@@ -1843,7 +1843,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cancel adding the comment.
         /// </summary>
-        internal static string CancelCommentButton {
+        public static string CancelCommentButton {
             get {
                 return ResourceManager.GetString("CancelCommentButton", resourceCulture);
             }
@@ -1852,7 +1852,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to All the data you entered will be lost. Are you sure you want to continue?.
         /// </summary>
-        internal static string CancelConfirmMessage {
+        public static string CancelConfirmMessage {
             get {
                 return ResourceManager.GetString("CancelConfirmMessage", resourceCulture);
             }
@@ -1861,7 +1861,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change the email.
         /// </summary>
-        internal static string ChangeEmail {
+        public static string ChangeEmail {
             get {
                 return ResourceManager.GetString("ChangeEmail", resourceCulture);
             }
@@ -1870,7 +1870,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail has been successfully changed.
         /// </summary>
-        internal static string ChangeEmailSuccess {
+        public static string ChangeEmailSuccess {
             get {
                 return ResourceManager.GetString("ChangeEmailSuccess", resourceCulture);
             }
@@ -1879,7 +1879,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change Logo.
         /// </summary>
-        internal static string ChangeLogoButton {
+        public static string ChangeLogoButton {
             get {
                 return ResourceManager.GetString("ChangeLogoButton", resourceCulture);
             }
@@ -1888,7 +1888,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password has been successfully changed.
         /// </summary>
-        internal static string ChangePasswordSuccess {
+        public static string ChangePasswordSuccess {
             get {
                 return ResourceManager.GetString("ChangePasswordSuccess", resourceCulture);
             }
@@ -1897,7 +1897,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A link to confirm the operation has been sent to :email (the email address of the portal owner)..
         /// </summary>
-        internal static string ChangePortalOwnerMsg {
+        public static string ChangePortalOwnerMsg {
             get {
                 return ResourceManager.GetString("ChangePortalOwnerMsg", resourceCulture);
             }
@@ -1906,7 +1906,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to %b %d.
         /// </summary>
-        internal static string ChartDateFormat {
+        public static string ChartDateFormat {
             get {
                 return ResourceManager.GetString("ChartDateFormat", resourceCulture);
             }
@@ -1915,7 +1915,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec.
         /// </summary>
-        internal static string ChartMonthNames {
+        public static string ChartMonthNames {
             get {
                 return ResourceManager.GetString("ChartMonthNames", resourceCulture);
             }
@@ -1924,7 +1924,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose.
         /// </summary>
-        internal static string Choose {
+        public static string Choose {
             get {
                 return ResourceManager.GetString("Choose", resourceCulture);
             }
@@ -1933,7 +1933,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose Owner.
         /// </summary>
-        internal static string ChooseOwner {
+        public static string ChooseOwner {
             get {
                 return ResourceManager.GetString("ChooseOwner", resourceCulture);
             }
@@ -1942,7 +1942,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose a profile photo.
         /// </summary>
-        internal static string ChooseProfilePhoto {
+        public static string ChooseProfilePhoto {
             get {
                 return ResourceManager.GetString("ChooseProfilePhoto", resourceCulture);
             }
@@ -1951,7 +1951,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose Region.
         /// </summary>
-        internal static string ChooseRegion {
+        public static string ChooseRegion {
             get {
                 return ResourceManager.GetString("ChooseRegion", resourceCulture);
             }
@@ -1960,7 +1960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose {!user}.
         /// </summary>
-        internal static string ChooseUser {
+        public static string ChooseUser {
             get {
                 return ResourceManager.GetString("ChooseUser", resourceCulture);
             }
@@ -1969,7 +1969,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rate and review us in Chrome Store.
         /// </summary>
-        internal static string ChromeStoreBannerTitle {
+        public static string ChromeStoreBannerTitle {
             get {
                 return ResourceManager.GetString("ChromeStoreBannerTitle", resourceCulture);
             }
@@ -1978,7 +1978,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
-        internal static string ClearButton {
+        public static string ClearButton {
             get {
                 return ResourceManager.GetString("ClearButton", resourceCulture);
             }
@@ -1987,7 +1987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Clear Filter.
         /// </summary>
-        internal static string ClearFilterButton {
+        public static string ClearFilterButton {
             get {
                 return ResourceManager.GetString("ClearFilterButton", resourceCulture);
             }
@@ -1996,7 +1996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
-        internal static string CloseButton {
+        public static string CloseButton {
             get {
                 return ResourceManager.GetString("CloseButton", resourceCulture);
             }
@@ -2005,7 +2005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}{!Guest} can:{1}{2}{4}attach and download files;{5}{4}view and comment the portal open content;{5}{4}organize his/her schedule using the Calendar;{5}{4}use Talk to chat with other portal users online.{5}{3}.
         /// </summary>
-        internal static string CollaboratorCanDescribe2 {
+        public static string CollaboratorCanDescribe2 {
             get {
                 return ResourceManager.GetString("CollaboratorCanDescribe2", resourceCulture);
             }
@@ -2014,7 +2014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bright blue.
         /// </summary>
-        internal static string ColorThemeBrightBlue {
+        public static string ColorThemeBrightBlue {
             get {
                 return ResourceManager.GetString("ColorThemeBrightBlue", resourceCulture);
             }
@@ -2023,7 +2023,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dark green.
         /// </summary>
-        internal static string ColorThemeDarkGreen {
+        public static string ColorThemeDarkGreen {
             get {
                 return ResourceManager.GetString("ColorThemeDarkGreen", resourceCulture);
             }
@@ -2032,7 +2032,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deep blue.
         /// </summary>
-        internal static string ColorThemeDeepBlue {
+        public static string ColorThemeDeepBlue {
             get {
                 return ResourceManager.GetString("ColorThemeDeepBlue", resourceCulture);
             }
@@ -2041,7 +2041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mellow green.
         /// </summary>
-        internal static string ColorThemeDefault {
+        public static string ColorThemeDefault {
             get {
                 return ResourceManager.GetString("ColorThemeDefault", resourceCulture);
             }
@@ -2050,7 +2050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pure orange.
         /// </summary>
-        internal static string ColorThemePureOrange {
+        public static string ColorThemePureOrange {
             get {
                 return ResourceManager.GetString("ColorThemePureOrange", resourceCulture);
             }
@@ -2059,7 +2059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Color Themes.
         /// </summary>
-        internal static string ColorThemesTitle {
+        public static string ColorThemesTitle {
             get {
                 return ResourceManager.GetString("ColorThemesTitle", resourceCulture);
             }
@@ -2068,7 +2068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Wild pink.
         /// </summary>
-        internal static string ColorThemeWildPink {
+        public static string ColorThemeWildPink {
             get {
                 return ResourceManager.GetString("ColorThemeWildPink", resourceCulture);
             }
@@ -2077,7 +2077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to comment has been deleted.
         /// </summary>
-        internal static string CommentRemovedMessage {
+        public static string CommentRemovedMessage {
             get {
                 return ResourceManager.GetString("CommentRemovedMessage", resourceCulture);
             }
@@ -2086,7 +2086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Comments.
         /// </summary>
-        internal static string Comments {
+        public static string Comments {
             get {
                 return ResourceManager.GetString("Comments", resourceCulture);
             }
@@ -2095,7 +2095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to comment has been deleted.
         /// </summary>
-        internal static string CommentWasRemoved {
+        public static string CommentWasRemoved {
             get {
                 return ResourceManager.GetString("CommentWasRemoved", resourceCulture);
             }
@@ -2104,7 +2104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
-        internal static string CompleteCallBtn {
+        public static string CompleteCallBtn {
             get {
                 return ResourceManager.GetString("CompleteCallBtn", resourceCulture);
             }
@@ -2113,7 +2113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
-        internal static string Confirmation {
+        public static string Confirmation {
             get {
                 return ResourceManager.GetString("Confirmation", resourceCulture);
             }
@@ -2122,7 +2122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
-        internal static string ConfirmationTitle {
+        public static string ConfirmationTitle {
             get {
                 return ResourceManager.GetString("ConfirmationTitle", resourceCulture);
             }
@@ -2131,7 +2131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please confirm that you want to deactivate your portal.
         /// </summary>
-        internal static string ConfirmDeactivatePortalTitle {
+        public static string ConfirmDeactivatePortalTitle {
             get {
                 return ResourceManager.GetString("ConfirmDeactivatePortalTitle", resourceCulture);
             }
@@ -2140,7 +2140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please confirm that you want to delete your portal.
         /// </summary>
-        internal static string ConfirmDeletePortalTitle {
+        public static string ConfirmDeletePortalTitle {
             get {
                 return ResourceManager.GetString("ConfirmDeletePortalTitle", resourceCulture);
             }
@@ -2149,7 +2149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to change the portal address to {0}?.
         /// </summary>
-        internal static string ConfirmDnsUpdateTitle {
+        public static string ConfirmDnsUpdateTitle {
             get {
                 return ResourceManager.GetString("ConfirmDnsUpdateTitle", resourceCulture);
             }
@@ -2158,7 +2158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to continue?.
         /// </summary>
-        internal static string ConfirmMessage {
+        public static string ConfirmMessage {
             get {
                 return ResourceManager.GetString("ConfirmMessage", resourceCulture);
             }
@@ -2167,7 +2167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}.
         /// </summary>
-        internal static string ConfirmOwnerPortalSuccessMessage {
+        public static string ConfirmOwnerPortalSuccessMessage {
             get {
                 return ResourceManager.GetString("ConfirmOwnerPortalSuccessMessage", resourceCulture);
             }
@@ -2176,7 +2176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please confirm that you want to change portal owner to {0}.
         /// </summary>
-        internal static string ConfirmOwnerPortalTitle {
+        public static string ConfirmOwnerPortalTitle {
             get {
                 return ResourceManager.GetString("ConfirmOwnerPortalTitle", resourceCulture);
             }
@@ -2185,7 +2185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join.
         /// </summary>
-        internal static string ConfirmPersonalJoin {
+        public static string ConfirmPersonalJoin {
             get {
                 return ResourceManager.GetString("ConfirmPersonalJoin", resourceCulture);
             }
@@ -2194,7 +2194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You&apos;ve successfully confirmed your registration. Create a password and start your work! .
         /// </summary>
-        internal static string ConfirmPersonalText {
+        public static string ConfirmPersonalText {
             get {
                 return ResourceManager.GetString("ConfirmPersonalText", resourceCulture);
             }
@@ -2203,7 +2203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please confirm that you want to reactivate your portal.
         /// </summary>
-        internal static string ConfirmReactivatePortalTitle {
+        public static string ConfirmReactivatePortalTitle {
             get {
                 return ResourceManager.GetString("ConfirmReactivatePortalTitle", resourceCulture);
             }
@@ -2212,7 +2212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete your comment?.
         /// </summary>
-        internal static string ConfirmRemoveCommentMessage {
+        public static string ConfirmRemoveCommentMessage {
             get {
                 return ResourceManager.GetString("ConfirmRemoveCommentMessage", resourceCulture);
             }
@@ -2221,7 +2221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Remove Comment.
         /// </summary>
-        internal static string ConfirmRemoveCommentTitle {
+        public static string ConfirmRemoveCommentTitle {
             get {
                 return ResourceManager.GetString("ConfirmRemoveCommentTitle", resourceCulture);
             }
@@ -2230,7 +2230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Congratulate.
         /// </summary>
-        internal static string CongratulateBirthday {
+        public static string CongratulateBirthday {
             get {
                 return ResourceManager.GetString("CongratulateBirthday", resourceCulture);
             }
@@ -2239,7 +2239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
-        internal static string ConnectButton {
+        public static string ConnectButton {
             get {
                 return ResourceManager.GetString("ConnectButton", resourceCulture);
             }
@@ -2248,7 +2248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to S3 accesskey.
         /// </summary>
-        internal static string Consumersacesskey {
+        public static string Consumersacesskey {
             get {
                 return ResourceManager.GetString("Consumersacesskey", resourceCulture);
             }
@@ -2257,7 +2257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rackspace apiKey.
         /// </summary>
-        internal static string ConsumersapiKey {
+        public static string ConsumersapiKey {
             get {
                 return ResourceManager.GetString("ConsumersapiKey", resourceCulture);
             }
@@ -2266,7 +2266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selectel authPwd.
         /// </summary>
-        internal static string ConsumersauthPwd {
+        public static string ConsumersauthPwd {
             get {
                 return ResourceManager.GetString("ConsumersauthPwd", resourceCulture);
             }
@@ -2275,7 +2275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selectel authUser.
         /// </summary>
-        internal static string ConsumersauthUser {
+        public static string ConsumersauthUser {
             get {
                 return ResourceManager.GetString("ConsumersauthUser", resourceCulture);
             }
@@ -2284,7 +2284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bitly.
         /// </summary>
-        internal static string ConsumersBitly {
+        public static string ConsumersBitly {
             get {
                 return ResourceManager.GetString("ConsumersBitly", resourceCulture);
             }
@@ -2293,7 +2293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to login.
         /// </summary>
-        internal static string ConsumersbitlyClientId {
+        public static string ConsumersbitlyClientId {
             get {
                 return ResourceManager.GetString("ConsumersbitlyClientId", resourceCulture);
             }
@@ -2302,7 +2302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to apiKey.
         /// </summary>
-        internal static string ConsumersbitlyClientSecret {
+        public static string ConsumersbitlyClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersbitlyClientSecret", resourceCulture);
             }
@@ -2311,7 +2311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить сервис Bitly для сокращения пригласительных ссылок на портал и расшаренных ссылок в Документах..
         /// </summary>
-        internal static string ConsumersBitlyDescription {
+        public static string ConsumersBitlyDescription {
             get {
                 return ResourceManager.GetString("ConsumersBitlyDescription", resourceCulture);
             }
@@ -2320,7 +2320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив сервис Bitly Вы будуте получать сокращенные ссылки для приглашения новых пользователей на портал ONLYOFFICE™ и сокращённые ссылки для расшаренных на внешний доступ документов в модуле Документы..
         /// </summary>
-        internal static string ConsumersBitlyInstruction {
+        public static string ConsumersBitlyInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBitlyInstruction", resourceCulture);
             }
@@ -2329,7 +2329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Box.
         /// </summary>
-        internal static string ConsumersBox {
+        public static string ConsumersBox {
             get {
                 return ResourceManager.GetString("ConsumersBox", resourceCulture);
             }
@@ -2338,7 +2338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Box ID.
         /// </summary>
-        internal static string ConsumersboxClientId {
+        public static string ConsumersboxClientId {
             get {
                 return ResourceManager.GetString("ConsumersboxClientId", resourceCulture);
             }
@@ -2347,7 +2347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Box Key.
         /// </summary>
-        internal static string ConsumersboxClientSecret {
+        public static string ConsumersboxClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersboxClientSecret", resourceCulture);
             }
@@ -2356,7 +2356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для управления файлами и папками Box..
         /// </summary>
-        internal static string ConsumersBoxDescription {
+        public static string ConsumersBoxDescription {
             get {
                 return ResourceManager.GetString("ConsumersBoxDescription", resourceCulture);
             }
@@ -2365,7 +2365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Box Вы сможете подключать свои аккаунт в модуле Документы. Это позволит загружать и создавать новые файлы в Box, редактировать существующие, копировать и удалять, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersBoxInstruction {
+        public static string ConsumersBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBoxInstruction", resourceCulture);
             }
@@ -2374,7 +2374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Clickatell.
         /// </summary>
-        internal static string ConsumersClickatell {
+        public static string ConsumersClickatell {
             get {
                 return ResourceManager.GetString("ConsumersClickatell", resourceCulture);
             }
@@ -2383,7 +2383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to apiKey.
         /// </summary>
-        internal static string ConsumersclickatellapiKey {
+        public static string ConsumersclickatellapiKey {
             get {
                 return ResourceManager.GetString("ConsumersclickatellapiKey", resourceCulture);
             }
@@ -2392,7 +2392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для включения двухфакторной авторизации через Clickatell..
         /// </summary>
-        internal static string ConsumersClickatellDescription {
+        public static string ConsumersClickatellDescription {
             get {
                 return ResourceManager.GetString("ConsumersClickatellDescription", resourceCulture);
             }
@@ -2401,7 +2401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Clickatell Вы сможете включить двухфакторную авторизацию для получения смс с кодом входа пользователя на портал ONLYOFFICE..
         /// </summary>
-        internal static string ConsumersClickatellInstruction {
+        public static string ConsumersClickatellInstruction {
             get {
                 return ResourceManager.GetString("ConsumersClickatellInstruction", resourceCulture);
             }
@@ -2410,7 +2410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DocuSign.
         /// </summary>
-        internal static string ConsumersDocuSign {
+        public static string ConsumersDocuSign {
             get {
                 return ResourceManager.GetString("ConsumersDocuSign", resourceCulture);
             }
@@ -2419,7 +2419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DocuSign Key.
         /// </summary>
-        internal static string ConsumersdocuSignClientId {
+        public static string ConsumersdocuSignClientId {
             get {
                 return ResourceManager.GetString("ConsumersdocuSignClientId", resourceCulture);
             }
@@ -2428,7 +2428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DocuSign Secret.
         /// </summary>
-        internal static string ConsumersdocuSignClientSecret {
+        public static string ConsumersdocuSignClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersdocuSignClientSecret", resourceCulture);
             }
@@ -2437,7 +2437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для добавления электронной подписи DocuSign к документам..
         /// </summary>
-        internal static string ConsumersDocuSignDescription {
+        public static string ConsumersDocuSignDescription {
             get {
                 return ResourceManager.GetString("ConsumersDocuSignDescription", resourceCulture);
             }
@@ -2446,7 +2446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DocuSign authentication endpoint.
         /// </summary>
-        internal static string ConsumersdocuSignHost {
+        public static string ConsumersdocuSignHost {
             get {
                 return ResourceManager.GetString("ConsumersdocuSignHost", resourceCulture);
             }
@@ -2455,7 +2455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса DocuSign Вы сможете подписывать файлы модуля Документы. Это позволит вам отправлять файл на получение электронной подписи сотрудникам портала ONLYOFFICE™ средствами сервиса DocuSugn. Подписанный файл будет сохранён в Документах порала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersDocuSignInstruction {
+        public static string ConsumersDocuSignInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDocuSignInstruction", resourceCulture);
             }
@@ -2464,7 +2464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DropBox.
         /// </summary>
-        internal static string ConsumersDropBox {
+        public static string ConsumersDropBox {
             get {
                 return ResourceManager.GetString("ConsumersDropBox", resourceCulture);
             }
@@ -2473,7 +2473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для управления файлами и папками Dropbox..
         /// </summary>
-        internal static string ConsumersDropBoxDescription {
+        public static string ConsumersDropBoxDescription {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxDescription", resourceCulture);
             }
@@ -2482,7 +2482,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Dropbox Вы сможете подключать свои аккаунт в модуле Документы. Это позволит загружать и создавать новые файлы в Dropbox, редактировать существующие, копировать и удалять, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersDropBoxInstruction {
+        public static string ConsumersDropBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxInstruction", resourceCulture);
             }
@@ -2491,7 +2491,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to App key.
         /// </summary>
-        internal static string ConsumersDropBoxKey {
+        public static string ConsumersDropBoxKey {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxKey", resourceCulture);
             }
@@ -2500,7 +2500,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to App secret.
         /// </summary>
-        internal static string ConsumersDropBoxSecret {
+        public static string ConsumersDropBoxSecret {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxSecret", resourceCulture);
             }
@@ -2509,7 +2509,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to EasyBib.
         /// </summary>
-        internal static string ConsumersEasyBib {
+        public static string ConsumersEasyBib {
             get {
                 return ResourceManager.GetString("ConsumersEasyBib", resourceCulture);
             }
@@ -2518,7 +2518,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to App key.
         /// </summary>
-        internal static string ConsumerseasyBibappkey {
+        public static string ConsumerseasyBibappkey {
             get {
                 return ResourceManager.GetString("ConsumerseasyBibappkey", resourceCulture);
             }
@@ -2527,7 +2527,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение EasyBib для создания библиографических списков..
         /// </summary>
-        internal static string ConsumersEasyBibDescription {
+        public static string ConsumersEasyBibDescription {
             get {
                 return ResourceManager.GetString("ConsumersEasyBibDescription", resourceCulture);
             }
@@ -2536,7 +2536,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение EasyBib Вы сможете легко создавать библиографические списки в своих документах..
         /// </summary>
-        internal static string ConsumersEasyBibInstruction {
+        public static string ConsumersEasyBibInstruction {
             get {
                 return ResourceManager.GetString("ConsumersEasyBibInstruction", resourceCulture);
             }
@@ -2545,7 +2545,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Facebook.
         /// </summary>
-        internal static string ConsumersFacebook {
+        public static string ConsumersFacebook {
             get {
                 return ResourceManager.GetString("ConsumersFacebook", resourceCulture);
             }
@@ -2554,7 +2554,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to App Token.
         /// </summary>
-        internal static string ConsumersfacebookAccessToken_Default {
+        public static string ConsumersfacebookAccessToken_Default {
             get {
                 return ResourceManager.GetString("ConsumersfacebookAccessToken_Default", resourceCulture);
             }
@@ -2563,7 +2563,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Facebook ID.
         /// </summary>
-        internal static string ConsumersfacebookClientId {
+        public static string ConsumersfacebookClientId {
             get {
                 return ResourceManager.GetString("ConsumersfacebookClientId", resourceCulture);
             }
@@ -2572,7 +2572,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Facebook Key.
         /// </summary>
-        internal static string ConsumersfacebookClientSecret {
+        public static string ConsumersfacebookClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersfacebookClientSecret", resourceCulture);
             }
@@ -2581,7 +2581,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для входа на портал по учетной записи Facebook и поиска контактов..
         /// </summary>
-        internal static string ConsumersFacebookDescription {
+        public static string ConsumersFacebookDescription {
             get {
                 return ResourceManager.GetString("ConsumersFacebookDescription", resourceCulture);
             }
@@ -2590,7 +2590,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Facebook Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ используя аккаунт Facebook. Так же Вы сможете на странице редактирования персоны CRM находить и привязывать аккаунт Facebook..
         /// </summary>
-        internal static string ConsumersFacebookInstruction {
+        public static string ConsumersFacebookInstruction {
             get {
                 return ResourceManager.GetString("ConsumersFacebookInstruction", resourceCulture);
             }
@@ -2599,7 +2599,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Firebase.
         /// </summary>
-        internal static string ConsumersFirebase {
+        public static string ConsumersFirebase {
             get {
                 return ResourceManager.GetString("ConsumersFirebase", resourceCulture);
             }
@@ -2608,7 +2608,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Web API key.
         /// </summary>
-        internal static string Consumersfirebase_apiKey {
+        public static string Consumersfirebase_apiKey {
             get {
                 return ResourceManager.GetString("Consumersfirebase_apiKey", resourceCulture);
             }
@@ -2617,7 +2617,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Server key.
         /// </summary>
-        internal static string Consumersfirebase_authorization {
+        public static string Consumersfirebase_authorization {
             get {
                 return ResourceManager.GetString("Consumersfirebase_authorization", resourceCulture);
             }
@@ -2626,7 +2626,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sender ID.
         /// </summary>
-        internal static string Consumersfirebase_messagingSenderId {
+        public static string Consumersfirebase_messagingSenderId {
             get {
                 return ResourceManager.GetString("Consumersfirebase_messagingSenderId", resourceCulture);
             }
@@ -2635,7 +2635,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Project ID.
         /// </summary>
-        internal static string Consumersfirebase_projectId {
+        public static string Consumersfirebase_projectId {
             get {
                 return ResourceManager.GetString("Consumersfirebase_projectId", resourceCulture);
             }
@@ -2644,7 +2644,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить сервис Firebase Cloud Messaging для получения уведомлений о полученных сообщениях..
         /// </summary>
-        internal static string ConsumersFirebaseDescription {
+        public static string ConsumersFirebaseDescription {
             get {
                 return ResourceManager.GetString("ConsumersFirebaseDescription", resourceCulture);
             }
@@ -2653,7 +2653,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив Firebase Cloud Messaging Вы сможете получать уведомлений о полученных сообщениях, находясь не в сети..
         /// </summary>
-        internal static string ConsumersFirebaseInstruction {
+        public static string ConsumersFirebaseInstruction {
             get {
                 return ResourceManager.GetString("ConsumersFirebaseInstruction", resourceCulture);
             }
@@ -2662,7 +2662,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Google.
         /// </summary>
-        internal static string ConsumersGoogle {
+        public static string ConsumersGoogle {
             get {
                 return ResourceManager.GetString("ConsumersGoogle", resourceCulture);
             }
@@ -2671,7 +2671,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Google ID.
         /// </summary>
-        internal static string ConsumersgoogleClientId {
+        public static string ConsumersgoogleClientId {
             get {
                 return ResourceManager.GetString("ConsumersgoogleClientId", resourceCulture);
             }
@@ -2680,7 +2680,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Google Key.
         /// </summary>
-        internal static string ConsumersgoogleClientSecret {
+        public static string ConsumersgoogleClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersgoogleClientSecret", resourceCulture);
             }
@@ -2689,7 +2689,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleCloud.
         /// </summary>
-        internal static string ConsumersGoogleCloud {
+        public static string ConsumersGoogleCloud {
             get {
                 return ResourceManager.GetString("ConsumersGoogleCloud", resourceCulture);
             }
@@ -2698,7 +2698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bucket.
         /// </summary>
-        internal static string ConsumersGoogleCloudbucket {
+        public static string ConsumersGoogleCloudbucket {
             get {
                 return ResourceManager.GetString("ConsumersGoogleCloudbucket", resourceCulture);
             }
@@ -2707,7 +2707,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleCloud Description.
         /// </summary>
-        internal static string ConsumersGoogleCloudDescription {
+        public static string ConsumersGoogleCloudDescription {
             get {
                 return ResourceManager.GetString("ConsumersGoogleCloudDescription", resourceCulture);
             }
@@ -2716,7 +2716,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleCloud Instruction.
         /// </summary>
-        internal static string ConsumersGoogleCloudInstruction {
+        public static string ConsumersGoogleCloudInstruction {
             get {
                 return ResourceManager.GetString("ConsumersGoogleCloudInstruction", resourceCulture);
             }
@@ -2725,7 +2725,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleCloud jsonPath.
         /// </summary>
-        internal static string ConsumersGoogleCloudjsonPath {
+        public static string ConsumersGoogleCloudjsonPath {
             get {
                 return ResourceManager.GetString("ConsumersGoogleCloudjsonPath", resourceCulture);
             }
@@ -2734,7 +2734,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить проект для входа на портал по учетной записи Google и для управления файлами и папками Google Drive..
         /// </summary>
-        internal static string ConsumersGoogleDescription {
+        public static string ConsumersGoogleDescription {
             get {
                 return ResourceManager.GetString("ConsumersGoogleDescription", resourceCulture);
             }
@@ -2743,7 +2743,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив проект сервиса Google Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ используя аккаунт Google и подключать свои аккаунт в модуле Документы. Это позволит загружать и создавать новые файлы в Google Drive, редактировать существующие, копировать и удалять, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersGoogleInstruction {
+        public static string ConsumersGoogleInstruction {
             get {
                 return ResourceManager.GetString("ConsumersGoogleInstruction", resourceCulture);
             }
@@ -2752,7 +2752,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Linkedin.
         /// </summary>
-        internal static string ConsumersLinkedIn {
+        public static string ConsumersLinkedIn {
             get {
                 return ResourceManager.GetString("ConsumersLinkedIn", resourceCulture);
             }
@@ -2761,7 +2761,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для входа на портал по учетной записи LinkedIn..
         /// </summary>
-        internal static string ConsumersLinkedInDescription {
+        public static string ConsumersLinkedInDescription {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInDescription", resourceCulture);
             }
@@ -2770,7 +2770,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса LinkeIn Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ используя аккаунт LinkedIn..
         /// </summary>
-        internal static string ConsumersLinkedInInstruction {
+        public static string ConsumersLinkedInInstruction {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInInstruction", resourceCulture);
             }
@@ -2779,7 +2779,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to API key.
         /// </summary>
-        internal static string ConsumersLinkedInKey {
+        public static string ConsumersLinkedInKey {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInKey", resourceCulture);
             }
@@ -2788,7 +2788,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Secret key.
         /// </summary>
-        internal static string ConsumersLinkedInSecret {
+        public static string ConsumersLinkedInSecret {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInSecret", resourceCulture);
             }
@@ -2797,7 +2797,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rackspace.
         /// </summary>
-        internal static string ConsumersRackspace {
+        public static string ConsumersRackspace {
             get {
                 return ResourceManager.GetString("ConsumersRackspace", resourceCulture);
             }
@@ -2806,7 +2806,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rackspace Description.
         /// </summary>
-        internal static string ConsumersRackspaceDescription {
+        public static string ConsumersRackspaceDescription {
             get {
                 return ResourceManager.GetString("ConsumersRackspaceDescription", resourceCulture);
             }
@@ -2815,7 +2815,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rackspace Instruction.
         /// </summary>
-        internal static string ConsumersRackspaceInstruction {
+        public static string ConsumersRackspaceInstruction {
             get {
                 return ResourceManager.GetString("ConsumersRackspaceInstruction", resourceCulture);
             }
@@ -2824,7 +2824,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Private Container.
         /// </summary>
-        internal static string ConsumersRackspaceprivate_container {
+        public static string ConsumersRackspaceprivate_container {
             get {
                 return ResourceManager.GetString("ConsumersRackspaceprivate_container", resourceCulture);
             }
@@ -2833,7 +2833,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Public Container.
         /// </summary>
-        internal static string ConsumersRackspacepublic_container {
+        public static string ConsumersRackspacepublic_container {
             get {
                 return ResourceManager.GetString("ConsumersRackspacepublic_container", resourceCulture);
             }
@@ -2842,7 +2842,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Region.
         /// </summary>
-        internal static string ConsumersRackspaceregion {
+        public static string ConsumersRackspaceregion {
             get {
                 return ResourceManager.GetString("ConsumersRackspaceregion", resourceCulture);
             }
@@ -2851,7 +2851,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to S3.
         /// </summary>
-        internal static string ConsumersS3 {
+        public static string ConsumersS3 {
             get {
                 return ResourceManager.GetString("ConsumersS3", resourceCulture);
             }
@@ -2860,7 +2860,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to S3 Description.
         /// </summary>
-        internal static string ConsumersS3Description {
+        public static string ConsumersS3Description {
             get {
                 return ResourceManager.GetString("ConsumersS3Description", resourceCulture);
             }
@@ -2869,7 +2869,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to S3 Instruction.
         /// </summary>
-        internal static string ConsumersS3Instruction {
+        public static string ConsumersS3Instruction {
             get {
                 return ResourceManager.GetString("ConsumersS3Instruction", resourceCulture);
             }
@@ -2878,7 +2878,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to S3 secret access key.
         /// </summary>
-        internal static string Consumerssecretaccesskey {
+        public static string Consumerssecretaccesskey {
             get {
                 return ResourceManager.GetString("Consumerssecretaccesskey", resourceCulture);
             }
@@ -2887,7 +2887,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selectel.
         /// </summary>
-        internal static string ConsumersSelectel {
+        public static string ConsumersSelectel {
             get {
                 return ResourceManager.GetString("ConsumersSelectel", resourceCulture);
             }
@@ -2896,7 +2896,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Auth Pwd.
         /// </summary>
-        internal static string ConsumersSelectelauthPwd {
+        public static string ConsumersSelectelauthPwd {
             get {
                 return ResourceManager.GetString("ConsumersSelectelauthPwd", resourceCulture);
             }
@@ -2905,7 +2905,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Auth User.
         /// </summary>
-        internal static string ConsumersSelectelauthUser {
+        public static string ConsumersSelectelauthUser {
             get {
                 return ResourceManager.GetString("ConsumersSelectelauthUser", resourceCulture);
             }
@@ -2914,7 +2914,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selectel Instruction.
         /// </summary>
-        internal static string ConsumersSelectelCloudInstruction {
+        public static string ConsumersSelectelCloudInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSelectelCloudInstruction", resourceCulture);
             }
@@ -2923,7 +2923,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selectel Description.
         /// </summary>
-        internal static string ConsumersSelectelDescription {
+        public static string ConsumersSelectelDescription {
             get {
                 return ResourceManager.GetString("ConsumersSelectelDescription", resourceCulture);
             }
@@ -2932,7 +2932,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Private container.
         /// </summary>
-        internal static string ConsumersSelectelprivate_container {
+        public static string ConsumersSelectelprivate_container {
             get {
                 return ResourceManager.GetString("ConsumersSelectelprivate_container", resourceCulture);
             }
@@ -2941,7 +2941,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Public container.
         /// </summary>
-        internal static string ConsumersSelectelpublic_container {
+        public static string ConsumersSelectelpublic_container {
             get {
                 return ResourceManager.GetString("ConsumersSelectelpublic_container", resourceCulture);
             }
@@ -2950,7 +2950,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OneDrive.
         /// </summary>
-        internal static string ConsumersSkyDrive {
+        public static string ConsumersSkyDrive {
             get {
                 return ResourceManager.GetString("ConsumersSkyDrive", resourceCulture);
             }
@@ -2959,7 +2959,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OneDrive ID.
         /// </summary>
-        internal static string Consumersskydriveappkey {
+        public static string Consumersskydriveappkey {
             get {
                 return ResourceManager.GetString("Consumersskydriveappkey", resourceCulture);
             }
@@ -2968,7 +2968,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OneDrive Key.
         /// </summary>
-        internal static string Consumersskydriveappsecret {
+        public static string Consumersskydriveappsecret {
             get {
                 return ResourceManager.GetString("Consumersskydriveappsecret", resourceCulture);
             }
@@ -2977,7 +2977,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для управления файлами и папками OneDrive..
         /// </summary>
-        internal static string ConsumersSkyDriveDescription {
+        public static string ConsumersSkyDriveDescription {
             get {
                 return ResourceManager.GetString("ConsumersSkyDriveDescription", resourceCulture);
             }
@@ -2986,7 +2986,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса OneDrive Вы сможете подключать свои аккаунт в модуле Документы. Это позволит загружать и создавать новые файлы в OneDrive, редактировать существующие, копировать и удалять, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersSkyDriveInstruction {
+        public static string ConsumersSkyDriveInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSkyDriveInstruction", resourceCulture);
             }
@@ -2995,7 +2995,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SMS-центр.
         /// </summary>
-        internal static string ConsumersSmsc {
+        public static string ConsumersSmsc {
             get {
                 return ResourceManager.GetString("ConsumersSmsc", resourceCulture);
             }
@@ -3004,7 +3004,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для включения двухфакторной авторизации через SMS-центр..
         /// </summary>
-        internal static string ConsumersSmscDescription {
+        public static string ConsumersSmscDescription {
             get {
                 return ResourceManager.GetString("ConsumersSmscDescription", resourceCulture);
             }
@@ -3013,7 +3013,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса SMS-центр Вы сможете включить двухфакторную авторизацию для получения смс с кодом входа пользователя на портал ONLYOFFICE. SMS-центр удобно использовать как sms провайдер для стран СНГ..
         /// </summary>
-        internal static string ConsumersSmscInstruction {
+        public static string ConsumersSmscInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSmscInstruction", resourceCulture);
             }
@@ -3022,7 +3022,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
-        internal static string Consumerssmsclogin {
+        public static string Consumerssmsclogin {
             get {
                 return ResourceManager.GetString("Consumerssmsclogin", resourceCulture);
             }
@@ -3031,7 +3031,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password or MD5 hash password in lowercase.
         /// </summary>
-        internal static string Consumerssmscpsw {
+        public static string Consumerssmscpsw {
             get {
                 return ResourceManager.GetString("Consumerssmscpsw", resourceCulture);
             }
@@ -3040,7 +3040,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Twilio.
         /// </summary>
-        internal static string ConsumersTwilio {
+        public static string ConsumersTwilio {
             get {
                 return ResourceManager.GetString("ConsumersTwilio", resourceCulture);
             }
@@ -3049,7 +3049,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Account Sid.
         /// </summary>
-        internal static string ConsumerstwilioAccountSid {
+        public static string ConsumerstwilioAccountSid {
             get {
                 return ResourceManager.GetString("ConsumerstwilioAccountSid", resourceCulture);
             }
@@ -3058,7 +3058,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Auth Token.
         /// </summary>
-        internal static string ConsumerstwilioAuthToken {
+        public static string ConsumerstwilioAuthToken {
             get {
                 return ResourceManager.GetString("ConsumerstwilioAuthToken", resourceCulture);
             }
@@ -3067,7 +3067,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить Twilio для совершения вызовов контактов CRM прямо из браузера или для включения двухфакторной авторизации..
         /// </summary>
-        internal static string ConsumersTwilioDescription {
+        public static string ConsumersTwilioDescription {
             get {
                 return ResourceManager.GetString("ConsumersTwilioDescription", resourceCulture);
             }
@@ -3076,7 +3076,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив Twilio Вы сможете звонить любому контакту из CRM прямо из браузера и включить двухфакторную авторизацию для получения смс с кодом входа пользователя на портал ONLYOFFICE..
         /// </summary>
-        internal static string ConsumersTwilioInstruction {
+        public static string ConsumersTwilioInstruction {
             get {
                 return ResourceManager.GetString("ConsumersTwilioInstruction", resourceCulture);
             }
@@ -3085,7 +3085,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Phone number from Twilio (required for SMS authorization).
         /// </summary>
-        internal static string Consumerstwiliosender {
+        public static string Consumerstwiliosender {
             get {
                 return ResourceManager.GetString("Consumerstwiliosender", resourceCulture);
             }
@@ -3094,7 +3094,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Twitter.
         /// </summary>
-        internal static string ConsumersTwitter {
+        public static string ConsumersTwitter {
             get {
                 return ResourceManager.GetString("ConsumersTwitter", resourceCulture);
             }
@@ -3103,7 +3103,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Token.
         /// </summary>
-        internal static string ConsumerstwitterAccessToken_Default {
+        public static string ConsumerstwitterAccessToken_Default {
             get {
                 return ResourceManager.GetString("ConsumerstwitterAccessToken_Default", resourceCulture);
             }
@@ -3112,7 +3112,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access Token Secret.
         /// </summary>
-        internal static string ConsumerstwitterAccessTokenSecret_Default {
+        public static string ConsumerstwitterAccessTokenSecret_Default {
             get {
                 return ResourceManager.GetString("ConsumerstwitterAccessTokenSecret_Default", resourceCulture);
             }
@@ -3121,7 +3121,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для входа на портал по учетной записи Twitter и поиска контактов..
         /// </summary>
-        internal static string ConsumersTwitterDescription {
+        public static string ConsumersTwitterDescription {
             get {
                 return ResourceManager.GetString("ConsumersTwitterDescription", resourceCulture);
             }
@@ -3130,7 +3130,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Twitter Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ используя аккаунт Twitter. Так же Вы сможете на странице персоны CRM привязывать аккаунт и читать новости Twitter..
         /// </summary>
-        internal static string ConsumersTwitterInstruction {
+        public static string ConsumersTwitterInstruction {
             get {
                 return ResourceManager.GetString("ConsumersTwitterInstruction", resourceCulture);
             }
@@ -3139,7 +3139,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to API key.
         /// </summary>
-        internal static string ConsumersTwitterKey {
+        public static string ConsumersTwitterKey {
             get {
                 return ResourceManager.GetString("ConsumersTwitterKey", resourceCulture);
             }
@@ -3148,7 +3148,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to API secret.
         /// </summary>
-        internal static string ConsumersTwitterSecret {
+        public static string ConsumersTwitterSecret {
             get {
                 return ResourceManager.GetString("ConsumersTwitterSecret", resourceCulture);
             }
@@ -3157,7 +3157,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Rackspace username.
         /// </summary>
-        internal static string Consumersusername {
+        public static string Consumersusername {
             get {
                 return ResourceManager.GetString("Consumersusername", resourceCulture);
             }
@@ -3166,7 +3166,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to WordPress.
         /// </summary>
-        internal static string ConsumersWordpress {
+        public static string ConsumersWordpress {
             get {
                 return ResourceManager.GetString("ConsumersWordpress", resourceCulture);
             }
@@ -3175,7 +3175,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для публикации документов в WordPress..
         /// </summary>
-        internal static string ConsumersWordpressDescription {
+        public static string ConsumersWordpressDescription {
             get {
                 return ResourceManager.GetString("ConsumersWordpressDescription", resourceCulture);
             }
@@ -3184,7 +3184,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение WordPress Вы сможете легко, сохраняя форматирование, публиковать документы на своем сайте WordPress..
         /// </summary>
-        internal static string ConsumersWordpressInstruction {
+        public static string ConsumersWordpressInstruction {
             get {
                 return ResourceManager.GetString("ConsumersWordpressInstruction", resourceCulture);
             }
@@ -3193,7 +3193,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to WordPress Key.
         /// </summary>
-        internal static string ConsumerswpClientId {
+        public static string ConsumerswpClientId {
             get {
                 return ResourceManager.GetString("ConsumerswpClientId", resourceCulture);
             }
@@ -3202,7 +3202,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to WordPress Secret.
         /// </summary>
-        internal static string ConsumerswpClientSecret {
+        public static string ConsumerswpClientSecret {
             get {
                 return ResourceManager.GetString("ConsumerswpClientSecret", resourceCulture);
             }
@@ -3211,7 +3211,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Yahoo.
         /// </summary>
-        internal static string ConsumersYahoo {
+        public static string ConsumersYahoo {
             get {
                 return ResourceManager.GetString("ConsumersYahoo", resourceCulture);
             }
@@ -3220,7 +3220,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Client ID.
         /// </summary>
-        internal static string ConsumersyahooClientId {
+        public static string ConsumersyahooClientId {
             get {
                 return ResourceManager.GetString("ConsumersyahooClientId", resourceCulture);
             }
@@ -3229,7 +3229,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Client Secret.
         /// </summary>
-        internal static string ConsumersyahooClientSecret {
+        public static string ConsumersyahooClientSecret {
             get {
                 return ResourceManager.GetString("ConsumersyahooClientSecret", resourceCulture);
             }
@@ -3238,7 +3238,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Подключить приложение для импорта контактов Yahoo..
         /// </summary>
-        internal static string ConsumersYahooDescription {
+        public static string ConsumersYahooDescription {
             get {
                 return ResourceManager.GetString("ConsumersYahooDescription", resourceCulture);
             }
@@ -3247,7 +3247,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Добавив приложение сервиса Yahoo Вы сможете из списка контактов добавлять новых пользователей портала ONLYOFFICE™..
         /// </summary>
-        internal static string ConsumersYahooInstruction {
+        public static string ConsumersYahooInstruction {
             get {
                 return ResourceManager.GetString("ConsumersYahooInstruction", resourceCulture);
             }
@@ -3256,7 +3256,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Contact Information.
         /// </summary>
-        internal static string ContactInformation {
+        public static string ContactInformation {
             get {
                 return ResourceManager.GetString("ContactInformation", resourceCulture);
             }
@@ -3265,7 +3265,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can upload an image not larger than 200x300 pixels, otherwise resizing will take place. The maximum image size cannot exceed 1 MB..
         /// </summary>
-        internal static string ContactPhotoInfo {
+        public static string ContactPhotoInfo {
             get {
                 return ResourceManager.GetString("ContactPhotoInfo", resourceCulture);
             }
@@ -3274,7 +3274,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Contacts.
         /// </summary>
-        internal static string Contacts {
+        public static string Contacts {
             get {
                 return ResourceManager.GetString("Contacts", resourceCulture);
             }
@@ -3283,7 +3283,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
-        internal static string ContinueButton {
+        public static string ContinueButton {
             get {
                 return ResourceManager.GetString("ContinueButton", resourceCulture);
             }
@@ -3292,7 +3292,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Control Panel.
         /// </summary>
-        internal static string ControlPanelLabel {
+        public static string ControlPanelLabel {
             get {
                 return ResourceManager.GetString("ControlPanelLabel", resourceCulture);
             }
@@ -3301,7 +3301,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Control Panel.
         /// </summary>
-        internal static string ControlPanelSettings {
+        public static string ControlPanelSettings {
             get {
                 return ResourceManager.GetString("ControlPanelSettings", resourceCulture);
             }
@@ -3310,7 +3310,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Got it!.
         /// </summary>
-        internal static string CookieMessButton {
+        public static string CookieMessButton {
             get {
                 return ResourceManager.GetString("CookieMessButton", resourceCulture);
             }
@@ -3319,7 +3319,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This website uses cookies. By continuing to browse the website you agree to our {0}privacy policy{1}.
         /// </summary>
-        internal static string CookieMessText {
+        public static string CookieMessText {
             get {
                 return ResourceManager.GetString("CookieMessText", resourceCulture);
             }
@@ -3328,7 +3328,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Session Lifetime{1} allows to set time (in minutes) before the portal users will need to enter the portal credentials again in order to access the portal.{2}After save all the users will be logged out from portal..
         /// </summary>
-        internal static string CookieSettingsHelp {
+        public static string CookieSettingsHelp {
             get {
                 return ResourceManager.GetString("CookieSettingsHelp", resourceCulture);
             }
@@ -3337,7 +3337,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Lifetime (min).
         /// </summary>
-        internal static string CookieSettingsLifeTime {
+        public static string CookieSettingsLifeTime {
             get {
                 return ResourceManager.GetString("CookieSettingsLifeTime", resourceCulture);
             }
@@ -3346,7 +3346,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Session Lifetime.
         /// </summary>
-        internal static string CookieSettingsTitle {
+        public static string CookieSettingsTitle {
             get {
                 return ResourceManager.GetString("CookieSettingsTitle", resourceCulture);
             }
@@ -3355,7 +3355,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Copy email and password.
         /// </summary>
-        internal static string CopyEmailAndPassword {
+        public static string CopyEmailAndPassword {
             get {
                 return ResourceManager.GetString("CopyEmailAndPassword", resourceCulture);
             }
@@ -3364,7 +3364,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Copy the link.
         /// </summary>
-        internal static string CopyToClipboard {
+        public static string CopyToClipboard {
             get {
                 return ResourceManager.GetString("CopyToClipboard", resourceCulture);
             }
@@ -3373,7 +3373,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Corporate Use.
         /// </summary>
-        internal static string CorporateUse {
+        public static string CorporateUse {
             get {
                 return ResourceManager.GetString("CorporateUse", resourceCulture);
             }
@@ -3382,7 +3382,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password recovery operation is prohibited for an LDAP user.
         /// </summary>
-        internal static string CouldNotRecoverPasswordForLdapUser {
+        public static string CouldNotRecoverPasswordForLdapUser {
             get {
                 return ResourceManager.GetString("CouldNotRecoverPasswordForLdapUser", resourceCulture);
             }
@@ -3391,7 +3391,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password recovery operation is prohibited for an SSO user.
         /// </summary>
-        internal static string CouldNotRecoverPasswordForSsoUser {
+        public static string CouldNotRecoverPasswordForSsoUser {
             get {
                 return ResourceManager.GetString("CouldNotRecoverPasswordForSsoUser", resourceCulture);
             }
@@ -3400,7 +3400,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
-        internal static string CreateButton {
+        public static string CreateButton {
             get {
                 return ResourceManager.GetString("CreateButton", resourceCulture);
             }
@@ -3409,7 +3409,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create email on domain.
         /// </summary>
-        internal static string CreateEmailOnDomain {
+        public static string CreateEmailOnDomain {
             get {
                 return ResourceManager.GetString("CreateEmailOnDomain", resourceCulture);
             }
@@ -3418,7 +3418,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create mail on the domain.
         /// </summary>
-        internal static string CreateMailOnDomain {
+        public static string CreateMailOnDomain {
             get {
                 return ResourceManager.GetString("CreateMailOnDomain", resourceCulture);
             }
@@ -3427,7 +3427,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create New Profile.
         /// </summary>
-        internal static string CreateNewProfile {
+        public static string CreateNewProfile {
             get {
                 return ResourceManager.GetString("CreateNewProfile", resourceCulture);
             }
@@ -3436,7 +3436,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create on ONLYOFFICE account.
         /// </summary>
-        internal static string CreatePersonalButton {
+        public static string CreatePersonalButton {
             get {
                 return ResourceManager.GetString("CreatePersonalButton", resourceCulture);
             }
@@ -3445,7 +3445,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Error while generating report.
         /// </summary>
-        internal static string CreateReportError {
+        public static string CreateReportError {
             get {
                 return ResourceManager.GetString("CreateReportError", resourceCulture);
             }
@@ -3454,7 +3454,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to creating backup.
         /// </summary>
-        internal static string CreatingBackup {
+        public static string CreatingBackup {
             get {
                 return ResourceManager.GetString("CreatingBackup", resourceCulture);
             }
@@ -3463,7 +3463,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Ctrl+Enter.
         /// </summary>
-        internal static string CtrlEnterKeys {
+        public static string CtrlEnterKeys {
             get {
                 return ResourceManager.GetString("CtrlEnterKeys", resourceCulture);
             }
@@ -3472,7 +3472,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
-        internal static string Custom {
+        public static string Custom {
             get {
                 return ResourceManager.GetString("Custom", resourceCulture);
             }
@@ -3481,7 +3481,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom domain name.
         /// </summary>
-        internal static string CustomDomainName {
+        public static string CustomDomainName {
             get {
                 return ResourceManager.GetString("CustomDomainName", resourceCulture);
             }
@@ -3490,7 +3490,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Customization.
         /// </summary>
-        internal static string Customization {
+        public static string Customization {
             get {
                 return ResourceManager.GetString("Customization", resourceCulture);
             }
@@ -3499,7 +3499,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom.
         /// </summary>
-        internal static string CustomNamingPeopleSchema {
+        public static string CustomNamingPeopleSchema {
             get {
                 return ResourceManager.GetString("CustomNamingPeopleSchema", resourceCulture);
             }
@@ -3508,7 +3508,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Item.
         /// </summary>
-        internal static string CustomNavigationAddBtn {
+        public static string CustomNavigationAddBtn {
             get {
                 return ResourceManager.GetString("CustomNavigationAddBtn", resourceCulture);
             }
@@ -3517,7 +3517,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Item.
         /// </summary>
-        internal static string CustomNavigationAddDialogHeader {
+        public static string CustomNavigationAddDialogHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationAddDialogHeader", resourceCulture);
             }
@@ -3526,7 +3526,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Large icon, 100x100.
         /// </summary>
-        internal static string CustomNavigationBigImgHeader {
+        public static string CustomNavigationBigImgHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationBigImgHeader", resourceCulture);
             }
@@ -3535,7 +3535,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change image.
         /// </summary>
-        internal static string CustomNavigationChangeImage {
+        public static string CustomNavigationChangeImage {
             get {
                 return ResourceManager.GetString("CustomNavigationChangeImage", resourceCulture);
             }
@@ -3544,7 +3544,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string CustomNavigationEditBtn {
+        public static string CustomNavigationEditBtn {
             get {
                 return ResourceManager.GetString("CustomNavigationEditBtn", resourceCulture);
             }
@@ -3553,7 +3553,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Item Settings.
         /// </summary>
-        internal static string CustomNavigationEditDialogHeader {
+        public static string CustomNavigationEditDialogHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationEditDialogHeader", resourceCulture);
             }
@@ -3562,7 +3562,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Custom Navigation{1} - is the setting for changing the navigation menu.{2}Add your own items for greater usability of the portal..
         /// </summary>
-        internal static string CustomNavigationHelp {
+        public static string CustomNavigationHelp {
             get {
                 return ResourceManager.GetString("CustomNavigationHelp", resourceCulture);
             }
@@ -3571,7 +3571,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Label.
         /// </summary>
-        internal static string CustomNavigationLabelHeader {
+        public static string CustomNavigationLabelHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationLabelHeader", resourceCulture);
             }
@@ -3580,7 +3580,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Remove Item.
         /// </summary>
-        internal static string CustomNavigationRemoveBtn {
+        public static string CustomNavigationRemoveBtn {
             get {
                 return ResourceManager.GetString("CustomNavigationRemoveBtn", resourceCulture);
             }
@@ -3589,7 +3589,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show in menu.
         /// </summary>
-        internal static string CustomNavigationShowInMenu {
+        public static string CustomNavigationShowInMenu {
             get {
                 return ResourceManager.GetString("CustomNavigationShowInMenu", resourceCulture);
             }
@@ -3598,7 +3598,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show on home page.
         /// </summary>
-        internal static string CustomNavigationShowOnHomePage {
+        public static string CustomNavigationShowOnHomePage {
             get {
                 return ResourceManager.GetString("CustomNavigationShowOnHomePage", resourceCulture);
             }
@@ -3607,7 +3607,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Small icon, 16x16.
         /// </summary>
-        internal static string CustomNavigationSmallImgHeader {
+        public static string CustomNavigationSmallImgHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationSmallImgHeader", resourceCulture);
             }
@@ -3616,7 +3616,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom Navigation.
         /// </summary>
-        internal static string CustomNavigationTitle {
+        public static string CustomNavigationTitle {
             get {
                 return ResourceManager.GetString("CustomNavigationTitle", resourceCulture);
             }
@@ -3625,7 +3625,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to URL.
         /// </summary>
-        internal static string CustomNavigationURLHeader {
+        public static string CustomNavigationURLHeader {
             get {
                 return ResourceManager.GetString("CustomNavigationURLHeader", resourceCulture);
             }
@@ -3634,7 +3634,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Data Backup.
         /// </summary>
-        internal static string DataBackup {
+        public static string DataBackup {
             get {
                 return ResourceManager.GetString("DataBackup", resourceCulture);
             }
@@ -3645,7 +3645,7 @@ namespace ASC.Web.Core.PublicResources {
         ///If you choose to include mail, only the messages for the last 30 days will be backed up.{2}
         ///{0}Note:{1} you need to connect your third party account (DropBox, Box.com, OneDrive or Google Drive) to ONLYOFFICE Common Documents folder before you will be able to save your backup th [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string DataBackupHelp {
+        public static string DataBackupHelp {
             get {
                 return ResourceManager.GetString("DataBackupHelp", resourceCulture);
             }
@@ -3654,7 +3654,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Data Management.
         /// </summary>
-        internal static string DataManagement {
+        public static string DataManagement {
             get {
                 return ResourceManager.GetString("DataManagement", resourceCulture);
             }
@@ -3663,7 +3663,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to day.
         /// </summary>
-        internal static string Day {
+        public static string Day {
             get {
                 return ResourceManager.GetString("Day", resourceCulture);
             }
@@ -3672,7 +3672,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to days.
         /// </summary>
-        internal static string DaysOne {
+        public static string DaysOne {
             get {
                 return ResourceManager.GetString("DaysOne", resourceCulture);
             }
@@ -3681,7 +3681,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to days.
         /// </summary>
-        internal static string DaysTwo {
+        public static string DaysTwo {
             get {
                 return ResourceManager.GetString("DaysTwo", resourceCulture);
             }
@@ -3690,7 +3690,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
-        internal static string DeactivateButton {
+        public static string DeactivateButton {
             get {
                 return ResourceManager.GetString("DeactivateButton", resourceCulture);
             }
@@ -3699,7 +3699,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
-        internal static string DeactivatePortalButton {
+        public static string DeactivatePortalButton {
             get {
                 return ResourceManager.GetString("DeactivatePortalButton", resourceCulture);
             }
@@ -3708,7 +3708,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your account has been successfully deactivated.{0}In 10 seconds you will be redirected {1}here{2}.
         /// </summary>
-        internal static string DeactivatePortalSuccessMessage {
+        public static string DeactivatePortalSuccessMessage {
             get {
                 return ResourceManager.GetString("DeactivatePortalSuccessMessage", resourceCulture);
             }
@@ -3717,7 +3717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Deactivation/Deletion.
         /// </summary>
-        internal static string DeactivationDeletionPortal {
+        public static string DeactivationDeletionPortal {
             get {
                 return ResourceManager.GetString("DeactivationDeletionPortal", resourceCulture);
             }
@@ -3726,7 +3726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this option to deactivate your portal temporarily..
         /// </summary>
-        internal static string DeactivationDesc {
+        public static string DeactivationDesc {
             get {
                 return ResourceManager.GetString("DeactivationDesc", resourceCulture);
             }
@@ -3735,7 +3735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
-        internal static string Default {
+        public static string Default {
             get {
                 return ResourceManager.GetString("Default", resourceCulture);
             }
@@ -3744,7 +3744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Module choice.
         /// </summary>
-        internal static string DefaultPageSettingsChoiseOfProducts {
+        public static string DefaultPageSettingsChoiseOfProducts {
             get {
                 return ResourceManager.GetString("DefaultPageSettingsChoiseOfProducts", resourceCulture);
             }
@@ -3753,7 +3753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Default Start Page.
         /// </summary>
-        internal static string DefaultPageSettingsTitle {
+        public static string DefaultPageSettingsTitle {
             get {
                 return ResourceManager.GetString("DefaultPageSettingsTitle", resourceCulture);
             }
@@ -3762,7 +3762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Default password:.
         /// </summary>
-        internal static string DefaultPassword {
+        public static string DefaultPassword {
             get {
                 return ResourceManager.GetString("DefaultPassword", resourceCulture);
             }
@@ -3771,7 +3771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Default Settings.
         /// </summary>
-        internal static string DefaultSettings {
+        public static string DefaultSettings {
             get {
                 return ResourceManager.GetString("DefaultSettings", resourceCulture);
             }
@@ -3780,7 +3780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string DeleteButton {
+        public static string DeleteButton {
             get {
                 return ResourceManager.GetString("DeleteButton", resourceCulture);
             }
@@ -3790,7 +3790,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to This action cannot be undone.
         ///Are you sure want to delete the {0} {!group}?.
         /// </summary>
-        internal static string DeleteDepartmentConfirmation {
+        public static string DeleteDepartmentConfirmation {
             get {
                 return ResourceManager.GetString("DeleteDepartmentConfirmation", resourceCulture);
             }
@@ -3799,7 +3799,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string DeletePortalButton {
+        public static string DeletePortalButton {
             get {
                 return ResourceManager.GetString("DeletePortalButton", resourceCulture);
             }
@@ -3808,7 +3808,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your portal has been successfully deleted. {0}In 10 seconds you will be redirected {1}here{2}.
         /// </summary>
-        internal static string DeletePortalSuccessMessage {
+        public static string DeletePortalSuccessMessage {
             get {
                 return ResourceManager.GetString("DeletePortalSuccessMessage", resourceCulture);
             }
@@ -3817,7 +3817,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete my account.
         /// </summary>
-        internal static string DeleteProfileBtn {
+        public static string DeleteProfileBtn {
             get {
                 return ResourceManager.GetString("DeleteProfileBtn", resourceCulture);
             }
@@ -3826,7 +3826,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete my profile.
         /// </summary>
-        internal static string DeleteProfileButton {
+        public static string DeleteProfileButton {
             get {
                 return ResourceManager.GetString("DeleteProfileButton", resourceCulture);
             }
@@ -3835,7 +3835,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Attention! You are deleting your profile from portal.
         /// </summary>
-        internal static string DeleteProfileConfirm {
+        public static string DeleteProfileConfirm {
             get {
                 return ResourceManager.GetString("DeleteProfileConfirm", resourceCulture);
             }
@@ -3844,7 +3844,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Attention! You are about to delete your account..
         /// </summary>
-        internal static string DeleteProfileConfirmation {
+        public static string DeleteProfileConfirmation {
             get {
                 return ResourceManager.GetString("DeleteProfileConfirmation", resourceCulture);
             }
@@ -3853,7 +3853,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to By clicking the &quot;Delete my account&quot; button you agree with our {0}Privacy policy{1}..
         /// </summary>
-        internal static string DeleteProfileConfirmationInfo {
+        public static string DeleteProfileConfirmationInfo {
             get {
                 return ResourceManager.GetString("DeleteProfileConfirmationInfo", resourceCulture);
             }
@@ -3862,7 +3862,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send the profile deletion instructions to the email address.
         /// </summary>
-        internal static string DeleteProfileInfo {
+        public static string DeleteProfileInfo {
             get {
                 return ResourceManager.GetString("DeleteProfileInfo", resourceCulture);
             }
@@ -3871,7 +3871,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your profile has been successfully deleted.
         /// </summary>
-        internal static string DeleteProfileSuccess {
+        public static string DeleteProfileSuccess {
             get {
                 return ResourceManager.GetString("DeleteProfileSuccess", resourceCulture);
             }
@@ -3880,7 +3880,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your account has been successfully deleted..
         /// </summary>
-        internal static string DeleteProfileSuccessMessage {
+        public static string DeleteProfileSuccessMessage {
             get {
                 return ResourceManager.GetString("DeleteProfileSuccessMessage", resourceCulture);
             }
@@ -3889,7 +3889,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to See our {0}Privacy policy{1} to learn more about deleting your account and data accociated with it..
         /// </summary>
-        internal static string DeleteProfileSuccessMessageInfo {
+        public static string DeleteProfileSuccessMessageInfo {
             get {
                 return ResourceManager.GetString("DeleteProfileSuccessMessageInfo", resourceCulture);
             }
@@ -3898,7 +3898,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete profile dialog.
         /// </summary>
-        internal static string DeleteProfileTitle {
+        public static string DeleteProfileTitle {
             get {
                 return ResourceManager.GetString("DeleteProfileTitle", resourceCulture);
             }
@@ -3907,7 +3907,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete profile.
         /// </summary>
-        internal static string DeleteSelfProfile {
+        public static string DeleteSelfProfile {
             get {
                 return ResourceManager.GetString("DeleteSelfProfile", resourceCulture);
             }
@@ -3916,7 +3916,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!User} {0} will be deleted..
         /// </summary>
-        internal static string DeleteUserConfirmation {
+        public static string DeleteUserConfirmation {
             get {
                 return ResourceManager.GetString("DeleteUserConfirmation", resourceCulture);
             }
@@ -3925,7 +3925,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User&apos;s personal documents that are available to others will be deleted. To avoid this, you must start the data reassign process before deleting..
         /// </summary>
-        internal static string DeleteUserDataConfirmation {
+        public static string DeleteUserDataConfirmation {
             get {
                 return ResourceManager.GetString("DeleteUserDataConfirmation", resourceCulture);
             }
@@ -3934,7 +3934,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this option to delete your portal permanently..
         /// </summary>
-        internal static string DeletionDesc {
+        public static string DeletionDesc {
             get {
                 return ResourceManager.GetString("DeletionDesc", resourceCulture);
             }
@@ -3943,7 +3943,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Group}.
         /// </summary>
-        internal static string Department {
+        public static string Department {
             get {
                 return ResourceManager.GetString("Department", resourceCulture);
             }
@@ -3952,7 +3952,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Head}.
         /// </summary>
-        internal static string DepartmentMaster {
+        public static string DepartmentMaster {
             get {
                 return ResourceManager.GetString("DepartmentMaster", resourceCulture);
             }
@@ -3961,7 +3961,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Groups}.
         /// </summary>
-        internal static string Departments {
+        public static string Departments {
             get {
                 return ResourceManager.GetString("Departments", resourceCulture);
             }
@@ -3970,7 +3970,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit {!group}.
         /// </summary>
-        internal static string DepEditHeader {
+        public static string DepEditHeader {
             get {
                 return ResourceManager.GetString("DepEditHeader", resourceCulture);
             }
@@ -3979,7 +3979,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
-        internal static string Description {
+        public static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
@@ -3988,7 +3988,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select the image area that will be displayed as your avatar.
         /// </summary>
-        internal static string DescriptionThumbnail {
+        public static string DescriptionThumbnail {
             get {
                 return ResourceManager.GetString("DescriptionThumbnail", resourceCulture);
             }
@@ -3997,7 +3997,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Desktop Editors for {0}.
         /// </summary>
-        internal static string DesktopEditorsFor {
+        public static string DesktopEditorsFor {
             get {
                 return ResourceManager.GetString("DesktopEditorsFor", resourceCulture);
             }
@@ -4006,7 +4006,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disabled.
         /// </summary>
-        internal static string DisabledEmployeeTitle {
+        public static string DisabledEmployeeTitle {
             get {
                 return ResourceManager.GetString("DisabledEmployeeTitle", resourceCulture);
             }
@@ -4015,7 +4015,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
-        internal static string DisableUserButton {
+        public static string DisableUserButton {
             get {
                 return ResourceManager.GetString("DisableUserButton", resourceCulture);
             }
@@ -4024,7 +4024,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {!user} will not be displayed in the list of active {!users}.
         /// </summary>
-        internal static string DisableUserHelp {
+        public static string DisableUserHelp {
             get {
                 return ResourceManager.GetString("DisableUserHelp", resourceCulture);
             }
@@ -4033,7 +4033,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A link to confirm the operation has been sent to {0} (the email address of the portal owner)..
         /// </summary>
-        internal static string DnsChangeMsg {
+        public static string DnsChangeMsg {
             get {
                 return ResourceManager.GetString("DnsChangeMsg", resourceCulture);
             }
@@ -4042,7 +4042,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to DNS Settings.
         /// </summary>
-        internal static string DnsSettings {
+        public static string DnsSettings {
             get {
                 return ResourceManager.GetString("DnsSettings", resourceCulture);
             }
@@ -4051,7 +4051,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal DNS address.
         /// </summary>
-        internal static string DnsSettingsLabel {
+        public static string DnsSettingsLabel {
             get {
                 return ResourceManager.GetString("DnsSettingsLabel", resourceCulture);
             }
@@ -4060,7 +4060,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document Service.
         /// </summary>
-        internal static string DocService {
+        public static string DocService {
             get {
                 return ResourceManager.GetString("DocService", resourceCulture);
             }
@@ -4069,7 +4069,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document service location specifies the address of the server with the document services installed. Please change the &apos;&amp;lt;editors-dns-name&amp;gt;&apos; for the server address in the below lines leaving the rest of the line exactly as it is..
         /// </summary>
-        internal static string DocServiceText {
+        public static string DocServiceText {
             get {
                 return ResourceManager.GetString("DocServiceText", resourceCulture);
             }
@@ -4078,7 +4078,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document Service Location.
         /// </summary>
-        internal static string DocServiceUrl {
+        public static string DocServiceUrl {
             get {
                 return ResourceManager.GetString("DocServiceUrl", resourceCulture);
             }
@@ -4087,7 +4087,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document Editing Service Address.
         /// </summary>
-        internal static string DocServiceUrlApi {
+        public static string DocServiceUrlApi {
             get {
                 return ResourceManager.GetString("DocServiceUrlApi", resourceCulture);
             }
@@ -4096,7 +4096,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Example: {0}.
         /// </summary>
-        internal static string DocServiceUrlExample {
+        public static string DocServiceUrlExample {
             get {
                 return ResourceManager.GetString("DocServiceUrlExample", resourceCulture);
             }
@@ -4105,7 +4105,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Document Service{2} is the server service which allows to perform the document editing and allows to convert the document file into the appropriate OfficeOpen XML format..
         /// </summary>
-        internal static string DocServiceUrlHelp2 {
+        public static string DocServiceUrlHelp2 {
             get {
                 return ResourceManager.GetString("DocServiceUrlHelp2", resourceCulture);
             }
@@ -4114,7 +4114,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Document Service Address for requests from the Community Server.
         /// </summary>
-        internal static string DocServiceUrlInternal {
+        public static string DocServiceUrlInternal {
             get {
                 return ResourceManager.GetString("DocServiceUrlInternal", resourceCulture);
             }
@@ -4123,7 +4123,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Community Server Address for requests from the Document Service.
         /// </summary>
-        internal static string DocServiceUrlPortal2 {
+        public static string DocServiceUrlPortal2 {
             get {
                 return ResourceManager.GetString("DocServiceUrlPortal2", resourceCulture);
             }
@@ -4132,7 +4132,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Documents for {0} devices.
         /// </summary>
-        internal static string DocumentsForDevices {
+        public static string DocumentsForDevices {
             get {
                 return ResourceManager.GetString("DocumentsForDevices", resourceCulture);
             }
@@ -4141,7 +4141,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
-        internal static string DoneButton {
+        public static string DoneButton {
             get {
                 return ResourceManager.GetString("DoneButton", resourceCulture);
             }
@@ -4150,7 +4150,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
-        internal static string DownloadButton {
+        public static string DownloadButton {
             get {
                 return ResourceManager.GetString("DownloadButton", resourceCulture);
             }
@@ -4159,7 +4159,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} ago.
         /// </summary>
-        internal static string DrnAgo {
+        public static string DrnAgo {
             get {
                 return ResourceManager.GetString("DrnAgo", resourceCulture);
             }
@@ -4168,7 +4168,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} day.
         /// </summary>
-        internal static string DrnAgoDaysI {
+        public static string DrnAgoDaysI {
             get {
                 return ResourceManager.GetString("DrnAgoDaysI", resourceCulture);
             }
@@ -4177,7 +4177,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} days.
         /// </summary>
-        internal static string DrnAgoDaysR1 {
+        public static string DrnAgoDaysR1 {
             get {
                 return ResourceManager.GetString("DrnAgoDaysR1", resourceCulture);
             }
@@ -4186,7 +4186,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} days.
         /// </summary>
-        internal static string DrnAgoDaysRm {
+        public static string DrnAgoDaysRm {
             get {
                 return ResourceManager.GetString("DrnAgoDaysRm", resourceCulture);
             }
@@ -4195,7 +4195,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to just.
         /// </summary>
-        internal static string DrnAgoFewMoments {
+        public static string DrnAgoFewMoments {
             get {
                 return ResourceManager.GetString("DrnAgoFewMoments", resourceCulture);
             }
@@ -4204,7 +4204,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} hour.
         /// </summary>
-        internal static string DrnAgoHoursI {
+        public static string DrnAgoHoursI {
             get {
                 return ResourceManager.GetString("DrnAgoHoursI", resourceCulture);
             }
@@ -4213,7 +4213,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} hours.
         /// </summary>
-        internal static string DrnAgoHoursR1 {
+        public static string DrnAgoHoursR1 {
             get {
                 return ResourceManager.GetString("DrnAgoHoursR1", resourceCulture);
             }
@@ -4222,7 +4222,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} hours.
         /// </summary>
-        internal static string DrnAgoHoursRm {
+        public static string DrnAgoHoursRm {
             get {
                 return ResourceManager.GetString("DrnAgoHoursRm", resourceCulture);
             }
@@ -4231,7 +4231,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} minute.
         /// </summary>
-        internal static string DrnAgoMinutesI {
+        public static string DrnAgoMinutesI {
             get {
                 return ResourceManager.GetString("DrnAgoMinutesI", resourceCulture);
             }
@@ -4240,7 +4240,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} minutes.
         /// </summary>
-        internal static string DrnAgoMinutesR1 {
+        public static string DrnAgoMinutesR1 {
             get {
                 return ResourceManager.GetString("DrnAgoMinutesR1", resourceCulture);
             }
@@ -4249,7 +4249,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} minutes.
         /// </summary>
-        internal static string DrnAgoMinutesRm {
+        public static string DrnAgoMinutesRm {
             get {
                 return ResourceManager.GetString("DrnAgoMinutesRm", resourceCulture);
             }
@@ -4258,7 +4258,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} month.
         /// </summary>
-        internal static string DrnAgoMonthsI {
+        public static string DrnAgoMonthsI {
             get {
                 return ResourceManager.GetString("DrnAgoMonthsI", resourceCulture);
             }
@@ -4267,7 +4267,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} months.
         /// </summary>
-        internal static string DrnAgoMonthsR1 {
+        public static string DrnAgoMonthsR1 {
             get {
                 return ResourceManager.GetString("DrnAgoMonthsR1", resourceCulture);
             }
@@ -4276,7 +4276,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} months.
         /// </summary>
-        internal static string DrnAgoMonthsRm {
+        public static string DrnAgoMonthsRm {
             get {
                 return ResourceManager.GetString("DrnAgoMonthsRm", resourceCulture);
             }
@@ -4285,7 +4285,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} year.
         /// </summary>
-        internal static string DrnAgoYearsI {
+        public static string DrnAgoYearsI {
             get {
                 return ResourceManager.GetString("DrnAgoYearsI", resourceCulture);
             }
@@ -4294,7 +4294,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} years.
         /// </summary>
-        internal static string DrnAgoYearsR1 {
+        public static string DrnAgoYearsR1 {
             get {
                 return ResourceManager.GetString("DrnAgoYearsR1", resourceCulture);
             }
@@ -4303,7 +4303,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} years.
         /// </summary>
-        internal static string DrnAgoYearsRm {
+        public static string DrnAgoYearsRm {
             get {
                 return ResourceManager.GetString("DrnAgoYearsRm", resourceCulture);
             }
@@ -4312,7 +4312,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Day before yesterday.
         /// </summary>
-        internal static string DrnDayBeforeYesterday {
+        public static string DrnDayBeforeYesterday {
             get {
                 return ResourceManager.GetString("DrnDayBeforeYesterday", resourceCulture);
             }
@@ -4321,7 +4321,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Today.
         /// </summary>
-        internal static string DrnToday {
+        public static string DrnToday {
             get {
                 return ResourceManager.GetString("DrnToday", resourceCulture);
             }
@@ -4330,7 +4330,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tomorrow.
         /// </summary>
-        internal static string DrnTomorrow {
+        public static string DrnTomorrow {
             get {
                 return ResourceManager.GetString("DrnTomorrow", resourceCulture);
             }
@@ -4339,7 +4339,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Yesterday.
         /// </summary>
-        internal static string DrnYesterday {
+        public static string DrnYesterday {
             get {
                 return ResourceManager.GetString("DrnYesterday", resourceCulture);
             }
@@ -4348,7 +4348,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit.
         /// </summary>
-        internal static string EditButton {
+        public static string EditButton {
             get {
                 return ResourceManager.GetString("EditButton", resourceCulture);
             }
@@ -4357,7 +4357,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit Photo.
         /// </summary>
-        internal static string EditPhoto {
+        public static string EditPhoto {
             get {
                 return ResourceManager.GetString("EditPhoto", resourceCulture);
             }
@@ -4366,7 +4366,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Edit Profile.
         /// </summary>
-        internal static string EditUserDialogTitle {
+        public static string EditUserDialogTitle {
             get {
                 return ResourceManager.GetString("EditUserDialogTitle", resourceCulture);
             }
@@ -4375,7 +4375,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        internal static string Email {
+        public static string Email {
             get {
                 return ResourceManager.GetString("Email", resourceCulture);
             }
@@ -4384,7 +4384,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The activation instructions will be sent to the entered email.
         /// </summary>
-        internal static string EmailActivationDescription {
+        public static string EmailActivationDescription {
             get {
                 return ResourceManager.GetString("EmailActivationDescription", resourceCulture);
             }
@@ -4393,7 +4393,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use the link provided in the activation email. Haven&apos;t received an email with the activation link?.
         /// </summary>
-        internal static string EmailActivationPanelBodyText {
+        public static string EmailActivationPanelBodyText {
             get {
                 return ResourceManager.GetString("EmailActivationPanelBodyText", resourceCulture);
             }
@@ -4402,7 +4402,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please activate your email entered while registering to get access to all the portal features..
         /// </summary>
-        internal static string EmailActivationPanelHeaderText {
+        public static string EmailActivationPanelHeaderText {
             get {
                 return ResourceManager.GetString("EmailActivationPanelHeaderText", resourceCulture);
             }
@@ -4411,7 +4411,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Request activation once again.
         /// </summary>
-        internal static string EmailActivationPanelLinkText {
+        public static string EmailActivationPanelLinkText {
             get {
                 return ResourceManager.GetString("EmailActivationPanelLinkText", resourceCulture);
             }
@@ -4420,7 +4420,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to An activation email has been sent to your email address. Please follow the link in the message to activate your account..
         /// </summary>
-        internal static string EmailActivationPanelSendText {
+        public static string EmailActivationPanelSendText {
             get {
                 return ResourceManager.GetString("EmailActivationPanelSendText", resourceCulture);
             }
@@ -4429,7 +4429,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email activation.
         /// </summary>
-        internal static string EmailActivationTitle {
+        public static string EmailActivationTitle {
             get {
                 return ResourceManager.GetString("EmailActivationTitle", resourceCulture);
             }
@@ -4438,7 +4438,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Confirm password.
         /// </summary>
-        internal static string EmailAndPasswordConfirmPassword {
+        public static string EmailAndPasswordConfirmPassword {
             get {
                 return ResourceManager.GetString("EmailAndPasswordConfirmPassword", resourceCulture);
             }
@@ -4447,7 +4447,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email and password copied to clipboard.
         /// </summary>
-        internal static string EmailAndPasswordCopiedToClipboard {
+        public static string EmailAndPasswordCopiedToClipboard {
             get {
                 return ResourceManager.GetString("EmailAndPasswordCopiedToClipboard", resourceCulture);
             }
@@ -4456,7 +4456,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your portal is registered to the following domain:.
         /// </summary>
-        internal static string EmailAndPasswordDomain {
+        public static string EmailAndPasswordDomain {
             get {
                 return ResourceManager.GetString("EmailAndPasswordDomain", resourceCulture);
             }
@@ -4465,7 +4465,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Wrong password.
         /// </summary>
-        internal static string EmailAndPasswordEmptyPassword {
+        public static string EmailAndPasswordEmptyPassword {
             get {
                 return ResourceManager.GetString("EmailAndPasswordEmptyPassword", resourceCulture);
             }
@@ -4474,7 +4474,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect email address.
         /// </summary>
-        internal static string EmailAndPasswordIncorrectEmail {
+        public static string EmailAndPasswordIncorrectEmail {
             get {
                 return ResourceManager.GetString("EmailAndPasswordIncorrectEmail", resourceCulture);
             }
@@ -4483,7 +4483,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect promo code.
         /// </summary>
-        internal static string EmailAndPasswordIncorrectPromocode {
+        public static string EmailAndPasswordIncorrectPromocode {
             get {
                 return ResourceManager.GetString("EmailAndPasswordIncorrectPromocode", resourceCulture);
             }
@@ -4492,7 +4492,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        internal static string EmailAndPasswordOK {
+        public static string EmailAndPasswordOK {
             get {
                 return ResourceManager.GetString("EmailAndPasswordOK", resourceCulture);
             }
@@ -4501,7 +4501,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Have a Promo Code? Put it here.
         /// </summary>
-        internal static string EmailAndPasswordPromocode {
+        public static string EmailAndPasswordPromocode {
             get {
                 return ResourceManager.GetString("EmailAndPasswordPromocode", resourceCulture);
             }
@@ -4510,7 +4510,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your portal is registered from the following email:.
         /// </summary>
-        internal static string EmailAndPasswordRegEmail {
+        public static string EmailAndPasswordRegEmail {
             get {
                 return ResourceManager.GetString("EmailAndPasswordRegEmail", resourceCulture);
             }
@@ -4519,7 +4519,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to These settings have been successfully saved.
         /// </summary>
-        internal static string EmailAndPasswordSaved {
+        public static string EmailAndPasswordSaved {
             get {
                 return ResourceManager.GetString("EmailAndPasswordSaved", resourceCulture);
             }
@@ -4528,7 +4528,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change it.
         /// </summary>
-        internal static string EmailAndPasswordTypeChangeIt {
+        public static string EmailAndPasswordTypeChangeIt {
             get {
                 return ResourceManager.GetString("EmailAndPasswordTypeChangeIt", resourceCulture);
             }
@@ -4537,7 +4537,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Type password.
         /// </summary>
-        internal static string EmailAndPasswordTypePassword {
+        public static string EmailAndPasswordTypePassword {
             get {
                 return ResourceManager.GetString("EmailAndPasswordTypePassword", resourceCulture);
             }
@@ -4546,7 +4546,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to (minimum 6 characters).
         /// </summary>
-        internal static string EmailAndPasswordTypePasswordRecommendations {
+        public static string EmailAndPasswordTypePasswordRecommendations {
             get {
                 return ResourceManager.GetString("EmailAndPasswordTypePasswordRecommendations", resourceCulture);
             }
@@ -4555,7 +4555,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password and its confirmation do not match.
         /// </summary>
-        internal static string EmailAndPasswordWrongPassword {
+        public static string EmailAndPasswordWrongPassword {
             get {
                 return ResourceManager.GetString("EmailAndPasswordWrongPassword", resourceCulture);
             }
@@ -4564,7 +4564,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change email.
         /// </summary>
-        internal static string EmailChangeButton {
+        public static string EmailChangeButton {
             get {
                 return ResourceManager.GetString("EmailChangeButton", resourceCulture);
             }
@@ -4573,7 +4573,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The activation instructions will be sent to the entered email.
         /// </summary>
-        internal static string EmailChangeDescription {
+        public static string EmailChangeDescription {
             get {
                 return ResourceManager.GetString("EmailChangeDescription", resourceCulture);
             }
@@ -4582,7 +4582,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email change.
         /// </summary>
-        internal static string EmailChangeTitle {
+        public static string EmailChangeTitle {
             get {
                 return ResourceManager.GetString("EmailChangeTitle", resourceCulture);
             }
@@ -4591,7 +4591,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email is available.
         /// </summary>
-        internal static string EmailIsAvailable {
+        public static string EmailIsAvailable {
             get {
                 return ResourceManager.GetString("EmailIsAvailable", resourceCulture);
             }
@@ -4600,7 +4600,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email is not activated.
         /// </summary>
-        internal static string EmailIsNotConfirmed {
+        public static string EmailIsNotConfirmed {
             get {
                 return ResourceManager.GetString("EmailIsNotConfirmed", resourceCulture);
             }
@@ -4609,7 +4609,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email on domain is not created.
         /// </summary>
-        internal static string EmailOnDomainIsNotCreated {
+        public static string EmailOnDomainIsNotCreated {
             get {
                 return ResourceManager.GetString("EmailOnDomainIsNotCreated", resourceCulture);
             }
@@ -4618,7 +4618,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.{1}You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.{2}The main e-mail can be used as a login when logging in to the portal.{3}.
         /// </summary>
-        internal static string EmailPopupHelper {
+        public static string EmailPopupHelper {
             get {
                 return ResourceManager.GetString("EmailPopupHelper", resourceCulture);
             }
@@ -4627,7 +4627,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!User}.
         /// </summary>
-        internal static string Employee {
+        public static string Employee {
             get {
                 return ResourceManager.GetString("Employee", resourceCulture);
             }
@@ -4636,7 +4636,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to All {!Groups}.
         /// </summary>
-        internal static string EmployeeAllDepartments {
+        public static string EmployeeAllDepartments {
             get {
                 return ResourceManager.GetString("EmployeeAllDepartments", resourceCulture);
             }
@@ -4645,7 +4645,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Users}.
         /// </summary>
-        internal static string Employees {
+        public static string Employees {
             get {
                 return ResourceManager.GetString("Employees", resourceCulture);
             }
@@ -4654,7 +4654,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Staff Search.
         /// </summary>
-        internal static string EmployeesSearch {
+        public static string EmployeesSearch {
             get {
                 return ResourceManager.GetString("EmployeesSearch", resourceCulture);
             }
@@ -4663,7 +4663,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to There is no data taking the storage space.
         /// </summary>
-        internal static string EmptyUsageSpace {
+        public static string EmptyUsageSpace {
             get {
                 return ResourceManager.GetString("EmptyUsageSpace", resourceCulture);
             }
@@ -4672,7 +4672,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable LDAP Authentication.
         /// </summary>
-        internal static string EnableLDAPAuthentication {
+        public static string EnableLDAPAuthentication {
             get {
                 return ResourceManager.GetString("EnableLDAPAuthentication", resourceCulture);
             }
@@ -4681,7 +4681,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable SSL.
         /// </summary>
-        internal static string EnableSSL {
+        public static string EnableSSL {
             get {
                 return ResourceManager.GetString("EnableSSL", resourceCulture);
             }
@@ -4690,7 +4690,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
-        internal static string EnableUserButton {
+        public static string EnableUserButton {
             get {
                 return ResourceManager.GetString("EnableUserButton", resourceCulture);
             }
@@ -4699,7 +4699,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {!user} will be displayed as active again.
         /// </summary>
-        internal static string EnableUserHelp {
+        public static string EnableUserHelp {
             get {
                 return ResourceManager.GetString("EnableUserHelp", resourceCulture);
             }
@@ -4708,7 +4708,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter a new email address.
         /// </summary>
-        internal static string EnterEmail {
+        public static string EnterEmail {
             get {
                 return ResourceManager.GetString("EnterEmail", resourceCulture);
             }
@@ -4717,7 +4717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
-        internal static string Error {
+        public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
@@ -4726,7 +4726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have permission to view this page.
         /// </summary>
-        internal static string Error403Text {
+        public static string Error403Text {
             get {
                 return ResourceManager.GetString("Error403Text", resourceCulture);
             }
@@ -4735,7 +4735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Error 403 - Forbidden.
         /// </summary>
-        internal static string Error403Title {
+        public static string Error403Title {
             get {
                 return ResourceManager.GetString("Error403Title", resourceCulture);
             }
@@ -4744,7 +4744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No permissions to perform this action.
         /// </summary>
-        internal static string ErrorAccessDenied {
+        public static string ErrorAccessDenied {
             get {
                 return ResourceManager.GetString("ErrorAccessDenied", resourceCulture);
             }
@@ -4753,7 +4753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The access to the portal is restricted..
         /// </summary>
-        internal static string ErrorAccessRestricted {
+        public static string ErrorAccessRestricted {
             get {
                 return ResourceManager.GetString("ErrorAccessRestricted", resourceCulture);
             }
@@ -4762,7 +4762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bad keys.
         /// </summary>
-        internal static string ErrorBadKeys {
+        public static string ErrorBadKeys {
             get {
                 return ResourceManager.GetString("ErrorBadKeys", resourceCulture);
             }
@@ -4771,7 +4771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bad request.
         /// </summary>
-        internal static string ErrorBadRequest {
+        public static string ErrorBadRequest {
             get {
                 return ResourceManager.GetString("ErrorBadRequest", resourceCulture);
             }
@@ -4780,7 +4780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid email or expired link.
         /// </summary>
-        internal static string ErrorConfirmURLError {
+        public static string ErrorConfirmURLError {
             get {
                 return ResourceManager.GetString("ErrorConfirmURLError", resourceCulture);
             }
@@ -4789,7 +4789,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your profile is suspended.
         /// </summary>
-        internal static string ErrorDisabledProfile {
+        public static string ErrorDisabledProfile {
             get {
                 return ResourceManager.GetString("ErrorDisabledProfile", resourceCulture);
             }
@@ -4798,7 +4798,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!User} with this email is already registered.
         /// </summary>
-        internal static string ErrorEmailAlreadyExists {
+        public static string ErrorEmailAlreadyExists {
             get {
                 return ResourceManager.GetString("ErrorEmailAlreadyExists", resourceCulture);
             }
@@ -4807,7 +4807,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Emails from this domain are not allowed for registration.
         /// </summary>
-        internal static string ErrorEmailDomainNotAllowed {
+        public static string ErrorEmailDomainNotAllowed {
             get {
                 return ResourceManager.GetString("ErrorEmailDomainNotAllowed", resourceCulture);
             }
@@ -4816,7 +4816,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email field is empty.
         /// </summary>
-        internal static string ErrorEmailEmpty {
+        public static string ErrorEmailEmpty {
             get {
                 return ResourceManager.GetString("ErrorEmailEmpty", resourceCulture);
             }
@@ -4825,7 +4825,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The current email and the new email are the same.
         /// </summary>
-        internal static string ErrorEmailsAreTheSame {
+        public static string ErrorEmailsAreTheSame {
             get {
                 return ResourceManager.GetString("ErrorEmailsAreTheSame", resourceCulture);
             }
@@ -4834,7 +4834,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please fill in all fields.
         /// </summary>
-        internal static string ErrorEmptyFields {
+        public static string ErrorEmptyFields {
             get {
                 return ResourceManager.GetString("ErrorEmptyFields", resourceCulture);
             }
@@ -4843,7 +4843,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Message text is empty.
         /// </summary>
-        internal static string ErrorEmptyMessage {
+        public static string ErrorEmptyMessage {
             get {
                 return ResourceManager.GetString("ErrorEmptyMessage", resourceCulture);
             }
@@ -4852,7 +4852,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter a name.
         /// </summary>
-        internal static string ErrorEmptyName {
+        public static string ErrorEmptyName {
             get {
                 return ResourceManager.GetString("ErrorEmptyName", resourceCulture);
             }
@@ -4861,7 +4861,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The uploaded file could not be found.
         /// </summary>
-        internal static string ErrorEmptyUploadFileSelected {
+        public static string ErrorEmptyUploadFileSelected {
             get {
                 return ResourceManager.GetString("ErrorEmptyUploadFileSelected", resourceCulture);
             }
@@ -4870,7 +4870,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your email address.
         /// </summary>
-        internal static string ErrorEmptyUserEmail {
+        public static string ErrorEmptyUserEmail {
             get {
                 return ResourceManager.GetString("ErrorEmptyUserEmail", resourceCulture);
             }
@@ -4879,7 +4879,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your first name.
         /// </summary>
-        internal static string ErrorEmptyUserFirstName {
+        public static string ErrorEmptyUserFirstName {
             get {
                 return ResourceManager.GetString("ErrorEmptyUserFirstName", resourceCulture);
             }
@@ -4888,7 +4888,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your last name.
         /// </summary>
-        internal static string ErrorEmptyUserLastName {
+        public static string ErrorEmptyUserLastName {
             get {
                 return ResourceManager.GetString("ErrorEmptyUserLastName", resourceCulture);
             }
@@ -4897,7 +4897,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Link has expired.
         /// </summary>
-        internal static string ErrorExpiredActivationLink {
+        public static string ErrorExpiredActivationLink {
             get {
                 return ResourceManager.GetString("ErrorExpiredActivationLink", resourceCulture);
             }
@@ -4906,7 +4906,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Image size is too large.
         /// </summary>
-        internal static string ErrorImageSizetLimit {
+        public static string ErrorImageSizetLimit {
             get {
                 return ResourceManager.GetString("ErrorImageSizetLimit", resourceCulture);
             }
@@ -4915,7 +4915,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
-        internal static string ErrorImageWeightLimit {
+        public static string ErrorImageWeightLimit {
             get {
                 return ResourceManager.GetString("ErrorImageWeightLimit", resourceCulture);
             }
@@ -4924,7 +4924,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect firstname or lastname.
         /// </summary>
-        internal static string ErrorIncorrectUserName {
+        public static string ErrorIncorrectUserName {
             get {
                 return ResourceManager.GetString("ErrorIncorrectUserName", resourceCulture);
             }
@@ -4933,7 +4933,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid activation link.
         /// </summary>
-        internal static string ErrorInvalidActivationLink {
+        public static string ErrorInvalidActivationLink {
             get {
                 return ResourceManager.GetString("ErrorInvalidActivationLink", resourceCulture);
             }
@@ -4942,7 +4942,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The access to the portal is restricted.
         /// </summary>
-        internal static string ErrorIpSecurity {
+        public static string ErrorIpSecurity {
             get {
                 return ResourceManager.GetString("ErrorIpSecurity", resourceCulture);
             }
@@ -4951,7 +4951,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail server not available!.
         /// </summary>
-        internal static string ErrorMailServerNotAvailable {
+        public static string ErrorMailServerNotAvailable {
             get {
                 return ResourceManager.GetString("ErrorMailServerNotAvailable", resourceCulture);
             }
@@ -4960,7 +4960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Registration date must be later than birth date.
         /// </summary>
-        internal static string ErrorMessage_InvalidDate {
+        public static string ErrorMessage_InvalidDate {
             get {
                 return ResourceManager.GetString("ErrorMessage_InvalidDate", resourceCulture);
             }
@@ -4969,7 +4969,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cannot add the same account and contact twice..
         /// </summary>
-        internal static string ErrorMessageContactsDuplicated {
+        public static string ErrorMessageContactsDuplicated {
             get {
                 return ResourceManager.GetString("ErrorMessageContactsDuplicated", resourceCulture);
             }
@@ -4978,7 +4978,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can only enter up to 255 characters for this field..
         /// </summary>
-        internal static string ErrorMessageLongField255 {
+        public static string ErrorMessageLongField255 {
             get {
                 return ResourceManager.GetString("ErrorMessageLongField255", resourceCulture);
             }
@@ -4987,7 +4987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can only enter up to 64 characters for this field..
         /// </summary>
-        internal static string ErrorMessageLongField64 {
+        public static string ErrorMessageLongField64 {
             get {
                 return ResourceManager.GetString("ErrorMessageLongField64", resourceCulture);
             }
@@ -4996,7 +4996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your browser does not support JavaScript!.
         /// </summary>
-        internal static string ErrorNoscript {
+        public static string ErrorNoscript {
             get {
                 return ResourceManager.GetString("ErrorNoscript", resourceCulture);
             }
@@ -5005,7 +5005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your pricing plan does not support this option.
         /// </summary>
-        internal static string ErrorNotAllowedOption {
+        public static string ErrorNotAllowedOption {
             get {
                 return ResourceManager.GetString("ErrorNotAllowedOption", resourceCulture);
             }
@@ -5014,7 +5014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid date format.
         /// </summary>
-        internal static string ErrorNotCorrectDate {
+        public static string ErrorNotCorrectDate {
             get {
                 return ResourceManager.GetString("ErrorNotCorrectDate", resourceCulture);
             }
@@ -5023,7 +5023,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect email.
         /// </summary>
-        internal static string ErrorNotCorrectEmail {
+        public static string ErrorNotCorrectEmail {
             get {
                 return ResourceManager.GetString("ErrorNotCorrectEmail", resourceCulture);
             }
@@ -5032,7 +5032,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid domain name.
         /// </summary>
-        internal static string ErrorNotCorrectTrustedDomain {
+        public static string ErrorNotCorrectTrustedDomain {
             get {
                 return ResourceManager.GetString("ErrorNotCorrectTrustedDomain", resourceCulture);
             }
@@ -5041,7 +5041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The password is empty..
         /// </summary>
-        internal static string ErrorPasswordEmpty {
+        public static string ErrorPasswordEmpty {
             get {
                 return ResourceManager.GetString("ErrorPasswordEmpty", resourceCulture);
             }
@@ -5050,7 +5050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to from {0} to {1} characters.
         /// </summary>
-        internal static string ErrorPasswordLength {
+        public static string ErrorPasswordLength {
             get {
                 return ResourceManager.GetString("ErrorPasswordLength", resourceCulture);
             }
@@ -5059,7 +5059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password must contain.
         /// </summary>
-        internal static string ErrorPasswordMessage {
+        public static string ErrorPasswordMessage {
             get {
                 return ResourceManager.GetString("ErrorPasswordMessage", resourceCulture);
             }
@@ -5068,7 +5068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to It must contain.
         /// </summary>
-        internal static string ErrorPasswordMessageStart {
+        public static string ErrorPasswordMessageStart {
             get {
                 return ResourceManager.GetString("ErrorPasswordMessageStart", resourceCulture);
             }
@@ -5077,7 +5077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to digits.
         /// </summary>
-        internal static string ErrorPasswordNoDigits {
+        public static string ErrorPasswordNoDigits {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoDigits", resourceCulture);
             }
@@ -5086,7 +5086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to no spaces.
         /// </summary>
-        internal static string ErrorPasswordNoSpaces {
+        public static string ErrorPasswordNoSpaces {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoSpaces", resourceCulture);
             }
@@ -5095,7 +5095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to special characters.
         /// </summary>
-        internal static string ErrorPasswordNoSpecialSymbols {
+        public static string ErrorPasswordNoSpecialSymbols {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoSpecialSymbols", resourceCulture);
             }
@@ -5104,7 +5104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to capital letters.
         /// </summary>
-        internal static string ErrorPasswordNoUpperCase {
+        public static string ErrorPasswordNoUpperCase {
             get {
                 return ResourceManager.GetString("ErrorPasswordNoUpperCase", resourceCulture);
             }
@@ -5113,7 +5113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to only latin letters.
         /// </summary>
-        internal static string ErrorPasswordOnlyLatinLetters {
+        public static string ErrorPasswordOnlyLatinLetters {
             get {
                 return ResourceManager.GetString("ErrorPasswordOnlyLatinLetters", resourceCulture);
             }
@@ -5122,7 +5122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Request limit is exceeded.
         /// </summary>
-        internal static string ErrorRequestLimitExceeded {
+        public static string ErrorRequestLimitExceeded {
             get {
                 return ResourceManager.GetString("ErrorRequestLimitExceeded", resourceCulture);
             }
@@ -5131,7 +5131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unknown image file type.
         /// </summary>
-        internal static string ErrorUnknownFileImageType {
+        public static string ErrorUnknownFileImageType {
             get {
                 return ResourceManager.GetString("ErrorUnknownFileImageType", resourceCulture);
             }
@@ -5140,7 +5140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user could not be found.
         /// </summary>
-        internal static string ErrorUserNotFound {
+        public static string ErrorUserNotFound {
             get {
                 return ResourceManager.GetString("ErrorUserNotFound", resourceCulture);
             }
@@ -5149,7 +5149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user with &quot;{0}&quot; email could not be found.
         /// </summary>
-        internal static string ErrorUserNotFoundByEmail {
+        public static string ErrorUserNotFoundByEmail {
             get {
                 return ResourceManager.GetString("ErrorUserNotFoundByEmail", resourceCulture);
             }
@@ -5158,7 +5158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to EU (Ireland) Region.
         /// </summary>
-        internal static string EuServerRegion {
+        public static string EuServerRegion {
             get {
                 return ResourceManager.GetString("EuServerRegion", resourceCulture);
             }
@@ -5167,7 +5167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Every day.
         /// </summary>
-        internal static string EveryDay {
+        public static string EveryDay {
             get {
                 return ResourceManager.GetString("EveryDay", resourceCulture);
             }
@@ -5176,7 +5176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Every month.
         /// </summary>
-        internal static string EveryMonth {
+        public static string EveryMonth {
             get {
                 return ResourceManager.GetString("EveryMonth", resourceCulture);
             }
@@ -5185,7 +5185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Every week.
         /// </summary>
-        internal static string EveryWeek {
+        public static string EveryWeek {
             get {
                 return ResourceManager.GetString("EveryWeek", resourceCulture);
             }
@@ -5194,7 +5194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Feedback &amp;amp; Support.
         /// </summary>
-        internal static string FeedbackSupport {
+        public static string FeedbackSupport {
             get {
                 return ResourceManager.GetString("FeedbackSupport", resourceCulture);
             }
@@ -5203,7 +5203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Female.
         /// </summary>
-        internal static string FemaleSexStatus {
+        public static string FemaleSexStatus {
             get {
                 return ResourceManager.GetString("FemaleSexStatus", resourceCulture);
             }
@@ -5212,7 +5212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The maximum file size is exceeded.
         /// </summary>
-        internal static string FileSizeMaxExceed {
+        public static string FileSizeMaxExceed {
             get {
                 return ResourceManager.GetString("FileSizeMaxExceed", resourceCulture);
             }
@@ -5221,7 +5221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Note: the file size cannot exceed {1}{0}{2}.
         /// </summary>
-        internal static string FileSizeNote {
+        public static string FileSizeNote {
             get {
                 return ResourceManager.GetString("FileSizeNote", resourceCulture);
             }
@@ -5230,7 +5230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to bytes,KB,MB,GB,TB.
         /// </summary>
-        internal static string FileSizePostfix {
+        public static string FileSizePostfix {
             get {
                 return ResourceManager.GetString("FileSizePostfix", resourceCulture);
             }
@@ -5239,7 +5239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to for a period.
         /// </summary>
-        internal static string FilterInPeriod {
+        public static string FilterInPeriod {
             get {
                 return ResourceManager.GetString("FilterInPeriod", resourceCulture);
             }
@@ -5248,7 +5248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to from.
         /// </summary>
-        internal static string FilterInPeriodFromLabel {
+        public static string FilterInPeriodFromLabel {
             get {
                 return ResourceManager.GetString("FilterInPeriodFromLabel", resourceCulture);
             }
@@ -5257,7 +5257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to to.
         /// </summary>
-        internal static string FilterInPeriodToLabel {
+        public static string FilterInPeriodToLabel {
             get {
                 return ResourceManager.GetString("FilterInPeriodToLabel", resourceCulture);
             }
@@ -5266,7 +5266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to last 3 months.
         /// </summary>
-        internal static string FilterLast3Months {
+        public static string FilterLast3Months {
             get {
                 return ResourceManager.GetString("FilterLast3Months", resourceCulture);
             }
@@ -5275,7 +5275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to last month.
         /// </summary>
-        internal static string FilterLastMonth {
+        public static string FilterLastMonth {
             get {
                 return ResourceManager.GetString("FilterLastMonth", resourceCulture);
             }
@@ -5284,7 +5284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to last week.
         /// </summary>
-        internal static string FilterLastWeek {
+        public static string FilterLastWeek {
             get {
                 return ResourceManager.GetString("FilterLastWeek", resourceCulture);
             }
@@ -5293,7 +5293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Congratulations! The users have been successfully added..
         /// </summary>
-        internal static string FinishImportUserTitle {
+        public static string FinishImportUserTitle {
             get {
                 return ResourceManager.GetString("FinishImportUserTitle", resourceCulture);
             }
@@ -5302,7 +5302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The link to confirm your account has been sent to the specified email.
         /// </summary>
-        internal static string FinishInviteJoinEmailMessage {
+        public static string FinishInviteJoinEmailMessage {
             get {
                 return ResourceManager.GetString("FinishInviteJoinEmailMessage", resourceCulture);
             }
@@ -5311,7 +5311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
-        internal static string FirstName {
+        public static string FirstName {
             get {
                 return ResourceManager.GetString("FirstName", resourceCulture);
             }
@@ -5320,7 +5320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Forgot your password?.
         /// </summary>
-        internal static string ForgotPassword {
+        public static string ForgotPassword {
             get {
                 return ResourceManager.GetString("ForgotPassword", resourceCulture);
             }
@@ -5329,7 +5329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to For mobile.
         /// </summary>
-        internal static string ForMobile {
+        public static string ForMobile {
             get {
                 return ResourceManager.GetString("ForMobile", resourceCulture);
             }
@@ -5338,7 +5338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To sign in please follow this {0}link{1}.
         /// </summary>
-        internal static string ForSignInFollowMessage {
+        public static string ForSignInFollowMessage {
             get {
                 return ResourceManager.GetString("ForSignInFollowMessage", resourceCulture);
             }
@@ -5347,7 +5347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to For your PC.
         /// </summary>
-        internal static string ForYourPC {
+        public static string ForYourPC {
             get {
                 return ResourceManager.GetString("ForYourPC", resourceCulture);
             }
@@ -5356,7 +5356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Free ONLYOFFICE desktop and mobile apps.
         /// </summary>
-        internal static string FreeOfficeDesktopDndMobileApps {
+        public static string FreeOfficeDesktopDndMobileApps {
             get {
                 return ResourceManager.GetString("FreeOfficeDesktopDndMobileApps", resourceCulture);
             }
@@ -5365,7 +5365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Free SMS.
         /// </summary>
-        internal static string FreeSms {
+        public static string FreeSms {
             get {
                 return ResourceManager.GetString("FreeSms", resourceCulture);
             }
@@ -5374,7 +5374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to from.
         /// </summary>
-        internal static string FromTime {
+        public static string FromTime {
             get {
                 return ResourceManager.GetString("FromTime", resourceCulture);
             }
@@ -5383,7 +5383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Full text search service is not running.
         /// </summary>
-        internal static string FullTextSearchServiceIsNotRunning {
+        public static string FullTextSearchServiceIsNotRunning {
             get {
                 return ResourceManager.GetString("FullTextSearchServiceIsNotRunning", resourceCulture);
             }
@@ -5392,7 +5392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Full text search service is running.
         /// </summary>
-        internal static string FullTextSearchServiceIsRunning {
+        public static string FullTextSearchServiceIsRunning {
             get {
                 return ResourceManager.GetString("FullTextSearchServiceIsRunning", resourceCulture);
             }
@@ -5401,7 +5401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sphinx Settings.
         /// </summary>
-        internal static string FullTextSearchSettings {
+        public static string FullTextSearchSettings {
             get {
                 return ResourceManager.GetString("FullTextSearchSettings", resourceCulture);
             }
@@ -5410,7 +5410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To use the full text search you need sphinx.2.2.10 installed on your server..
         /// </summary>
-        internal static string FullTextSearchSettingsHelp {
+        public static string FullTextSearchSettingsHelp {
             get {
                 return ResourceManager.GetString("FullTextSearchSettingsHelp", resourceCulture);
             }
@@ -5419,7 +5419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Settings for work with sphinx, indexer and search daemon launch. You need to specify the host and the port number which is listened to by the searchd search daemon. These settings must coincide with sphinx configuration in the searchd section of the sphinx.conf.in file..
         /// </summary>
-        internal static string FullTextSearchSettingsText {
+        public static string FullTextSearchSettingsText {
             get {
                 return ResourceManager.GetString("FullTextSearchSettingsText", resourceCulture);
             }
@@ -5428,7 +5428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
-        internal static string FullTextSearchTestButton {
+        public static string FullTextSearchTestButton {
             get {
                 return ResourceManager.GetString("FullTextSearchTestButton", resourceCulture);
             }
@@ -5437,7 +5437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
-        internal static string GeneralSettings {
+        public static string GeneralSettings {
             get {
                 return ResourceManager.GetString("GeneralSettings", resourceCulture);
             }
@@ -5446,7 +5446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
-        internal static string GeneralSubscriptionName {
+        public static string GeneralSubscriptionName {
             get {
                 return ResourceManager.GetString("GeneralSubscriptionName", resourceCulture);
             }
@@ -5455,7 +5455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Get contacts.
         /// </summary>
-        internal static string GetContacts {
+        public static string GetContacts {
             get {
                 return ResourceManager.GetString("GetContacts", resourceCulture);
             }
@@ -5464,7 +5464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Get it now.
         /// </summary>
-        internal static string GetItNow {
+        public static string GetItNow {
             get {
                 return ResourceManager.GetString("GetItNow", resourceCulture);
             }
@@ -5473,7 +5473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Get shortened link.
         /// </summary>
-        internal static string GetShortenLink {
+        public static string GetShortenLink {
             get {
                 return ResourceManager.GetString("GetShortenLink", resourceCulture);
             }
@@ -5482,7 +5482,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Go to contact list.
         /// </summary>
-        internal static string GoToContactListBtn {
+        public static string GoToContactListBtn {
             get {
                 return ResourceManager.GetString("GoToContactListBtn", resourceCulture);
             }
@@ -5491,7 +5491,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Logo.
         /// </summary>
-        internal static string GreetingLogo {
+        public static string GreetingLogo {
             get {
                 return ResourceManager.GetString("GreetingLogo", resourceCulture);
             }
@@ -5500,7 +5500,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome Page Settings.
         /// </summary>
-        internal static string GreetingSettingsTitle {
+        public static string GreetingSettingsTitle {
             get {
                 return ResourceManager.GetString("GreetingSettingsTitle", resourceCulture);
             }
@@ -5509,7 +5509,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string GreetingTitle {
+        public static string GreetingTitle {
             get {
                 return ResourceManager.GetString("GreetingTitle", resourceCulture);
             }
@@ -5518,7 +5518,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
-        internal static string GroupCaption {
+        public static string GroupCaption {
             get {
                 return ResourceManager.GetString("GroupCaption", resourceCulture);
             }
@@ -5527,7 +5527,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Lead.
         /// </summary>
-        internal static string GroupHeadCaption {
+        public static string GroupHeadCaption {
             get {
                 return ResourceManager.GetString("GroupHeadCaption", resourceCulture);
             }
@@ -5536,7 +5536,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
-        internal static string GroupsCaption {
+        public static string GroupsCaption {
             get {
                 return ResourceManager.GetString("GroupsCaption", resourceCulture);
             }
@@ -5545,7 +5545,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Guest}.
         /// </summary>
-        internal static string Guest {
+        public static string Guest {
             get {
                 return ResourceManager.GetString("Guest", resourceCulture);
             }
@@ -5554,7 +5554,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guest.
         /// </summary>
-        internal static string GuestCaption {
+        public static string GuestCaption {
             get {
                 return ResourceManager.GetString("GuestCaption", resourceCulture);
             }
@@ -5563,7 +5563,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Guests}.
         /// </summary>
-        internal static string Guests {
+        public static string Guests {
             get {
                 return ResourceManager.GetString("Guests", resourceCulture);
             }
@@ -5572,7 +5572,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guests.
         /// </summary>
-        internal static string GuestsCaption {
+        public static string GuestsCaption {
             get {
                 return ResourceManager.GetString("GuestsCaption", resourceCulture);
             }
@@ -5581,7 +5581,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
-        internal static string Help {
+        public static string Help {
             get {
                 return ResourceManager.GetString("Help", resourceCulture);
             }
@@ -5590,7 +5590,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to If you wish to {1}deactivate{2} the portal, your portal and all information associated with it will be blocked so that no one has access to it for a particular period. To do that click the {1}Deactivate{2} button. A link to confirm the operation will be sent to the email address of the portal owner.{0}In case you want to come back to the ONLYOFFICE™ portal and resume using it you will need to use the second link provided in the confirmation email. So, please, keep this email in a safe place.{0}If you do not [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string HelpAnswerAccountDeactivation {
+        public static string HelpAnswerAccountDeactivation {
             get {
                 return ResourceManager.GetString("HelpAnswerAccountDeactivation", resourceCulture);
             }
@@ -5599,7 +5599,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Administrator Message Settings{2} is a way to contact the portal administrator.{0}Enable this option to display the contact form on the {1}Sign In{2} page so that people could send the message to the portal administrator in case they have troubles accessing the portal.{0}To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerAdminMessSettings {
+        public static string HelpAnswerAdminMessSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerAdminMessSettings", resourceCulture);
             }
@@ -5608,7 +5608,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Color Themes{2} let you customize your portal interface according to your company brand.{0} Select one of the color themes from the list on the left.{0} To apply the selected color theme, click the {1}Save{2} button at the bottom of this section..
         /// </summary>
-        internal static string HelpAnswerColorTheme {
+        public static string HelpAnswerColorTheme {
             get {
                 return ResourceManager.GetString("HelpAnswerColorTheme", resourceCulture);
             }
@@ -5617,7 +5617,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Default Start Page{1} is a way to select the module you go to right after you log in to the portal or click the ONLYOFFICE™ logo when you have already signed in. To make the parameters you set take effect click the {0}Save{1} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerDefaultPageSettings {
+        public static string HelpAnswerDefaultPageSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerDefaultPageSettings", resourceCulture);
             }
@@ -5626,7 +5626,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}DNS Settings{2} is a way to set an alternative URL for your ONLYOFFICE™ portal.{0}Check the {1}Custom domain name{2} box and specify your own domain name for the ONLYOFFICE™ portal in the field below.{0} To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerDNSSettings {
+        public static string HelpAnswerDNSSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerDNSSettings", resourceCulture);
             }
@@ -5635,7 +5635,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Welcome Page Settings{2} is a way to change the default portal title to be displayed on the {1}Welcome Page{2} of your portal. The same name is also used for the {1}From{2} field of your portal email notifications.{0}Enter the name you like in the {1}Title{2} field..
         /// </summary>
-        internal static string HelpAnswerGreetingSettings {
+        public static string HelpAnswerGreetingSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerGreetingSettings", resourceCulture);
             }
@@ -5644,7 +5644,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Share the link to invite your colleagues to your portal..
         /// </summary>
-        internal static string HelpAnswerLinkInviteSettings {
+        public static string HelpAnswerLinkInviteSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerLinkInviteSettings", resourceCulture);
             }
@@ -5653,7 +5653,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Language and Time Zone Settings{2} is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the ONLYOFFICE™ portal will be shown with the correct date and time.{0}To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerLngTimeSettings {
+        public static string HelpAnswerLngTimeSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerLngTimeSettings", resourceCulture);
             }
@@ -5662,7 +5662,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Logo Settings{2} is a way to change the default logo to be displayed on the {1}Welcome Page{2} of your portal.{0} To replace the portal logo click the {1}Change Logo{2} link to the right and select the image stored on your computer to load it to your portal.{0}Please, keep in mind that you can upload an image not larger than {1}250x100 pixels{2}, otherwise resizing will take place. The maximum image size cannot exceed {1}1 MB{2}..
         /// </summary>
-        internal static string HelpAnswerLogoSettings {
+        public static string HelpAnswerLogoSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerLogoSettings", resourceCulture);
             }
@@ -5671,7 +5671,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Trusted Mail Domain Settings{2} is a way to specify the mail servers used for user self-registration.{0}You can either to check the {1}Custom domains{2} option and enter the trusted mail server in the field below so that person who has an account at it will be able to register him(her)self by clicking the Join link on the {1}Sign In{2} page or disable this option.{0}To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerMailDomainSettings {
+        public static string HelpAnswerMailDomainSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerMailDomainSettings", resourceCulture);
             }
@@ -5680,7 +5680,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Password Strength Settings{2}is a way to determine the effectiveness of a password in resisting guessing and brute-force attacks.{0}Use the {1}Minimum Password Length{2} bar to determine how long the password should be. Check the appropriate boxes below to determine the character set that must be used in the password.{0}To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerPasswordSettings {
+        public static string HelpAnswerPasswordSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerPasswordSettings", resourceCulture);
             }
@@ -5689,7 +5689,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Public Portal{2} is a free option that allows anyone to view your public contents without registration. No private projects are available and the CRM module is disabled for such portals.{0}Registration to public portals is not limited in number of users, new users are added upon the request to the portal administrator. Use the {1}Register new users Immediately{2} option to remove any registration confirmation necessity..
         /// </summary>
-        internal static string HelpAnswerPortalAccessSettings {
+        public static string HelpAnswerPortalAccessSettings {
             get {
                 return ResourceManager.GetString("HelpAnswerPortalAccessSettings", resourceCulture);
             }
@@ -5698,7 +5698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE includes Google Analytics tracking to help our team better understand how to you use it during your daily work.{0}By enabling this feature? you provide ONLYOFFICE team with valuable metrics, allowing us to better analyze patterns and new features and bug fixes faster..
         /// </summary>
-        internal static string HelpAnswerPortalAnalytics {
+        public static string HelpAnswerPortalAnalytics {
             get {
                 return ResourceManager.GetString("HelpAnswerPortalAnalytics", resourceCulture);
             }
@@ -5708,7 +5708,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to Here you can change your portal address. Enter the part that will appear next to the onlyoffice.com/onlyoffice.eu portal address.{0}
         ///{1}Please note{2}: your old portal address will become available to new ONLYOFFICE users once you click the {1}Save{2} button..
         /// </summary>
-        internal static string HelpAnswerPortalRename {
+        public static string HelpAnswerPortalRename {
             get {
                 return ResourceManager.GetString("HelpAnswerPortalRename", resourceCulture);
             }
@@ -5717,7 +5717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Portal Version{2} is a way to switch between the available ONLYOFFICE™ portal versions.{0}You can either use the new version or switch back to the previous version of the portal.{0}To make the parameters you set take effect click the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerPortalVersion {
+        public static string HelpAnswerPortalVersion {
             get {
                 return ResourceManager.GetString("HelpAnswerPortalVersion", resourceCulture);
             }
@@ -5726,7 +5726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {1}Team Template{2} is a customizable way to name the organization (or group), its members and their activities.{0}Drop down the {1}Template{2} list to choose one of the available presets or enter the names yourselves selecting the {1}Custom{2} option from the list.{0}To apply the selected template use the {1}Save{2} button at the bottom of the section..
         /// </summary>
-        internal static string HelpAnswerTeamTemplate {
+        public static string HelpAnswerTeamTemplate {
             get {
                 return ResourceManager.GetString("HelpAnswerTeamTemplate", resourceCulture);
             }
@@ -5735,7 +5735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Migrating the portal to the servers of the region closest to your geographical location will make the portal response faster. The closer your users and clients are located to the server region, the faster the portal speed will be.{0}To start the migration process click the {1}Change Server Region{2} button at the section bottom.{0}{1}Note:{2} once the process is started, it cannot be canceled. Please also note that due to technical limitations only the mail for the last 30 days will be transferred..
         /// </summary>
-        internal static string HelpAnswerTransferPortal {
+        public static string HelpAnswerTransferPortal {
             get {
                 return ResourceManager.GetString("HelpAnswerTransferPortal", resourceCulture);
             }
@@ -5744,7 +5744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Help Center.
         /// </summary>
-        internal static string HelpCenter {
+        public static string HelpCenter {
             get {
                 return ResourceManager.GetString("HelpCenter", resourceCulture);
             }
@@ -5753,7 +5753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The program purpose is to legally advertise ONLYOFFICE™ to receive a commission on subscriptions purchased by referred individuals..
         /// </summary>
-        internal static string HelpJoinToAffilliate {
+        public static string HelpJoinToAffilliate {
             get {
                 return ResourceManager.GetString("HelpJoinToAffilliate", resourceCulture);
             }
@@ -5762,7 +5762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hide.
         /// </summary>
-        internal static string Hide {
+        public static string Hide {
             get {
                 return ResourceManager.GetString("Hide", resourceCulture);
             }
@@ -5771,7 +5771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hide.
         /// </summary>
-        internal static string HideButton {
+        public static string HideButton {
             get {
                 return ResourceManager.GetString("HideButton", resourceCulture);
             }
@@ -5780,7 +5780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your AIM account.
         /// </summary>
-        internal static string HintAim {
+        public static string HintAim {
             get {
                 return ResourceManager.GetString("HintAim", resourceCulture);
             }
@@ -5789,7 +5789,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Blogger profile.
         /// </summary>
-        internal static string HintBlogger {
+        public static string HintBlogger {
             get {
                 return ResourceManager.GetString("HintBlogger", resourceCulture);
             }
@@ -5798,7 +5798,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Email.
         /// </summary>
-        internal static string HintEmail {
+        public static string HintEmail {
             get {
                 return ResourceManager.GetString("HintEmail", resourceCulture);
             }
@@ -5807,7 +5807,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Facebook profile.
         /// </summary>
-        internal static string HintFacebook {
+        public static string HintFacebook {
             get {
                 return ResourceManager.GetString("HintFacebook", resourceCulture);
             }
@@ -5816,7 +5816,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your account login name or ID.
         /// </summary>
-        internal static string HintForSocialAccounts {
+        public static string HintForSocialAccounts {
             get {
                 return ResourceManager.GetString("HintForSocialAccounts", resourceCulture);
             }
@@ -5825,7 +5825,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your GoogleTalk account.
         /// </summary>
-        internal static string HintGoggletalk {
+        public static string HintGoggletalk {
             get {
                 return ResourceManager.GetString("HintGoggletalk", resourceCulture);
             }
@@ -5834,7 +5834,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your GoogleBuzz profile.
         /// </summary>
-        internal static string HintGooglebuzz {
+        public static string HintGooglebuzz {
             get {
                 return ResourceManager.GetString("HintGooglebuzz", resourceCulture);
             }
@@ -5843,7 +5843,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Google account.
         /// </summary>
-        internal static string HintGooglemail {
+        public static string HintGooglemail {
             get {
                 return ResourceManager.GetString("HintGooglemail", resourceCulture);
             }
@@ -5852,7 +5852,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your ICQ account.
         /// </summary>
-        internal static string HintIcq {
+        public static string HintIcq {
             get {
                 return ResourceManager.GetString("HintIcq", resourceCulture);
             }
@@ -5861,7 +5861,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Jabber account.
         /// </summary>
-        internal static string HintJabber {
+        public static string HintJabber {
             get {
                 return ResourceManager.GetString("HintJabber", resourceCulture);
             }
@@ -5870,7 +5870,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your LiveJournal profile.
         /// </summary>
-        internal static string HintLivejournal {
+        public static string HintLivejournal {
             get {
                 return ResourceManager.GetString("HintLivejournal", resourceCulture);
             }
@@ -5879,7 +5879,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your mobile phone number.
         /// </summary>
-        internal static string HintMobphone {
+        public static string HintMobphone {
             get {
                 return ResourceManager.GetString("HintMobphone", resourceCulture);
             }
@@ -5888,7 +5888,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your MSN account.
         /// </summary>
-        internal static string HintMsn {
+        public static string HintMsn {
             get {
                 return ResourceManager.GetString("HintMsn", resourceCulture);
             }
@@ -5897,7 +5897,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your MySpace profile.
         /// </summary>
-        internal static string HintMyspace {
+        public static string HintMyspace {
             get {
                 return ResourceManager.GetString("HintMyspace", resourceCulture);
             }
@@ -5906,7 +5906,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your phone number.
         /// </summary>
-        internal static string HintPhone {
+        public static string HintPhone {
             get {
                 return ResourceManager.GetString("HintPhone", resourceCulture);
             }
@@ -5915,7 +5915,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Skype account.
         /// </summary>
-        internal static string HintSkype {
+        public static string HintSkype {
             get {
                 return ResourceManager.GetString("HintSkype", resourceCulture);
             }
@@ -5924,7 +5924,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Twitter profile.
         /// </summary>
-        internal static string HintTwitter {
+        public static string HintTwitter {
             get {
                 return ResourceManager.GetString("HintTwitter", resourceCulture);
             }
@@ -5933,7 +5933,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your Yahoo account.
         /// </summary>
-        internal static string HintYahoo {
+        public static string HintYahoo {
             get {
                 return ResourceManager.GetString("HintYahoo", resourceCulture);
             }
@@ -5942,7 +5942,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SMTP Server Address.
         /// </summary>
-        internal static string Host {
+        public static string Host {
             get {
                 return ResourceManager.GetString("Host", resourceCulture);
             }
@@ -5951,7 +5951,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Host Login.
         /// </summary>
-        internal static string HostLogin {
+        public static string HostLogin {
             get {
                 return ResourceManager.GetString("HostLogin", resourceCulture);
             }
@@ -5960,7 +5960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Host.
         /// </summary>
-        internal static string HostName {
+        public static string HostName {
             get {
                 return ResourceManager.GetString("HostName", resourceCulture);
             }
@@ -5969,7 +5969,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Host Password.
         /// </summary>
-        internal static string HostPassword {
+        public static string HostPassword {
             get {
                 return ResourceManager.GetString("HostPassword", resourceCulture);
             }
@@ -5978,7 +5978,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Manually.
         /// </summary>
-        internal static string ImportButtonManually {
+        public static string ImportButtonManually {
             get {
                 return ResourceManager.GetString("ImportButtonManually", resourceCulture);
             }
@@ -5987,7 +5987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
-        internal static string ImportContactsAddButton {
+        public static string ImportContactsAddButton {
             get {
                 return ResourceManager.GetString("ImportContactsAddButton", resourceCulture);
             }
@@ -5996,7 +5996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!User} already exists.
         /// </summary>
-        internal static string ImportContactsAlreadyExists {
+        public static string ImportContactsAlreadyExists {
             get {
                 return ResourceManager.GetString("ImportContactsAlreadyExists", resourceCulture);
             }
@@ -6005,7 +6005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        internal static string ImportContactsCancelButton {
+        public static string ImportContactsCancelButton {
             get {
                 return ResourceManager.GetString("ImportContactsCancelButton", resourceCulture);
             }
@@ -6014,7 +6014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
-        internal static string ImportContactsClearButton {
+        public static string ImportContactsClearButton {
             get {
                 return ResourceManager.GetString("ImportContactsClearButton", resourceCulture);
             }
@@ -6023,7 +6023,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string ImportContactsDeleteButton {
+        public static string ImportContactsDeleteButton {
             get {
                 return ResourceManager.GetString("ImportContactsDeleteButton", resourceCulture);
             }
@@ -6032,7 +6032,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!users} using the contact information from Google, Yahoo from a CSV file{0} or an email client contact book, or entering the {!user} first and last name and email manually..
         /// </summary>
-        internal static string ImportContactsDescription {
+        public static string ImportContactsDescription {
             get {
                 return ResourceManager.GetString("ImportContactsDescription", resourceCulture);
             }
@@ -6041,7 +6041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        internal static string ImportContactsEmail {
+        public static string ImportContactsEmail {
             get {
                 return ResourceManager.GetString("ImportContactsEmail", resourceCulture);
             }
@@ -6050,7 +6050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No contacts have been received.{0}You can also import contacts from other profiles..
         /// </summary>
-        internal static string ImportContactsEmptyData {
+        public static string ImportContactsEmptyData {
             get {
                 return ResourceManager.GetString("ImportContactsEmptyData", resourceCulture);
             }
@@ -6059,7 +6059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the user email.
         /// </summary>
-        internal static string ImportContactsEmptyEmail {
+        public static string ImportContactsEmptyEmail {
             get {
                 return ResourceManager.GetString("ImportContactsEmptyEmail", resourceCulture);
             }
@@ -6068,7 +6068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the user first name.
         /// </summary>
-        internal static string ImportContactsEmptyFirstName {
+        public static string ImportContactsEmptyFirstName {
             get {
                 return ResourceManager.GetString("ImportContactsEmptyFirstName", resourceCulture);
             }
@@ -6077,7 +6077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the user last name.
         /// </summary>
-        internal static string ImportContactsEmptyLastName {
+        public static string ImportContactsEmptyLastName {
             get {
                 return ResourceManager.GetString("ImportContactsEmptyLastName", resourceCulture);
             }
@@ -6086,7 +6086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your email.
         /// </summary>
-        internal static string ImportContactsErrorEmail {
+        public static string ImportContactsErrorEmail {
             get {
                 return ResourceManager.GetString("ImportContactsErrorEmail", resourceCulture);
             }
@@ -6095,7 +6095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your first name.
         /// </summary>
-        internal static string ImportContactsErrorFirstName {
+        public static string ImportContactsErrorFirstName {
             get {
                 return ResourceManager.GetString("ImportContactsErrorFirstName", resourceCulture);
             }
@@ -6104,7 +6104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Import error.
         /// </summary>
-        internal static string ImportContactsErrorHeader {
+        public static string ImportContactsErrorHeader {
             get {
                 return ResourceManager.GetString("ImportContactsErrorHeader", resourceCulture);
             }
@@ -6113,7 +6113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter your last name.
         /// </summary>
-        internal static string ImportContactsErrorLastName {
+        public static string ImportContactsErrorLastName {
             get {
                 return ResourceManager.GetString("ImportContactsErrorLastName", resourceCulture);
             }
@@ -6122,7 +6122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please, enter the first name, last name and email of a {!user} who will be added to the portal into the fields above. Click the &apos;Add&apos; button to append the {!user} to the list..
         /// </summary>
-        internal static string ImportContactsFirstable {
+        public static string ImportContactsFirstable {
             get {
                 return ResourceManager.GetString("ImportContactsFirstable", resourceCulture);
             }
@@ -6131,7 +6131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to First name.
         /// </summary>
-        internal static string ImportContactsFirstName {
+        public static string ImportContactsFirstName {
             get {
                 return ResourceManager.GetString("ImportContactsFirstName", resourceCulture);
             }
@@ -6140,7 +6140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to From File.
         /// </summary>
-        internal static string ImportContactsFromFile {
+        public static string ImportContactsFromFile {
             get {
                 return ResourceManager.GetString("ImportContactsFromFile", resourceCulture);
             }
@@ -6149,7 +6149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to CSV text file.
         /// </summary>
-        internal static string ImportContactsFromFileCSV {
+        public static string ImportContactsFromFileCSV {
             get {
                 return ResourceManager.GetString("ImportContactsFromFileCSV", resourceCulture);
             }
@@ -6158,7 +6158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The file selected for importing has a wrong format.{0}Please, select another file and repeat the importing process once again..
         /// </summary>
-        internal static string ImportContactsFromFileError {
+        public static string ImportContactsFromFileError {
             get {
                 return ResourceManager.GetString("ImportContactsFromFileError", resourceCulture);
             }
@@ -6167,7 +6167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selected file is too large. The size of the uploaded file should not exceed: {0} kB..
         /// </summary>
-        internal static string ImportContactsFromFileErrorTooLarge {
+        public static string ImportContactsFromFileErrorTooLarge {
             get {
                 return ResourceManager.GetString("ImportContactsFromFileErrorTooLarge", resourceCulture);
             }
@@ -6176,7 +6176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to MS Outlook Express CSV.
         /// </summary>
-        internal static string ImportContactsFromFileMS {
+        public static string ImportContactsFromFileMS {
             get {
                 return ResourceManager.GetString("ImportContactsFromFileMS", resourceCulture);
             }
@@ -6185,7 +6185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add {!users} to the portal.
         /// </summary>
-        internal static string ImportContactsHeader {
+        public static string ImportContactsHeader {
             get {
                 return ResourceManager.GetString("ImportContactsHeader", resourceCulture);
             }
@@ -6194,7 +6194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make sure that all user fields including first name, last name and email address are filled correctly.
         /// </summary>
-        internal static string ImportContactsIncorrectFields {
+        public static string ImportContactsIncorrectFields {
             get {
                 return ResourceManager.GetString("ImportContactsIncorrectFields", resourceCulture);
             }
@@ -6203,7 +6203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid the user email.
         /// </summary>
-        internal static string ImportContactsInvalidEmail {
+        public static string ImportContactsInvalidEmail {
             get {
                 return ResourceManager.GetString("ImportContactsInvalidEmail", resourceCulture);
             }
@@ -6212,7 +6212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid the user first name.
         /// </summary>
-        internal static string ImportContactsInvalidFirstName {
+        public static string ImportContactsInvalidFirstName {
             get {
                 return ResourceManager.GetString("ImportContactsInvalidFirstName", resourceCulture);
             }
@@ -6221,7 +6221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid the user last name.
         /// </summary>
-        internal static string ImportContactsInvalidLastName {
+        public static string ImportContactsInvalidLastName {
             get {
                 return ResourceManager.GetString("ImportContactsInvalidLastName", resourceCulture);
             }
@@ -6230,7 +6230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this link to invite co-workers and friends to join your portal. Copy the link below and paste into the email to send it to the people you wish to invite. After they follow this link and enter their email, first name, last name and password they will be automatically added to your portal and will be able to start collaborating with you. The link is valid for 7 days..
         /// </summary>
-        internal static string ImportContactsInviteHint {
+        public static string ImportContactsInviteHint {
             get {
                 return ResourceManager.GetString("ImportContactsInviteHint", resourceCulture);
             }
@@ -6239,7 +6239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to or invite them.
         /// </summary>
-        internal static string ImportContactsInviteLinkLabel {
+        public static string ImportContactsInviteLinkLabel {
             get {
                 return ResourceManager.GetString("ImportContactsInviteLinkLabel", resourceCulture);
             }
@@ -6248,7 +6248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Last name.
         /// </summary>
-        internal static string ImportContactsLastName {
+        public static string ImportContactsLastName {
             get {
                 return ResourceManager.GetString("ImportContactsLastName", resourceCulture);
             }
@@ -6257,7 +6257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        internal static string ImportContactsOkButton {
+        public static string ImportContactsOkButton {
             get {
                 return ResourceManager.GetString("ImportContactsOkButton", resourceCulture);
             }
@@ -6266,7 +6266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Selected.
         /// </summary>
-        internal static string ImportContactsSaveButton {
+        public static string ImportContactsSaveButton {
             get {
                 return ResourceManager.GetString("ImportContactsSaveButton", resourceCulture);
             }
@@ -6275,7 +6275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You need a properly formed CSV file to import {!users} from it. The file must have the following row structure: Email,First name,Last name.
         /// </summary>
-        internal static string ImportContactsSmallDescription {
+        public static string ImportContactsSmallDescription {
             get {
                 return ResourceManager.GetString("ImportContactsSmallDescription", resourceCulture);
             }
@@ -6284,7 +6284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delimiter.
         /// </summary>
-        internal static string ImportDelimiter {
+        public static string ImportDelimiter {
             get {
                 return ResourceManager.GetString("ImportDelimiter", resourceCulture);
             }
@@ -6293,7 +6293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Encoding.
         /// </summary>
-        internal static string ImportEncoding {
+        public static string ImportEncoding {
             get {
                 return ResourceManager.GetString("ImportEncoding", resourceCulture);
             }
@@ -6302,7 +6302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select a CSV exported from {0} Outllok, {1} Gmail, {2} Tunderbird or another application, or generated by yourself..
         /// </summary>
-        internal static string ImportFileCSV {
+        public static string ImportFileCSV {
             get {
                 return ResourceManager.GetString("ImportFileCSV", resourceCulture);
             }
@@ -6311,7 +6311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Filename .
         /// </summary>
-        internal static string ImportFileName {
+        public static string ImportFileName {
             get {
                 return ResourceManager.GetString("ImportFileName", resourceCulture);
             }
@@ -6320,7 +6320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Import from Basecamp.
         /// </summary>
-        internal static string ImportFromBaseCamp {
+        public static string ImportFromBaseCamp {
             get {
                 return ResourceManager.GetString("ImportFromBaseCamp", resourceCulture);
             }
@@ -6329,7 +6329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Import from Google.
         /// </summary>
-        internal static string ImportFromGoogle {
+        public static string ImportFromGoogle {
             get {
                 return ResourceManager.GetString("ImportFromGoogle", resourceCulture);
             }
@@ -6338,7 +6338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Import from Yahoo.
         /// </summary>
-        internal static string ImportFromYahoo {
+        public static string ImportFromYahoo {
             get {
                 return ResourceManager.GetString("ImportFromYahoo", resourceCulture);
             }
@@ -6347,7 +6347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select another source.
         /// </summary>
-        internal static string ImportSelectAnotherSource {
+        public static string ImportSelectAnotherSource {
             get {
                 return ResourceManager.GetString("ImportSelectAnotherSource", resourceCulture);
             }
@@ -6356,7 +6356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select the data source.
         /// </summary>
-        internal static string ImportSelectDataSource {
+        public static string ImportSelectDataSource {
             get {
                 return ResourceManager.GetString("ImportSelectDataSource", resourceCulture);
             }
@@ -6365,7 +6365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Text Delimiter.
         /// </summary>
-        internal static string ImportTextDelimiter {
+        public static string ImportTextDelimiter {
             get {
                 return ResourceManager.GetString("ImportTextDelimiter", resourceCulture);
             }
@@ -6374,7 +6374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Do you agree to add users with the specified rights?.
         /// </summary>
-        internal static string ImportUserLimitDecision {
+        public static string ImportUserLimitDecision {
             get {
                 return ResourceManager.GetString("ImportUserLimitDecision", resourceCulture);
             }
@@ -6383,7 +6383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You current pricing plan allows you to add {0} users..
         /// </summary>
-        internal static string ImportUserLimitHeader {
+        public static string ImportUserLimitHeader {
             get {
                 return ResourceManager.GetString("ImportUserLimitHeader", resourceCulture);
             }
@@ -6392,7 +6392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Yes, add users.
         /// </summary>
-        internal static string ImportUserLimitOkButtons {
+        public static string ImportUserLimitOkButtons {
             get {
                 return ResourceManager.GetString("ImportUserLimitOkButtons", resourceCulture);
             }
@@ -6401,7 +6401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upgrade your pricing plan or add more users as guests with view-only permissions. You will be able to change their roles later in the &apos;People&apos; module..
         /// </summary>
-        internal static string ImportUserLimitReason {
+        public static string ImportUserLimitReason {
             get {
                 return ResourceManager.GetString("ImportUserLimitReason", resourceCulture);
             }
@@ -6410,7 +6410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Adding users.
         /// </summary>
-        internal static string ImportUserLimitTitle {
+        public static string ImportUserLimitTitle {
             get {
                 return ResourceManager.GetString("ImportUserLimitTitle", resourceCulture);
             }
@@ -6419,7 +6419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upgrade your plan or add more users as guests with view-only permissions. You will be able to change their roles later in the &apos;People&apos; module or {0}Read about non-profit usage{1}.
         /// </summary>
-        internal static string ImportUserOpenPortalLimitReason {
+        public static string ImportUserOpenPortalLimitReason {
             get {
                 return ResourceManager.GetString("ImportUserOpenPortalLimitReason", resourceCulture);
             }
@@ -6428,7 +6428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your pricing plan does not allow you to add any more users.
         /// </summary>
-        internal static string ImportUserOverlimitHeader {
+        public static string ImportUserOverlimitHeader {
             get {
                 return ResourceManager.GetString("ImportUserOverlimitHeader", resourceCulture);
             }
@@ -6437,7 +6437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The selected users will be added as guests. You will be able to change their roles later in the &apos;People&apos; module..
         /// </summary>
-        internal static string ImportUserOverlimitReason {
+        public static string ImportUserOverlimitReason {
             get {
                 return ResourceManager.GetString("ImportUserOverlimitReason", resourceCulture);
             }
@@ -6446,7 +6446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Import Users.
         /// </summary>
-        internal static string ImportUsersProgressText {
+        public static string ImportUsersProgressText {
             get {
                 return ResourceManager.GetString("ImportUsersProgressText", resourceCulture);
             }
@@ -6455,7 +6455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Setting up compliance.
         /// </summary>
-        internal static string ImportWizardSecondStep {
+        public static string ImportWizardSecondStep {
             get {
                 return ResourceManager.GetString("ImportWizardSecondStep", resourceCulture);
             }
@@ -6464,7 +6464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to In.
         /// </summary>
-        internal static string In {
+        public static string In {
             get {
                 return ResourceManager.GetString("In", resourceCulture);
             }
@@ -6473,7 +6473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect IP address format.
         /// </summary>
-        internal static string IncorrectIPAddressFormat {
+        public static string IncorrectIPAddressFormat {
             get {
                 return ResourceManager.GetString("IncorrectIPAddressFormat", resourceCulture);
             }
@@ -6482,7 +6482,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid username or password..
         /// </summary>
-        internal static string InvalidUsernameOrPassword {
+        public static string InvalidUsernameOrPassword {
             get {
                 return ResourceManager.GetString("InvalidUsernameOrPassword", resourceCulture);
             }
@@ -6491,7 +6491,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite.
         /// </summary>
-        internal static string InviteButton {
+        public static string InviteButton {
             get {
                 return ResourceManager.GetString("InviteButton", resourceCulture);
             }
@@ -6500,7 +6500,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to In order to begin work on the portal, you should see if your {0}first name{1} and {0}last name{1} are correct in the right-side form, and set a {0}personal password{1} to be able to login..
         /// </summary>
-        internal static string InviteDescription {
+        public static string InviteDescription {
             get {
                 return ResourceManager.GetString("InviteDescription", resourceCulture);
             }
@@ -6509,7 +6509,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invitation Link.
         /// </summary>
-        internal static string InviteLinkTitle {
+        public static string InviteLinkTitle {
             get {
                 return ResourceManager.GetString("InviteLinkTitle", resourceCulture);
             }
@@ -6518,7 +6518,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This link is valid for {0} days only..
         /// </summary>
-        internal static string InviteLinkValidInterval {
+        public static string InviteLinkValidInterval {
             get {
                 return ResourceManager.GetString("InviteLinkValidInterval", resourceCulture);
             }
@@ -6527,7 +6527,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string InvitePassword {
+        public static string InvitePassword {
             get {
                 return ResourceManager.GetString("InvitePassword", resourceCulture);
             }
@@ -6536,7 +6536,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You received the link to this portal from a friend, acquaintance or colleague of yours.
         /// </summary>
-        internal static string InvitePublicSubTitle {
+        public static string InvitePublicSubTitle {
             get {
                 return ResourceManager.GetString("InvitePublicSubTitle", resourceCulture);
             }
@@ -6545,7 +6545,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You were added to this portal by a friend, acquaintance or colleague of yours.
         /// </summary>
-        internal static string InviteSubTitle {
+        public static string InviteSubTitle {
             get {
                 return ResourceManager.GetString("InviteSubTitle", resourceCulture);
             }
@@ -6554,7 +6554,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are invited to join this portal!.
         /// </summary>
-        internal static string InviteTitle {
+        public static string InviteTitle {
             get {
                 return ResourceManager.GetString("InviteTitle", resourceCulture);
             }
@@ -6563,7 +6563,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add users as {!guests}.
         /// </summary>
-        internal static string InviteUsersAsCollaborators {
+        public static string InviteUsersAsCollaborators {
             get {
                 return ResourceManager.GetString("InviteUsersAsCollaborators", resourceCulture);
             }
@@ -6572,7 +6572,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invite {!users} to portal.
         /// </summary>
-        internal static string InviteUsersToPortalLink {
+        public static string InviteUsersToPortalLink {
             get {
                 return ResourceManager.GetString("InviteUsersToPortalLink", resourceCulture);
             }
@@ -6581,7 +6581,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disable.
         /// </summary>
-        internal static string IPSecurityDisable {
+        public static string IPSecurityDisable {
             get {
                 return ResourceManager.GetString("IPSecurityDisable", resourceCulture);
             }
@@ -6590,7 +6590,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
-        internal static string IPSecurityEnable {
+        public static string IPSecurityEnable {
             get {
                 return ResourceManager.GetString("IPSecurityEnable", resourceCulture);
             }
@@ -6599,7 +6599,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}IP Security{1} is used to restrict login to the portal from all IP addresses except certain addresses. You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255) or IP range (in the #.#.#.#-#.#.#.# format). The IP security does not work for portal owners, they can access the portal from any IP address..
         /// </summary>
-        internal static string IpSecurityHelp {
+        public static string IpSecurityHelp {
             get {
                 return ResourceManager.GetString("IpSecurityHelp", resourceCulture);
             }
@@ -6608,7 +6608,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to IP Security.
         /// </summary>
-        internal static string IpSecurityNav {
+        public static string IpSecurityNav {
             get {
                 return ResourceManager.GetString("IpSecurityNav", resourceCulture);
             }
@@ -6617,7 +6617,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to First you need to specify your current IP or the IP range your current IP address belongs to, otherwise your portal access will be blocked right after you save the settings. The portal owner will have the portal access from any IP address..
         /// </summary>
-        internal static string IpSecurityWarning {
+        public static string IpSecurityWarning {
             get {
                 return ResourceManager.GetString("IpSecurityWarning", resourceCulture);
             }
@@ -6626,7 +6626,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Migrate ONLYOFFICE™ Mail as well (not recommended).
         /// </summary>
-        internal static string IsMailMigration {
+        public static string IsMailMigration {
             get {
                 return ResourceManager.GetString("IsMailMigration", resourceCulture);
             }
@@ -6635,7 +6635,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Issuer URL.
         /// </summary>
-        internal static string IssuerURL {
+        public static string IssuerURL {
             get {
                 return ResourceManager.GetString("IssuerURL", resourceCulture);
             }
@@ -6644,7 +6644,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Become our Affiliate.
         /// </summary>
-        internal static string JoinToAffilliateProgram {
+        public static string JoinToAffilliateProgram {
             get {
                 return ResourceManager.GetString("JoinToAffilliateProgram", resourceCulture);
             }
@@ -6653,7 +6653,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can keep adding the users as {!guests} or change the pricing plan for the one with a larger number of users..
         /// </summary>
-        internal static string KeepTariffInviteGuests {
+        public static string KeepTariffInviteGuests {
             get {
                 return ResourceManager.GetString("KeepTariffInviteGuests", resourceCulture);
             }
@@ -6662,7 +6662,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Do not show this message.
         /// </summary>
-        internal static string LabelDontShowMessage {
+        public static string LabelDontShowMessage {
             get {
                 return ResourceManager.GetString("LabelDontShowMessage", resourceCulture);
             }
@@ -6671,7 +6671,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
-        internal static string Language {
+        public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
             }
@@ -6680,7 +6680,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Last Name.
         /// </summary>
-        internal static string LastName {
+        public static string LastName {
             get {
                 return ResourceManager.GetString("LastName", resourceCulture);
             }
@@ -6689,7 +6689,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to LDAP Settings.
         /// </summary>
-        internal static string LdapSettings {
+        public static string LdapSettings {
             get {
                 return ResourceManager.GetString("LdapSettings", resourceCulture);
             }
@@ -6698,7 +6698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User Authentication.
         /// </summary>
-        internal static string LdapSettingsAuthentication {
+        public static string LdapSettingsAuthentication {
             get {
                 return ResourceManager.GetString("LdapSettingsAuthentication", resourceCulture);
             }
@@ -6707,7 +6707,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable this option if the current Windows user does not have rights to read from LDAP server/Active Directory, and enter the credentials of another user with the read rights..
         /// </summary>
-        internal static string LdapSettingsAuthenticationHelper {
+        public static string LdapSettingsAuthenticationHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsAuthenticationHelper", resourceCulture);
             }
@@ -6716,7 +6716,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Connection error.
         /// </summary>
-        internal static string LdapSettingsConnectError {
+        public static string LdapSettingsConnectError {
             get {
                 return ResourceManager.GetString("LdapSettingsConnectError", resourceCulture);
             }
@@ -6725,7 +6725,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The LDAP module allows you to import users and groups from the LDAP server, as well as provide user authentication on the portal using the login/password, stored in an LDAP server. Users will be imported immediately after saving the settings. New users added later will be imported during their first authentication on the portal. The information about the users edited at the LDAP server can be immediately updated using the &apos;Sync LDAP&apos; button below. The LDAP module can be very flexibly configured to meet spec [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string LdapSettingsDscr {
+        public static string LdapSettingsDscr {
             get {
                 return ResourceManager.GetString("LdapSettingsDscr", resourceCulture);
             }
@@ -6734,7 +6734,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Empty field.
         /// </summary>
-        internal static string LdapSettingsEmptyField {
+        public static string LdapSettingsEmptyField {
             get {
                 return ResourceManager.GetString("LdapSettingsEmptyField", resourceCulture);
             }
@@ -6743,7 +6743,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable this option if you want to add users from LDAP server/Active Directory to ONLYOFFICE™ automatically. The added users will be able to authorize using their LDAP server/Active Directory credentials. ONLYOFFICE™ does not save the user passwords locally and will authenticate users sending their login and password to LDAP server/Active Directory..
         /// </summary>
-        internal static string LdapSettingsEnableLdapAuthenticationHelper {
+        public static string LdapSettingsEnableLdapAuthenticationHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsEnableLdapAuthenticationHelper", resourceCulture);
             }
@@ -6752,7 +6752,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Users could not be created, the received data are incorrect..
         /// </summary>
-        internal static string LdapSettingsErrorCantCreateUsers {
+        public static string LdapSettingsErrorCantCreateUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorCantCreateUsers", resourceCulture);
             }
@@ -6761,7 +6761,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The server could not get settings..
         /// </summary>
-        internal static string LdapSettingsErrorCantGetLdapSettings {
+        public static string LdapSettingsErrorCantGetLdapSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorCantGetLdapSettings", resourceCulture);
             }
@@ -6770,7 +6770,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The server could not save settings..
         /// </summary>
-        internal static string LdapSettingsErrorCantSaveLdapSettings {
+        public static string LdapSettingsErrorCantSaveLdapSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorCantSaveLdapSettings", resourceCulture);
             }
@@ -6779,7 +6779,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect login or password..
         /// </summary>
-        internal static string LdapSettingsErrorCredentialsNotValid {
+        public static string LdapSettingsErrorCredentialsNotValid {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorCredentialsNotValid", resourceCulture);
             }
@@ -6788,7 +6788,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to LDAP domain not found..
         /// </summary>
-        internal static string LdapSettingsErrorDomainNotFound {
+        public static string LdapSettingsErrorDomainNotFound {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorDomainNotFound", resourceCulture);
             }
@@ -6797,7 +6797,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No groups could be found..
         /// </summary>
-        internal static string LdapSettingsErrorGroupsNotFound {
+        public static string LdapSettingsErrorGroupsNotFound {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorGroupsNotFound", resourceCulture);
             }
@@ -6806,7 +6806,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid User Filter value..
         /// </summary>
-        internal static string LdapSettingsErrorIncorrectLdapFilter {
+        public static string LdapSettingsErrorIncorrectLdapFilter {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorIncorrectLdapFilter", resourceCulture);
             }
@@ -6815,7 +6815,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights was unaffected..
         /// </summary>
-        internal static string LdapSettingsErrorLostRights {
+        public static string LdapSettingsErrorLostRights {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorLostRights", resourceCulture);
             }
@@ -6824,7 +6824,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your account is not linked to the LDAP directory and your LDAP password is no longer active. Please change or set the password to your account at the profile settings page..
         /// </summary>
-        internal static string LdapSettingsErrorRemovedYourself {
+        public static string LdapSettingsErrorRemovedYourself {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorRemovedYourself", resourceCulture);
             }
@@ -6833,7 +6833,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unknown error..
         /// </summary>
-        internal static string LdapSettingsErrorUnknownError {
+        public static string LdapSettingsErrorUnknownError {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorUnknownError", resourceCulture);
             }
@@ -6842,7 +6842,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No users could be found..
         /// </summary>
-        internal static string LdapSettingsErrorUsersNotFound {
+        public static string LdapSettingsErrorUsersNotFound {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorUsersNotFound", resourceCulture);
             }
@@ -6851,7 +6851,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not get Group Attribute for one or several groups..
         /// </summary>
-        internal static string LdapSettingsErrorWrongGroupAttribute {
+        public static string LdapSettingsErrorWrongGroupAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongGroupAttribute", resourceCulture);
             }
@@ -6860,7 +6860,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect Group DN..
         /// </summary>
-        internal static string LdapSettingsErrorWrongGroupDN {
+        public static string LdapSettingsErrorWrongGroupDN {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongGroupDN", resourceCulture);
             }
@@ -6869,7 +6869,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect Group Filter..
         /// </summary>
-        internal static string LdapSettingsErrorWrongGroupFilter {
+        public static string LdapSettingsErrorWrongGroupFilter {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongGroupFilter", resourceCulture);
             }
@@ -6878,7 +6878,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not obtain Group Name Attribute for one or several groups..
         /// </summary>
-        internal static string LdapSettingsErrorWrongGroupNameAttribute {
+        public static string LdapSettingsErrorWrongGroupNameAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongGroupNameAttribute", resourceCulture);
             }
@@ -6887,7 +6887,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not get Login Attribute for one or several users..
         /// </summary>
-        internal static string LdapSettingsErrorWrongLoginAttribute {
+        public static string LdapSettingsErrorWrongLoginAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongLoginAttribute", resourceCulture);
             }
@@ -6896,7 +6896,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unable to connect to LDAP server. Please check if the server address and port number are correct..
         /// </summary>
-        internal static string LdapSettingsErrorWrongServerOrPort {
+        public static string LdapSettingsErrorWrongServerOrPort {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongServerOrPort", resourceCulture);
             }
@@ -6905,7 +6905,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not get User Attribute for one or several users..
         /// </summary>
-        internal static string LdapSettingsErrorWrongUserAttribute {
+        public static string LdapSettingsErrorWrongUserAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongUserAttribute", resourceCulture);
             }
@@ -6914,7 +6914,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect User DN..
         /// </summary>
-        internal static string LdapSettingsErrorWrongUserDN {
+        public static string LdapSettingsErrorWrongUserDN {
             get {
                 return ResourceManager.GetString("LdapSettingsErrorWrongUserDN", resourceCulture);
             }
@@ -6923,7 +6923,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to First Name Attribute.
         /// </summary>
-        internal static string LdapSettingsFirstNameAttribute {
+        public static string LdapSettingsFirstNameAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsFirstNameAttribute", resourceCulture);
             }
@@ -6932,7 +6932,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user name..
         /// </summary>
-        internal static string LdapSettingsFirstNameAttributeHelper {
+        public static string LdapSettingsFirstNameAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsFirstNameAttributeHelper", resourceCulture);
             }
@@ -6941,7 +6941,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Attribute.
         /// </summary>
-        internal static string LdapSettingsGroupAttribute {
+        public static string LdapSettingsGroupAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupAttribute", resourceCulture);
             }
@@ -6950,7 +6950,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the group object attribute which specifies what users this group includes..
         /// </summary>
-        internal static string LdapSettingsGroupAttributeHelper {
+        public static string LdapSettingsGroupAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupAttributeHelper", resourceCulture);
             }
@@ -6959,7 +6959,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group DN.
         /// </summary>
-        internal static string LdapSettingsGroupDN {
+        public static string LdapSettingsGroupDN {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupDN", resourceCulture);
             }
@@ -6968,7 +6968,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the distinguished name to the directory containing groups you want to add..
         /// </summary>
-        internal static string LdapSettingsGroupDNHelper {
+        public static string LdapSettingsGroupDNHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupDNHelper", resourceCulture);
             }
@@ -6977,7 +6977,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Filter.
         /// </summary>
-        internal static string LdapSettingsGroupFilter {
+        public static string LdapSettingsGroupFilter {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupFilter", resourceCulture);
             }
@@ -6986,7 +6986,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use search LDAP filter to select groups that will be imported. Please note that only users from these groups will be added..
         /// </summary>
-        internal static string LdapSettingsGroupFilterHelper {
+        public static string LdapSettingsGroupFilterHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupFilterHelper", resourceCulture);
             }
@@ -6995,7 +6995,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Membership.
         /// </summary>
-        internal static string LdapSettingsGroupMembership {
+        public static string LdapSettingsGroupMembership {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupMembership", resourceCulture);
             }
@@ -7004,7 +7004,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable this option if you want to add groups from LDAP server/Active Directory to ONLYOFFICE™. Please note that only users who belong to these groups will be added..
         /// </summary>
-        internal static string LdapSettingsGroupMembershipHelper {
+        public static string LdapSettingsGroupMembershipHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupMembershipHelper", resourceCulture);
             }
@@ -7013,7 +7013,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Name Attribute.
         /// </summary>
-        internal static string LdapSettingsGroupNameAttribute {
+        public static string LdapSettingsGroupNameAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupNameAttribute", resourceCulture);
             }
@@ -7022,7 +7022,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the group name..
         /// </summary>
-        internal static string LdapSettingsGroupNameAttributeHelper {
+        public static string LdapSettingsGroupNameAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupNameAttributeHelper", resourceCulture);
             }
@@ -7031,7 +7031,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No group containing users could be found..
         /// </summary>
-        internal static string LdapSettingsGroupsNotFound {
+        public static string LdapSettingsGroupsNotFound {
             get {
                 return ResourceManager.GetString("LdapSettingsGroupsNotFound", resourceCulture);
             }
@@ -7040,7 +7040,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The current pricing plan user limit can be exceeded while importing. All the other users will be added as guests. Do you agree to start importing?.
         /// </summary>
-        internal static string LdapSettingsImportUserLimitDecision {
+        public static string LdapSettingsImportUserLimitDecision {
             get {
                 return ResourceManager.GetString("LdapSettingsImportUserLimitDecision", resourceCulture);
             }
@@ -7049,7 +7049,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Server internal error..
         /// </summary>
-        internal static string LdapSettingsInternalServerError {
+        public static string LdapSettingsInternalServerError {
             get {
                 return ResourceManager.GetString("LdapSettingsInternalServerError", resourceCulture);
             }
@@ -7058,7 +7058,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Location Attribute.
         /// </summary>
-        internal static string LdapSettingsLocationAttribute {
+        public static string LdapSettingsLocationAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsLocationAttribute", resourceCulture);
             }
@@ -7067,7 +7067,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user location..
         /// </summary>
-        internal static string LdapSettingsLocationAttributeHelper {
+        public static string LdapSettingsLocationAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsLocationAttributeHelper", resourceCulture);
             }
@@ -7076,7 +7076,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
-        internal static string LdapSettingsLogin {
+        public static string LdapSettingsLogin {
             get {
                 return ResourceManager.GetString("LdapSettingsLogin", resourceCulture);
             }
@@ -7085,7 +7085,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login Attribute.
         /// </summary>
-        internal static string LdapSettingsLoginAttribute {
+        public static string LdapSettingsLoginAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsLoginAttribute", resourceCulture);
             }
@@ -7094,7 +7094,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the object attribute corresponding to the user login..
         /// </summary>
-        internal static string LdapSettingsLoginAttributeHelper {
+        public static string LdapSettingsLoginAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsLoginAttributeHelper", resourceCulture);
             }
@@ -7103,7 +7103,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Attribute.
         /// </summary>
-        internal static string LdapSettingsMailAttribute {
+        public static string LdapSettingsMailAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsMailAttribute", resourceCulture);
             }
@@ -7112,7 +7112,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user address..
         /// </summary>
-        internal static string LdapSettingsMailAttributeHelper {
+        public static string LdapSettingsMailAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsMailAttributeHelper", resourceCulture);
             }
@@ -7121,7 +7121,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mobile Phone Attribute.
         /// </summary>
-        internal static string LdapSettingsMobilePhoneAttribute {
+        public static string LdapSettingsMobilePhoneAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsMobilePhoneAttribute", resourceCulture);
             }
@@ -7130,7 +7130,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user mobile phone number..
         /// </summary>
-        internal static string LdapSettingsMobilePhoneAttributeHelper {
+        public static string LdapSettingsMobilePhoneAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsMobilePhoneAttributeHelper", resourceCulture);
             }
@@ -7139,7 +7139,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Modifying LDAP users on ordinary portal users.
         /// </summary>
-        internal static string LdapSettingsModifyLdapUsers {
+        public static string LdapSettingsModifyLdapUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsModifyLdapUsers", resourceCulture);
             }
@@ -7148,7 +7148,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login DN.
         /// </summary>
-        internal static string LdapSettingsMonoLogin {
+        public static string LdapSettingsMonoLogin {
             get {
                 return ResourceManager.GetString("LdapSettingsMonoLogin", resourceCulture);
             }
@@ -7157,7 +7157,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string LdapSettingsPassword {
+        public static string LdapSettingsPassword {
             get {
                 return ResourceManager.GetString("LdapSettingsPassword", resourceCulture);
             }
@@ -7166,7 +7166,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the password for the user with the access rights to read data from LDAP server/Active Directory..
         /// </summary>
-        internal static string LdapSettingsPasswordHelper {
+        public static string LdapSettingsPasswordHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsPasswordHelper", resourceCulture);
             }
@@ -7175,7 +7175,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Port Number.
         /// </summary>
-        internal static string LdapSettingsPortNumber {
+        public static string LdapSettingsPortNumber {
             get {
                 return ResourceManager.GetString("LdapSettingsPortNumber", resourceCulture);
             }
@@ -7184,7 +7184,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the port number for your LDAP server/Active Directory..
         /// </summary>
-        internal static string LdapSettingsPortNumberHelper {
+        public static string LdapSettingsPortNumberHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsPortNumberHelper", resourceCulture);
             }
@@ -7193,7 +7193,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Restore default settings.
         /// </summary>
-        internal static string LdapSettingsRestoreDefault {
+        public static string LdapSettingsRestoreDefault {
             get {
                 return ResourceManager.GetString("LdapSettingsRestoreDefault", resourceCulture);
             }
@@ -7202,7 +7202,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Restore to default settings.
         /// </summary>
-        internal static string LdapSettingsRestoreDefaultSettings {
+        public static string LdapSettingsRestoreDefaultSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsRestoreDefaultSettings", resourceCulture);
             }
@@ -7211,7 +7211,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string LdapSettingsSave {
+        public static string LdapSettingsSave {
             get {
                 return ResourceManager.GetString("LdapSettingsSave", resourceCulture);
             }
@@ -7220,7 +7220,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Save settings.
         /// </summary>
-        internal static string LdapSettingsSaveSettings {
+        public static string LdapSettingsSaveSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsSaveSettings", resourceCulture);
             }
@@ -7229,7 +7229,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Second Name Attribute.
         /// </summary>
-        internal static string LdapSettingsSecondNameAttribute {
+        public static string LdapSettingsSecondNameAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsSecondNameAttribute", resourceCulture);
             }
@@ -7238,7 +7238,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user last name..
         /// </summary>
-        internal static string LdapSettingsSecondNameAttributeHelper {
+        public static string LdapSettingsSecondNameAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsSecondNameAttributeHelper", resourceCulture);
             }
@@ -7247,7 +7247,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Server.
         /// </summary>
-        internal static string LdapSettingsServer {
+        public static string LdapSettingsServer {
             get {
                 return ResourceManager.GetString("LdapSettingsServer", resourceCulture);
             }
@@ -7256,7 +7256,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the LDAP server URL without the port number, e.g. LDAP://mycompany.com..
         /// </summary>
-        internal static string LdapSettingsServerHelper {
+        public static string LdapSettingsServerHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsServerHelper", resourceCulture);
             }
@@ -7265,7 +7265,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to adding user.
         /// </summary>
-        internal static string LdapSettingsStatusAddingGroupUser {
+        public static string LdapSettingsStatusAddingGroupUser {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusAddingGroupUser", resourceCulture);
             }
@@ -7274,7 +7274,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Certificate verification.
         /// </summary>
-        internal static string LdapSettingsStatusCertificateVerification {
+        public static string LdapSettingsStatusCertificateVerification {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusCertificateVerification", resourceCulture);
             }
@@ -7283,7 +7283,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Checking LDAP support settings.
         /// </summary>
-        internal static string LdapSettingsStatusCheckingLdapSettings {
+        public static string LdapSettingsStatusCheckingLdapSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusCheckingLdapSettings", resourceCulture);
             }
@@ -7292,7 +7292,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to LDAP disconnecting.
         /// </summary>
-        internal static string LdapSettingsStatusDisconnecting {
+        public static string LdapSettingsStatusDisconnecting {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusDisconnecting", resourceCulture);
             }
@@ -7301,7 +7301,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Retrieving the group list from the LDAP server.
         /// </summary>
-        internal static string LdapSettingsStatusGettingGroupsFromLdap {
+        public static string LdapSettingsStatusGettingGroupsFromLdap {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusGettingGroupsFromLdap", resourceCulture);
             }
@@ -7310,7 +7310,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Retrieving existing LDAP user list from the People.
         /// </summary>
-        internal static string LdapSettingsStatusGettingUsersFromDb {
+        public static string LdapSettingsStatusGettingUsersFromDb {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusGettingUsersFromDb", resourceCulture);
             }
@@ -7319,7 +7319,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Retrieving the user list from the LDAP server.
         /// </summary>
-        internal static string LdapSettingsStatusGettingUsersFromLdap {
+        public static string LdapSettingsStatusGettingUsersFromLdap {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusGettingUsersFromLdap", resourceCulture);
             }
@@ -7328,7 +7328,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Setting user {0} as {1} admin.
         /// </summary>
-        internal static string LdapSettingsStatusGivingRights {
+        public static string LdapSettingsStatusGivingRights {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusGivingRights", resourceCulture);
             }
@@ -7337,7 +7337,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Loading LDAP base info.
         /// </summary>
-        internal static string LdapSettingsStatusLoadingBaseInfo {
+        public static string LdapSettingsStatusLoadingBaseInfo {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusLoadingBaseInfo", resourceCulture);
             }
@@ -7346,7 +7346,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to removing user.
         /// </summary>
-        internal static string LdapSettingsStatusRemovingGroupUser {
+        public static string LdapSettingsStatusRemovingGroupUser {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusRemovingGroupUser", resourceCulture);
             }
@@ -7355,7 +7355,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Removing outdated groups that have been loaded via LDAP earlier.
         /// </summary>
-        internal static string LdapSettingsStatusRemovingOldGroups {
+        public static string LdapSettingsStatusRemovingOldGroups {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusRemovingOldGroups", resourceCulture);
             }
@@ -7364,7 +7364,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Removing outdated access rights that have been loaded via LDAP earlier.
         /// </summary>
-        internal static string LdapSettingsStatusRemovingOldRights {
+        public static string LdapSettingsStatusRemovingOldRights {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusRemovingOldRights", resourceCulture);
             }
@@ -7373,7 +7373,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Removing outdated user profiles that have been loaded via LDAP earlier.
         /// </summary>
-        internal static string LdapSettingsStatusRemovingOldUsers {
+        public static string LdapSettingsStatusRemovingOldUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusRemovingOldUsers", resourceCulture);
             }
@@ -7382,7 +7382,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saving groups.
         /// </summary>
-        internal static string LdapSettingsStatusSavingGroups {
+        public static string LdapSettingsStatusSavingGroups {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusSavingGroups", resourceCulture);
             }
@@ -7391,7 +7391,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saving settings.
         /// </summary>
-        internal static string LdapSettingsStatusSavingSettings {
+        public static string LdapSettingsStatusSavingSettings {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusSavingSettings", resourceCulture);
             }
@@ -7400,7 +7400,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saving photo.
         /// </summary>
-        internal static string LdapSettingsStatusSavingUserPhoto {
+        public static string LdapSettingsStatusSavingUserPhoto {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusSavingUserPhoto", resourceCulture);
             }
@@ -7409,7 +7409,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saving users.
         /// </summary>
-        internal static string LdapSettingsStatusSavingUsers {
+        public static string LdapSettingsStatusSavingUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusSavingUsers", resourceCulture);
             }
@@ -7418,7 +7418,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Syncing users.
         /// </summary>
-        internal static string LdapSettingsStatusSyncingUsers {
+        public static string LdapSettingsStatusSyncingUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusSyncingUsers", resourceCulture);
             }
@@ -7427,7 +7427,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Updating users access rights.
         /// </summary>
-        internal static string LdapSettingsStatusUpdatingAccessRights {
+        public static string LdapSettingsStatusUpdatingAccessRights {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusUpdatingAccessRights", resourceCulture);
             }
@@ -7436,7 +7436,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Updating user photos.
         /// </summary>
-        internal static string LdapSettingsStatusUpdatingUserPhotos {
+        public static string LdapSettingsStatusUpdatingUserPhotos {
             get {
                 return ResourceManager.GetString("LdapSettingsStatusUpdatingUserPhotos", resourceCulture);
             }
@@ -7445,7 +7445,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server..
         /// </summary>
-        internal static string LdapSettingsStrongAuthRequired {
+        public static string LdapSettingsStrongAuthRequired {
             get {
                 return ResourceManager.GetString("LdapSettingsStrongAuthRequired", resourceCulture);
             }
@@ -7454,7 +7454,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saving has been successfully completed.
         /// </summary>
-        internal static string LdapSettingsSuccess {
+        public static string LdapSettingsSuccess {
             get {
                 return ResourceManager.GetString("LdapSettingsSuccess", resourceCulture);
             }
@@ -7463,7 +7463,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sync LDAP.
         /// </summary>
-        internal static string LdapSettingsSyncUsers {
+        public static string LdapSettingsSyncUsers {
             get {
                 return ResourceManager.GetString("LdapSettingsSyncUsers", resourceCulture);
             }
@@ -7472,7 +7472,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The current pricing plan user limit has been reached.
         /// </summary>
-        internal static string LdapSettingsTenantQuotaSettled {
+        public static string LdapSettingsTenantQuotaSettled {
             get {
                 return ResourceManager.GetString("LdapSettingsTenantQuotaSettled", resourceCulture);
             }
@@ -7481,7 +7481,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to LDAP Support.
         /// </summary>
-        internal static string LdapSettingsTitle {
+        public static string LdapSettingsTitle {
             get {
                 return ResourceManager.GetString("LdapSettingsTitle", resourceCulture);
             }
@@ -7490,7 +7490,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Title Attribute.
         /// </summary>
-        internal static string LdapSettingsTitleAttribute {
+        public static string LdapSettingsTitleAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsTitleAttribute", resourceCulture);
             }
@@ -7499,7 +7499,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify the object attribute that corresponds to the user position..
         /// </summary>
-        internal static string LdapSettingsTitleAttributeHelper {
+        public static string LdapSettingsTitleAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsTitleAttributeHelper", resourceCulture);
             }
@@ -7508,7 +7508,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to StartTLS not supported for current LDAP server..
         /// </summary>
-        internal static string LdapSettingsTlsNotSupported {
+        public static string LdapSettingsTlsNotSupported {
             get {
                 return ResourceManager.GetString("LdapSettingsTlsNotSupported", resourceCulture);
             }
@@ -7517,7 +7517,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Too many LDAP operations..
         /// </summary>
-        internal static string LdapSettingsTooManyOperations {
+        public static string LdapSettingsTooManyOperations {
             get {
                 return ResourceManager.GetString("LdapSettingsTooManyOperations", resourceCulture);
             }
@@ -7526,7 +7526,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User Attribute.
         /// </summary>
-        internal static string LdapSettingsUserAttribute {
+        public static string LdapSettingsUserAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsUserAttribute", resourceCulture);
             }
@@ -7535,7 +7535,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the user object attribute used to determine whether this user is a member of the groups..
         /// </summary>
-        internal static string LdapSettingsUserAttributeHelper {
+        public static string LdapSettingsUserAttributeHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsUserAttributeHelper", resourceCulture);
             }
@@ -7544,7 +7544,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User DN.
         /// </summary>
-        internal static string LdapSettingsUserDN {
+        public static string LdapSettingsUserDN {
             get {
                 return ResourceManager.GetString("LdapSettingsUserDN", resourceCulture);
             }
@@ -7553,7 +7553,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter the distinguished name to the directory containing users you want to add..
         /// </summary>
-        internal static string LdapSettingsUserDNHelper {
+        public static string LdapSettingsUserDNHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsUserDNHelper", resourceCulture);
             }
@@ -7562,7 +7562,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User Filter.
         /// </summary>
-        internal static string LdapSettingsUserFilter {
+        public static string LdapSettingsUserFilter {
             get {
                 return ResourceManager.GetString("LdapSettingsUserFilter", resourceCulture);
             }
@@ -7571,7 +7571,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use the search LDAP filter to select the users who must be imported..
         /// </summary>
-        internal static string LdapSettingsUserFilterHelper {
+        public static string LdapSettingsUserFilterHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsUserFilterHelper", resourceCulture);
             }
@@ -7580,7 +7580,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please specify {0} user who has LDAP server/Active Directory read access rights..
         /// </summary>
-        internal static string LdapSettingsUserNameHelper {
+        public static string LdapSettingsUserNameHelper {
             get {
                 return ResourceManager.GetString("LdapSettingsUserNameHelper", resourceCulture);
             }
@@ -7589,7 +7589,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Wrong email {0} from LDAP user {1} {2}. Please replace it with correct email and try again..
         /// </summary>
-        internal static string LdapSettingsWrongEmail {
+        public static string LdapSettingsWrongEmail {
             get {
                 return ResourceManager.GetString("LdapSettingsWrongEmail", resourceCulture);
             }
@@ -7598,7 +7598,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file..
         /// </summary>
-        internal static string LdapSettingsWrongSidAttribute {
+        public static string LdapSettingsWrongSidAttribute {
             get {
                 return ResourceManager.GetString("LdapSettingsWrongSidAttribute", resourceCulture);
             }
@@ -7607,7 +7607,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user has been imported from LDAP. Contact your LDAP administrator if you want to change the locked profile fields..
         /// </summary>
-        internal static string LdapUserEditCanOnlyAdminTitle {
+        public static string LdapUserEditCanOnlyAdminTitle {
             get {
                 return ResourceManager.GetString("LdapUserEditCanOnlyAdminTitle", resourceCulture);
             }
@@ -7616,7 +7616,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user has been imported from LDAP.
         /// </summary>
-        internal static string LdapUsersListLockTitle {
+        public static string LdapUsersListLockTitle {
             get {
                 return ResourceManager.GetString("LdapUsersListLockTitle", resourceCulture);
             }
@@ -7625,7 +7625,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Learn more....
         /// </summary>
-        internal static string LearnMore {
+        public static string LearnMore {
             get {
                 return ResourceManager.GetString("LearnMore", resourceCulture);
             }
@@ -7634,7 +7634,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Learn more.
         /// </summary>
-        internal static string LearnMoreLink {
+        public static string LearnMoreLink {
             get {
                 return ResourceManager.GetString("LearnMoreLink", resourceCulture);
             }
@@ -7643,7 +7643,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to License Agreements.
         /// </summary>
-        internal static string LicenseAgreements {
+        public static string LicenseAgreements {
             get {
                 return ResourceManager.GetString("LicenseAgreements", resourceCulture);
             }
@@ -7652,7 +7652,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to License is not correct.
         /// </summary>
-        internal static string LicenseError {
+        public static string LicenseError {
             get {
                 return ResourceManager.GetString("LicenseError", resourceCulture);
             }
@@ -7661,7 +7661,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to License has expired.
         /// </summary>
-        internal static string LicenseErrorExpired {
+        public static string LicenseErrorExpired {
             get {
                 return ResourceManager.GetString("LicenseErrorExpired", resourceCulture);
             }
@@ -7670,7 +7670,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The number of portals exceeds the one allowed by the license.
         /// </summary>
-        internal static string LicenseErrorPortal {
+        public static string LicenseErrorPortal {
             get {
                 return ResourceManager.GetString("LicenseErrorPortal", resourceCulture);
             }
@@ -7679,7 +7679,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The number of users exceeds the one allowed by the license.
         /// </summary>
-        internal static string LicenseErrorQuota {
+        public static string LicenseErrorQuota {
             get {
                 return ResourceManager.GetString("LicenseErrorQuota", resourceCulture);
             }
@@ -7688,7 +7688,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Uploaded successfully.
         /// </summary>
-        internal static string LicenseUploaded {
+        public static string LicenseUploaded {
             get {
                 return ResourceManager.GetString("LicenseUploaded", resourceCulture);
             }
@@ -7697,7 +7697,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Uploaded successfully. {0}Support and updates are not available for this license since {2}.{1}.
         /// </summary>
-        internal static string LicenseUploadedOverdue {
+        public static string LicenseUploadedOverdue {
             get {
                 return ResourceManager.GetString("LicenseUploadedOverdue", resourceCulture);
             }
@@ -7706,7 +7706,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to link.
         /// </summary>
-        internal static string Link {
+        public static string Link {
             get {
                 return ResourceManager.GetString("Link", resourceCulture);
             }
@@ -7715,7 +7715,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please wait....
         /// </summary>
-        internal static string LoadingDescription {
+        public static string LoadingDescription {
             get {
                 return ResourceManager.GetString("LoadingDescription", resourceCulture);
             }
@@ -7724,7 +7724,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Loading, please wait.
         /// </summary>
-        internal static string LoadingMsg {
+        public static string LoadingMsg {
             get {
                 return ResourceManager.GetString("LoadingMsg", resourceCulture);
             }
@@ -7733,7 +7733,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
-        internal static string LoadingProcessing {
+        public static string LoadingProcessing {
             get {
                 return ResourceManager.GetString("LoadingProcessing", resourceCulture);
             }
@@ -7742,7 +7742,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upload photo from PC.
         /// </summary>
-        internal static string LoadPhotoFromPC {
+        public static string LoadPhotoFromPC {
             get {
                 return ResourceManager.GetString("LoadPhotoFromPC", resourceCulture);
             }
@@ -7751,7 +7751,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
-        internal static string Location {
+        public static string Location {
             get {
                 return ResourceManager.GetString("Location", resourceCulture);
             }
@@ -7760,7 +7760,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
-        internal static string Login {
+        public static string Login {
             get {
                 return ResourceManager.GetString("Login", resourceCulture);
             }
@@ -7769,7 +7769,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
-        internal static string LoginButton {
+        public static string LoginButton {
             get {
                 return ResourceManager.GetString("LoginButton", resourceCulture);
             }
@@ -7778,7 +7778,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The login is also used as an email for notifications. If you do not receive notifications and you are not sure if such an email exists, please contact your portal administrator..
         /// </summary>
-        internal static string LoginDescription {
+        public static string LoginDescription {
             get {
                 return ResourceManager.GetString("LoginDescription", resourceCulture);
             }
@@ -7787,7 +7787,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal access is restricted. Contact the portal administrator..
         /// </summary>
-        internal static string LoginFailIPSecurityMsg {
+        public static string LoginFailIPSecurityMsg {
             get {
                 return ResourceManager.GetString("LoginFailIPSecurityMsg", resourceCulture);
             }
@@ -7796,7 +7796,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Join.
         /// </summary>
-        internal static string LoginRegistryButton {
+        public static string LoginRegistryButton {
             get {
                 return ResourceManager.GetString("LoginRegistryButton", resourceCulture);
             }
@@ -7805,7 +7805,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login settings.
         /// </summary>
-        internal static string LoginSettings {
+        public static string LoginSettings {
             get {
                 return ResourceManager.GetString("LoginSettings", resourceCulture);
             }
@@ -7814,7 +7814,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Two-factor authentication{1} via code generating application was enabled for all users by cloud service administrator..
         /// </summary>
-        internal static string LoginSettingsDescription {
+        public static string LoginSettingsDescription {
             get {
                 return ResourceManager.GetString("LoginSettingsDescription", resourceCulture);
             }
@@ -7823,7 +7823,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Login via Social Networks.
         /// </summary>
-        internal static string LoginSocialNetworks {
+        public static string LoginSocialNetworks {
             get {
                 return ResourceManager.GetString("LoginSocialNetworks", resourceCulture);
             }
@@ -7832,7 +7832,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to or login with:.
         /// </summary>
-        internal static string LoginWithAccount {
+        public static string LoginWithAccount {
             get {
                 return ResourceManager.GetString("LoginWithAccount", resourceCulture);
             }
@@ -7841,7 +7841,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Can&apos;t find associated third party account. You need to connect your social networking account at the profile editing page first..
         /// </summary>
-        internal static string LoginWithAccountNotFound {
+        public static string LoginWithAccountNotFound {
             get {
                 return ResourceManager.GetString("LoginWithAccountNotFound", resourceCulture);
             }
@@ -7850,7 +7850,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authorization temporarily blocked..
         /// </summary>
-        internal static string LoginWithBruteForce {
+        public static string LoginWithBruteForce {
             get {
                 return ResourceManager.GetString("LoginWithBruteForce", resourceCulture);
             }
@@ -7859,7 +7859,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Logo Settings.
         /// </summary>
-        internal static string LogoSettingsTitle {
+        public static string LogoSettingsTitle {
             get {
                 return ResourceManager.GetString("LogoSettingsTitle", resourceCulture);
             }
@@ -7868,7 +7868,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sign Out.
         /// </summary>
-        internal static string LogoutButton {
+        public static string LogoutButton {
             get {
                 return ResourceManager.GetString("LogoutButton", resourceCulture);
             }
@@ -7877,7 +7877,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail.
         /// </summary>
-        internal static string Mail {
+        public static string Mail {
             get {
                 return ResourceManager.GetString("Mail", resourceCulture);
             }
@@ -7886,7 +7886,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This email is generated automatically and you do not need to answer it..
         /// </summary>
-        internal static string MailAutoGeneratedText {
+        public static string MailAutoGeneratedText {
             get {
                 return ResourceManager.GetString("MailAutoGeneratedText", resourceCulture);
             }
@@ -7895,7 +7895,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to map.
         /// </summary>
-        internal static string MailIcsCalendarMapLabel {
+        public static string MailIcsCalendarMapLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarMapLabel", resourceCulture);
             }
@@ -7904,7 +7904,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No location.
         /// </summary>
-        internal static string MailIcsCalendarNoLocationLabel {
+        public static string MailIcsCalendarNoLocationLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarNoLocationLabel", resourceCulture);
             }
@@ -7913,7 +7913,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Organizer.
         /// </summary>
-        internal static string MailIcsCalendarOrganizerLabel {
+        public static string MailIcsCalendarOrganizerLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarOrganizerLabel", resourceCulture);
             }
@@ -7922,7 +7922,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Recurrence.
         /// </summary>
-        internal static string MailIcsCalendarRecurrenceLabel {
+        public static string MailIcsCalendarRecurrenceLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarRecurrenceLabel", resourceCulture);
             }
@@ -7931,7 +7931,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to When.
         /// </summary>
-        internal static string MailIcsCalendarWhenLabel {
+        public static string MailIcsCalendarWhenLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarWhenLabel", resourceCulture);
             }
@@ -7940,7 +7940,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Where.
         /// </summary>
-        internal static string MailIcsCalendarWhereLabel {
+        public static string MailIcsCalendarWhereLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarWhereLabel", resourceCulture);
             }
@@ -7949,7 +7949,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Who.
         /// </summary>
-        internal static string MailIcsCalendarWhoLabel {
+        public static string MailIcsCalendarWhoLabel {
             get {
                 return ResourceManager.GetString("MailIcsCalendarWhoLabel", resourceCulture);
             }
@@ -7958,7 +7958,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to There is no unread mail. Please go to the Mail to read all your messages..
         /// </summary>
-        internal static string MailReadedMsg {
+        public static string MailReadedMsg {
             get {
                 return ResourceManager.GetString("MailReadedMsg", resourceCulture);
             }
@@ -7967,7 +7967,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Service.
         /// </summary>
-        internal static string MailService {
+        public static string MailService {
             get {
                 return ResourceManager.GetString("MailService", resourceCulture);
             }
@@ -7976,7 +7976,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Successful connection.
         /// </summary>
-        internal static string MailServiceConnectSuccessMsg {
+        public static string MailServiceConnectSuccessMsg {
             get {
                 return ResourceManager.GetString("MailServiceConnectSuccessMsg", resourceCulture);
             }
@@ -7985,7 +7985,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Error: Сould not get hostname or auth token.
         /// </summary>
-        internal static string MailServiceCouldNotGetErrorMsg {
+        public static string MailServiceCouldNotGetErrorMsg {
             get {
                 return ResourceManager.GetString("MailServiceCouldNotGetErrorMsg", resourceCulture);
             }
@@ -7994,7 +7994,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Example: {0}.
         /// </summary>
-        internal static string MailServiceExample {
+        public static string MailServiceExample {
             get {
                 return ResourceManager.GetString("MailServiceExample", resourceCulture);
             }
@@ -8003,7 +8003,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Configure Mail Server.
         /// </summary>
-        internal static string MailServiceGoToMailserver {
+        public static string MailServiceGoToMailserver {
             get {
                 return ResourceManager.GetString("MailServiceGoToMailserver", resourceCulture);
             }
@@ -8012,7 +8012,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This option allows to connect your portal to the {0}Mail Server{1} installed on a remote computer using the {2}Docker installation{3}.{4}{0}Note:{1} make sure that ports {0}3306{1} and {0}8081{1} are opened at the computer where {0}Mail Server{1} is installed. We also strongly recommend that you change your {0}Mail Server{1} database access password..
         /// </summary>
-        internal static string MailServiceHelp {
+        public static string MailServiceHelp {
             get {
                 return ResourceManager.GetString("MailServiceHelp", resourceCulture);
             }
@@ -8021,7 +8021,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hide Advanced Settings.
         /// </summary>
-        internal static string MailServiceHideAdvancedSettings {
+        public static string MailServiceHideAdvancedSettings {
             get {
                 return ResourceManager.GetString("MailServiceHideAdvancedSettings", resourceCulture);
             }
@@ -8030,7 +8030,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server database host.
         /// </summary>
-        internal static string MailServiceHost {
+        public static string MailServiceHost {
             get {
                 return ResourceManager.GetString("MailServiceHost", resourceCulture);
             }
@@ -8039,7 +8039,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server database password.
         /// </summary>
-        internal static string MailServicePassword {
+        public static string MailServicePassword {
             get {
                 return ResourceManager.GetString("MailServicePassword", resourceCulture);
             }
@@ -8048,7 +8048,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Error pinging host {0}:{1}.
         /// </summary>
-        internal static string MailServicePingingErrorMsg {
+        public static string MailServicePingingErrorMsg {
             get {
                 return ResourceManager.GetString("MailServicePingingErrorMsg", resourceCulture);
             }
@@ -8057,7 +8057,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Service successfully connected.
         /// </summary>
-        internal static string MailServiceSaveSuccessMsg {
+        public static string MailServiceSaveSuccessMsg {
             get {
                 return ResourceManager.GetString("MailServiceSaveSuccessMsg", resourceCulture);
             }
@@ -8066,7 +8066,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server IP.
         /// </summary>
-        internal static string MailServiceServerIp {
+        public static string MailServiceServerIp {
             get {
                 return ResourceManager.GetString("MailServiceServerIp", resourceCulture);
             }
@@ -8075,7 +8075,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show Advanced Settings.
         /// </summary>
-        internal static string MailServiceShowAdvancedSettings {
+        public static string MailServiceShowAdvancedSettings {
             get {
                 return ResourceManager.GetString("MailServiceShowAdvancedSettings", resourceCulture);
             }
@@ -8084,7 +8084,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Once connected, the {0}Mail Server{1} will {2}become available{3} within the {0}Mail{1} module, and you will be able to create mailboxes for the portal users using your own mail domain name..
         /// </summary>
-        internal static string MailServiceText {
+        public static string MailServiceText {
             get {
                 return ResourceManager.GetString("MailServiceText", resourceCulture);
             }
@@ -8093,7 +8093,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server Connection Settings.
         /// </summary>
-        internal static string MailServiceTitle {
+        public static string MailServiceTitle {
             get {
                 return ResourceManager.GetString("MailServiceTitle", resourceCulture);
             }
@@ -8102,7 +8102,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server database user name.
         /// </summary>
-        internal static string MailServiceUser {
+        public static string MailServiceUser {
             get {
                 return ResourceManager.GetString("MailServiceUser", resourceCulture);
             }
@@ -8111,7 +8111,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Warning: you already have Mail Domain settings and mailboxes for users present in your {0}Mail{1} module. Changing the settings here you realize that these changes can affect their work and result in mail server failure. If you completely moved the {0}Mail Server{1} to another computer and/or changed database access credentials, just update the {0}Mail Server IP{1} and/or credentials here. If you created a new {0}Mail Server{1} and want to connect it, you need to delete the old data at the {2}Mail Server pa [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string MailServiceWarning {
+        public static string MailServiceWarning {
             get {
                 return ResourceManager.GetString("MailServiceWarning", resourceCulture);
             }
@@ -8120,7 +8120,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™.
         /// </summary>
-        internal static string MainPageTitle {
+        public static string MainPageTitle {
             get {
                 return ResourceManager.GetString("MainPageTitle", resourceCulture);
             }
@@ -8129,7 +8129,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Male.
         /// </summary>
-        internal static string MaleSexStatus {
+        public static string MaleSexStatus {
             get {
                 return ResourceManager.GetString("MaleSexStatus", resourceCulture);
             }
@@ -8138,7 +8138,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Common.
         /// </summary>
-        internal static string ManagementCategoryCommon {
+        public static string ManagementCategoryCommon {
             get {
                 return ResourceManager.GetString("ManagementCategoryCommon", resourceCulture);
             }
@@ -8147,7 +8147,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Integration.
         /// </summary>
-        internal static string ManagementCategoryIntegration {
+        public static string ManagementCategoryIntegration {
             get {
                 return ResourceManager.GetString("ManagementCategoryIntegration", resourceCulture);
             }
@@ -8156,7 +8156,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Security.
         /// </summary>
-        internal static string ManagementCategorySecurity {
+        public static string ManagementCategorySecurity {
             get {
                 return ResourceManager.GetString("ManagementCategorySecurity", resourceCulture);
             }
@@ -8165,7 +8165,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Statistics.
         /// </summary>
-        internal static string ManagementCategoryStatistic {
+        public static string ManagementCategoryStatistic {
             get {
                 return ResourceManager.GetString("ManagementCategoryStatistic", resourceCulture);
             }
@@ -8174,7 +8174,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Build your CRM database.
         /// </summary>
-        internal static string ManagerEmptyScreen_CRMLink {
+        public static string ManagerEmptyScreen_CRMLink {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_CRMLink", resourceCulture);
             }
@@ -8183,7 +8183,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Manage clients, track sales and make invoices.
         /// </summary>
-        internal static string ManagerEmptyScreen_CRMLinkDscr {
+        public static string ManagerEmptyScreen_CRMLinkDscr {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_CRMLinkDscr", resourceCulture);
             }
@@ -8192,7 +8192,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Work with .docx, .xlsx and .pptx online.
         /// </summary>
-        internal static string ManagerEmptyScreen_DocumentsLink {
+        public static string ManagerEmptyScreen_DocumentsLink {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_DocumentsLink", resourceCulture);
             }
@@ -8201,7 +8201,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to View and edit documents right on the portal.
         /// </summary>
-        internal static string ManagerEmptyScreen_DocumentsLinkDscr {
+        public static string ManagerEmptyScreen_DocumentsLinkDscr {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_DocumentsLinkDscr", resourceCulture);
             }
@@ -8210,7 +8210,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to View your team members.
         /// </summary>
-        internal static string ManagerEmptyScreen_PeopleLink {
+        public static string ManagerEmptyScreen_PeopleLink {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_PeopleLink", resourceCulture);
             }
@@ -8219,7 +8219,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to View portal {!users}, add or import them.
         /// </summary>
-        internal static string ManagerEmptyScreen_PeopleLinkDscr {
+        public static string ManagerEmptyScreen_PeopleLinkDscr {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_PeopleLinkDscr", resourceCulture);
             }
@@ -8228,7 +8228,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Take part in projects.
         /// </summary>
-        internal static string ManagerEmptyScreen_ProjectsLink {
+        public static string ManagerEmptyScreen_ProjectsLink {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_ProjectsLink", resourceCulture);
             }
@@ -8237,7 +8237,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Control tasks and track performance with Gantt chart.
         /// </summary>
-        internal static string ManagerEmptyScreen_ProjectsLinkDscr {
+        public static string ManagerEmptyScreen_ProjectsLinkDscr {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_ProjectsLinkDscr", resourceCulture);
             }
@@ -8246,7 +8246,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Here are a few steps to get started:.
         /// </summary>
-        internal static string ManagerEmptyScreen_StepsHeader {
+        public static string ManagerEmptyScreen_StepsHeader {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_StepsHeader", resourceCulture);
             }
@@ -8255,7 +8255,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE, {0}!.
         /// </summary>
-        internal static string ManagerEmptyScreen_WelcomeHeader {
+        public static string ManagerEmptyScreen_WelcomeHeader {
             get {
                 return ResourceManager.GetString("ManagerEmptyScreen_WelcomeHeader", resourceCulture);
             }
@@ -8264,7 +8264,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mark as Read.
         /// </summary>
-        internal static string MarkAllAsRead {
+        public static string MarkAllAsRead {
             get {
                 return ResourceManager.GetString("MarkAllAsRead", resourceCulture);
             }
@@ -8273,7 +8273,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Talk.
         /// </summary>
-        internal static string Message {
+        public static string Message {
             get {
                 return ResourceManager.GetString("Message", resourceCulture);
             }
@@ -8282,7 +8282,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please authorize yourself..
         /// </summary>
-        internal static string MessageAuthorize {
+        public static string MessageAuthorize {
             get {
                 return ResourceManager.GetString("MessageAuthorize", resourceCulture);
             }
@@ -8291,7 +8291,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please sign in to:.
         /// </summary>
-        internal static string MessageAuthorizeLdap {
+        public static string MessageAuthorizeLdap {
             get {
                 return ResourceManager.GetString("MessageAuthorizeLdap", resourceCulture);
             }
@@ -8300,7 +8300,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your current email address is.
         /// </summary>
-        internal static string MessageCurrentEmailAddressIs {
+        public static string MessageCurrentEmailAddressIs {
             get {
                 return ResourceManager.GetString("MessageCurrentEmailAddressIs", resourceCulture);
             }
@@ -8309,7 +8309,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The email activation instructions have been sent to the {0} email address.
         /// </summary>
-        internal static string MessageEmailActivationInstuctionsSentOnEmail {
+        public static string MessageEmailActivationInstuctionsSentOnEmail {
             get {
                 return ResourceManager.GetString("MessageEmailActivationInstuctionsSentOnEmail", resourceCulture);
             }
@@ -8318,7 +8318,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are changing your email address.
         /// </summary>
-        internal static string MessageEmailAddressChanging {
+        public static string MessageEmailAddressChanging {
             get {
                 return ResourceManager.GetString("MessageEmailAddressChanging", resourceCulture);
             }
@@ -8327,7 +8327,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
         /// </summary>
-        internal static string MessageEmailChangeInstuctionsSentOnEmail {
+        public static string MessageEmailChangeInstuctionsSentOnEmail {
             get {
                 return ResourceManager.GetString("MessageEmailChangeInstuctionsSentOnEmail", resourceCulture);
             }
@@ -8336,7 +8336,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your email was activated successfully..
         /// </summary>
-        internal static string MessageEmailConfirmed {
+        public static string MessageEmailConfirmed {
             get {
                 return ResourceManager.GetString("MessageEmailConfirmed", resourceCulture);
             }
@@ -8345,7 +8345,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send the invitation instructions to the {0} email address.
         /// </summary>
-        internal static string MessageReSendInviteInstructionsOnEmail {
+        public static string MessageReSendInviteInstructionsOnEmail {
             get {
                 return ResourceManager.GetString("MessageReSendInviteInstructionsOnEmail", resourceCulture);
             }
@@ -8354,7 +8354,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Talk.
         /// </summary>
-        internal static string Messages {
+        public static string Messages {
             get {
                 return ResourceManager.GetString("Messages", resourceCulture);
             }
@@ -8363,7 +8363,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send the email activation instructions to the {0} email address.
         /// </summary>
-        internal static string MessageSendEmailActivationInstructionsOnEmail {
+        public static string MessageSendEmailActivationInstructionsOnEmail {
             get {
                 return ResourceManager.GetString("MessageSendEmailActivationInstructionsOnEmail", resourceCulture);
             }
@@ -8372,7 +8372,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send the email change instructions to the {0} email address.
         /// </summary>
-        internal static string MessageSendEmailChangeInstructionsOnEmail {
+        public static string MessageSendEmailChangeInstructionsOnEmail {
             get {
                 return ResourceManager.GetString("MessageSendEmailChangeInstructionsOnEmail", resourceCulture);
             }
@@ -8381,7 +8381,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send the password change instructions to the {0} email address.
         /// </summary>
-        internal static string MessageSendPasswordChangeInstructionsOnEmail {
+        public static string MessageSendPasswordChangeInstructionsOnEmail {
             get {
                 return ResourceManager.GetString("MessageSendPasswordChangeInstructionsOnEmail", resourceCulture);
             }
@@ -8390,7 +8390,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please enter the email you used while registering on the portal. The password recovery instructions will be send to that email address..
         /// </summary>
-        internal static string MessageSendPasswordRecoveryInstructionsOnEmail {
+        public static string MessageSendPasswordRecoveryInstructionsOnEmail {
             get {
                 return ResourceManager.GetString("MessageSendPasswordRecoveryInstructionsOnEmail", resourceCulture);
             }
@@ -8399,7 +8399,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Messages.
         /// </summary>
-        internal static string MessageTitle {
+        public static string MessageTitle {
             get {
                 return ResourceManager.GetString("MessageTitle", resourceCulture);
             }
@@ -8408,7 +8408,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The password change instructions have been sent to the {0} email address..
         /// </summary>
-        internal static string MessageYourPasswordSuccessfullySendedToEmail {
+        public static string MessageYourPasswordSuccessfullySendedToEmail {
             get {
                 return ResourceManager.GetString("MessageYourPasswordSuccessfullySendedToEmail", resourceCulture);
             }
@@ -8417,7 +8417,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™ is a cloud office that enables you to manage documents, projects, team and customer relations in one place..
         /// </summary>
-        internal static string MetaDescription {
+        public static string MetaDescription {
             get {
                 return ResourceManager.GetString("MetaDescription", resourceCulture);
             }
@@ -8426,7 +8426,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to online document editor, project management tool, business tools, crm system, gantt chart, online collaboration, cloud office, online word, documents management, online spreadsheets, online office, collaborative editing, online office application, online docs.
         /// </summary>
-        internal static string MetaKeywords {
+        public static string MetaKeywords {
             get {
                 return ResourceManager.GetString("MetaKeywords", resourceCulture);
             }
@@ -8435,7 +8435,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Migration.
         /// </summary>
-        internal static string Migration {
+        public static string Migration {
             get {
                 return ResourceManager.GetString("Migration", resourceCulture);
             }
@@ -8444,7 +8444,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {0}Portal Region Migration{1} feature is available for owners of the paid portals only..
         /// </summary>
-        internal static string MigrationNotAvailable {
+        public static string MigrationNotAvailable {
             get {
                 return ResourceManager.GetString("MigrationNotAvailable", resourceCulture);
             }
@@ -8453,7 +8453,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The {0}Portal Region Migration{1} feature is available for portals owners only..
         /// </summary>
-        internal static string MigrationNotAvailableOwner {
+        public static string MigrationNotAvailableOwner {
             get {
                 return ResourceManager.GetString("MigrationNotAvailableOwner", resourceCulture);
             }
@@ -8462,7 +8462,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Миграция портала {0} в новое хранилище в процессе..
         /// </summary>
-        internal static string MigrationPortalProcessTitle {
+        public static string MigrationPortalProcessTitle {
             get {
                 return ResourceManager.GetString("MigrationPortalProcessTitle", resourceCulture);
             }
@@ -8471,7 +8471,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Как только процесс миграции в новое хранилище закончится, портал будет готов к работе..
         /// </summary>
-        internal static string MigrationPortalText {
+        public static string MigrationPortalText {
             get {
                 return ResourceManager.GetString("MigrationPortalText", resourceCulture);
             }
@@ -8480,7 +8480,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Миграция.
         /// </summary>
-        internal static string MigrationPortalTitle {
+        public static string MigrationPortalTitle {
             get {
                 return ResourceManager.GetString("MigrationPortalTitle", resourceCulture);
             }
@@ -8489,7 +8489,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to New mobile phone.
         /// </summary>
-        internal static string MobileNewNumber {
+        public static string MobileNewNumber {
             get {
                 return ResourceManager.GetString("MobileNewNumber", resourceCulture);
             }
@@ -8498,7 +8498,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Primary Mobile Phone.
         /// </summary>
-        internal static string MobilePhone {
+        public static string MobilePhone {
             get {
                 return ResourceManager.GetString("MobilePhone", resourceCulture);
             }
@@ -8507,7 +8507,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change phone number.
         /// </summary>
-        internal static string MobilePhoneChange {
+        public static string MobilePhoneChange {
             get {
                 return ResourceManager.GetString("MobilePhoneChange", resourceCulture);
             }
@@ -8516,7 +8516,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Go to page number change the phone number..
         /// </summary>
-        internal static string MobilePhoneChangeDescription {
+        public static string MobilePhoneChangeDescription {
             get {
                 return ResourceManager.GetString("MobilePhoneChangeDescription", resourceCulture);
             }
@@ -8525,7 +8525,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To change the phone number use the text message with the code which has been sent to your new phone..
         /// </summary>
-        internal static string MobilePhoneChangeDescriptionSms {
+        public static string MobilePhoneChangeDescriptionSms {
             get {
                 return ResourceManager.GetString("MobilePhoneChangeDescriptionSms", resourceCulture);
             }
@@ -8534,7 +8534,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sent.
         /// </summary>
-        internal static string MobilePhoneChangeSent {
+        public static string MobilePhoneChangeSent {
             get {
                 return ResourceManager.GetString("MobilePhoneChangeSent", resourceCulture);
             }
@@ -8543,7 +8543,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change mobile phone.
         /// </summary>
-        internal static string MobilePhoneChangeTitle {
+        public static string MobilePhoneChangeTitle {
             get {
                 return ResourceManager.GetString("MobilePhoneChangeTitle", resourceCulture);
             }
@@ -8552,7 +8552,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete user phone.
         /// </summary>
-        internal static string MobilePhoneErase {
+        public static string MobilePhoneErase {
             get {
                 return ResourceManager.GetString("MobilePhoneErase", resourceCulture);
             }
@@ -8561,7 +8561,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The instructions on how to change the user mobile number will be sent to the user email address.
         /// </summary>
-        internal static string MobilePhoneEraseDescription {
+        public static string MobilePhoneEraseDescription {
             get {
                 return ResourceManager.GetString("MobilePhoneEraseDescription", resourceCulture);
             }
@@ -8570,7 +8570,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To change the number, you need to delete your current phone number.
         /// </summary>
-        internal static string MobilePhoneMustErase {
+        public static string MobilePhoneMustErase {
             get {
                 return ResourceManager.GetString("MobilePhoneMustErase", resourceCulture);
             }
@@ -8579,7 +8579,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Monitoring.
         /// </summary>
-        internal static string Monitoring {
+        public static string Monitoring {
             get {
                 return ResourceManager.GetString("Monitoring", resourceCulture);
             }
@@ -8588,7 +8588,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to More.
         /// </summary>
-        internal static string More {
+        public static string More {
             get {
                 return ResourceManager.GetString("More", resourceCulture);
             }
@@ -8597,7 +8597,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to More actions.
         /// </summary>
-        internal static string MoreActions {
+        public static string MoreActions {
             get {
                 return ResourceManager.GetString("MoreActions", resourceCulture);
             }
@@ -8606,7 +8606,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to More languages.
         /// </summary>
-        internal static string MoreLanguages {
+        public static string MoreLanguages {
             get {
                 return ResourceManager.GetString("MoreLanguages", resourceCulture);
             }
@@ -8615,7 +8615,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to My Profile.
         /// </summary>
-        internal static string MyProfile {
+        public static string MyProfile {
             get {
                 return ResourceManager.GetString("MyProfile", resourceCulture);
             }
@@ -8624,7 +8624,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string Name {
+        public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
@@ -8633,7 +8633,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The name of fields in first line.
         /// </summary>
-        internal static string NameInFirstLine {
+        public static string NameInFirstLine {
             get {
                 return ResourceManager.GetString("NameInFirstLine", resourceCulture);
             }
@@ -8642,7 +8642,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Template.
         /// </summary>
-        internal static string NamingPeopleSchema {
+        public static string NamingPeopleSchema {
             get {
                 return ResourceManager.GetString("NamingPeopleSchema", resourceCulture);
             }
@@ -8651,7 +8651,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Team Template.
         /// </summary>
-        internal static string NamingPeopleSettings {
+        public static string NamingPeopleSettings {
             get {
                 return ResourceManager.GetString("NamingPeopleSettings", resourceCulture);
             }
@@ -8660,7 +8660,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Never Show.
         /// </summary>
-        internal static string NeverShow {
+        public static string NeverShow {
             get {
                 return ResourceManager.GetString("NeverShow", resourceCulture);
             }
@@ -8669,7 +8669,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to New Email.
         /// </summary>
-        internal static string NewEmail {
+        public static string NewEmail {
             get {
                 return ResourceManager.GetString("NewEmail", resourceCulture);
             }
@@ -8678,7 +8678,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to New Password.
         /// </summary>
-        internal static string NewPassword {
+        public static string NewPassword {
             get {
                 return ResourceManager.GetString("NewPassword", resourceCulture);
             }
@@ -8687,7 +8687,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to New portal name.
         /// </summary>
-        internal static string NewPortalName {
+        public static string NewPortalName {
             get {
                 return ResourceManager.GetString("NewPortalName", resourceCulture);
             }
@@ -8696,7 +8696,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No file selected.
         /// </summary>
-        internal static string NoFileSelected {
+        public static string NoFileSelected {
             get {
                 return ResourceManager.GetString("NoFileSelected", resourceCulture);
             }
@@ -8705,7 +8705,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You haven&apos;t added any domains yet. Follow the {0}link{1} to add the first domain..
         /// </summary>
-        internal static string NoMailServerDomainsMsg {
+        public static string NoMailServerDomainsMsg {
             get {
                 return ResourceManager.GetString("NoMailServerDomainsMsg", resourceCulture);
             }
@@ -8714,7 +8714,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No missed calls.
         /// </summary>
-        internal static string NoMissedCallsMsg {
+        public static string NoMissedCallsMsg {
             get {
                 return ResourceManager.GetString("NoMissedCallsMsg", resourceCulture);
             }
@@ -8723,7 +8723,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No other operators available, please answer..
         /// </summary>
-        internal static string NoRedirectOperatorsMsg {
+        public static string NoRedirectOperatorsMsg {
             get {
                 return ResourceManager.GetString("NoRedirectOperatorsMsg", resourceCulture);
             }
@@ -8732,7 +8732,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Roles for the users added as {!guests} can be later changed in the {0}People{1} module..
         /// </summary>
-        internal static string NoteInviteCollaborator {
+        public static string NoteInviteCollaborator {
             get {
                 return ResourceManager.GetString("NoteInviteCollaborator", resourceCulture);
             }
@@ -8741,7 +8741,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The portal email user will be formed the following way: &apos;Login Attribute + @ + LDAP Domain&apos;. In case such email does not exist, the user will not receive any portal notifications..
         /// </summary>
-        internal static string NoteLDAPShouldKnow {
+        public static string NoteLDAPShouldKnow {
             get {
                 return ResourceManager.GetString("NoteLDAPShouldKnow", resourceCulture);
             }
@@ -8750,7 +8750,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to They will not be included into the total number of users in the portal pricing..
         /// </summary>
-        internal static string NotePriceCollaborator {
+        public static string NotePriceCollaborator {
             get {
                 return ResourceManager.GetString("NotePriceCollaborator", resourceCulture);
             }
@@ -8759,7 +8759,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Things you should know:.
         /// </summary>
-        internal static string NoteShouldKnowHeader {
+        public static string NoteShouldKnowHeader {
             get {
                 return ResourceManager.GetString("NoteShouldKnowHeader", resourceCulture);
             }
@@ -8768,7 +8768,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to In case you cannot find your language in the list of the available ones, feel free to write to us at {0}documentation@onlyoffice.com{1} to take part in the translation and get up to 1 year free of charge..
         /// </summary>
-        internal static string NotFoundLanguage {
+        public static string NotFoundLanguage {
             get {
                 return ResourceManager.GetString("NotFoundLanguage", resourceCulture);
             }
@@ -8777,7 +8777,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Notify by:.
         /// </summary>
-        internal static string NotifyBy {
+        public static string NotifyBy {
             get {
                 return ResourceManager.GetString("NotifyBy", resourceCulture);
             }
@@ -8786,7 +8786,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        internal static string NotifyByEmail {
+        public static string NotifyByEmail {
             get {
                 return ResourceManager.GetString("NotifyByEmail", resourceCulture);
             }
@@ -8795,7 +8795,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email &amp; Talk.
         /// </summary>
-        internal static string NotifyByEmailAndTMTalk {
+        public static string NotifyByEmailAndTMTalk {
             get {
                 return ResourceManager.GetString("NotifyByEmailAndTMTalk", resourceCulture);
             }
@@ -8804,7 +8804,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Talk.
         /// </summary>
-        internal static string NotifyByTMTalk {
+        public static string NotifyByTMTalk {
             get {
                 return ResourceManager.GetString("NotifyByTMTalk", resourceCulture);
             }
@@ -8813,7 +8813,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Notify {!users} about portal migration.
         /// </summary>
-        internal static string NotifyPortalMigration {
+        public static string NotifyPortalMigration {
             get {
                 return ResourceManager.GetString("NotifyPortalMigration", resourceCulture);
             }
@@ -8822,7 +8822,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Not import.
         /// </summary>
-        internal static string NotImport {
+        public static string NotImport {
             get {
                 return ResourceManager.GetString("NotImport", resourceCulture);
             }
@@ -8831,7 +8831,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disabled.
         /// </summary>
-        internal static string OffMailDomains {
+        public static string OffMailDomains {
             get {
                 return ResourceManager.GetString("OffMailDomains", resourceCulture);
             }
@@ -8840,7 +8840,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        internal static string OKButton {
+        public static string OKButton {
             get {
                 return ResourceManager.GetString("OKButton", resourceCulture);
             }
@@ -8849,7 +8849,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE apps.
         /// </summary>
-        internal static string OnlyofficeApps {
+        public static string OnlyofficeApps {
             get {
                 return ResourceManager.GetString("OnlyofficeApps", resourceCulture);
             }
@@ -8858,7 +8858,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Or.
         /// </summary>
-        internal static string Or {
+        public static string Or {
             get {
                 return ResourceManager.GetString("Or", resourceCulture);
             }
@@ -8867,7 +8867,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ORG Region.
         /// </summary>
-        internal static string OrgServerRegion {
+        public static string OrgServerRegion {
             get {
                 return ResourceManager.GetString("OrgServerRegion", resourceCulture);
             }
@@ -8876,7 +8876,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to or press.
         /// </summary>
-        internal static string OrPress {
+        public static string OrPress {
             get {
                 return ResourceManager.GetString("OrPress", resourceCulture);
             }
@@ -8885,7 +8885,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Owner.
         /// </summary>
-        internal static string Owner {
+        public static string Owner {
             get {
                 return ResourceManager.GetString("Owner", resourceCulture);
             }
@@ -8894,7 +8894,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your subscription to support and updates has expired.
         /// </summary>
-        internal static string PaidPeriodExpiredStandaloneLife {
+        public static string PaidPeriodExpiredStandaloneLife {
             get {
                 return ResourceManager.GetString("PaidPeriodExpiredStandaloneLife", resourceCulture);
             }
@@ -8903,7 +8903,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your subscription to support and updates will expire in {0} {1}.
         /// </summary>
-        internal static string PaidPeriodStandaloneLife {
+        public static string PaidPeriodStandaloneLife {
             get {
                 return ResourceManager.GetString("PaidPeriodStandaloneLife", resourceCulture);
             }
@@ -8912,7 +8912,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string Password {
+        public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
             }
@@ -8921,7 +8921,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change password.
         /// </summary>
-        internal static string PasswordChangeButton {
+        public static string PasswordChangeButton {
             get {
                 return ResourceManager.GetString("PasswordChangeButton", resourceCulture);
             }
@@ -8930,7 +8930,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password change.
         /// </summary>
-        internal static string PasswordChangeTitle {
+        public static string PasswordChangeTitle {
             get {
                 return ResourceManager.GetString("PasswordChangeTitle", resourceCulture);
             }
@@ -8939,7 +8939,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Minimal password length.
         /// </summary>
-        internal static string PasswordMinLength {
+        public static string PasswordMinLength {
             get {
                 return ResourceManager.GetString("PasswordMinLength", resourceCulture);
             }
@@ -8948,7 +8948,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password recovery.
         /// </summary>
-        internal static string PasswordRecoveryTitle {
+        public static string PasswordRecoveryTitle {
             get {
                 return ResourceManager.GetString("PasswordRecoveryTitle", resourceCulture);
             }
@@ -8957,7 +8957,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to characters.
         /// </summary>
-        internal static string PasswordSymbolsCountLabel {
+        public static string PasswordSymbolsCountLabel {
             get {
                 return ResourceManager.GetString("PasswordSymbolsCountLabel", resourceCulture);
             }
@@ -8966,7 +8966,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use digits.
         /// </summary>
-        internal static string PasswordUseDigits {
+        public static string PasswordUseDigits {
             get {
                 return ResourceManager.GetString("PasswordUseDigits", resourceCulture);
             }
@@ -8975,7 +8975,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use special characters.
         /// </summary>
-        internal static string PasswordUseSpecialSymbols {
+        public static string PasswordUseSpecialSymbols {
             get {
                 return ResourceManager.GetString("PasswordUseSpecialSymbols", resourceCulture);
             }
@@ -8984,7 +8984,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use capital letters.
         /// </summary>
-        internal static string PasswordUseUpperCase {
+        public static string PasswordUseUpperCase {
             get {
                 return ResourceManager.GetString("PasswordUseUpperCase", resourceCulture);
             }
@@ -8993,7 +8993,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Now you can create a new password..
         /// </summary>
-        internal static string PassworResetTitle {
+        public static string PassworResetTitle {
             get {
                 return ResourceManager.GetString("PassworResetTitle", resourceCulture);
             }
@@ -9002,7 +9002,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Payment required.
         /// </summary>
-        internal static string PaymentRequired {
+        public static string PaymentRequired {
             get {
                 return ResourceManager.GetString("PaymentRequired", resourceCulture);
             }
@@ -9011,7 +9011,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Payments.
         /// </summary>
-        internal static string Payments {
+        public static string Payments {
             get {
                 return ResourceManager.GetString("Payments", resourceCulture);
             }
@@ -9020,7 +9020,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Payment History.
         /// </summary>
-        internal static string PaymentsTitle {
+        public static string PaymentsTitle {
             get {
                 return ResourceManager.GetString("PaymentsTitle", resourceCulture);
             }
@@ -9029,7 +9029,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pending.
         /// </summary>
-        internal static string PendingTitle {
+        public static string PendingTitle {
             get {
                 return ResourceManager.GetString("PendingTitle", resourceCulture);
             }
@@ -9038,7 +9038,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to People.
         /// </summary>
-        internal static string People {
+        public static string People {
             get {
                 return ResourceManager.GetString("People", resourceCulture);
             }
@@ -9047,7 +9047,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Disk space quota exceeded.
         /// </summary>
-        internal static string PersonalFreeSpaceException {
+        public static string PersonalFreeSpaceException {
             get {
                 return ResourceManager.GetString("PersonalFreeSpaceException", resourceCulture);
             }
@@ -9056,7 +9056,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Account Login.
         /// </summary>
-        internal static string PersonalLogin {
+        public static string PersonalLogin {
             get {
                 return ResourceManager.GetString("PersonalLogin", resourceCulture);
             }
@@ -9065,7 +9065,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space amount is about to be exceeded: {0}.
         /// </summary>
-        internal static string PersonalTariffExceedLimit {
+        public static string PersonalTariffExceedLimit {
             get {
                 return ResourceManager.GetString("PersonalTariffExceedLimit", resourceCulture);
             }
@@ -9074,7 +9074,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are running out of free storage space. When the storage quota is exceeded you will not be able to create or upload new files, and all the existing file changes will be discarded.{2}You can remove the unnecessary files or {0}contact our support team{1} to find out how you can get additional free space..
         /// </summary>
-        internal static string PersonalTariffExceedLimitInfoText {
+        public static string PersonalTariffExceedLimitInfoText {
             get {
                 return ResourceManager.GetString("PersonalTariffExceedLimitInfoText", resourceCulture);
             }
@@ -9083,7 +9083,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to JPG or PNG, max {0}.
         /// </summary>
-        internal static string PhotoMaxSize {
+        public static string PhotoMaxSize {
             get {
                 return ResourceManager.GetString("PhotoMaxSize", resourceCulture);
             }
@@ -9092,7 +9092,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Photo not selected.
         /// </summary>
-        internal static string PhotoNotSelected {
+        public static string PhotoNotSelected {
             get {
                 return ResourceManager.GetString("PhotoNotSelected", resourceCulture);
             }
@@ -9101,7 +9101,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please wait....
         /// </summary>
-        internal static string PleaseWaitMessage {
+        public static string PleaseWaitMessage {
             get {
                 return ResourceManager.GetString("PleaseWaitMessage", resourceCulture);
             }
@@ -9110,7 +9110,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Port.
         /// </summary>
-        internal static string Port {
+        public static string Port {
             get {
                 return ResourceManager.GetString("Port", resourceCulture);
             }
@@ -9119,7 +9119,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Public portal.
         /// </summary>
-        internal static string PortalAccessSettingsAnyone {
+        public static string PortalAccessSettingsAnyone {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsAnyone", resourceCulture);
             }
@@ -9128,7 +9128,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Private portal.
         /// </summary>
-        internal static string PortalAccessSettingsAuthorized {
+        public static string PortalAccessSettingsAuthorized {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsAuthorized", resourceCulture);
             }
@@ -9137,7 +9137,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Limit exceeded ({0} Mb disk space).
         /// </summary>
-        internal static string PortalAccessSettingsDiscSpaceLimitException {
+        public static string PortalAccessSettingsDiscSpaceLimitException {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsDiscSpaceLimitException", resourceCulture);
             }
@@ -9146,7 +9146,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This feature enabled on free tariff only.
         /// </summary>
-        internal static string PortalAccessSettingsTariffException {
+        public static string PortalAccessSettingsTariffException {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsTariffException", resourceCulture);
             }
@@ -9155,7 +9155,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Access Settings.
         /// </summary>
-        internal static string PortalAccessSettingsTitle {
+        public static string PortalAccessSettingsTitle {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsTitle", resourceCulture);
             }
@@ -9164,7 +9164,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Limit exceeded ({0} active users).
         /// </summary>
-        internal static string PortalAccessSettingsUserLimitException {
+        public static string PortalAccessSettingsUserLimitException {
             get {
                 return ResourceManager.GetString("PortalAccessSettingsUserLimitException", resourceCulture);
             }
@@ -9173,7 +9173,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Address.
         /// </summary>
-        internal static string PortalAddress {
+        public static string PortalAddress {
             get {
                 return ResourceManager.GetString("PortalAddress", resourceCulture);
             }
@@ -9182,7 +9182,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Google Analytics tracking.
         /// </summary>
-        internal static string PortalAnalyticsTitle {
+        public static string PortalAnalyticsTitle {
             get {
                 return ResourceManager.GetString("PortalAnalyticsTitle", resourceCulture);
             }
@@ -9191,7 +9191,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Name.
         /// </summary>
-        internal static string PortalName {
+        public static string PortalName {
             get {
                 return ResourceManager.GetString("PortalName", resourceCulture);
             }
@@ -9200,7 +9200,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Owner.
         /// </summary>
-        internal static string PortalOwner {
+        public static string PortalOwner {
             get {
                 return ResourceManager.GetString("PortalOwner", resourceCulture);
             }
@@ -9209,7 +9209,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Renaming.
         /// </summary>
-        internal static string PortalRenameTitle {
+        public static string PortalRenameTitle {
             get {
                 return ResourceManager.GetString("PortalRenameTitle", resourceCulture);
             }
@@ -9218,7 +9218,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Access.
         /// </summary>
-        internal static string PortalSecurity {
+        public static string PortalSecurity {
             get {
                 return ResourceManager.GetString("PortalSecurity", resourceCulture);
             }
@@ -9227,7 +9227,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Powered by.
         /// </summary>
-        internal static string PoweredBy {
+        public static string PoweredBy {
             get {
                 return ResourceManager.GetString("PoweredBy", resourceCulture);
             }
@@ -9236,7 +9236,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
-        internal static string PreviewButton {
+        public static string PreviewButton {
             get {
                 return ResourceManager.GetString("PreviewButton", resourceCulture);
             }
@@ -9245,7 +9245,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pricing Page.
         /// </summary>
-        internal static string PricingPage {
+        public static string PricingPage {
             get {
                 return ResourceManager.GetString("PricingPage", resourceCulture);
             }
@@ -9254,7 +9254,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pricing page available for administrators only.
         /// </summary>
-        internal static string PricingPageSettingsCbxText {
+        public static string PricingPageSettingsCbxText {
             get {
                 return ResourceManager.GetString("PricingPageSettingsCbxText", resourceCulture);
             }
@@ -9263,7 +9263,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Pricing Page Settings{1} allow the portal administrator to enable or disable the pricing page visibility to all users making it visible to the portal administrators only..
         /// </summary>
-        internal static string PricingPageSettingsHelp {
+        public static string PricingPageSettingsHelp {
             get {
                 return ResourceManager.GetString("PricingPageSettingsHelp", resourceCulture);
             }
@@ -9272,7 +9272,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pricing Page Settings.
         /// </summary>
-        internal static string PricingPageSettingsTitle {
+        public static string PricingPageSettingsTitle {
             get {
                 return ResourceManager.GetString("PricingPageSettingsTitle", resourceCulture);
             }
@@ -9281,7 +9281,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Print.
         /// </summary>
-        internal static string PrintButton {
+        public static string PrintButton {
             get {
                 return ResourceManager.GetString("PrintButton", resourceCulture);
             }
@@ -9290,7 +9290,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Modules &amp; Tools.
         /// </summary>
-        internal static string ProductsAndInstruments {
+        public static string ProductsAndInstruments {
             get {
                 return ResourceManager.GetString("ProductsAndInstruments", resourceCulture);
             }
@@ -9299,7 +9299,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select the ONLYOFFICE™ modules and tools you need. The disabled modules and tools will be hidden from all portal {!users}. Keep in mind that after enabling the modules and tools again they will become available for all portal {!users} as well. To restrict the access, refer to the Access Rights section of the Portal Settings..
         /// </summary>
-        internal static string ProductsAndInstruments_Info {
+        public static string ProductsAndInstruments_Info {
             get {
                 return ResourceManager.GetString("ProductsAndInstruments_Info", resourceCulture);
             }
@@ -9308,7 +9308,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tools.
         /// </summary>
-        internal static string ProductsAndInstruments_Instruments {
+        public static string ProductsAndInstruments_Instruments {
             get {
                 return ResourceManager.GetString("ProductsAndInstruments_Instruments", resourceCulture);
             }
@@ -9317,7 +9317,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Modules.
         /// </summary>
-        internal static string ProductsAndInstruments_Products {
+        public static string ProductsAndInstruments_Products {
             get {
                 return ResourceManager.GetString("ProductsAndInstruments_Products", resourceCulture);
             }
@@ -9326,7 +9326,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
-        internal static string Profile {
+        public static string Profile {
             get {
                 return ResourceManager.GetString("Profile", resourceCulture);
             }
@@ -9335,7 +9335,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Profile has been removed.
         /// </summary>
-        internal static string ProfileRemoved {
+        public static string ProfileRemoved {
             get {
                 return ResourceManager.GetString("ProfileRemoved", resourceCulture);
             }
@@ -9344,7 +9344,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guests have limited access to some portal features and modules.
         /// </summary>
-        internal static string ProfileTypePopupHelper {
+        public static string ProfileTypePopupHelper {
             get {
                 return ResourceManager.GetString("ProfileTypePopupHelper", resourceCulture);
             }
@@ -9353,7 +9353,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE Projects for {0} devices.
         /// </summary>
-        internal static string ProjectsForDevices {
+        public static string ProjectsForDevices {
             get {
                 return ResourceManager.GetString("ProjectsForDevices", resourceCulture);
             }
@@ -9362,7 +9362,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Public Portal.
         /// </summary>
-        internal static string PublicPortal {
+        public static string PublicPortal {
             get {
                 return ResourceManager.GetString("PublicPortal", resourceCulture);
             }
@@ -9371,7 +9371,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Publish.
         /// </summary>
-        internal static string PublishButton {
+        public static string PublishButton {
             get {
                 return ResourceManager.GetString("PublishButton", resourceCulture);
             }
@@ -9380,7 +9380,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Quick Links.
         /// </summary>
-        internal static string QuickLinks {
+        public static string QuickLinks {
             get {
                 return ResourceManager.GetString("QuickLinks", resourceCulture);
             }
@@ -9389,7 +9389,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string QuickLinksDeleteLink {
+        public static string QuickLinksDeleteLink {
             get {
                 return ResourceManager.GetString("QuickLinksDeleteLink", resourceCulture);
             }
@@ -9398,7 +9398,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Quick Search.
         /// </summary>
-        internal static string QuickSearch {
+        public static string QuickSearch {
             get {
                 return ResourceManager.GetString("QuickSearch", resourceCulture);
             }
@@ -9407,7 +9407,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reactivate.
         /// </summary>
-        internal static string ReactivatePortalButton {
+        public static string ReactivatePortalButton {
             get {
                 return ResourceManager.GetString("ReactivatePortalButton", resourceCulture);
             }
@@ -9416,7 +9416,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your account has been successfully reactivated. {0}In 10 seconds you will be redirected {1}here{2}.
         /// </summary>
-        internal static string ReactivatePortalSuccessMessage {
+        public static string ReactivatePortalSuccessMessage {
             get {
                 return ResourceManager.GetString("ReactivatePortalSuccessMessage", resourceCulture);
             }
@@ -9425,7 +9425,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reassign data.
         /// </summary>
-        internal static string ReassignData {
+        public static string ReassignData {
             get {
                 return ResourceManager.GetString("ReassignData", resourceCulture);
             }
@@ -9434,7 +9434,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Data reassign progress for {0} is not complete..
         /// </summary>
-        internal static string ReassignDataRemoveUserError {
+        public static string ReassignDataRemoveUserError {
             get {
                 return ResourceManager.GetString("ReassignDataRemoveUserError", resourceCulture);
             }
@@ -9443,7 +9443,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Пересчитать.
         /// </summary>
-        internal static string RecalculateQuota {
+        public static string RecalculateQuota {
             get {
                 return ResourceManager.GetString("RecalculateQuota", resourceCulture);
             }
@@ -9452,7 +9452,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Redirect.
         /// </summary>
-        internal static string RedirectCallBtn {
+        public static string RedirectCallBtn {
             get {
                 return ResourceManager.GetString("RedirectCallBtn", resourceCulture);
             }
@@ -9461,7 +9461,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Registration Date.
         /// </summary>
-        internal static string RegDateCaption {
+        public static string RegDateCaption {
             get {
                 return ResourceManager.GetString("RegDateCaption", resourceCulture);
             }
@@ -9470,7 +9470,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Register new {!users} immediately.
         /// </summary>
-        internal static string RegisterNewUsersImmediately {
+        public static string RegisterNewUsersImmediately {
             get {
                 return ResourceManager.GetString("RegisterNewUsersImmediately", resourceCulture);
             }
@@ -9479,7 +9479,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your registration email.
         /// </summary>
-        internal static string RegistrationEmailWatermark {
+        public static string RegistrationEmailWatermark {
             get {
                 return ResourceManager.GetString("RegistrationEmailWatermark", resourceCulture);
             }
@@ -9488,7 +9488,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your registration login.
         /// </summary>
-        internal static string RegistrationLoginWatermark {
+        public static string RegistrationLoginWatermark {
             get {
                 return ResourceManager.GetString("RegistrationLoginWatermark", resourceCulture);
             }
@@ -9497,7 +9497,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sign Up.
         /// </summary>
-        internal static string RegistryButton {
+        public static string RegistryButton {
             get {
                 return ResourceManager.GetString("RegistryButton", resourceCulture);
             }
@@ -9506,7 +9506,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Create now.
         /// </summary>
-        internal static string RegistryButtonCreateNow {
+        public static string RegistryButtonCreateNow {
             get {
                 return ResourceManager.GetString("RegistryButtonCreateNow", resourceCulture);
             }
@@ -9515,7 +9515,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Start editing.
         /// </summary>
-        internal static string RegistryButtonStartEditing {
+        public static string RegistryButtonStartEditing {
             get {
                 return ResourceManager.GetString("RegistryButtonStartEditing", resourceCulture);
             }
@@ -9524,7 +9524,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to I agree that my usage data will be anonymously tracked via Google Analytics.
         /// </summary>
-        internal static string RegistrySettingAnalytics {
+        public static string RegistrySettingAnalytics {
             get {
                 return ResourceManager.GetString("RegistrySettingAnalytics", resourceCulture);
             }
@@ -9533,7 +9533,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to I want to subscribe to the ONLYOFFICE newsletter.
         /// </summary>
-        internal static string RegistrySettingSpam {
+        public static string RegistrySettingSpam {
             get {
                 return ResourceManager.GetString("RegistrySettingSpam", resourceCulture);
             }
@@ -9542,7 +9542,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to I agree to ONLYOFFICE {0}Terms and conditions{1} and {2}Privacy statement{3}.
         /// </summary>
-        internal static string RegistrySettingTerms {
+        public static string RegistrySettingTerms {
             get {
                 return ResourceManager.GetString("RegistrySettingTerms", resourceCulture);
             }
@@ -9551,7 +9551,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reject.
         /// </summary>
-        internal static string RejectCallBtn {
+        public static string RejectCallBtn {
             get {
                 return ResourceManager.GetString("RejectCallBtn", resourceCulture);
             }
@@ -9560,7 +9560,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Remember.
         /// </summary>
-        internal static string Remember {
+        public static string Remember {
             get {
                 return ResourceManager.GetString("Remember", resourceCulture);
             }
@@ -9569,7 +9569,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to the settings..
         /// </summary>
-        internal static string RememberHelper {
+        public static string RememberHelper {
             get {
                 return ResourceManager.GetString("RememberHelper", resourceCulture);
             }
@@ -9578,7 +9578,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Delete personal data.
         /// </summary>
-        internal static string RemoveData {
+        public static string RemoveData {
             get {
                 return ResourceManager.GetString("RemoveData", resourceCulture);
             }
@@ -9587,7 +9587,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Request new.
         /// </summary>
-        internal static string RequestNewButton {
+        public static string RequestNewButton {
             get {
                 return ResourceManager.GetString("RequestNewButton", resourceCulture);
             }
@@ -9596,7 +9596,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The invitation will be sent to the entered email.
         /// </summary>
-        internal static string ResendInviteDescription {
+        public static string ResendInviteDescription {
             get {
                 return ResourceManager.GetString("ResendInviteDescription", resourceCulture);
             }
@@ -9605,7 +9605,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Re-send.
         /// </summary>
-        internal static string ResendInvitesButton {
+        public static string ResendInvitesButton {
             get {
                 return ResourceManager.GetString("ResendInvitesButton", resourceCulture);
             }
@@ -9614,7 +9614,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to send invitations once again?.
         /// </summary>
-        internal static string ResendInvitesText {
+        public static string ResendInvitesText {
             get {
                 return ResourceManager.GetString("ResendInvitesText", resourceCulture);
             }
@@ -9623,7 +9623,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Re-send invitation.
         /// </summary>
-        internal static string ResendInviteTitle {
+        public static string ResendInviteTitle {
             get {
                 return ResourceManager.GetString("ResendInviteTitle", resourceCulture);
             }
@@ -9632,7 +9632,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reset.
         /// </summary>
-        internal static string ResetButton {
+        public static string ResetButton {
             get {
                 return ResourceManager.GetString("ResetButton", resourceCulture);
             }
@@ -9641,7 +9641,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Restore.
         /// </summary>
-        internal static string RestoreAction {
+        public static string RestoreAction {
             get {
                 return ResourceManager.GetString("RestoreAction", resourceCulture);
             }
@@ -9650,7 +9650,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Backup list.
         /// </summary>
-        internal static string RestoreBackupList {
+        public static string RestoreBackupList {
             get {
                 return ResourceManager.GetString("RestoreBackupList", resourceCulture);
             }
@@ -9661,7 +9661,7 @@ namespace ASC.Web.Core.PublicResources {
         ///deleted. This action cannot be undone. To delete all the files use the link: {0}
         ///Clear the list{1}..
         /// </summary>
-        internal static string RestoreBackupListClearText {
+        public static string RestoreBackupListClearText {
             get {
                 return ResourceManager.GetString("RestoreBackupListClearText", resourceCulture);
             }
@@ -9670,7 +9670,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Restore.
         /// </summary>
-        internal static string RestoreBtn {
+        public static string RestoreBtn {
             get {
                 return ResourceManager.GetString("RestoreBtn", resourceCulture);
             }
@@ -9679,7 +9679,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Computer file.
         /// </summary>
-        internal static string RestoreComputerFile {
+        public static string RestoreComputerFile {
             get {
                 return ResourceManager.GetString("RestoreComputerFile", resourceCulture);
             }
@@ -9688,7 +9688,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Restore to Default.
         /// </summary>
-        internal static string RestoreDefaultButton {
+        public static string RestoreDefaultButton {
             get {
                 return ResourceManager.GetString("RestoreDefaultButton", resourceCulture);
             }
@@ -9697,7 +9697,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Use this option to restore your portal from the previously saved backup file..
         /// </summary>
-        internal static string RestoreDesc {
+        public static string RestoreDesc {
             get {
                 return ResourceManager.GetString("RestoreDesc", resourceCulture);
             }
@@ -9706,7 +9706,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to No backups have been created yet. Create one or more backups for them to appear in this list..
         /// </summary>
-        internal static string RestoreEmptyList {
+        public static string RestoreEmptyList {
             get {
                 return ResourceManager.GetString("RestoreEmptyList", resourceCulture);
             }
@@ -9715,7 +9715,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Data Restore{1} option is used to restore your previously saved portal data (from a local server or SaaS portal). Select the storage where the data is saved, enter necessary details and check the {0}Send notification to portal users{1} to alert your portal users about the backup/restore operations..
         /// </summary>
-        internal static string RestoreHelp {
+        public static string RestoreHelp {
             get {
                 return ResourceManager.GetString("RestoreHelp", resourceCulture);
             }
@@ -9724,7 +9724,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Once the restore process is over, you&apos;ll be automatically redirected to your portal..
         /// </summary>
-        internal static string RestorePortalProcessText {
+        public static string RestorePortalProcessText {
             get {
                 return ResourceManager.GetString("RestorePortalProcessText", resourceCulture);
             }
@@ -9733,7 +9733,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal restoring is underway..
         /// </summary>
-        internal static string RestorePortalProcessTitle {
+        public static string RestorePortalProcessTitle {
             get {
                 return ResourceManager.GetString("RestorePortalProcessTitle", resourceCulture);
             }
@@ -9742,7 +9742,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send notification about portal restoring to users.
         /// </summary>
-        internal static string RestoreSendNotification {
+        public static string RestoreSendNotification {
             get {
                 return ResourceManager.GetString("RestoreSendNotification", resourceCulture);
             }
@@ -9751,7 +9751,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show the backup list.
         /// </summary>
-        internal static string RestoreShowListBackup {
+        public static string RestoreShowListBackup {
             get {
                 return ResourceManager.GetString("RestoreShowListBackup", resourceCulture);
             }
@@ -9760,7 +9760,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Data Restore.
         /// </summary>
-        internal static string RestoreTitle {
+        public static string RestoreTitle {
             get {
                 return ResourceManager.GetString("RestoreTitle", resourceCulture);
             }
@@ -9769,7 +9769,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The portal will become unavailable during the restore process. After the restore is complete all the changes made after the date of the selected restore point will be lost..
         /// </summary>
-        internal static string RestoreWarningText {
+        public static string RestoreWarningText {
             get {
                 return ResourceManager.GetString("RestoreWarningText", resourceCulture);
             }
@@ -9778,7 +9778,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Return the default image:.
         /// </summary>
-        internal static string ReturnDefaultImage {
+        public static string ReturnDefaultImage {
             get {
                 return ResourceManager.GetString("ReturnDefaultImage", resourceCulture);
             }
@@ -9787,7 +9787,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Return to import settings.
         /// </summary>
-        internal static string ReturnToImportSettingsBtn {
+        public static string ReturnToImportSettingsBtn {
             get {
                 return ResourceManager.GetString("ReturnToImportSettingsBtn", resourceCulture);
             }
@@ -9796,7 +9796,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sales Email.
         /// </summary>
-        internal static string SalesEmail {
+        public static string SalesEmail {
             get {
                 return ResourceManager.GetString("SalesEmail", resourceCulture);
             }
@@ -9805,7 +9805,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string SaveButton {
+        public static string SaveButton {
             get {
                 return ResourceManager.GetString("SaveButton", resourceCulture);
             }
@@ -9814,7 +9814,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Saved.
         /// </summary>
-        internal static string SavedTitle {
+        public static string SavedTitle {
             get {
                 return ResourceManager.GetString("SavedTitle", resourceCulture);
             }
@@ -9823,7 +9823,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
-        internal static string Search {
+        public static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
@@ -9832,7 +9832,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Make sure all words are spelled correctly. Try using different keywords..
         /// </summary>
-        internal static string SearchNotFoundDescript {
+        public static string SearchNotFoundDescript {
             get {
                 return ResourceManager.GetString("SearchNotFoundDescript", resourceCulture);
             }
@@ -9841,7 +9841,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Nothing has been found..
         /// </summary>
-        internal static string SearchNotFoundMessage {
+        public static string SearchNotFoundMessage {
             get {
                 return ResourceManager.GetString("SearchNotFoundMessage", resourceCulture);
             }
@@ -9850,7 +9850,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Search Results.
         /// </summary>
-        internal static string SearchResult {
+        public static string SearchResult {
             get {
                 return ResourceManager.GetString("SearchResult", resourceCulture);
             }
@@ -9859,7 +9859,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to See all.
         /// </summary>
-        internal static string SeeAllBtn {
+        public static string SeeAllBtn {
             get {
                 return ResourceManager.GetString("SeeAllBtn", resourceCulture);
             }
@@ -9868,7 +9868,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Watch all videos.
         /// </summary>
-        internal static string SeeAllVideos {
+        public static string SeeAllVideos {
             get {
                 return ResourceManager.GetString("SeeAllVideos", resourceCulture);
             }
@@ -9877,7 +9877,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
-        internal static string SelectAll {
+        public static string SelectAll {
             get {
                 return ResourceManager.GetString("SelectAll", resourceCulture);
             }
@@ -9886,7 +9886,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select All.
         /// </summary>
-        internal static string SelectAllButton {
+        public static string SelectAllButton {
             get {
                 return ResourceManager.GetString("SelectAllButton", resourceCulture);
             }
@@ -9895,7 +9895,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select data source.
         /// </summary>
-        internal static string SelectDataSource {
+        public static string SelectDataSource {
             get {
                 return ResourceManager.GetString("SelectDataSource", resourceCulture);
             }
@@ -9904,7 +9904,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Selected.
         /// </summary>
-        internal static string Selected {
+        public static string Selected {
             get {
                 return ResourceManager.GetString("Selected", resourceCulture);
             }
@@ -9913,7 +9913,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose.
         /// </summary>
-        internal static string SelectProduct {
+        public static string SelectProduct {
             get {
                 return ResourceManager.GetString("SelectProduct", resourceCulture);
             }
@@ -9922,7 +9922,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send.
         /// </summary>
-        internal static string SendButton {
+        public static string SendButton {
             get {
                 return ResourceManager.GetString("SendButton", resourceCulture);
             }
@@ -9931,7 +9931,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sender Name.
         /// </summary>
-        internal static string SenderDisplayName {
+        public static string SenderDisplayName {
             get {
                 return ResourceManager.GetString("SenderDisplayName", resourceCulture);
             }
@@ -9940,7 +9940,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sender Email Address.
         /// </summary>
-        internal static string SenderEmailAddress {
+        public static string SenderEmailAddress {
             get {
                 return ResourceManager.GetString("SenderEmailAddress", resourceCulture);
             }
@@ -9949,7 +9949,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sender Display Name.
         /// </summary>
-        internal static string SenderName {
+        public static string SenderName {
             get {
                 return ResourceManager.GetString("SenderName", resourceCulture);
             }
@@ -9958,7 +9958,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send invitation once again.
         /// </summary>
-        internal static string SendInviteAgain {
+        public static string SendInviteAgain {
             get {
                 return ResourceManager.GetString("SendInviteAgain", resourceCulture);
             }
@@ -9967,7 +9967,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send invitation.
         /// </summary>
-        internal static string SendInviteToJoinButton {
+        public static string SendInviteToJoinButton {
             get {
                 return ResourceManager.GetString("SendInviteToJoinButton", resourceCulture);
             }
@@ -9976,7 +9976,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Click here to join.
         /// </summary>
-        internal static string SendInviteToJoinButtonBlock {
+        public static string SendInviteToJoinButtonBlock {
             get {
                 return ResourceManager.GetString("SendInviteToJoinButtonBlock", resourceCulture);
             }
@@ -9985,7 +9985,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Want to become the portal {!user}?.
         /// </summary>
-        internal static string SendInviteToJoinDescription {
+        public static string SendInviteToJoinDescription {
             get {
                 return ResourceManager.GetString("SendInviteToJoinDescription", resourceCulture);
             }
@@ -9994,7 +9994,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please enter the email address where the invitation will be sent:.
         /// </summary>
-        internal static string SendInviteToJoinEmailDesc {
+        public static string SendInviteToJoinEmailDesc {
             get {
                 return ResourceManager.GetString("SendInviteToJoinEmailDesc", resourceCulture);
             }
@@ -10003,7 +10003,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send Test Mail.
         /// </summary>
-        internal static string SendTestMail {
+        public static string SendTestMail {
             get {
                 return ResourceManager.GetString("SendTestMail", resourceCulture);
             }
@@ -10012,7 +10012,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The server software enconted an error while processing your request. Please wait for some time and try again. If the error persists, you might probably need to contact the site administrator..
         /// </summary>
-        internal static string ServerErrorText {
+        public static string ServerErrorText {
             get {
                 return ResourceManager.GetString("ServerErrorText", resourceCulture);
             }
@@ -10021,7 +10021,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Server Error.
         /// </summary>
-        internal static string ServerErrorTitle {
+        public static string ServerErrorTitle {
             get {
                 return ResourceManager.GetString("ServerErrorTitle", resourceCulture);
             }
@@ -10030,7 +10030,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Server Region.
         /// </summary>
-        internal static string ServerRegion {
+        public static string ServerRegion {
             get {
                 return ResourceManager.GetString("ServerRegion", resourceCulture);
             }
@@ -10039,7 +10039,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Set password.
         /// </summary>
-        internal static string SetPassword {
+        public static string SetPassword {
             get {
                 return ResourceManager.GetString("SetPassword", resourceCulture);
             }
@@ -10048,7 +10048,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This is the current version already.
         /// </summary>
-        internal static string SettingsAlreadyCurrentPortalVersion {
+        public static string SettingsAlreadyCurrentPortalVersion {
             get {
                 return ResourceManager.GetString("SettingsAlreadyCurrentPortalVersion", resourceCulture);
             }
@@ -10057,7 +10057,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid portal version.
         /// </summary>
-        internal static string SettingsBadPortalVersion {
+        public static string SettingsBadPortalVersion {
             get {
                 return ResourceManager.GetString("SettingsBadPortalVersion", resourceCulture);
             }
@@ -10066,7 +10066,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sex.
         /// </summary>
-        internal static string Sex {
+        public static string Sex {
             get {
                 return ResourceManager.GetString("Sex", resourceCulture);
             }
@@ -10075,7 +10075,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Asia Pacific (Singapore).
         /// </summary>
-        internal static string SgServerRegion {
+        public static string SgServerRegion {
             get {
                 return ResourceManager.GetString("SgServerRegion", resourceCulture);
             }
@@ -10084,7 +10084,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Access granted:.
         /// </summary>
-        internal static string SharingSettingsItemsTitle {
+        public static string SharingSettingsItemsTitle {
             get {
                 return ResourceManager.GetString("SharingSettingsItemsTitle", resourceCulture);
             }
@@ -10093,7 +10093,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sharing Settings.
         /// </summary>
-        internal static string SharingSettingsTitle {
+        public static string SharingSettingsTitle {
             get {
                 return ResourceManager.GetString("SharingSettingsTitle", resourceCulture);
             }
@@ -10102,7 +10102,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
-        internal static string Show {
+        public static string Show {
             get {
                 return ResourceManager.GetString("Show", resourceCulture);
             }
@@ -10111,7 +10111,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show All.
         /// </summary>
-        internal static string ShowAllButton {
+        public static string ShowAllButton {
             get {
                 return ResourceManager.GetString("ShowAllButton", resourceCulture);
             }
@@ -10120,7 +10120,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show all results.
         /// </summary>
-        internal static string ShowAllSearchResult {
+        public static string ShowAllSearchResult {
             get {
                 return ResourceManager.GetString("ShowAllSearchResult", resourceCulture);
             }
@@ -10129,7 +10129,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable/disable tooltips.
         /// </summary>
-        internal static string ShowingTipsSettingMsg {
+        public static string ShowingTipsSettingMsg {
             get {
                 return ResourceManager.GetString("ShowingTipsSettingMsg", resourceCulture);
             }
@@ -10138,7 +10138,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show Next.
         /// </summary>
-        internal static string ShowNext {
+        public static string ShowNext {
             get {
                 return ResourceManager.GetString("ShowNext", resourceCulture);
             }
@@ -10148,7 +10148,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to Registration is available to users with an email account at any domain. 
         ///To register, enter your email and click on Send Invitation.  An email message with a link to activate your ONLYOFFICE™ account will be sent to the specified email..
         /// </summary>
-        internal static string SignInFromAnyDomainInviteTitle {
+        public static string SignInFromAnyDomainInviteTitle {
             get {
                 return ResourceManager.GetString("SignInFromAnyDomainInviteTitle", resourceCulture);
             }
@@ -10157,7 +10157,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Single Sign-on.
         /// </summary>
-        internal static string SingleSignOnSettings {
+        public static string SingleSignOnSettings {
             get {
                 return ResourceManager.GetString("SingleSignOnSettings", resourceCulture);
             }
@@ -10166,7 +10166,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SLO Endpoint URL.
         /// </summary>
-        internal static string SloEndpointURL {
+        public static string SloEndpointURL {
             get {
                 return ResourceManager.GetString("SloEndpointURL", resourceCulture);
             }
@@ -10175,7 +10175,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Surprise.
         /// </summary>
-        internal static string SmlAmazement {
+        public static string SmlAmazement {
             get {
                 return ResourceManager.GetString("SmlAmazement", resourceCulture);
             }
@@ -10184,7 +10184,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Bomb.
         /// </summary>
-        internal static string SmlBomb {
+        public static string SmlBomb {
             get {
                 return ResourceManager.GetString("SmlBomb", resourceCulture);
             }
@@ -10193,7 +10193,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Crazy.
         /// </summary>
-        internal static string SmlCrazy {
+        public static string SmlCrazy {
             get {
                 return ResourceManager.GetString("SmlCrazy", resourceCulture);
             }
@@ -10202,7 +10202,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cry.
         /// </summary>
-        internal static string SmlCry {
+        public static string SmlCry {
             get {
                 return ResourceManager.GetString("SmlCry", resourceCulture);
             }
@@ -10211,7 +10211,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Dance.
         /// </summary>
-        internal static string SmlDance {
+        public static string SmlDance {
             get {
                 return ResourceManager.GetString("SmlDance", resourceCulture);
             }
@@ -10220,7 +10220,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Drink.
         /// </summary>
-        internal static string SmlDrink {
+        public static string SmlDrink {
             get {
                 return ResourceManager.GetString("SmlDrink", resourceCulture);
             }
@@ -10229,7 +10229,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Angry.
         /// </summary>
-        internal static string SmlEvil {
+        public static string SmlEvil {
             get {
                 return ResourceManager.GetString("SmlEvil", resourceCulture);
             }
@@ -10238,7 +10238,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Wink.
         /// </summary>
-        internal static string SmlEye {
+        public static string SmlEye {
             get {
                 return ResourceManager.GetString("SmlEye", resourceCulture);
             }
@@ -10247,7 +10247,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Green.
         /// </summary>
-        internal static string SmlGreen {
+        public static string SmlGreen {
             get {
                 return ResourceManager.GetString("SmlGreen", resourceCulture);
             }
@@ -10256,7 +10256,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hollywood smile.
         /// </summary>
-        internal static string SmlHollywood {
+        public static string SmlHollywood {
             get {
                 return ResourceManager.GetString("SmlHollywood", resourceCulture);
             }
@@ -10265,7 +10265,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sad.
         /// </summary>
-        internal static string SmlMourning {
+        public static string SmlMourning {
             get {
                 return ResourceManager.GetString("SmlMourning", resourceCulture);
             }
@@ -10274,7 +10274,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Music.
         /// </summary>
-        internal static string SmlMusic {
+        public static string SmlMusic {
             get {
                 return ResourceManager.GetString("SmlMusic", resourceCulture);
             }
@@ -10283,7 +10283,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
-        internal static string SmlOK {
+        public static string SmlOK {
             get {
                 return ResourceManager.GetString("SmlOK", resourceCulture);
             }
@@ -10292,7 +10292,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Smile.
         /// </summary>
-        internal static string SmlSmile {
+        public static string SmlSmile {
             get {
                 return ResourceManager.GetString("SmlSmile", resourceCulture);
             }
@@ -10301,7 +10301,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Grin.
         /// </summary>
-        internal static string SmlSmirk {
+        public static string SmlSmirk {
             get {
                 return ResourceManager.GetString("SmlSmirk", resourceCulture);
             }
@@ -10310,7 +10310,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sorry.
         /// </summary>
-        internal static string SmlSorry {
+        public static string SmlSorry {
             get {
                 return ResourceManager.GetString("SmlSorry", resourceCulture);
             }
@@ -10319,7 +10319,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Sos.
         /// </summary>
-        internal static string SmlSOS {
+        public static string SmlSOS {
             get {
                 return ResourceManager.GetString("SmlSOS", resourceCulture);
             }
@@ -10328,7 +10328,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Goggles.
         /// </summary>
-        internal static string SmlSpectacles {
+        public static string SmlSpectacles {
             get {
                 return ResourceManager.GetString("SmlSpectacles", resourceCulture);
             }
@@ -10337,7 +10337,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Super.
         /// </summary>
-        internal static string SmlSuper {
+        public static string SmlSuper {
             get {
                 return ResourceManager.GetString("SmlSuper", resourceCulture);
             }
@@ -10346,7 +10346,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tongue.
         /// </summary>
-        internal static string SmlTongue {
+        public static string SmlTongue {
             get {
                 return ResourceManager.GetString("SmlTongue", resourceCulture);
             }
@@ -10355,7 +10355,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hurray.
         /// </summary>
-        internal static string SmlYAHOO {
+        public static string SmlYAHOO {
             get {
                 return ResourceManager.GetString("SmlYAHOO", resourceCulture);
             }
@@ -10364,7 +10364,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Two-factor authentication{1} is a more secure way for the users to enter the portal. After the credentials are entered, the user will have to enter the code from the SMS received to the mobile phone with the number which was specified at the first portal login via the two-factor authentication or code from connected authenticator application.{2}Enable this option for a more secure portal access by all the portal users. {2}To apply the changes you made click the {0}Save{1} button below this section.{2}.
         /// </summary>
-        internal static string SmsAuthDescription {
+        public static string SmsAuthDescription {
             get {
                 return ResourceManager.GetString("SmsAuthDescription", resourceCulture);
             }
@@ -10373,7 +10373,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect code.
         /// </summary>
-        internal static string SmsAuthenticationMessageError {
+        public static string SmsAuthenticationMessageError {
             get {
                 return ResourceManager.GetString("SmsAuthenticationMessageError", resourceCulture);
             }
@@ -10382,7 +10382,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Code: {0}.
         /// </summary>
-        internal static string SmsAuthenticationMessageToUser {
+        public static string SmsAuthenticationMessageToUser {
             get {
                 return ResourceManager.GetString("SmsAuthenticationMessageToUser", resourceCulture);
             }
@@ -10391,7 +10391,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Time to use the code has expired. Please request a new text message..
         /// </summary>
-        internal static string SmsAuthenticationTimeout {
+        public static string SmsAuthenticationTimeout {
             get {
                 return ResourceManager.GetString("SmsAuthenticationTimeout", resourceCulture);
             }
@@ -10400,7 +10400,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Note{1}: when you are out of SMS the two-factor authentication portal access option will be automatically disabled. Do not forget to buy additional SMS package in good time..
         /// </summary>
-        internal static string SmsAuthNoteDescription {
+        public static string SmsAuthNoteDescription {
             get {
                 return ResourceManager.GetString("SmsAuthNoteDescription", resourceCulture);
             }
@@ -10409,7 +10409,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Note{1}: before you can use two-factor authentication, you need to select at least one SMS provider and configure it at the {3}{0}Third Party Authorization{1}{4} page..
         /// </summary>
-        internal static string SmsAuthNoteKeysDescription {
+        public static string SmsAuthNoteKeysDescription {
             get {
                 return ResourceManager.GetString("SmsAuthNoteKeysDescription", resourceCulture);
             }
@@ -10418,7 +10418,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Note{1}: two-factor authentication is available for paid portals only..
         /// </summary>
-        internal static string SmsAuthNoteQuotaDescription {
+        public static string SmsAuthNoteQuotaDescription {
             get {
                 return ResourceManager.GetString("SmsAuthNoteQuotaDescription", resourceCulture);
             }
@@ -10427,7 +10427,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Two-factor authentication.
         /// </summary>
-        internal static string SmsAuthTitle {
+        public static string SmsAuthTitle {
             get {
                 return ResourceManager.GetString("SmsAuthTitle", resourceCulture);
             }
@@ -10436,7 +10436,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} balance.
         /// </summary>
-        internal static string SmsBalance {
+        public static string SmsBalance {
             get {
                 return ResourceManager.GetString("SmsBalance", resourceCulture);
             }
@@ -10445,7 +10445,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to see on your {0} account.
         /// </summary>
-        internal static string SmsBalanceAccount {
+        public static string SmsBalanceAccount {
             get {
                 return ResourceManager.GetString("SmsBalanceAccount", resourceCulture);
             }
@@ -10454,7 +10454,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SMS settings are not available.
         /// </summary>
-        internal static string SmsNotAvailable {
+        public static string SmsNotAvailable {
             get {
                 return ResourceManager.GetString("SmsNotAvailable", resourceCulture);
             }
@@ -10463,7 +10463,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You have sent too many text messages. Please try again later..
         /// </summary>
-        internal static string SmsTooMuchError {
+        public static string SmsTooMuchError {
             get {
                 return ResourceManager.GetString("SmsTooMuchError", resourceCulture);
             }
@@ -10472,7 +10472,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom settings.
         /// </summary>
-        internal static string SmtpCustomSettings {
+        public static string SmtpCustomSettings {
             get {
                 return ResourceManager.GetString("SmtpCustomSettings", resourceCulture);
             }
@@ -10481,7 +10481,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mail Server Settings.
         /// </summary>
-        internal static string SmtpMailServerSettings {
+        public static string SmtpMailServerSettings {
             get {
                 return ResourceManager.GetString("SmtpMailServerSettings", resourceCulture);
             }
@@ -10490,7 +10490,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SMTP Settings.
         /// </summary>
-        internal static string SmtpSettings {
+        public static string SmtpSettings {
             get {
                 return ResourceManager.GetString("SmtpSettings", resourceCulture);
             }
@@ -10499,7 +10499,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to If you use a Gmail account for SMTP server, you will not be able to send mail until you do the following: sign in to the Gmail account you use via its standard web interface and confirm any verification questions about the ONLYOFFICE™ access attempt to the account, in case there are some.{0}We recommend using ports 587 or 25 for the email messages to be sent, as other values might prevent the SMTP from the correct work..
         /// </summary>
-        internal static string SMTPSettingsHelp {
+        public static string SMTPSettingsHelp {
             get {
                 return ResourceManager.GetString("SMTPSettingsHelp", resourceCulture);
             }
@@ -10508,7 +10508,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The SMTP settings are needed to set up an email account which will be used to send notifications from the portal using your own SMTP server instead of the one ONLYOFFICE™ uses. Please fill in all the fields and click the &apos;Save&apos; button. You can use the &apos;Send Test Mail&apos; button to check if all the settings you entered are correct and work as supposed..
         /// </summary>
-        internal static string SmtpSettingsText {
+        public static string SmtpSettingsText {
             get {
                 return ResourceManager.GetString("SmtpSettingsText", resourceCulture);
             }
@@ -10517,7 +10517,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Social Profiles.
         /// </summary>
-        internal static string SocialProfiles {
+        public static string SocialProfiles {
             get {
                 return ResourceManager.GetString("SocialProfiles", resourceCulture);
             }
@@ -10526,7 +10526,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Source.
         /// </summary>
-        internal static string Source {
+        public static string Source {
             get {
                 return ResourceManager.GetString("Source", resourceCulture);
             }
@@ -10535,7 +10535,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email notifications with product updates, announcements and special offers.
         /// </summary>
-        internal static string SpamSubscriptionDescription {
+        public static string SpamSubscriptionDescription {
             get {
                 return ResourceManager.GetString("SpamSubscriptionDescription", resourceCulture);
             }
@@ -10544,7 +10544,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Specify an existing email.
         /// </summary>
-        internal static string SpecifyAnExistingEmail {
+        public static string SpecifyAnExistingEmail {
             get {
                 return ResourceManager.GetString("SpecifyAnExistingEmail", resourceCulture);
             }
@@ -10553,7 +10553,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SSO Endpoint URL.
         /// </summary>
-        internal static string SsoEndpointURL {
+        public static string SsoEndpointURL {
             get {
                 return ResourceManager.GetString("SsoEndpointURL", resourceCulture);
             }
@@ -10562,7 +10562,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Blank settings have been transferred.
         /// </summary>
-        internal static string SsoSettingsAreEmpty {
+        public static string SsoSettingsAreEmpty {
             get {
                 return ResourceManager.GetString("SsoSettingsAreEmpty", resourceCulture);
             }
@@ -10571,7 +10571,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not create the user with this authentication token.
         /// </summary>
-        internal static string SsoSettingsCantCreateUser {
+        public static string SsoSettingsCantCreateUser {
             get {
                 return ResourceManager.GetString("SsoSettingsCantCreateUser", resourceCulture);
             }
@@ -10580,7 +10580,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Could not save settings.
         /// </summary>
-        internal static string SsoSettingsCantSaveSettings {
+        public static string SsoSettingsCantSaveSettings {
             get {
                 return ResourceManager.GetString("SsoSettingsCantSaveSettings", resourceCulture);
             }
@@ -10589,7 +10589,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Settings could not be null.
         /// </summary>
-        internal static string SsoSettingsCouldNotBeNull {
+        public static string SsoSettingsCouldNotBeNull {
             get {
                 return ResourceManager.GetString("SsoSettingsCouldNotBeNull", resourceCulture);
             }
@@ -10598,7 +10598,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Single sign-on is disabled.
         /// </summary>
-        internal static string SsoSettingsDisabled {
+        public static string SsoSettingsDisabled {
             get {
                 return ResourceManager.GetString("SsoSettingsDisabled", resourceCulture);
             }
@@ -10607,7 +10607,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Download client certificate public key.
         /// </summary>
-        internal static string SsoSettingsDownloadPublicKeyOfCertificate {
+        public static string SsoSettingsDownloadPublicKeyOfCertificate {
             get {
                 return ResourceManager.GetString("SsoSettingsDownloadPublicKeyOfCertificate", resourceCulture);
             }
@@ -10616,7 +10616,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authentication token could not be found.
         /// </summary>
-        internal static string SsoSettingsEmptyToken {
+        public static string SsoSettingsEmptyToken {
             get {
                 return ResourceManager.GetString("SsoSettingsEmptyToken", resourceCulture);
             }
@@ -10625,7 +10625,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enable SSO.
         /// </summary>
-        internal static string SsoSettingsEnableSso {
+        public static string SsoSettingsEnableSso {
             get {
                 return ResourceManager.GetString("SsoSettingsEnableSso", resourceCulture);
             }
@@ -10634,7 +10634,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unexpected authentication token type.
         /// </summary>
-        internal static string SsoSettingsEnexpectedTokenType {
+        public static string SsoSettingsEnexpectedTokenType {
             get {
                 return ResourceManager.GetString("SsoSettingsEnexpectedTokenType", resourceCulture);
             }
@@ -10645,7 +10645,7 @@ namespace ASC.Web.Core.PublicResources {
         ///Select the most convenient SSO type for you (SAML/JWT) and enter the required fields using the information from the SSO service account. The hints for fields entries can be found next to them.{2}
         ///After enabling single sign-on select the {0}SSO Type{1} from the drop-down list, {0}Issuer URL{1}, {0}SSO Endpoint URL{1}, {0}SLO Endpoint URL{1} and [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string SsoSettingsHelp {
+        public static string SsoSettingsHelp {
             get {
                 return ResourceManager.GetString("SsoSettingsHelp", resourceCulture);
             }
@@ -10654,7 +10654,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid binding: {0}.
         /// </summary>
-        internal static string SsoSettingsInvalidBinding {
+        public static string SsoSettingsInvalidBinding {
             get {
                 return ResourceManager.GetString("SsoSettingsInvalidBinding", resourceCulture);
             }
@@ -10663,7 +10663,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid entityId.
         /// </summary>
-        internal static string SsoSettingsInvalidEntityId {
+        public static string SsoSettingsInvalidEntityId {
             get {
                 return ResourceManager.GetString("SsoSettingsInvalidEntityId", resourceCulture);
             }
@@ -10672,7 +10672,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid fields mapping.
         /// </summary>
-        internal static string SsoSettingsInvalidMapping {
+        public static string SsoSettingsInvalidMapping {
             get {
                 return ResourceManager.GetString("SsoSettingsInvalidMapping", resourceCulture);
             }
@@ -10681,7 +10681,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Identifies the user account provider. Issuer URL is used to validate the SAML response or JWT token digital signatures..
         /// </summary>
-        internal static string SsoSettingsIssuerUrlHelper {
+        public static string SsoSettingsIssuerUrlHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsIssuerUrlHelper", resourceCulture);
             }
@@ -10690,7 +10690,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid authentication token.
         /// </summary>
-        internal static string SsoSettingsNotValidToken {
+        public static string SsoSettingsNotValidToken {
             get {
                 return ResourceManager.GetString("SsoSettingsNotValidToken", resourceCulture);
             }
@@ -10699,7 +10699,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Client certificate password.
         /// </summary>
-        internal static string SsoSettingsPasswordOfClientCertificate {
+        public static string SsoSettingsPasswordOfClientCertificate {
             get {
                 return ResourceManager.GetString("SsoSettingsPasswordOfClientCertificate", resourceCulture);
             }
@@ -10708,7 +10708,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Key.
         /// </summary>
-        internal static string SsoSettingsPublicKey {
+        public static string SsoSettingsPublicKey {
             get {
                 return ResourceManager.GetString("SsoSettingsPublicKey", resourceCulture);
             }
@@ -10717,7 +10717,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Depending on the validation type the key can be public X.509 certificate key, or public RSA SHA-256 key, or private HMAC SHA-256 key and is used for JWT token or SAML response signature validation..
         /// </summary>
-        internal static string SsoSettingsPublicKeyHelper {
+        public static string SsoSettingsPublicKeyHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsPublicKeyHelper", resourceCulture);
             }
@@ -10726,7 +10726,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Client certificate public key.
         /// </summary>
-        internal static string SsoSettingsServiceProviderPublicKey {
+        public static string SsoSettingsServiceProviderPublicKey {
             get {
                 return ResourceManager.GetString("SsoSettingsServiceProviderPublicKey", resourceCulture);
             }
@@ -10735,7 +10735,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Client certificate public key is used to sign SAML requests. Some authentication providers, e.g. ADFS, accept signed SAML requests only..
         /// </summary>
-        internal static string SsoSettingsServiceProviderPublicKeyHelper {
+        public static string SsoSettingsServiceProviderPublicKeyHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsServiceProviderPublicKeyHelper", resourceCulture);
             }
@@ -10744,7 +10744,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to When the user signs out of ONLYOFFICE portal he/she will be redirected to the entered URL..
         /// </summary>
-        internal static string SsoSettingsSloEndpointUrlHelper {
+        public static string SsoSettingsSloEndpointUrlHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsSloEndpointUrlHelper", resourceCulture);
             }
@@ -10753,7 +10753,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to If SSO is initiated on service provider side the redirect will be made to the entered URL..
         /// </summary>
-        internal static string SsoSettingsSsoEndpointUrlHelper {
+        public static string SsoSettingsSsoEndpointUrlHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsSsoEndpointUrlHelper", resourceCulture);
             }
@@ -10762,7 +10762,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to SSO Type.
         /// </summary>
-        internal static string SsoSettingsSsoType {
+        public static string SsoSettingsSsoType {
             get {
                 return ResourceManager.GetString("SsoSettingsSsoType", resourceCulture);
             }
@@ -10771,7 +10771,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Determines the type of the token which the account provider will transfer to the service provider during user authentication..
         /// </summary>
-        internal static string SsoSettingsSsoTypeHelper {
+        public static string SsoSettingsSsoTypeHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsSsoTypeHelper", resourceCulture);
             }
@@ -10780,7 +10780,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unexpected error.
         /// </summary>
-        internal static string SsoSettingsUnexpectedError {
+        public static string SsoSettingsUnexpectedError {
             get {
                 return ResourceManager.GetString("SsoSettingsUnexpectedError", resourceCulture);
             }
@@ -10789,7 +10789,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upload client SSO certificate.
         /// </summary>
-        internal static string SsoSettingsUploadClientSsoCertificate {
+        public static string SsoSettingsUploadClientSsoCertificate {
             get {
                 return ResourceManager.GetString("SsoSettingsUploadClientSsoCertificate", resourceCulture);
             }
@@ -10798,7 +10798,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This user is disabled.
         /// </summary>
-        internal static string SsoSettingsUserTerminated {
+        public static string SsoSettingsUserTerminated {
             get {
                 return ResourceManager.GetString("SsoSettingsUserTerminated", resourceCulture);
             }
@@ -10807,7 +10807,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Signature Validation Type.
         /// </summary>
-        internal static string SsoSettingsValidationType {
+        public static string SsoSettingsValidationType {
             get {
                 return ResourceManager.GetString("SsoSettingsValidationType", resourceCulture);
             }
@@ -10816,7 +10816,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to When using JWT it is necessary to select the valid token signature validation type: using open X.509 certificate key, public asymmetric RSA SHA-256 algorithm key, or private symmetric HMAC SHA-256 algorithm key..
         /// </summary>
-        internal static string SsoSettingsValidationTypeHelper {
+        public static string SsoSettingsValidationTypeHelper {
             get {
                 return ResourceManager.GetString("SsoSettingsValidationTypeHelper", resourceCulture);
             }
@@ -10825,7 +10825,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid key.
         /// </summary>
-        internal static string SsoSettingsWrongPublicKey {
+        public static string SsoSettingsWrongPublicKey {
             get {
                 return ResourceManager.GetString("SsoSettingsWrongPublicKey", resourceCulture);
             }
@@ -10834,7 +10834,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid settings have been transferred.
         /// </summary>
-        internal static string SsoSettingsWrongSerialization {
+        public static string SsoSettingsWrongSerialization {
             get {
                 return ResourceManager.GetString("SsoSettingsWrongSerialization", resourceCulture);
             }
@@ -10843,7 +10843,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid token type.
         /// </summary>
-        internal static string SsoSettingsWrongTokenType {
+        public static string SsoSettingsWrongTokenType {
             get {
                 return ResourceManager.GetString("SsoSettingsWrongTokenType", resourceCulture);
             }
@@ -10852,7 +10852,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid URL format: {0}.
         /// </summary>
-        internal static string SsoSettingsWrongURL {
+        public static string SsoSettingsWrongURL {
             get {
                 return ResourceManager.GetString("SsoSettingsWrongURL", resourceCulture);
             }
@@ -10861,7 +10861,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect signature validation type.
         /// </summary>
-        internal static string SsoSettingsWrongValidationType {
+        public static string SsoSettingsWrongValidationType {
             get {
                 return ResourceManager.GetString("SsoSettingsWrongValidationType", resourceCulture);
             }
@@ -10870,7 +10870,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user has been imported from SSO. Contact your SSO administrator if you want to change the locked profile fields..
         /// </summary>
-        internal static string SsoUserEditCanOnlyAdminTitle {
+        public static string SsoUserEditCanOnlyAdminTitle {
             get {
                 return ResourceManager.GetString("SsoUserEditCanOnlyAdminTitle", resourceCulture);
             }
@@ -10879,7 +10879,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user has been imported from SSO.
         /// </summary>
-        internal static string SsoUsersListLockTitle {
+        public static string SsoUsersListLockTitle {
             get {
                 return ResourceManager.GetString("SsoUsersListLockTitle", resourceCulture);
             }
@@ -10888,7 +10888,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To increase storage space select an upgraded pricing plan.{0}To free the storage space, you can delete the personal data of the disabled users. To do this, go to the user profile and select the &quot;Delete personal data&quot; action from the drop-down menu to the right of the name..
         /// </summary>
-        internal static string StatisticsDescription {
+        public static string StatisticsDescription {
             get {
                 return ResourceManager.GetString("StatisticsDescription", resourceCulture);
             }
@@ -10897,7 +10897,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Statistics.
         /// </summary>
-        internal static string StatisticsTitle {
+        public static string StatisticsTitle {
             get {
                 return ResourceManager.GetString("StatisticsTitle", resourceCulture);
             }
@@ -10906,7 +10906,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage.
         /// </summary>
-        internal static string Storage {
+        public static string Storage {
             get {
                 return ResourceManager.GetString("Storage", resourceCulture);
             }
@@ -10915,7 +10915,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to На этой странице вы можете подключить стороннее хранилище и начать перенос в выбранное хранилище. После начала переноса, портал будет недоступен..
         /// </summary>
-        internal static string StorageText {
+        public static string StorageText {
             get {
                 return ResourceManager.GetString("StorageText", resourceCulture);
             }
@@ -10924,7 +10924,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Настройки хранилища.
         /// </summary>
-        internal static string StorageTitle {
+        public static string StorageTitle {
             get {
                 return ResourceManager.GetString("StorageTitle", resourceCulture);
             }
@@ -10933,7 +10933,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Trusted Mail Domain Settings.
         /// </summary>
-        internal static string StudioDomainSettings {
+        public static string StudioDomainSettings {
             get {
                 return ResourceManager.GetString("StudioDomainSettings", resourceCulture);
             }
@@ -10942,7 +10942,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Password Strength Settings.
         /// </summary>
-        internal static string StudioPasswordSettings {
+        public static string StudioPasswordSettings {
             get {
                 return ResourceManager.GetString("StudioPasswordSettings", resourceCulture);
             }
@@ -10951,7 +10951,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Language and Time Zone Settings.
         /// </summary>
-        internal static string StudioTimeLanguageSettings {
+        public static string StudioTimeLanguageSettings {
             get {
                 return ResourceManager.GetString("StudioTimeLanguageSettings", resourceCulture);
             }
@@ -10960,7 +10960,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Version.
         /// </summary>
-        internal static string StudioVersionSettings {
+        public static string StudioVersionSettings {
             get {
                 return ResourceManager.GetString("StudioVersionSettings", resourceCulture);
             }
@@ -10969,7 +10969,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Subscribe.
         /// </summary>
-        internal static string SubscribeButton {
+        public static string SubscribeButton {
             get {
                 return ResourceManager.GetString("SubscribeButton", resourceCulture);
             }
@@ -10978,7 +10978,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Events and notifications for the portal owner or administrator.
         /// </summary>
-        internal static string SubscribtionAdminNotifications {
+        public static string SubscribtionAdminNotifications {
             get {
                 return ResourceManager.GetString("SubscribtionAdminNotifications", resourceCulture);
             }
@@ -10987,7 +10987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal daily news and events digest.
         /// </summary>
-        internal static string SubscribtionDailyNews {
+        public static string SubscribtionDailyNews {
             get {
                 return ResourceManager.GetString("SubscribtionDailyNews", resourceCulture);
             }
@@ -10996,7 +10996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Project Name.
         /// </summary>
-        internal static string SubscribtionProjectName {
+        public static string SubscribtionProjectName {
             get {
                 return ResourceManager.GetString("SubscribtionProjectName", resourceCulture);
             }
@@ -11005,7 +11005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to from all.
         /// </summary>
-        internal static string SubscriptionFromAll {
+        public static string SubscriptionFromAll {
             get {
                 return ResourceManager.GetString("SubscriptionFromAll", resourceCulture);
             }
@@ -11014,7 +11014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Notify via.
         /// </summary>
-        internal static string SubscriptionNoticeVia {
+        public static string SubscriptionNoticeVia {
             get {
                 return ResourceManager.GetString("SubscriptionNoticeVia", resourceCulture);
             }
@@ -11023,7 +11023,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Subscriptions.
         /// </summary>
-        internal static string Subscriptions {
+        public static string Subscriptions {
             get {
                 return ResourceManager.GetString("Subscriptions", resourceCulture);
             }
@@ -11032,7 +11032,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The user status has been successfully changed.
         /// </summary>
-        internal static string SuccessChangeUserStatus {
+        public static string SuccessChangeUserStatus {
             get {
                 return ResourceManager.GetString("SuccessChangeUserStatus", resourceCulture);
             }
@@ -11041,7 +11041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal has been renamed successfully.
         /// </summary>
-        internal static string SuccessfullyPortalRenameMessage {
+        public static string SuccessfullyPortalRenameMessage {
             get {
                 return ResourceManager.GetString("SuccessfullyPortalRenameMessage", resourceCulture);
             }
@@ -11050,7 +11050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome Page settings have been successfully saved.
         /// </summary>
-        internal static string SuccessfullySaveGreetingSettingsMessage {
+        public static string SuccessfullySaveGreetingSettingsMessage {
             get {
                 return ResourceManager.GetString("SuccessfullySaveGreetingSettingsMessage", resourceCulture);
             }
@@ -11059,7 +11059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Settings have been successfully updated.
         /// </summary>
-        internal static string SuccessfullySaveSettingsMessage {
+        public static string SuccessfullySaveSettingsMessage {
             get {
                 return ResourceManager.GetString("SuccessfullySaveSettingsMessage", resourceCulture);
             }
@@ -11068,7 +11068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Instructions to delete your profile has been sent to {0} email address.
         /// </summary>
-        internal static string SuccessfullySentNotificationDeleteUserInfoMessage {
+        public static string SuccessfullySentNotificationDeleteUserInfoMessage {
             get {
                 return ResourceManager.GetString("SuccessfullySentNotificationDeleteUserInfoMessage", resourceCulture);
             }
@@ -11077,7 +11077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invitations have been successfully re-sent.
         /// </summary>
-        internal static string SuccessResendInvitesText {
+        public static string SuccessResendInvitesText {
             get {
                 return ResourceManager.GetString("SuccessResendInvitesText", resourceCulture);
             }
@@ -11086,7 +11086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Support.
         /// </summary>
-        internal static string Support {
+        public static string Support {
             get {
                 return ResourceManager.GetString("Support", resourceCulture);
             }
@@ -11095,7 +11095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Chat now.
         /// </summary>
-        internal static string SupportBlockChatBtn {
+        public static string SupportBlockChatBtn {
             get {
                 return ResourceManager.GetString("SupportBlockChatBtn", resourceCulture);
             }
@@ -11104,7 +11104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Send email.
         /// </summary>
-        internal static string SupportBlockEmailBth {
+        public static string SupportBlockEmailBth {
             get {
                 return ResourceManager.GetString("SupportBlockEmailBth", resourceCulture);
             }
@@ -11113,7 +11113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Contact us to find about special offers.
         /// </summary>
-        internal static string SupportBlockTitle {
+        public static string SupportBlockTitle {
             get {
                 return ResourceManager.GetString("SupportBlockTitle", resourceCulture);
             }
@@ -11122,7 +11122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Support via chat.
         /// </summary>
-        internal static string SupportByChat {
+        public static string SupportByChat {
             get {
                 return ResourceManager.GetString("SupportByChat", resourceCulture);
             }
@@ -11131,7 +11131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reduce the required parameter or select another pricing plan..
         /// </summary>
-        internal static string TarffDowngradeErrorDescription {
+        public static string TarffDowngradeErrorDescription {
             get {
                 return ResourceManager.GetString("TarffDowngradeErrorDescription", resourceCulture);
             }
@@ -11140,7 +11140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Buy now.
         /// </summary>
-        internal static string TariffButtonBuy {
+        public static string TariffButtonBuy {
             get {
                 return ResourceManager.GetString("TariffButtonBuy", resourceCulture);
             }
@@ -11149,7 +11149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Prolong.
         /// </summary>
-        internal static string TariffButtonExtend {
+        public static string TariffButtonExtend {
             get {
                 return ResourceManager.GetString("TariffButtonExtend", resourceCulture);
             }
@@ -11158,7 +11158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to We recommend you to select the Recurring payments option during the payment process. It will guarantee you the invariable price according to the chosen plan..
         /// </summary>
-        internal static string TariffBuyRecommendation {
+        public static string TariffBuyRecommendation {
             get {
                 return ResourceManager.GetString("TariffBuyRecommendation", resourceCulture);
             }
@@ -11167,7 +11167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Buy.
         /// </summary>
-        internal static string TariffBuyRecommendationTitle {
+        public static string TariffBuyRecommendationTitle {
             get {
                 return ResourceManager.GetString("TariffBuyRecommendationTitle", resourceCulture);
             }
@@ -11176,7 +11176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can prolong the current plan or change it using the table below..
         /// </summary>
-        internal static string TariffCanProlong {
+        public static string TariffCanProlong {
             get {
                 return ResourceManager.GetString("TariffCanProlong", resourceCulture);
             }
@@ -11185,7 +11185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Choose a plan that suits your needs best. The recommended plan is highlighted below..
         /// </summary>
-        internal static string TariffChooseLabel {
+        public static string TariffChooseLabel {
             get {
                 return ResourceManager.GetString("TariffChooseLabel", resourceCulture);
             }
@@ -11194,7 +11194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to This plan cannot be selected.
         /// </summary>
-        internal static string TariffDowngrade {
+        public static string TariffDowngrade {
             get {
                 return ResourceManager.GetString("TariffDowngrade", resourceCulture);
             }
@@ -11203,7 +11203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space size allowed: {0}. Current storage space: {1}..
         /// </summary>
-        internal static string TariffDowngradeErrorStatisticsStorage {
+        public static string TariffDowngradeErrorStatisticsStorage {
             get {
                 return ResourceManager.GetString("TariffDowngradeErrorStatisticsStorage", resourceCulture);
             }
@@ -11212,7 +11212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Number of portal users allowed: {0}. Current number of users: {1}..
         /// </summary>
-        internal static string TariffDowngradeErrorStatisticsUsers {
+        public static string TariffDowngradeErrorStatisticsUsers {
             get {
                 return ResourceManager.GetString("TariffDowngradeErrorStatisticsUsers", resourceCulture);
             }
@@ -11221,7 +11221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You cannot select this plan as either the storage space or number of users exceeds limitations of the selected pricing plan:.
         /// </summary>
-        internal static string TariffDowngradeErrorTitle {
+        public static string TariffDowngradeErrorTitle {
             get {
                 return ResourceManager.GetString("TariffDowngradeErrorTitle", resourceCulture);
             }
@@ -11230,7 +11230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Recurring payments are on.
         /// </summary>
-        internal static string TariffEnabledAutorenew {
+        public static string TariffEnabledAutorenew {
             get {
                 return ResourceManager.GetString("TariffEnabledAutorenew", resourceCulture);
             }
@@ -11239,7 +11239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space amount is about to be exceeded: {0}.
         /// </summary>
-        internal static string TariffExceedLimit {
+        public static string TariffExceedLimit {
             get {
                 return ResourceManager.GetString("TariffExceedLimit", resourceCulture);
             }
@@ -11248,7 +11248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can remove the unnecessary files or {0}click here{1} to find a better pricing plan for your portal..
         /// </summary>
-        internal static string TariffExceedLimitInfoText {
+        public static string TariffExceedLimitInfoText {
             get {
                 return ResourceManager.GetString("TariffExceedLimitInfoText", resourceCulture);
             }
@@ -11257,7 +11257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to It will expire on {0}..
         /// </summary>
-        internal static string TariffExpiredDate {
+        public static string TariffExpiredDate {
             get {
                 return ResourceManager.GetString("TariffExpiredDate", resourceCulture);
             }
@@ -11266,7 +11266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to It will expire on {0}..
         /// </summary>
-        internal static string TariffExpiredDateStandalone {
+        public static string TariffExpiredDateStandalone {
             get {
                 return ResourceManager.GetString("TariffExpiredDateStandalone", resourceCulture);
             }
@@ -11275,7 +11275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are using Free Plan..
         /// </summary>
-        internal static string TariffFree {
+        public static string TariffFree {
             get {
                 return ResourceManager.GetString("TariffFree", resourceCulture);
             }
@@ -11284,7 +11284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Invoice.
         /// </summary>
-        internal static string TariffInvoice {
+        public static string TariffInvoice {
             get {
                 return ResourceManager.GetString("TariffInvoice", resourceCulture);
             }
@@ -11293,7 +11293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Click here{1} to upload a license file for your portal..
         /// </summary>
-        internal static string TariffLinkStandalone {
+        public static string TariffLinkStandalone {
             get {
                 return ResourceManager.GetString("TariffLinkStandalone", resourceCulture);
             }
@@ -11302,7 +11302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To renew it, {0}click here{1}..
         /// </summary>
-        internal static string TariffLinkStandaloneLife {
+        public static string TariffLinkStandaloneLife {
             get {
                 return ResourceManager.GetString("TariffLinkStandaloneLife", resourceCulture);
             }
@@ -11311,7 +11311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your subscription has expired..
         /// </summary>
-        internal static string TariffPaymentDelay {
+        public static string TariffPaymentDelay {
             get {
                 return ResourceManager.GetString("TariffPaymentDelay", resourceCulture);
             }
@@ -11320,7 +11320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Your ONLYOFFICE™ portal will be blocked {2}. Please {0}click here{1} to prolong the existing plan or change it for an appropriate one..
         /// </summary>
-        internal static string TariffPaymentDelayText {
+        public static string TariffPaymentDelayText {
             get {
                 return ResourceManager.GetString("TariffPaymentDelayText", resourceCulture);
             }
@@ -11329,7 +11329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Number of portals you&apos;ve created: {0}.
         /// </summary>
-        internal static string TariffPortalStatistics {
+        public static string TariffPortalStatistics {
             get {
                 return ResourceManager.GetString("TariffPortalStatistics", resourceCulture);
             }
@@ -11338,7 +11338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The pricing plan is not available until the end of the paid year..
         /// </summary>
-        internal static string TariffRemarkDisabledMonth {
+        public static string TariffRemarkDisabledMonth {
             get {
                 return ResourceManager.GetString("TariffRemarkDisabledMonth", resourceCulture);
             }
@@ -11347,7 +11347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The pricing plan is not available until the end of the 3 year pricing plan..
         /// </summary>
-        internal static string TariffRemarkDisabledYear {
+        public static string TariffRemarkDisabledYear {
             get {
                 return ResourceManager.GetString("TariffRemarkDisabledYear", resourceCulture);
             }
@@ -11356,7 +11356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To prolong the term automatically, please make sure the Recurring Payment checkbox in your Avangate account is on..
         /// </summary>
-        internal static string TariffRemarkProlongDisable {
+        public static string TariffRemarkProlongDisable {
             get {
                 return ResourceManager.GetString("TariffRemarkProlongDisable", resourceCulture);
             }
@@ -11365,7 +11365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To cancel Recurring Payments, please, go to your Avangate account..
         /// </summary>
-        internal static string TariffRemarkProlongEnable {
+        public static string TariffRemarkProlongEnable {
             get {
                 return ResourceManager.GetString("TariffRemarkProlongEnable", resourceCulture);
             }
@@ -11374,7 +11374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Up to {0} only..
         /// </summary>
-        internal static string TariffRemarkSale {
+        public static string TariffRemarkSale {
             get {
                 return ResourceManager.GetString("TariffRemarkSale", resourceCulture);
             }
@@ -11383,7 +11383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Pricing plans.
         /// </summary>
-        internal static string Tariffs {
+        public static string Tariffs {
             get {
                 return ResourceManager.GetString("Tariffs", resourceCulture);
             }
@@ -11392,7 +11392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to For your convenience paiments in Russian roubles are calculated using the fixed exchange rate {0} Russian roubles for 1 US dollar..
         /// </summary>
-        internal static string TariffsCurrencyRu {
+        public static string TariffsCurrencyRu {
             get {
                 return ResourceManager.GetString("TariffsCurrencyRu", resourceCulture);
             }
@@ -11401,7 +11401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Payments.
         /// </summary>
-        internal static string TariffSettings {
+        public static string TariffSettings {
             get {
                 return ResourceManager.GetString("TariffSettings", resourceCulture);
             }
@@ -11410,7 +11410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Number of active users you&apos;ve added: {0}.
         /// </summary>
-        internal static string TariffStatistics {
+        public static string TariffStatistics {
             get {
                 return ResourceManager.GetString("TariffStatistics", resourceCulture);
             }
@@ -11419,7 +11419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space used: {0}.
         /// </summary>
-        internal static string TariffStatisticsStorage {
+        public static string TariffStatisticsStorage {
             get {
                 return ResourceManager.GetString("TariffStatisticsStorage", resourceCulture);
             }
@@ -11428,7 +11428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are using FreeTrial Plan..
         /// </summary>
-        internal static string TariffTrial {
+        public static string TariffTrial {
             get {
                 return ResourceManager.GetString("TariffTrial", resourceCulture);
             }
@@ -11437,7 +11437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Thank you for having checked out ONLYOFFICE™!{2}{0}Free trial period has expired.{1}.
         /// </summary>
-        internal static string TariffTrialOverdue {
+        public static string TariffTrialOverdue {
             get {
                 return ResourceManager.GetString("TariffTrialOverdue", resourceCulture);
             }
@@ -11446,7 +11446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Cannot add new users.
         /// </summary>
-        internal static string TariffUserLimitHeader {
+        public static string TariffUserLimitHeader {
             get {
                 return ResourceManager.GetString("TariffUserLimitHeader", resourceCulture);
             }
@@ -11455,7 +11455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Adding new users will exceed the maximum number of portal members available according to your pricing plan..
         /// </summary>
-        internal static string TariffUserLimitReason {
+        public static string TariffUserLimitReason {
             get {
                 return ResourceManager.GetString("TariffUserLimitReason", resourceCulture);
             }
@@ -11464,7 +11464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™.
         /// </summary>
-        internal static string TeamLabOfficeTitle {
+        public static string TeamLabOfficeTitle {
             get {
                 return ResourceManager.GetString("TeamLabOfficeTitle", resourceCulture);
             }
@@ -11473,7 +11473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Temporary password to access portal.
         /// </summary>
-        internal static string TemporaryPasswordToAccess {
+        public static string TemporaryPasswordToAccess {
             get {
                 return ResourceManager.GetString("TemporaryPasswordToAccess", resourceCulture);
             }
@@ -11482,7 +11482,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Created.
         /// </summary>
-        internal static string TenantCreated {
+        public static string TenantCreated {
             get {
                 return ResourceManager.GetString("TenantCreated", resourceCulture);
             }
@@ -11491,7 +11491,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space available for portal.
         /// </summary>
-        internal static string TenantStorageSpace {
+        public static string TenantStorageSpace {
             get {
                 return ResourceManager.GetString("TenantStorageSpace", resourceCulture);
             }
@@ -11500,7 +11500,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Storage space used.
         /// </summary>
-        internal static string TenantUsedSpace {
+        public static string TenantUsedSpace {
             get {
                 return ResourceManager.GetString("TenantUsedSpace", resourceCulture);
             }
@@ -11509,7 +11509,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Total number of {!users}.
         /// </summary>
-        internal static string TenantUsersTotal {
+        public static string TenantUsersTotal {
             get {
                 return ResourceManager.GetString("TenantUsersTotal", resourceCulture);
             }
@@ -11518,7 +11518,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Read more about terms of use.
         /// </summary>
-        internal static string TermsOfUsePopupHelperLink {
+        public static string TermsOfUsePopupHelperLink {
             get {
                 return ResourceManager.GetString("TermsOfUsePopupHelperLink", resourceCulture);
             }
@@ -11527,7 +11527,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Incorrect code.
         /// </summary>
-        internal static string TfaAppAuthMessageError {
+        public static string TfaAppAuthMessageError {
             get {
                 return ResourceManager.GetString("TfaAppAuthMessageError", resourceCulture);
             }
@@ -11536,7 +11536,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to (remaining: {0}).
         /// </summary>
-        internal static string TfaAppBackupCodesRemaining {
+        public static string TfaAppBackupCodesRemaining {
             get {
                 return ResourceManager.GetString("TfaAppBackupCodesRemaining", resourceCulture);
             }
@@ -11545,7 +11545,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to TFA application settings are not available.
         /// </summary>
-        internal static string TfaAppNotAvailable {
+        public static string TfaAppNotAvailable {
             get {
                 return ResourceManager.GetString("TfaAppNotAvailable", resourceCulture);
             }
@@ -11554,7 +11554,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reset application.
         /// </summary>
-        internal static string TfaAppResetApp {
+        public static string TfaAppResetApp {
             get {
                 return ResourceManager.GetString("TfaAppResetApp", resourceCulture);
             }
@@ -11563,7 +11563,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Authenticator application configuration will be reset..
         /// </summary>
-        internal static string TfaAppResetAppDescription {
+        public static string TfaAppResetAppDescription {
             get {
                 return ResourceManager.GetString("TfaAppResetAppDescription", resourceCulture);
             }
@@ -11572,7 +11572,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Reset application configuration.
         /// </summary>
-        internal static string TfaAppResetAppHeader {
+        public static string TfaAppResetAppHeader {
             get {
                 return ResourceManager.GetString("TfaAppResetAppHeader", resourceCulture);
             }
@@ -11581,7 +11581,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show backup codes.
         /// </summary>
-        internal static string TfaAppShowBackupCodes {
+        public static string TfaAppShowBackupCodes {
             get {
                 return ResourceManager.GetString("TfaAppShowBackupCodes", resourceCulture);
             }
@@ -11590,7 +11590,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Backup codes allowes you to confirm login when you don&apos;t have access to your phone.{0}Now you have only {1} code(s) each can be used only one time. Print them and use when needed..
         /// </summary>
-        internal static string TfaAppShowBackupCodesDescription {
+        public static string TfaAppShowBackupCodesDescription {
             get {
                 return ResourceManager.GetString("TfaAppShowBackupCodesDescription", resourceCulture);
             }
@@ -11599,7 +11599,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You can get new codes anytime. Only codes which was generated last are valid..
         /// </summary>
-        internal static string TfaAppShowBackupCodesNote {
+        public static string TfaAppShowBackupCodesNote {
             get {
                 return ResourceManager.GetString("TfaAppShowBackupCodesNote", resourceCulture);
             }
@@ -11608,7 +11608,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Backup codes.
         /// </summary>
-        internal static string TfaAppShowBackupCodesTitle {
+        public static string TfaAppShowBackupCodesTitle {
             get {
                 return ResourceManager.GetString("TfaAppShowBackupCodesTitle", resourceCulture);
             }
@@ -11617,7 +11617,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You have sent too many text messages. Please try again later..
         /// </summary>
-        internal static string TfaTooMuchError {
+        public static string TfaTooMuchError {
             get {
                 return ResourceManager.GetString("TfaTooMuchError", resourceCulture);
             }
@@ -11626,7 +11626,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Third Party Authorization.
         /// </summary>
-        internal static string ThirdPartyAuthorization {
+        public static string ThirdPartyAuthorization {
             get {
                 return ResourceManager.GetString("ThirdPartyAuthorization", resourceCulture);
             }
@@ -11635,7 +11635,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Time period.
         /// </summary>
-        internal static string TimePeriod {
+        public static string TimePeriod {
             get {
                 return ResourceManager.GetString("TimePeriod", resourceCulture);
             }
@@ -11644,7 +11644,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Time Zone.
         /// </summary>
-        internal static string TimeZone {
+        public static string TimeZone {
             get {
                 return ResourceManager.GetString("TimeZone", resourceCulture);
             }
@@ -11653,7 +11653,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email notification with tips and tricks.
         /// </summary>
-        internal static string TipsAndTricsSubscriptionDescription {
+        public static string TipsAndTricsSubscriptionDescription {
             get {
                 return ResourceManager.GetString("TipsAndTricsSubscriptionDescription", resourceCulture);
             }
@@ -11662,7 +11662,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Tips&amp;Tricks.
         /// </summary>
-        internal static string TipsAndTricsSubscriptionName {
+        public static string TipsAndTricsSubscriptionName {
             get {
                 return ResourceManager.GetString("TipsAndTricsSubscriptionName", resourceCulture);
             }
@@ -11671,7 +11671,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string Title {
+        public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
             }
@@ -11680,7 +11680,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to AIM.
         /// </summary>
-        internal static string TitleAim {
+        public static string TitleAim {
             get {
                 return ResourceManager.GetString("TitleAim", resourceCulture);
             }
@@ -11689,7 +11689,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Blogger.
         /// </summary>
-        internal static string TitleBlogger {
+        public static string TitleBlogger {
             get {
                 return ResourceManager.GetString("TitleBlogger", resourceCulture);
             }
@@ -11698,7 +11698,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        internal static string TitleEmail {
+        public static string TitleEmail {
             get {
                 return ResourceManager.GetString("TitleEmail", resourceCulture);
             }
@@ -11707,7 +11707,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Facebook.
         /// </summary>
-        internal static string TitleFacebook {
+        public static string TitleFacebook {
             get {
                 return ResourceManager.GetString("TitleFacebook", resourceCulture);
             }
@@ -11716,7 +11716,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleBuzz.
         /// </summary>
-        internal static string TitleGooglebuzz {
+        public static string TitleGooglebuzz {
             get {
                 return ResourceManager.GetString("TitleGooglebuzz", resourceCulture);
             }
@@ -11725,7 +11725,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GMail.
         /// </summary>
-        internal static string TitleGooglemail {
+        public static string TitleGooglemail {
             get {
                 return ResourceManager.GetString("TitleGooglemail", resourceCulture);
             }
@@ -11734,7 +11734,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to GoogleTalk.
         /// </summary>
-        internal static string TitleGoogletalk {
+        public static string TitleGoogletalk {
             get {
                 return ResourceManager.GetString("TitleGoogletalk", resourceCulture);
             }
@@ -11743,7 +11743,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ICQ.
         /// </summary>
-        internal static string TitleIcq {
+        public static string TitleIcq {
             get {
                 return ResourceManager.GetString("TitleIcq", resourceCulture);
             }
@@ -11752,7 +11752,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Jabber.
         /// </summary>
-        internal static string TitleJabber {
+        public static string TitleJabber {
             get {
                 return ResourceManager.GetString("TitleJabber", resourceCulture);
             }
@@ -11761,7 +11761,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to LiveJournal.
         /// </summary>
-        internal static string TitleLiveJournal {
+        public static string TitleLiveJournal {
             get {
                 return ResourceManager.GetString("TitleLiveJournal", resourceCulture);
             }
@@ -11770,7 +11770,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Mobile Phone.
         /// </summary>
-        internal static string TitleMobphone {
+        public static string TitleMobphone {
             get {
                 return ResourceManager.GetString("TitleMobphone", resourceCulture);
             }
@@ -11779,7 +11779,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to MSN.
         /// </summary>
-        internal static string TitleMsn {
+        public static string TitleMsn {
             get {
                 return ResourceManager.GetString("TitleMsn", resourceCulture);
             }
@@ -11788,7 +11788,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to MySpace.
         /// </summary>
-        internal static string TitleMyspace {
+        public static string TitleMyspace {
             get {
                 return ResourceManager.GetString("TitleMyspace", resourceCulture);
             }
@@ -11797,7 +11797,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Phone number.
         /// </summary>
-        internal static string TitlePhone {
+        public static string TitlePhone {
             get {
                 return ResourceManager.GetString("TitlePhone", resourceCulture);
             }
@@ -11806,7 +11806,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Skype.
         /// </summary>
-        internal static string TitleSkype {
+        public static string TitleSkype {
             get {
                 return ResourceManager.GetString("TitleSkype", resourceCulture);
             }
@@ -11815,7 +11815,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change Thumbnails.
         /// </summary>
-        internal static string TitleThumbnailPhoto {
+        public static string TitleThumbnailPhoto {
             get {
                 return ResourceManager.GetString("TitleThumbnailPhoto", resourceCulture);
             }
@@ -11824,7 +11824,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Twitter.
         /// </summary>
-        internal static string TitleTwitter {
+        public static string TitleTwitter {
             get {
                 return ResourceManager.GetString("TitleTwitter", resourceCulture);
             }
@@ -11833,7 +11833,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Yahoo!!.
         /// </summary>
-        internal static string TitleYahoo {
+        public static string TitleYahoo {
             get {
                 return ResourceManager.GetString("TitleYahoo", resourceCulture);
             }
@@ -11842,7 +11842,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Top 10.
         /// </summary>
-        internal static string Top10Title {
+        public static string Top10Title {
             get {
                 return ResourceManager.GetString("Top10Title", resourceCulture);
             }
@@ -11851,7 +11851,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Total found.
         /// </summary>
-        internal static string TotalFinded {
+        public static string TotalFinded {
             get {
                 return ResourceManager.GetString("TotalFinded", resourceCulture);
             }
@@ -11860,7 +11860,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to till.
         /// </summary>
-        internal static string ToTime {
+        public static string ToTime {
             get {
                 return ResourceManager.GetString("ToTime", resourceCulture);
             }
@@ -11869,7 +11869,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Change Server Region.
         /// </summary>
-        internal static string TransferPortalButton {
+        public static string TransferPortalButton {
             get {
                 return ResourceManager.GetString("TransferPortalButton", resourceCulture);
             }
@@ -11878,7 +11878,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}You are about to start the portal migration to another region. The portal will be unavailable during the migration process. After it is over the notification will be sent to your email address.{1}{0}Mail domains, mailboxes (except for those of third party services) and emails contained there will not be transferred during the migration process.{1}{0}Are you sure you want to continue?{1}.
         /// </summary>
-        internal static string TransferPortalContentPopup {
+        public static string TransferPortalContentPopup {
             get {
                 return ResourceManager.GetString("TransferPortalContentPopup", resourceCulture);
             }
@@ -11887,7 +11887,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Once the migration process is over, you&apos;ll be automatically redirected to the new URL of your portal..
         /// </summary>
-        internal static string TransferPortalProcessText {
+        public static string TransferPortalProcessText {
             get {
                 return ResourceManager.GetString("TransferPortalProcessText", resourceCulture);
             }
@@ -11896,7 +11896,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal migration{0} to another region is underway..
         /// </summary>
-        internal static string TransferPortalProcessTitle {
+        public static string TransferPortalProcessTitle {
             get {
                 return ResourceManager.GetString("TransferPortalProcessTitle", resourceCulture);
             }
@@ -11905,7 +11905,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Region.
         /// </summary>
-        internal static string TransferPortalTitle {
+        public static string TransferPortalTitle {
             get {
                 return ResourceManager.GetString("TransferPortalTitle", resourceCulture);
             }
@@ -11914,7 +11914,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Changing server region.
         /// </summary>
-        internal static string TransferPortalTitlePopup {
+        public static string TransferPortalTitlePopup {
             get {
                 return ResourceManager.GetString("TransferPortalTitlePopup", resourceCulture);
             }
@@ -11923,7 +11923,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The portal will not be available during the migration process. After the migration is complete the portal URL will be changed and all the shared documents links will be inaccessible..
         /// </summary>
-        internal static string TransferPortalWarning {
+        public static string TransferPortalWarning {
             get {
                 return ResourceManager.GetString("TransferPortalWarning", resourceCulture);
             }
@@ -11932,7 +11932,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Trial period: {0} {1}.
         /// </summary>
-        internal static string TrialPeriod {
+        public static string TrialPeriod {
             get {
                 return ResourceManager.GetString("TrialPeriod", resourceCulture);
             }
@@ -11941,7 +11941,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Free trial period has expired.
         /// </summary>
-        internal static string TrialPeriodExpired {
+        public static string TrialPeriodExpired {
             get {
                 return ResourceManager.GetString("TrialPeriodExpired", resourceCulture);
             }
@@ -11950,7 +11950,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Click here{1} to select the most suitable pricing plan for your portal..
         /// </summary>
-        internal static string TrialPeriodInfoText {
+        public static string TrialPeriodInfoText {
             get {
                 return ResourceManager.GetString("TrialPeriodInfoText", resourceCulture);
             }
@@ -11959,7 +11959,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You are using the trial version.
         /// </summary>
-        internal static string TrialPeriodInfoTextLicense {
+        public static string TrialPeriodInfoTextLicense {
             get {
                 return ResourceManager.GetString("TrialPeriodInfoTextLicense", resourceCulture);
             }
@@ -11968,7 +11968,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Custom domains.
         /// </summary>
-        internal static string TrustedDomainSignInTitle {
+        public static string TrustedDomainSignInTitle {
             get {
                 return ResourceManager.GetString("TrustedDomainSignInTitle", resourceCulture);
             }
@@ -11978,7 +11978,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Looks up a localized string similar to Registration is available to users with an email account at {0}. 
         ///To register, enter your email and click on Send Invitation.  An email message with a link to activate your ONLYOFFICE™ account will be sent to the specified email..
         /// </summary>
-        internal static string TrustedDomainsInviteTitle {
+        public static string TrustedDomainsInviteTitle {
             get {
                 return ResourceManager.GetString("TrustedDomainsInviteTitle", resourceCulture);
             }
@@ -11987,7 +11987,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Enter a new email address.
         /// </summary>
-        internal static string TypeNewEmail {
+        public static string TypeNewEmail {
             get {
                 return ResourceManager.GetString("TypeNewEmail", resourceCulture);
             }
@@ -11996,7 +11996,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to An unknown error occurred.
         /// </summary>
-        internal static string UnknownError {
+        public static string UnknownError {
             get {
                 return ResourceManager.GetString("UnknownError", resourceCulture);
             }
@@ -12005,7 +12005,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unsubscribe.
         /// </summary>
-        internal static string UnsubscribeButton {
+        public static string UnsubscribeButton {
             get {
                 return ResourceManager.GetString("UnsubscribeButton", resourceCulture);
             }
@@ -12014,7 +12014,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upgrade pricing plan.
         /// </summary>
-        internal static string UpgradePlan {
+        public static string UpgradePlan {
             get {
                 return ResourceManager.GetString("UpgradePlan", resourceCulture);
             }
@@ -12023,7 +12023,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upload.
         /// </summary>
-        internal static string UploadButton {
+        public static string UploadButton {
             get {
                 return ResourceManager.GetString("UploadButton", resourceCulture);
             }
@@ -12032,7 +12032,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}Upload HTTPS Certificate{1} allows you to upload the server certificate for your custom domain so that the server successfully passed the authentication without any warnings. Use the {0}Upload{1} link to select the certificate .pfx file on your computer hard disk drive..
         /// </summary>
-        internal static string UploadHttpsHelp {
+        public static string UploadHttpsHelp {
             get {
                 return ResourceManager.GetString("UploadHttpsHelp", resourceCulture);
             }
@@ -12041,7 +12041,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to At least one of the sites has similar https binding. Do you want to delete the binding and continue?.
         /// </summary>
-        internal static string UploadHttpsSettingsError {
+        public static string UploadHttpsSettingsError {
             get {
                 return ResourceManager.GetString("UploadHttpsSettingsError", resourceCulture);
             }
@@ -12050,7 +12050,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Check.
         /// </summary>
-        internal static string UploadHttpsSettingsHeader {
+        public static string UploadHttpsSettingsHeader {
             get {
                 return ResourceManager.GetString("UploadHttpsSettingsHeader", resourceCulture);
             }
@@ -12059,7 +12059,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Success.
         /// </summary>
-        internal static string UploadHttpsSettingsSuccess {
+        public static string UploadHttpsSettingsSuccess {
             get {
                 return ResourceManager.GetString("UploadHttpsSettingsSuccess", resourceCulture);
             }
@@ -12068,7 +12068,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Upload Https Certificate.
         /// </summary>
-        internal static string UploadHttpsSettingsTitle {
+        public static string UploadHttpsSettingsTitle {
             get {
                 return ResourceManager.GetString("UploadHttpsSettingsTitle", resourceCulture);
             }
@@ -12077,7 +12077,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!User}.
         /// </summary>
-        internal static string User {
+        public static string User {
             get {
                 return ResourceManager.GetString("User", resourceCulture);
             }
@@ -12086,7 +12086,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
-        internal static string UserCaption {
+        public static string UserCaption {
             get {
                 return ResourceManager.GetString("UserCaption", resourceCulture);
             }
@@ -12095,7 +12095,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User Forum.
         /// </summary>
-        internal static string UserForum {
+        public static string UserForum {
             get {
                 return ResourceManager.GetString("UserForum", resourceCulture);
             }
@@ -12104,7 +12104,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Userpost}.
         /// </summary>
-        internal static string UserPost {
+        public static string UserPost {
             get {
                 return ResourceManager.GetString("UserPost", resourceCulture);
             }
@@ -12113,7 +12113,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
-        internal static string UsersCaption {
+        public static string UsersCaption {
             get {
                 return ResourceManager.GetString("UsersCaption", resourceCulture);
             }
@@ -12122,7 +12122,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Select {!User}.
         /// </summary>
-        internal static string UserSelectDialogTitle {
+        public static string UserSelectDialogTitle {
             get {
                 return ResourceManager.GetString("UserSelectDialogTitle", resourceCulture);
             }
@@ -12131,7 +12131,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
-        internal static string UserStatus {
+        public static string UserStatus {
             get {
                 return ResourceManager.GetString("UserStatus", resourceCulture);
             }
@@ -12140,7 +12140,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Job/Title.
         /// </summary>
-        internal static string UserStatusCaption {
+        public static string UserStatusCaption {
             get {
                 return ResourceManager.GetString("UserStatusCaption", resourceCulture);
             }
@@ -12149,7 +12149,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
-        internal static string UserType {
+        public static string UserType {
             get {
                 return ResourceManager.GetString("UserType", resourceCulture);
             }
@@ -12158,7 +12158,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to US West (Oregon) Region.
         /// </summary>
-        internal static string UsServerRegion {
+        public static string UsServerRegion {
             get {
                 return ResourceManager.GetString("UsServerRegion", resourceCulture);
             }
@@ -12167,7 +12167,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Video Guides.
         /// </summary>
-        internal static string VideoGuides {
+        public static string VideoGuides {
             get {
                 return ResourceManager.GetString("VideoGuides", resourceCulture);
             }
@@ -12176,7 +12176,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Show unwatched video.
         /// </summary>
-        internal static string VideoShowUnwatchedVideo {
+        public static string VideoShowUnwatchedVideo {
             get {
                 return ResourceManager.GetString("VideoShowUnwatchedVideo", resourceCulture);
             }
@@ -12185,7 +12185,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to See pricing plans.
         /// </summary>
-        internal static string ViewTariffPlans {
+        public static string ViewTariffPlans {
             get {
                 return ResourceManager.GetString("ViewTariffPlans", resourceCulture);
             }
@@ -12194,7 +12194,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to hits.
         /// </summary>
-        internal static string VisitorsChartHitLabel {
+        public static string VisitorsChartHitLabel {
             get {
                 return ResourceManager.GetString("VisitorsChartHitLabel", resourceCulture);
             }
@@ -12203,7 +12203,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to hosts.
         /// </summary>
-        internal static string VisitorsChartHostLabel {
+        public static string VisitorsChartHostLabel {
             get {
                 return ResourceManager.GetString("VisitorsChartHostLabel", resourceCulture);
             }
@@ -12212,7 +12212,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Usage Graph.
         /// </summary>
-        internal static string VisitorsChartTitle {
+        public static string VisitorsChartTitle {
             get {
                 return ResourceManager.GetString("VisitorsChartTitle", resourceCulture);
             }
@@ -12221,7 +12221,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Visits.
         /// </summary>
-        internal static string VisitorsChartVisitsLabel {
+        public static string VisitorsChartVisitsLabel {
             get {
                 return ResourceManager.GetString("VisitorsChartVisitsLabel", resourceCulture);
             }
@@ -12230,7 +12230,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Please maintain above zero balance to be able to make and receive calls..
         /// </summary>
-        internal static string VoipBuyHelperMsg {
+        public static string VoipBuyHelperMsg {
             get {
                 return ResourceManager.GetString("VoipBuyHelperMsg", resourceCulture);
             }
@@ -12239,7 +12239,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Buy VoIP package.
         /// </summary>
-        internal static string VoipBuyMsg {
+        public static string VoipBuyMsg {
             get {
                 return ResourceManager.GetString("VoipBuyMsg", resourceCulture);
             }
@@ -12248,7 +12248,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to VoIP package for {0}.
         /// </summary>
-        internal static string VoipPackageMsg {
+        public static string VoipPackageMsg {
             get {
                 return ResourceManager.GetString("VoipPackageMsg", resourceCulture);
             }
@@ -12257,7 +12257,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to VoIP Package: {0}/{1}.
         /// </summary>
-        internal static string VoipPackageSateMsg {
+        public static string VoipPackageSateMsg {
             get {
                 return ResourceManager.GetString("VoipPackageSateMsg", resourceCulture);
             }
@@ -12266,7 +12266,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Соединение уже установлено в другом окне.
         /// </summary>
-        internal static string VoipServiceAlreadyRunningMsg {
+        public static string VoipServiceAlreadyRunningMsg {
             get {
                 return ResourceManager.GetString("VoipServiceAlreadyRunningMsg", resourceCulture);
             }
@@ -12275,7 +12275,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Unfortunately the service is currently unavailable. Please try again later..
         /// </summary>
-        internal static string VoipServiceUnavailableMsg {
+        public static string VoipServiceUnavailableMsg {
             get {
                 return ResourceManager.GetString("VoipServiceUnavailableMsg", resourceCulture);
             }
@@ -12284,7 +12284,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Warning!.
         /// </summary>
-        internal static string Warning {
+        public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }
@@ -12293,7 +12293,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to ONLYOFFICE™.
         /// </summary>
-        internal static string WebStudioName {
+        public static string WebStudioName {
             get {
                 return ResourceManager.GetString("WebStudioName", resourceCulture);
             }
@@ -12302,7 +12302,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Signed in as.
         /// </summary>
-        internal static string Welcome {
+        public static string Welcome {
             get {
                 return ResourceManager.GetString("Welcome", resourceCulture);
             }
@@ -12311,7 +12311,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {0}This means that you can: {1}view portal content open for all portal users,{2}leave comments,{3}attach and download files.{4}.
         /// </summary>
-        internal static string WelcomeCollaboratorCan {
+        public static string WelcomeCollaboratorCan {
             get {
                 return ResourceManager.GetString("WelcomeCollaboratorCan", resourceCulture);
             }
@@ -12320,7 +12320,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to In case you need some additional rights please contact your portal administrator..
         /// </summary>
-        internal static string WelcomeCollaboratorOtherActions {
+        public static string WelcomeCollaboratorOtherActions {
             get {
                 return ResourceManager.GetString("WelcomeCollaboratorOtherActions", resourceCulture);
             }
@@ -12329,7 +12329,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE™.
         /// </summary>
-        internal static string WelcomeCollaboratorPopupHeader {
+        public static string WelcomeCollaboratorPopupHeader {
             get {
                 return ResourceManager.GetString("WelcomeCollaboratorPopupHeader", resourceCulture);
             }
@@ -12338,7 +12338,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to The portal administrator invited you as guest user to the portal..
         /// </summary>
-        internal static string WelcomeCollaboratorRole {
+        public static string WelcomeCollaboratorRole {
             get {
                 return ResourceManager.GetString("WelcomeCollaboratorRole", resourceCulture);
             }
@@ -12347,7 +12347,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Start work.
         /// </summary>
-        internal static string WelcomeCollaboratorStartWork {
+        public static string WelcomeCollaboratorStartWork {
             get {
                 return ResourceManager.GetString("WelcomeCollaboratorStartWork", resourceCulture);
             }
@@ -12356,7 +12356,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Thank you for choosing ONLYOFFICE™! For the security reasons the password setup procedure must be performed..
         /// </summary>
-        internal static string WelcomeDescription {
+        public static string WelcomeDescription {
             get {
                 return ResourceManager.GetString("WelcomeDescription", resourceCulture);
             }
@@ -12365,7 +12365,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to Your ONLYOFFICE™ Portal.
         /// </summary>
-        internal static string WelcomeTitle {
+        public static string WelcomeTitle {
             get {
                 return ResourceManager.GetString("WelcomeTitle", resourceCulture);
             }
@@ -12374,7 +12374,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE™!.
         /// </summary>
-        internal static string WelcomeToTeamlab {
+        public static string WelcomeToTeamlab {
             get {
                 return ResourceManager.GetString("WelcomeToTeamlab", resourceCulture);
             }
@@ -12383,7 +12383,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Welcome, {0}.
         /// </summary>
-        internal static string WelcomeUserMessage {
+        public static string WelcomeUserMessage {
             get {
                 return ResourceManager.GetString("WelcomeUserMessage", resourceCulture);
             }
@@ -12392,7 +12392,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to We use ONLYOFFICE™ Online Office.
         /// </summary>
-        internal static string WeUseTeamLabOnlineOffice {
+        public static string WeUseTeamLabOnlineOffice {
             get {
                 return ResourceManager.GetString("WeUseTeamLabOnlineOffice", resourceCulture);
             }
@@ -12401,7 +12401,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to What&apos;s New.
         /// </summary>
-        internal static string WhatsNewSubscriptionName {
+        public static string WhatsNewSubscriptionName {
             get {
                 return ResourceManager.GetString("WhatsNewSubscriptionName", resourceCulture);
             }
@@ -12410,7 +12410,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to White Label.
         /// </summary>
-        internal static string WhiteLabel {
+        public static string WhiteLabel {
             get {
                 return ResourceManager.GetString("WhiteLabel", resourceCulture);
             }
@@ -12419,7 +12419,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You haven&apos;t set up any password. You will be able to do it later using the &apos;Forgot your password?&apos; link at the portal login page. Are you sure you want to continue?.
         /// </summary>
-        internal static string WizardCancelConfirmMessage {
+        public static string WizardCancelConfirmMessage {
             get {
                 return ResourceManager.GetString("WizardCancelConfirmMessage", resourceCulture);
             }
@@ -12428,7 +12428,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Language and Time Zone Settings.
         /// </summary>
-        internal static string WizardGenTimeLang {
+        public static string WizardGenTimeLang {
             get {
                 return ResourceManager.GetString("WizardGenTimeLang", resourceCulture);
             }
@@ -12437,7 +12437,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Portal Setup - Go through these easy steps to start your web office easily.
         /// </summary>
-        internal static string WizardPageTitle {
+        public static string WizardPageTitle {
             get {
                 return ResourceManager.GetString("WizardPageTitle", resourceCulture);
             }
@@ -12446,7 +12446,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Registration Settings.
         /// </summary>
-        internal static string WizardRegistrationSettings {
+        public static string WizardRegistrationSettings {
             get {
                 return ResourceManager.GetString("WizardRegistrationSettings", resourceCulture);
             }
@@ -12455,7 +12455,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to {!Regdate}.
         /// </summary>
-        internal static string WorkFromDate {
+        public static string WorkFromDate {
             get {
                 return ResourceManager.GetString("WorkFromDate", resourceCulture);
             }
@@ -12464,7 +12464,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Wrong password or incorrect certitificate.
         /// </summary>
-        internal static string WrongPasswordOrIncorrectCertitificate {
+        public static string WrongPasswordOrIncorrectCertitificate {
             get {
                 return ResourceManager.GetString("WrongPasswordOrIncorrectCertitificate", resourceCulture);
             }
@@ -12473,7 +12473,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to You decided to join this portal..
         /// </summary>
-        internal static string YouDecidedToJoinThisPortal {
+        public static string YouDecidedToJoinThisPortal {
             get {
                 return ResourceManager.GetString("YouDecidedToJoinThisPortal", resourceCulture);
             }

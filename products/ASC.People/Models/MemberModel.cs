@@ -23,4 +23,10 @@ namespace ASC.People.Models
         public string Files { get; set; }
         public string Password { get; set; }
     }
+
+    public class UpdateMemberModel : MemberModel
+    {
+        public string UserId { get; set; }
+        public bool? Disable { get; set; }
+    }
 }
