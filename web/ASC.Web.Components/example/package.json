@@ -46,7 +46,7 @@
     "@storybook/addon-storysource": "^5.0.11",
     "@storybook/addon-viewport": "^5.0.11",
     "@storybook/addons": "^5.0.11",
-    "@storybook/cli": "^5.0.11",
+    "@storybook/cli": "^5.1.8",
     "@storybook/react": "^5.0.11",
     "babel-loader": "^8.0.6",
     "install-peers": "^1.0.3",
