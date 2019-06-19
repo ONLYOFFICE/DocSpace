@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
-import { Card, Row, Col} from 'reactstrap';
+import styled from 'styled-components';
 import Loader from '../loader';
 
 const StyledOuter = styled.div`
