@@ -3,6 +3,8 @@ import OrigPeopleIcon from './people.react.svg';
 import OrigCalendarIcon from './calendar.react.svg';
 import OrigExpanderDownIcon from './expander-down.react.svg';
 import OrigExpanderRightIcon from './expander-right.react.svg';
+import OrigRotateIcon from './rotate.react.svg';
+import OrigUploadIcon from './upload.react.svg';
 
 import OrigGuestIcon from './guest.react.svg';
 import OrigAdministratorIcon from './administrator.react.svg';
@@ -24,6 +26,14 @@ export const ExpanderDownIcon = createStyledIcon(
 export const ExpanderRightIcon = createStyledIcon(
   OrigExpanderRightIcon,
   'ExpanderRight'
+);
+export const RotateIcon = createStyledIcon(
+  OrigRotateIcon,
+  'RotateIcon'
+);
+export const UploadIcon = createStyledIcon(
+  OrigUploadIcon,
+  'UploadIcon'
 );
 
 export const GuestIcon = createStyledIcon(
