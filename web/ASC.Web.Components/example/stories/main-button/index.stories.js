@@ -6,6 +6,14 @@ import Section from '../../.storybook/decorators/section';
 
 const moduleNames = ['documents', 'people', 'mail', ''];
 
+function ClickMainButton(e, credentials) {
+  console.log("ClickMainButton", e, credentials);
+}
+
+function ClickSecondaryButton(e, credentials) {
+  console.log("ClickSecondaryButton", e, credentials);
+}
+
 storiesOf('Components|MainButton', module)
   .addDecorator(withKnobs)
   .add('Main button', () => (
@@ -15,6 +23,8 @@ storiesOf('Components|MainButton', module)
         isDropdown={boolean('isDropdown', false)}
         text={text('text', 'Actions')}
         moduleName={select('moduleName', moduleNames, 'people')}
+        clickAction={ClickMainButton}
+        clickActionSecondary={ClickSecondaryButton}
       >
         <GroupButton 
           text='Group button' 

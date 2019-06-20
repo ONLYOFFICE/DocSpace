@@ -57,7 +57,11 @@ const GroupMainButton = styled.div`
     position: relative;
     display: grid;
     Grid-template-columns: ${props => (props.isDropdown ? "1fr" : "1fr 32px")};
-    ${props => (!props.isDropdown && "grid-column-gap: 1px")}
+    ${props => (!props.isDropdown && "grid-column-gap: 1px")};
+`;
+
+const StyledDropDown = styled(DropDown)`
+    width:100%;
 `;
 
 const StyledMainButton = styled.div`
@@ -102,9 +106,13 @@ const StyledSecondaryButton = styled(StyledMainButton)`
 
 
 const MainButton = (props) => {
-    const { text, isDropdown, opened, clickActionSecondary, clickAction } = props;
+    const { text, isDropdown, opened } = props;
     const [isOpen, toggle] = useState(opened);
-    const dropMenu = <DropDown isOpen={isOpen} {...props}/>;
+    const dropMenu = <StyledDropDown isOpen={isOpen} {...props}/>;
+
+    function stopAction(e) {
+        e.preventDefault();
+    }
 
     const SecondaryButtonIcon = moduleName => {
         
@@ -124,13 +132,18 @@ const MainButton = (props) => {
 
     return(
         <GroupMainButton {...props}>
-            <StyledMainButton {...props} onClick={() => { !props.isDropdown ? clickActionSecondary : toggle(!isOpen) }}>
+            <StyledMainButton {...props} onClick={ 
+                    !props.isDisable 
+                        ? !props.isDropdown 
+                            ? props.clickAction 
+                            : () => { toggle(!isOpen) }
+                        : stopAction}>
                 {text}
             </StyledMainButton>
             {isDropdown 
                 ?   { ...dropMenu } 
                 
-                :   <StyledSecondaryButton {...props} onClick={clickActionSecondary}> 
+                :   <StyledSecondaryButton {...props} onClick={ !props.isDisable ? props.clickActionSecondary : stopAction}> 
                         {SecondaryButtonIcon(props.moduleName)}
                     </StyledSecondaryButton>}
         </GroupMainButton>
@@ -148,12 +161,10 @@ MainButton.propTypes = {
 };
 
 MainButton.defaultProps = {
-    text: "Main button",
+    text: "Button",
     isDisable: false,
     isDropdown: true,
     moduleName: "",
-    clickAction: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
-    clickActionSecondary: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
-}
+};
 
 export default MainButton;
