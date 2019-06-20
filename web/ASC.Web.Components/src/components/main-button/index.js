@@ -69,7 +69,7 @@ const StyledMainButton = styled.div`
     display: block;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: ${props => props.isDisable ? disableBackgroundColor : backgroundColor};
+    background-color: ${props => props.isDisabled ? disableBackgroundColor : backgroundColor};
     padding: 5px 11px;
     color: #ffffff;
     border-radius: 3px;
@@ -83,7 +83,7 @@ const StyledMainButton = styled.div`
         ${arrowDropdown}
     }
 
-    ${props => (!props.isDisable && notDisableStyles)}
+    ${props => (!props.isDisabled && notDisableStyles)}
     ${props => (!props.isDropdown && notDropdown)}
 
     & > svg {
@@ -109,7 +109,6 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
         const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
 
         if (ref.current) {
-            console.log("thisentry")
             document.addEventListener("click", handleClick);
         }
 
@@ -151,7 +150,7 @@ const MainButton = (props) => {
     return(
         <GroupMainButton {...props} ref={ref}>
             <StyledMainButton {...props} onClick={ 
-                    !props.isDisable 
+                    !props.isDisabled 
                         ? !props.isDropdown 
                             ? props.clickAction 
                             : () => { toggle(!isOpen) }
@@ -161,7 +160,7 @@ const MainButton = (props) => {
             {isDropdown 
                 ?   { ...dropMenu } 
                 
-                :   <StyledSecondaryButton {...props} onClick={ !props.isDisable ? props.clickActionSecondary : stopAction}> 
+                :   <StyledSecondaryButton {...props} onClick={ !props.isDisabled ? props.clickActionSecondary : stopAction}> 
                         {SecondaryButtonIcon(props.moduleName)}
                     </StyledSecondaryButton>}
         </GroupMainButton>
@@ -170,8 +169,7 @@ const MainButton = (props) => {
 
 MainButton.propTypes = {
     text: PropTypes.string,
-    id: PropTypes.number,
-    isDisable: PropTypes.bool,
+    isDisabled: PropTypes.bool,
     isDropdown: PropTypes.bool,
     clickAction: PropTypes.func,
     clickActionSecondary: PropTypes.func,
@@ -180,7 +178,7 @@ MainButton.propTypes = {
 
 MainButton.defaultProps = {
     text: "Button",
-    isDisable: false,
+    isDisabled: false,
     isDropdown: true,
     moduleName: "",
 };

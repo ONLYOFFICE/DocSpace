@@ -2,7 +2,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, withKnobs, select } from '@storybook/addon-knobs/react';
 import { MainButton, GroupButton, Button } from 'asc-web-components';
-import Section from '../../.storybook/decorators/section';
+import Section from '../../../.storybook/decorators/section';
+import withReadme from 'storybook-readme/with-readme';
+import Readme from './README.md';
 
 const moduleNames = ['documents', 'people', 'mail', ''];
 
@@ -16,10 +18,11 @@ function ClickSecondaryButton(e, credentials) {
 
 storiesOf('Components|MainButton', module)
   .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
   .add('Main button', () => (
     <Section>
       <MainButton
-        isDisable={boolean('isDisable', false)}
+        isDisabled={boolean('isDisabled', false)}
         isDropdown={boolean('isDropdown', false)}
         text={text('text', 'Actions')}
         moduleName={select('moduleName', moduleNames, 'people')}
