@@ -77,7 +77,7 @@ const RoundButton = (props) => {
   useOuterClickNotifier((e) => toggle(false), ref);
 
   return (
-      <StyledOuther onClick={() => { toggle(!isOpen) }} >
+      <StyledOuther onClick={() => { toggle(!isOpen) }} ref={ref} >
         <StyledRoundButton {...props} opened={isOpen}/>
         <DropDown {...props} isOpen={isOpen}>
           {loop(data)}

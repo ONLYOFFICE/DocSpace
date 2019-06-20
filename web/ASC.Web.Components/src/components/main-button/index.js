@@ -104,11 +104,29 @@ const StyledSecondaryButton = styled(StyledMainButton)`
     border-bottom-left-radius:0;
 `;
 
+const useOuterClickNotifier = (onOuterClick, ref) => {
+    useEffect(() => { 
+        const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
+
+        if (ref.current) {
+            console.log("thisentry")
+            document.addEventListener("click", handleClick);
+        }
+
+        return () => document.removeEventListener("click", handleClick);
+    },
+    [onOuterClick, ref]
+    );
+}
+
 
 const MainButton = (props) => {
     const { text, isDropdown, opened } = props;
     const [isOpen, toggle] = useState(opened);
     const dropMenu = <StyledDropDown isOpen={isOpen} {...props}/>;
+    const ref = useRef(null);
+  
+    useOuterClickNotifier((e) => toggle(false), ref);
 
     function stopAction(e) {
         e.preventDefault();
@@ -131,7 +149,7 @@ const MainButton = (props) => {
       };
 
     return(
-        <GroupMainButton {...props}>
+        <GroupMainButton {...props} ref={ref}>
             <StyledMainButton {...props} onClick={ 
                     !props.isDisable 
                         ? !props.isDropdown 
