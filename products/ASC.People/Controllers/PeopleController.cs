@@ -10,6 +10,7 @@ using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Reassigns;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
@@ -521,14 +522,13 @@ namespace ASC.Employee.Core.Controllers
             if (user.Status != EmployeeStatus.Terminated)
                 throw new Exception("The user is not suspended");
 
-            //TODO
-            //CheckReassignProccess(new[] { user.ID });
+            CheckReassignProccess(new[] { user.ID });
 
             var userName = user.DisplayUserName(false);
 
             UserPhotoManager.RemovePhoto(user.ID);
             CoreContext.UserManager.DeleteUser(user.ID);
-            //QueueWorker.StartRemove(Common.HttpContext.Current, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
+            QueueWorker.StartRemove(Common.HttpContext.Current, MessageService, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
@@ -855,8 +855,7 @@ namespace ASC.Employee.Core.Controllers
         {
             SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-            //TODO
-            //CheckReassignProccess(userIds);
+            CheckReassignProccess(model.UserIds);
 
             var users = model.UserIds.Select(userId => CoreContext.UserManager.GetUsers(userId))
                 .Where(u => !CoreContext.UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
@@ -870,7 +869,7 @@ namespace ASC.Employee.Core.Controllers
 
                 UserPhotoManager.RemovePhoto(user.ID);
                 CoreContext.UserManager.DeleteUser(user.ID);
-                //QueueWorker.StartRemove(HttpContext.Current, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
+                QueueWorker.StartRemove(Common.HttpContext.Current, MessageService, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
             }
 
             MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
@@ -945,133 +944,98 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        ///// <summary>
-        ///// Returns the progress of the started reassign process
-        ///// </summary>
-        ///// <param name="userId">User ID whose data is reassigned</param>
-        ///// <category>Reassign user data</category>
-        ///// <returns>Reassign Progress</returns>
-        //[Read(@"reassign/progress")]
-        //public ReassignProgressItem GetReassignProgress(Guid userId)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
+        [Read(@"reassign/progress"), Read(@"reassign/progress", false)]
+        public ReassignProgressItem GetReassignProgress(Guid userId)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        //    return QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem)) as ReassignProgressItem;
-        //}
+            return QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem)) as ReassignProgressItem;
+        }
 
-        ///// <summary>
-        ///// Terminate reassign process
-        ///// </summary>
-        ///// <param name="userId">User ID whose data is reassigned</param>
-        ///// <category>Reassign user data</category>
-        //[Update(@"reassign/terminate")]
-        //public void TerminateReassign(Guid userId)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
+        [Update(@"reassign/terminate"), Update(@"reassign/terminate", false)]
+        public void TerminateReassign(Guid userId)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        //    QueueWorker.Terminate(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem));
-        //}
+            QueueWorker.Terminate(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem));
+        }
 
-        ///// <summary>
-        ///// Start a reassign process
-        ///// </summary>
-        ///// <param name="fromUserId">From User ID</param>
-        ///// <param name="toUserId">To User ID</param>
-        ///// <param name="deleteProfile">Delete profile when reassignment will be finished</param>
-        ///// <category>Reassign user data</category>
-        ///// <returns>Reassign Progress</returns>
-        //[Create(@"reassign/start")]
-        //public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
+        [Create(@"reassign/start"), Create(@"reassign/start", false)]
+        public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        //    var fromUser = CoreContext.UserManager.GetUsers(fromUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(fromUserId);
 
-        //    if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
-        //        throw new ArgumentException("User with id = " + fromUserId + " not found");
+            if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
+                throw new ArgumentException("User with id = " + fromUserId + " not found");
 
-        //    if (fromUser.IsOwner() || fromUser.IsMe() || fromUser.Status != EmployeeStatus.Terminated)
-        //        throw new ArgumentException("Can not delete user with id = " + fromUserId);
+            if (fromUser.IsOwner() || fromUser.IsMe() || fromUser.Status != EmployeeStatus.Terminated)
+                throw new ArgumentException("Can not delete user with id = " + fromUserId);
 
-        //    var toUser = CoreContext.UserManager.GetUsers(toUserId);
+            var toUser = CoreContext.UserManager.GetUsers(toUserId);
 
-        //    if (toUser == null || toUser.ID == Constants.LostUser.ID)
-        //        throw new ArgumentException("User with id = " + toUserId + " not found");
+            if (toUser == null || toUser.ID == Constants.LostUser.ID)
+                throw new ArgumentException("User with id = " + toUserId + " not found");
 
-        //    if (toUser.IsVisitor() || toUser.Status == EmployeeStatus.Terminated)
-        //        throw new ArgumentException("Can not reassign data to user with id = " + toUserId);
+            if (toUser.IsVisitor() || toUser.Status == EmployeeStatus.Terminated)
+                throw new ArgumentException("Can not reassign data to user with id = " + toUserId);
 
-        //    return QueueWorker.StartReassign(HttpContext.Current, TenantProvider.CurrentTenantID, fromUserId, toUserId, SecurityContext.CurrentAccount.ID, deleteProfile);
-        //}
+            return QueueWorker.StartReassign(Common.HttpContext.Current, MessageService, TenantProvider.CurrentTenantID, fromUserId, toUserId, SecurityContext.CurrentAccount.ID, deleteProfile);
+        }
 
-        //private void CheckReassignProccess(IEnumerable<Guid> userIds)
-        //{
-        //    foreach (var userId in userIds)
-        //    {
-        //        var reassignStatus = QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem));
-        //        if (reassignStatus == null || reassignStatus.IsCompleted)
-        //            continue;
+        private void CheckReassignProccess(IEnumerable<Guid> userIds)
+        {
+            foreach (var userId in userIds)
+            {
+                var reassignStatus = QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(ReassignProgressItem));
+                if (reassignStatus == null || reassignStatus.IsCompleted)
+                    continue;
 
-        //        var userName = CoreContext.UserManager.GetUsers(userId).DisplayUserName();
-        //        throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
-        //    }
-        //}
+                var userName = CoreContext.UserManager.GetUsers(userId).DisplayUserName();
+                throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
+            }
+        }
 
         //#endregion
 
 
-        //#region Remove user data
+        #region Remove user data
 
-        ///// <summary>
-        ///// Returns the progress of the started remove process
-        ///// </summary>
-        ///// <param name="userId">User ID</param>
-        ///// <category>Remove user data</category>
-        ///// <returns>Remove Progress</returns>
-        //[Read(@"remove/progress")]
-        //public RemoveProgressItem GetRemoveProgress(Guid userId)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        //    return QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(RemoveProgressItem)) as RemoveProgressItem;
-        //}
+        [Read(@"remove/progress"), Read(@"remove/progress", false)]
+        public RemoveProgressItem GetRemoveProgress(Guid userId)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        ///// <summary>
-        ///// Terminate remove process
-        ///// </summary>
-        ///// <param name="userId">User ID</param>
-        ///// <category>Remove user data</category>
-        //[Update(@"remove/terminate")]
-        //public void TerminateRemove(Guid userId)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
+            return QueueWorker.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId, typeof(RemoveProgressItem)) as RemoveProgressItem;
+        }
 
-        //    QueueWorker.Terminate(TenantProvider.CurrentTenantID, userId, typeof(RemoveProgressItem));
-        //}
+        [Update(@"remove/terminate"), Update(@"remove/terminate", false)]
+        public void TerminateRemove(Guid userId)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        ///// <summary>
-        ///// Start a remove process
-        ///// </summary>
-        ///// <param name="userId">User ID</param>
-        ///// <category>Remove user data</category>
-        ///// <returns>Remove Progress</returns>
-        //[Create(@"remove/start")]
-        //public RemoveProgressItem StartRemove(Guid userId)
-        //{
-        //    SecurityContext.DemandPermissions(Constants.Action_EditUser);
+            QueueWorker.Terminate(TenantProvider.CurrentTenantID, userId, typeof(RemoveProgressItem));
+        }
 
-        //    var user = CoreContext.UserManager.GetUsers(userId);
+        [Create(@"remove/start"), Create(@"remove/start", false)]
+        public RemoveProgressItem StartRemove(Guid userId)
+        {
+            SecurityContext.DemandPermissions(Constants.Action_EditUser);
 
-        //    if (user == null || user.ID == Constants.LostUser.ID)
-        //        throw new ArgumentException("User with id = " + userId + " not found");
+            var user = CoreContext.UserManager.GetUsers(userId);
 
-        //    if (user.IsOwner() || user.IsMe() || user.Status != EmployeeStatus.Terminated)
-        //        throw new ArgumentException("Can not delete user with id = " + userId);
+            if (user == null || user.ID == Constants.LostUser.ID)
+                throw new ArgumentException("User with id = " + userId + " not found");
 
-        //    return QueueWorker.StartRemove(HttpContext.Current, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, true);
-        //}
+            if (user.IsOwner() || user.IsMe() || user.Status != EmployeeStatus.Terminated)
+                throw new ArgumentException("Can not delete user with id = " + userId);
 
-        //#endregion
+            return QueueWorker.StartRemove(ASC.Common.HttpContext.Current, MessageService, TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, true);
+        }
+
+        #endregion
 
         private static void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
         {
