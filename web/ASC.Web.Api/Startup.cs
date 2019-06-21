@@ -21,6 +21,7 @@ using ASC.Data.Storage.Configuration;
 
 using Autofac;
 using ASC.MessagingSystem;
+using ASC.Data.Reassigns;
 
 namespace ASC.Web.Api
 {
@@ -69,7 +70,9 @@ namespace ASC.Web.Api
             services.AddLogManager()
                     .AddStorage()
                     .AddWebItemManager()
-                    .AddTransient<MessageService>();
+                    .AddScoped<MessageService>()
+                    .AddScoped<QueueWorkerReassign>()
+                    .AddScoped<QueueWorkerRemove>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

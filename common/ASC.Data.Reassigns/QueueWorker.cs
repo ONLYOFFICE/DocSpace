@@ -37,32 +37,48 @@ namespace ASC.Data.Reassigns
 {
     public class QueueWorker
     {
-        private static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromMinutes(5), true);
-
-        public static string GetProgressItemId(int tenantId, Guid userId, Type progressItemType)
+        public static Dictionary<string, string> GetHttpHeaders(HttpRequest httpRequest)
         {
-            return string.Format("{0}_{1}_{2}", tenantId, userId, progressItemType.Name);
+            return httpRequest?.Headers.Keys.ToDictionary(key => key, key => httpRequest.Headers[key].ToString());
+        }
+    }
+    public class QueueWorker<T> where T : class, IProgressItem
+    {
+        protected static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromMinutes(5), true);
+
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public MessageService MessageService { get; }
+
+        public QueueWorker(IHttpContextAccessor httpContextAccessor, MessageService messageService)
+        {
+            HttpContextAccessor = httpContextAccessor;
+            MessageService = messageService;
         }
 
-        public static IProgressItem GetProgressItemStatus(int tenantId, Guid userId, Type progressItemType)
+        public string GetProgressItemId(int tenantId, Guid userId)
         {
-            var id = GetProgressItemId(tenantId, userId, progressItemType);
-            return Queue.GetStatus(id);
+            return string.Format("{0}_{1}_{2}", tenantId, userId, typeof(T).Name);
         }
 
-        public static void Terminate(int tenantId, Guid userId, Type progressItemType)
+        public T GetProgressItemStatus(int tenantId, Guid userId)
         {
-            var item = GetProgressItemStatus(tenantId, userId, progressItemType);
+            var id = GetProgressItemId(tenantId, userId);
+            return Queue.GetStatus(id) as T;
+        }
+
+        public void Terminate(int tenantId, Guid userId)
+        {
+            var item = GetProgressItemStatus(tenantId, userId);
 
             if (item != null)
                 Queue.Remove(item);
         }
 
-        public static ReassignProgressItem StartReassign(HttpContext context, MessageService messageService, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        protected IProgressItem Start(int tenantId, Guid userId, Func<T> constructor)
         {
             lock (Queue.SynchRoot)
             {
-                var task = GetProgressItemStatus(tenantId, fromUserId, typeof(ReassignProgressItem)) as ReassignProgressItem;
+                var task = GetProgressItemStatus(tenantId, userId);
 
                 if (task != null && task.IsCompleted)
                 {
@@ -72,7 +88,7 @@ namespace ASC.Data.Reassigns
 
                 if (task == null)
                 {
-                    task = new ReassignProgressItem(context, messageService, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
+                    task = constructor();
                     Queue.Add(task);
                 }
 
@@ -82,35 +98,30 @@ namespace ASC.Data.Reassigns
                 return task;
             }
         }
+    }
 
-        public static RemoveProgressItem StartRemove(HttpContext context, MessageService messageService, int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
+    {
+        public QueueWorkerRemove QueueWorkerRemove { get; }
+        public QueueWorkerReassign(IHttpContextAccessor httpContextAccessor, MessageService messageService, QueueWorkerRemove queueWorkerRemove) : base(httpContextAccessor, messageService)
         {
-            lock (Queue.SynchRoot)
-            {
-                var task = GetProgressItemStatus(tenantId, user.ID, typeof(RemoveProgressItem)) as RemoveProgressItem;
-
-                if (task != null && task.IsCompleted)
-                {
-                    Queue.Remove(task);
-                    task = null;
-                }
-
-                if (task == null)
-                {
-                    task = new RemoveProgressItem(context, messageService, tenantId, user, currentUserId, notify);
-                    Queue.Add(task);
-                }
-
-                if (!Queue.IsStarted)
-                    Queue.Start(x => x.RunJob());
-
-                return task;
-            }
+            QueueWorkerRemove = queueWorkerRemove;
         }
 
-        public static Dictionary<string, string> GetHttpHeaders(HttpRequest httpRequest)
+        public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
-            return httpRequest?.Headers.Keys.ToDictionary(key => key, key => httpRequest.Headers[key].ToString());
+            return Start(tenantId, fromUserId, () => new ReassignProgressItem(HttpContextAccessor.HttpContext, MessageService, this, QueueWorkerRemove, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
+        }
+    }
+    public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
+    {
+        public QueueWorkerRemove(IHttpContextAccessor httpContextAccessor, MessageService messageService) : base(httpContextAccessor, messageService)
+        {
+        }
+
+        public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
+        {
+            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace ASC.Data.Reassigns
 
         public MessageService MessageService { get; }
 
-        public RemoveProgressItem(HttpContext context, MessageService messageService, int tenantId, UserInfo user, Guid currentUserId, bool notify)
+        public RemoveProgressItem(HttpContext context, MessageService messageService, QueueWorkerRemove queueWorkerRemove, int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             _context = context;
             MessageService = messageService;
@@ -86,7 +86,7 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_mailEraser = new MailGarbageEngine();
 
-            Id = QueueWorker.GetProgressItemId(tenantId, _userId, typeof(RemoveProgressItem));
+            Id = queueWorkerRemove.GetProgressItemId(tenantId, _userId);
             Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;

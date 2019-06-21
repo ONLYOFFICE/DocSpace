@@ -66,11 +66,13 @@ namespace ASC.Data.Reassigns
         public Guid ToUser { get { return _toUserId; } }
 
         public MessageService MessageService { get; }
+        public QueueWorkerRemove QueueWorkerRemove { get; }
 
-        public ReassignProgressItem(HttpContext context, MessageService messageService, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        public ReassignProgressItem(HttpContext context, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             _context = context;
             MessageService = messageService;
+            QueueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -82,7 +84,7 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_projectsReassign = new ProjectsReassign();
 
-            Id = QueueWorker.GetProgressItemId(tenantId, fromUserId, typeof(ReassignProgressItem));
+            Id = queueWorkerReassign.GetProgressItemId(tenantId, fromUserId);
             Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;
@@ -188,7 +190,7 @@ namespace ASC.Data.Reassigns
 
             UserPhotoManager.RemovePhoto(user.ID);
             CoreContext.UserManager.DeleteUser(user.ID);
-            QueueWorker.StartRemove(_context, MessageService, _tenantId, user, _currentUserId, false);
+            QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
                 MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), new[] {userName});
