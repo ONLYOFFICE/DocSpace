@@ -12,12 +12,12 @@ storiesOf('Components| DropDown', module)
     .add('base', () => (
         <Container>
             <Row style={rowStyle}>
-                <Col xs="2">Only dropdown</Col>
+                <Col xs="4">Only dropdown</Col>
                 <Col xs="2"/>
                 <Col>With Button</Col>
             </Row>
             <Row style={rowStyle}>
-                <Col xs="2">
+                <Col xs="4">
                     Without active button
                     <DropDown opened={true}>
                         <DropDownItem

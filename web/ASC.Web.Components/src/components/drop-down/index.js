@@ -14,7 +14,6 @@ const StyledDropdown = styled.div`
     left: 0;
     z-index: 1000;
     margin-top: 0px;
-    width:100%;
     display: ${props => (props.isOpen || props.opened ? 'block' : 'none')};
     border-radius: 6px;
     -moz-border-radius: 6px;
@@ -33,10 +32,6 @@ const DropDown = props => {
         )}
         </StyledDropdown>
     );
-};
-
-DropDown.propTypes ={
-
 };
 
 export default DropDown
