@@ -1,6 +1,5 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean, number, text, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../.storybook/decorators/section';
@@ -16,7 +15,6 @@ function getData() {
 }
 
 storiesOf('Components|ContextMenuButton', module)
-  .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('context-menu-button', () => (
     <Section>
