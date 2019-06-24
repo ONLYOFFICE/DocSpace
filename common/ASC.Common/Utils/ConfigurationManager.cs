@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using ASC.Common.Logging;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,10 @@ namespace ASC.Common.Utils
             AppSettings = serviceProvider.GetService<IConfiguration>();
             LogManager = serviceProvider.GetService<LogManager>();
             ConnectionStrings = new ConnectionStringCollection(GetSettings<ConnectionStringSettings>("ConnectionStrings"));
+        }
+        public static void UseCm(this IApplicationBuilder applicationBuilder)
+        {
+            Init(applicationBuilder.ApplicationServices);
         }
         public static IEnumerable<T> GetSettings<T> (string section) where T : new ()
         {

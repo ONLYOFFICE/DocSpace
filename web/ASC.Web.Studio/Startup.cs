@@ -77,8 +77,8 @@ namespace ASC.Web.Studio
                     template: "{controller}/{action=Index}/{id?}");
             });*/
 
-            CommonServiceProvider.Init(app.ApplicationServices);
-            ConfigurationManager.Init(app.ApplicationServices);
+            app.UseCSP();
+            app.UseCm();
 
             app.UseEndpoints(endpoints =>
             {

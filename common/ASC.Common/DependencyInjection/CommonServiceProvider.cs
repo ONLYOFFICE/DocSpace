@@ -14,5 +14,9 @@ namespace ASC.Common.DependencyInjection
         {
             ServiceProvider = serviceProvider;
         }
+        public static void UseCSP(this IApplicationBuilder applicationBuilder)
+        {
+            Init(applicationBuilder.ApplicationServices);
+        }
     }
 }

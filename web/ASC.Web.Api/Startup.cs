@@ -22,6 +22,8 @@ using ASC.Data.Storage.Configuration;
 using Autofac;
 using ASC.MessagingSystem;
 using ASC.Data.Reassigns;
+using ASC.Core;
+using System.Threading;
 
 namespace ASC.Web.Api
 {
@@ -94,14 +96,24 @@ namespace ASC.Web.Api
 
             app.UseAuthentication();
 
+            app.Use(async (context, next) => {
+                if (SecurityContext.IsAuthenticated)
+                {
+                    var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                    var culture = user.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
+                }
+                await next.Invoke();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-
-            CommonServiceProvider.Init(app.ApplicationServices);
-            ConfigurationManager.Init(app.ApplicationServices);
+            app.UseCSP();
+            app.UseCm();
             app.UseWebItemManager();
         }
     }
