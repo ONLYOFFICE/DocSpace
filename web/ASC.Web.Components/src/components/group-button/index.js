@@ -4,73 +4,48 @@ import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 import DropDown from '../drop-down'
 
-const backgroundColor = '#ebebeb',
-    disabledBackgroundColor = '#f7f7f7',
-    activatedBackgroundColor = '#e2e2e2',
-    hoveredBackgroundColor = '#f5f5f5',
-    primaryBackgroundColor = '#2da7db',
-    primaryDisabledBackgroundColor = '#a6dcf2',
-    primaryActivatedBackgroundColor = '#1f97ca',
-    primaryHoveredBackgroundColor = '#3db8ec';
-
-const borderColor = '#c4c4c4',
-    disabledBorderColor = '#ebebeb',
-    activatedBorderColor = '#dadada',
-    hoveredBorderColor = '#d4d4d4',
-    primaryBorderColor = 'transparent';
-
-const textColor = '#666666',
-    disabledTextColor = '#999999',
-    primaryTextColor = '#ffffff';
+const textColor = '#333333',
+    disabledTextColor = '#A3A9AE';
 
 const activatedCss = css`
     cursor: pointer;
-    border: 1px solid ${props => props.primary ? primaryBorderColor : activatedBorderColor} !important;
-    background-color: ${props => props.primary ? primaryActivatedBackgroundColor : activatedBackgroundColor} !important;
 `;
 
 const hoveredCss = css`
     cursor: pointer;
-    border: 1px solid ${props => props.primary ? primaryBorderColor : hoveredBorderColor};
-    background-color: ${props => props.primary ? primaryHoveredBackgroundColor : hoveredBackgroundColor};
 `;
 
 const StyledGroupButton = styled.div`
     position: relative;
     display: inline-flex;
     vertical-align: middle;
-    box-sizing: border-box;
 `;
 
-const StyledDropdownToggle = styled.button`
-    font: normal 12px 'Open Sans', sans-serif;
+const StyledDropdownToggle = styled.div`
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: ${props => props.fontWeight};
+    font-size: 14px;
+    line-height: 19px;
+
     cursor: default;
 
-    color: ${props => (props.primary && primaryTextColor) || (props.disabled ? disabledTextColor : textColor)};
-    background-color: ${props => (props.disabled 
-        ? (props.primary ? primaryDisabledBackgroundColor : disabledBackgroundColor) 
-        : (props.primary ? primaryBackgroundColor : backgroundColor))};
-    border: 1px solid ${props => (props.disabled 
-        ? (props.primary ? primaryBorderColor : disabledBorderColor) 
-        : (props.primary ? primaryBorderColor : borderColor))};
+    color: ${props => (props.disabled ? disabledTextColor : textColor)};
     
     float: left;
-    height: 21px;
-    margin-right: ${props => props.splitted ? '0px' : '4px'};
-    margin-left: ${props => props.splitted ? '-1px' : '0px'};
+    height: 19px;
+    margin: 18px 12px 19px 12px;
     overflow: hidden;
-    padding: 1px 5px 1px;
+    padding: 0px;
+
     text-align: center;
     text-decoration: none;
     white-space: nowrap;
+
     user-select: none;
     -o-user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-
-    border-radius: ${props => props.splitted ? '0px 3px 3px 0px' : '3px'};
-    -moz-border-radius: ${props => props.splitted ? '0px 3px 3px 0px' : '3px'};
-    -webkit-border-radius: ${props => props.splitted ? '0px 3px 3px 0px' : '3px'};
 
     ${props => !props.disabled && (props.activated ? `${activatedCss}` : css`
         &:active {
@@ -83,48 +58,19 @@ const StyledDropdownToggle = styled.button`
             ${hoveredCss}
         }`)
     }
-
-    ${props => props.isCheckbox & !props.splitted && css`
-        padding: 3px 5px 1px;
-    `}
-`;
-
-const StyledButton = styled(StyledDropdownToggle)`
-    margin-right: 0px;
-    margin-left: 0px;
-
-    border-radius: ${props => props.splitted ? '3px 0px 0px 3px' : '3px'};
-    -moz-border-radius: ${props => props.splitted ? '3px 0px 0px 3px' : '3px'};
-    -webkit-border-radius: ${props => props.splitted ? '3px 0px 0px 3px' : '3px'};
-
-    ${props => props.isCheckbox & props.splitted && css`
-        padding: 3px 5px 1px;
-    `}
 `;
 
 const Caret = styled(Icons.ExpanderDownIcon)`
     width: 10px;
     margin-left: 4px;
+`;
 
-    ${props => props.isCheckbox && (props.splitted
-        ? css`
-            margin-top: -4px;
-            margin-left: 0;
-            ` 
-        : css`
-            margin-top: -6px;
-            `)
-    }
-
-    ${props => !props.isCheckbox && (props.splitted 
-        ? css`
-            margin-top: -2px;
-            margin-left: 0;
-            `
-        : css`
-            margin-top: -3px;
-            `)
-    }
+const Separator = styled.div`
+    vertical-align: middle;
+    border: 0.5px solid #ECEEF1;
+    width: 1px;
+    height: 24px;
+    margin-top: 16px;
 `;
 
 const useOuterClickNotifier = (onOuterClick, ref) => {
@@ -142,7 +88,7 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
 }
 
 const GroupButton = (props) => {
-    const { text, splitted, isDropdown, isCheckbox, opened, disabled, primary, clickAction } = props;
+    const { label, isDropdown, opened, disabled, action, isSeparator } = props;
     const [isOpen, toggle] = useState(opened);
     const ref = useRef(null);
 
@@ -150,76 +96,50 @@ const GroupButton = (props) => {
 
     const dropMenu = <DropDown isOpen={isOpen} {...props}/>;
 
-    const splittedDropButton =
-        <>
-            <StyledButton {...props} onClick={clickAction}>
-                {text}
-                {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
-            </StyledButton>
-            <StyledDropdownToggle {...props} onClick={() => { disabled ? false : toggle(!isOpen) }}>
-                <Caret 
-                    splitted={splitted} 
-                    isCheckbox={isCheckbox} 
-                    size='small' 
-                    color={primary && primaryTextColor || (disabled ? disabledTextColor : textColor)} 
-                />
-            </StyledDropdownToggle>
-        </>;
-
-    const singleDropButton =
+    const dropDownButton =
         <StyledDropdownToggle {...props} onClick={() => { disabled ? false : toggle(!isOpen) }}>
-            {text}
-            {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
-            <Caret 
-                splitted={splitted} 
-                isCheckbox={isCheckbox}
-                size='small'
-                color={primary && primaryTextColor || (disabled ? disabledTextColor : textColor)} 
-            />
+            {label}
+            <Caret size='small' color={disabled ? disabledTextColor : textColor} />
         </StyledDropdownToggle>;
 
     return (
         <StyledGroupButton ref={ref} {...props}>
             {isDropdown
-                ? (splitted
-                    ? { ...splittedDropButton }
-                    : { ...singleDropButton })
-                : <StyledDropdownToggle {...props} onClick={clickAction}>
-                    {text}
-                    {isCheckbox && <input type='checkbox' disabled={disabled ? 'disabled' : ''} />}
+                ? {...dropDownButton}
+                : <StyledDropdownToggle {...props} onClick={action}>
+                    {label}
                 </StyledDropdownToggle>
             }
-            {isDropdown && { ...dropMenu }}
+            {isSeparator && <Separator/>}
+            {isDropdown && {...dropMenu}}
         </StyledGroupButton>
     );
 }
 
 GroupButton.propTypes = {
-    text: PropTypes.string,
-    primary: PropTypes.bool,
+    label: PropTypes.string,
     disabled: PropTypes.bool,
     activated: PropTypes.bool,
     opened: PropTypes.bool,
     hovered: PropTypes.bool,
-    splitted: PropTypes.bool,
-    isCheckbox: PropTypes.bool,
     isDropdown: PropTypes.bool,
+    isSeparator: PropTypes.bool,
     tabIndex: PropTypes.number,
-    clickAction: PropTypes.func
+    action: PropTypes.func,
+    fontWeight: PropTypes.string
 };
 
 GroupButton.defaultProps = {
-    text: 'Default text',
-    primary: false,
+    label: 'Group button',
     disabled: false,
     activated: false,
     opened: false,
     hovered: false,
-    splitted: false,
-    isCheckbox: false,
     isDropdown: false,
+    isSeparator: false,
     tabIndex: -1,
-    clickAction: (e) => console.log('Button "' + e.target.innerText + '" clicked!')
+    action: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
+    fontWeight: 600
 };
 
 export default GroupButton
