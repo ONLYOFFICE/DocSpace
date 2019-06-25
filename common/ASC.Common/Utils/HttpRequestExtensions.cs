@@ -40,7 +40,11 @@ namespace System.Web
 
         public static Uri GetUrlRewriter(this HttpRequest request)
         {
-            return request != null ? GetUrlRewriter(request.Headers, new Uri(request.GetDisplayUrl())) : null;
+            return request != null ? GetUrlRewriter(request.Headers, request.Url()) : null;
+        }
+        public static Uri Url(this HttpRequest request)
+        {
+            return request != null ?  new Uri(request.GetDisplayUrl()) : null;
         }
 
         /*public static Uri GetUrlRewriter(this HttpRequestBase request)

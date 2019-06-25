@@ -1,51 +1,64 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace ASC.Web.Api.Routing
 {
-    public class ReadAttribute : HttpGetAttribute
+    public abstract class CustomHttpMethodAttribute : HttpMethodAttribute
     {
-        public ReadAttribute(bool format = true) :
-            base($"[controller]{(format ? ".{format}" : "")}")
+        public bool Check { get; set; }
+
+        public CustomHttpMethodAttribute(string method, string template, bool check = true)
+            : base(new List<string>() { method }, template)
+        {
+            Check = check;
+        }
+    }
+
+    public class ReadAttribute : CustomHttpMethodAttribute
+    {
+        public ReadAttribute(bool format = true, bool check = true) :
+            base("GET", $"[controller]{(format ? ".{format}" : "")}", check)
         {
         }
-        public ReadAttribute(string template, bool format = true, int order = 1) : 
-            base($"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}")
+        public ReadAttribute(string template, bool format = true, int order = 1, bool check = true) :
+            base("GET", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
         {
             Order = order;
         }
     }
-    public class CreateAttribute : HttpPostAttribute
+    public class CreateAttribute : CustomHttpMethodAttribute
     {
-        public CreateAttribute(bool format = true) :
-            base($"[controller]{(format ? ".{format}" : "")}")
+        public CreateAttribute(bool format = true, bool check = true) :
+            base("POST", $"[controller]{(format ? ".{format}" : "")}", check)
         {
         }
-        public CreateAttribute(string template, bool format = true, int order = 1) : 
-            base($"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}")
+        public CreateAttribute(string template, bool format = true, int order = 1, bool check = true) :
+            base("POST", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
         {
             Order = order;
         }
     }
-    public class UpdateAttribute : HttpPutAttribute
+    public class UpdateAttribute : CustomHttpMethodAttribute
     {
-        public UpdateAttribute(bool format = true) :
-            base($"[controller]{(format ? ".{format}" : "")}")
+        public UpdateAttribute(bool format = true, bool check = true) :
+            base("PUT", $"[controller]{(format ? ".{format}" : "")}", check)
         {
         }
-        public UpdateAttribute(string template, bool format = true, int order = 1) : 
-            base($"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}")
+
+        public UpdateAttribute(string template, bool format = true, int order = 1, bool check = true) :
+            base("PUT" ,$"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
         {
             Order = order;
         }
     }
-    public class DeleteAttribute : HttpDeleteAttribute
+    public class DeleteAttribute : CustomHttpMethodAttribute
     {
-        public DeleteAttribute(bool format = true) :
-            base($"[controller]{(format ? ".{format}" : "")}")
+        public DeleteAttribute(bool format = true, bool check = true) :
+            base("DELETE", $"[controller]{(format ? ".{format}" : "")}", check)
         {
         }
-        public DeleteAttribute(string template, bool format = true, int order = 1) : 
-            base($"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}")
+        public DeleteAttribute(string template, bool format = true, int order = 1, bool check = true) :
+            base("DELETE", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
         {
             Order = order;
         }

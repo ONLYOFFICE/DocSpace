@@ -662,7 +662,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [AllowAnonymous]
-        [Create("password"), Create("password", false)]
+        [Create("password", check: false), Create("password", false, check: false)]
         public string SendUserPassword(string email)
         {
             var userInfo = UserManagerWrapper.SendUserPassword(email, MessageService);
