@@ -9,6 +9,8 @@ import OrigGuestIcon from './guest.react.svg';
 import OrigAdministratorIcon from './administrator.react.svg';
 import OrigOwnerIcon from './owner.react.svg';
 import OrigVerticalDotsIcon from './vertical-dots.react.svg';
+import OrigTickIcon from './tick.react.svg';
+import OrigRectangleIcon from './rectangle.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -49,5 +51,13 @@ export const OwnerIcon = createStyledIcon(
 );
 export const VerticalDotsIcon = createStyledIcon(
   OrigVerticalDotsIcon,
-  'VerticalDots'
+  'VerticalDotsIcon'
+);
+export const TickIcon = createStyledIcon(
+  OrigTickIcon,
+  'TickIcon'
+);
+export const RectangleIcon = createStyledIcon(
+  OrigRectangleIcon,
+  'RectangleIcon'
 );
