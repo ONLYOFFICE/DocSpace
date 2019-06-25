@@ -24,6 +24,11 @@ using ASC.MessagingSystem;
 using ASC.Data.Reassigns;
 using ASC.Core;
 using System.Threading;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Routing.Patterns;
+using ASC.Api.Core.Core;
 
 namespace ASC.Web.Api
 {
@@ -111,6 +116,7 @@ namespace ASC.Web.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapCustom();
             });
 
             app.UseCSP();

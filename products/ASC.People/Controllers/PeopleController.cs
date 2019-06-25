@@ -49,7 +49,7 @@ namespace ASC.Employee.Core.Controllers
             QueueWorkerRemove = queueWorkerRemove;
         }
 
-        [Read, Read(false)]
+        [Read]
         public IEnumerable<EmployeeWraper> GetAll()
         {
             return GetByStatus(EmployeeStatus.Active);
@@ -70,13 +70,13 @@ namespace ASC.Employee.Core.Controllers
             return query.Select(x => new EmployeeWraperFull(x, ApiContext));
         }
 
-        [Read("@self"), Read("@self", false)]
+        [Read("@self")]
         public EmployeeWraper Self()
         {
             return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext);
         }
 
-        [Read("email"), Read("email", false)]
+        [Read("email")]
         public EmployeeWraperFull GetByEmail([FromQuery]string email)
         {
             if (CoreContext.Configuration.Personal && !CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner())
@@ -90,7 +90,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Read("{username}", Order = int.MaxValue)]
+        [Read("{username}", order: int.MaxValue)]
         public EmployeeWraperFull GetById(string username)
         {
             if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
@@ -136,13 +136,13 @@ namespace ASC.Employee.Core.Controllers
             return null;
         }
 
-        [Read("search"), Read("search", false)]
+        [Read("search")]
         public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery]string query)
         {
             return GetSearch(query);
         }
 
-        [Read("status/{status}/search"), Read("status/{status}/search", false)]
+        [Read("status/{status}/search")]
         public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery]string query)
         {
             if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
@@ -223,7 +223,7 @@ namespace ASC.Employee.Core.Controllers
         //}
 
 
-        [Read("filter"), Read("filter", false)]
+        [Read("filter")]
         public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
@@ -231,7 +231,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(u => new EmployeeWraperFull(u, ApiContext));
         }
 
-        [Read("simple/filter"), Read("simple/filter", false)]
+        [Read("simple/filter")]
         public IEnumerable<EmployeeWraper> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
@@ -317,7 +317,7 @@ namespace ASC.Employee.Core.Controllers
             return users;
         }
 
-        [Create, Create(false)]
+        [Create]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
             SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -362,7 +362,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Create("active"), Create("active", false)]
+        [Create("active")]
         public EmployeeWraperFull AddMemberAsActivated(MemberModel memberModel)
         {
             SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -539,7 +539,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Update("{userid}/contacts"), Update("{userid}/contacts", false)]
+        [Update("{userid}/contacts")]
         public EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
@@ -552,7 +552,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Create("{userid}/contacts"), Create("{userid}/contacts", false)]
+        [Create("{userid}/contacts")]
         public EmployeeWraperFull SetMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
@@ -566,7 +566,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Delete("{userid}/contacts"), Delete("{userid}/contacts", false)]
+        [Delete("{userid}/contacts")]
         public EmployeeWraperFull DeleteMemberContacts(string userid, UpdateMemberModel memberModel)
         {
             var user = GetUserInfo(userid);
@@ -579,7 +579,7 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user);
         }
 
-        [Read("{userid}/photo"), Read("{userid}/photo", false)]
+        [Read("{userid}/photo")]
         public ThumbnailsDataWrapper GetMemberPhoto(string userid)
         {
             var user = GetUserInfo(userid);
@@ -590,7 +590,7 @@ namespace ASC.Employee.Core.Controllers
             return new ThumbnailsDataWrapper(user.ID);
         }
 
-        [Update("{userid}/photo"), Update("{userid}/photo", false)]
+        [Update("{userid}/photo")]
         public ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
         {
             var user = GetUserInfo(userid);
@@ -609,7 +609,7 @@ namespace ASC.Employee.Core.Controllers
             return new ThumbnailsDataWrapper(user.ID);
         }
 
-        [Delete("{userid}/photo"), Delete("{userid}/photo", false)]
+        [Delete("{userid}/photo")]
         public ThumbnailsDataWrapper DeleteMemberPhoto(string userid)
         {
             var user = GetUserInfo(userid);
@@ -628,7 +628,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        [Create("{userid}/photo/thumbnails"), Create("{userid}/photo/thumbnails", false)]
+        [Create("{userid}/photo/thumbnails")]
         public ThumbnailsDataWrapper CreateMemberPhotoThumbnails(string userid, ThumbnailsModel thumbnailsModel)
         {
             var user = GetUserInfo(userid);
@@ -662,7 +662,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [AllowAnonymous]
-        [Create("password", check: false), Create("password", false, check: false)]
+        [Create("password", false)]
         public string SendUserPassword(string email)
         {
             var userInfo = UserManagerWrapper.SendUserPassword(email, MessageService);
@@ -670,7 +670,7 @@ namespace ASC.Employee.Core.Controllers
             return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
         }
 
-        [Update("{userid}/password"), Update("{userid}/password", false)]
+        [Update("{userid}/password")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
             SecurityContext.DemandPermissions(new UserSecurityProvider(userid), Constants.Action_EditUser);
@@ -820,7 +820,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        [Update("invite"), Update("invite", false)]
+        [Update("invite")]
         public IEnumerable<EmployeeWraperFull> ResendUserInvites(UpdateMembersModel model)
         {
             var users = model.UserIds
@@ -854,7 +854,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(user => new EmployeeWraperFull(user));
         }
 
-        [Update("delete"), Update("delete", false)]
+        [Update("delete")]
         public IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
         {
             SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -882,7 +882,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        [Update("self/delete"), Update("self/delete", false)]
+        [Update("self/delete")]
         public string SendInstructionsToDelete()
         {
             var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
@@ -897,7 +897,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        [Update("thirdparty/linkaccount"), Update("thirdparty/linkaccount", false)]
+        [Update("thirdparty/linkaccount")]
         public void LinkAccount(string serializedProfile)
         {
             var profile = new LoginProfile(serializedProfile);
@@ -917,7 +917,7 @@ namespace ASC.Employee.Core.Controllers
             }
         }
 
-        [Delete("thirdparty/unlinkaccount"), Delete("thirdparty/unlinkaccount", false)]
+        [Delete("thirdparty/unlinkaccount")]
         public void UnlinkAccount(string provider)
         {
             GetLinker().RemoveProvider(SecurityContext.CurrentAccount.ID.ToString(), provider);
@@ -948,7 +948,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
 
-        [Read(@"reassign/progress"), Read(@"reassign/progress", false)]
+        [Read(@"reassign/progress")]
         public ReassignProgressItem GetReassignProgress(Guid userId)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);
@@ -956,7 +956,7 @@ namespace ASC.Employee.Core.Controllers
             return QueueWorkerReassign.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId);
         }
 
-        [Update(@"reassign/terminate"), Update(@"reassign/terminate", false)]
+        [Update(@"reassign/terminate")]
         public void TerminateReassign(Guid userId)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);
@@ -964,7 +964,7 @@ namespace ASC.Employee.Core.Controllers
             QueueWorkerReassign.Terminate(TenantProvider.CurrentTenantID, userId);
         }
 
-        [Create(@"reassign/start"), Create(@"reassign/start", false)]
+        [Create(@"reassign/start")]
         public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);
@@ -1007,7 +1007,7 @@ namespace ASC.Employee.Core.Controllers
         #region Remove user data
 
 
-        [Read(@"remove/progress"), Read(@"remove/progress", false)]
+        [Read(@"remove/progress")]
         public RemoveProgressItem GetRemoveProgress(Guid userId)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);
@@ -1015,7 +1015,7 @@ namespace ASC.Employee.Core.Controllers
             return QueueWorkerRemove.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId);
         }
 
-        [Update(@"remove/terminate"), Update(@"remove/terminate", false)]
+        [Update(@"remove/terminate")]
         public void TerminateRemove(Guid userId)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);
@@ -1023,7 +1023,7 @@ namespace ASC.Employee.Core.Controllers
             QueueWorkerRemove.Terminate(TenantProvider.CurrentTenantID, userId);
         }
 
-        [Create(@"remove/start"), Create(@"remove/start", false)]
+        [Create(@"remove/start")]
         public RemoveProgressItem StartRemove(Guid userId)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditUser);

@@ -16,51 +16,39 @@ namespace ASC.Web.Api.Routing
 
     public class ReadAttribute : CustomHttpMethodAttribute
     {
-        public ReadAttribute(bool format = true, bool check = true) :
-            base("GET", $"[controller]{(format ? ".{format}" : "")}", check)
+        public ReadAttribute(bool check = true) :
+            base("GET", $"[controller]", check)
         {
         }
-        public ReadAttribute(string template, bool format = true, int order = 1, bool check = true) :
-            base("GET", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
-        {
-            Order = order;
-        }
+        public ReadAttribute(string template, bool check = true, int order = 1) :
+            base("GET", $"[controller]/{template}", check) => Order = order;
     }
     public class CreateAttribute : CustomHttpMethodAttribute
     {
-        public CreateAttribute(bool format = true, bool check = true) :
-            base("POST", $"[controller]{(format ? ".{format}" : "")}", check)
+        public CreateAttribute(bool check = true) :
+            base("POST", $"[controller]", check)
         {
         }
-        public CreateAttribute(string template, bool format = true, int order = 1, bool check = true) :
-            base("POST", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
-        {
-            Order = order;
-        }
+        public CreateAttribute(string template, bool check = true, int order = 1) :
+            base("POST", $"[controller]/{template}", check) => Order = order;
     }
     public class UpdateAttribute : CustomHttpMethodAttribute
     {
-        public UpdateAttribute(bool format = true, bool check = true) :
-            base("PUT", $"[controller]{(format ? ".{format}" : "")}", check)
+        public UpdateAttribute(bool check = true) :
+            base("PUT", $"[controller]", check)
         {
         }
 
-        public UpdateAttribute(string template, bool format = true, int order = 1, bool check = true) :
-            base("PUT" ,$"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
-        {
-            Order = order;
-        }
+        public UpdateAttribute(string template, bool check = true, int order = 1) :
+            base("PUT" ,$"[controller]/{template}", check) => Order = order;
     }
     public class DeleteAttribute : CustomHttpMethodAttribute
     {
-        public DeleteAttribute(bool format = true, bool check = true) :
-            base("DELETE", $"[controller]{(format ? ".{format}" : "")}", check)
+        public DeleteAttribute(bool check = true) :
+            base("DELETE", $"[controller]", check)
         {
         }
-        public DeleteAttribute(string template, bool format = true, int order = 1, bool check = true) :
-            base("DELETE", $"[controller]/{template}{(!format ? "": (template.EndsWith("}") ? ".{format?}" : ".{format}"))}", check)
-        {
-            Order = order;
-        }
+        public DeleteAttribute(string template, bool check = true, int order = 1) :
+            base("DELETE", $"[controller]/{template}", check) => Order = order;
     }
 }
