@@ -11,6 +11,11 @@ const colors = ['black', 'gray', 'blue'];
 const target = ['_blank', '_self', '_parent', '_top'];
 const dropdownType = ['alwaysDotted', 'appearDottedAfterHover', 'none'];
 
+
+function clickActionLink(e) {
+  console.log('Clicked action link', e);
+}
+
 storiesOf('Components|Link', module)
 .addDecorator(withKnobs)
 .addDecorator(withReadme(Readme))
@@ -18,6 +23,7 @@ storiesOf('Components|Link', module)
 let linkType=`${select('type', type, 'page')}`;
 const userProps = linkType === "action" ? {
   dropdownType: `${select('dropdownType', dropdownType, 'none')}`,
+  onClick: clickActionLink
   } : {};
 return (
   <Section>
@@ -25,7 +31,7 @@ return (
       type={linkType}
       color={select('color', colors, 'black')}
       fontSize={number('fontSize', 12)}
-      href={text('href', 'https://github.com')}
+      href={text('href', undefined)}
       isBold={boolean('isBold', false)}
       title={text('title', '')}
       target={select('target', target, '_top')}
