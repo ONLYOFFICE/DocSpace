@@ -19,15 +19,22 @@ function ClickSecondaryButton(e, credentials) {
 storiesOf('Components|MainButton', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('Main button', () => (
+  .add('Main button', () => {
+
+    let isDropdown=boolean('isDropdown', false);
+
+    let icon = !isDropdown ? {iconName: `${select('iconName', iconNames, 'PeopleIcon')}`} : {};
+
+    return (
     <Section>
       <MainButton
         isDisabled={boolean('isDisabled', false)}
-        isDropdown={boolean('isDropdown', false)}
+        isDropdown={isDropdown}
         text={text('text', 'Actions')}
-        iconName={select('IconName', iconNames, 'PeopleIcon')}
+        
         clickAction={ClickMainButton}
         clickActionSecondary={ClickSecondaryButton}
+        {...icon}
       >
         
         <Button 
@@ -44,4 +51,4 @@ storiesOf('Components|MainButton', module)
         />
       </MainButton>
     </Section>
-  ));
+  )});
