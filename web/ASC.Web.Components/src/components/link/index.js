@@ -5,59 +5,38 @@ import PropTypes from 'prop-types';
 const arrowDropdown = css`
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: ${props => 
-        ((props.dropdownColor === 'filter' || props.dropdownColor === 'sorting') && '4px solid #888') || 
-        (props.dropdownColor === 'profile' && '4px solid #cbcbcc') || 
-        (props.dropdownColor === 'number' && '4px solid #212121') || 
-        ((props.dropdownColor === 'email' || props.dropdownColor === 'group') && '4px solid #666')
+    border-top: ${props =>
+        (props.color === 'black' && '4px solid #333333') ||
+        (props.color === 'gray' && '4px solid #A3A9AE') ||
+        (props.color === 'blue' && '4px solid #316DAA')
     };
-
     content: "";
     height: 0;
     position: absolute;
-    right: ${props => 
-        (props.dropdownRightIndent)
-    };
-
+    right: -15px;
+    top: 1px;
+    bottom: 0px;
     top: 50%;
     width: 0;
     margin-top: -2px;
-`;
-
-const textOverflowCss = css`
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -moz-text-overflow: ellipsis;
-    -webkit-text-overflow: ellipsis;
-`;
-
-const boldCss = css`
-    font-weight: bold;
 `;
 
 const colorCss = css`
     color: ${props =>
         (props.color === 'black' && '#333333') ||
         (props.color === 'gray' && '#A3A9AE') ||
-        (props.color === 'blue' && '#316DAA') ||
-        (props.color === 'filter' && '#1a6db3') ||
-        (props.color === 'profile' && '#C5C5C5')
+        (props.color === 'blue' && '#316DAA')
     };
 `;
 
 const hoveredCss = css`
     ${colorCss};
-    border-bottom: ${props => (props.isHoverDotted && props.type === 'action' ?  '1px dotted;' : 'none')};
+    border-bottom: ${props => (props.type === 'action' ?  '1px dotted;' : 'none')};
     text-decoration: ${props => (props.type === 'page' ? 'underline' : 'none')};
 `;
 
 const visitedCss = css`
     ${colorCss};
-`;
-
-
-const fontSizeCss = css`
-    font-size: ${props => props.fontSize};
 `;
 
 const dottedCss = css`
@@ -67,15 +46,15 @@ const dottedCss = css`
 const StyledLink = styled.a.attrs((props) => ({
     href: props.href,
     target: props.target,
-    rel: props.target === '_blank' ? 'noopener noreferrer' : props.rel ? props.rel : undefined,
+    rel: props.target === '_blank' && 'noopener noreferrer',
     title: props.title
 }))`
     ${colorCss};
-    ${fontSizeCss};
+    font-size: ${props => props.fontSize}px;
     cursor: pointer;
     position: relative;
     text-decoration: none;
-    font-weight: ${props => (props.isBold && css `${boldCss}`)};
+    font-weight: ${props => (props.isBold && 'bold')};
 
         &:hover { 
             ${hoveredCss};
@@ -100,13 +79,13 @@ ${props => (props.isHovered &&
     `)
 }
 
-${props => (props.type === 'action' && props.isDotted && (!props.isHovered || props.isHoverDotted) && 
+${props => (props.type === 'action' && (props.isHovered || props.dropdownType === 'alwaysDotted') && 
     css`
         ${dottedCss}
     `)
 }
         
-${props => (props.type === 'action' && props.isDropdown && !props.displayDropdownAfterHover &&  
+${props => (props.type === 'action' && props.dropdownType === 'alwaysDotted' &&  
     css`
         &:after {
             ${arrowDropdown}
@@ -115,17 +94,15 @@ ${props => (props.type === 'action' && props.isDropdown && !props.displayDropdow
 
 ${props => (props.isTextOverflow && 
     css`
-        ${textOverflowCss}
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        -moz-text-overflow: ellipsis;
+        -webkit-text-overflow: ellipsis;
+        overflow: hidden;
     `)
 }
 
-${props => (props.isBold && 
-    css`
-        ${boldCss}
-    `)
-} 
-
-${props => (props.type === 'action' && props.isDropdown && props.displayDropdownAfterHover && 
+${props => (props.type === 'action' && props.dropdownType === 'appearDottedAfterHover' && 
     css`
         &:hover { 
             :after {
@@ -139,21 +116,14 @@ ${props => (props.type === 'action' && props.isDropdown && props.displayDropdown
 const Link = props => <StyledLink {...props} />;
 
 Link.propTypes = {
-    color: PropTypes.oneOf(['gray', 'black', 'blue', 'filter', 'profile']),
-    displayDropdownAfterHover: PropTypes.bool,
-    dropdownColor: PropTypes.oneOf(['filter', 'profile', 'sorting','number','email',  'group']),
-    dropdownRightIndent: PropTypes.string,
-    dropdownType: PropTypes.oneOf(['filter', 'menu', 'none']),
-    fontSize: PropTypes.string,
+    color: PropTypes.oneOf(['gray', 'black', 'blue']),
+    dropdownType: PropTypes.oneOf(['alwaysDotted', 'appearDottedAfterHover', 'none']),
+    fontSize: PropTypes.number,
     href: PropTypes.string,
     isBold: PropTypes.bool,
-    isDropdown: PropTypes.bool,
-    isDotted: PropTypes.bool,
-    isHoverDotted: PropTypes.bool,
     isHovered: PropTypes.bool,
     isTextOverflow: PropTypes.bool,
     onClick: PropTypes.func,
-    rel: PropTypes.string,
     target: PropTypes.oneOf(['_blank', '_self', '_parent', '_top']),
     title: PropTypes.string,
     type: PropTypes.oneOf(['action', 'page'])  
@@ -161,8 +131,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
     color: 'black',
-    dropdownRightIndent: '-10px',
-    fontSize: '12px',
+    fontSize: 12,
     href: undefined,
     isBold: false,
     isHovered: false,
