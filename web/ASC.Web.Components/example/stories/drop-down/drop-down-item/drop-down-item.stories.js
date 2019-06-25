@@ -5,9 +5,9 @@ import Readme from './README.md'
 import { Container, Row, Col } from 'reactstrap';
 import { DropDown, DropDownItem } from 'asc-web-components'
 
-storiesOf('Components| DropDownItem', module)
+storiesOf('Components | DropDown | DropDownItem', module)
     .addDecorator(withReadme(Readme))
-    .add('DropDownItem', () => (
+    .add('base item', () => (
         <Container>
             <Row>
                 <Col xs="2">Only dropdown</Col>
