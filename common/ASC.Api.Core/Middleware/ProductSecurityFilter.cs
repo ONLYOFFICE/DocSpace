@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
-using ASC.Core.Billing;
-using ASC.Core.Tenants;
-using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -63,50 +58,9 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-            if (controllerActionDescriptor != null && !controllerActionDescriptor.EndpointMetadata.OfType<CustomHttpMethodAttribute>().FirstOrDefault().Check)
-            {
-                log.Debug("Payment is not required");
-            }
-            else
-            {
-                var header = context.HttpContext.Request.Headers["Payment-Info"];
-                if (string.IsNullOrEmpty(header) || (bool.TryParse(header, out var flag) && flag))
-                {
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
-                    if (tenant == null)
-                    {
-                        var hostname = string.Empty;
-                        try
-                        {
-                            hostname = context.HttpContext.Request.GetUrlRewriter().Host;
-                        }
-                        catch
-                        {
-                        }
-                        context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
-                        throw new System.Security.SecurityException(string.Format("Portal {0} not found.", hostname));
-                    }
-
-                    var tenantStatus = tenant.Status;
-                    if (tenantStatus == TenantStatus.Transfering)
-                    {
-                        context.Result = new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-                        log.WarnFormat("Portal {0} is transfering to another region", context.HttpContext.Request.Url());
-                    }
-
-                    var tariff = CoreContext.PaymentManager.GetTariff(tenant.TenantId);
-                    if (tenantStatus != TenantStatus.Active || tariff.State >= TariffState.NotPaid)
-                    {
-                        context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
-                        log.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
-                    }
-                }
-            }
-
             if (!SecurityContext.IsAuthenticated) return;
 
-            if (controllerActionDescriptor != null)
+            if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
                 var pid = FindProduct(controllerActionDescriptor);
                 if (pid != Guid.Empty)

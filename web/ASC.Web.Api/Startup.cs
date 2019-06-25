@@ -60,6 +60,8 @@ namespace ASC.Web.Api
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
