@@ -11,7 +11,7 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class ModulesController : ControllerBase
     {
-        [Read, Read(false)]
+        [Read]
         public IEnumerable<Module> GetAll()
         {
             var result = new List<Module>(){

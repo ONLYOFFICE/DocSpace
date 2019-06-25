@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import DropDown from '../drop-down';
-import { Icons } from '../icons'
+import { Icons } from '../icons';
 
 
 const backgroundColor = '#ED7309',
@@ -10,11 +10,10 @@ const backgroundColor = '#ED7309',
     hoverBackgroundColor = '#FF8932',
     clickBackgroundColor = '#C96C27';
 
-const hoveredCss = css`
+const hoveredCss = css` 
     background-color: ${hoverBackgroundColor};
     cursor: pointer;
 `;
-
 const clickCss = css`
     background-color: ${clickBackgroundColor};
     cursor: pointer;
@@ -118,34 +117,18 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
     );
 }
 
-
 const MainButton = (props) => {
     const { text, isDropdown, opened } = props;
     const [isOpen, toggle] = useState(opened);
     const dropMenu = <StyledDropDown isOpen={isOpen} {...props}/>;
     const ref = useRef(null);
+    const iconNames = Object.keys(Icons);
   
     useOuterClickNotifier((e) => toggle(false), ref);
 
     function stopAction(e) {
         e.preventDefault();
     }
-
-    const SecondaryButtonIcon = moduleName => {
-        
-        switch (moduleName) {
-          case "people":
-            return <Icons.PeopleIcon size="medium" color='#ffffff' />;
-          case "mail":
-            return <Icons.RotateIcon size="medium" color='#ffffff' />;
-          case "documents":
-            return <Icons.UploadIcon size="medium" color='#ffffff' />;
-          default:
-            return (
-                <div></div>
-            );
-        }
-      };
 
     return(
         <GroupMainButton {...props} ref={ref}>
@@ -161,7 +144,14 @@ const MainButton = (props) => {
                 ?   { ...dropMenu } 
                 
                 :   <StyledSecondaryButton {...props} onClick={ !props.isDisabled ? props.clickActionSecondary : stopAction}> 
-                        {SecondaryButtonIcon(props.moduleName)}
+
+                        {Object.values(Icons).map((Icon, index) => {  
+                            
+                            if (iconNames[index] == props.iconName) {
+                                return (<Icon size="medium" color='#ffffff'/>) 
+                            }
+
+                        })}
                     </StyledSecondaryButton>}
         </GroupMainButton>
     )
@@ -173,14 +163,14 @@ MainButton.propTypes = {
     isDropdown: PropTypes.bool,
     clickAction: PropTypes.func,
     clickActionSecondary: PropTypes.func,
-    moduleName: PropTypes.string,
+    iconName: PropTypes.string,
 };
 
 MainButton.defaultProps = {
     text: "Button",
     isDisabled: false,
     isDropdown: true,
-    moduleName: "",
+    iconName: "PeopleIcon",
 };
 
 export default MainButton;

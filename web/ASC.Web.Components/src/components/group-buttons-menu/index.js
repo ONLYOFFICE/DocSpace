@@ -6,16 +6,43 @@ import GroupButton from '../group-button'
 const StyledGroupButtonsMenu = styled.div`
     position: sticky;
     top: 0;
-    background: white;
-    border-bottom: 1px solid #d1d1d1;
-    color: #999999;
-    height: 30px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 18px rgba(0, 0, 0, 0.100306);
+    height: 56px;
     list-style: none;
-    margin: 0 0 -1px;
-    padding: 0 0 8px 0;
+    padding: 0 18px 19px 0;
 
     .hidden {
         display: none;
+    }
+`;
+
+const CloseButton = styled.div`
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+
+    &:hover{
+        cursor: pointer;
+    }
+
+    &:before, &:after {
+        position: absolute;
+        left: 15px;
+        content: ' ';
+        height: 20px;
+        width: 1px;
+        background-color: #D8D8D8;
+    }
+
+    &:before {
+        transform: rotate(45deg);
+    }
+
+    &:after {
+        transform: rotate(-45deg);
     }
 `;
 
@@ -85,7 +112,8 @@ const GroupButtonsMenu = props => {
     return (
         <StyledGroupButtonsMenu ref={ref} {...props}>
             {children}
-            {needCollapse && <GroupButton className="more" isDropdown text='...'>{children}</GroupButton>}
+            {needCollapse && <GroupButton className="more" isDropdown label='More'>{children}</GroupButton>}
+            <CloseButton/>
         </StyledGroupButtonsMenu>
     );
 }

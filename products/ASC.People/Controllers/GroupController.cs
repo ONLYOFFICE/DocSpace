@@ -29,7 +29,7 @@ namespace ASC.Employee.Core.Controllers
             MessageService = messageService;
         }
 
-        [Read, Read(false)]
+        [Read]
         public IEnumerable<GroupWrapperSummary> GetAll()
         {
             return CoreContext.UserManager.GetDepartments().Select(x => new GroupWrapperSummary(x));
@@ -47,7 +47,7 @@ namespace ASC.Employee.Core.Controllers
             return CoreContext.UserManager.GetUserGroups(userid).Select(x => new GroupWrapperSummary(x));
         }
 
-        [Create, Create(false)]
+        [Create]
         public GroupWrapperFull AddGroup(Guid groupManager, string groupName, IEnumerable<Guid> members)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -135,7 +135,7 @@ namespace ASC.Employee.Core.Controllers
             return GetById(newgroupid);
         }
 
-        [Create("{groupid}/members"), Create("{groupid}/members", false)]
+        [Create("{groupid}/members")]
         public GroupWrapperFull SetMembersTo(Guid groupid, IEnumerable<Guid> members)
         {
             RemoveMembersFrom(groupid, CoreContext.UserManager.GetUsersByGroup(groupid).Select(x => x.ID));
@@ -143,7 +143,7 @@ namespace ASC.Employee.Core.Controllers
             return GetById(groupid);
         }
 
-        [Update("{groupid}/members"), Update("{groupid}/members", false)]
+        [Update("{groupid}/members")]
         public GroupWrapperFull AddMembersTo(Guid groupid, IEnumerable<Guid> members)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
@@ -156,7 +156,7 @@ namespace ASC.Employee.Core.Controllers
             return GetById(group.ID);
         }
 
-        [Update("{groupid}/manager"), Update("{groupid}/manager", false)]
+        [Update("{groupid}/manager")]
         public GroupWrapperFull SetManager(Guid groupid, Guid userid)
         {
             var group = GetGroupInfo(groupid);
@@ -171,7 +171,7 @@ namespace ASC.Employee.Core.Controllers
             return GetById(groupid);
         }
 
-        [Delete("{groupid}/members"), Delete("{groupid}/members", false)]
+        [Delete("{groupid}/members")]
         public GroupWrapperFull RemoveMembersFrom(Guid groupid, IEnumerable<Guid> members)
         {
             SecurityContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);

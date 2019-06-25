@@ -24,6 +24,11 @@ using ASC.MessagingSystem;
 using ASC.Data.Reassigns;
 using ASC.Core;
 using System.Threading;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Routing.Patterns;
+using ASC.Api.Core.Core;
 
 namespace ASC.Web.Api
 {
@@ -55,6 +60,9 @@ namespace ASC.Web.Api
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
@@ -111,6 +119,7 @@ namespace ASC.Web.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapCustom();
             });
 
             app.UseCSP();

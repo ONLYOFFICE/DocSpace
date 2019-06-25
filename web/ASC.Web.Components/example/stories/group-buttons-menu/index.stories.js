@@ -1,12 +1,17 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import withReadme from 'storybook-readme/with-readme'
-import styled from '@emotion/styled';
+import styled, { css } from '@emotion/styled';
 import Readme from './README.md'
-import { GroupButtonsMenu, GroupButton } from 'asc-web-components'
+import { GroupButtonsMenu, GroupButton, DropDownItem } from 'asc-web-components'
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
+`;
+
+const Checkbox = styled.input`
+    vertical-align: middle;
+    margin-left: 24px;
 `;
 
 storiesOf('Components|GroupButtonsMenu', module)
@@ -19,41 +24,41 @@ storiesOf('Components|GroupButtonsMenu', module)
     .add('documents', () => (
         <GroupButtonsMenuContainer>
             <GroupButtonsMenu needCollapse>
-                <GroupButton text='' isCheckbox isDropdown>
-                    <GroupButton text='All'/>
-                    <GroupButton text='Folders'/>
-                    <GroupButton text='Documents'/>
-                    <GroupButton text='Presentations'/>
-                    <GroupButton text='Spreadsheets'/>
-                    <GroupButton text='Images'/>
-                    <GroupButton text='Media'/>
-                    <GroupButton text='Archives'/>
-                    <GroupButton text='All files'/>
+            <Checkbox name="checkbox" type="checkbox" />
+                <GroupButton label='Select' isDropdown isSeparator fontWeight='bold'>
+                    <DropDownItem label='All'/>
+                    <DropDownItem label='Files'/>
+                    <DropDownItem label='Folders'/>
+                    <DropDownItem label='Documents'/>
+                    <DropDownItem label='Presentations'/>
+                    <DropDownItem label='Images'/>
+                    <DropDownItem label='Archives'/>
                 </GroupButton>
-                <GroupButton text='Sharing Settings'/>
-                <GroupButton text='Download' />
-                <GroupButton text='Download as'/>
-                <GroupButton text='Move to' hovered={false} />
-                <GroupButton text='Copy'/>
-                <GroupButton text='Delete'/>
+                <GroupButton label='Share'/>
+                <GroupButton label='Download' />
+                <GroupButton label='Download as'/>
+                <GroupButton label='Move'/>
+                <GroupButton label='Copy'/>
+                <GroupButton label='Delete'/>
             </GroupButtonsMenu>
         </GroupButtonsMenuContainer>
     ))
     .add('people', () => (
         <GroupButtonsMenuContainer>
             <GroupButtonsMenu needCollapse>
-                <GroupButton text='' isCheckbox />
-                <GroupButton text='Change type' isDropdown>
-                    <GroupButton text='User'/>
-                    <GroupButton text='Guest'/>
+                <Checkbox name="checkbox" type="checkbox" />
+                <GroupButton label='Select' isDropdown isSeparator fontWeight='bold'>
+                    <DropDownItem label='Active'/>
+                    <DropDownItem label='Disabled'/>
+                    <DropDownItem label='Invited'/>
                 </GroupButton>
-                <GroupButton text='Change status' isDropdown>
-                    <GroupButton text='Active'/>
-                    <GroupButton text='Disabled'/>
-                </GroupButton>
-                <GroupButton text='Send activation link once again' />
-                <GroupButton text='Write Letter'/>
-                <GroupButton text='Delete'/>
+                <GroupButton label='Make employee' />
+                <GroupButton label='Make guest' />
+                <GroupButton label='Set active' />
+                <GroupButton label='Set disabled' />
+                <GroupButton label='Invite again' />
+                <GroupButton label='Send e-mail' />
+                <GroupButton label='Delete' />
             </GroupButtonsMenu>
         </GroupButtonsMenuContainer>
     ));

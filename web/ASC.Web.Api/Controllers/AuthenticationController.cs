@@ -15,7 +15,7 @@ namespace ASC.Web.Api.Controllers
     [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
-        [Create(check: false), Create(false, false)]
+        [Create(false)]
         public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
         {
             var user = GetUser(auth.UserName, auth.Password);

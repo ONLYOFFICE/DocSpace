@@ -33,7 +33,7 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "black" isBold = {true}>Bold black action link</Link>
           </Col>
-          <Col>Sorting:&nbsp;<Link type = "action" color = "black" isDotted = {true} isDropdown = {true} dropdownColor = 'sorting' isHoverDotted = {true}>Last name</Link></Col>
+          <Col><Link type = "action" color = "black" dropdownType = 'alwaysDotted'>Simple dropdown</Link></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -42,7 +42,7 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "black">Black action link</Link>
           </Col>
-          <Col> <Link type = "action" color = "profile" isDropdown = {true} dropdownColor = 'profile'>My profile color(deprecated)</Link></Col>
+          <Col> <Link type = "action" color = "gray" dropdownType = 'appearDottedAfterHover'>Gray dropdown and dotted appear after hover</Link></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -51,7 +51,7 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "black" isHovered = {true}>Black hovered action link</Link>
           </Col>
-          <Col> Show on page:&nbsp;<Link type = "action" color = "black" isDotted = {true} isDropdown = {true} dropdownColor = 'number' isHoverDotted = {true}>25</Link></Col>
+          <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -60,7 +60,7 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "gray">Gray action link</Link>
           </Col>
-          <Col><Link type = "action" color = "black" isDropdown = {true} dropdownColor = 'email' displayDropdownAfterHover = {true} isHoverDotted = {true}>Dropdown appear after hover</Link></Col>
+          <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -69,7 +69,7 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "gray" isHovered = {true}>Gray hovered action link</Link>
           </Col>
-          <Col><Link type = "action" color = "filter" isDropdown = {true} dropdownColor = 'filter' isDropdown = {true} isDotted = {true} isHoverDotted = {true}>Some group filter color(deprecated)</Link></Col>
+          <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -88,50 +88,7 @@ storiesOf('Components|Link', module)
             <Link type = "action" color = "blue" isHovered = {true}>Blue hovered action link</Link>
           </Col>
           <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "black" isDotted = {true}>Black dotted action link</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "black" isHoverDotted = {true}>Black action link, dotted after hover</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "gray" isDotted = {true}>Gray dotted action link</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "gray" isHoverDotted = {true}>Gray action link, dotted after hover</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "blue" isDotted = {true}>Blue dotted action link</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col></Col>
-          <Col>
-            <Link type = "action" color = "blue" isHoverDotted = {true}>Blue action link, dotted after hover</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      
+      </Row>  
     </Container>
    </>
   ));
