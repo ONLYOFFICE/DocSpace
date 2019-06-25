@@ -1,12 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, withKnobs, select } from '@storybook/addon-knobs/react';
-import { MainButton, GroupButton, Button } from 'asc-web-components';
+import { MainButton, Button, Icons } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-const moduleNames = ['documents', 'people', 'mail', ''];
+const iconNames = Object.keys(Icons);
 
 function ClickMainButton(e, credentials) {
   console.log("ClickMainButton", e, credentials);
@@ -25,12 +25,18 @@ storiesOf('Components|MainButton', module)
         isDisabled={boolean('isDisabled', false)}
         isDropdown={boolean('isDropdown', false)}
         text={text('text', 'Actions')}
-        moduleName={select('moduleName', moduleNames, 'people')}
+        iconName={select('IconName', iconNames, 'PeopleIcon')}
         clickAction={ClickMainButton}
         clickActionSecondary={ClickSecondaryButton}
       >
-        <GroupButton 
-          text='Group button' 
+        
+        <Button 
+            label='Base button' 
+            size='base' 
+        />
+        <Button 
+            label='Base button' 
+            size='base' 
         />
         <Button 
             label='Base button' 
