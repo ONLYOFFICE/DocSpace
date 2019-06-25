@@ -8,6 +8,7 @@ import { Icons } from '../icons'
 const StyledOuther = styled.div`
   display: inline-block;
   position: relative;
+  cursor: pointer;
 `;
 
 const useOuterClickNotifier = (onOuterClick, ref) => {
@@ -33,9 +34,9 @@ const ContextMenuButton = (props) => {
   useOuterClickNotifier((e) => { toggle(false) }, ref);
 
   return (
-      <StyledOuther onClick={() => { setState(props.getData()); toggle(!isOpen) }} ref={ref} >
-        <Icons.VerticalDotsIcon size={props.size} color={props.color} />
-        <DropDown {...props} isOpen={isOpen}>
+      <StyledOuther title={props.title} onClick={() => { setState(props.getData()); toggle(!isOpen); }} ref={ref}>
+        <Icons.VerticalDotsIcon size={props.size} color={props.color}/>
+        <DropDown isOpen={isOpen}>
           {
             data.map(item => <DropDownItem {...item}/>)
           }
@@ -48,14 +49,16 @@ ContextMenuButton.propTypes = {
   opened: PropTypes.bool,
   data: PropTypes.array,
   getData: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
   color: PropTypes.string
 };
 
 ContextMenuButton.defaultProps = {
   opened: false,
   data: [],
-  size: 'medium',
-  color: '#999'
+  title: '',
+  size: 'medium'
 };
 
 export default ContextMenuButton
