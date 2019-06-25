@@ -85,14 +85,14 @@ const StyledLink = styled.a.attrs((props) => ({
            ${visitedCss};
         }
 
-        &:not(<href>){
+        &:not([href]):not([tabindex]) {
             ${colorCss};
             text-decoration: none;
 
-            :hover { 
+            &:hover {
                 ${hoveredCss};
             }
-        }        
+        }      
         
 ${props => (props.isHovered && 
     css`
@@ -163,7 +163,7 @@ Link.defaultProps = {
     color: 'black',
     dropdownRightIndent: '-10px',
     fontSize: '12px',
-    href: 'javascript:void(0)',
+    href: undefined,
     isBold: false,
     isHovered: false,
     isTextOverflow: true,
