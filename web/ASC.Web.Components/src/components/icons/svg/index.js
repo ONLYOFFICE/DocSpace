@@ -18,6 +18,7 @@ import OrigCloudServicesOneDriveIcon from './cloud.services.onedrive.react.svg';
 import OrigCloudServicesBoxIcon from './cloud.services.box.react.svg';
 import OrigCloudServicesNextcloudIcon from './cloud.services.nextcloud.react.svg';
 import OrigCommunityIcon from './community.react.svg';
+import OrigAppsIcon from './apps.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -95,4 +96,8 @@ export const CloudServicesNextcloudIcon = createStyledIcon(
 export const CommunityIcon = createStyledIcon(
   OrigCommunityIcon,
   'CommunityIcon'
+);
+export const AppsIcon = createStyledIcon(
+  OrigAppsIcon,
+  'AppsIcon'
 );
