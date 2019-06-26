@@ -31,6 +31,7 @@ import OrigSettingsCatalogIcon from './settings.catalog.react.svg';
 import OrigProjectDocumentsUpIcon from './project.documents.up.react.svg';
 import OrigProjectsTemplatesIcon from './projects.templates.react.svg';
 import OrigItemPausedIcon from './item.paused.react.svg';
+import OrigProjectsTasksIcon from './projects.tasks.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -160,4 +161,8 @@ export const ProjectsTemplatesIcon = createStyledIcon(
 export const ItemPausedIcon = createStyledIcon(
   OrigItemPausedIcon,
   'ItemPausedIcon'
+);
+export const ProjectsTasksIcon = createStyledIcon(
+  OrigProjectsTasksIcon,
+  'ProjectsTasksIcon'
 );
