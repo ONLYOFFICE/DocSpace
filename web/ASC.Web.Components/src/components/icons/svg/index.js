@@ -26,6 +26,7 @@ import OrigFollowIcon from './follow.react.svg';
 import OrigMailIcon from './mail.react.svg';
 import OrigMoneyIcon from './money.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
+import OrigSearchIcon from './search.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -135,4 +136,8 @@ export const MoneyIcon = createStyledIcon(
 export const ProjectsIcon = createStyledIcon(
   OrigProjectsIcon,
   'ProjectsIcon'
+);
+export const SearchIcon = createStyledIcon(
+  OrigSearchIcon,
+  'SearchIcon'
 );
