@@ -27,7 +27,7 @@ import OrigMailIcon from './mail.react.svg';
 import OrigMoneyIcon from './money.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
 import OrigSearchIcon from './search.react.svg';
-import OrigSettingsCatalogIcon from './settings.catalog.react.svg';
+import OrigSettingsIcon from './settings.react.svg';
 import OrigProjectDocumentsUpIcon from './project.documents.up.react.svg';
 import OrigProjectsTemplatesIcon from './projects.templates.react.svg';
 import OrigItemPausedIcon from './item.paused.react.svg';
@@ -150,9 +150,9 @@ export const SearchIcon = createStyledIcon(
   OrigSearchIcon,
   'SearchIcon'
 );
-export const SettingsCatalogIcon = createStyledIcon(
-  OrigSettingsCatalogIcon,
-  'SettingsCatalogIcon'
+export const SettingsIcon = createStyledIcon(
+  OrigSettingsIcon,
+  'SettingsIcon'
 );
 export const ProjectDocumentsUpIcon = createStyledIcon(
   OrigProjectDocumentsUpIcon,
