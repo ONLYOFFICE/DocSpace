@@ -38,6 +38,7 @@ import OrigItemActiveIcon from './item.active.react.svg';
 import OrigDownloadIcon from './download.react.svg';
 import OrigCatalogPortfolioIcon from './catalog.portfolio.react.svg';
 import OrigActionsDocumentsIcon from './actions.documents.react.svg';
+import OrigAccessEditIcon from './access.edit.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -195,4 +196,8 @@ export const CatalogPortfolioIcon = createStyledIcon(
 export const ActionsDocumentsIcon = createStyledIcon(
   OrigActionsDocumentsIcon,
   'ActionsDocumentsIcon'
+);
+export const AccessEditIcon = createStyledIcon(
+  OrigAccessEditIcon,
+  'AccessEditIcon'
 );
