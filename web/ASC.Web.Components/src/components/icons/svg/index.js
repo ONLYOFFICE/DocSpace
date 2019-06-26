@@ -22,6 +22,7 @@ import OrigAppsIcon from './apps.react.svg';
 import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
 import OrigCrmIcon from './crm.react.svg';
 import OrigDocumentsIcon from './documents.react.svg';
+import OrigFollowIcon from './follow.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -115,4 +116,8 @@ export const CrmIcon = createStyledIcon(
 export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   'DocumentsIcon'
+);
+export const FollowIcon = createStyledIcon(
+  OrigFollowIcon,
+  'FollowIcon'
 );
