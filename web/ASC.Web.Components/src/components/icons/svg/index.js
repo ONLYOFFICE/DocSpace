@@ -33,6 +33,7 @@ import OrigProjectsTemplatesIcon from './projects.templates.react.svg';
 import OrigItemPausedIcon from './item.paused.react.svg';
 import OrigProjectsTasksIcon from './projects.tasks.react.svg';
 import OrigActionsReportsIcon from './actions.reports.react.svg';
+import OrigProjectsMilestoneIcon from './projects.milestone.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -170,4 +171,8 @@ export const ProjectsTasksIcon = createStyledIcon(
 export const ActionsReportsIcon = createStyledIcon(
   OrigActionsReportsIcon,
   'ActionsReportsIcon'
+);
+export const ProjectsMilestoneIcon = createStyledIcon(
+  OrigProjectsMilestoneIcon,
+  'ProjectsMilestoneIcon'
 );
