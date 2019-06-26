@@ -9,8 +9,8 @@ import OrigGuestIcon from './guest.react.svg';
 import OrigAdministratorIcon from './administrator.react.svg';
 import OrigOwnerIcon from './owner.react.svg';
 import OrigVerticalDotsIcon from './vertical-dots.react.svg';
-import OrigTickIcon from './tick.react.svg';
-import OrigRectangleIcon from './rectangle.react.svg';
+import OrigCheckedIcon from './checked.react.svg';
+import OrigIndeterminateIcon from './indeterminate.react.svg';
 import OrigCloudServicesGoogleDriveIcon from './cloud.services.google.drive.react.svg';
 import OrigCloudServicesDropboxIcon from './cloud.services.dropbox.react.svg';
 import OrigHorizontalDotsIcon from './horizontal-dots.react.svg';
@@ -59,13 +59,13 @@ export const VerticalDotsIcon = createStyledIcon(
   OrigVerticalDotsIcon,
   'VerticalDotsIcon'
 );
-export const TickIcon = createStyledIcon(
-  OrigTickIcon,
-  'TickIcon'
+export const CheckedIcon = createStyledIcon(
+  OrigCheckedIcon,
+  'CheckedIcon'
 );
-export const RectangleIcon = createStyledIcon(
-  OrigRectangleIcon,
-  'RectangleIcon'
+export const IndeterminateIcon = createStyledIcon(
+  OrigIndeterminateIcon,
+  'IndeterminateIcon'
 );
 export const CloudServicesGoogleDriveIcon = createStyledIcon(
   OrigCloudServicesGoogleDriveIcon,
