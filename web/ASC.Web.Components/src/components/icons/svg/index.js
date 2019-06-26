@@ -14,6 +14,7 @@ import OrigRectangleIcon from './rectangle.react.svg';
 import OrigCloudServicesGoogleDriveIcon from './cloud.services.google.drive.react.svg';
 import OrigCloudServicesDropboxIcon from './cloud.services.dropbox.react.svg';
 import OrigHorizontalDotsIcon from './horizontal-dots.react.svg';
+import OrigCloudServicesOneDriveIcon from './cloud.services.onedrive.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -75,4 +76,8 @@ export const CloudServicesDropboxIcon = createStyledIcon(
 export const HorizontalDotsIcon = createStyledIcon(
   OrigHorizontalDotsIcon,
   'HorizontalDotsIcon'
+);
+export const CloudServicesOneDriveIcon = createStyledIcon(
+  OrigCloudServicesOneDriveIcon,
+  'CloudServicesOneDriveIcon'
 );
