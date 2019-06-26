@@ -139,7 +139,7 @@ GroupButton.defaultProps = {
     isSeparator: false,
     tabIndex: -1,
     action: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
-    fontWeight: 600
+    fontWeight: '600'
 };
 
 export default GroupButton

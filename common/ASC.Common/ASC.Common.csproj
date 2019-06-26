@@ -51,5 +51,6 @@
     <PackageReference Include="NVelocity" Version="1.2.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="5.0.2" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 </Project>
