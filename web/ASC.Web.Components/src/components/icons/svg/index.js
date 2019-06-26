@@ -18,6 +18,21 @@ import OrigCloudServicesOneDriveIcon from './cloud.services.onedrive.react.svg';
 import OrigCloudServicesBoxIcon from './cloud.services.box.react.svg';
 import OrigCloudServicesNextcloudIcon from './cloud.services.nextcloud.react.svg';
 import OrigCommunityIcon from './community.react.svg';
+import OrigAppsIcon from './apps.react.svg';
+import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
+import OrigCrmIcon from './crm.react.svg';
+import OrigDocumentsIcon from './documents.react.svg';
+import OrigFollowIcon from './follow.react.svg';
+import OrigMailIcon from './mail.react.svg';
+import OrigMoneyIcon from './money.react.svg';
+import OrigProjectsIcon from './projects.react.svg';
+import OrigSearchIcon from './search.react.svg';
+import OrigSettingsCatalogIcon from './settings.catalog.react.svg';
+import OrigProjectDocumentsUpIcon from './project.documents.up.react.svg';
+import OrigProjectsTemplatesIcon from './projects.templates.react.svg';
+import OrigItemPausedIcon from './item.paused.react.svg';
+import OrigProjectsTasksIcon from './projects.tasks.react.svg';
+import OrigActionsReportsIcon from './actions.reports.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -95,4 +110,64 @@ export const CloudServicesNextcloudIcon = createStyledIcon(
 export const CommunityIcon = createStyledIcon(
   OrigCommunityIcon,
   'CommunityIcon'
+);
+export const AppsIcon = createStyledIcon(
+  OrigAppsIcon,
+  'AppsIcon'
+);
+export const CalendarCheckedIcon = createStyledIcon(
+  OrigCalendarCheckedIcon,
+  'CalendarCheckedIcon'
+);
+export const CrmIcon = createStyledIcon(
+  OrigCrmIcon,
+  'CrmIcon'
+);
+export const DocumentsIcon = createStyledIcon(
+  OrigDocumentsIcon,
+  'DocumentsIcon'
+);
+export const FollowIcon = createStyledIcon(
+  OrigFollowIcon,
+  'FollowIcon'
+);
+export const MailIcon = createStyledIcon(
+  OrigMailIcon,
+  'MailIcon'
+);
+export const MoneyIcon = createStyledIcon(
+  OrigMoneyIcon,
+  'MoneyIcon'
+);
+export const ProjectsIcon = createStyledIcon(
+  OrigProjectsIcon,
+  'ProjectsIcon'
+);
+export const SearchIcon = createStyledIcon(
+  OrigSearchIcon,
+  'SearchIcon'
+);
+export const SettingsCatalogIcon = createStyledIcon(
+  OrigSettingsCatalogIcon,
+  'SettingsCatalogIcon'
+);
+export const ProjectDocumentsUpIcon = createStyledIcon(
+  OrigProjectDocumentsUpIcon,
+  'ProjectDocumentsUpIcon'
+);
+export const ProjectsTemplatesIcon = createStyledIcon(
+  OrigProjectsTemplatesIcon,
+  'ProjectsTemplatesIcon'
+);
+export const ItemPausedIcon = createStyledIcon(
+  OrigItemPausedIcon,
+  'ItemPausedIcon'
+);
+export const ProjectsTasksIcon = createStyledIcon(
+  OrigProjectsTasksIcon,
+  'ProjectsTasksIcon'
+);
+export const ActionsReportsIcon = createStyledIcon(
+  OrigActionsReportsIcon,
+  'ActionsReportsIcon'
 );
