@@ -37,11 +37,7 @@ const ContextMenuButton = (props) => {
   return (
       <StyledOuther title={props.title} onClick={() => { setState(props.getData()); toggle(!isOpen); }} ref={ref}>
         {
-          Object.values(Icons).map((Icon, index) => {  
-            if (iconNames[index] == props.iconName) {
-                return <Icon size={props.size} color={props.color}/>
-            }
-          })
+          iconNames.includes(props.iconName) && React.createElement(Icons[props.iconName], {size: props.size, color: props.color})
         }
         <DropDown isOpen={isOpen}>
           {
