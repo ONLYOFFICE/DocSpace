@@ -11,6 +11,7 @@ import OrigOwnerIcon from './owner.react.svg';
 import OrigVerticalDotsIcon from './vertical-dots.react.svg';
 import OrigTickIcon from './tick.react.svg';
 import OrigRectangleIcon from './rectangle.react.svg';
+import OrigCloudServicesGoogleDriveIcon from './cloud.services.google.drive.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -60,4 +61,8 @@ export const TickIcon = createStyledIcon(
 export const RectangleIcon = createStyledIcon(
   OrigRectangleIcon,
   'RectangleIcon'
+);
+export const CloudServicesGoogleDriveIcon = createStyledIcon(
+  OrigCloudServicesGoogleDriveIcon,
+  'CloudServicesGoogleDriveIcon'
 );
