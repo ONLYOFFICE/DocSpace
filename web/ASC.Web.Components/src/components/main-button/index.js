@@ -144,14 +144,10 @@ const MainButton = (props) => {
                 ?   { ...dropMenu } 
                 
                 :   <StyledSecondaryButton {...props} onClick={ !props.isDisabled ? props.clickActionSecondary : stopAction}> 
-
-                        {Object.values(Icons).map((Icon, index) => {  
-                            
-                            if (iconNames[index] == props.iconName) {
-                                return (<Icon size="medium" color='#ffffff'/>) 
-                            }
-
-                        })}
+                        {
+                            iconNames.includes(props.iconName)
+                            && React.createElement(Icons[props.iconName], {size: "medium", color: "#ffffff"})
+                        }
                     </StyledSecondaryButton>}
         </GroupMainButton>
     )
