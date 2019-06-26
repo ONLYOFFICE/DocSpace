@@ -7,33 +7,19 @@ const borderColor = '#D0D5DA',
     activeColor = '#333333',
     disableColor = '#A3A9AE';
 
-const StyledOuter = styled.label`
+const Label = styled.label`
   display: flex;
   align-items: center;
   position: relative;
-  margin: 0;
-  line-height: 16px;
+  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
 `;
 
-const StyledInput = styled.input.attrs((props) => ({
-  id: props.id,
-  name: props.name,
-  value: props.value,
-  label: props.label,
-
-  isChecked: PropTypes.bool,
-  isIndeterminate: PropTypes.bool,
-  isDisabled: PropTypes.bool,
-
-  onChange: props.onChange
-}))`
-  right: 0;
+const HiddenInput = styled.input`
   opacity: 0.0001;
   position: absolute;
-  top: 0;
 `;
 
-const StyledInner = styled.div`
+const IconWrapper = styled.div`
   display: flex;
   align-items: center;  
   border: 1px solid ${borderColor};
@@ -42,41 +28,37 @@ const StyledInner = styled.div`
   width: 16px;
   height: 16px;
   padding: ${props => (props.isChecked && !props.isIndeterminate ? '0 2px' : '3px')};
-  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
 `;
 
-const StyledText = styled.span`
-  margin: 0 8px;
-  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+const TextWrapper = styled.span`
+  margin-left: 8px;
   color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
 
 const Checkbox = props => {
-
+  const { id, isDisabled, isChecked, isIndeterminate, label } = props;
   const ref = useRef(null);
 
   useEffect(() => {
-    ref.current.indeterminate = props.isIndeterminate;
+    ref.current.indeterminate = isIndeterminate;
   });
 
   return (
-    <StyledOuter for={props.id}>
-      <StyledInput type='checkbox' checked={props.isChecked && !props.isIndeterminate} disabled={props.isDisabled} ref={ref} {...props}/>
-      <StyledInner {...props}>
+    <Label htmlFor={id} isDisabled={isDisabled} >
+      <HiddenInput type='checkbox' checked={isChecked && !isIndeterminate} disabled={isDisabled} ref={ref} {...props}/>
+      <IconWrapper isChecked={isChecked} isIndeterminate={isIndeterminate}>
       {
-        props.isIndeterminate
-          ? <Icons.RectangleIcon color={props.isDisabled ? disableColor : activeColor}/>
-          : props.isChecked
-            ? <Icons.TickIcon color={props.isDisabled ? disableColor : activeColor}/>
+        isIndeterminate
+          ? <Icons.RectangleIcon color={isDisabled ? disableColor : activeColor}/>
+          : isChecked
+            ? <Icons.TickIcon color={isDisabled ? disableColor : activeColor}/>
             : ""
       }
-      </StyledInner>
+      </IconWrapper>
       {
-        props.label
-          ? <StyledText {...props}>{props.label}</StyledText>
-          : ""
+        label && <TextWrapper isDisabled={isDisabled}>{label}</TextWrapper>
       }
-    </StyledOuter>
+    </Label>
   );
 };
 
