@@ -20,6 +20,7 @@ import OrigCloudServicesNextcloudIcon from './cloud.services.nextcloud.react.svg
 import OrigCommunityIcon from './community.react.svg';
 import OrigAppsIcon from './apps.react.svg';
 import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
+import OrigCrmIcon from './crm.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -105,4 +106,8 @@ export const AppsIcon = createStyledIcon(
 export const CalendarCheckedIcon = createStyledIcon(
   OrigCalendarCheckedIcon,
   'CalendarCheckedIcon'
+);
+export const CrmIcon = createStyledIcon(
+  OrigCrmIcon,
+  'CrmIcon'
 );
