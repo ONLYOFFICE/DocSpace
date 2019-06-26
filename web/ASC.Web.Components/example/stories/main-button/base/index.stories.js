@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { text, boolean, withKnobs, select } from '@storybook/addon-knobs/react';
 import { MainButton, Button, Icons } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
@@ -36,16 +37,18 @@ storiesOf('Components|MainButton', module)
         clickActionSecondary={ClickSecondaryButton}
         {...icon}
       >
-        
         <Button 
+            onClick={action('clicked')}
             label='Base button' 
             size='base' 
         />
         <Button 
+            onClick={action('clicked')}
             label='Base button' 
             size='base' 
         />
         <Button 
+            onClick={action('clicked')}
             label='Base button' 
             size='base' 
         />
