@@ -14,14 +14,16 @@ namespace ASC.Web.Studio
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        public IHostEnvironment HostEnvironment { get; }
+
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        {
+            Configuration = configuration;
+            HostEnvironment = hostEnvironment;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
@@ -40,7 +42,7 @@ namespace ASC.Web.Studio
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddAutofac(Configuration);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             services.AddHttpContextAccessor()
                 .AddStorage()

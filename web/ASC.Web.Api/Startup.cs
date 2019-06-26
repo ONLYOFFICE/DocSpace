@@ -24,10 +24,6 @@ using ASC.MessagingSystem;
 using ASC.Data.Reassigns;
 using ASC.Core;
 using System.Threading;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using Microsoft.AspNetCore.Routing.Patterns;
 using ASC.Api.Core.Core;
 
 namespace ASC.Web.Api
@@ -35,10 +31,12 @@ namespace ASC.Web.Api
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -69,7 +67,7 @@ namespace ASC.Web.Api
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
             });
 
-            var container = services.AddAutofac(Configuration);
+            var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             var assemblies = container.Resolve<IEnumerable<IWebItem>>().Select(r=> r.GetType().Assembly).Distinct();
 

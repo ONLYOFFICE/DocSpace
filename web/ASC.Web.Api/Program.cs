@@ -30,7 +30,8 @@ namespace ASC.Web.Api
                 config
                     .AddJsonFile("appsettings.json")
                     .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                    .AddJsonFile("autofac.api.json")
+                    .AddJsonFile("autofac.json")
+                    .AddJsonFile("autofac.products.json")
                     .AddJsonFile("storage.json");
             });
     }
