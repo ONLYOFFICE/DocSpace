@@ -37,6 +37,7 @@ import OrigProjectsMilestoneIcon from './projects.milestone.react.svg';
 import OrigItemActiveIcon from './item.active.react.svg';
 import OrigDownloadIcon from './download.react.svg';
 import OrigCatalogPortfolioIcon from './catalog.portfolio.react.svg';
+import OrigActionsDocumentsIcon from './actions.documents.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -190,4 +191,8 @@ export const DownloadIcon = createStyledIcon(
 export const CatalogPortfolioIcon = createStyledIcon(
   OrigCatalogPortfolioIcon,
   'CatalogPortfolioIcon'
+);
+export const ActionsDocumentsIcon = createStyledIcon(
+  OrigActionsDocumentsIcon,
+  'ActionsDocumentsIcon'
 );
