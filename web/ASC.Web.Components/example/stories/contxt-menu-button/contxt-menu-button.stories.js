@@ -4,8 +4,9 @@ import { withKnobs, text, select, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../.storybook/decorators/section';
-import { ContextMenuButton } from 'asc-web-components';
+import { ContextMenuButton, Icons } from 'asc-web-components';
 
+const iconNames = Object.keys(Icons);
 const sizeOptions = ['small', 'medium', 'big', 'scale'];
 
 function getData() {
@@ -23,6 +24,7 @@ storiesOf('Components|ContextMenuButton', module)
     <Section>
       <ContextMenuButton 
         title={text('title', 'Actions')}
+        iconName={select('iconName', iconNames, 'VerticalDotsIcon')}
         size={select('size', sizeOptions, 'medium')}
         color={color('loaderColor', '#A3A9AE')}
         getData={getData} />

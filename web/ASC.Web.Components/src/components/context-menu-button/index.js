@@ -29,13 +29,16 @@ const ContextMenuButton = (props) => {
 
   const [data, setState] = useState(props.data);
   const [isOpen, toggle] = useState(props.opened);
+  const iconNames = Object.keys(Icons);
   const ref = useRef(null);
-  
+
   useOuterClickNotifier((e) => { toggle(false) }, ref);
 
   return (
       <StyledOuther title={props.title} onClick={() => { setState(props.getData()); toggle(!isOpen); }} ref={ref}>
-        <Icons.VerticalDotsIcon size={props.size} color={props.color}/>
+        {
+          iconNames.includes(props.iconName) && React.createElement(Icons[props.iconName], {size: props.size, color: props.color})
+        }
         <DropDown isOpen={isOpen}>
           {
             data.map(item => <DropDownItem {...item}/>)
@@ -50,6 +53,7 @@ ContextMenuButton.propTypes = {
   data: PropTypes.array,
   getData: PropTypes.func.isRequired,
   title: PropTypes.string,
+  iconName: PropTypes.string,
   size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
   color: PropTypes.string
 };
@@ -58,6 +62,7 @@ ContextMenuButton.defaultProps = {
   opened: false,
   data: [],
   title: '',
+  iconName: 'VerticalDotsIcon',
   size: 'medium'
 };
 
