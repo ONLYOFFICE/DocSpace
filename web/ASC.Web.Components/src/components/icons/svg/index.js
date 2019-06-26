@@ -13,6 +13,7 @@ import OrigTickIcon from './tick.react.svg';
 import OrigRectangleIcon from './rectangle.react.svg';
 import OrigCloudServicesGoogleDriveIcon from './cloud.services.google.drive.react.svg';
 import OrigCloudServicesDropboxIcon from './cloud.services.dropbox.react.svg';
+import OrigHorizontalDotsIcon from './horizontal-dots.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -70,4 +71,8 @@ export const CloudServicesGoogleDriveIcon = createStyledIcon(
 export const CloudServicesDropboxIcon = createStyledIcon(
   OrigCloudServicesDropboxIcon,
   'CloudServicesDropboxIcon'
+);
+export const HorizontalDotsIcon = createStyledIcon(
+  OrigHorizontalDotsIcon,
+  'HorizontalDotsIcon'
 );
