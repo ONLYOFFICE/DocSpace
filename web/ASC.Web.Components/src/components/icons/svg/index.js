@@ -21,6 +21,7 @@ import OrigCommunityIcon from './community.react.svg';
 import OrigAppsIcon from './apps.react.svg';
 import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
 import OrigCrmIcon from './crm.react.svg';
+import OrigDocumentsIcon from './documents.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -110,4 +111,8 @@ export const CalendarCheckedIcon = createStyledIcon(
 export const CrmIcon = createStyledIcon(
   OrigCrmIcon,
   'CrmIcon'
+);
+export const DocumentsIcon = createStyledIcon(
+  OrigDocumentsIcon,
+  'DocumentsIcon'
 );
