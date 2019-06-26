@@ -49,9 +49,9 @@ const Checkbox = props => {
       <IconWrapper isChecked={isChecked} isIndeterminate={isIndeterminate}>
       {
         isIndeterminate
-          ? <Icons.RectangleIcon color={isDisabled ? disableColor : activeColor}/>
+          ? <Icons.IndeterminateIcon color={isDisabled ? disableColor : activeColor}/>
           : isChecked
-            ? <Icons.TickIcon color={isDisabled ? disableColor : activeColor}/>
+            ? <Icons.CheckedIcon color={isDisabled ? disableColor : activeColor}/>
             : ""
       }
       </IconWrapper>
