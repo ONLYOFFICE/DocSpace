@@ -41,6 +41,7 @@ import OrigActionsDocumentsIcon from './actions.documents.react.svg';
 import OrigAccessEditIcon from './access.edit.react.svg';
 import OrigCatalogFolderIcon from './catalog.folder.react.svg';
 import OrigCreateFolderIcon from './catalog.create.folder.react.svg';
+import OrigCatalogUnpinIcon from './catalog.unpin.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -210,4 +211,8 @@ export const CatalogFolderIcon = createStyledIcon(
 export const CreateFolderIcon = createStyledIcon(
   OrigCreateFolderIcon,
   'CreateFolderIcon'
+);
+export const CatalogUnpinIcon = createStyledIcon(
+  OrigCatalogUnpinIcon,
+  'CatalogUnpinIcon'
 );
