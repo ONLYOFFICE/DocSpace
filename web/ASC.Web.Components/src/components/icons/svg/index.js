@@ -59,6 +59,7 @@ import OrigInvitationLinkIcon from './invitation.link.react.svg';
 import OrigAlertIcon from './alert.react.svg';
 import OrigImportIcon from './import.react.svg';
 import OrigCatalogPinIcon from './catalog.pin.react.svg';
+import OrigCopyIcon from './copy.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -300,4 +301,8 @@ export const ImportIcon = createStyledIcon(
 export const CatalogPinIcon = createStyledIcon(
   OrigCatalogPinIcon,
   'CatalogPinIcon'
+);
+export const CopyIcon = createStyledIcon(
+  OrigCopyIcon,
+  'CopyIcon'
 );
