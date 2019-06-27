@@ -46,6 +46,7 @@ import OrigCatalogUserIcon from './catalog.user.react.svg';
 import OrigProjectsTimeTrackingIcon from './projects.time.tracking.react.svg';
 import OrigActionsUploadIcon from './actions.upload.react.svg';
 import OrigCameraIcon from './camera.react.svg';
+import OrigCatalogArchiveIcon from './catalog.archive.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -235,5 +236,9 @@ export const ActionsUploadIcon = createStyledIcon(
 export const CameraIcon = createStyledIcon(
   OrigCameraIcon,
   'CameraIcon'
+);
+export const CatalogArchiveIcon = createStyledIcon(
+  OrigCatalogArchiveIcon,
+  'CatalogArchiveIcon'
 );
 
