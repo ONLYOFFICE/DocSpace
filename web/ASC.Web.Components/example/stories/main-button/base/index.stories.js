@@ -20,7 +20,7 @@ function ClickSecondaryButton(e, credentials) {
 storiesOf('Components|MainButton', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('Main button', () => {
+  .add('main button', () => {
 
     let isDropdown=boolean('isDropdown', false);
 
