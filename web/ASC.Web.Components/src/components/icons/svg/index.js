@@ -68,6 +68,7 @@ import OrigShareTwitterIcon from './share.twitter.react.svg';
 import OrigAccessNoneIcon from './access.none.react.svg';
 import OrigTimeTrackingNotBilledIcon from './time.tracking.not.billed.react.svg';
 import OrigAccessFormIcon from './access.form.react.svg';
+import OrigAccessReviewIcon from './access.review.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -345,4 +346,8 @@ export const TimeTrackingNotBilledIcon = createStyledIcon(
 export const AccessFormIcon = createStyledIcon(
   OrigAccessFormIcon,
   'AccessFormIcon'
+);
+export const AccessReviewIcon = createStyledIcon(
+  OrigAccessReviewIcon,
+  'AccessReviewIcon'
 );
