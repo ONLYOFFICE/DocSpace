@@ -32,10 +32,14 @@ const getSizeStyle = size => {
 };
 
 export default function createStyledIcon(Component, displayName) {
-  const StyledComponent = styled(Component)(
+
+  const Icon = ({ isfill, ...props }) => (
+    <Component {...props}></Component>
+  )
+  const StyledComponent = styled(Icon)(
     props => `
     * {
-      fill: ${props.color};
+      ${props.isfill ? 'fill:' + props.color : ''};
     }
     ${getSizeStyle(props.size)}
   `
@@ -44,6 +48,7 @@ export default function createStyledIcon(Component, displayName) {
   StyledComponent.propTypes = {
     color: PropTypes.string,
     size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
+    isfill: PropTypes.bool
   };
   return StyledComponent;
 }

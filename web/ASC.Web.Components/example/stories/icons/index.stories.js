@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import withReadme from 'storybook-readme/with-readme';
 import styled from '@emotion/styled';
-import { withKnobs, select, color } from '@storybook/addon-knobs/react';
+import { withKnobs, select, color, boolean } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
 import {Icons} from 'asc-web-components';
@@ -33,6 +33,10 @@ storiesOf('Components|Icons', module)
     <IconList>
       {Object.values(Icons).map((Icon, index) => {
         const sizeValue = select('size', ['small', 'medium', 'big', 'scale'], 'big');
+
+        let isFill = boolean('isfill', false);
+        let iconColor = isFill ? {color: `${color('color', "dimgray")}`} : {};
+
         const containerWidth =
           sizeValue === 'scale'
             ? {
@@ -43,8 +47,9 @@ storiesOf('Components|Icons', module)
           <IconItem key={index}>
             <IconContainer style={containerWidth}>
               <Icon
+                isfill={isFill}
                 size={sizeValue}
-                color={color('color', "dimgray")}
+                {...iconColor}
               />
             </IconContainer>
             <span>{iconNames[index]}</span>
