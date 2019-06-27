@@ -63,6 +63,25 @@ import OrigCopyIcon from './copy.react.svg';
 import OrigShareEmailIcon from './share.e-mail.react.svg';
 import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
 import OrigSendClockIcon from './send.clock.react.svg';
+import OrigShareFacebookIcon from './share.facebook.react.svg';
+import OrigShareTwitterIcon from './share.twitter.react.svg';
+import OrigAccessNoneIcon from './access.none.react.svg';
+import OrigTimeTrackingNotBilledIcon from './time.tracking.not.billed.react.svg';
+import OrigAccessFormIcon from './access.form.react.svg';
+import OrigAccessReviewIcon from './access.review.react.svg';
+import OrigAccessCommentIcon from './access.comment.react.svg';
+import OrigProjectsDiscussionsIcon from './projects.discussions.react.svg';
+import OrigGanttChartIcon from './projects.gantt.chart.react.svg';
+import OrigCatalogTagIcon from './catalog.tag.react.svg';
+import OrigCatalogAccountsIcon from './catalog.accounts.react.svg';
+import OrigCatalogContactsIcon from './catalog.contacts.react.svg';
+import OrigActionsPresentationIcon from './actions.presentation.react.svg';
+import OrigCatalogTrashIcon from './catalog.trash.react.svg';
+import OrigRemoveIcon from './remove.react.svg';
+import OrigCatalogQuestionIcon from './catalog.question.react.svg';
+import OrigArrowContentIcon from './arrow.content.react.svg';
+import OrigPhoneIcon from './phone.react.svg';
+import OrigMobileIcon from './mobile.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -320,4 +339,80 @@ export const ShareGooglePlusIcon = createStyledIcon(
 export const SendClockIcon = createStyledIcon(
   OrigSendClockIcon,
   'SendClockIcon'
+);
+export const ShareFacebookIcon = createStyledIcon(
+  OrigShareFacebookIcon,
+  'ShareFacebookIcon'
+);
+export const ShareTwitterIcon = createStyledIcon(
+  OrigShareTwitterIcon,
+  'ShareTwitterIcon'
+);
+export const AccessNoneIcon = createStyledIcon(
+  OrigAccessNoneIcon,
+  'AccessNoneIcon'
+);
+export const TimeTrackingNotBilledIcon = createStyledIcon(
+  OrigTimeTrackingNotBilledIcon,
+  'TimeTrackingNotBilledIcon'
+);
+export const AccessFormIcon = createStyledIcon(
+  OrigAccessFormIcon,
+  'AccessFormIcon'
+);
+export const AccessReviewIcon = createStyledIcon(
+  OrigAccessReviewIcon,
+  'AccessReviewIcon'
+);
+export const AccessCommentIcon = createStyledIcon(
+  OrigAccessCommentIcon,
+  'AccessCommentIcon'
+);
+export const ProjectsDiscussionsIcon = createStyledIcon(
+  OrigProjectsDiscussionsIcon,
+  'ProjectsDiscussionsIcon'
+);
+export const GanttChartIcon = createStyledIcon(
+  OrigGanttChartIcon,
+  'GanttChartIcon'
+);
+export const CatalogTagIcon = createStyledIcon(
+  OrigCatalogTagIcon,
+  'CatalogTagIcon'
+);
+export const CatalogAccountsIcon = createStyledIcon(
+  OrigCatalogAccountsIcon,
+  'CatalogAccountsIcon'
+);
+export const CatalogContactsIcon = createStyledIcon(
+  OrigCatalogContactsIcon,
+  'CatalogContactsIcon'
+);
+export const ActionsPresentationIcon = createStyledIcon(
+  OrigActionsPresentationIcon,
+  'ActionsPresentationIcon'
+);
+export const CatalogTrashIcon = createStyledIcon(
+  OrigCatalogTrashIcon,
+  'CatalogTrashIcon'
+);
+export const RemoveIcon = createStyledIcon(
+  OrigRemoveIcon,
+  'RemoveIcon'
+);
+export const CatalogQuestionIcon = createStyledIcon(
+  OrigCatalogQuestionIcon,
+  'CatalogQuestionIcon'
+);
+export const ArrowContentIcon = createStyledIcon(
+  OrigArrowContentIcon,
+  'ArrowContentIcon'
+);
+export const PhoneIcon = createStyledIcon(
+  OrigPhoneIcon,
+  'PhoneIcon'
+);
+export const MobileIcon = createStyledIcon(
+  OrigMobileIcon,
+  'MobileIcon'
 );
