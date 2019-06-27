@@ -56,6 +56,7 @@ import OrigActionsSpreadsheetIcon from './actions.spreadsheet.react.svg';
 import OrigCatalogEmployeeIcon from './catalog.employee.react.svg';
 import OrigCatalogGuestIcon from './catalog.guest.react.svg';
 import OrigInvitationLinkIcon from './invitation.link.react.svg';
+import OrigAlertIcon from './alert.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -285,4 +286,8 @@ export const CatalogGuestIcon = createStyledIcon(
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,
   'InvitationLinkIcon'
+);
+export const AlertIcon = createStyledIcon(
+  OrigAlertIcon,
+  'AlertIcon'
 );
