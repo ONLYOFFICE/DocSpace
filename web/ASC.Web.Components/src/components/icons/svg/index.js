@@ -47,6 +47,7 @@ import OrigProjectsTimeTrackingIcon from './projects.time.tracking.react.svg';
 import OrigActionsUploadIcon from './actions.upload.react.svg';
 import OrigCameraIcon from './camera.react.svg';
 import OrigCatalogArchiveIcon from './catalog.archive.react.svg';
+import OrigCatalogDepartmentsIcon from './catalog.departments.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -241,4 +242,9 @@ export const CatalogArchiveIcon = createStyledIcon(
   OrigCatalogArchiveIcon,
   'CatalogArchiveIcon'
 );
+export const CatalogDepartmentsIcon = createStyledIcon(
+  OrigCatalogDepartmentsIcon,
+  'CatalogDepartmentsIcon'
+);
+
 
