@@ -75,6 +75,7 @@ import OrigGanttChartIcon from './projects.gantt.chart.react.svg';
 import OrigItemClosedIcon from './item.closed.react.svg';
 import OrigCatalogTagIcon from './catalog.tag.react.svg';
 import OrigCatalogAccountsIcon from './catalog.accounts.react.svg';
+import OrigCatalogContactsIcon from './catalog.contacts.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -380,4 +381,8 @@ export const CatalogTagIcon = createStyledIcon(
 export const CatalogAccountsIcon = createStyledIcon(
   OrigCatalogAccountsIcon,
   'CatalogAccountsIcon'
+);
+export const CatalogContactsIcon = createStyledIcon(
+  OrigCatalogContactsIcon,
+  'CatalogContactsIcon'
 );
