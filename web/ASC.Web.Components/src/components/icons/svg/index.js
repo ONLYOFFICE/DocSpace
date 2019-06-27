@@ -61,6 +61,7 @@ import OrigImportIcon from './import.react.svg';
 import OrigCatalogPinIcon from './catalog.pin.react.svg';
 import OrigCopyIcon from './copy.react.svg';
 import OrigShareEmailIcon from './share.e-mail.react.svg';
+import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -310,4 +311,8 @@ export const CopyIcon = createStyledIcon(
 export const ShareEmailIcon = createStyledIcon(
   OrigShareEmailIcon,
   'ShareEmailIcon'
+);
+export const ShareGooglePlusIcon = createStyledIcon(
+  OrigShareGooglePlusIcon,
+  'ShareGooglePlusIcon'
 );
