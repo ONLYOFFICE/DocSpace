@@ -13,8 +13,8 @@ const header = "Header text";
 const body = <p>{"Body text"}</p>;
 
 const footer = [
-  <Button label="Ok" onClick={()=>{}} primary/>,
-  <Button label="Cancel" onClick={()=>{}} style={{marginLeft:"8px"}}/>
+  <Button label="Ok" onClick={e => { action('onOk')(e)}} primary/>,
+  <Button label="Cancel" onClick={e => { action('onCancel')(e)}} style={{marginLeft:"8px"}}/>
 ];
 
 storiesOf('Components|ModalDialog', module)
