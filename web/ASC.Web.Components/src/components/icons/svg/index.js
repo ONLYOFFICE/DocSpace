@@ -64,6 +64,7 @@ import OrigShareEmailIcon from './share.e-mail.react.svg';
 import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
 import OrigSendClockIcon from './send.clock.react.svg';
 import OrigShareFacebookIcon from './share.facebook.react.svg';
+import OrigShareTwitterIcon from './share.twitter.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -325,4 +326,8 @@ export const SendClockIcon = createStyledIcon(
 export const ShareFacebookIcon = createStyledIcon(
   OrigShareFacebookIcon,
   'ShareFacebookIcon'
+);
+export const ShareTwitterIcon = createStyledIcon(
+  OrigShareTwitterIcon,
+  'ShareTwitterIcon'
 );
