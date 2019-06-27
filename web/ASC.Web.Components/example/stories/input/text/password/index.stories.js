@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Value } from 'react-value';
+import { StringValue } from 'react-values';
 import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
@@ -14,23 +14,24 @@ storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('password', () => (
-    <Section>
-      <Value
-        defaultValue="password sample"
-        render={(value, onChange) => (
+    <StringValue
+      onChange={e => {
+          action('onChange')(e);
+        }
+      }
+    >
+      {({ value, set }) => (
+        <Section>
           <TextInput
             type="password"
             id={text('id', '')}
             name={text('name', '')}
-            value={text('value', value)}
+            value={value}
             placeholder={text('placeholder', 'This is placeholder')}
             maxLength={number('maxLength', 255)}
             size={select('size', sizeOptions, 'base')}
             scale={boolean('scale', false)}
-            onChange={event => {
-              action('onChange')(event);
-              onChange(event.target.value);
-            }}
+            onChange={event => set(event.target.value)}
             onBlur={action('onBlur')}
             onFocus={action('onFocus')}
             isAutoFocussed={boolean('isAutoFocussed', false)}
@@ -40,9 +41,8 @@ storiesOf('Components|Input', module)
             hasWarning={boolean('hasWarning', false)}
             autoComplete={text('autoComplete', 'off')}
             tabIndex={number('tabIndex', 1)}
-
           />
+        </Section>
         )}
-      />
-    </Section>
+    </StringValue>
   ));
