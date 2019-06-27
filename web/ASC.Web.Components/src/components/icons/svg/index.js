@@ -44,6 +44,7 @@ import OrigCreateFolderIcon from './catalog.create.folder.react.svg';
 import OrigCatalogUnpinIcon from './catalog.unpin.react.svg';
 import OrigCatalogUserIcon from './catalog.user.react.svg';
 import OrigProjectsTimeTrackingIcon from './projects.time.tracking.react.svg';
+import OrigActionsUploadIcon from './actions.upload.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -225,5 +226,9 @@ export const CatalogUserIcon = createStyledIcon(
 export const ProjectsTimeTrackingIcon = createStyledIcon(
   OrigProjectsTimeTrackingIcon,
   'ProjectsTimeTrackingIcon'
+);
+export const ActionsUploadIcon = createStyledIcon(
+  OrigActionsUploadIcon,
+  'ActionsUploadIcon'
 );
 
