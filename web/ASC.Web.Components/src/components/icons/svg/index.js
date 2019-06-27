@@ -54,6 +54,7 @@ import OrigPlaneIcon from './plane.react.svg';
 import OrigCatalogSpamIcon from './catalog.spam.react.svg';
 import OrigActionsSpreadsheetIcon from './actions.spreadsheet.react.svg';
 import OrigCatalogEmployeeIcon from './catalog.employee.react.svg';
+import OrigCatalogGuestIcon from './catalog.guest.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -275,4 +276,8 @@ export const ActionsSpreadsheetIcon = createStyledIcon(
 export const CatalogEmployeeIcon = createStyledIcon(
   OrigCatalogEmployeeIcon,
   'CatalogEmployeeIcon'
+);
+export const CatalogGuestIcon = createStyledIcon(
+  OrigCatalogGuestIcon,
+  'CatalogGuestIcon'
 );
