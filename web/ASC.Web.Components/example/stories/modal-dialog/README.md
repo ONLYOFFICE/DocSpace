@@ -1,0 +1,23 @@
+# ModalDialog
+
+#### Description
+
+ModalDialog is used for displaying modal dialogs
+
+#### Usage
+
+```js
+import { ModalDialog } from 'asc-web-components';
+
+<ModalDialog isOpen={false} />
+```
+
+#### Properties
+
+| Props           | Type                      | Required | Values | Default | Description                                      |
+| --------------- | ------------------------- | :------: | -------| ------- | ------------------------------------------------ |
+| `isOpen`        | `bool`                    |          |        |         | Display dialog or not                            |
+| `headerContent` | `string/element/elements` |          |        |         | Header content                                   |
+| `bodyContent`   | `string/element/elements` |          |        |         | Body content                                     |
+| `footerContent` | `string/element/elements` |          |        |         | Footer content                                   |
+| `onClose`       | `func`                    |          |        |         | Will be triggered when a close button is clicked |
