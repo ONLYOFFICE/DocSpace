@@ -73,6 +73,7 @@ import OrigAccessCommentIcon from './access.comment.react.svg';
 import OrigProjectsDiscussionsIcon from './projects.discussions.react.svg';
 import OrigGanttChartIcon from './projects.gantt.chart.react.svg';
 import OrigItemClosedIcon from './item.closed.react.svg';
+import OrigCatalogTagIcon from './catalog.tag.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -370,4 +371,8 @@ export const GanttChartIcon = createStyledIcon(
 export const ItemClosedIcon = createStyledIcon(
   OrigItemClosedIcon,
   'ItemClosedIcon'
+);
+export const CatalogTagIcon = createStyledIcon(
+  OrigCatalogTagIcon,
+  'CatalogTagIcon'
 );
