@@ -65,6 +65,7 @@ import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
 import OrigSendClockIcon from './send.clock.react.svg';
 import OrigShareFacebookIcon from './share.facebook.react.svg';
 import OrigShareTwitterIcon from './share.twitter.react.svg';
+import OrigAccessNoneIcon from './access.none.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -330,4 +331,8 @@ export const ShareFacebookIcon = createStyledIcon(
 export const ShareTwitterIcon = createStyledIcon(
   OrigShareTwitterIcon,
   'ShareTwitterIcon'
+);
+export const AccessNoneIcon = createStyledIcon(
+  OrigAccessNoneIcon,
+  'AccessNoneIcon'
 );
