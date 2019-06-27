@@ -50,6 +50,7 @@ import OrigCatalogArchiveIcon from './catalog.archive.react.svg';
 import OrigCatalogDepartmentsIcon from './catalog.departments.react.svg';
 import OrigCatalogInboxIcon from './catalog.inbox.react.svg';
 import OrigCatalogSentIcon from './catalog.sent.react.svg';
+import OrigPlaneIcon from './plane.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -255,4 +256,8 @@ export const CatalogInboxIcon = createStyledIcon(
 export const CatalogSentIcon = createStyledIcon(
   OrigCatalogSentIcon,
   'CatalogSentIcon'
+);
+export const PlaneIcon = createStyledIcon(
+  OrigPlaneIcon,
+  'PlaneIcon'
 );
