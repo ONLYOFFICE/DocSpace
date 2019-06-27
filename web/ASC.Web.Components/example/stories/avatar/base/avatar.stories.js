@@ -7,19 +7,24 @@ import { Avatar } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 
 const roleOptions = ['owner', 'admin','guest','user'];
-const sizeOptions = ['retina', 'max', 'big', 'medium', 'small'];
+const sizeOptions = ['max', 'big', 'medium', 'small'];
 
 storiesOf('Components|Avatar', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('base', () => (
+  .add('base', () => {
+    const size = select('size', sizeOptions, 'max');
+    const editing =  size === 'max' ? boolean('editing', false) : {};
+
+    return (
     <Section>
         <Avatar
-            size={select('size', sizeOptions, 'max')}
+            size={size}
             role={select('role', roleOptions, 'admin')}
             source={text('source', '')}
-            pending={boolean('pending', false)}
-            disabled={boolean('disabled', false)}
+            userName={text('userName', '')}
+            editing={editing}
         />
     </Section>
-  ));
+    );
+  });

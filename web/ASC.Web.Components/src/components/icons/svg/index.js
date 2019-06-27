@@ -22,17 +22,47 @@ import OrigAppsIcon from './apps.react.svg';
 import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
 import OrigCrmIcon from './crm.react.svg';
 import OrigDocumentsIcon from './documents.react.svg';
-import OrigFollowIcon from './follow.react.svg';
+import OrigCatalogSharedIcon from './catalog.shared.react.svg';
 import OrigMailIcon from './mail.react.svg';
 import OrigMoneyIcon from './money.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
 import OrigSearchIcon from './search.react.svg';
-import OrigSettingsCatalogIcon from './settings.catalog.react.svg';
+import OrigSettingsIcon from './settings.react.svg';
 import OrigProjectDocumentsUpIcon from './project.documents.up.react.svg';
 import OrigProjectsTemplatesIcon from './projects.templates.react.svg';
 import OrigItemPausedIcon from './item.paused.react.svg';
 import OrigProjectsTasksIcon from './projects.tasks.react.svg';
 import OrigActionsReportsIcon from './actions.reports.react.svg';
+import OrigProjectsMilestoneIcon from './projects.milestone.react.svg';
+import OrigItemActiveIcon from './item.active.react.svg';
+import OrigDownloadIcon from './download.react.svg';
+import OrigCatalogPortfolioIcon from './catalog.portfolio.react.svg';
+import OrigActionsDocumentsIcon from './actions.documents.react.svg';
+import OrigAccessEditIcon from './access.edit.react.svg';
+import OrigCatalogFolderIcon from './catalog.folder.react.svg';
+import OrigCreateFolderIcon from './catalog.create.folder.react.svg';
+import OrigCatalogUnpinIcon from './catalog.unpin.react.svg';
+import OrigCatalogUserIcon from './catalog.user.react.svg';
+import OrigProjectsTimeTrackingIcon from './projects.time.tracking.react.svg';
+import OrigActionsUploadIcon from './actions.upload.react.svg';
+import OrigCameraIcon from './camera.react.svg';
+import OrigCatalogArchiveIcon from './catalog.archive.react.svg';
+import OrigCatalogDepartmentsIcon from './catalog.departments.react.svg';
+import OrigCatalogInboxIcon from './catalog.inbox.react.svg';
+import OrigCatalogSentIcon from './catalog.sent.react.svg';
+import OrigPlaneIcon from './plane.react.svg';
+import OrigCatalogSpamIcon from './catalog.spam.react.svg';
+import OrigActionsSpreadsheetIcon from './actions.spreadsheet.react.svg';
+import OrigCatalogEmployeeIcon from './catalog.employee.react.svg';
+import OrigCatalogGuestIcon from './catalog.guest.react.svg';
+import OrigInvitationLinkIcon from './invitation.link.react.svg';
+import OrigAlertIcon from './alert.react.svg';
+import OrigImportIcon from './import.react.svg';
+import OrigCatalogPinIcon from './catalog.pin.react.svg';
+import OrigCopyIcon from './copy.react.svg';
+import OrigShareEmailIcon from './share.e-mail.react.svg';
+import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
+import OrigSendClockIcon from './send.clock.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -127,9 +157,9 @@ export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   'DocumentsIcon'
 );
-export const FollowIcon = createStyledIcon(
-  OrigFollowIcon,
-  'FollowIcon'
+export const CatalogSharedIcon = createStyledIcon(
+  OrigCatalogSharedIcon,
+  'CatalogSharedIcon'
 );
 export const MailIcon = createStyledIcon(
   OrigMailIcon,
@@ -147,9 +177,9 @@ export const SearchIcon = createStyledIcon(
   OrigSearchIcon,
   'SearchIcon'
 );
-export const SettingsCatalogIcon = createStyledIcon(
-  OrigSettingsCatalogIcon,
-  'SettingsCatalogIcon'
+export const SettingsIcon = createStyledIcon(
+  OrigSettingsIcon,
+  'SettingsIcon'
 );
 export const ProjectDocumentsUpIcon = createStyledIcon(
   OrigProjectDocumentsUpIcon,
@@ -170,4 +200,124 @@ export const ProjectsTasksIcon = createStyledIcon(
 export const ActionsReportsIcon = createStyledIcon(
   OrigActionsReportsIcon,
   'ActionsReportsIcon'
+);
+export const ProjectsMilestoneIcon = createStyledIcon(
+  OrigProjectsMilestoneIcon,
+  'ProjectsMilestoneIcon'
+);
+export const ItemActiveIcon = createStyledIcon(
+  OrigItemActiveIcon,
+  'ItemActiveIcon'
+);
+export const DownloadIcon = createStyledIcon(
+  OrigDownloadIcon,
+  'DownloadIcon'
+);
+export const CatalogPortfolioIcon = createStyledIcon(
+  OrigCatalogPortfolioIcon,
+  'CatalogPortfolioIcon'
+);
+export const ActionsDocumentsIcon = createStyledIcon(
+  OrigActionsDocumentsIcon,
+  'ActionsDocumentsIcon'
+);
+export const AccessEditIcon = createStyledIcon(
+  OrigAccessEditIcon,
+  'AccessEditIcon'
+);
+export const CatalogFolderIcon = createStyledIcon(
+  OrigCatalogFolderIcon,
+  'CatalogFolderIcon'
+);
+export const CreateFolderIcon = createStyledIcon(
+  OrigCreateFolderIcon,
+  'CreateFolderIcon'
+);
+export const CatalogUnpinIcon = createStyledIcon(
+  OrigCatalogUnpinIcon,
+  'CatalogUnpinIcon'
+);
+export const CatalogUserIcon = createStyledIcon(
+  OrigCatalogUserIcon,
+  'CatalogUserIcon'
+);
+export const ProjectsTimeTrackingIcon = createStyledIcon(
+  OrigProjectsTimeTrackingIcon,
+  'ProjectsTimeTrackingIcon'
+);
+export const ActionsUploadIcon = createStyledIcon(
+  OrigActionsUploadIcon,
+  'ActionsUploadIcon'
+);
+export const CameraIcon = createStyledIcon(
+  OrigCameraIcon,
+  'CameraIcon'
+);
+export const CatalogArchiveIcon = createStyledIcon(
+  OrigCatalogArchiveIcon,
+  'CatalogArchiveIcon'
+);
+export const CatalogDepartmentsIcon = createStyledIcon(
+  OrigCatalogDepartmentsIcon,
+  'CatalogDepartmentsIcon'
+);
+export const CatalogInboxIcon = createStyledIcon(
+  OrigCatalogInboxIcon,
+  'CatalogInboxIcon'
+);
+export const CatalogSentIcon = createStyledIcon(
+  OrigCatalogSentIcon,
+  'CatalogSentIcon'
+);
+export const PlaneIcon = createStyledIcon(
+  OrigPlaneIcon,
+  'PlaneIcon'
+);
+export const CatalogSpamIcon = createStyledIcon(
+  OrigCatalogSpamIcon,
+  'CatalogSpamIcon'
+);
+export const ActionsSpreadsheetIcon = createStyledIcon(
+  OrigActionsSpreadsheetIcon,
+  'ActionsSpreadsheetIcon'
+);
+export const CatalogEmployeeIcon = createStyledIcon(
+  OrigCatalogEmployeeIcon,
+  'CatalogEmployeeIcon'
+);
+export const CatalogGuestIcon = createStyledIcon(
+  OrigCatalogGuestIcon,
+  'CatalogGuestIcon'
+);
+export const InvitationLinkIcon = createStyledIcon(
+  OrigInvitationLinkIcon,
+  'InvitationLinkIcon'
+);
+export const AlertIcon = createStyledIcon(
+  OrigAlertIcon,
+  'AlertIcon'
+);
+export const ImportIcon = createStyledIcon(
+  OrigImportIcon,
+  'ImportIcon'
+);
+export const CatalogPinIcon = createStyledIcon(
+  OrigCatalogPinIcon,
+  'CatalogPinIcon'
+);
+export const CopyIcon = createStyledIcon(
+  OrigCopyIcon,
+  'CopyIcon'
+);
+export const ShareEmailIcon = createStyledIcon(
+  OrigShareEmailIcon,
+  'ShareEmailIcon'
+);
+export const ShareGooglePlusIcon = createStyledIcon(
+  OrigShareGooglePlusIcon,
+  'ShareGooglePlusIcon'
+);
+export const SendClockIcon = createStyledIcon(
+  OrigSendClockIcon,
+  'SendClockIcon'
 );
