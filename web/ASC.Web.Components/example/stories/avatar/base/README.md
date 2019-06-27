@@ -13,15 +13,15 @@ Required to display user avatar on page.
 #### Usage
 
 ```js
-<Avatar size='max' role='admin' source='' pending={false} disabled={false} />
+<Avatar size='max' role='admin' source='' userName='' editing={false} />
 ```
 
 #### Properties
 
 | Props              | Type     | Required | Values                                    | Default   | Description                                           |
 | ------------------ | -------- | :------: | ----------------------------------------- | --------- | ----------------------------------------------------- |
-| `size`             | `oneOf`  |    -     | `retina`, `max`, `big`, `medium`, `small` | `medium`  | Tells what size avatar should be displayed            |
+| `size`             | `oneOf`  |    -     | `max`, `big`, `medium`, `small`           | `medium`  | Tells what size avatar should be displayed            |
 | `role`             | `oneOf`  |    -     | `owner`, `admin`, `guest`, `user`         | ` `       | Adds a user role table                                |
 | `source`           | `string` |    -     | -                                         | ` `       | Avatar image source                                   |
-| `pending`          | `bool`   |    -     | -                                         | `false`   | Reports account pending                               |
-| `disabled`         | `bool`   |    -     | -                                         | `false`   | Reports that account is disabled                      |
+| `userName`         | `string` |    -     | -                                         | ` `       | If you want to generate an avatar with initials       |
+| `editing`          | `bool`   |    -     | -                                         | `false`   | Displays avatar edit layer                            |
