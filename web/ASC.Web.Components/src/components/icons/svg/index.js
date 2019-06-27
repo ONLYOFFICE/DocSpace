@@ -69,6 +69,7 @@ import OrigAccessNoneIcon from './access.none.react.svg';
 import OrigTimeTrackingNotBilledIcon from './time.tracking.not.billed.react.svg';
 import OrigAccessFormIcon from './access.form.react.svg';
 import OrigAccessReviewIcon from './access.review.react.svg';
+import OrigAccessCommentIcon from './access.comment.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -350,4 +351,8 @@ export const AccessFormIcon = createStyledIcon(
 export const AccessReviewIcon = createStyledIcon(
   OrigAccessReviewIcon,
   'AccessReviewIcon'
+);
+export const AccessCommentIcon = createStyledIcon(
+  OrigAccessCommentIcon,
+  'AccessCommentIcon'
 );
