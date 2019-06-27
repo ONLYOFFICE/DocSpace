@@ -71,6 +71,7 @@ import OrigAccessFormIcon from './access.form.react.svg';
 import OrigAccessReviewIcon from './access.review.react.svg';
 import OrigAccessCommentIcon from './access.comment.react.svg';
 import OrigProjectsDiscussionsIcon from './projects.discussions.react.svg';
+import OrigGanttChartIcon from './projects.gantt.chart.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -360,4 +361,8 @@ export const AccessCommentIcon = createStyledIcon(
 export const ProjectsDiscussionsIcon = createStyledIcon(
   OrigProjectsDiscussionsIcon,
   'ProjectsDiscussionsIcon'
+);
+export const GanttChartIcon = createStyledIcon(
+  OrigGanttChartIcon,
+  'GanttChartIcon'
 );
