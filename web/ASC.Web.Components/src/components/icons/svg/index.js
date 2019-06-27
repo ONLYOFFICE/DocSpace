@@ -80,6 +80,7 @@ import OrigCatalogTrashIcon from './catalog.trash.react.svg';
 import OrigRemoveIcon from './remove.react.svg';
 import OrigCatalogQuestionIcon from './catalog.question.react.svg';
 import OrigArrowContentIcon from './arrow.content.react.svg';
+import OrigPhoneIcon from './phone.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -405,4 +406,8 @@ export const CatalogQuestionIcon = createStyledIcon(
 export const ArrowContentIcon = createStyledIcon(
   OrigArrowContentIcon,
   'ArrowContentIcon'
+);
+export const PhoneIcon = createStyledIcon(
+  OrigPhoneIcon,
+  'PhoneIcon'
 );
