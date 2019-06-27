@@ -81,6 +81,7 @@ import OrigRemoveIcon from './remove.react.svg';
 import OrigCatalogQuestionIcon from './catalog.question.react.svg';
 import OrigArrowContentIcon from './arrow.content.react.svg';
 import OrigPhoneIcon from './phone.react.svg';
+import OrigMobileIcon from './mobile.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -410,4 +411,8 @@ export const ArrowContentIcon = createStyledIcon(
 export const PhoneIcon = createStyledIcon(
   OrigPhoneIcon,
   'PhoneIcon'
+);
+export const MobileIcon = createStyledIcon(
+  OrigMobileIcon,
+  'MobileIcon'
 );
