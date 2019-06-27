@@ -22,7 +22,7 @@ import OrigAppsIcon from './apps.react.svg';
 import OrigCalendarCheckedIcon from './calendar.checked.react.svg';
 import OrigCrmIcon from './crm.react.svg';
 import OrigDocumentsIcon from './documents.react.svg';
-import OrigFollowIcon from './follow.react.svg';
+import OrigCatalogSharedIcon from './catalog.shared.react.svg';
 import OrigMailIcon from './mail.react.svg';
 import OrigMoneyIcon from './money.react.svg';
 import OrigProjectsIcon from './projects.react.svg';
@@ -139,9 +139,9 @@ export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   'DocumentsIcon'
 );
-export const FollowIcon = createStyledIcon(
-  OrigFollowIcon,
-  'FollowIcon'
+export const CatalogSharedIcon = createStyledIcon(
+  OrigCatalogSharedIcon,
+  'CatalogSharedIcon'
 );
 export const MailIcon = createStyledIcon(
   OrigMailIcon,
