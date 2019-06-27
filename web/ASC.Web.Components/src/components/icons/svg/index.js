@@ -72,7 +72,6 @@ import OrigAccessReviewIcon from './access.review.react.svg';
 import OrigAccessCommentIcon from './access.comment.react.svg';
 import OrigProjectsDiscussionsIcon from './projects.discussions.react.svg';
 import OrigGanttChartIcon from './projects.gantt.chart.react.svg';
-import OrigItemClosedIcon from './item.closed.react.svg';
 import OrigCatalogTagIcon from './catalog.tag.react.svg';
 import OrigCatalogAccountsIcon from './catalog.accounts.react.svg';
 import OrigCatalogContactsIcon from './catalog.contacts.react.svg';
@@ -373,10 +372,6 @@ export const ProjectsDiscussionsIcon = createStyledIcon(
 export const GanttChartIcon = createStyledIcon(
   OrigGanttChartIcon,
   'GanttChartIcon'
-);
-export const ItemClosedIcon = createStyledIcon(
-  OrigItemClosedIcon,
-  'ItemClosedIcon'
 );
 export const CatalogTagIcon = createStyledIcon(
   OrigCatalogTagIcon,
