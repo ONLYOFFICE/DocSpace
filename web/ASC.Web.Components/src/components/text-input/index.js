@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
 
-const StyledInput = styled.input.attrs((props) => ({
+const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale,  ...props }) => <input {...props}/>;
+
+const StyledInput = styled(Input).attrs((props) => ({
     id: props.id,
     name: props.name,
     type:  props.type,
