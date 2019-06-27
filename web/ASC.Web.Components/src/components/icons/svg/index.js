@@ -78,6 +78,7 @@ import OrigCatalogAccountsIcon from './catalog.accounts.react.svg';
 import OrigCatalogContactsIcon from './catalog.contacts.react.svg';
 import OrigActionsPresentationIcon from './actions.presentation.react.svg';
 import OrigCatalogTrashIcon from './catalog.trash.react.svg';
+import OrigRemoveIcon from './remove.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -395,4 +396,8 @@ export const ActionsPresentationIcon = createStyledIcon(
 export const CatalogTrashIcon = createStyledIcon(
   OrigCatalogTrashIcon,
   'CatalogTrashIcon'
+);
+export const RemoveIcon = createStyledIcon(
+  OrigRemoveIcon,
+  'RemoveIcon'
 );
