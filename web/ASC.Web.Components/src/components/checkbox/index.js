@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef }  from 'react'
+import React, { useEffect, useRef }  from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import { Icons } from '../icons'
