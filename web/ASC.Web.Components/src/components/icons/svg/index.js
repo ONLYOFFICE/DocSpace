@@ -42,6 +42,7 @@ import OrigAccessEditIcon from './access.edit.react.svg';
 import OrigCatalogFolderIcon from './catalog.folder.react.svg';
 import OrigCreateFolderIcon from './catalog.create.folder.react.svg';
 import OrigCatalogUnpinIcon from './catalog.unpin.react.svg';
+import OrigCatalogUserIcon from './catalog.user.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -216,3 +217,8 @@ export const CatalogUnpinIcon = createStyledIcon(
   OrigCatalogUnpinIcon,
   'CatalogUnpinIcon'
 );
+export const CatalogUserIcon = createStyledIcon(
+  OrigCatalogUserIcon,
+  'CatalogUserIcon'
+);
+
