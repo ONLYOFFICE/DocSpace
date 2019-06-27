@@ -40,6 +40,7 @@ import OrigCatalogPortfolioIcon from './catalog.portfolio.react.svg';
 import OrigActionsDocumentsIcon from './actions.documents.react.svg';
 import OrigAccessEditIcon from './access.edit.react.svg';
 import OrigCatalogFolderIcon from './catalog.folder.react.svg';
+import OrigCreateFolderIcon from './catalog.create.folder.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -205,4 +206,8 @@ export const AccessEditIcon = createStyledIcon(
 export const CatalogFolderIcon = createStyledIcon(
   OrigCatalogFolderIcon,
   'CatalogFolderIcon'
+);
+export const CreateFolderIcon = createStyledIcon(
+  OrigCreateFolderIcon,
+  'CreateFolderIcon'
 );
