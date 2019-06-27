@@ -51,6 +51,7 @@ import OrigCatalogDepartmentsIcon from './catalog.departments.react.svg';
 import OrigCatalogInboxIcon from './catalog.inbox.react.svg';
 import OrigCatalogSentIcon from './catalog.sent.react.svg';
 import OrigPlaneIcon from './plane.react.svg';
+import OrigCatalogSpamIcon from './catalog.spam.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -260,4 +261,8 @@ export const CatalogSentIcon = createStyledIcon(
 export const PlaneIcon = createStyledIcon(
   OrigPlaneIcon,
   'PlaneIcon'
+);
+export const CatalogSpamIcon = createStyledIcon(
+  OrigCatalogSpamIcon,
+  'CatalogSpamIcon'
 );
