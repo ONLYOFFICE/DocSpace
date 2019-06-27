@@ -79,6 +79,7 @@ import OrigActionsPresentationIcon from './actions.presentation.react.svg';
 import OrigCatalogTrashIcon from './catalog.trash.react.svg';
 import OrigRemoveIcon from './remove.react.svg';
 import OrigCatalogQuestionIcon from './catalog.question.react.svg';
+import OrigArrowContentIcon from './arrow.content.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -400,4 +401,8 @@ export const RemoveIcon = createStyledIcon(
 export const CatalogQuestionIcon = createStyledIcon(
   OrigCatalogQuestionIcon,
   'CatalogQuestionIcon'
+);
+export const ArrowContentIcon = createStyledIcon(
+  OrigArrowContentIcon,
+  'ArrowContentIcon'
 );
