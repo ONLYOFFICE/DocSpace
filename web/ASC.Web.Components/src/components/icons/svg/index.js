@@ -60,6 +60,7 @@ import OrigAlertIcon from './alert.react.svg';
 import OrigImportIcon from './import.react.svg';
 import OrigCatalogPinIcon from './catalog.pin.react.svg';
 import OrigCopyIcon from './copy.react.svg';
+import OrigShareEmailIcon from './share.e-mail.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -305,4 +306,8 @@ export const CatalogPinIcon = createStyledIcon(
 export const CopyIcon = createStyledIcon(
   OrigCopyIcon,
   'CopyIcon'
+);
+export const ShareEmailIcon = createStyledIcon(
+  OrigShareEmailIcon,
+  'ShareEmailIcon'
 );
