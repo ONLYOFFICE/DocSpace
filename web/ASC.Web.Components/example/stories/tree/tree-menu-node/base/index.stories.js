@@ -24,16 +24,15 @@ const TreeMenuStory = props => {
       width: 8px;
     `;
     if (obj.expanded) {
-      return (<StyledTreeExpanderDownIcon size="small" color="dimgray"></StyledTreeExpanderDownIcon>);
+      return (<StyledTreeExpanderDownIcon size="small" isfill={true} color="dimgray"></StyledTreeExpanderDownIcon>);
     } else {
-      return (<StyledTreeExpanderRightIcon size="small" color="dimgray"></StyledTreeExpanderRightIcon>);
+      return (<StyledTreeExpanderRightIcon size="small" isfill={true} color="dimgray"></StyledTreeExpanderRightIcon>);
     }
   };
 
   const StyledPeopleIcon = styled(Icons.PeopleIcon)`
     margin: 0px 3px 2px 0px;
   `;
-  const sizeValue = select('size', ['small', 'middle', 'big'], 'middle');
 
   return (
     <div style={{width: "250px", margin: "20px"}}>
@@ -47,11 +46,8 @@ const TreeMenuStory = props => {
 
         switcherIcon={switcherIcon}
       >
-        <TreeNode size="big" title="Parent" key="0-0" icon={<StyledPeopleIcon size="medium" color="dimgray"/>}>
+        <TreeNode title="Parent" key="0-0" icon={<StyledPeopleIcon size="medium" color="dimgray"/>}>
           <TreeNode 
-            size={sizeValue}
-            isUnderline={boolean('isUnderline', true)}
-
             title="Child" 
             key="0-0-0"
           ></TreeNode>
@@ -62,9 +58,9 @@ const TreeMenuStory = props => {
 };
 
 
-storiesOf('Components|Tree', module)
+/*storiesOf('Components|Tree', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('Tree menu node', () => <TreeMenuStory />);
+  .add('Tree menu node', () => <TreeMenuStory />);*/
   
 
