@@ -96,6 +96,7 @@ import OrigMyspaceIcon from './myspace.react.svg';
 import OrigBloggerIcon from './blogger.react.svg';
 import OrigYahooIcon from './yahoo.react.svg';
 import OrigCalendarEmptyIcon from './calendar.empty.react.svg';
+import OrigRefreshIcon from './refresh.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -485,4 +486,8 @@ export const YahooIcon = createStyledIcon(
 export const CalendarEmptyIcon = createStyledIcon(
   OrigCalendarEmptyIcon,
   'CalendarEmptyIcon'
+);
+export const RefreshIcon = createStyledIcon(
+  OrigRefreshIcon,
+  'RefreshIcon'
 );
