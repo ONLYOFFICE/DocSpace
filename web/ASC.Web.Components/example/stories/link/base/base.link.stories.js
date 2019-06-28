@@ -33,7 +33,7 @@ return (
       fontSize={number('fontSize', 12)}
       href={text('href', undefined)}
       isBold={boolean('isBold', false)}
-      title={text('title', '')}
+      title={text('title', undefined )}
       target={select('target', target, '_top')}
       isTextOverflow={boolean('isTextOverflow', false)}
       isHovered={boolean('isHovered', false)}
