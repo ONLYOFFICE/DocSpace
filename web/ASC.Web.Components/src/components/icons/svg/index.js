@@ -91,6 +91,7 @@ import OrigWindowsMsnIcon from './windows.msn.react.svg';
 import OrigIcqIcon from './icq.react.svg';
 import OrigJabberIcon from './jabber.react.svg';
 import OrigAimIcon from './aim.react.svg';
+import OrigLivejournalIcon from './livejournal.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -460,4 +461,8 @@ export const JabberIcon = createStyledIcon(
 export const AimIcon = createStyledIcon(
   OrigAimIcon,
   'AimIcon'
+);
+export const LivejournalIcon = createStyledIcon(
+  OrigLivejournalIcon,
+  'LivejournalIcon'
 );
