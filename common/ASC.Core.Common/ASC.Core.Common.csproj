@@ -22,6 +22,7 @@
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
@@ -33,5 +34,18 @@
     <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.100.18" />
     <PackageReference Include="MailKit" Version="2.1.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\ResourceGenerator.cs">
+      <DependentUpon>ResourceGenerator.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Resources\ResourceGenerator.tt">
+      <LastGenOutput>ResourceGenerator.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
   </ItemGroup>
 </Project>

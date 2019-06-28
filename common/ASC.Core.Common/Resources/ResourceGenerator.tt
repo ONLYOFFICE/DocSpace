@@ -1,0 +1,136 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+
+<#@ assembly name="System.Core" #>
+<#@ assembly name="Newtonsoft.Json" #>
+
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="Newtonsoft.Json.Linq" #>
+
+namespace ASC.Core.Common.Resources
+{
+<# 
+    var dirPath = this.Host.ResolvePath("../../../web/ASC.Web.Studio/ClientApp/public/locales/en");
+    var files = Directory.GetFiles(dirPath, "*.json");
+
+    foreach(var filePath in files)
+    {
+        var parsed = JObject.Parse(File.ReadAllText(filePath));
+        var properties = parsed.Properties();
+        var fileName = Path.GetFileNameWithoutExtension(filePath);
+#>
+    public class <#= ToUpper(fileName)#>
+    {
+        private static JsonResourceManager JsonResourceManager { get; set; }
+        static <#= ToUpper(fileName)#>()
+        {
+            JsonResourceManager = new JsonResourceManager("<#= fileName#>");
+        }
+
+<#    foreach (var prop in properties)  {
+        var upperPropName= ToUpper(prop.Name);
+        if(prop.Value is JValue){#>
+        public static string <#= upperPropName#>
+        {
+            get
+            {
+                return JsonResourceManager.GetString("<#= prop.Name#>");
+            }
+        }
+<#        } else if(prop.Value is JObject obj){ #>
+        public static <#= upperPropName#>Data <#= upperPropName#> 
+        {
+            get
+            {
+                return new <#= upperPropName#>Data();
+            }
+        }
+<#=GetProps(2, prop.Name, prop)#>
+        
+<#          }
+      }#>
+    }
+<#}#>
+}
+<#
+    string ToUpper(string name)
+    {
+        return name.Substring(0, 1).ToUpper() + name.Substring(1);
+    }
+
+    string GetProps(int level, string propName, JProperty prop)
+    {
+        var obj = prop.Value as JObject;
+        var builder= new StringBuilder();
+
+        builder.Append(' ', level*4);
+        builder.AppendFormat("public class {0}Data", ToUpper(prop.Name));
+        builder.AppendLine();
+
+        builder.Append(' ', level*4);
+        builder.Append("{");
+        builder.AppendLine();
+
+        foreach(var o in obj.Properties())
+        {
+            var oUpperName = ToUpper(o.Name);
+            if(o.Value is JValue)
+            {
+                AddGetProp($"public string {oUpperName}", $"return JsonResourceManager.GetString(\"{propName}.{o.Name}\");");
+                
+                level -=1;
+            }
+            else if(o.Value is JObject subobj)
+            {
+                AddGetProp($"public {oUpperName}Data {oUpperName}", $"return new {oUpperName}Data();");
+
+                builder.Append(GetProps(level, propName + "." + o.Name, o));
+                level -=1;
+            }
+        }
+        
+        builder.AppendLine();
+        builder.Append(' ', level*4);
+        builder.Append("}");
+        builder.AppendLine();
+        return builder.ToString();
+
+        void AddGetProp(string name, string val)
+        {
+            level +=1;
+            builder.Append(' ', level*4);
+            builder.Append(name);
+            builder.AppendLine();
+
+            builder.Append(' ', level*4);
+            builder.Append("{");
+            builder.AppendLine();
+
+            level +=1;
+            builder.Append(' ', level*4);
+            builder.Append("get");
+            builder.AppendLine();
+
+            builder.Append(' ', level*4);
+            builder.Append("{");
+            builder.AppendLine();
+
+            level +=1;
+            builder.Append(' ', level*4);
+            builder.Append(val);
+            builder.AppendLine();
+
+            level -=1;
+            builder.Append(' ', level*4);
+            builder.Append("}");
+            builder.AppendLine();
+
+            level -=1;
+            builder.Append(' ', level*4);
+            builder.Append("}");
+            builder.AppendLine();
+        }
+    }
+#>
