@@ -82,6 +82,7 @@ import OrigCatalogQuestionIcon from './catalog.question.react.svg';
 import OrigArrowContentIcon from './arrow.content.react.svg';
 import OrigPhoneIcon from './phone.react.svg';
 import OrigMobileIcon from './mobile.react.svg';
+import OrigGmailIcon from './gmail.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -415,4 +416,8 @@ export const PhoneIcon = createStyledIcon(
 export const MobileIcon = createStyledIcon(
   OrigMobileIcon,
   'MobileIcon'
+);
+export const GmailIcon = createStyledIcon(
+  OrigGmailIcon,
+  'GmailIcon'
 );

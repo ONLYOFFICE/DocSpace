@@ -14,11 +14,12 @@ storiesOf('Components|Buttons', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => (
     <Section>
-      <Button
+      <Button 
         size={select('size', sizeOptions, 'base')}
         primary={boolean('primary', true)}
         isDisabled={boolean('isDisabled', false)}
         onClick={action('clicked')}
+        isLoading={boolean('isLoading', false)}
         label={text('label', 'Base button')}
       />
     </Section>

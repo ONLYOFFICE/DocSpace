@@ -11,7 +11,8 @@ const StyledDropdown = styled.div`
 
     position: absolute;
     top: 100%;
-    left: 0;
+    ${props => (props.direction === 'right' && css`right: 0px;`)}
+    ${props => (props.direction === 'left' && css`left: 0px;`)}
     z-index: 1000;
     margin-top: 0px;
     display: ${props => (props.isOpen || props.opened ? 'block' : 'none')};
@@ -32,6 +33,14 @@ const DropDown = props => {
         )}
         </StyledDropdown>
     );
+};
+
+DropDown.propTypes = {
+    direction: PropTypes.oneOf(['left', 'right'])
+};
+
+DropDown.defaultProps = {
+    direction: 'left'
 };
 
 export default DropDown
