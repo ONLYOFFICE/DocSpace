@@ -101,6 +101,7 @@ import OrigForwardIcon from './forward.react.svg';
 import OrigFileActionsLockedIcon from './file.actions.locked.react.svg';
 import OrigReplyAllIcon from './reply.all.react.svg';
 import OrigFileActionsConvertEditDocIcon from './file.actions.convert.edit.doc.react.svg';
+import OrigFileActionsConvertIcon from './file.actions.convert.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -510,4 +511,8 @@ export const ReplyAllIcon = createStyledIcon(
 export const FileActionsConvertEditDocIcon = createStyledIcon(
   OrigFileActionsConvertEditDocIcon,
   'FileActionsConvertEditDocIcon'
+);
+export const FileActionsConvertIcon = createStyledIcon(
+  OrigFileActionsConvertIcon,
+  'FileActionsConvertIcon'
 );
