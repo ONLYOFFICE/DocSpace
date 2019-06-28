@@ -85,6 +85,7 @@ import OrigMobileIcon from './mobile.react.svg';
 import OrigGmailIcon from './gmail.react.svg';
 import OrigGoogleIcon from './google.react.svg';
 import OrigGoogleSquareIcon from './google.sq.react.svg';
+import OrigStarIcon from './star.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -430,4 +431,8 @@ export const GoogleIcon = createStyledIcon(
 export const GoogleSquareIcon = createStyledIcon(
   OrigGoogleSquareIcon,
   'GoogleSquareIcon'
+);
+export const StarIcon = createStyledIcon(
+  OrigStarIcon,
+  'StarIcon'
 );
