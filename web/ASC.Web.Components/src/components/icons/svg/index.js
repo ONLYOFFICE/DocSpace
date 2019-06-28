@@ -98,6 +98,7 @@ import OrigYahooIcon from './yahoo.react.svg';
 import OrigCalendarEmptyIcon from './calendar.empty.react.svg';
 import OrigRefreshIcon from './refresh.react.svg';
 import OrigForwardIcon from './forward.react.svg';
+import OrigFileActionsLockedIcon from './file.actions.locked.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -495,4 +496,8 @@ export const RefreshIcon = createStyledIcon(
 export const ForwardIcon = createStyledIcon(
   OrigForwardIcon,
   'ForwardIcon'
+);
+export const FileActionsLockedIcon = createStyledIcon(
+  OrigFileActionsLockedIcon,
+  'FileActionsLockedIcon'
 );
