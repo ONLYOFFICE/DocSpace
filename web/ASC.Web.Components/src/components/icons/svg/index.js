@@ -108,6 +108,7 @@ import OrigAZSortingIcon from './a-z.sorting.react.svg';
 import OrigZASortingIcon from './z-a.sorting.react.svg';
 import OrigExternalLinkIcon from './external.link.react.svg';
 import OrigRadiobuttonIcon from './radiobutton.react.svg';
+import OrigRadiobuttonHoverIcon from './radiobutton.hover.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -545,4 +546,8 @@ export const ExternalLinkIcon = createStyledIcon(
 export const RadiobuttonIcon = createStyledIcon(
   OrigRadiobuttonIcon,
   'RadiobuttonIcon'
+);
+export const RadiobuttonHoverIcon = createStyledIcon(
+  OrigRadiobuttonHoverIcon,
+  'RadiobuttonHoverIcon'
 );
