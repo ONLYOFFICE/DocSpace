@@ -118,6 +118,7 @@ import OrigMainMenuVideoGuideIcon from './main.menu.video.guide.react.svg';
 import OrigChatIcon from './chat.react.svg';
 import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
+import OrigCrossIcon from './cross.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -595,4 +596,8 @@ export const RectangleFilterIcon = createStyledIcon(
 export const CatalogButtonIcon = createStyledIcon(
   OrigCatalogButtonIcon,
   'CatalogButtonIcon'
+);
+export const CrossIcon = createStyledIcon(
+  OrigCrossIcon,
+  'CrossIcon'
 );
