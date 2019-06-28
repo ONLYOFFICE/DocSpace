@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
+const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
+
 const arrowDropdown = css`
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
@@ -43,7 +45,7 @@ const dottedCss = css`
     border-bottom: 1px dotted;
 `;
 
-const StyledLink = styled.a.attrs((props) => ({
+const StyledLink = styled(SimpleLink).attrs((props) => ({
     href: props.href,
     target: props.target,
     rel: props.target === '_blank' && 'noopener noreferrer',
@@ -125,6 +127,7 @@ Link.propTypes = {
     isTextOverflow: PropTypes.bool,
     onClick: PropTypes.func,
     target: PropTypes.oneOf(['_blank', '_self', '_parent', '_top']),
+    text: PropTypes.string,
     title: PropTypes.string,
     type: PropTypes.oneOf(['action', 'page'])  
 };

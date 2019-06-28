@@ -37,8 +37,9 @@ return (
       target={select('target', target, '_top')}
       isTextOverflow={boolean('isTextOverflow', false)}
       isHovered={boolean('isHovered', false)}
+      text={text('text', 'Simple link')}
       {...userProps}
-    >Simple link</Link>
+    />
   </Section>
 );
 });
