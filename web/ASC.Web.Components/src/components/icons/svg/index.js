@@ -90,6 +90,7 @@ import OrigSkypeIcon from './skype.react.svg';
 import OrigWindowsMsnIcon from './windows.msn.react.svg';
 import OrigIcqIcon from './icq.react.svg';
 import OrigJabberIcon from './jabber.react.svg';
+import OrigAimIcon from './aim.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -455,4 +456,8 @@ export const IcqIcon = createStyledIcon(
 export const JabberIcon = createStyledIcon(
   OrigJabberIcon,
   'JabberIcon'
+);
+export const AimIcon = createStyledIcon(
+  OrigAimIcon,
+  'AimIcon'
 );
