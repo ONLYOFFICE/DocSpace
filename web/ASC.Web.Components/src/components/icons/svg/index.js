@@ -104,6 +104,7 @@ import OrigFileActionsConvertEditDocIcon from './file.actions.convert.edit.doc.r
 import OrigFileActionsConvertIcon from './file.actions.convert.react.svg';
 import OrigReplyIcon from './reply.react.svg';
 import OrigClipIcon from './clip.react.svg';
+import OrigAZSortingIcon from './a-z.sorting.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -525,4 +526,8 @@ export const ReplyIcon = createStyledIcon(
 export const ClipIcon = createStyledIcon(
   OrigClipIcon,
   'ClipIcon'
+);
+export const AZSortingIcon = createStyledIcon(
+  OrigAZSortingIcon,
+  'AZSortingIcon'
 );
