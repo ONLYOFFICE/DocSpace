@@ -1,56 +1,42 @@
-import React, { useState, useEffect, useRef }  from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import styled from 'styled-components';
 import TextInput from '../text-input'
-import { Icons } from '../icons'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const StyledOuter = styled.div`
-  display: inline-block;
-  position: relative;
-`;
+//TODO: replace svgUrl with real icon url
+
+const svg = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.4444 1H12.6667V0H11.1111V1H4.88889V0H3.33333V1H1.55556C0.696134 1 0.00780207 1.71599 0.00780207 2.60001L0 14.4C0 15.284 0.696097 16 1.55556 16H14.4444C15.3039 16 16 15.284 16 14.4V2.59997C16 1.71599 15.3039 1 14.4444 1ZM14 14H2V5H14V14Z" fill="#A3A9AE"/>
+</svg>`;
+
+const svgUrl = encodeURIComponent(svg.replace(new RegExp('"', 'g'), '\''));
 
 const StyledTextInput = styled(TextInput)`
-  padding-right: 28px;
+  background-image: url("data:image/svg+xml;utf8,${svgUrl}");
+  background-position: 82px center;
+  background-repeat: no-repeat;  
+  padding-right: 32px;
   width: 106px;
 `;
 
-const StyledIcon = styled(Icons.CalendarIcon)`
-  position: absolute;
-  right: 6px;
-  top: 6px;
-`;
+class CustomInput extends React.Component {
+  render () {
+    return (
+      <StyledTextInput type="text" {...this.props}/>
+    )
+  }
+}
 
 const DateInput = props => {
   return (
-    <StyledOuter>
-      <StyledTextInput type="text" size="base" maxLength="10" {...props}/>
-      <StyledIcon size="medium" onClick={props.onFocus}/>
-    </StyledOuter>
+    <DatePicker
+      customInput={<CustomInput/>}
+      selected={props.selected}
+      onChange={props.onChange}
+      {...props}
+    />
   );
-};
-
-DateInput.propTypes = {
-  id: PropTypes.string,
-  name: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  placeholder: PropTypes.string,
-  tabIndex: PropTypes.number,
-
-  onChange: PropTypes.func,
-  onBlur: PropTypes.func,
-  onFocus: PropTypes.func,
-
-  isDisabled: PropTypes.bool,
-  isReadOnly: PropTypes.bool,
-  hasError: PropTypes.bool,
-  hasWarning: PropTypes.bool
-}
-
-DateInput.defaultProps = {
-  value: '',
-  tabIndex: -1,
-  hasError: false,
-  hasWarning: false
 }
 
 export default DateInput
