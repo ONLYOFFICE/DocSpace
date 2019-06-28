@@ -86,6 +86,7 @@ import OrigGmailIcon from './gmail.react.svg';
 import OrigGoogleIcon from './google.react.svg';
 import OrigGoogleSquareIcon from './google.sq.react.svg';
 import OrigStarIcon from './star.react.svg';
+import OrigSkypeIcon from './skype.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -435,4 +436,8 @@ export const GoogleSquareIcon = createStyledIcon(
 export const StarIcon = createStyledIcon(
   OrigStarIcon,
   'StarIcon'
+);
+export const SkypeIcon = createStyledIcon(
+  OrigSkypeIcon,
+  'SkypeIcon'
 );
