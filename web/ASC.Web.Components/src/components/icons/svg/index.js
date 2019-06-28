@@ -116,6 +116,7 @@ import OrigMainMenuPeopleIcon from './main.menu.people.react.svg';
 import OrigMainMenuFeedbackIcon from './main.menu.feedback.react.svg';
 import OrigMainMenuVideoGuideIcon from './main.menu.video.guide.react.svg';
 import OrigChatIcon from './chat.react.svg';
+import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -585,4 +586,8 @@ export const MainMenuVideoGuideIcon = createStyledIcon(
 export const ChatIcon = createStyledIcon(
   OrigChatIcon,
   'ChatIcon'
+);
+export const RectangleFilterIcon = createStyledIcon(
+  OrigRectangleFilterIcon,
+  'RectangleFilterIcon'
 );
