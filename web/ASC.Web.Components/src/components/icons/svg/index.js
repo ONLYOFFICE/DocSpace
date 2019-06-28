@@ -87,6 +87,7 @@ import OrigGoogleIcon from './google.react.svg';
 import OrigGoogleSquareIcon from './google.sq.react.svg';
 import OrigStarIcon from './star.react.svg';
 import OrigSkypeIcon from './skype.react.svg';
+import OrigWindowsMsnIcon from './windows.msn.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -440,4 +441,8 @@ export const StarIcon = createStyledIcon(
 export const SkypeIcon = createStyledIcon(
   OrigSkypeIcon,
   'SkypeIcon'
+);
+export const WindowsMsnIcon = createStyledIcon(
+  OrigWindowsMsnIcon,
+  'WindowsMsnIcon'
 );
