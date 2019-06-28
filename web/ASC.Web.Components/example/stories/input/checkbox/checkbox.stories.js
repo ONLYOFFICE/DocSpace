@@ -13,11 +13,7 @@ storiesOf('Components|Input', module)
   .addDecorator(withReadme(Readme))
   .add('checkbox', () => (
     <Section>
-      <BooleanValue
-        onChange={e => {
-            action('onChange')(e);
-        }}
-      >
+      <BooleanValue>
         {({ value, toggle }) => (
           <Checkbox
             id={text('id', 'id')}
@@ -28,6 +24,7 @@ storiesOf('Components|Input', module)
             isIndeterminate={boolean('isIndeterminate', false)}
             isDisabled={boolean('isDisabled', false)}
             onChange={e => {
+              action('onChange')(e);
               toggle(e.target.checked);
             }}
           />
