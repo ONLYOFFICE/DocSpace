@@ -8,7 +8,7 @@ import { Button } from 'asc-web-components';
 
 #### Description
 
-Base Button is used for a action on a page.
+Button is used for a action on a page.
 
 #### Usage
 
@@ -20,8 +20,10 @@ Base Button is used for a action on a page.
 
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `primary`          | `bool`   |    -     | -                           | -         | Tells when the button should be primary                                  |
-| `isDisabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
-| `onClick`          | `func`   |    ✅    | -                           | -         | What the button will trigger when clicked                                              |
-| `size`             | `oneOf`  |    -     | `base`, `middle`, `big`, `huge`             | `base`     | Size of button      |
 | `label`             | `string`  |    -     | -             | -     | Button text                     |
+| `primary`          | `bool`   |    -     | -                           | -         | Tells when the button should be primary                                  |
+| `size`             | `oneOf`  |    -     | `base`, `middle`, `big`, `huge`             | `base`     | Size of button      |
+| `isDisabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
+| `isLoading`             | `bool`  |    -     | -             | -     | Tells when the button should show loader icon                      |
+| `onClick`          | `func`   |    ✅    | -                           | -         | What the button will trigger when clicked                                              |
+
