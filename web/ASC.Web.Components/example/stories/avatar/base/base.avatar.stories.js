@@ -14,7 +14,7 @@ storiesOf('Components|Avatar', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
     const size = select('size', sizeOptions, 'max');
-    const editing =  size === 'max' ? boolean('editing', false) : {};
+    const editing =  size === 'max' ? boolean('editing', false) : false;
 
     return (
     <Section>

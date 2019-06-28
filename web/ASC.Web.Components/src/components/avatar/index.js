@@ -125,7 +125,7 @@ const Avatar = props => {
     };
 
     const setNamedAvatar = userName => {
-        let initials = userName.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substring(0,3)
+        let initials = userName.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substring(0,2)
 
         return (
             <NamedAvatar {...props}>{initials}</NamedAvatar>
@@ -141,7 +141,7 @@ const Avatar = props => {
             </AvatarWrapper>
             {editing && (size === 'max') && 
                 <EditContainer {...props}>
-                    <Link type='action' isHovered={true}>{editLabel}</Link>
+                    <Link type='action' isHovered={true} text={editLabel}/>
                 </EditContainer>}
             <RoleWrapper {... props}>
                 {role === 'guest' && <Icons.GuestIcon size='scale' />}
