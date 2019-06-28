@@ -93,6 +93,7 @@ import OrigJabberIcon from './jabber.react.svg';
 import OrigAimIcon from './aim.react.svg';
 import OrigLivejournalIcon from './livejournal.react.svg';
 import OrigMyspaceIcon from './myspace.react.svg';
+import OrigBloggerIcon from './blogger.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -470,4 +471,8 @@ export const LivejournalIcon = createStyledIcon(
 export const MyspaceIcon = createStyledIcon(
   OrigMyspaceIcon,
   'MyspaceIcon'
+);
+export const BloggerIcon = createStyledIcon(
+  OrigBloggerIcon,
+  'BloggerIcon'
 );
