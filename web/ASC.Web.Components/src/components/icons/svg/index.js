@@ -111,6 +111,7 @@ import OrigRadiobuttonIcon from './radiobutton.react.svg';
 import OrigRadiobuttonHoverIcon from './radiobutton.hover.react.svg';
 import OrigRadiobuttonCheckedIcon from './radiobutton.checked.react.svg';
 import OrigPlusIcon from './actions.header.touch.react.svg';
+import OrigPlusSharpIcon from './plus.sharp.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -560,4 +561,8 @@ export const RadiobuttonCheckedIcon = createStyledIcon(
 export const PlusIcon = createStyledIcon(
   OrigPlusIcon,
   'PlusIcon'
+);
+export const PlusSharpIcon = createStyledIcon(
+  OrigPlusSharpIcon,
+  'PlusSharpIcon'
 );
