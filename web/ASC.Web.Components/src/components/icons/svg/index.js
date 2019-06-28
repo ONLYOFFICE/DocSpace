@@ -97,6 +97,7 @@ import OrigBloggerIcon from './blogger.react.svg';
 import OrigYahooIcon from './yahoo.react.svg';
 import OrigCalendarEmptyIcon from './calendar.empty.react.svg';
 import OrigRefreshIcon from './refresh.react.svg';
+import OrigForwardIcon from './forward.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -490,4 +491,8 @@ export const CalendarEmptyIcon = createStyledIcon(
 export const RefreshIcon = createStyledIcon(
   OrigRefreshIcon,
   'RefreshIcon'
+);
+export const ForwardIcon = createStyledIcon(
+  OrigForwardIcon,
+  'ForwardIcon'
 );
