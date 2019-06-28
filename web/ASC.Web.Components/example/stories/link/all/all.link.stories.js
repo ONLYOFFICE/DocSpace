@@ -28,64 +28,64 @@ storiesOf('Components|Link', module)
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "black" href="https://github.com" isBold = {true}>Bold black page link</Link>
+            <Link type = "page" color = "black" href="https://github.com" isBold = {true} text = 'Bold black page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "black" isBold = {true}>Bold black action link</Link>
+            <Link type = "action" color = "black" isBold = {true} text = 'Bold black action link' />
           </Col>
-          <Col><Link type = "action" color = "black" dropdownType = 'alwaysDotted'>Simple dropdown</Link></Col>
+          <Col><Link type = "action" color = "black" dropdownType = 'alwaysDotted' text = 'Simple dropdown' /></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "black" href="https://github.com">Black page link</Link>
+            <Link type = "page" color = "black" href="https://github.com" text = 'Black page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "black">Black action link</Link>
+            <Link type = "action" color = "black" text = 'Black action link' />
           </Col>
-          <Col> <Link type = "action" color = "gray" dropdownType = 'appearDottedAfterHover'>Gray dropdown and dotted appear after hover</Link></Col>
+          <Col> <Link type = "action" color = "gray" dropdownType = 'appearDottedAfterHover' text = 'Gray dropdown and dotted appear after hover' /></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "black" href="https://github.com" isHovered = {true}>Black hovered page link</Link>
+            <Link type = "page" color = "black" href="https://github.com" isHovered = {true} text = 'Black hovered page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "black" isHovered = {true}>Black hovered action link</Link>
+            <Link type = "action" color = "black" isHovered = {true} text = 'Black hovered action link' />
           </Col>
           <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "gray" href="https://github.com">Gray page link</Link>
+            <Link type = "page" color = "gray" href="https://github.com" text = 'Gray page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "gray">Gray action link</Link>
-          </Col>
-          <Col></Col>
-      </Row>
-      <Row style={rowStyle}>
-          <Col>
-            <Link type = "page" color = "gray" href="https://github.com" isHovered = {true}>Gray hovered page link</Link>
-          </Col>
-          <Col>
-            <Link type = "action" color = "gray" isHovered = {true}>Gray hovered action link</Link>
+            <Link type = "action" color = "gray" text = 'Gray action link' />
           </Col>
           <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "blue" href="https://github.com">Blue page link</Link>
+            <Link type = "page" color = "gray" href="https://github.com" isHovered = {true} text = 'Gray hovered page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "blue">Blue action link</Link>
+            <Link type = "action" color = "gray" isHovered = {true} text = 'Gray hovered action link' />
           </Col>
           <Col></Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
-            <Link type = "page" color = "blue" href="https://github.com" isHovered = {true}>Blue hovered page link</Link>
+            <Link type = "page" color = "blue" href="https://github.com" text = 'Blue page link' />
           </Col>
           <Col>
-            <Link type = "action" color = "blue" isHovered = {true}>Blue hovered action link</Link>
+            <Link type = "action" color = "blue" text = 'Blue action link' />
+          </Col>
+          <Col></Col>
+      </Row>
+      <Row style={rowStyle}>
+          <Col>
+            <Link type = "page" color = "blue" href="https://github.com" isHovered = {true} text = 'Blue hovered page link' />
+          </Col>
+          <Col>
+            <Link type = "action" color = "blue" isHovered = {true} text = 'Blue hovered action link' />
           </Col>
           <Col></Col>
       </Row>  
