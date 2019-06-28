@@ -9,11 +9,12 @@ import { Icons } from 'asc-web-components';
 import { action } from '@storybook/addon-actions';
 
 const treeData = [
-  { key: '0-0', title: 'Groups', root: true, children:
+  { key: '0-0', title: 'Departments', root: true, children:
     [
-      { key: '0-0-0', title: 'Administration', root: false},
-      { key: '0-0-1', title: 'Promotion', root: false },
-      { key: '0-0-2', title: 'Advertising', root: false }
+      { key: '0-0-0', title: 'Development', root: false},
+      { key: '0-0-1', title: 'Direction', root: false },
+      { key: '0-0-2', title: 'Marketing', root: false },
+      { key: '0-0-3', title: 'Support', root: false }
     ],
   },
 ];
@@ -94,16 +95,23 @@ const TreeMenuStory = props => {
     setAutoExpandParent(false);
   }
 
-  const StyledPeopleIcon = styled(Icons.PeopleIcon)`
+  const StyledCatalogDepartmentsIcon = styled(Icons.CatalogDepartmentsIcon)`
+    height: 16px;
+    width: 16px;
+    margin: 0px 3px 2px 0px;
+  `;
+  const StyledCatalogFolderIcon = styled(Icons.CatalogFolderIcon)`
+    height: 16px;
+    width: 16px;
     margin: 0px 3px 2px 0px;
   `;
 
   const loop = data => {
       return data.map((item) => {
           if (item.children && item.children.length) {
-              return <TreeNode size="big" title={item.title} key={item.key} icon={item.root ? <StyledPeopleIcon size="medium" color="dimgray"/> : ''} >{loop(item.children)}</TreeNode>;
+              return <TreeNode size="big" title={item.title} key={item.key} icon={item.root ? <StyledCatalogDepartmentsIcon size="medium" isfill={true} color="dimgray"/> : ''} >{loop(item.children)}</TreeNode>;
           }
-          return <TreeNode size="middle" key={item.key} title={item.title} ></TreeNode>;
+          return <TreeNode size="middle" key={item.key} title={item.title} icon={!item.root ? <StyledCatalogFolderIcon size="medium" isfill={true} color="dimgray"/> : ''} ></TreeNode>;
       });
   };
   
@@ -112,19 +120,19 @@ const TreeMenuStory = props => {
       return null;
     }
     const StyledTreeExpanderDownIcon = styled(Icons.ExpanderDownIcon)`
-      margin: 0px 0px 8px 5px;
+      margin: 0 0 0 5px;
       height: 8px;
       width: 8px;
     `;
     const StyledTreeExpanderRightIcon = styled(Icons.ExpanderRightIcon)`
-      margin: 0px 0px 8px 5px;
-      height: 8px;
+      margin: 0 0 2px 5px;
+      height: 8px; 
       width: 8px;
     `;
     if (obj.expanded) {
-      return <StyledTreeExpanderDownIcon size="small" color="dimgray"></StyledTreeExpanderDownIcon>
+      return <StyledTreeExpanderDownIcon size="small" isfill={true} color="dimgray"></StyledTreeExpanderDownIcon>
     } else {
-      return <StyledTreeExpanderRightIcon size="small" color="dimgray"></StyledTreeExpanderRightIcon>
+      return <StyledTreeExpanderRightIcon size="small" isfill={true} color="dimgray"></StyledTreeExpanderRightIcon>
     }
   };
   
@@ -132,7 +140,7 @@ const TreeMenuStory = props => {
     <div style={{width: "250px", margin: "20px"}}>
       <TreeMenu
         checkable={boolean('checkable', false)}
-        draggable={boolean('draggable', true)}
+        draggable={boolean('draggable', false)}
         disabled={boolean('disabled', false)}
         multiple={boolean('multiple', false)}
         showIcon={boolean('showIcon', true)}
