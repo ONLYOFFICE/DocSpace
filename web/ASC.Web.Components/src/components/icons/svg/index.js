@@ -94,6 +94,7 @@ import OrigAimIcon from './aim.react.svg';
 import OrigLivejournalIcon from './livejournal.react.svg';
 import OrigMyspaceIcon from './myspace.react.svg';
 import OrigBloggerIcon from './blogger.react.svg';
+import OrigYahooIcon from './yahoo.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -475,4 +476,8 @@ export const MyspaceIcon = createStyledIcon(
 export const BloggerIcon = createStyledIcon(
   OrigBloggerIcon,
   'BloggerIcon'
+);
+export const YahooIcon = createStyledIcon(
+  OrigYahooIcon,
+  'YahooIcon'
 );
