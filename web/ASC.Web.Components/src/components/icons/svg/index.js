@@ -99,6 +99,7 @@ import OrigCalendarEmptyIcon from './calendar.empty.react.svg';
 import OrigRefreshIcon from './refresh.react.svg';
 import OrigForwardIcon from './forward.react.svg';
 import OrigFileActionsLockedIcon from './file.actions.locked.react.svg';
+import OrigReplyAllIcon from './reply.all.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -500,4 +501,8 @@ export const ForwardIcon = createStyledIcon(
 export const FileActionsLockedIcon = createStyledIcon(
   OrigFileActionsLockedIcon,
   'FileActionsLockedIcon'
+);
+export const ReplyAllIcon = createStyledIcon(
+  OrigReplyAllIcon,
+  'ReplyAllIcon'
 );
