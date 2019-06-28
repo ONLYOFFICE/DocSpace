@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Value } from 'react-value';
+import { BooleanValue } from 'react-values'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
@@ -13,23 +13,25 @@ storiesOf('Components|Input', module)
   .addDecorator(withReadme(Readme))
   .add('checkbox', () => (
     <Section>
-      <Value
-        defaultValue={true}
-        render={(isChecked, onChange) => (
+      <BooleanValue
+        onChange={e => {
+            action('onChange')(e);
+        }}
+      >
+        {({ value, toggle }) => (
           <Checkbox
             id={text('id', 'id')}
             name={text('name', 'name')}
             value={text('value', 'value')}
             label={text('label', 'label')}
-            isChecked={boolean('isChecked', isChecked)}
+            isChecked={value}
             isIndeterminate={boolean('isIndeterminate', false)}
             isDisabled={boolean('isDisabled', false)}
-            onChange={event => {
-              action('onChange')(event);
-              onChange(event.target.checked);
+            onChange={e => {
+              toggle(e.target.checked);
             }}
           />
         )}
-      />
+      </BooleanValue>
     </Section>
   ));
