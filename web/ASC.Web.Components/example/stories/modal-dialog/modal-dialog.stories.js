@@ -12,23 +12,47 @@ storiesOf('Components|ModalDialog', module)
   .addDecorator(withReadme(Readme))
   .add('Modal dialog', () => (
     <Section>
-      <BooleanValue
-        onChange={e => {
-            action('onShow')(e);
-        }}
-      >
+      <BooleanValue>
         {({ value, toggle }) => (
           <div>
-            <Button label="Show" primary={true} onClick={() => { toggle(true); }}/>
+            <Button
+              label="Show"
+              primary={true}
+              onClick={(e) => {
+                action('onShow')(e);
+                toggle(true);
+              }}
+            />
             <ModalDialog
               isOpen={value}
               headerContent={"Header text"}
-              bodyContent={<p>{"Body text"}</p>}
+              bodyContent={
+                <p>{"Body text"}</p>
+              }
               footerContent={[
-                <Button key="OkBtn" label="Ok" onClick={() => { toggle(false);}} primary={true}/>,
-                <Button key="CancelBtn" label="Cancel" onClick={() => { toggle(false);}} style={{marginLeft:"8px"}}/>
+                <Button
+                  key="OkBtn"
+                  label="Ok"
+                  primary={true}
+                  onClick={(e) => {
+                    action('onOk')(e);
+                    toggle(false);
+                  }}
+                />,
+                <Button
+                  key="CancelBtn"
+                  label="Cancel"
+                  onClick={(e) => {
+                    action('onCancel')(e);
+                    toggle(false);
+                  }}
+                  style={{marginLeft:"8px"}}
+                />
               ]}
-              onClose={e => { toggle(false); }}
+              onClose={e => {
+                action('onClose')(e);
+                toggle(false);
+              }}
             />
           </div>
         )}
