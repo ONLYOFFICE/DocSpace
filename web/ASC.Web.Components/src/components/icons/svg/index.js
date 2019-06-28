@@ -89,6 +89,7 @@ import OrigStarIcon from './star.react.svg';
 import OrigSkypeIcon from './skype.react.svg';
 import OrigWindowsMsnIcon from './windows.msn.react.svg';
 import OrigIcqIcon from './icq.react.svg';
+import OrigJabberIcon from './jabber.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -450,4 +451,8 @@ export const WindowsMsnIcon = createStyledIcon(
 export const IcqIcon = createStyledIcon(
   OrigIcqIcon,
   'IcqIcon'
+);
+export const JabberIcon = createStyledIcon(
+  OrigJabberIcon,
+  'JabberIcon'
 );
