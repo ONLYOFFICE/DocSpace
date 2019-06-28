@@ -114,6 +114,7 @@ import OrigPlusIcon from './actions.header.touch.react.svg';
 import OrigPlusSharpIcon from './plus.sharp.react.svg';
 import OrigMainMenuPeopleIcon from './main.menu.people.react.svg';
 import OrigMainMenuFeedbackIcon from './main.menu.feedback.react.svg';
+import OrigMainMenuVideoGuideIcon from './main.menu.video.guide.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -575,4 +576,8 @@ export const MainMenuPeopleIcon = createStyledIcon(
 export const MainMenuFeedbackIcon = createStyledIcon(
   OrigMainMenuFeedbackIcon,
   'MainMenuFeedbackIcon'
+);
+export const MainMenuVideoGuideIcon = createStyledIcon(
+  OrigMainMenuVideoGuideIcon,
+  'MainMenuVideoGuideIcon'
 );
