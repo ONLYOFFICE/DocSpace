@@ -115,6 +115,7 @@ import OrigPlusSharpIcon from './plus.sharp.react.svg';
 import OrigMainMenuPeopleIcon from './main.menu.people.react.svg';
 import OrigMainMenuFeedbackIcon from './main.menu.feedback.react.svg';
 import OrigMainMenuVideoGuideIcon from './main.menu.video.guide.react.svg';
+import OrigChatIcon from './chat.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -580,4 +581,8 @@ export const MainMenuFeedbackIcon = createStyledIcon(
 export const MainMenuVideoGuideIcon = createStyledIcon(
   OrigMainMenuVideoGuideIcon,
   'MainMenuVideoGuideIcon'
+);
+export const ChatIcon = createStyledIcon(
+  OrigChatIcon,
+  'ChatIcon'
 );
