@@ -113,6 +113,7 @@ import OrigRadiobuttonCheckedIcon from './radiobutton.checked.react.svg';
 import OrigPlusIcon from './actions.header.touch.react.svg';
 import OrigPlusSharpIcon from './plus.sharp.react.svg';
 import OrigMainMenuPeopleIcon from './main.menu.people.react.svg';
+import OrigMainMenuFeedbackIcon from './main.menu.feedback.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -570,4 +571,8 @@ export const PlusSharpIcon = createStyledIcon(
 export const MainMenuPeopleIcon = createStyledIcon(
   OrigMainMenuPeopleIcon,
   'MainMenuPeopleIcon'
+);
+export const MainMenuFeedbackIcon = createStyledIcon(
+  OrigMainMenuFeedbackIcon,
+  'MainMenuFeedbackIcon'
 );
