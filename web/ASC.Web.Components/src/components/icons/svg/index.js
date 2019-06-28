@@ -119,6 +119,7 @@ import OrigChatIcon from './chat.react.svg';
 import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
+import OrigCheckboxIcon from './checkbox.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -600,4 +601,8 @@ export const CatalogButtonIcon = createStyledIcon(
 export const CrossIcon = createStyledIcon(
   OrigCrossIcon,
   'CrossIcon'
+);
+export const CheckboxIcon = createStyledIcon(
+  OrigCheckboxIcon,
+  'CheckboxIcon'
 );
