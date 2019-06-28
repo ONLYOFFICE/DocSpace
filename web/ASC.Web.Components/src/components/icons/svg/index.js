@@ -105,6 +105,7 @@ import OrigFileActionsConvertIcon from './file.actions.convert.react.svg';
 import OrigReplyIcon from './reply.react.svg';
 import OrigClipIcon from './clip.react.svg';
 import OrigAZSortingIcon from './a-z.sorting.react.svg';
+import OrigZASortingIcon from './z-a.sorting.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -530,4 +531,8 @@ export const ClipIcon = createStyledIcon(
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
+);
+export const ZASortingIcon = createStyledIcon(
+  OrigZASortingIcon,
+  'ZASortingIcon'
 );
