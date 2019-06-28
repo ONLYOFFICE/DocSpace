@@ -106,6 +106,7 @@ import OrigReplyIcon from './reply.react.svg';
 import OrigClipIcon from './clip.react.svg';
 import OrigAZSortingIcon from './a-z.sorting.react.svg';
 import OrigZASortingIcon from './z-a.sorting.react.svg';
+import OrigExternalLinkIcon from './external.link.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -535,4 +536,8 @@ export const AZSortingIcon = createStyledIcon(
 export const ZASortingIcon = createStyledIcon(
   OrigZASortingIcon,
   'ZASortingIcon'
+);
+export const ExternalLinkIcon = createStyledIcon(
+  OrigExternalLinkIcon,
+  'ExternalLinkIcon'
 );
