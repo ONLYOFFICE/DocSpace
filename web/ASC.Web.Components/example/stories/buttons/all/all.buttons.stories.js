@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Container, Row, Col } from 'reactstrap';
 import { Button } from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
 
 function onClick(e) {
   e = e || window.event;
@@ -10,21 +10,17 @@ function onClick(e) {
   console.log("onClick", text);
 }
 
-const rowStyle = {
-  marginTop: 8
-};
+const getButtons = (primary) => {
 
-const getButtons = () => {
-  const primary = [true, false];
-  const sizes = ['huge', 'big', 'middle', 'base'];
-  const states = ['isActivated', 'isHovered', 'isPressed', 'isDisabled', 'isLoading'];
+  const sizes = ['big', 'base'];
+  const states = ['isActivated', 'isHovered', 'isClicked', 'isDisabled'];
 
   const baseButton = {
     size: 'base',
     primary: true,
     isActivated: false,
     isHovered: false,
-    isPressed: false,
+    isClicked: false,
     isDisabled: false,
     isLoading: false,
     onClick: onClick,
@@ -32,21 +28,22 @@ const getButtons = () => {
   };
 
   let buttons = [];
-  primary.forEach(type => {
-    baseButton.primary = type;
-    sizes.forEach(size => {
-      let sizeButtons = [];
-      states.forEach(state => {
-        let btn = { ...baseButton, size: size, label: `${size} button` }
-        btn[state] = true;
-        sizeButtons.push(btn);
-      })
-      buttons.push({
-        size: size,
-        buttons: sizeButtons
-      });
+  baseButton.primary = primary;
+
+  sizes.forEach(size => {
+    let sizeButtons = [];
+    states.forEach(state => {
+      let btn = { ...baseButton, size: size, label: primary ? (size === "base" ? "Save" : "Publish") : "Cancel" }
+      btn[state] = true;
+      sizeButtons.push(btn);
+    })
+    buttons.push({
+      size: size,
+      buttons: sizeButtons
     });
   });
+
+  console.log("buttons", buttons);
 
   return buttons;
 };
@@ -56,28 +53,58 @@ storiesOf('Components|Buttons', module)
   .addParameters({ viewport: { defaultViewport: 'responsive' } })
   .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (
-    <>
-      <Container fluid>
-        <Row style={rowStyle}>
-          <Col>Active</Col>
-          <Col>Hover</Col>
-          <Col>Click*(otional)</Col>
-          <Col>Disable</Col>
-          <Col>Loading</Col>
-        </Row>
-
-        {Object.values(getButtons()).map((btnSize, i) => {
-          console.log(btnSize);
-          return (
-            <Row style={rowStyle} key={`row${i}`}>
-              {Object.values(btnSize.buttons).map((btn, j) => (
-                <Col key={`col${i}${j}`}>
-                  <Button key={`btn${i}${j}`} {...btn} />
-                </Col>))}
-            </Row>
-          )
-        })}
-
-      </Container>
-    </>
+    <Section>
+      <div>
+        <h1>Main buttons (primary action)</h1>
+        <table style={{ width: 584, borderCollapse: "separate" }}>
+          <thead>
+            <tr>
+              <th>Active</th>
+              <th>Hover</th>
+              <th>Click</th>
+              <th>Disable</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(getButtons(true)).map((btnSize, i) => {
+              console.log(btnSize);
+              return (
+                <tr key={`row${i}`}>
+                  {Object.values(btnSize.buttons).map((btn, j) => (
+                    <td key={`col${i}${j}`} style={{ paddingBottom: 20 }}>
+                      <Button key={`btn${i}${j}`} {...btn} />
+                    </td>))}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ marginTop: 47 }}>
+        <h1>Main buttons (secondary action)</h1>
+        <table style={{ width: 584, borderCollapse: "separate" }}>
+          <thead>
+            <tr>
+              <th>Active</th>
+              <th>Hover</th>
+              <th>Click</th>
+              <th>Disable</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(getButtons(false)).map((btnSize, i) => {
+              console.log(btnSize);
+              return (
+                <tr key={`row${i}`}>
+                  {Object.values(btnSize.buttons).map((btn, j) => (
+                    <td key={`col${i}${j}`} style={{ paddingBottom: 20 }}>
+                      <Button key={`btn${i}${j}`} {...btn} />
+                    </td>))}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Section>
   ));

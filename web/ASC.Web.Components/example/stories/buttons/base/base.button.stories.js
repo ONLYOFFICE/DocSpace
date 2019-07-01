@@ -7,7 +7,7 @@ import Readme from './README.md';
 import { Button } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 
-const sizeOptions = ['base', 'middle', 'big', 'huge'];
+const sizeOptions = ['base', 'big'];
 
 storiesOf('Components|Buttons', module)
   .addDecorator(withKnobs)
@@ -15,12 +15,16 @@ storiesOf('Components|Buttons', module)
   .add('base', () => (
     <Section>
       <Button 
-        size={select('size', sizeOptions, 'base')}
-        primary={boolean('primary', true)}
-        isDisabled={boolean('isDisabled', false)}
-        onClick={action('clicked')}
-        isLoading={boolean('isLoading', false)}
         label={text('label', 'Base button')}
+        primary={boolean('primary', true)}
+        size={select('size', sizeOptions, 'big')}
+
+        isHovered={boolean('isHovered', false)}
+        isClicked={boolean('isClicked', false)}
+        isDisabled={boolean('isDisabled', false)}
+        isLoading={boolean('isLoading', false)}
+
+        onClick={action('clicked')}
       />
     </Section>
   ));
