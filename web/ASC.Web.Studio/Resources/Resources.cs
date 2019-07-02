@@ -115,12 +115,46 @@ namespace ASC.Web.Studio
                 }
 
             }
+            public PeopleData People
+            {
+                get
+                {
+                    return new PeopleData();
+                }
+            }
+            public class PeopleData
+            {
+                public string Title
+                {
+                    get
+                    {
+                        return JsonResourceManager.GetString("module.People.title");
+                    }
+                }
+
+            }
+            public CommunityData Community
+            {
+                get
+                {
+                    return new CommunityData();
+                }
+            }
+            public class CommunityData
+            {
+                public string Title
+                {
+                    get
+                    {
+                        return JsonResourceManager.GetString("module.community.title");
+                    }
+                }
+
+            }
 
         }
 
         
     }
 }
-
-
 
