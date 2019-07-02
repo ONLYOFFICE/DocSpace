@@ -244,7 +244,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             IProduct product;
             IModule module;
-            CommonLinkUtility.GetLocationByRequest(out product, out module);
+            //TODOL httpContext
+            CommonLinkUtility.GetLocationByRequest(out product, out module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;

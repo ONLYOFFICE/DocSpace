@@ -24,6 +24,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -36,6 +37,7 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
         public ApiContext ApiContext { get; }
+        public HttpContext HttpContext { get { return ApiContext.HttpContext; } }
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
@@ -506,7 +508,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
-                CookiesManager.ResetUserCookie(user.ID);
+                HttpContext.ResetUserCookie(user.ID);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -665,7 +667,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("password", false)]
         public string SendUserPassword(string email)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(email, MessageService);
+            var userInfo = UserManagerWrapper.SendUserPassword(email, MessageService, HttpContext);
 
             return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
         }
@@ -698,7 +700,7 @@ namespace ASC.Employee.Core.Controllers
                 SecurityContext.SetUserPassword(userid, memberModel.Password);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
-                CookiesManager.ResetUserCookie(userid);
+                HttpContext.ResetUserCookie(userid);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -808,7 +810,7 @@ namespace ASC.Employee.Core.Controllers
                         user.Status = EmployeeStatus.Terminated;
                         CoreContext.UserManager.SaveUserInfo(user);
 
-                        CookiesManager.ResetUserCookie(user.ID);
+                        HttpContext.ResetUserCookie(user.ID);
                         MessageService.Send(MessageAction.CookieSettingsUpdated);
                         break;
                 }

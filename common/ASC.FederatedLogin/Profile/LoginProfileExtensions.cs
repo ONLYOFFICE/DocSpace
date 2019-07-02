@@ -26,7 +26,6 @@
 
 using System;
 using System.Web;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
@@ -50,17 +49,17 @@ namespace ASC.FederatedLogin.Profile
             return profile.AppendCacheProfile(uri);
         }
 
-        public static LoginProfile GetProfile(this Uri uri)
+        public static LoginProfile GetProfile(this Uri uri, HttpContext context)
         {
             var profile = new LoginProfile();
             var queryString = HttpUtility.ParseQueryString(uri.Query);
-            if (!string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) && Common.HttpContext.Current != null && Common.HttpContext.Current.Session != null)
+            if (!string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) && context != null && context.Session != null)
             {
-                return JsonConvert.DeserializeObject< LoginProfile>(Common.HttpContext.Current.Session.GetString(queryString[LoginProfile.QuerySessionParamName]));
+                return JsonConvert.DeserializeObject< LoginProfile>(context.Session.GetString(queryString[LoginProfile.QuerySessionParamName]));
             }
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryParamName]))
             {
-                profile.ParseFromUrl(uri);
+                profile.ParseFromUrl(context, uri);
                 return profile;
             }
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryCacheParamName]))

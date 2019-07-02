@@ -25,9 +25,9 @@
 
 
 using System;
-using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Data.Storage;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Utility.Skins
 {
@@ -43,14 +43,14 @@ namespace ASC.Web.Core.Utility.Skins
             return GetImageAbsoluteWebPath(imgFileName, moduleID);
         }
 
-        public static string GetImageFolderAbsoluteWebPath()
+        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext)
         {
-            return GetImageFolderAbsoluteWebPath(Guid.Empty);
+            return GetImageFolderAbsoluteWebPath(httpContext, Guid.Empty);
         }
 
-        public static string GetImageFolderAbsoluteWebPath(Guid moduleID)
+        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext, Guid moduleID)
         {
-            if (HttpContext.Current == null) return string.Empty;
+            if (httpContext == null) return string.Empty;
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
             return WebPath.GetPath(currentThemePath.ToLower());
