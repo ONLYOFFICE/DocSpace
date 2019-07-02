@@ -29,12 +29,12 @@ namespace ASC.Core.Common.Tests
 {
     using System.Linq;
     using ASC.Core.Data;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbSubscriptionServiceTest : DbBaseTest<DbSubscriptionService>
     {
-        [ClassInitialize]
+        [OneTimeSetUp]
         public void ClearData()
         {
             Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", RecipientId = "recipientId", });
@@ -46,7 +46,7 @@ namespace ASC.Core.Common.Tests
             Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = Tenants.Tenant.DEFAULT_TENANT, SourceId = "Good", ActionId = "Bad", RecipientId = "Rec1", Methods = null });
         }
 
-        [TestMethod]
+        [Test]
         public void SubscriptionMethod()
         {
             Service.SetSubscriptionMethod(new SubscriptionMethod { Tenant = this.Tenant, SourceId = "sourceId", ActionId = "actionId", RecipientId = "recipientId", Methods = new[] { "email.sender" } });

@@ -26,14 +26,14 @@
 
 #if DEBUG
 using ASC.Common.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Data
 {
-    [TestClass]
+    [TestFixture]
     public class MultiRegionalDbTest
     {
-        [TestMethod]
+        [Test]
         public void ExecuteListTest()
         {
             var db = new MultiRegionalDbManager("core");

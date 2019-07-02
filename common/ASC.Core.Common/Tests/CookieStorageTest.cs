@@ -29,12 +29,12 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using ASC.Core.Security.Authentication;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class CookieStorageTest
     {
-        [TestMethod]
+        [Test]
         public void Validate()
         {
             var t1 = 1;

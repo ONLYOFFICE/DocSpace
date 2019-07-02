@@ -29,13 +29,13 @@ namespace ASC.Core.Common.Tests
 {
     using ASC.Common.Utils;
     using ASC.Core.Tenants;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System.Linq;
 
-    [TestClass]
+    [TestFixture]
     public class HostedSolutionTest
     {
-        [TestMethod]
+        [Test]
         public void FindTenants()
         {
             var h = new HostedSolution(ConfigurationManager.ConnectionStrings["core"]);
@@ -43,14 +43,14 @@ namespace ASC.Core.Common.Tests
             Assert.AreNotEqual(0, tenants.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void TenantUtilTest()
         {
             var date = TenantUtil.DateTimeNow(System.TimeZoneInfo.GetSystemTimeZones().First());
             Assert.IsNotNull(date);
         }
 
-        [TestMethod]
+        [Test]
         public void RegionsTest()
         {
             var regionSerice = new MultiRegionHostedSolution("site");

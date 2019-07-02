@@ -26,15 +26,15 @@
 
 #if (DEBUG)
 using ASC.Common.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 
 namespace ASC.Core.Common.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class SignatureTest
     {
-        [TestMethod]
+        [Test]
         public void TestSignature()
         {
             var validObject = new { expire = DateTime.UtcNow.AddMinutes(15), key = "345jhndfg", ip = "192.168.1.1" };

@@ -25,17 +25,17 @@
 
 
 #if DEBUG
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
 {
-    [TestClass]
+    [TestFixture]
     public class ClientPaymentManagerTest
     {
         private readonly PaymentManager paymentManager = new PaymentManager(null, null, null);
 
 
-        [TestMethod]
+        [Test]
         public void ActivateCuponTest()
         {
             CoreContext.TenantManager.SetCurrentTenant(0);
