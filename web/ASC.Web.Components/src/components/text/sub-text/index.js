@@ -1,7 +1,8 @@
 import createStyledHeadline from './create-styled-headline';
 import createStyledBody from './create-styled-body-text';
-import createStyledMainHeadline from './create-styled-main-headline';
+import createStyledHeader from './create-styled-header';
 
 export const Headline = createStyledHeadline();
 export const Body = createStyledBody();
-export const MainHeadline = createStyledMainHeadline();
+export const MenuHeader = createStyledHeader('MenuHeader');
+export const ContentHeader = createStyledHeader('ContentHeader');

@@ -41,7 +41,7 @@ const style = css`
    Text.propTypes = {
      tag: PropTypes.oneOf(['p','span']),
      title: PropTypes.string,
-     color: PropTypes.string,
+     color: PropTypes.oneOf(['black', 'gray', 'lightGray']),
      backgroundColor: PropTypes.bool,
      truncate: PropTypes.bool,
      isDisabled: PropTypes.bool,
