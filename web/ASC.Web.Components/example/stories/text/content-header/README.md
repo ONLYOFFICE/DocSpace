@@ -6,16 +6,16 @@
 import { Text } from 'asc-web-components';
 ```
 
-#### Description
+### <Text.ContentHeader>
 
-Text used in titles and content
+Wraps the given text in the specified size of the content header.
 
 #### Usage
 
 ```js
-    <Text elementType='h1' title='Some title'>
+    <Text.ContentHeader title='Some title' isInline>
         Some text
-    </Text>
+    </Text.ContentHeader>
 ```
 
 #### Properties
@@ -23,9 +23,6 @@ Text used in titles and content
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                              |
-| `elementType`      | `select` |    -     |`h1`,`h2`,`h3`,`p`,`moduleName`,`mainTitle` | `p`        |Sets the text type with its own font size and font weight|
-| `styleType`        | `bool`   |    -     | -                     | `default`     | Style type                                      |
-| `title`            | `bool`   |    -     | -                     | -     | Title                                                   |
+| `title`            | `bool`   |    -     | -                     | -         | Title                                               |
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |
-
-
+| `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property           |

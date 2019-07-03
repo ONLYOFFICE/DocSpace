@@ -31,9 +31,9 @@ namespace ASC.Core.Common.Tests
     using ASC.Common.Utils;
     using ASC.Core.Billing;
     using ASC.Core.Data;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class TariffServiceTest
     {
         private readonly ITariffService tariffService;
@@ -46,7 +46,7 @@ namespace ASC.Core.Common.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void TestShoppingUriBatch()
         {
             var bc = new BillingClient(true);
@@ -54,21 +54,21 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(5, result.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPaymentInfo()
         {
             var payments = tariffService.GetPayments(918, DateTime.MinValue, DateTime.MaxValue);
             Assert.IsNotNull(payments);
         }
 
-        [TestMethod]
+        [Test]
         public void TestTariff()
         {
             var tariff = tariffService.GetTariff(918);
             Assert.IsNotNull(tariff);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSetTariff()
         {
             var duedate = DateTime.UtcNow.AddMonths(1);
@@ -78,7 +78,7 @@ namespace ASC.Core.Common.Tests
             tariffService.SetTariff(0, new Tariff { QuotaId = -1, DueDate = DateTime.MaxValue });
         }
 
-        [TestMethod]
+        [Test]
         public void TestInvoice()
         {
             var payments = tariffService.GetPayments(918, DateTime.MinValue, DateTime.MaxValue);

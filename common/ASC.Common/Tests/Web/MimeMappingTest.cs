@@ -26,14 +26,14 @@
 
 #if DEBUG
 using ASC.Common.Web;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Web {
 
-	[TestClass]
+	[TestFixture]
 	public class MimeMappingTest {
 
-		[TestMethod]
+		[Test]
 		public void GetExtentionTest() {
 			var ext = MimeMapping.GetExtention("application/x-zip-compressed");
 			Assert.AreEqual(".zip", ext);

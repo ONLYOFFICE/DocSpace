@@ -35,13 +35,13 @@ namespace ASC.Core.Common.Tests
     using ASC.Core.Billing;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using ASC.Common.Data;
 
-    [TestClass]
+    [TestFixture]
     public class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
     {
-        [ClassInitialize]
+        [OneTimeSetUp]
         public void ClearData()
         {
             Service.RemoveTenantQuota(Tenant);
@@ -51,7 +51,7 @@ namespace ASC.Core.Common.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void QuotaMethod()
         {
             var quota1 = new TenantQuota(Tenant)
@@ -80,7 +80,7 @@ namespace ASC.Core.Common.Tests
             DeleteQuotaRow(row);
         }
 
-        [TestMethod]
+        [Test]
         public void SerializeTest()
         {
             var quota1 = new TenantQuota(Tenant)
@@ -105,7 +105,7 @@ namespace ASC.Core.Common.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void SyncTest()
         {
             var client = new TariffSyncClient();

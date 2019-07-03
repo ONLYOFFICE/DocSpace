@@ -1,18 +1,16 @@
 ﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
-
 <#@ assembly name="System.Core" #>
 <#@ assembly name="Newtonsoft.Json" #>
-
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="Newtonsoft.Json.Linq" #>
-
-namespace ASC.Core.Common.Resources
+using ASC.Core.Common.Resources;
+namespace <#= GetNamespace()#>
 {
 <# 
-    var dirPath = this.Host.ResolvePath("../../../web/ASC.Web.Studio/ClientApp/public/locales/en");
+    var dirPath = GetPath();
     var files = Directory.GetFiles(dirPath, "*.json");
 
     foreach(var filePath in files)

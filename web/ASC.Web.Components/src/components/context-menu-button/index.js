@@ -39,7 +39,7 @@ const ContextMenuButton = (props) => {
         {
           iconNames.includes(props.iconName) && React.createElement(Icons[props.iconName], {size: props.size, color: props.color})
         }
-        <DropDown isOpen={isOpen}>
+        <DropDown direction={props.direction || 'left'} isOpen={isOpen}>
           {
             data.map(item => <DropDownItem {...item}/>)
           }

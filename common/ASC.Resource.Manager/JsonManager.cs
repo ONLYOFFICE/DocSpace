@@ -118,16 +118,21 @@ namespace ASC.Resource.Manager
 
             foreach (var fileWords in words)
             {
-                var wordsDictionary = new Dictionary<string, string>();
+                var wordsDictionary = new Dictionary<string, object>();
+
                 foreach (var word in fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)))
                 {
                     if (string.IsNullOrEmpty(word.ValueTo) && !withDefaultValue) continue;
 
-                    wordsDictionary[word.Title] = word.ValueTo ?? word.ValueFrom;
-                    if (!string.IsNullOrEmpty(wordsDictionary[word.Title]))
+                    var newVal = word.ValueTo ?? word.ValueFrom;
+
+                    if (!string.IsNullOrEmpty(newVal))
                     {
-                        wordsDictionary[word.Title] = wordsDictionary[word.Title].TrimEnd('\n').TrimEnd('\r');
+                        newVal = newVal.TrimEnd('\n').TrimEnd('\r');
                     }
+
+                    var newKey = GetKey(word.Title, newVal);
+                    wordsDictionary.Add(newKey.Keys.First(), newKey.Values.First());
                 }
 
                 var firstWord = fileWords.FirstOrDefault();
@@ -169,7 +174,7 @@ namespace ASC.Resource.Manager
 
                         var child = data.CreateElement("string");
                         child.Attributes.Append(stringAttr);
-                        child.InnerText = ind.Value;
+                        child.InnerText = ind.Value.ToString();
 
                         resources.AppendChild(child);
                     }
@@ -204,6 +209,14 @@ namespace ASC.Resource.Manager
             }
 
             return culture;
+        }
+
+        private static Dictionary<string, object> GetKey(string title, string val)
+        {
+            var splited = title.Split('.');
+            if (splited.Length == 1) return new Dictionary<string, object>() { { title, val } };
+
+            return new Dictionary<string, object>() { { splited[0], GetKey(title.Substring(title.IndexOf('.') + 1), val) } };
         }
     }
 }

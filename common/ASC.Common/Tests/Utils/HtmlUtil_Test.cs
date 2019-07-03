@@ -28,13 +28,13 @@
 namespace ASC.Common.Tests.Utils
 {
     using ASC.Common.Utils;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System.IO;
 
-    [TestClass]
+    [TestFixture]
     public class HtmlUtil_Test
     {
-        [TestMethod]
+        [Test]
         public void GetTextBr()
         {
             string html = "Hello";
@@ -62,7 +62,7 @@ w <a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/UserPage.as
             System.Diagnostics.Trace.Write(HtmlUtil.GetText(html));
         }
 
-        [TestMethod]
+        [Test]
         public void FromFile()
         {
             var html = File.ReadAllText("tests/utils/html_test.html");//Include file!

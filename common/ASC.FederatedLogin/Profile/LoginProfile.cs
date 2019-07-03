@@ -273,9 +273,9 @@ namespace ASC.FederatedLogin.Profile
         }
 
 
-        public static bool HasProfile()
+        public static bool HasProfile(HttpContext context)
         {
-            return Common.HttpContext.Current != null && HasProfile(Common.HttpContext.Current.Request);
+            return context != null && HasProfile(context.Request);
         }
 
         public static bool HasProfile(HttpRequest request)
@@ -284,21 +284,16 @@ namespace ASC.FederatedLogin.Profile
             return new Uri(request.GetDisplayUrl()).HasProfile();
         }
 
-        public static LoginProfile GetProfile()
+        public static LoginProfile GetProfile(HttpContext context)
         {
-            return Common.HttpContext.Current != null ? GetProfile(Common.HttpContext.Current.Request) : new LoginProfile();
+            if (context == null) return new LoginProfile();
+            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context);
         }
 
         internal static LoginProfile FromError(Exception e)
         {
             var profile = new LoginProfile { AuthorizationError = e.Message };
             return profile;
-        }
-
-        public static LoginProfile GetProfile(HttpRequest request)
-        {
-            if (request == null) throw new ArgumentNullException("request");
-            return new Uri(request.GetDisplayUrl()).GetProfile();
         }
 
         private static Uri AppendQueryParam(Uri uri, string keyvalue, string value)
@@ -339,7 +334,7 @@ namespace ASC.FederatedLogin.Profile
         }
 
 
-        internal void ParseFromUrl(Uri uri)
+        internal void ParseFromUrl(HttpContext context, Uri uri)
         {
             var queryString = HttpUtility.ParseQueryString(uri.Query);
             if (!string.IsNullOrEmpty(queryString[QueryParamName]))
@@ -348,7 +343,7 @@ namespace ASC.FederatedLogin.Profile
             }
             else if (!string.IsNullOrEmpty(queryString[QuerySessionParamName]))
             {
-                FromTransport(Common.HttpContext.Current.Session.GetString(queryString[QuerySessionParamName]));
+                FromTransport(context.Session.GetString(queryString[QuerySessionParamName]));
             }
             else if (!string.IsNullOrEmpty(queryString[QueryCacheParamName]))
             {

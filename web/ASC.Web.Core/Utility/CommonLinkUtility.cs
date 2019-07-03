@@ -29,13 +29,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -205,32 +205,25 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID()
+        public static Guid GetProductID(HttpContext context)
         {
             var productID = Guid.Empty;
 
-            if (HttpContext.Current != null)
+            if (context != null)
             {
-                IProduct product;
-                IModule module;
-                GetLocationByRequest(out product, out module);
+                GetLocationByRequest(out var product, out var module, context);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
-        {
-            GetLocationByRequest(out currentProduct, out currentModule, HttpContext.Current);
-        }
-
-        public static void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule, Microsoft.AspNetCore.Http.HttpContext context)
+        public static void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule, HttpContext context)
         {
             var currentURL = string.Empty;
             if (context != null && context.Request != null)
             {
-                currentURL = HttpContext.Current.Request.GetUrlRewriter().AbsoluteUri;
+                currentURL = context.Request.GetUrlRewriter().AbsoluteUri;
 
                 //TODO ?
                 // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx

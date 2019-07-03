@@ -34,9 +34,9 @@ namespace ASC.Core.Common.Tests
     using ASC.Core.Tenants;
     using ASC.Core.Users;
     using ASC.Security.Cryptography;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbTenantServiceTest : DbBaseTest<DbTenantService>
     {
         private readonly DbUserService userService;
@@ -64,7 +64,7 @@ namespace ASC.Core.Common.Tests
             Service.SetTenantSettings(Tenant, "key3", null);
         }
 
-        [TestMethod]
+        [Test]
         public void TenantTest()
         {
             var t1 = new Tenant("nct5nct5");
@@ -125,7 +125,7 @@ namespace ASC.Core.Common.Tests
             userService.RemoveUser(Tenant, user.ID, true);
         }
 
-        [TestMethod]
+        [Test]
         public void ValidateDomain()
         {
             ValidateDomain("12345", typeof(TenantTooShortException));
@@ -155,7 +155,7 @@ namespace ASC.Core.Common.Tests
             Service.RemoveTenant(Tenant);
         }
 
-        [TestMethod]
+        [Test]
         public void TenantSettings()
         {
             Service.SetTenantSettings(Tenant, "key1", null);

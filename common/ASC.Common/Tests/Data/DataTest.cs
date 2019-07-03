@@ -26,13 +26,13 @@
 
 /*#if DEBUG
 using ASC.Common.Data;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Data.SQLite;
 
 namespace ASC.Common.Tests.Data
 {
-    [TestClass]
+    [TestFixture]
     public class DataTest
     {
         private string dbId = Guid.NewGuid().ToString();
@@ -43,7 +43,7 @@ namespace ASC.Common.Tests.Data
             DbRegistry.RegisterDatabase(dbId, new SQLiteFactory(), cs);
         }
 
-        [TestMethod]
+        [Test]
         public void RegistryTest()
         {
             Assert.AreEqual(cs, DbRegistry.GetConnectionString(dbId));
@@ -51,7 +51,7 @@ namespace ASC.Common.Tests.Data
             Assert.IsNotNull(DbRegistry.CreateDbConnection(dbId));
         }
 
-        [TestMethod]
+        [Test]
         public void DbTransactionTest()
         {
             var dbManager = new DbManager(dbId);
@@ -65,7 +65,7 @@ namespace ASC.Common.Tests.Data
             dbManager.ExecuteNonQuery("insert into a(c1) values (?)", "s3");
         }
 
-        [TestMethod]
+        [Test]
         public void GroupConcatTest()
         {
             using (var connect = new SQLiteConnection("Data Source=:memory:"))
@@ -107,7 +107,7 @@ namespace ASC.Common.Tests.Data
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ExecuteScalarTest()
         {
             using (var connect = new SQLiteConnection("Data Source=:memory:"))
@@ -142,7 +142,7 @@ namespace ASC.Common.Tests.Data
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ExecuteListWithParamsTest()
         {
             using (var connect = new SQLiteConnection("Data Source=:memory:"))
@@ -152,7 +152,7 @@ namespace ASC.Common.Tests.Data
             }
         }
 
-        [TestMethod]
+        [Test]
         public void MySqlUnnamedParametersTest()
         {
             using (var db = new DbManager("core"))

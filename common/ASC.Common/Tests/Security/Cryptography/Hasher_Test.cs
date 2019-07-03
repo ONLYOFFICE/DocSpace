@@ -26,17 +26,17 @@
 
 #if DEBUG
 using ASC.Security.Cryptography;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace ASC.Common.Tests.Security.Cryptography
 {
-    [TestClass]
+    [TestFixture]
     public class Hasher_Test
     {
-        [TestMethod]
+        [Test]
         public void DoHash()
         {
             string str = "Hello, Jhon!";

@@ -28,16 +28,16 @@
 using log4net;
 using log4net.Appender;
 using log4net.Config;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Reflection;
 
 namespace ASC.Common.Tests.Logging
 {
-    [TestClass]
+    [TestFixture]
     public class ConvertTest
     {
-        [TestMethod]
+        [Test]
         public void FolderTest()
         {
             XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
@@ -45,7 +45,7 @@ namespace ASC.Common.Tests.Logging
             Assert.AreEqual("..\\Logs\\onlyoffice\\8.0\\bin\\Test." + DateTime.Now.ToString("MM-dd") + ".log", ((FileAppender)appenders[0]).File);
         }
 
-        [TestMethod]
+        [Test]
         public void CommandLineTest()
         {
             XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));

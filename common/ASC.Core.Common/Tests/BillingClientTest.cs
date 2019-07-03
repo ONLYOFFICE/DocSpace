@@ -28,11 +28,11 @@
 namespace ASC.Core.Common.Tests
 {
     using Core.Billing;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System;
     using System.Linq;
 
-    [TestClass]
+    [TestFixture]
     public class BillingClientTest
     {
         private readonly BillingClient billingClient;
@@ -44,7 +44,7 @@ namespace ASC.Core.Common.Tests
         }
 
 
-        [TestMethod]
+        [Test]
         public void GetLastPaymentTest()
         {
             var p = billingClient.GetLastPayment("208761");
@@ -54,7 +54,7 @@ namespace ASC.Core.Common.Tests
             Assert.IsFalse(p.Autorenewal);
         }
 
-        [TestMethod]
+        [Test]
         public void GetLastPaymentByEmail()
         {
             var arr = billingClient.GetLastPaymentByEmail("david@bluetigertech.com.au");
@@ -66,7 +66,7 @@ namespace ASC.Core.Common.Tests
             Assert.IsTrue(p.SAAS);
         }
 
-        [TestMethod]
+        [Test]
         public void GetPaymentsTest()
         {
             var payments = billingClient.GetPayments("918", DateTime.MinValue, DateTime.MaxValue).ToList();
@@ -81,7 +81,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(payments[0].Price, 37.5);
         }
 
-        [TestMethod]
+        [Test]
         public void ShoppingUriBatchTest()
         {
             var result = billingClient.GetPaymentUrls("55380i", new[] { "78", "79", "80", "107", "108" });
@@ -99,14 +99,14 @@ namespace ASC.Core.Common.Tests
             Assert.IsNull(result["-2"].Item2);
         }
 
-        [TestMethod]
+        [Test]
         public void GetPaymentUrlTest()
         {
             var result = billingClient.GetPaymentUrl("49b9c8c2-70d0-4e16-bb1b-a5106af81e52", "61", "en-EN");
             Assert.AreNotEqual(string.Empty, result);
         }
 
-        [TestMethod]
+        [Test]
         public void GetInvoiceTest()
         {
             var result = billingClient.GetInvoice("11806812");
@@ -114,7 +114,7 @@ namespace ASC.Core.Common.Tests
             Assert.IsNull(result.Refund);
         }
 
-        [TestMethod]
+        [Test]
         public void GetProductPriceInfoTest()
         {
             var result = billingClient.GetProductPriceInfo("36", "60", "131");

@@ -58,8 +58,26 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   };
 
   padding: ${props =>
-    (props.size === 'big' && (props.primary ? '8px 28px 9px 28px' : '8px 27px 9px 28px')) ||
-    (props.size === 'base' && (props.primary ? '3px 24px 5px 24px' : '3px 24px 5px 24px'))
+    (props.size === 'big' && (props.primary 
+      ? (props.icon 
+          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
+          : (props.label ? '8px 28px 9px 28px' : '8px 10px 9px 10px')
+        ) 
+      : (props.icon 
+          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
+          : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+        ))
+    ) ||
+    (props.size === 'base' && (props.primary 
+      ? (props.icon 
+          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
+          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+        )
+      : (props.icon 
+          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
+          : (props.label ? '3px 24px 5px 24px' : '3px 5px 5px 5px')
+        ))
+    )
   };
 
   cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
@@ -111,31 +129,50 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   &:focus {
     outline: none
   }
-`;
 
-const ButtonLoader = styled(Loader)`
-  display: inline-block;
-  margin-right: 8px;
-`;
-
-const getLoaderSize = (btnSize) => {
-  switch (btnSize) {
-    case 'big':
-      return 16;
-    case 'huge':
-      return 18;
-    default:
-      return 14;
+  .btnIcon,
+  .loader {
+    display: inline-block;
+    vertical-align: text-top;
   }
 
-}
+  ${props => props.label && css`
+    .btnIcon,
+    .loader {
+      padding-right: 4px;
+    }
+  `}
+`;
+
+const Icon = ({size, primary, icon}) => (
+  <div className="btnIcon">
+    { icon && React.cloneElement(icon, 
+      { 
+        isfill: true, 
+        size: size === "big" ? "medium" : "small", 
+        color: primary ? "#FFFFFF" : '#333333'
+    })}
+  </div>
+);
+
+Icon.propTypes = {
+  icon: PropTypes.node
+};
+
+Icon.defaultProps = {
+  icon: null
+};
 
 const Button = props => {
-  const { isLoading, label, primary, size } = props;
+  const { isLoading, label, primary, size, icon } = props;
   return (
     <StyledButton {...props}>
-      {isLoading && <ButtonLoader type="oval" size={getLoaderSize(size)} color={primary ? "white" : 'black'} />}
-      {label}
+        {(isLoading || icon) && 
+          isLoading 
+            ? <Loader type="oval" size={size === "big" ? 16 : 14} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+            : <Icon {...props} />
+        }
+        {label}
     </StyledButton>
   );
 };
@@ -144,6 +181,7 @@ Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'big']),
+  icon: PropTypes.node,
 
   tabIndex: PropTypes.number,
 
@@ -159,6 +197,7 @@ Button.defaultProps = {
   label: '',
   primary: false,
   size: 'base',
+  icon: null,
 
   tabIndex: -1,
 

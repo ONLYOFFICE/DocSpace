@@ -131,7 +131,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                RequestCode(Common.HttpContext.Current, scopes);
+                RequestCode(context, scopes);
                 return null;
             }
             var state = context.Request.Query["state"];

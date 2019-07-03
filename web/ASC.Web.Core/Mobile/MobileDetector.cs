@@ -26,9 +26,9 @@
 
 using System;
 using System.Text.RegularExpressions;
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Mobile
 {
@@ -39,9 +39,9 @@ namespace ASC.Web.Core.Mobile
         private static readonly ICache cache = AscCache.Memory;
 
 
-        public static bool IsMobile
+        public static bool IsMobile(HttpContext httpContext)
         {
-            get { return IsRequestMatchesMobile(); }
+            return IsRequestMatchesMobile(httpContext);
         }
 
 
@@ -54,10 +54,10 @@ namespace ASC.Web.Core.Mobile
         }
 
 
-        public static bool IsRequestMatchesMobile()
+        public static bool IsRequestMatchesMobile(HttpContext httpContext)
         {
             bool? result = false;
-            var ua = HttpContext.Current.Request.Headers["User-Agent"].ToString();
+            var ua = httpContext.Request.Headers["User-Agent"].ToString();
             var regex = uaMobileRegex;
             if (!string.IsNullOrEmpty(ua) && regex != null)
             {

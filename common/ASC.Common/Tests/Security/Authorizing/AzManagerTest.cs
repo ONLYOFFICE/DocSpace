@@ -27,15 +27,15 @@
 #if DEBUG
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace ASC.Common.Tests.Security.Authorizing
 {
-    [TestClass]
+    [TestFixture]
     public class AzManagerTest
     {
-        [TestMethod]
+        [Test]
         public void CollectInheritSubjects_Test()
         {
             AzManager azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
@@ -81,7 +81,7 @@ namespace ASC.Common.Tests.Security.Authorizing
             Assert.AreEqual(3, subjects.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void GetAzManagerAcl()
         {
 
@@ -134,7 +134,7 @@ namespace ASC.Common.Tests.Security.Authorizing
             Assert.IsFalse(acl.IsAllow);
         }
 
-        [TestMethod]
+        [Test]
         public void GetAzManagerObjectAcl()
         {
             AzManager azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);

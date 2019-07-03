@@ -29,7 +29,6 @@ using System.Globalization;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
-using ASC.Common;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -38,6 +37,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Users
 {
@@ -163,14 +163,14 @@ namespace ASC.Web.Core.Users
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 
-        public static UserInfo SendUserPassword(string email, MessageService messageService)
+        public static UserInfo SendUserPassword(string email, MessageService messageService, HttpContext context)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.IPSecurity.Verify(tenant))
+            if (settings.Enable && !IPSecurity.IPSecurity.Verify(context, tenant))
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
