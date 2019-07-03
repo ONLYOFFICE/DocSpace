@@ -121,6 +121,7 @@ import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
 import OrigEyeIcon from './eye.react.svg';
+import OrigMenuIcon from './menu.react.svg';
 
 
 export const PeopleIcon = createStyledIcon(
@@ -610,4 +611,8 @@ export const CheckboxIcon = createStyledIcon(
 export const EyeIcon = createStyledIcon(
   OrigEyeIcon,
   'EyeIcon'
+);
+export const MenuIcon = createStyledIcon(
+  OrigMenuIcon,
+  'MenuIcon'
 );
