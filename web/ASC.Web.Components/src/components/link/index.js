@@ -96,11 +96,12 @@ ${props => (props.type === 'action' && props.dropdownType === 'alwaysDotted' &&
 
 ${props => (props.isTextOverflow && 
     css`
+        white-space: nowrap;
+        overflow: hidden;
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
         -moz-text-overflow: ellipsis;
         -webkit-text-overflow: ellipsis;
-        overflow: hidden;
     `)
 }
 
