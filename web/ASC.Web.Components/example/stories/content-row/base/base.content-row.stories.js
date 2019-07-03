@@ -5,7 +5,7 @@ import { BooleanValue } from 'react-values'
 import { withKnobs, boolean, select, text } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { ContentRow, Checkbox, Avatar, ContextMenuButton } from 'asc-web-components';
+import { ContentRow, Checkbox, Avatar, ContextMenuButton, Text } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 
 
@@ -15,9 +15,9 @@ storiesOf('Components|ContentRow', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
 
-    const checkbox = boolean('checkbox', false);
-    const avatar = boolean('avatar', false);
-    const contextButton = boolean('contextButton', false);
+    const checkbox = boolean('checkbox', true);
+    const avatar = boolean('avatar', true);
+    const contextButton = boolean('contextButton', true);
 
     return(
       <Section>
@@ -43,10 +43,14 @@ storiesOf('Components|ContentRow', module)
                       : ''}
                     contextButton={contextButton
                       ? <ContextMenuButton direction='right' 
-                                        getData={() => [{}]} />
+                                        getData={() => 
+                                          [
+                                            {key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit')},
+                                            {key: 'key2', label: 'Delete', onClick: () => console.log('Context action: Delete')}
+                                          ]} />
                       : ''}
               >
-                <a>{text('content', '')}</a>
+                <Text.Body truncate={true} >{text('content', '')}</Text.Body>
               </ContentRow>
       </Section>
     );

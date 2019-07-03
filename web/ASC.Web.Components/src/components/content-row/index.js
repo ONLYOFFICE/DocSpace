@@ -31,7 +31,7 @@ const StyledContent = styled.div`
     display: flex;
     flex-basis: 100%;
 
-    & > a {
+    & > a, p {
         margin-left: 16px;
     }
 
