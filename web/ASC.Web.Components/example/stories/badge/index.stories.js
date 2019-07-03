@@ -18,6 +18,9 @@ storiesOf('Components|Badge', module)
         color={color('color', '#FFFFFF')}
         fontSize={text('fontSize', '11px')}
         fontWeight={number('fontWeight', 800)}
+        borderRadius={text('borderRadius', '11px')}
+        padding={text('padding', '0 5px')}
+        maxWidth={text('maxWidth', '50px')}
         onClick={(e)=>{
           action('onClick')(e);
         }}

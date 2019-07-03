@@ -7,12 +7,12 @@ const StyledBadge = styled.div`
   color: ${props => props.color};
   font-size: ${props => props.fontSize};
   font-weight: ${props => props.fontWeight};
-  border-radius: ${props => props.fontSize};
-  padding: 0 ${props => Math.floor(parseInt(props.fontSize)/2)}px;
+  border-radius: ${props => props.borderRadius};
+  padding: ${props => props.padding};
+  max-width: ${props => props.maxWidth};
   text-align: center;
   cursor: pointer;
   overflow: hidden;
-  max-width: 50px;
   text-overflow: ellipsis;
   display: inline-block;
 `;
@@ -31,6 +31,9 @@ Badge.propTypes = {
   color: PropTypes.string,
   fontSize: PropTypes.string,
   fontWeight: PropTypes.number,
+  borderRadius: PropTypes.string,
+  padding: PropTypes.string,
+  maxWidth: PropTypes.string,
   onClick: PropTypes.func
 };
 
@@ -39,7 +42,10 @@ Badge.defaultProps = {
   backgroundColor: '#ED7309',
   color: '#FFFFFF',
   fontSize: '11px',
-  fontWeight: 800
+  fontWeight: 800,
+  borderRadius: '11px',
+  padding: '0 5px',
+  maxWidth: '50px'
 }
 
 export default Badge;
