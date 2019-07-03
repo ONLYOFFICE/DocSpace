@@ -31,12 +31,12 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using ASC.Common.Security.Authorizing;
     using ASC.Core.Data;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class DbAzServiceTest : DbBaseTest<DbAzService>
     {
-        [TestInitialize]
+        [SetUp]
         public void ClearData()
         {
             foreach (var ac in Service.GetAces(Tenant, default(DateTime)))
@@ -45,7 +45,7 @@ namespace ASC.Core.Common.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void AceRecords()
         {
             var ar1 = new AzRecord(Guid.Empty, Guid.Empty, AceType.Allow);

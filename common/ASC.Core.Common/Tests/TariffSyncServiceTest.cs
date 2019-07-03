@@ -28,10 +28,10 @@
 namespace ASC.Core.Common.Tests
 {
     using ASC.Core.Billing;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System.Linq;
 
-    [TestClass]
+    [TestFixture]
     public class TariffSyncServiceTest
     {
         private readonly ITariffSyncService tariffSyncService;
@@ -42,7 +42,7 @@ namespace ASC.Core.Common.Tests
             tariffSyncService = new TariffSyncService();
         }
 
-        [TestMethod]
+        [Test]
         public void GetTeriffsTest()
         {
             var tariff = tariffSyncService.GetTariffs(70, null).FirstOrDefault(t => t.Id == -38);
@@ -51,7 +51,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(100 * 1024 * 1024, tariff.MaxFileSize);
         }
 
-        [TestMethod]
+        [Test]
         public void SyncTest()
         {
             using (var wcfClient = new TariffSyncClient())

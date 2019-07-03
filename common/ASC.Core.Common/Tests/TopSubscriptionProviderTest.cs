@@ -31,12 +31,12 @@ using System.Linq;
 using System.Text;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Common.Tests
 {
-    [TestClass]
+    [TestFixture]
     class TopSubscriptionProviderTest
     {
         private TopSubscriptionProvider subProvider;
@@ -53,7 +53,7 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec2;
         private NotifyAction nAction;
 
-        [ClassInitialize]
+        [OneTimeSetUp]
         public void CreateProviders()
         {
             tenant = new Tenants.Tenant(0, "teamlab");
@@ -71,7 +71,7 @@ namespace ASC.Core.Common.Tests
             CoreContext.TenantManager.SetCurrentTenant(tenant);
         }
 
-        [TestMethod]
+        [Test]
         public void TopSubProviderTest()
         {
             try

@@ -26,14 +26,14 @@
 
 #if DEBUG
 using ASC.Common.Utils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Utils
 {
-    [TestClass]
+    [TestFixture]
     public class MimeHeaderUtilsTest
     {
-        [TestMethod]
+        [Test]
         public void Encode()
         {
             Assert.AreEqual("=?utf-8?B?0YrRitGK?=", MimeHeaderUtils.EncodeMime("ъъъ"));

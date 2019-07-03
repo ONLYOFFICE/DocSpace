@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using ASC.Web.Core;
 
 namespace ASC.People
@@ -24,17 +24,17 @@ namespace ASC.People
 
         public override string Name
         {
-            get { return "People"; }//PeopleResource.ProductName; }
+            get { return PeopleResource.ProductName; }
         }
 
         public override string Description
         {
-            get { return "People Description"; }//PeopleResource.ProductDescription; }
+            get { return PeopleResource.ProductDescription; }
         }
 
         public override string ExtendedDescription
         {
-            get { return "People ExtendedDescription"; }//PeopleResource.ProductDescription; }
+            get { return PeopleResource.ProductDescription; }
         }
 
         public override Guid ProductID
@@ -65,8 +65,8 @@ namespace ASC.People
                 IconFileName = "product_logo.png",
                 LargeIconFileName = "images/people_logolarge.png",
                 DefaultSortOrder = 50,
-                AdminOpportunities = () => new List<string>(),//PeopleResource.ProductAdminOpportunities.Split('|').ToList(),
-                UserOpportunities = () => new List<string>() //PeopleResource.ProductUserOpportunities.Split('|').ToList()
+                AdminOpportunities = () => PeopleResource.ProductAdminOpportunities.Split('|').ToList(),
+                UserOpportunities = () => PeopleResource.ProductUserOpportunities.Split('|').ToList()
             };
 
             //SearchHandlerManager.Registry(new SearchHandler());

@@ -26,14 +26,14 @@
 
 #if DEBUG
 using ASC.Geolocation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Geolocation
 {
-    [TestClass]
+    [TestFixture]
     public class GeolocationTest
     {
-        [TestMethod]
+        [Test]
         public void GetIPGeolocationTest()
         {
             var helper = new GeolocationHelper("db");

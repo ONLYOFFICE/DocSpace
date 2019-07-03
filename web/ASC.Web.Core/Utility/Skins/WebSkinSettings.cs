@@ -53,8 +53,6 @@ namespace ASC.Web.Core.Utility.Skins
 
         static WebSkin()
         {
-            if (HttpContext.Current == null) return;
-
             try
             {
                 var dir = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, "~/skins/default/");

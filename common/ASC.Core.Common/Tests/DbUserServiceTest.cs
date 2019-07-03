@@ -31,14 +31,14 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using ASC.Core.Data;
     using ASC.Security.Cryptography;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using ASC.Core.Users;
     using System.Globalization;
 
-    [TestClass]
+    [TestFixture]
     public class DbUserServiceTest : DbBaseTest<DbUserService>
     {
-        [ClassInitialize]
+        [OneTimeSetUp]
         public void ClearData()
         {
             Service.GetUsers(Tenant, default(DateTime))
@@ -54,7 +54,7 @@ namespace ASC.Core.Common.Tests
                 .ForEach(r => Service.RemoveUserGroupRef(Tenant, r.Value.UserId, r.Value.GroupId, r.Value.RefType, true));
         }
 
-        [TestMethod]
+        [Test]
         public void CRUDUser()
         {
             var user1 = new UserInfo
@@ -146,7 +146,7 @@ namespace ASC.Core.Common.Tests
             Assert.IsNull(Service.GetUserPassword(Tenant, user1.ID));
         }
 
-        [TestMethod]
+        [Test]
         public void CRUDGroup()
         {
             var g1 = new Group
@@ -179,7 +179,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(0, Service.GetGroups(Tenant, new DateTime(1900, 1, 1)).Count());
         }
 
-        [TestMethod]
+        [Test]
         public void CRUDUserGroupRef()
         {
             Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = Guid.Empty, GroupId = Guid.Empty, RefType = UserGroupRefType.Manager });

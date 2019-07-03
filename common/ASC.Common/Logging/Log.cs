@@ -772,7 +772,7 @@ namespace ASC.Common.Logging
 
         public static ILog GetLogger(string name)
         {
-            return ConfigurationManager.LogManager.Get(name);
+            return ConfigurationManager.LogManager?.Get(name) ?? new NullLog();
         }
 
         public ILog Get(string name)

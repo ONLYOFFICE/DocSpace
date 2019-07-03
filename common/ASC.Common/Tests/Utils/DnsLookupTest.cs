@@ -30,36 +30,32 @@ namespace ASC.Common.Tests.Utils
     using System;
     using System.Linq;
     using ASC.Common.Utils;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     
-    [TestClass]
+    [TestFixture]
     public class DnsLookupTest
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "domainName")]
+        [Test]
         public void DomainNameEmptyExists()
         {
             const string domain = "";
 
             var dnsLoopup = new DnsLookup();
 
-            dnsLoopup.IsDomainExists(domain);
+            Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "domainName");
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException), "Domain name could not be parsed")]
+        [Test]
         public void DomainNameInvalidExists()
         {
             const string domain = "/.";
 
             var dnsLoopup = new DnsLookup();
 
-            var exists = dnsLoopup.IsDomainExists(domain);
-
-            Assert.IsTrue(exists);
+            Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "Domain name could not be parsed");
         }
 
-        [TestMethod]
+        [Test]
         public void DomainExists()
         {
             const string domain = "onlyoffice.com";
@@ -71,7 +67,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(exists);
         }
 
-        [TestMethod]
+        [Test]
         public void DomainNotExists()
         {
             const string domain = "sdkjskytt111hdhdhwooo.ttt";
@@ -83,7 +79,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsFalse(exists);
         }
 
-        [TestMethod]
+        [Test]
         public void MxExists()
         {
             const string domain = "onlyoffice.com";
@@ -96,7 +92,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(exists);
         }
 
-        [TestMethod]
+        [Test]
         public void DkimExists()
         {
             const string domain = "onlyoffice.com";
@@ -109,7 +105,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(exists);
         }
 
-        [TestMethod]
+        [Test]
         public void TxtSpfExists()
         {
             const string domain = "onlyoffice.com";
@@ -122,7 +118,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(exists);
         }
 
-        [TestMethod]
+        [Test]
         public void GetMxRecords()
         {
             const string domain = "onlyoffice.com";
@@ -134,7 +130,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(mxRecords.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void GetARecords()
         {
             const string domain = "onlyoffice.com";
@@ -146,7 +142,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(aRecords.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void GetIPs()
         {
             const string domain = "onlyoffice.com";
@@ -158,7 +154,7 @@ namespace ASC.Common.Tests.Utils
             Assert.IsTrue(ips.Any());
         }
 
-        [TestMethod]
+        [Test]
         public void GetPtr()
         {
             const string domain = "mx1.onlyoffice.com";
@@ -172,7 +168,7 @@ namespace ASC.Common.Tests.Utils
         }
 
 
-        [TestMethod]
+        [Test]
         public void GetNoexistedDomainMx()
         {
             const string domain = "taramparam.tk";

@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-export default function createStyledMainHeadline() {
+export default function createStyledHeader(headlineType) {
 
    const fontSize = css`
-      ${props =>
-         (props.headlineName === 'moduleName' && 27) ||
-         (props.headlineName === 'mainTitle' && 21)
+      ${
+         (headlineType === 'MenuHeader' && 27) ||
+         (headlineType === 'ContentHeader' && 21)
       }
    `;
 
@@ -24,7 +24,6 @@ export default function createStyledMainHeadline() {
    const Text = props => <StyledHeadline {...props} title={props.title}></StyledHeadline>
 
    Text.propTypes = {
-      headlineName: PropTypes.oneOf(['moduleName', 'mainTitle']),
       title: PropTypes.string,
       truncate: PropTypes.bool,
       isDisabled: PropTypes.bool,
@@ -32,7 +31,6 @@ export default function createStyledMainHeadline() {
    };
 
    Text.defaultProps = {
-      headlineName: 'moduleName',
       title: '',
       truncate: false,
       isDisabled: false,

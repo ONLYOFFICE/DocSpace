@@ -27,7 +27,7 @@
 #if (DEBUG)
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 
 namespace ASC.Common.Tests.Notify
@@ -63,7 +63,7 @@ namespace ASC.Common.Tests.Notify
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class XmlPatternProvider2Test
     {
         private readonly string xml =
@@ -87,7 +87,7 @@ namespace ASC.Common.Tests.Notify
             </patterns>";
 
 
-        [TestMethod]
+        [Test]
         public void XmlParseTest()
         {
             var xmlPatternProvider2 = new XmlPatternProvider2(xml);

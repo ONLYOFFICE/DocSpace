@@ -26,15 +26,15 @@
 
 using System;
 using System.Web;
-using ASC.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Utility
 {
     public static class UrlSwitcher
     {
-        public static string SelectCurrentUriScheme(string uri)
+        public static string SelectCurrentUriScheme(this HttpContext httpContext, string uri)
         {
-            return HttpContext.Current != null ? SelectUriScheme(uri, HttpContext.Current.Request.GetUrlRewriter().Scheme) : uri;
+            return httpContext != null ? SelectUriScheme(uri, httpContext.Request.GetUrlRewriter().Scheme) : uri;
         }
 
         public static string SelectUriScheme(string uri, string scheme)
@@ -42,11 +42,11 @@ namespace ASC.Web.Core.Utility
             return Uri.IsWellFormedUriString(uri,UriKind.Absolute) ? SelectUriScheme(new Uri(uri, UriKind.Absolute),scheme).ToString() : uri;
         }
 
-        public static Uri SelectCurrentUriScheme(Uri uri)
+        public static Uri SelectCurrentUriScheme(this HttpContext httpContext, Uri uri)
         {
-            if (HttpContext.Current!=null)
+            if (httpContext != null)
             {
-                return SelectUriScheme(uri, HttpContext.Current.Request.GetUrlRewriter().Scheme);
+                return SelectUriScheme(uri, httpContext.Request.GetUrlRewriter().Scheme);
             }
             return uri;
         }
@@ -62,9 +62,9 @@ namespace ASC.Web.Core.Utility
             return uri;
         }
 
-        public static Uri ToCurrentScheme(this Uri uri)
+        public static Uri ToCurrentScheme(this Uri uri, HttpContext httpContext)
         {
-            return SelectCurrentUriScheme(uri);
+            return SelectCurrentUriScheme(httpContext, uri);
         }
 
         public static Uri ToScheme(this Uri uri, string scheme)

@@ -30,13 +30,13 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Threading;
     using ASC.Core.Users;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using System.Diagnostics;
 
-    [TestClass]
+    [TestFixture]
     public class UserManagerTest
     {
-        [TestMethod]
+        [Test]
         public void SearchUsers()
         {
             CoreContext.TenantManager.SetCurrentTenant(0);
@@ -72,7 +72,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(0, users);
         }
 
-        [TestMethod]
+        [Test]
         public void DepartmentManagers()
         {
             CoreContext.TenantManager.SetCurrentTenant(1024);
@@ -101,7 +101,7 @@ namespace ASC.Core.Common.Tests
             CoreContext.UserManager.SetDepartmentManager(g1.ID, u2.ID);
         }
 
-        [TestMethod]
+        [Test]
         public void UserGroupsPerformanceTest()
         {
             CoreContext.TenantManager.SetCurrentTenant(0);

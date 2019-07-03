@@ -29,11 +29,11 @@ using System;
 
 namespace ASC.Common.Tests.Security.Cryptography
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using ASC.Security.Cryptography;
     using System.Security.Cryptography;
 
-    [TestClass]
+    [TestFixture]
     public class EmailValidationKeyPairProvider_Test
     {
         public void PasswordDerivedBytes_Test()
@@ -50,7 +50,7 @@ namespace ASC.Common.Tests.Security.Cryptography
 
         }
 
-        [TestMethod]
+        [Test]
         public void GetEmailKey_MillisecondDistanceDifference()
         {
             var k1 = EmailValidationKeyProvider.GetEmailKey("sm_anton@mail.ru");
@@ -60,7 +60,7 @@ namespace ASC.Common.Tests.Security.Cryptography
             Assert.AreNotEqual(k1, k2);
         }
 
-        [TestMethod]
+        [Test]
         public void ValidateKeyImmediate()
         {
             var k1 = EmailValidationKeyProvider.GetEmailKey("sm_anton@mail.ru");
@@ -68,7 +68,7 @@ namespace ASC.Common.Tests.Security.Cryptography
             Assert.AreEqual(EmailValidationKeyProvider.ValidateEmailKey("sm_anton@mail.ru2", k1), EmailValidationKeyProvider.ValidationResult.Invalid);
         }
 
-        [TestMethod]
+        [Test]
         public void ValidateKey_Delayed()
         {
             var k1 = EmailValidationKeyProvider.GetEmailKey("sm_anton@mail.ru");

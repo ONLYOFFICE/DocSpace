@@ -31,9 +31,9 @@ namespace ASC.Core.Common.Tests
     using ASC.Common.Utils;
     using ASC.Core.Caching;
     using ASC.Core.Data;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
 
-    [TestClass]
+    [TestFixture]
     public class CachedSubscriptionServiceTest
     {
         private readonly ISubscriptionService service;
@@ -45,7 +45,7 @@ namespace ASC.Core.Common.Tests
         }
 
 
-        [ClassInitialize]
+        [OneTimeSetUp]
         public void ClearData()
         {
             service.RemoveSubscriptions(2024, "sourceId2", "actionId2");
@@ -59,7 +59,7 @@ namespace ASC.Core.Common.Tests
             service.SetSubscriptionMethod(sm2);
         }
 
-        [TestMethod]
+        [Test]
         public void CachedSubscriptionMethod()
         {
             var sb1 = new SubscriptionRecord { Tenant = 2024, ActionId = "actionId1", SourceId = "sourceId1", ObjectId = "objectId1", RecipientId = "recipientId1", Subscribed = false };

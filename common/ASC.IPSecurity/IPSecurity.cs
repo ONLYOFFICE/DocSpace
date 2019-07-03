@@ -28,11 +28,11 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
 namespace ASC.IPSecurity
@@ -55,11 +55,10 @@ namespace ASC.IPSecurity
 
         private static readonly string CurrentIpForTest = ConfigurationManager.AppSettings["ipsecurity.test"];
 
-        public static bool Verify(Tenant tenant)
+        public static bool Verify(HttpContext httpContext, Tenant tenant)
         {
             if (!IpSecurityEnabled) return true;
 
-            var httpContext = HttpContext.Current;
             if (httpContext == null) return true;
 
             if (tenant == null || SecurityContext.CurrentAccount.ID == tenant.OwnerId) return true;

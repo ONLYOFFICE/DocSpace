@@ -28,14 +28,14 @@
 using System.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Data
 {
-    [TestClass]
+    [TestFixture]
     public class ExpTest
     {
-        [TestMethod]
+        [Test]
         public void JunctuinTest()
         {
             var exp = Exp.Eq("A", 0) & (Exp.Eq("B", 0) | Exp.Eq("C", 0));
@@ -63,7 +63,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual(exp.ToString(), "A = ? or (B = ? and C = ?)");
         }
 
-        [TestMethod]
+        [Test]
         public void QueryTtest()
         {
             var query = new SqlQuery("Table1 t1")
@@ -74,7 +74,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual("select t1.Name from Table1 t1, (select Id from Table2) as t2 where t1.Id = t2.Id", query.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void LGTest()
         {
             Assert.AreEqual("a < ?", Exp.Lt("a", 0).ToString());
@@ -83,7 +83,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual("a >= ?", Exp.Ge("a", 0).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void InTest()
         {
             Assert.AreEqual("a = ?", Exp.In("a", new[] { 1 }).ToString());
@@ -97,14 +97,14 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual("a not in (select c)", (!Exp.In("a", new SqlQuery().Select("c"))).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void NullTest()
         {
             Assert.AreEqual("a is null", Exp.Eq("a", null).ToString());
             Assert.AreEqual("a is not null", (!Exp.Eq("a", null)).ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SqlInsertTest()
         {
             var i = new SqlInsert("Table").InColumnValue("c1", 1);
@@ -129,7 +129,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual("insert into Table values (?,?)", i.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SqlUpdateTest()
         {
             var update = new SqlUpdate("Table")
@@ -148,7 +148,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual("update Table set Column1 = ?, Column3 = (select x from Table2 where y = ?)", update.ToString());
         }
 
-        [TestMethod]
+        [Test]
         public void SqlUnionTest()
         {
             var union = new SqlQuery("t1").Select("c1").Where("c1", 4)
@@ -159,7 +159,7 @@ namespace ASC.Common.Tests.Data
             Assert.AreEqual(7, union.GetParameters()[1]);
         }
 
-        [TestMethod]
+        [Test]
         public void SqlCreateTableTest()
         {
             var q = new SqlCreate.Table("t1")
