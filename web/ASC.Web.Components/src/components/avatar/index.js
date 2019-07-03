@@ -29,25 +29,25 @@ const StyledAvatar = styled.div`
 const RoleWrapper = styled.div`
     position: absolute;
     left: ${props =>
-        (props.size === 'max' && '6px') ||
+        (props.size === 'max' && '0px') ||
         (props.size === 'big' && '-2px') ||
         (props.size === 'medium' && '-2px') ||
         (props.size === 'small' && '-2px')
       };
     bottom: ${props =>
-        (props.size === 'max' && '6px') ||
+        (props.size === 'max' && '0px') ||
         (props.size === 'big' && '4px') ||
         (props.size === 'medium' && '4px') ||
-        (props.size === 'small' && '4px')
+        (props.size === 'small' && '3px')
       };
     width: ${props =>
-        (props.size === 'max' && '22px') ||
+        (props.size === 'max' && '24px') ||
         (props.size === 'big' && '12px') ||
         (props.size === 'medium' && '12px') ||
         (props.size === 'small' && '12px')
       };
     height: ${props =>
-        (props.size === 'max' && '22px') ||
+        (props.size === 'max' && '24px') ||
         (props.size === 'big' && '12px') ||
         (props.size === 'medium' && '12px') ||
         (props.size === 'small' && '12px')
