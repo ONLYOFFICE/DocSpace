@@ -4,21 +4,17 @@ import styled from 'styled-components';
 import Avatar from '../avatar'
 import DropDown from '../drop-down'
 import DropDownItem from '../drop-down-item'
+import Badge from '../badge'
 import { Icons } from '../icons'
+import { Text } from '../text'
+
+import device from './sub-components/device'
+import Backdrop from './sub-components/backdrop'
+import BadgedIcon from './sub-components/badged-icon'
+import NavItem from './sub-components/nav-item'
+
 
 const logoSrc = "https://static.onlyoffice.com/studio/tag/10.0.0/skins/default/images/onlyoffice_logo/light_small_general.svg";
-
-const size = {
-  mobile: "375px",
-  tablet: "768px",
-  desktop: "1024px"
-};
-
-const device = {
-  mobile: `(max-width: ${size.mobile})`,
-  tablet: `(max-width: ${size.tablet})`,
-  desktop: `(max-width: ${size.desktop})`
-};
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,32 +22,6 @@ const Wrapper = styled.div`
   @media ${device.tablet} {
     display: block;
   }
-`;
-
-const Backdrop = styled.div`
-  background-color: #000000;
-  opacity: 0.3;
-  z-index: 100;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  display: none;
-
-  @media ${device.tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
-  }
-`;
-
-const HeaderIcons = styled.div`
-  display: flex;
-  padding: 0 16px;
-  align-items: center;
-  width: 100px;
-  justify-content: space-between;
-  position: absolute;
-  z-index: 300;
-  right: 0;
-  height: 56px;
 `;
 
 const Header = styled.div`
@@ -67,9 +37,19 @@ const Header = styled.div`
   }
 `;
 
+const HeaderIcons = styled.div`
+  display: flex;
+  padding: 0 16px;
+  align-items: center;
+  width: 100px;
+  justify-content: space-between;
+  position: absolute;
+  right: 0;
+  height: 56px;
+`;
+
 const Navigation = styled.div`
   background-color: #0f4071;  
-  z-index: 200;
   width: ${props => props.visible ? '240px' : 'auto'};
   position: fixed;
   min-height: 100vh;
@@ -87,32 +67,43 @@ const MenuItem = styled.div`
   display: none;  
 
   @media ${device.tablet} {
-    display: block;
+    display: flex;
+    padding: 16px;
+    height: 56px;
+    align-items: center;
   }
 `;
 
-const NavItem = styled.div`
-  color: #ffffff;
+const MenuHeader = styled(Text.MenuHeader)`
+  margin: 0 0 0 16px;
+  color: #FFFFFF;
+`;
+
+const LogoItem = styled.div`
   display: flex;
   min-width: 56px;
   min-height: 56px;
   align-items: center;
   padding: 0 16px;
-`;
 
-const NavItemText = styled.div`
-  margin-left: 16px;
-`;
+  .logoitem-img {
+    margin-left: 16px;
+  }
 
-const NavItemSeporator= styled.div`
-  border-bottom: 1px solid #3E668D;
-  margin: 0 16px;
+  @media ${device.tablet} {
+    .logoitem-menu {
+      display: none; 
+    }
+
+    .logoitem-img {
+      margin-left: 0;
+    }
+  }
 `;
 
 const Content = styled.div`
   min-height: 100vh;
   width: 100vw;
-  z-index: 0;
 
   @media ${device.tablet} {
     padding-top: 56px;
@@ -122,45 +113,35 @@ const Content = styled.div`
 const Layout = props => {
 
   const [visible, setState] = useState(props.visible);
-  const [opened, toggle] = useState(props.opened);
 
   return (
     <Wrapper>
-      <Backdrop visible={visible} onClick={() => { setState(false); toggle(false); }}/>
-      <HeaderIcons>
-        <Icons.ChatIcon/>
-        <Avatar size="small" role="user" onClick={() => { toggle(!opened); }} />
-        <DropDown isOpen={opened}>
-          <DropDownItem label="Profile"/>
-          <DropDownItem label="About"/>
-          <DropDownItem label="Log out"/>
-        </DropDown>
-      </HeaderIcons>
+      <Backdrop visible={visible} onClick={() => { setState(false); }}/>
       <Header visible={visible}>
+        <HeaderIcons>
+          <BadgedIcon iconName="ChatIcon" badgeNumber={10} onClick={() => {}}/>
+          <Avatar size="small" role="user"/>
+        </HeaderIcons>
         <MenuItem>
-          <NavItem onClick={() => { setState(!visible); }}>
-            <Icons.MenuIcon/>
-            {visible ? <NavItemText><img alt="ONLYOFFICE" src={logoSrc}/></NavItemText> : ""}
-          </NavItem>
+          <BadgedIcon iconName="MenuIcon" badgeNumber={10} onClick={() => { setState(!visible); }}/>
+          <MenuHeader>Documents</MenuHeader>
         </MenuItem>
         <Navigation visible={visible}>
-          <NavItem onClick={() => { setState(!visible); }}>
-            <Icons.MenuIcon/>
-            {visible ? <NavItemText><img alt="ONLYOFFICE" src={logoSrc}/></NavItemText> : ""}
-          </NavItem>
-          <NavItemSeporator/>
-          <NavItem><Icons.DocumentsIcon/>{visible ? <NavItemText>Documents</NavItemText> : ""}</NavItem>
-          <NavItem><Icons.MailIcon/>{visible ? <NavItemText>Mail</NavItemText> : ""}</NavItem>
-          <NavItem><Icons.CalendarEmptyIcon/>{visible ? <NavItemText>Calendar</NavItemText> : ""}</NavItem>
+          <LogoItem>
+            <BadgedIcon className="logoitem-menu" iconName="MenuIcon" badgeNumber={10} onClick={() => { setState(!visible); }}/>
+            { visible ? <img className="logoitem-img" alt="ONLYOFFICE" src={logoSrc}/> : "" }
+          </LogoItem>
+          <NavItem seporator={true}></NavItem>
+          <NavItem active={true} opened={visible} iconName="DocumentsIcon" badgeNumber={3} onClick={() => {}}>Documents</NavItem>
+          <NavItem active={false} opened={visible} iconName="MailIcon" badgeNumber={7} onClick={() => {}}>Mail</NavItem>
         </Navigation>
       </Header>
-      <Content visible={visible}>
+      <Content>
         {props.children}
       </Content>
     </Wrapper>
   );
 }
-
 
 Layout.propTypes = {
   visible: PropTypes.bool
