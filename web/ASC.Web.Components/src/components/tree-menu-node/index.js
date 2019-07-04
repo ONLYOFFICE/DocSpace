@@ -1,13 +1,16 @@
-import React from 'react'
+import React from 'react';
 import styled , { css } from 'styled-components';
-import PropTypes from 'prop-types'
-import { Icons } from '../icons'
-import { getCssFromSvg } from '../icons/get-css-from-svg'
+import { Icons } from '../icons';
+import { getCssFromSvg } from '../icons/get-css-from-svg';
 import {TreeNode} from 'rc-tree';
 import ReactDOMServer from 'react-dom/server';
 
-const checkboxСheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxСheckedIcon />));
-const checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon />));
+let checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(function(){
+    return <Icons.CheckboxIcon />;
+}()));
+let checkboxСheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(function(){
+    return <Icons.CheckboxCheckedIcon />;
+}()));
 
 const TreeNodeMenu = styled(TreeNode)`
     

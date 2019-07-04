@@ -120,7 +120,7 @@ import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
-import OrigCheckbox—heckedIcon from './checkboxchecked.react.svg';
+import OrigCheckboxCheckedIcon from './checkboxchecked.react.svg';
 import OrigEyeIcon from './eye.react.svg';
 import OrigMenuIcon from './menu.react.svg';
 
@@ -293,9 +293,9 @@ export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   'CheckboxIcon'
 );
-export const Checkbox—heckedIcon = createStyledIcon(
-  OrigCheckbox—heckedIcon,
-  'Checkbox—heckedIcon'
+export const CheckboxCheckedIcon = createStyledIcon(
+  OrigCheckboxCheckedIcon,
+  'CheckboxCheckedIcon'
 );
 export const CheckedIcon = createStyledIcon(
   OrigCheckedIcon,
@@ -465,6 +465,10 @@ export const MoneyIcon = createStyledIcon(
   OrigMoneyIcon,
   'MoneyIcon'
 );
+export const MenuIcon = createStyledIcon(
+  OrigMenuIcon,
+  'MenuIcon'
+);
 export const MyspaceIcon = createStyledIcon(
   OrigMyspaceIcon,
   'MyspaceIcon'
@@ -613,22 +617,7 @@ export const YahooIcon = createStyledIcon(
   OrigYahooIcon,
   'YahooIcon'
 );
-export const CrossIcon = createStyledIcon(
-  OrigCrossIcon,
-  'CrossIcon'
-);
-export const CheckboxIcon = createStyledIcon(
-  OrigCheckboxIcon,
-  'CheckboxIcon'
-);
-export const EyeIcon = createStyledIcon(
-  OrigEyeIcon,
-  'EyeIcon'
-);
-export const MenuIcon = createStyledIcon(
-  OrigMenuIcon,
-  'MenuIcon'
-);export const ZASortingIcon = createStyledIcon(
+export const ZASortingIcon = createStyledIcon(
   OrigZASortingIcon,
   'ZASortingIcon'
 );
