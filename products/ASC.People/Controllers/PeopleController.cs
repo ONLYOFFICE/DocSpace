@@ -37,7 +37,6 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
         public ApiContext ApiContext { get; }
-        public HttpContext HttpContext { get { return ApiContext.HttpContext; } }
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }

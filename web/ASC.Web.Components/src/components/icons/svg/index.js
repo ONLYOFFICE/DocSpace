@@ -120,8 +120,9 @@ import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
-import OrigCheckbox小heckedIcon from './checkboxchecked.react.svg';
+import OrigCheckbox裩eckedIcon from './checkboxchecked.react.svg';
 import OrigEyeIcon from './eye.react.svg';
+import OrigMenuIcon from './menu.react.svg';
 
 
 export const AZSortingIcon = createStyledIcon(
@@ -292,9 +293,9 @@ export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   'CheckboxIcon'
 );
-export const Checkbox小heckedIcon = createStyledIcon(
-  OrigCheckbox小heckedIcon,
-  'Checkbox小heckedIcon'
+export const Checkbox裩eckedIcon = createStyledIcon(
+  OrigCheckbox裩eckedIcon,
+  'Checkbox裩eckedIcon'
 );
 export const CheckedIcon = createStyledIcon(
   OrigCheckedIcon,
@@ -612,7 +613,22 @@ export const YahooIcon = createStyledIcon(
   OrigYahooIcon,
   'YahooIcon'
 );
-export const ZASortingIcon = createStyledIcon(
+export const CrossIcon = createStyledIcon(
+  OrigCrossIcon,
+  'CrossIcon'
+);
+export const CheckboxIcon = createStyledIcon(
+  OrigCheckboxIcon,
+  'CheckboxIcon'
+);
+export const EyeIcon = createStyledIcon(
+  OrigEyeIcon,
+  'EyeIcon'
+);
+export const MenuIcon = createStyledIcon(
+  OrigMenuIcon,
+  'MenuIcon'
+);export const ZASortingIcon = createStyledIcon(
   OrigZASortingIcon,
   'ZASortingIcon'
 );
