@@ -35,31 +35,41 @@ const TextWrapper = styled.span`
   color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
 
-const Checkbox = props => {
-  const { id, isDisabled, isChecked, isIndeterminate, label } = props;
-  const ref = useRef(null);
+class Checkbox extends React.Component  {
 
-  useEffect(() => {
-    ref.current.indeterminate = isIndeterminate;
-  });
+  componentDidMount() {
+    if (this.props.isIndeterminate) {
+      this.ref.current.indeterminate = true;
+    }
+  }
 
-  return (
-    <Label htmlFor={id} isDisabled={isDisabled} >
-      <HiddenInput type='checkbox' checked={isChecked && !isIndeterminate} disabled={isDisabled} ref={ref} {...props}/>
-      <IconWrapper isChecked={isChecked} isIndeterminate={isIndeterminate}>
+  componentDidUpdate(prevProps) {
+    if (prevProps.isIndeterminate !== this.props.isIndeterminate) {
+      this.ref.current.indeterminate = this.props.isIndeterminate;
+    }
+  }
+
+  ref = React.createRef();
+
+  render() {
+    return (
+    <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} >
+      <HiddenInput type='checkbox' checked={this.props.isChecked && !this.props.isIndeterminate} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
+      <IconWrapper isChecked={this.props.isChecked} isIndeterminate={this.props.isIndeterminate}>
       {
-        isIndeterminate
-          ? <Icons.IndeterminateIcon isfill={true} color={isDisabled ? disableColor : activeColor}/>
-          : isChecked
-            ? <Icons.CheckedIcon isfill={true} color={isDisabled ? disableColor : activeColor}/>
+        this.props.isIndeterminate
+          ? <Icons.IndeterminateIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
+          : this.props.isChecked
+            ? <Icons.CheckedIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
             : ""
       }
       </IconWrapper>
       {
-        label && <TextWrapper isDisabled={isDisabled}>{label}</TextWrapper>
+        this.props.label && <TextWrapper isDisabled={this.props.isDisabled}>{this.props.label}</TextWrapper>
       }
     </Label>
-  );
+    );
+  };
 };
 
 Checkbox.propTypes = {
