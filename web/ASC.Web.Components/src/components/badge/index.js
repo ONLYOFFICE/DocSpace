@@ -15,6 +15,7 @@ const StyledBadge = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   display: inline-block;
+  user-select: none;
 `;
 
 const Badge = props => {
