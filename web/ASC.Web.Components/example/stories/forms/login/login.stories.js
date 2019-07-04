@@ -77,7 +77,7 @@ const LoginForm = props => {
     );
 };
 
-storiesOf('Components|Examples. Forms', module)
+storiesOf('EXAMPLES|Forms', module)
     // To set a default viewport for all the stories for this component
     .addParameters({ viewport: { defaultViewport: 'responsive' } })
     .add('login', () => {

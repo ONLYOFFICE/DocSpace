@@ -139,5 +139,5 @@ const TreeMenuStory = props => {
     </div>
   );
 };
-storiesOf('Components|Examples. Tree', module)
+storiesOf('EXAMPLES|Tree.', module)
   .add('people tree menu', () => <TreeMenuStory data={treeData} />);
