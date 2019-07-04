@@ -120,6 +120,7 @@ import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
+import OrigCheckboxСheckedIcon from './checkboxchecked.react.svg';
 import OrigEyeIcon from './eye.react.svg';
 
 
@@ -606,6 +607,10 @@ export const CrossIcon = createStyledIcon(
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   'CheckboxIcon'
+);
+export const CheckboxСheckedIcon = createStyledIcon(
+  OrigCheckboxСheckedIcon,
+  'CheckboxСheckedIcon'
 );
 export const EyeIcon = createStyledIcon(
   OrigEyeIcon,
