@@ -46,6 +46,7 @@ const HeaderIcons = styled.div`
   position: absolute;
   right: 0;
   height: 56px;
+  z-index: 300;
 `;
 
 const Navigation = styled.div`
@@ -113,14 +114,21 @@ const Content = styled.div`
 const Layout = props => {
 
   const [visible, setState] = useState(props.visible);
+  const [opened, toggle] = useState(props.opened);
 
   return (
     <Wrapper>
-      <Backdrop visible={visible} onClick={() => { setState(false); }}/>
+      <Backdrop visible={visible} onClick={() => { setState(false); toggle(false); }}/>
       <Header visible={visible}>
         <HeaderIcons>
           <BadgedIcon iconName="ChatIcon" badgeNumber={10} onClick={() => {}}/>
-          <Avatar size="small" role="user"/>
+          <Avatar size="small" role="user" onClick={() => { toggle(!opened); }} />
+          <DropDown isUserPreview withArrow direction='right' isOpen={opened}>
+            <DropDownItem isUserPreview role='user' source='' userName='Jane Doe' label='janedoe@gmail.com'/>
+            <DropDownItem label="Profile"/>
+            <DropDownItem label="About"/>
+            <DropDownItem label="Log out"/>
+          </DropDown>
         </HeaderIcons>
         <MenuItem>
           <BadgedIcon iconName="MenuIcon" badgeNumber={10} onClick={() => { setState(!visible); }}/>

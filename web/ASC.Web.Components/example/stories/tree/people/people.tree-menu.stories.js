@@ -1,21 +1,17 @@
 import React, {useState} from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean, text,select} from '@storybook/addon-knobs/react';
-import withReadme from 'storybook-readme/with-readme';
-import Readme from './README.md';
-import styled from '@emotion/styled';
 import { TreeMenu, TreeNode } from 'asc-web-components';
 import { Icons } from 'asc-web-components';
-import { action } from '@storybook/addon-actions';
-
-
-const iconNames = Object.keys(Icons);
 
 const treeData = [
-  { key: '0-0', children:
+  { key: '0-0', title: 'Departments', root: true, children:
     [
-      { key: '0-0-0'},
-      { key: '0-0-1'}
+      { key: '0-0-0', title: 'Development', root: false},
+      { key: '0-0-1', title: 'Direction', root: false },
+      { key: '0-0-2', title: 'Marketing', root: false },
+      { key: '0-0-3', title: 'Mobile', root: false },
+      { key: '0-0-4', title: 'Support', root: false },
+      { key: '0-0-5', title: 'Web', root: false }
     ],
   },
 ];
@@ -99,36 +95,34 @@ const TreeMenuStory = props => {
   const loop = data => {
       return data.map((item) => {
           if (item.children && item.children.length) {
-            return <TreeNode title={text('title', 'Title')} key={item.key} icon={React.createElement(Icons[select('icon', iconNames, 'CatalogFolderIcon')], {size: "scale", isfill:true, color: "dimgray"})} >{loop(item.children)}</TreeNode>;
+              return <TreeNode title={item.title} key={item.key} icon={item.root ? <Icons.CatalogDepartmentsIcon size="scale" isfill={true} color="dimgray"/> : ''} >{loop(item.children)}</TreeNode>;
           }
-          return <TreeNode key={item.key} title={text('title', 'Title')} icon={React.createElement(Icons[select('icon', iconNames, 'CatalogFolderIcon')], {size: "scale", isfill:true, color: "dimgray"})} ></TreeNode>;
+          return <TreeNode key={item.key} title={item.title} icon={!item.root ? <Icons.CatalogFolderIcon size="scale" isfill={true} color="dimgray"/> : ''} ></TreeNode>;
       });
   };
-
-
-
+  
   const switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray"></Icons.ExpanderDownIcon>
+      return <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray"></Icons.ExpanderRightIcon>
+      return <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
     }
   };
-
+  
   return (
     <div style={{width: "250px", margin: "20px"}}>
       <TreeMenu
-        checkable={boolean('checkable', false)}
-        draggable={boolean('draggable', false)}
-        disabled={boolean('disabled', false)}
-        multiple={boolean('multiple', false)}
-        showIcon={boolean('showIcon', true)}
+        checkable={false}
+        draggable={false}
+        disabled={false}
+        multiple={false}
+        showIcon={true}
         
-        defaultExpandAll={boolean('defaultExpandAll', false)}
-        defaultExpandParent={boolean('defaultExpandParent', true)}  
+        defaultExpandAll={false}
+        defaultExpandParent={true} 
 
         onExpand={onExpand} 
         autoExpandParent={autoExpandParent}
@@ -139,23 +133,11 @@ const TreeMenuStory = props => {
         onDragEnter={onDragEnter}
         
         switcherIcon={switcherIcon}
-
-        onSelect={action("select")}
-        onLoad={action("load")}
-
-        onCheck={action("check")}
-        
-        onRightClick={action("rightClick")}
       >
         {loop(gData)}
       </TreeMenu>
     </div>
   );
 };
-
-storiesOf('Components|Tree', module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add('Tree menu', () => <TreeMenuStory data={treeData} />);
-  
-
+storiesOf('EXAMPLES|Tree.', module)
+  .add('people tree menu', () => <TreeMenuStory data={treeData} />);

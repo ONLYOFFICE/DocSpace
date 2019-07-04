@@ -120,177 +120,162 @@ import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
+import OrigCheckboxCheckedIcon from './checkboxchecked.react.svg';
 import OrigEyeIcon from './eye.react.svg';
 import OrigMenuIcon from './menu.react.svg';
 
 
-export const PeopleIcon = createStyledIcon(
-  OrigPeopleIcon,
-  'PeopleIcon'
+export const AZSortingIcon = createStyledIcon(
+  OrigAZSortingIcon,
+  'AZSortingIcon'
 );
-export const CalendarIcon = createStyledIcon(
-  OrigCalendarIcon,
-  'CalendarIcon'
-);
-export const ExpanderDownIcon = createStyledIcon(
-  OrigExpanderDownIcon,
-  'ExpanderDownIcon'
-);
-export const ExpanderRightIcon = createStyledIcon(
-  OrigExpanderRightIcon,
-  'ExpanderRight'
-);
-export const RotateIcon = createStyledIcon(
-  OrigRotateIcon,
-  'RotateIcon'
-);
-export const UploadIcon = createStyledIcon(
-  OrigUploadIcon,
-  'UploadIcon'
-);
-export const GuestIcon = createStyledIcon(
-  OrigGuestIcon,
-  'GuestIcon'
-);
-export const AdministratorIcon = createStyledIcon(
-  OrigAdministratorIcon,
-  'AdministratorIcon'
-);
-export const OwnerIcon = createStyledIcon(
-  OrigOwnerIcon,
-  'OwnerIcon'
-);
-export const VerticalDotsIcon = createStyledIcon(
-  OrigVerticalDotsIcon,
-  'VerticalDotsIcon'
-);
-export const CheckedIcon = createStyledIcon(
-  OrigCheckedIcon,
-  'CheckedIcon'
-);
-export const IndeterminateIcon = createStyledIcon(
-  OrigIndeterminateIcon,
-  'IndeterminateIcon'
-);
-export const CloudServicesGoogleDriveIcon = createStyledIcon(
-  OrigCloudServicesGoogleDriveIcon,
-  'CloudServicesGoogleDriveIcon'
-);
-export const CloudServicesDropboxIcon = createStyledIcon(
-  OrigCloudServicesDropboxIcon,
-  'CloudServicesDropboxIcon'
-);
-export const HorizontalDotsIcon = createStyledIcon(
-  OrigHorizontalDotsIcon,
-  'HorizontalDotsIcon'
-);
-export const CloudServicesOneDriveIcon = createStyledIcon(
-  OrigCloudServicesOneDriveIcon,
-  'CloudServicesOneDriveIcon'
-);
-export const CloudServicesBoxIcon = createStyledIcon(
-  OrigCloudServicesBoxIcon,
-  'CloudServicesBoxIcon'
-);
-export const CloudServicesNextcloudIcon = createStyledIcon(
-  OrigCloudServicesNextcloudIcon,
-  'CloudServicesNextcloudIcon'
-);
-export const CommunityIcon = createStyledIcon(
-  OrigCommunityIcon,
-  'CommunityIcon'
-);
-export const AppsIcon = createStyledIcon(
-  OrigAppsIcon,
-  'AppsIcon'
-);
-export const CalendarCheckedIcon = createStyledIcon(
-  OrigCalendarCheckedIcon,
-  'CalendarCheckedIcon'
-);
-export const CrmIcon = createStyledIcon(
-  OrigCrmIcon,
-  'CrmIcon'
-);
-export const DocumentsIcon = createStyledIcon(
-  OrigDocumentsIcon,
-  'DocumentsIcon'
-);
-export const CatalogSharedIcon = createStyledIcon(
-  OrigCatalogSharedIcon,
-  'CatalogSharedIcon'
-);
-export const MailIcon = createStyledIcon(
-  OrigMailIcon,
-  'MailIcon'
-);
-export const MoneyIcon = createStyledIcon(
-  OrigMoneyIcon,
-  'MoneyIcon'
-);
-export const ProjectsIcon = createStyledIcon(
-  OrigProjectsIcon,
-  'ProjectsIcon'
-);
-export const SearchIcon = createStyledIcon(
-  OrigSearchIcon,
-  'SearchIcon'
-);
-export const SettingsIcon = createStyledIcon(
-  OrigSettingsIcon,
-  'SettingsIcon'
-);
-export const ProjectDocumentsUpIcon = createStyledIcon(
-  OrigProjectDocumentsUpIcon,
-  'ProjectDocumentsUpIcon'
-);
-export const ProjectsTemplatesIcon = createStyledIcon(
-  OrigProjectsTemplatesIcon,
-  'ProjectsTemplatesIcon'
-);
-export const ItemPausedIcon = createStyledIcon(
-  OrigItemPausedIcon,
-  'ItemPausedIcon'
-);
-export const ProjectsTasksIcon = createStyledIcon(
-  OrigProjectsTasksIcon,
-  'ProjectsTasksIcon'
-);
-export const ActionsReportsIcon = createStyledIcon(
-  OrigActionsReportsIcon,
-  'ActionsReportsIcon'
-);
-export const ProjectsMilestoneIcon = createStyledIcon(
-  OrigProjectsMilestoneIcon,
-  'ProjectsMilestoneIcon'
-);
-export const ItemActiveIcon = createStyledIcon(
-  OrigItemActiveIcon,
-  'ItemActiveIcon'
-);
-export const DownloadIcon = createStyledIcon(
-  OrigDownloadIcon,
-  'DownloadIcon'
-);
-export const CatalogPortfolioIcon = createStyledIcon(
-  OrigCatalogPortfolioIcon,
-  'CatalogPortfolioIcon'
-);
-export const ActionsDocumentsIcon = createStyledIcon(
-  OrigActionsDocumentsIcon,
-  'ActionsDocumentsIcon'
+export const AccessCommentIcon = createStyledIcon(
+  OrigAccessCommentIcon,
+  'AccessCommentIcon'
 );
 export const AccessEditIcon = createStyledIcon(
   OrigAccessEditIcon,
   'AccessEditIcon'
 );
+export const AccessFormIcon = createStyledIcon(
+  OrigAccessFormIcon,
+  'AccessFormIcon'
+);
+export const AccessNoneIcon = createStyledIcon(
+  OrigAccessNoneIcon,
+  'AccessNoneIcon'
+);
+export const AccessReviewIcon = createStyledIcon(
+  OrigAccessReviewIcon,
+  'AccessReviewIcon'
+);
+export const ActionsDocumentsIcon = createStyledIcon(
+  OrigActionsDocumentsIcon,
+  'ActionsDocumentsIcon'
+);
+export const ActionsPresentationIcon = createStyledIcon(
+  OrigActionsPresentationIcon,
+  'ActionsPresentationIcon'
+);
+export const ActionsReportsIcon = createStyledIcon(
+  OrigActionsReportsIcon,
+  'ActionsReportsIcon'
+);
+export const ActionsSpreadsheetIcon = createStyledIcon(
+  OrigActionsSpreadsheetIcon,
+  'ActionsSpreadsheetIcon'
+);
+export const ActionsUploadIcon = createStyledIcon(
+  OrigActionsUploadIcon,
+  'ActionsUploadIcon'
+);
+export const AdministratorIcon = createStyledIcon(
+  OrigAdministratorIcon,
+  'AdministratorIcon'
+);
+export const AimIcon = createStyledIcon(
+  OrigAimIcon,
+  'AimIcon'
+);
+export const AlertIcon = createStyledIcon(
+  OrigAlertIcon,
+  'AlertIcon'
+);
+export const AppsIcon = createStyledIcon(
+  OrigAppsIcon,
+  'AppsIcon'
+);
+export const ArrowContentIcon = createStyledIcon(
+  OrigArrowContentIcon,
+  'ArrowContentIcon'
+);
+export const BloggerIcon = createStyledIcon(
+  OrigBloggerIcon,
+  'BloggerIcon'
+);
+export const CalendarCheckedIcon = createStyledIcon(
+  OrigCalendarCheckedIcon,
+  'CalendarCheckedIcon'
+);
+export const CalendarEmptyIcon = createStyledIcon(
+  OrigCalendarEmptyIcon,
+  'CalendarEmptyIcon'
+);
+export const CalendarIcon = createStyledIcon(
+  OrigCalendarIcon,
+  'CalendarIcon'
+);
+export const CameraIcon = createStyledIcon(
+  OrigCameraIcon,
+  'CameraIcon'
+);
+export const CatalogAccountsIcon = createStyledIcon(
+  OrigCatalogAccountsIcon,
+  'CatalogAccountsIcon'
+);
+export const CatalogArchiveIcon = createStyledIcon(
+  OrigCatalogArchiveIcon,
+  'CatalogArchiveIcon'
+);
+export const CatalogButtonIcon = createStyledIcon(
+  OrigCatalogButtonIcon,
+  'CatalogButtonIcon'
+);
+export const CatalogContactsIcon = createStyledIcon(
+  OrigCatalogContactsIcon,
+  'CatalogContactsIcon'
+);
+export const CatalogDepartmentsIcon = createStyledIcon(
+  OrigCatalogDepartmentsIcon,
+  'CatalogDepartmentsIcon'
+);
+export const CatalogEmployeeIcon = createStyledIcon(
+  OrigCatalogEmployeeIcon,
+  'CatalogEmployeeIcon'
+);
 export const CatalogFolderIcon = createStyledIcon(
   OrigCatalogFolderIcon,
   'CatalogFolderIcon'
 );
-export const CreateFolderIcon = createStyledIcon(
-  OrigCreateFolderIcon,
-  'CreateFolderIcon'
+export const CatalogGuestIcon = createStyledIcon(
+  OrigCatalogGuestIcon,
+  'CatalogGuestIcon'
+);
+export const CatalogInboxIcon = createStyledIcon(
+  OrigCatalogInboxIcon,
+  'CatalogInboxIcon'
+);
+export const CatalogPinIcon = createStyledIcon(
+  OrigCatalogPinIcon,
+  'CatalogPinIcon'
+);
+export const CatalogPortfolioIcon = createStyledIcon(
+  OrigCatalogPortfolioIcon,
+  'CatalogPortfolioIcon'
+);
+export const CatalogQuestionIcon = createStyledIcon(
+  OrigCatalogQuestionIcon,
+  'CatalogQuestionIcon'
+);
+export const CatalogSentIcon = createStyledIcon(
+  OrigCatalogSentIcon,
+  'CatalogSentIcon'
+);
+export const CatalogSharedIcon = createStyledIcon(
+  OrigCatalogSharedIcon,
+  'CatalogSharedIcon'
+);
+export const CatalogSpamIcon = createStyledIcon(
+  OrigCatalogSpamIcon,
+  'CatalogSpamIcon'
+);
+export const CatalogTagIcon = createStyledIcon(
+  OrigCatalogTagIcon,
+  'CatalogTagIcon'
+);
+export const CatalogTrashIcon = createStyledIcon(
+  OrigCatalogTrashIcon,
+  'CatalogTrashIcon'
 );
 export const CatalogUnpinIcon = createStyledIcon(
   OrigCatalogUnpinIcon,
@@ -300,161 +285,109 @@ export const CatalogUserIcon = createStyledIcon(
   OrigCatalogUserIcon,
   'CatalogUserIcon'
 );
-export const ProjectsTimeTrackingIcon = createStyledIcon(
-  OrigProjectsTimeTrackingIcon,
-  'ProjectsTimeTrackingIcon'
+export const ChatIcon = createStyledIcon(
+  OrigChatIcon,
+  'ChatIcon'
 );
-export const ActionsUploadIcon = createStyledIcon(
-  OrigActionsUploadIcon,
-  'ActionsUploadIcon'
+export const CheckboxIcon = createStyledIcon(
+  OrigCheckboxIcon,
+  'CheckboxIcon'
 );
-export const CameraIcon = createStyledIcon(
-  OrigCameraIcon,
-  'CameraIcon'
+export const CheckboxCheckedIcon = createStyledIcon(
+  OrigCheckboxCheckedIcon,
+  'CheckboxCheckedIcon'
 );
-export const CatalogArchiveIcon = createStyledIcon(
-  OrigCatalogArchiveIcon,
-  'CatalogArchiveIcon'
+export const CheckedIcon = createStyledIcon(
+  OrigCheckedIcon,
+  'CheckedIcon'
 );
-export const CatalogDepartmentsIcon = createStyledIcon(
-  OrigCatalogDepartmentsIcon,
-  'CatalogDepartmentsIcon'
+export const ClipIcon = createStyledIcon(
+  OrigClipIcon,
+  'ClipIcon'
 );
-export const CatalogInboxIcon = createStyledIcon(
-  OrigCatalogInboxIcon,
-  'CatalogInboxIcon'
+export const CloudServicesBoxIcon = createStyledIcon(
+  OrigCloudServicesBoxIcon,
+  'CloudServicesBoxIcon'
 );
-export const CatalogSentIcon = createStyledIcon(
-  OrigCatalogSentIcon,
-  'CatalogSentIcon'
+export const CloudServicesDropboxIcon = createStyledIcon(
+  OrigCloudServicesDropboxIcon,
+  'CloudServicesDropboxIcon'
 );
-export const PlaneIcon = createStyledIcon(
-  OrigPlaneIcon,
-  'PlaneIcon'
+export const CloudServicesGoogleDriveIcon = createStyledIcon(
+  OrigCloudServicesGoogleDriveIcon,
+  'CloudServicesGoogleDriveIcon'
 );
-export const CatalogSpamIcon = createStyledIcon(
-  OrigCatalogSpamIcon,
-  'CatalogSpamIcon'
+export const CloudServicesNextcloudIcon = createStyledIcon(
+  OrigCloudServicesNextcloudIcon,
+  'CloudServicesNextcloudIcon'
 );
-export const ActionsSpreadsheetIcon = createStyledIcon(
-  OrigActionsSpreadsheetIcon,
-  'ActionsSpreadsheetIcon'
+export const CloudServicesOneDriveIcon = createStyledIcon(
+  OrigCloudServicesOneDriveIcon,
+  'CloudServicesOneDriveIcon'
 );
-export const CatalogEmployeeIcon = createStyledIcon(
-  OrigCatalogEmployeeIcon,
-  'CatalogEmployeeIcon'
-);
-export const CatalogGuestIcon = createStyledIcon(
-  OrigCatalogGuestIcon,
-  'CatalogGuestIcon'
-);
-export const InvitationLinkIcon = createStyledIcon(
-  OrigInvitationLinkIcon,
-  'InvitationLinkIcon'
-);
-export const AlertIcon = createStyledIcon(
-  OrigAlertIcon,
-  'AlertIcon'
-);
-export const ImportIcon = createStyledIcon(
-  OrigImportIcon,
-  'ImportIcon'
-);
-export const CatalogPinIcon = createStyledIcon(
-  OrigCatalogPinIcon,
-  'CatalogPinIcon'
+export const CommunityIcon = createStyledIcon(
+  OrigCommunityIcon,
+  'CommunityIcon'
 );
 export const CopyIcon = createStyledIcon(
   OrigCopyIcon,
   'CopyIcon'
 );
-export const ShareEmailIcon = createStyledIcon(
-  OrigShareEmailIcon,
-  'ShareEmailIcon'
+export const CreateFolderIcon = createStyledIcon(
+  OrigCreateFolderIcon,
+  'CreateFolderIcon'
 );
-export const ShareGooglePlusIcon = createStyledIcon(
-  OrigShareGooglePlusIcon,
-  'ShareGooglePlusIcon'
+export const CrmIcon = createStyledIcon(
+  OrigCrmIcon,
+  'CrmIcon'
 );
-export const SendClockIcon = createStyledIcon(
-  OrigSendClockIcon,
-  'SendClockIcon'
+export const CrossIcon = createStyledIcon(
+  OrigCrossIcon,
+  'CrossIcon'
 );
-export const ShareFacebookIcon = createStyledIcon(
-  OrigShareFacebookIcon,
-  'ShareFacebookIcon'
+export const DocumentsIcon = createStyledIcon(
+  OrigDocumentsIcon,
+  'DocumentsIcon'
 );
-export const ShareTwitterIcon = createStyledIcon(
-  OrigShareTwitterIcon,
-  'ShareTwitterIcon'
+export const DownloadIcon = createStyledIcon(
+  OrigDownloadIcon,
+  'DownloadIcon'
 );
-export const AccessNoneIcon = createStyledIcon(
-  OrigAccessNoneIcon,
-  'AccessNoneIcon'
+export const ExpanderDownIcon = createStyledIcon(
+  OrigExpanderDownIcon,
+  'ExpanderDownIcon'
 );
-export const TimeTrackingNotBilledIcon = createStyledIcon(
-  OrigTimeTrackingNotBilledIcon,
-  'TimeTrackingNotBilledIcon'
+export const ExpanderRightIcon = createStyledIcon(
+  OrigExpanderRightIcon,
+  'ExpanderRightIcon'
 );
-export const AccessFormIcon = createStyledIcon(
-  OrigAccessFormIcon,
-  'AccessFormIcon'
+export const ExternalLinkIcon = createStyledIcon(
+  OrigExternalLinkIcon,
+  'ExternalLinkIcon'
 );
-export const AccessReviewIcon = createStyledIcon(
-  OrigAccessReviewIcon,
-  'AccessReviewIcon'
+export const EyeIcon = createStyledIcon(
+  OrigEyeIcon,
+  'EyeIcon'
 );
-export const AccessCommentIcon = createStyledIcon(
-  OrigAccessCommentIcon,
-  'AccessCommentIcon'
+export const FileActionsConvertEditDocIcon = createStyledIcon(
+  OrigFileActionsConvertEditDocIcon,
+  'FileActionsConvertEditDocIcon'
 );
-export const ProjectsDiscussionsIcon = createStyledIcon(
-  OrigProjectsDiscussionsIcon,
-  'ProjectsDiscussionsIcon'
+export const FileActionsConvertIcon = createStyledIcon(
+  OrigFileActionsConvertIcon,
+  'FileActionsConvertIcon'
+);
+export const FileActionsLockedIcon = createStyledIcon(
+  OrigFileActionsLockedIcon,
+  'FileActionsLockedIcon'
+);
+export const ForwardIcon = createStyledIcon(
+  OrigForwardIcon,
+  'ForwardIcon'
 );
 export const GanttChartIcon = createStyledIcon(
   OrigGanttChartIcon,
   'GanttChartIcon'
-);
-export const CatalogTagIcon = createStyledIcon(
-  OrigCatalogTagIcon,
-  'CatalogTagIcon'
-);
-export const CatalogAccountsIcon = createStyledIcon(
-  OrigCatalogAccountsIcon,
-  'CatalogAccountsIcon'
-);
-export const CatalogContactsIcon = createStyledIcon(
-  OrigCatalogContactsIcon,
-  'CatalogContactsIcon'
-);
-export const ActionsPresentationIcon = createStyledIcon(
-  OrigActionsPresentationIcon,
-  'ActionsPresentationIcon'
-);
-export const CatalogTrashIcon = createStyledIcon(
-  OrigCatalogTrashIcon,
-  'CatalogTrashIcon'
-);
-export const RemoveIcon = createStyledIcon(
-  OrigRemoveIcon,
-  'RemoveIcon'
-);
-export const CatalogQuestionIcon = createStyledIcon(
-  OrigCatalogQuestionIcon,
-  'CatalogQuestionIcon'
-);
-export const ArrowContentIcon = createStyledIcon(
-  OrigArrowContentIcon,
-  'ArrowContentIcon'
-);
-export const PhoneIcon = createStyledIcon(
-  OrigPhoneIcon,
-  'PhoneIcon'
-);
-export const MobileIcon = createStyledIcon(
-  OrigMobileIcon,
-  'MobileIcon'
 );
 export const GmailIcon = createStyledIcon(
   OrigGmailIcon,
@@ -468,105 +401,93 @@ export const GoogleSquareIcon = createStyledIcon(
   OrigGoogleSquareIcon,
   'GoogleSquareIcon'
 );
-export const StarIcon = createStyledIcon(
-  OrigStarIcon,
-  'StarIcon'
+export const GuestIcon = createStyledIcon(
+  OrigGuestIcon,
+  'GuestIcon'
 );
-export const SkypeIcon = createStyledIcon(
-  OrigSkypeIcon,
-  'SkypeIcon'
-);
-export const WindowsMsnIcon = createStyledIcon(
-  OrigWindowsMsnIcon,
-  'WindowsMsnIcon'
+export const HorizontalDotsIcon = createStyledIcon(
+  OrigHorizontalDotsIcon,
+  'HorizontalDotsIcon'
 );
 export const IcqIcon = createStyledIcon(
   OrigIcqIcon,
   'IcqIcon'
 );
+export const ImportIcon = createStyledIcon(
+  OrigImportIcon,
+  'ImportIcon'
+);
+export const IndeterminateIcon = createStyledIcon(
+  OrigIndeterminateIcon,
+  'IndeterminateIcon'
+);
+export const InvitationLinkIcon = createStyledIcon(
+  OrigInvitationLinkIcon,
+  'InvitationLinkIcon'
+);
+export const ItemActiveIcon = createStyledIcon(
+  OrigItemActiveIcon,
+  'ItemActiveIcon'
+);
+export const ItemPausedIcon = createStyledIcon(
+  OrigItemPausedIcon,
+  'ItemPausedIcon'
+);
 export const JabberIcon = createStyledIcon(
   OrigJabberIcon,
   'JabberIcon'
-);
-export const AimIcon = createStyledIcon(
-  OrigAimIcon,
-  'AimIcon'
 );
 export const LivejournalIcon = createStyledIcon(
   OrigLivejournalIcon,
   'LivejournalIcon'
 );
+export const MailIcon = createStyledIcon(
+  OrigMailIcon,
+  'MailIcon'
+);
+export const MainMenuFeedbackIcon = createStyledIcon(
+  OrigMainMenuFeedbackIcon,
+  'MainMenuFeedbackIcon'
+);
+export const MainMenuPeopleIcon = createStyledIcon(
+  OrigMainMenuPeopleIcon,
+  'MainMenuPeopleIcon'
+);
+export const MainMenuVideoGuideIcon = createStyledIcon(
+  OrigMainMenuVideoGuideIcon,
+  'MainMenuVideoGuideIcon'
+);
+export const MobileIcon = createStyledIcon(
+  OrigMobileIcon,
+  'MobileIcon'
+);
+export const MoneyIcon = createStyledIcon(
+  OrigMoneyIcon,
+  'MoneyIcon'
+);
+export const MenuIcon = createStyledIcon(
+  OrigMenuIcon,
+  'MenuIcon'
+);
 export const MyspaceIcon = createStyledIcon(
   OrigMyspaceIcon,
   'MyspaceIcon'
 );
-export const BloggerIcon = createStyledIcon(
-  OrigBloggerIcon,
-  'BloggerIcon'
+export const OwnerIcon = createStyledIcon(
+  OrigOwnerIcon,
+  'OwnerIcon'
 );
-export const YahooIcon = createStyledIcon(
-  OrigYahooIcon,
-  'YahooIcon'
+export const PeopleIcon = createStyledIcon(
+  OrigPeopleIcon,
+  'PeopleIcon'
 );
-export const CalendarEmptyIcon = createStyledIcon(
-  OrigCalendarEmptyIcon,
-  'CalendarEmptyIcon'
+export const PhoneIcon = createStyledIcon(
+  OrigPhoneIcon,
+  'PhoneIcon'
 );
-export const RefreshIcon = createStyledIcon(
-  OrigRefreshIcon,
-  'RefreshIcon'
-);
-export const ForwardIcon = createStyledIcon(
-  OrigForwardIcon,
-  'ForwardIcon'
-);
-export const FileActionsLockedIcon = createStyledIcon(
-  OrigFileActionsLockedIcon,
-  'FileActionsLockedIcon'
-);
-export const ReplyAllIcon = createStyledIcon(
-  OrigReplyAllIcon,
-  'ReplyAllIcon'
-);
-export const FileActionsConvertEditDocIcon = createStyledIcon(
-  OrigFileActionsConvertEditDocIcon,
-  'FileActionsConvertEditDocIcon'
-);
-export const FileActionsConvertIcon = createStyledIcon(
-  OrigFileActionsConvertIcon,
-  'FileActionsConvertIcon'
-);
-export const ReplyIcon = createStyledIcon(
-  OrigReplyIcon,
-  'ReplyIcon'
-);
-export const ClipIcon = createStyledIcon(
-  OrigClipIcon,
-  'ClipIcon'
-);
-export const AZSortingIcon = createStyledIcon(
-  OrigAZSortingIcon,
-  'AZSortingIcon'
-);
-export const ZASortingIcon = createStyledIcon(
-  OrigZASortingIcon,
-  'ZASortingIcon'
-);
-export const ExternalLinkIcon = createStyledIcon(
-  OrigExternalLinkIcon,
-  'ExternalLinkIcon'
-);
-export const RadiobuttonIcon = createStyledIcon(
-  OrigRadiobuttonIcon,
-  'RadiobuttonIcon'
-);
-export const RadiobuttonHoverIcon = createStyledIcon(
-  OrigRadiobuttonHoverIcon,
-  'RadiobuttonHoverIcon'
-);
-export const RadiobuttonCheckedIcon = createStyledIcon(
-  OrigRadiobuttonCheckedIcon,
-  'RadiobuttonCheckedIcon'
+export const PlaneIcon = createStyledIcon(
+  OrigPlaneIcon,
+  'PlaneIcon'
 );
 export const PlusIcon = createStyledIcon(
   OrigPlusIcon,
@@ -576,43 +497,127 @@ export const PlusSharpIcon = createStyledIcon(
   OrigPlusSharpIcon,
   'PlusSharpIcon'
 );
-export const MainMenuPeopleIcon = createStyledIcon(
-  OrigMainMenuPeopleIcon,
-  'MainMenuPeopleIcon'
+export const ProjectDocumentsUpIcon = createStyledIcon(
+  OrigProjectDocumentsUpIcon,
+  'ProjectDocumentsUpIcon'
 );
-export const MainMenuFeedbackIcon = createStyledIcon(
-  OrigMainMenuFeedbackIcon,
-  'MainMenuFeedbackIcon'
+export const ProjectsDiscussionsIcon = createStyledIcon(
+  OrigProjectsDiscussionsIcon,
+  'ProjectsDiscussionsIcon'
 );
-export const MainMenuVideoGuideIcon = createStyledIcon(
-  OrigMainMenuVideoGuideIcon,
-  'MainMenuVideoGuideIcon'
+export const ProjectsIcon = createStyledIcon(
+  OrigProjectsIcon,
+  'ProjectsIcon'
 );
-export const ChatIcon = createStyledIcon(
-  OrigChatIcon,
-  'ChatIcon'
+export const ProjectsMilestoneIcon = createStyledIcon(
+  OrigProjectsMilestoneIcon,
+  'ProjectsMilestoneIcon'
+);
+export const ProjectsTasksIcon = createStyledIcon(
+  OrigProjectsTasksIcon,
+  'ProjectsTasksIcon'
+);
+export const ProjectsTemplatesIcon = createStyledIcon(
+  OrigProjectsTemplatesIcon,
+  'ProjectsTemplatesIcon'
+);
+export const ProjectsTimeTrackingIcon = createStyledIcon(
+  OrigProjectsTimeTrackingIcon,
+  'ProjectsTimeTrackingIcon'
+);
+export const RadiobuttonCheckedIcon = createStyledIcon(
+  OrigRadiobuttonCheckedIcon,
+  'RadiobuttonCheckedIcon'
+);
+export const RadiobuttonHoverIcon = createStyledIcon(
+  OrigRadiobuttonHoverIcon,
+  'RadiobuttonHoverIcon'
+);
+export const RadiobuttonIcon = createStyledIcon(
+  OrigRadiobuttonIcon,
+  'RadiobuttonIcon'
 );
 export const RectangleFilterIcon = createStyledIcon(
   OrigRectangleFilterIcon,
   'RectangleFilterIcon'
 );
-export const CatalogButtonIcon = createStyledIcon(
-  OrigCatalogButtonIcon,
-  'CatalogButtonIcon'
+export const RefreshIcon = createStyledIcon(
+  OrigRefreshIcon,
+  'RefreshIcon'
 );
-export const CrossIcon = createStyledIcon(
-  OrigCrossIcon,
-  'CrossIcon'
+export const RemoveIcon = createStyledIcon(
+  OrigRemoveIcon,
+  'RemoveIcon'
 );
-export const CheckboxIcon = createStyledIcon(
-  OrigCheckboxIcon,
-  'CheckboxIcon'
+export const ReplyAllIcon = createStyledIcon(
+  OrigReplyAllIcon,
+  'ReplyAllIcon'
 );
-export const EyeIcon = createStyledIcon(
-  OrigEyeIcon,
-  'EyeIcon'
+export const ReplyIcon = createStyledIcon(
+  OrigReplyIcon,
+  'ReplyIcon'
 );
-export const MenuIcon = createStyledIcon(
-  OrigMenuIcon,
-  'MenuIcon'
+export const RotateIcon = createStyledIcon(
+  OrigRotateIcon,
+  'RotateIcon'
+);
+export const SearchIcon = createStyledIcon(
+  OrigSearchIcon,
+  'SearchIcon'
+);
+export const SendClockIcon = createStyledIcon(
+  OrigSendClockIcon,
+  'SendClockIcon'
+);
+export const SettingsIcon = createStyledIcon(
+  OrigSettingsIcon,
+  'SettingsIcon'
+);
+export const ShareEmailIcon = createStyledIcon(
+  OrigShareEmailIcon,
+  'ShareEmailIcon'
+);
+export const ShareFacebookIcon = createStyledIcon(
+  OrigShareFacebookIcon,
+  'ShareFacebookIcon'
+);
+export const ShareGooglePlusIcon = createStyledIcon(
+  OrigShareGooglePlusIcon,
+  'ShareGooglePlusIcon'
+);
+export const ShareTwitterIcon = createStyledIcon(
+  OrigShareTwitterIcon,
+  'ShareTwitterIcon'
+);
+export const SkypeIcon = createStyledIcon(
+  OrigSkypeIcon,
+  'SkypeIcon'
+);
+export const StarIcon = createStyledIcon(
+  OrigStarIcon,
+  'StarIcon'
+);
+export const TimeTrackingNotBilledIcon = createStyledIcon(
+  OrigTimeTrackingNotBilledIcon,
+  'TimeTrackingNotBilledIcon'
+);
+export const UploadIcon = createStyledIcon(
+  OrigUploadIcon,
+  'UploadIcon'
+);
+export const VerticalDotsIcon = createStyledIcon(
+  OrigVerticalDotsIcon,
+  'VerticalDotsIcon'
+);
+export const WindowsMsnIcon = createStyledIcon(
+  OrigWindowsMsnIcon,
+  'WindowsMsnIcon'
+);
+export const YahooIcon = createStyledIcon(
+  OrigYahooIcon,
+  'YahooIcon'
+);
+export const ZASortingIcon = createStyledIcon(
+  OrigZASortingIcon,
+  'ZASortingIcon'
 );
