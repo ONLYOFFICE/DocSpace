@@ -130,7 +130,8 @@ const Layout = props => {
       <HeaderIcons>
         <Icons.ChatIcon/>
         <Avatar size="small" role="user" onClick={() => { toggle(!opened); }} />
-        <DropDown isOpen={opened}>
+        <DropDown isUserPreview withArrow direction='right' isOpen={opened}>
+          <DropDownItem isUserPreview role='user' source='' userName='Jane Doe' label='janedoe@gmail.com'/>
           <DropDownItem label="Profile"/>
           <DropDownItem label="About"/>
           <DropDownItem label="Log out"/>
