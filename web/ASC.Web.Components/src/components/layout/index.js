@@ -126,6 +126,8 @@ const Layout = props => {
     index--;
     item = props.availableModules[index];
 
+    if(item.seporator) continue;
+
     if(item.id == props.currentModuleId)
       currentModule = item;
 
@@ -166,17 +168,16 @@ const Layout = props => {
             <BadgedIcon
               className="logoitem-menu"
               iconName="MenuIcon"
-              badgeNumber={totalNotifications}
               onClick={() => { toggle(!isNavigationOpen); }}
             />
             { isNavigationOpen ? <img className="logoitem-img" alt="ONLYOFFICE" src={logoSrc}/> : "" }
           </LogoItem>
-          <NavItem seporator={true}></NavItem>
           {
             props.availableModules
               .filter(item => item.id != props.chatModuleId)
               .map(item => 
                 <NavItem
+                  seporator={!!item.seporator}
                   key={item.id}
                   isOpen={isNavigationOpen}
                   active={item.id == props.currentModuleId}
