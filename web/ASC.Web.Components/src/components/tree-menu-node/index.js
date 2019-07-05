@@ -195,6 +195,9 @@ const TreeNodeMenu = styled(TreeNode)`
         overflow: hidden;
         text-overflow: ellipsis;
     }
+    span.rc-tree-title:first-child{
+        max-width: 100%;
+    }
     .rc-tree-node-selected {
         background: #DFE2E3;
         mix-blend-mode: normal;

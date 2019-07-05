@@ -22,60 +22,73 @@ const StyledInput = styled(Input).attrs((props) => ({
     disabled: props.isDisabled ? 'disabled' : ''
 
 }))`
-  -webkit-appearance: none;
-  border-radius: 3px;
-  box-shadow: none;
-  box-sizing: border-box;
-  border: solid 1px;
-  border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || '#c7c7c7'};
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background-color: ${props => props.isDisabled ? '#efefef' : '#fff'};
-  color: ${props => props.isDisabled ? '#666562' : '#434341'};
-  display: flex;
-  font-family: 'Open Sans', sans-serif;
-  font-size: ${props =>
-    (props.size === 'base' && '12px') ||
-    (props.size === 'middle' && '14px') ||
-    (props.size === 'big' && '16px') ||
-    (props.size === 'huge' && '18px')
-  };
-  flex: 1 1 0%;
-  outline: none;
-  overflow: hidden;
-  padding: ${props =>
-    (props.size === 'base' && '4px 8px') ||
-    (props.size === 'middle' && '8px 12px') ||
-    (props.size === 'big' && '8px 16px') ||
-    (props.size === 'huge' && '8px 20px')
-  };
-  transition: all 0.2s ease 0s;
-  width: ${props =>
-        (props.scale && '100%') ||
-        (props.size === 'base' && '135px') ||
-        (props.size === 'middle' && '300px') ||
-        (props.size === 'big' && '350px') ||
-        (props.size === 'huge' && '500px')
+    -webkit-appearance: none;
+    border-radius: 3px;
+    box-shadow: none;
+    box-sizing: border-box;
+    border: solid 1px;
+    border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-color: ${props => props.isDisabled ? '#F8F9F9' : '#fff'};
+    color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
+    display: flex;
+    font-family: 'Open Sans', sans-serif;
+    line-height: ${props =>
+        (props.size === 'base' && '20px') ||
+        (props.size === 'middle' && '20px') ||
+        (props.size === 'big' && '20px') ||
+        (props.size === 'huge' && '20px')
     };
+    font-size: ${props =>
+        (props.size === 'base' && '13px') ||
+        (props.size === 'middle' && '14px') ||
+        (props.size === 'big' && '16px') ||
+        (props.size === 'huge' && '18px')
+    };
+    flex: 1 1 0%;
+    outline: none;
+    overflow: hidden;
+    padding: ${props =>
+        (props.size === 'base' && '5px 7px') ||
+        (props.size === 'middle' && '8px 12px') ||
+        (props.size === 'big' && '8px 16px') ||
+        (props.size === 'huge' && '8px 20px')
+    };
+    transition: all 0.2s ease 0s;
+    width: ${props =>
+            (props.scale && '100%') ||
+            (props.size === 'base' && '173px') ||
+            (props.size === 'middle' && '300px') ||
+            (props.size === 'big' && '350px') ||
+            (props.size === 'huge' && '500px')
+        };
 
     ::-webkit-input-placeholder {
-        color: #b2b2b2;
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
         font-family: 'Open Sans',sans-serif
     }
 
     :-moz-placeholder {
-        color: #b2b2b2;
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
         font-family: 'Open Sans',sans-serif
     }
 
     ::-moz-placeholder {
-        color: #b2b2b2;
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
         font-family: 'Open Sans',sans-serif
     }
 
     :-ms-input-placeholder {
-        color: #b2b2b2;
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
         font-family: 'Open Sans',sans-serif
+    }
+
+    :hover{
+        border-color: ${props => props.isDisabled ? '#ECEEF1' : '#A3A9AE'};
+    }
+    :focus{
+        border-color: #2DA7DB;
     }
 
 `;
