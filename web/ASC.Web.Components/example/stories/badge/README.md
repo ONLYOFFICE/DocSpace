@@ -10,7 +10,7 @@ import { Badge } from 'asc-web-components';
 
 #### Description
 
-Item notify badge.
+Notify badge
 
 #### Properties
 
