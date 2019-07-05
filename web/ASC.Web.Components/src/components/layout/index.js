@@ -42,12 +42,14 @@ const HeaderIcons = styled.div`
   display: flex;
   padding: 0 16px;
   align-items: center;
-  width: 100px;
-  justify-content: space-between;
   position: absolute;
   right: 0;
   height: 56px;
   z-index: 300;
+
+  & > div {
+    margin-left: 16px;
+  }
 `;
 
 const Navigation = styled.div`
