@@ -16,12 +16,12 @@ const StyledBadge = styled(Badge)`
 `;
 
 const BadgedIcon = props => {
-  const { onClick, className, iconName, color, badgeNumber } = props;
+  const { onClick, onBadgeClick, className, iconName, color, badgeNumber } = props;
 
   return (
     <InlineWrapper onClick={onClick} className={className}>
       {React.createElement(Icons[iconName], {isfill: true, color: color})} 
-      <StyledBadge number={badgeNumber}/>
+      <StyledBadge number={badgeNumber} onClick={onBadgeClick}/>
     </InlineWrapper>
   );
 };

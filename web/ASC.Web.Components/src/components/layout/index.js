@@ -12,6 +12,7 @@ import device from './sub-components/device'
 import Backdrop from './sub-components/backdrop'
 import BadgedIcon from './sub-components/badged-icon'
 import NavItem from './sub-components/nav-item'
+import ProfileActions from './sub-components/profile-actions'
 
 
 const logoSrc = "https://static.onlyoffice.com/studio/tag/10.0.0/skins/default/images/onlyoffice_logo/light_small_general.svg";
@@ -28,7 +29,7 @@ const Header = styled.div`
   background-color: #0f4071;
   min-height: 100vh;
   z-index: 200;
-  min-width: ${props => props.visible ? '240px' : '56px'};
+  min-width: ${props => props.isNavigationOpen ? '240px' : '56px'};
 
   @media ${device.tablet} {
     min-height: 56px;
@@ -51,14 +52,14 @@ const HeaderIcons = styled.div`
 
 const Navigation = styled.div`
   background-color: #0f4071;  
-  width: ${props => props.visible ? '240px' : 'auto'};
+  width: ${props => props.isNavigationOpen ? '240px' : 'auto'};
   position: fixed;
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
 
   @media ${device.tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
+    display: ${props => props.isNavigationOpen ? 'block' : 'none'};
     top: 0px;
     width: 240px;
   }
@@ -113,50 +114,96 @@ const Content = styled.div`
 
 const Layout = props => {
 
-  const [visible, setState] = useState(props.visible);
-  const [opened, toggle] = useState(props.opened);
+  var chatModule = null,
+      currentModule = null,
+      totalNotifications = 0,
+      index = props.availableModules.length,
+      item = null;
+
+  while (index) {
+    index--;
+    item = props.availableModules[index];
+
+    if(item.id == props.currentModuleId)
+      currentModule = item;
+
+    if(item.id == props.chatModuleId)
+      chatModule = item;
+    else
+      totalNotifications+=item.notifications;
+  }
+
+  const [isNavigationOpen, toggle] = useState(props.isNavigationOpen);
 
   return (
     <Wrapper>
-      <Backdrop visible={visible} onClick={() => { setState(false); toggle(false); }}/>
-      <Header visible={visible}>
+      <Backdrop isNavigationOpen={isNavigationOpen} onClick={() => { toggle(false); }}/>
+      <Header isNavigationOpen={isNavigationOpen}>
         <HeaderIcons>
-          <BadgedIcon iconName="ChatIcon" badgeNumber={10} onClick={() => {}}/>
-          <Avatar size="small" role="user" onClick={() => { toggle(!opened); }} />
-          <DropDown isUserPreview withArrow direction='right' isOpen={opened}>
-            <DropDownItem isUserPreview role='user' source='' userName='Jane Doe' label='janedoe@gmail.com'/>
-            <DropDownItem label="Profile"/>
-            <DropDownItem label="About"/>
-            <DropDownItem label="Log out"/>
-          </DropDown>
+          { 
+            chatModule && <BadgedIcon
+              key={chatModule.id}
+              iconName={chatModule.iconName}
+              badgeNumber={chatModule.notifications}
+              onClick={chatModule.onClick}
+              onBadgeClick={chatModule.onBadgeClick}
+            />
+          }
+          { props.currentUser && <ProfileActions {...props.currentUser}/> }
         </HeaderIcons>
         <MenuItem>
-          <BadgedIcon iconName="MenuIcon" badgeNumber={10} onClick={() => { setState(!visible); }}/>
-          <MenuHeader>Documents</MenuHeader>
+          <BadgedIcon
+            iconName="MenuIcon"
+            badgeNumber={totalNotifications}
+            onClick={() => { toggle(!isNavigationOpen); }}
+          />
+          <MenuHeader>{currentModule && currentModule.name}</MenuHeader>
         </MenuItem>
-        <Navigation visible={visible}>
+        <Navigation isNavigationOpen={isNavigationOpen}>
           <LogoItem>
-            <BadgedIcon className="logoitem-menu" iconName="MenuIcon" badgeNumber={10} onClick={() => { setState(!visible); }}/>
-            { visible ? <img className="logoitem-img" alt="ONLYOFFICE" src={logoSrc}/> : "" }
+            <BadgedIcon
+              className="logoitem-menu"
+              iconName="MenuIcon"
+              badgeNumber={totalNotifications}
+              onClick={() => { toggle(!isNavigationOpen); }}
+            />
+            { isNavigationOpen ? <img className="logoitem-img" alt="ONLYOFFICE" src={logoSrc}/> : "" }
           </LogoItem>
           <NavItem seporator={true}></NavItem>
-          <NavItem active={true} opened={visible} iconName="DocumentsIcon" badgeNumber={3} onClick={() => {}}>Documents</NavItem>
-          <NavItem active={false} opened={visible} iconName="MailIcon" badgeNumber={7} onClick={() => {}}>Mail</NavItem>
+          {
+            props.availableModules
+              .filter(item => item.id != props.chatModuleId)
+              .map(item => 
+                <NavItem
+                  key={item.id}
+                  isOpen={isNavigationOpen}
+                  active={item.id == props.currentModuleId}
+                  iconName={item.iconName}
+                  badgeNumber={item.notifications}
+                  onClick={item.onClick}
+                  onBadgeClick={item.onBadgeClick}
+                >
+                  {item.name}
+                </NavItem>
+              )
+          }
         </Navigation>
       </Header>
-      <Content>
-        {props.children}
-      </Content>
+      <Content>{props.children}</Content>
     </Wrapper>
   );
 }
 
 Layout.propTypes = {
-  visible: PropTypes.bool
+  isNavigationOpen: PropTypes.bool,
+  currentUser: PropTypes.object,
+  availableModules: PropTypes.array,
+  currentModuleId: PropTypes.string,
+  chatModuleId: PropTypes.string
 }
 
 Layout.defaultProps = {
-  visible: false
+  isNavigationOpen: false
 }
 
 export default Layout

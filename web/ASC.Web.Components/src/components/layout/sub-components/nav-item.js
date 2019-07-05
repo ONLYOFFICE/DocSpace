@@ -32,7 +32,7 @@ const Seporator = styled.div`
 `;
 
 const NavItem = props => {
-  const { seporator, active, opened, iconName, children, badgeNumber, onClick } = props;
+  const { seporator, active, isOpen, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 
   return (
@@ -40,13 +40,13 @@ const NavItem = props => {
     ? <Seporator/>
     : <Wrapper color={color} onClick={onClick}>
         {
-          opened
+          isOpen
           ? <>
               {React.createElement(Icons[iconName], {isfill: true, color: color})}
               <Label>{children}</Label>
-              <Badge number={badgeNumber}/>
+              <Badge number={badgeNumber} onClick={onBadgeClick}/>
             </>
-          : <BadgedIcon iconName={iconName} badgeNumber={badgeNumber} color={color}/>
+          : <BadgedIcon iconName={iconName} badgeNumber={badgeNumber} color={color} onBadgeClick={onBadgeClick}/>
         }
       </Wrapper>
   );

@@ -11,7 +11,7 @@ const StyledBackdrop = styled.div`
   display: none;
 
   @media ${device.tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
+    display: ${props => props.isNavigationOpen ? 'block' : 'none'};
   }
 `;
 
