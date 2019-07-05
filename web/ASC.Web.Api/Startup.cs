@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -18,8 +16,6 @@ using ASC.Common.Utils;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Core;
 using ASC.Data.Storage.Configuration;
-
-using Autofac;
 using ASC.MessagingSystem;
 using ASC.Data.Reassigns;
 using ASC.Core;
@@ -68,13 +64,6 @@ namespace ASC.Web.Api
             });
 
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
-            var assemblies = container.Resolve<IEnumerable<IWebItem>>().Select(r=> r.GetType().Assembly).Distinct();
-
-            foreach (var a in assemblies)
-            {
-                builder.AddApplicationPart(a);
-            }
 
             services.AddLogManager()
                     .AddStorage()
