@@ -37,6 +37,7 @@ return (
       target={select('target', target, '_top')}
       isTextOverflow={boolean('isTextOverflow', false)}
       isHovered={boolean('isHovered', false)}
+      isSemitransparent={boolean('isSemitransparent', false)}
       text={text('text', 'Simple link')}
       {...userProps}
     />
