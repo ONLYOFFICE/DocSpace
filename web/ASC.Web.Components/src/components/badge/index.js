@@ -19,9 +19,16 @@ const StyledBadge = styled.div`
 `;
 
 const Badge = props => {
+  const onClick = (e) => {
+    if (props.onClick) {
+      e.stopPropagation();
+      props.onClick(e);
+    }
+  }
+
   return (
     props.number > 0
-      ? <StyledBadge {...props}>{props.number}</StyledBadge>
+      ? <StyledBadge {...props} onClick={onClick}>{props.number}</StyledBadge>
       : ""
   );
 };
