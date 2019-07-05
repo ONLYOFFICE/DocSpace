@@ -88,6 +88,15 @@ storiesOf('Components|Link', module)
             <Link type = "action" color = "blue" isHovered = {true} text = 'Blue hovered action link' />
           </Col>
           <Col></Col>
+      </Row>
+      <Row style={rowStyle}>
+          <Col>
+            <Link type = "page" color = "black" href="https://github.com" isSemitransparent = {true} text = 'Semitransparent black page link' />
+          </Col>
+          <Col>
+            <Link type = "action" color = "black" isSemitransparent = {true} text = 'Semitransparent black action link' />
+          </Col>
+          <Col></Col>
       </Row>  
     </Container>
    </>

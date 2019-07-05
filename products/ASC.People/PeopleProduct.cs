@@ -57,6 +57,14 @@ namespace ASC.People
             get { return "people"; }
         }
 
+        public override string ApiURL
+        {
+            get
+            {
+                return "api/2.0/people/info.json";
+            }
+        }
+
         public override void Init()
         {
             _context = new ProductContext

@@ -1,11 +1,10 @@
+
 import axios from 'axios';
 import * as fakeApi from './fakeApi';
 
-const BASE_URL = `${window.location.protocol}//${window.location.hostname}`;
-const PORT = '5000';
 const PREFIX = 'api';
 const VERSION = '2.0';
-const API_URL = `${BASE_URL}:${PORT}/${PREFIX}/${VERSION}`;
+const API_URL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 
 const IS_FAKE = false;
 
@@ -14,7 +13,16 @@ export function login(data) {
 };
 
 export function getModulesList() {
-    return IS_FAKE ? fakeApi.getModulesList() : axios.get(`${API_URL}/modules`);
+    return IS_FAKE ? fakeApi.getModulesList() :
+        axios.get(`${API_URL}/modules`)
+        .then((res) => {
+            const modules = res.data.response;
+            return axios.all(modules.map((m) => axios.get(`${window.location.origin}/${m}`)))
+        })
+        .then((res) => {
+            const response = res.map((d) => d.data.response);
+            return Promise.resolve({ data: { response } });
+        });
 };
 
 export function getUser() {

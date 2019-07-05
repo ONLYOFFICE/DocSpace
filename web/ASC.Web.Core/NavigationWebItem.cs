@@ -48,7 +48,14 @@ namespace ASC.Web.Core
 
         public virtual WebItemContext Context { get; set; }
 
-        
+        public string ApiURL
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public override bool Equals(object obj)
         {
             var m = obj as IWebItem;

@@ -32,6 +32,8 @@ It is a link with 2 types:
 | `isTextOverflow`   | `bool`   |    -     | -                           | `true`        |Activate or deactivate *text-overflow* CSS property with ellipsis (' … ') value                           |
 | `isHovered`           | `bool`   |    -     | -                           | `false`        | Show hovered state of link. Only for demo        |
         |
+| `isSemitransparent`           | `bool`   |    -     | -                           | `false`        | Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status        |
+        |
 | `text`           | `string`   |    -     | -                           | -        | Text of link        |
         |
 
