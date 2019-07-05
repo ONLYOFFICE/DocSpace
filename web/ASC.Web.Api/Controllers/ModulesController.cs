@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -12,48 +11,14 @@ namespace ASC.Web.Api.Controllers
     public class ModulesController : ControllerBase
     {
         [Read]
-        public IEnumerable<Module> GetAll()
+        public IEnumerable<string> GetAll()
         {
-            var result = new List<Module>(){
-                new Module {
-                    Title = "Documents",
-                    Link = "/products/files/",
-                    ImageUrl = "images/documents240.png",
-                    Description = "Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed.",
-                    IsPrimary = true
-                },
-                new Module {
-                    Title = "Projects",
-                    Link = "products/projects/",
-                    ImageUrl = "images/projects_logolarge.png"
-                },
-                new Module {
-                    Title = "Crm",
-                    Link = "/products/crm/",
-                    ImageUrl = "images/crm_logolarge.png"
-                },
-                new Module {
-                    Title = "Mail",
-                    Link = "/products/mail/",
-                    ImageUrl = "images/mail_logolarge.png"
-                },
-                new Module {
-                    Title = "Community",
-                    Link = "products/community/",
-                    ImageUrl = "images/community_logolarge.png"
-                }
-            };
+            var result = new List<string>();
 
             foreach (var a in WebItemManager.Instance.GetItems(WebZoneType.StartProductList))
             {
-                result.Add(new Module() {
-                    Title = a.Name,
-                    Description = a.Description,
-                    ImageUrl = a.Context.LargeIconFileName,
-                    Link = a.StartURL
-                });
+                result.Add(a.ApiURL);
             }
-
 
             return result;
         }

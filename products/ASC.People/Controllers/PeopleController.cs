@@ -14,6 +14,7 @@ using ASC.Data.Reassigns;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
+using ASC.People;
 using ASC.People.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
@@ -48,6 +49,14 @@ namespace ASC.Employee.Core.Controllers
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
+        }
+
+        [Read("info")]
+        public Module GetModule()
+        {
+            var product = new PeopleProduct();
+            product.Init();
+            return new Module(product, true);
         }
 
         [Read]

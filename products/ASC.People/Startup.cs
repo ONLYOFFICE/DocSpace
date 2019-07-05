@@ -1,65 +1,118 @@
+using ASC.Api.Core.Middleware;
+using ASC.Common.Logging;
+using ASC.Common.DependencyInjection;
+using ASC.Data.Reassigns;
+using ASC.MessagingSystem;
+using ASC.Web.Api.Handlers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ASC.Data.Storage.Configuration;
+using ASC.Web.Core;
+using ASC.Api.Core.Core;
+using ASC.Common.Utils;
+using ASC.Core;
+using System.Threading;
 
 namespace ASC.People
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
+
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
+            HostEnvironment = hostEnvironment;
         }
 
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.EnableEndpointRouting = false)
-                .AddNewtonsoftJson();
+            services.AddControllers()
+                .AddNewtonsoftJson(s => s.UseCamelCasing(true))
+                .AddXmlSerializerFormatters();
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            services.AddMemoryCache();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+
+            var builder = services.AddMvc(config =>
             {
-                configuration.RootPath = "ClientApp/build";
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+                config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
+                config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
+                config.Filters.Add(new CustomResponseFilterAttribute());
+                config.Filters.Add(new CustomExceptionFilterAttribute());
+                config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
             });
+
+            var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+
+
+            services.AddLogManager()
+                    .AddStorage()
+                    .AddWebItemManager()
+                    .AddScoped<MessageService>()
+                    .AddScoped<QueueWorkerReassign>()
+                    .AddScoped<QueueWorkerRemove>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
 
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            app.UseCors(builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
+            app.UseRouting();
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
+            app.UseSession();
 
-                if (env.IsDevelopment())
+            app.UseAuthentication();
+
+            app.Use(async (context, next) => {
+                if (SecurityContext.IsAuthenticated)
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                    var culture = user.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
+                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
                 }
+                await next.Invoke();
             });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapCustom();
+            });
+
+            app.UseCSP();
+            app.UseCm();
+            app.UseWebItemManager();
         }
     }
 }

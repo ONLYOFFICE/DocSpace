@@ -37,6 +37,7 @@ namespace ASC.Web.Core
         string Description { get; }
 
         string StartURL { get; }
+        string ApiURL { get; }
 
         string HelpURL { get; }
 

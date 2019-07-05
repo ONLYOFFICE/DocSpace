@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
-const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
+const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
 
 const arrowDropdown = css`
     border-left: 4px solid transparent;
@@ -57,6 +57,11 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
     position: relative;
     text-decoration: none;
     font-weight: ${props => (props.isBold && 'bold')};
+    
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 
         &:hover { 
             ${hoveredCss};
@@ -114,6 +119,14 @@ ${props => (props.type === 'action' && props.dropdownType === 'appearDottedAfter
         }
     `)
 }
+
+${props => (props.isSemitransparent
+ && 
+    css`
+        opacity: 0.5;
+    `)
+}
+
 `;
 
 const Link = props => <StyledLink {...props} />;
@@ -125,6 +138,7 @@ Link.propTypes = {
     href: PropTypes.string,
     isBold: PropTypes.bool,
     isHovered: PropTypes.bool,
+    isSemitransparent: PropTypes.bool,
     isTextOverflow: PropTypes.bool,
     onClick: PropTypes.func,
     target: PropTypes.oneOf(['_blank', '_self', '_parent', '_top']),
@@ -139,6 +153,7 @@ Link.defaultProps = {
     href: undefined,
     isBold: false,
     isHovered: false,
+    isSemitransparent: false,
     isTextOverflow: true,
     type: 'page'
 }

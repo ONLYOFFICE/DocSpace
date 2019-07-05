@@ -30,6 +30,13 @@
     <Compile Remove="Resources\ResourceGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ResourceGenerator.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResourceGenerator.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AWSSDK.CloudFront" Version="3.3.100.18" />
     <PackageReference Include="AWSSDK.Core" Version="3.3.101.9" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
