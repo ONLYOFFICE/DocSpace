@@ -57,6 +57,11 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
     position: relative;
     text-decoration: none;
     font-weight: ${props => (props.isBold && 'bold')};
+    
+    user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 
         &:hover { 
             ${hoveredCss};
