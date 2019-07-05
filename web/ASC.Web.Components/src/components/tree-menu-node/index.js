@@ -5,12 +5,29 @@ import { getCssFromSvg } from '../icons/get-css-from-svg';
 import {TreeNode} from 'rc-tree';
 import ReactDOMServer from 'react-dom/server';
 
-let checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(function(){
-    return <Icons.CheckboxIcon />;
-}()));
-let checkboxСheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(function(){
-    return <Icons.CheckboxCheckedIcon />;
-}()));
+
+var checkboxIcon,
+    checkboxСheckedIcon,
+    сheckboxDisabledIcon,
+    сheckboxHoverIcon,
+    сheckboxIndeterminateIcon,
+    checkboxCheckedDisabledIcon,
+    checkboxCheckedHoverIcon,
+    checkboxIndeterminateDisabledIcon,
+    checkboxIndeterminateHoverIcon;
+
+(function(){
+    checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon />));
+    checkboxСheckedIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />));
+    сheckboxDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxDisabledIcon />));
+    сheckboxHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxHoverIcon />));
+    сheckboxIndeterminateIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />));
+
+    checkboxCheckedDisabledIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedDisabledIcon />));
+    checkboxCheckedHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedHoverIcon />));
+    checkboxIndeterminateDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateDisabledIcon />));
+    checkboxIndeterminateHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateHoverIcon />));
+}());
 
 const TreeNodeMenu = styled(TreeNode)`
     
@@ -131,23 +148,31 @@ const TreeNodeMenu = styled(TreeNode)`
         
          
     }
+
+    span.rc-tree-checkbox:hover {
+        background-image: url("data:image/svg+xml,${сheckboxHoverIcon}");
+    }
+    span.rc-tree-checkbox.rc-tree-checkbox-checked:hover {
+        background-image: url("data:image/svg+xml,${checkboxCheckedHoverIcon}");
+    }
+    span.rc-tree-checkbox-indeterminate:hover {
+        background-image: url("data:image/svg+xml,${checkboxIndeterminateHoverIcon}");
+    }
     span.rc-tree-checkbox-checked {
         background-image: url("data:image/svg+xml,${checkboxСheckedIcon}");
-        //background-position: -14px 0;
     }
     span.rc-tree-checkbox-indeterminate {
-        //background-position: -14px -28px;
+        background-image: url("data:image/svg+xml,${сheckboxIndeterminateIcon}");
     }
-    span.rc-tree-checkbox-disabled {
-        //background-position: 0 -56px;
+    span.rc-tree-checkbox-disabled,
+    span.rc-tree-checkbox-disabled:hover {
+        background-image: url("data:image/svg+xml,${сheckboxDisabledIcon}");
     }
     span.rc-tree-checkbox.rc-tree-checkbox-checked.rc-tree-checkbox-disabled {
-        //background-position: -14px -56px;
+        background-image: url("data:image/svg+xml,${checkboxCheckedDisabledIcon}");
     }
     span.rc-tree-checkbox.rc-tree-checkbox-indeterminate.rc-tree-checkbox-disabled {
-        position: relative;
-        background: #ccc;
-        border-radius: 3px;
+        background-image: url("data:image/svg+xml,${checkboxIndeterminateDisabledIcon}");
     }
     span.rc-tree-checkbox.rc-tree-checkbox-indeterminate.rc-tree-checkbox-disabled::after {
         content: ' ';
