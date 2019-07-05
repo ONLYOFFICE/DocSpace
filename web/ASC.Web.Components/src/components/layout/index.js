@@ -54,62 +54,82 @@ const Content = styled.div`
   }
 `;
 
-const Layout = props => {
+class Layout extends React.Component {
 
-  var chatModule = null,
+  constructor(props) {
+    super(props);
+
+    let chatModule = null,
       currentModule = null,
       totalNotifications = 0,
       index = props.availableModules.length,
       item = null;
 
-  while (index) {
-    index--;
-    item = props.availableModules[index];
+    while (index) {
+      index--;
+      item = props.availableModules[index];
 
-    if(item.seporator) continue;
+      if(item.seporator) continue;
 
-    if(item.id == props.currentModuleId)
-      currentModule = item;
+      if(item.id == props.currentModuleId)
+        currentModule = item;
 
-    if(item.id == props.chatModuleId)
-      chatModule = item;
-    else
-      totalNotifications+=item.notifications;
+      if(item.id == props.chatModuleId)
+        chatModule = item;
+      else
+        totalNotifications+=item.notifications;
+    }
+
+    this.state = {
+      chatModule: chatModule,
+      chatModuleId: props.chatModuleId,
+      currentModule: currentModule,
+      currentUser: props.currentUser || null,
+      totalNotifications: totalNotifications,
+      isNavigationOpen: props.isNavigationOpen,
+      availableModules: props.availableModules || []
+    };
+  };
+
+  toggle = () => {
+    console.log(this.state.isNavigationOpen);
+    this.setState({ isNavigationOpen: !this.state.isNavigationOpen });
+    console.log(this.state.isNavigationOpen);
+  };
+
+  render() {
+    return (
+      <Wrapper>
+        <Backdrop isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggle}/>
+        <Header isNavigationOpen={this.state.isNavigationOpen}>
+          <HeaderIcons chatModule={this.state.chatModule} currentUser={this.state.currentUser}/>
+          <HeaderMenu totalNotifications={this.state.totalNotifications} onClick={this.toggle} currentModule={this.state.currentModule}/>
+          <Navigation isNavigationOpen={this.state.isNavigationOpen}>
+            <NavLogoItem isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggle}/>
+            {
+              this.state.availableModules
+                .filter(item => item.id != this.state.chatModuleId)
+                .map(item => 
+                  <NavItem
+                    seporator={!!item.seporator}
+                    key={item.id}
+                    isOpen={this.state.isNavigationOpen}
+                    active={item.id == this.state.currentModuleId}
+                    iconName={item.iconName}
+                    badgeNumber={item.notifications}
+                    onClick={item.onClick}
+                    onBadgeClick={item.onBadgeClick}
+                  >
+                    {item.name}
+                  </NavItem>
+                )
+            }
+          </Navigation>
+        </Header>
+        <Content>{this.props.children}</Content>
+      </Wrapper>
+    );
   }
-
-  const [isNavigationOpen, toggle] = useState(props.isNavigationOpen);
-
-  return (
-    <Wrapper>
-      <Backdrop isNavigationOpen={isNavigationOpen} onClick={() => { toggle(false); }}/>
-      <Header isNavigationOpen={isNavigationOpen}>
-        <HeaderIcons chatModule={chatModule} currentUser={props.currentUser}/>
-        <HeaderMenu totalNotifications={totalNotifications} onClick={() => { toggle(!isNavigationOpen); }} currentModule={currentModule}/>
-        <Navigation isNavigationOpen={isNavigationOpen}>
-          <NavLogoItem isNavigationOpen={isNavigationOpen} onClick={() => { toggle(!isNavigationOpen); }}/>
-          {
-            props.availableModules
-              .filter(item => item.id != props.chatModuleId)
-              .map(item => 
-                <NavItem
-                  seporator={!!item.seporator}
-                  key={item.id}
-                  isOpen={isNavigationOpen}
-                  active={item.id == props.currentModuleId}
-                  iconName={item.iconName}
-                  badgeNumber={item.notifications}
-                  onClick={item.onClick}
-                  onBadgeClick={item.onBadgeClick}
-                >
-                  {item.name}
-                </NavItem>
-              )
-          }
-        </Navigation>
-      </Header>
-      <Content>{props.children}</Content>
-    </Wrapper>
-  );
 }
 
 Layout.propTypes = {
