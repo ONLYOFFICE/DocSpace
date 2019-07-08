@@ -4,11 +4,11 @@ cd ../web/ASC.Web.Components
 call npm install
 
 echo "ASC.Web.Components Storybook"
-cd ../web/ASC.Web.Components/example
+cd ../ASC.Web.Components/example
 call npm install
 
 echo "ASC.Web.sln"
-cd ../../
+cd ../../../
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
 echo "ASC.People"
