@@ -81,32 +81,47 @@ class Layout extends React.Component {
     }
 
     this.state = {
-      chatModule: chatModule,
-      chatModuleId: props.chatModuleId,
+      isNavigationHoverEnabled: props.isNavigationHoverEnabled,
+      isNavigationOpen: props.isNavigationOpen,
+      currentUser: props.currentUser || null,
+      availableModules: props.availableModules || [],
       currentModule: currentModule,
       currentModuleId: props.currentModuleId,
-      currentUser: props.currentUser || null,
-      totalNotifications: totalNotifications,
-      isNavigationOpen: props.isNavigationOpen,
-      availableModules: props.availableModules || []
+      chatModule: chatModule,
+      chatModuleId: props.chatModuleId,
+      totalNotifications: totalNotifications
     };
   };
 
-  toggle = () => {
-    console.log(this.state.isNavigationOpen);
-    this.setState({ isNavigationOpen: !this.state.isNavigationOpen });
-    console.log(this.state.isNavigationOpen);
+  toggleTabletNav = () => {
+    this.setState({
+      isNavigationOpen: !this.state.isNavigationOpen,
+      isNavigationHoverEnabled: !this.state.isNavigationHoverEnabled
+    });
+  };
+
+  handleDesctopNavHover = () => {
+    if(!this.state.isNavigationHoverEnabled) return;
+    this.setState({
+      isNavigationOpen: !this.state.isNavigationOpen
+    });
+  }
+
+  toggleDesctopNav = () => {
+    this.setState({
+      isNavigationHoverEnabled: !this.state.isNavigationHoverEnabled
+    });
   };
 
   render() {
     return (
       <Wrapper>
-        <Backdrop isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggle}/>
+        <Backdrop isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggleTabletNav}/>
         <Header isNavigationOpen={this.state.isNavigationOpen}>
           <HeaderIcons chatModule={this.state.chatModule} currentUser={this.state.currentUser}/>
-          <HeaderMenu totalNotifications={this.state.totalNotifications} onClick={this.toggle} currentModule={this.state.currentModule}/>
-          <Navigation isNavigationOpen={this.state.isNavigationOpen}>
-            <NavLogoItem isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggle}/>
+          <HeaderMenu totalNotifications={this.state.totalNotifications} onClick={this.toggleTabletNav} currentModule={this.state.currentModule}/>
+          <Navigation isNavigationOpen={this.state.isNavigationOpen} onMouseEnter={this.handleDesctopNavHover} onMouseLeave={this.handleDesctopNavHover}>
+            <NavLogoItem isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggleDesctopNav}/>
             {
               this.state.availableModules
                 .filter(item => item.id != this.state.chatModuleId)
@@ -134,6 +149,7 @@ class Layout extends React.Component {
 }
 
 Layout.propTypes = {
+  isNavigationHoverEnabled: PropTypes.bool,
   isNavigationOpen: PropTypes.bool,
   currentUser: PropTypes.object,
   availableModules: PropTypes.array,
@@ -142,6 +158,7 @@ Layout.propTypes = {
 }
 
 Layout.defaultProps = {
+  isNavigationHoverEnabled: true,
   isNavigationOpen: false
 }
 

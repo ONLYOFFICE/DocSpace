@@ -12,6 +12,10 @@ const LogoItem = styled.div`
   align-items: center;
   padding: 0 16px;
 
+  .logoitem-menu {
+    cursor: pointer;
+  }
+
   .logoitem-img {
     margin-left: 16px;
   }
