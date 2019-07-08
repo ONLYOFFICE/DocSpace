@@ -2,18 +2,14 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using ASC.Common.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Core.Common.Resources
 {
     public class JsonResourceManager
     {
-        private static string DirName { get; set; }
-        static JsonResourceManager()
-        {
-            DirName = "ClientApp";
-        }
+        private const string ClientApp = "ClientApp";
+        private const string Locales = "locales";
 
         public string FileName { get; }
 
@@ -56,8 +52,8 @@ namespace ASC.Core.Common.Resources
 
         JObject FromFile(string culture)
         {
-            var dirPath = Path.GetFullPath(DirName);
-            if(!Directory.Exists(dirPath)) return new JObject();
+            var dirPath = GetDirName(Path.Combine(ClientApp, "build", Locales)) ?? GetDirName(Path.Combine(ClientApp, "public", Locales));
+            if(string.IsNullOrEmpty(dirPath)) return new JObject();
 
             var files = Directory.GetFiles(dirPath, FileName, SearchOption.AllDirectories);
             if (!files.Any()) return new JObject();
@@ -66,6 +62,12 @@ namespace ASC.Core.Common.Resources
             if(string.IsNullOrEmpty(filePath)) return new JObject();
 
             return JObject.Parse(File.ReadAllText(filePath));
+        }
+
+        string GetDirName(string dirName)
+        {
+            var dirPath = Path.GetFullPath(dirName);
+            return Directory.Exists(dirPath) ? dirPath : null;
         }
     }
 }

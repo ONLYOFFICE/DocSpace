@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using System.Security;
+using System.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -71,36 +72,45 @@ namespace ASC.Web.Core
         {
             if (httpContext == null) return;
 
-            //TODO
-            //httpContext.Response.Cookies[GetCookiesName(type)].Value = value;
-            //httpContext.Response.Cookies[GetCookiesName(type)].Expires = GetExpiresDate(session);
+            var options = new CookieOptions
+            {
+                Expires = GetExpiresDate(session)
+            };
 
-            //if (type == CookiesType.AuthKey)
-            //{
-            //    httpContext.Response.Cookies[GetCookiesName(type)].HttpOnly = true;
+            if (type == CookiesType.AuthKey)
+            {
+                options.HttpOnly = true;
 
-            //    if (httpContext.Request.GetUrlRewriter().Scheme == "https")
-            //        httpContext.Response.Cookies[GetCookiesName(type)].Secure = true;
+                if (httpContext.Request.GetUrlRewriter().Scheme == "https")
+                {
+                    options.Secure = true;
+                }
+            }
 
-            //}
+            httpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
         }
 
         public static void SetCookies(this HttpContext httpContext, CookiesType type, string value, string domain, bool session = false)
         {
             if (httpContext == null) return;
 
-            //TODO
-            //httpContext.Response.Cookies[GetCookiesName(type)].Value = value;
-            //httpContext.Response.Cookies[GetCookiesName(type)].Domain = domain;
-            //httpContext.Response.Cookies[GetCookiesName(type)].Expires = GetExpiresDate(session);
+            var options = new CookieOptions
+            {
+                Expires = GetExpiresDate(session),
+                Domain = domain
+            };
 
-            //if (type == CookiesType.AuthKey)
-            //{
-            //    httpContext.Response.Cookies[GetCookiesName(type)].HttpOnly = true;
+            if (type == CookiesType.AuthKey)
+            {
+                options.HttpOnly = true;
 
-            //    if (httpContext.Request.GetUrlRewriter().Scheme == "https")
-            //        httpContext.Response.Cookies[GetCookiesName(type)].Secure = true;
-            //}
+                if (httpContext.Request.GetUrlRewriter().Scheme == "https")
+                {
+                    options.Secure = true;
+                }
+            }
+
+            httpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
         }
 
         public static string GetCookies(this HttpContext httpContext, CookiesType type)
@@ -109,9 +119,8 @@ namespace ASC.Web.Core
             {
                 var cookieName = GetCookiesName(type);
 
-                //TODO
-                //if (httpContext.Request.Cookies[cookieName] != null)
-                //    return httpContext.Request.Cookies[cookieName].Value ?? "";
+                if (httpContext.Request.Cookies.ContainsKey(cookieName))
+                    return httpContext.Request.Cookies[cookieName] ?? "";
             }
             return "";
         }
@@ -120,9 +129,10 @@ namespace ASC.Web.Core
         {
             if (httpContext == null) return;
 
-            //TODO
-            //if (httpContext.Request.Cookies[GetCookiesName(type)] != null)
-            //    httpContext.Response.Cookies[GetCookiesName(type)].Expires = DateTime.Now.AddDays(-3);
+            if (httpContext.Request.Cookies.ContainsKey(GetCookiesName(type)))
+            {
+                httpContext.Response.Cookies.Delete(GetCookiesName(type), new CookieOptions() { Expires = DateTime.Now.AddDays(-3) });
+            }
         }
 
         private static DateTime GetExpiresDate(bool session)
