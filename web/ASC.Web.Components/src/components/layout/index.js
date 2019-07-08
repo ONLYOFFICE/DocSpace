@@ -84,6 +84,7 @@ class Layout extends React.Component {
       chatModule: chatModule,
       chatModuleId: props.chatModuleId,
       currentModule: currentModule,
+      currentModuleId: props.currentModuleId,
       currentUser: props.currentUser || null,
       totalNotifications: totalNotifications,
       isNavigationOpen: props.isNavigationOpen,
