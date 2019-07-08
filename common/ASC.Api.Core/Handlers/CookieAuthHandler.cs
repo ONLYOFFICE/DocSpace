@@ -27,10 +27,6 @@ namespace ASC.Web.Api.Handlers
         {
             var token = Context.Request.Cookies["asc_auth_key"] ?? Context.Request.Headers["Authorization"];
             var result = SecurityContext.AuthenticateMe(token);
-            if (result)
-            {
-                Context.SetCookies(CookiesType.AuthKey, token);
-            }
 
             return Task.FromResult(
                      result ?
