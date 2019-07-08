@@ -71,7 +71,11 @@ namespace ASC.People
                     .AddWebItemManager()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
-                    .AddScoped<QueueWorkerRemove>();
+                    .AddScoped<QueueWorkerRemove>()
+                    .AddSpaStaticFiles(configuration =>
+                    {
+                        configuration.RootPath = "ClientApp/build";
+                    });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -113,6 +117,19 @@ namespace ASC.People
             app.UseCSP();
             app.UseCm();
             app.UseWebItemManager();
+
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
         }
     }
 }

@@ -68,7 +68,8 @@ namespace ASC.Common.DependencyInjection
             void LoadAssembly(string type)
             {
                 var dll = type.Substring(type.IndexOf(",") + 1).Trim();
-                var path = Directory.GetFiles(productsDir, $"{dll}.dll", SearchOption.AllDirectories).FirstOrDefault();
+                var productPath = Path.Combine(productsDir, dll);
+                var path = GetPath(Path.Combine(productPath, "bin"), dll, SearchOption.AllDirectories) ?? GetPath(productPath, dll, SearchOption.TopDirectoryOnly);
 
                 if (!string.IsNullOrEmpty(path))
                 {
@@ -82,6 +83,13 @@ namespace ASC.Common.DependencyInjection
                         };
                     }
                 }
+            }
+
+            string GetPath(string dirPath, string dll, SearchOption searchOption)
+            {
+                if (!Directory.Exists(dirPath)) return null;
+
+                return Directory.GetFiles(dirPath, $"{dll}.dll", searchOption).FirstOrDefault();
             }
         }
     }

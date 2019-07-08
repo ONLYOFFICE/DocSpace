@@ -1,26 +1,24 @@
-import React from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+import { Icons } from '../icons'
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
 
-const arrowDropdown = css`
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: ${props =>
-        (props.color === 'black' && '4px solid #333333') ||
-        (props.color === 'gray' && '4px solid #A3A9AE') ||
-        (props.color === 'blue' && '4px solid #316DAA')
-    };
-    content: "";
-    height: 0;
-    position: absolute;
-    right: -15px;
-    top: 1px;
-    bottom: 0px;
-    top: 50%;
-    width: 0;
-    margin-top: -2px;
+const getDropdownColor = color => {
+    switch (color) {
+        case 'gray':
+            return '#A3A9AE';
+        case 'blue':
+            return '#316DAA';
+        default:
+            return '#333333';
+    }
+}
+
+const opacityCss = css `
+    opacity: ${props =>
+        (props.isSemitransparent  && '0.5')};
 `;
 
 const colorCss = css`
@@ -45,6 +43,13 @@ const dottedCss = css`
     border-bottom: 1px dotted;
 `;
 
+const Caret = styled(Icons.ExpanderDownIcon)`
+    width: 10px;
+    margin-left: 5px;
+    margin-top: -4px;
+    ${opacityCss};
+`;
+
 const StyledLink = styled(SimpleLink).attrs((props) => ({
     href: props.href,
     target: props.target,
@@ -52,6 +57,7 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
     title: props.title
 }))`
     ${colorCss};
+    ${opacityCss};
     font-size: ${props => props.fontSize}px;
     cursor: pointer;
     position: relative;
@@ -91,13 +97,6 @@ ${props => (props.type === 'action' && (props.isHovered || props.dropdownType ==
         ${dottedCss}
     `)
 }
-        
-${props => (props.type === 'action' && props.dropdownType === 'alwaysDotted' &&  
-    css`
-        &:after {
-            ${arrowDropdown}
-        }`)
-}
 
 ${props => (props.isTextOverflow && 
     css`
@@ -110,26 +109,20 @@ ${props => (props.isTextOverflow &&
     `)
 }
 
-${props => (props.type === 'action' && props.dropdownType === 'appearDottedAfterHover' && 
-    css`
-        &:hover { 
-            :after {
-                ${arrowDropdown}
-                }
-        }
-    `)
-}
-
-${props => (props.isSemitransparent
- && 
-    css`
-        opacity: 0.5;
-    `)
-}
-
 `;
 
-const Link = props => <StyledLink {...props} />;
+const Link = props => {
+    const [isHovered, toggle] = useState(false);
+
+    return (
+        <span
+        onMouseEnter={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}
+        onMouseLeave={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}>
+        <StyledLink {...props} /> 
+        {(props.dropdownType === 'alwaysDotted' || (isHovered && props.dropdownType === 'appearDottedAfterHover')) &&  <Caret {...props} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
+        </span>
+    );
+}
 
 Link.propTypes = {
     color: PropTypes.oneOf(['gray', 'black', 'blue']),
@@ -149,6 +142,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
     color: 'black',
+    dropdownType: 'none',
     fontSize: 12,
     href: undefined,
     isBold: false,

@@ -3,6 +3,7 @@ using System.Security.Authentication;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASC.Core;
+using ASC.Web.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -26,6 +27,10 @@ namespace ASC.Web.Api.Handlers
         {
             var token = Context.Request.Cookies["asc_auth_key"] ?? Context.Request.Headers["Authorization"];
             var result = SecurityContext.AuthenticateMe(token);
+            if (result)
+            {
+                Context.SetCookies(CookiesType.AuthKey, token);
+            }
 
             return Task.FromResult(
                      result ?
