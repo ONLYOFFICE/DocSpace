@@ -16,6 +16,7 @@ const StyledDropdownItem = styled.button`
     margin: ${props => (props.isSeparator ? '0 16px' : '0')};
     padding: ${props => (props.isUserPreview ? '0px' : '0 16px')};
     text-decoration: none;
+    display: block;
 
     user-select: none;
     -o-user-select: none;

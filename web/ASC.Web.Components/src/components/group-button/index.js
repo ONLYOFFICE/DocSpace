@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 import DropDown from '../drop-down'
+import Checkbox from '../checkbox'
 
 const textColor = '#333333',
     disabledTextColor = '#A3A9AE';
@@ -88,7 +89,7 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
 }
 
 const GroupButton = (props) => {
-    const { label, isDropdown, opened, disabled, action, isSeparator } = props;
+    const { label, isDropdown, opened, disabled, action, isSeparator} = props;
     const [isOpen, toggle] = useState(opened);
     const ref = useRef(null);
 
