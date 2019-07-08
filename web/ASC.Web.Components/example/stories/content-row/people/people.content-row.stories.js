@@ -237,7 +237,7 @@ const peopleContent = (userName, department, phone, email, headDepartment, statu
   </Container>
   )};
 
-storiesOf('EXAMPLES|Row', module)
+storiesOf('EXAMPLES|ContentRow', module)
   .add('people row', () => {
    
     return(
