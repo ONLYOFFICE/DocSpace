@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "asc-web-components": "file:../../ASC.Web.Components/",
+    "asc-web-components": "file:../ASC.Web.Components/",
     "axios": "^0.19.0",
     "bootstrap": "4.3.1",
     "connected-react-router": "6.5.0",
@@ -44,7 +44,7 @@
     "rimraf": "2.6.3"
   },
   "scripts": {
-    "start": "rimraf ./build && react-scripts start",
+    "start": "rimraf ./build && set PORT=5001 && react-scripts start",
     "build": "react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

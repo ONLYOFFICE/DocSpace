@@ -38,12 +38,6 @@ namespace ASC.Web.Studio
             /*services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();*/
 
-            // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
@@ -84,16 +78,6 @@ namespace ASC.Web.Studio
             app.UseEndpoints(endpoints =>
             {
                 endpoints.InitializeHttpHandlers();
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
             });
         }
     }
