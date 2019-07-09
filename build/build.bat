@@ -8,9 +8,8 @@ cd ../ASC.Web.Storybook
 call npm ci
 
 echo "ASC.Web.Client"
-cd ../../ASC.Web.Client
+cd ../ASC.Web.Client
 call npm ci
-call npm run build
 
 echo "ASC.Web.sln"
 cd ../../
