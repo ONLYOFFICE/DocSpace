@@ -2,54 +2,94 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Container, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row } from 'reactstrap';
-import { NavMenu, NavLogo } from 'asc-web-components';
+import { Container, Row } from 'reactstrap';
+import { Layout } from 'asc-web-components';
 import { logout } from '../../actions/authActions';
 
-const Layout = props => {
+const MainPageContent = ({ children }) => (
+    <main className="main">
+        <Container className="mainPageContent">
+            <Row>
+                {children}
+            </Row>
+        </Container>
+    </main>
+);
+
+const StudioLayout = props => {
     const { auth, logout, children, history } = props;
+    console.log(props);
 
     return (
         <>
-            <header>
-                <NavMenu>
-                    <NavLogo imageUrl="images/light_small_general.svg" onClick={() => history.push('/')} />
-                    {auth.isAuthenticated && (
-                        <UncontrolledDropdown inNavbar size="sm">
-                            <DropdownToggle caret nav style={{ fontFamily: '"Open Sans", sans-serif', fontSize: '12px', color: '#c5c5c5',  }}>
-                                {auth.user.displayName}
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem onClick={() => history.push("/products/people/profile")}>Profile</DropdownItem>
-                                <DropdownItem onClick={() => {
-                                    logout();
-                                    history.push('/');
-                                }}>Sign Out</DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                        )}
-                </NavMenu>
-            </header>
-            <main className="main">
-                <Container fluid className="mainPageContent">
-                    <Row>
-                        {children}
-                    </Row>
-                </Container>
-            </main>
+            {auth.isAuthenticated && auth.isLoaded
+                ? (
+                    <Layout {...props}>
+                        <MainPageContent>{children}</MainPageContent>
+                    </Layout>
+                )
+                : (<MainPageContent>{children}</MainPageContent>)
+            }
         </>
     )
 };
 
-Layout.propTypes = {
+StudioLayout.propTypes = {
     auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
+const chatId = '22222222-2222-2222-2222-222222222222';
+
+function convertModules(modules) {
+    const separator = { seporator: true, id: 'nav-seporator-1' };
+    const chat = {
+        id: chatId,
+        name: 'Chat',
+        iconName: 'ChatIcon',
+        notifications: 3,
+        url: '/products/chat/',
+        onClick: () => window.open('/products/chat/', '_blank'),
+        onBadgeClick: e => console.log('ChatIconBadge Clicked')(e)
+    };
+
+    let items = modules.map(item => {
+        return {
+            id: '11111111-1111-1111-1111-111111111111',
+            name: item.title,
+            iconName: 'PeopleIcon',
+            notifications: 0,
+            url: item.link,
+            onClick: () => window.open(item.link, '_blank'),
+            onBadgeClick: e => console.log('DocumentsIconBadge Clicked')(e)
+        };
+    }) || [];
+
+    return items.length ? [separator, ...items, chat] : items;
+}
+
+function convertUser(user) {
     return {
-        auth: state.auth
+        id: user.id,
+        name: user.displayName,
+        email: user.email,
+        role: user.isVisitor ? 'guest' : user.isAdmin ? 'admin' : user.isOwner ? 'owner' : 'user',
+        url: user.profileUrl,
+        smallAvatar: user.avatarSmall,
+        mediumAvatar: user.avatarMedium,
     };
 }
 
-export default connect(mapStateToProps, { logout })(withRouter(Layout));
+function mapStateToProps(state) {
+    let availableModules = convertModules(state.auth.modules);
+    return {
+        auth: state.auth,
+        availableModules: availableModules,
+        currentUser: convertUser(state.auth.user),
+        currentModuleId: '',
+        chatModuleId: chatId
+    };
+}
+
+
+export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));
