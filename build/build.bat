@@ -3,8 +3,8 @@ echo "ASC.Web.Components"
 cd ../web/ASC.Web.Components
 call npm ci
 
-echo "ASC.Web.Components Storybook"
-cd ../ASC.Web.Components/example
+echo "ASC.Web.Storybook"
+cd ../ASC.Web.Storybook
 call npm ci
 
 echo "ASC.Web.Client"

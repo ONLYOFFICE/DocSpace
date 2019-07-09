@@ -1,11 +1,11 @@
 {
-  "name": "asc-web-components-example",
+  "name": "asc-web-storybook",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@emotion/core": "10.0.14",
     "@emotion/styled": "10.0.14",
-    "asc-web-components": "file:..",
+    "asc-web-components": "file:../ASC.Web.Components/",
     "bootstrap": "^4.3.1",
     "lodash": "4.17.11",
     "lodash-es": "4.17.11",
