@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Loader, ErrorContainer } from 'asc-web-components';
-import Layout from './components/Layout/Layout';
+import StudioLayout from './components/Layout/Layout';
 import Login from './components/pages/Login/Login';
 import Home from './components/pages/Home/Home';
 
@@ -12,7 +12,7 @@ const About = lazy(() => import('./components/pages/About/About'));
 const App = () => {
     return (
         <BrowserRouter>
-            <Layout>
+            <StudioLayout>
                 <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
                     <Switch>
                         <Route exact path='/login' component={Login} />
@@ -26,7 +26,7 @@ const App = () => {
                         )} />
                     </Switch>
                 </Suspense>
-            </Layout>
+            </StudioLayout>
         </BrowserRouter>
     );
 };

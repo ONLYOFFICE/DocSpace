@@ -16,9 +16,9 @@ const peopleItems = [
         isSeparator: true,
         fontWeight: 'bold',
         children: [
-            <DropDownItem label='Active'/>,
-            <DropDownItem label='Disabled'/>,
-            <DropDownItem label='Invited'/>
+            <DropDownItem key='active' label='Active'/>,
+            <DropDownItem key='disabled' label='Disabled'/>,
+            <DropDownItem key='invited' label='Invited'/>
         ]
     },
     {
