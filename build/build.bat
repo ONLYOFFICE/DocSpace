@@ -1,11 +1,11 @@
 PUSHD %~dp0
 echo "ASC.Web.Components"
 cd ../web/ASC.Web.Components
-call npm install
+call npm ci
 
 echo "ASC.Web.Components Storybook"
 cd ../ASC.Web.Components/example
-call npm install
+call npm ci
 
 echo "ASC.Web.sln"
 cd ../../../
