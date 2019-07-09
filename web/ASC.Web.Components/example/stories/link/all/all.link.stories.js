@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Link } from 'asc-web-components';
+import { Link, DropDownItem } from 'asc-web-components';
 import { Container, Row, Col } from 'reactstrap';
 
 const rowStyle = {
@@ -33,7 +33,20 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "black" isBold = {true} text = 'Bold black action link' />
           </Col>
-          <Col><Link type = "action" color = "black" dropdownType = 'alwaysDotted' text = 'Simple dropdown' /></Col>
+          <Col>
+            <Link type = "action" color = "black" dropdownType = 'alwaysDotted' text = 'Simple dropdown'>
+              <DropDownItem
+                  key= 'key1'
+                  onClick={() => console.log('Base button clicked')}
+                  label='Base button' 
+                />
+              <DropDownItem
+                  key= 'key2' 
+                  onClick={() => console.log('Base button2 clicked')}
+                  label='Base button2' 
+                />
+            </Link>
+          </Col>
       </Row>
       <Row style={rowStyle}>
           <Col>
@@ -42,7 +55,37 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type = "action" color = "black" text = 'Black action link' />
           </Col>
-          <Col> <Link type = "action" color = "gray" dropdownType = 'appearDottedAfterHover' text = 'Gray dropdown and dotted appear after hover' /></Col>
+          <Col> 
+            <Link type = "action" color = "gray" dropdownType = 'appearDottedAfterHover' text = 'Gray dropdown and dotted appear after hover'>
+          
+              <DropDownItem
+                key= 'key1' 
+                onClick={() => console.log('Base button clicked')}
+                label='Base button' 
+              />
+              <DropDownItem
+                key= 'key2' 
+                onClick={() => console.log('Base button2 clicked')}
+                label='Base button2' 
+              />
+              <DropDownItem
+                key= 'key3' 
+                isSeparator = {true}
+              />
+
+              <DropDownItem
+                key= 'key4' 
+                onClick={() => console.log('Base button3 clicked')}
+                label='Base button3'     
+              />
+
+              <DropDownItem
+                  key= 'key5' 
+                  onClick={() => console.log('Base button4 clicked')}
+                  label='Base button4'     
+              /> 
+            </Link>
+          </Col>
       </Row>
       <Row style={rowStyle}>
           <Col>

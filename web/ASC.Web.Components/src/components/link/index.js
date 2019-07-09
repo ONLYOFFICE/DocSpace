@@ -2,8 +2,10 @@ import React, {useState, useRef, useEffect} from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Icons } from '../icons'
+import DropDown from '../drop-down'
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
+const ClearCaret = ({ rel, isBold, fontSize, isTextOverflow, isHovered, type, color, text, target, dropdownType,  ...props }) => <Caret {...props}/>;
 
 const getDropdownColor = color => {
     switch (color) {
@@ -43,7 +45,9 @@ const dottedCss = css`
     border-bottom: 1px dotted;
 `;
 
-const Caret = styled(Icons.ExpanderDownIcon)`
+const Caret = styled(Icons.ExpanderDownIcon).attrs((props) => ({
+    isSemitransparent: props.isSemitransparent
+}))`
     width: 10px;
     margin-left: 5px;
     margin-top: -4px;
@@ -111,16 +115,55 @@ ${props => (props.isTextOverflow &&
 
 `;
 
-const Link = props => {
-    const [isHovered, toggle] = useState(false);
+const useOuterClickNotifier = (onOuterClick, ref) => {
+    
+    useEffect(() => { 
+        const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
 
+        if (ref.current) {
+            document.addEventListener("click", handleClick);
+        }
+
+        return () => document.removeEventListener("click", handleClick);
+    },
+    [onOuterClick, ref]
+    );
+}
+
+
+const Link = props => {
+    let isDropdown;
+    const [isHovered, toggle] = useState(false);
+    const [isOpen, toggleDropdown] = useState(0);
+    const dropMenu = <DropDown isOpen={isOpen} {...props}>
+                    {props.children}
+                     </DropDown>;
+
+    const ref = useRef(null);
+    props.dropdownType != 'none' ? isDropdown = true : isDropdown = false;
+    
+    function stopAction(e) {
+        if (props.href === ''){
+            e.preventDefault();
+        }
+    }
+
+    useOuterClickNotifier((e) => toggleDropdown(false), ref);
+    
     return (
-        <span
+
+        <span ref={ref}
         onMouseEnter={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}
         onMouseLeave={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}>
-        <StyledLink {...props} /> 
-        {(props.dropdownType === 'alwaysDotted' || (isHovered && props.dropdownType === 'appearDottedAfterHover')) &&  <Caret {...props} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
+           
+        <StyledLink {...props}  onClick={ 
+                 isDropdown ?
+                     () => { toggleDropdown(!isOpen) }
+                : stopAction}/> 
+        {(props.dropdownType === 'alwaysDotted' || (isHovered && props.dropdownType === 'appearDottedAfterHover')) &&  <ClearCaret {...props} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
+        {isDropdown &&  dropMenu }
         </span>
+        
     );
 }
 
