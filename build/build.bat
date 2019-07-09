@@ -9,7 +9,7 @@ call npm ci
 
 echo "ASC.Web.Client"
 cd ../../ASC.Web.Client
-call npm install
+call npm ci
 
 echo "ASC.Web.sln"
 cd ../../../
