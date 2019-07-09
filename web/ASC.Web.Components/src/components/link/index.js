@@ -5,7 +5,6 @@ import { Icons } from '../icons'
 import DropDown from '../drop-down'
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
-const ClearCaret = ({ rel, isBold, fontSize, isTextOverflow, isHovered, type, color, text, target, dropdownType,  ...props }) => <Caret {...props}/>;
 
 const getDropdownColor = color => {
     switch (color) {
@@ -90,16 +89,10 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
             }
         }      
         
-${props => (props.isHovered && 
-    css`
-        ${hoveredCss}
-    `)
+${props => (props.isHovered && hoveredCss)
 }
 
-${props => (props.type === 'action' && (props.isHovered || props.dropdownType === 'alwaysDotted') && 
-    css`
-        ${dottedCss}
-    `)
+${props => (props.type === 'action' && (props.isHovered || props.dropdownType === 'alwaysDotted') && dottedCss)
 }
 
 ${props => (props.isTextOverflow && 
@@ -160,7 +153,7 @@ const Link = props => {
                  isDropdown ?
                      () => { toggleDropdown(!isOpen) }
                 : stopAction}/> 
-        {(props.dropdownType === 'alwaysDotted' || (isHovered && props.dropdownType === 'appearDottedAfterHover')) &&  <ClearCaret {...props} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
+        {isDropdown && (isHovered || props.dropdownType === 'alwaysDotted') &&  <Caret isSemitransparent={props.isSemitransparent} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
         {isDropdown &&  dropMenu }
         </span>
         
