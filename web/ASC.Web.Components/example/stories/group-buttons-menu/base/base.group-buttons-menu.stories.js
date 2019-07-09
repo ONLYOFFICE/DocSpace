@@ -1,11 +1,11 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
-import { BooleanValue, createBooleanValue  } from 'react-values'
+import { withKnobs, text } from '@storybook/addon-knobs/react';
+import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme'
 import styled from '@emotion/styled';
 import Readme from './README.md'
-import { GroupButtonsMenu, Checkbox, DropDownItem, Button } from 'asc-web-components'
+import { GroupButtonsMenu, Checkbox, DropDownItem } from 'asc-web-components'
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
