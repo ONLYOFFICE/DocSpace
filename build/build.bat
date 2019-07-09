@@ -12,7 +12,7 @@ cd ../../ASC.Web.Client
 call npm ci
 
 echo "ASC.Web.sln"
-cd ../../../
+cd ../../
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
 rem echo "ASC.People"
