@@ -1,3 +1,16 @@
+using System.Threading;
+
+using ASC.Api.Core.Core;
+using ASC.Api.Core.Middleware;
+using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Data.Reassigns;
+using ASC.Data.Storage.Configuration;
+using ASC.MessagingSystem;
+using ASC.Web.Core;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,19 +21,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using ASC.Common.Logging;
-using ASC.Web.Api.Handlers;
-using ASC.Api.Core.Middleware;
-using ASC.Common.Utils;
-using ASC.Common.DependencyInjection;
-using ASC.Web.Core;
-using ASC.Data.Storage.Configuration;
-using ASC.MessagingSystem;
-using ASC.Data.Reassigns;
-using ASC.Core;
-using System.Threading;
-using ASC.Api.Core.Core;
 
 namespace ASC.Web.Api
 {

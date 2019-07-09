@@ -58,12 +58,11 @@ namespace ASC.Data.Storage.DiscStorage
 
         public async Task Invoke(HttpContext context)
         {
-            //TODO
-            //if (_checkAuth && !SecurityContext.IsAuthenticated)
-            //{
-            //    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            //    return;
-            //}
+            if (_checkAuth && !SecurityContext.IsAuthenticated)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
 
             var storage = StorageFactory.GetStorage(CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
             var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));

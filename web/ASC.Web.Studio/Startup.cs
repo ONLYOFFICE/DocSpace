@@ -3,6 +3,8 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
+using ASC.Web.Core;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -44,6 +46,8 @@ namespace ASC.Web.Studio
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
+            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+
             services.AddHttpContextAccessor()
                 .AddStorage()
                 .AddLogManager();
@@ -72,12 +76,7 @@ namespace ASC.Web.Studio
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseSession();
-            /*app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });*/
+            app.UseAuthentication();
 
             app.UseCSP();
             app.UseCm();

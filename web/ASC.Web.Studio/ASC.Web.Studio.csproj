@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
+    <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,6 +35,7 @@ using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.Common.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
@@ -141,8 +142,8 @@ namespace ASC.Data.Storage
             //{
             //    throw new InvalidOperationException("Application not hosted.");
             //}
-
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            
+            var section = builder.ServiceProvider.GetService<Configuration.Storage>();
             if (section != null)
             {
                 //old scheme

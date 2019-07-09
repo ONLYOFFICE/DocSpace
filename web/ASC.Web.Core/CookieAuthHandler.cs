@@ -3,13 +3,12 @@ using System.Security.Authentication;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASC.Core;
-using ASC.Web.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Web.Api.Handlers
+namespace ASC.Web.Core
 {
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {

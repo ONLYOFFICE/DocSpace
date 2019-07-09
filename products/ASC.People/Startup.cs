@@ -1,9 +1,16 @@
+using System.Threading;
+
+using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
-using ASC.Common.Logging;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
+using ASC.Core;
 using ASC.Data.Reassigns;
+using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
-using ASC.Web.Api.Handlers;
+using ASC.Web.Core;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -15,12 +22,6 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ASC.Data.Storage.Configuration;
-using ASC.Web.Core;
-using ASC.Api.Core.Core;
-using ASC.Common.Utils;
-using ASC.Core;
-using System.Threading;
 
 namespace ASC.People
 {
