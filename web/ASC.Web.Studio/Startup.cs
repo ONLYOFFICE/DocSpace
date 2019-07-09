@@ -7,7 +7,6 @@ using ASC.Web.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -68,7 +67,6 @@ namespace ASC.Web.Studio
                     .AllowAnyMethod());
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
             app.UseSession();
             app.UseAuthentication();
 
