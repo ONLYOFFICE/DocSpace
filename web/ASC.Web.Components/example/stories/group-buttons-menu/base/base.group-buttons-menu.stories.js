@@ -19,9 +19,9 @@ const createItems = (label, dropDownLabel, menuItemLabel, count) => {
             isSeparator: true,
             fontWeight: 'bold',
             children: [
-                <DropDownItem label={dropDownLabel}/>,
-                <DropDownItem label={dropDownLabel}/>,
-                <DropDownItem label={dropDownLabel}/>
+                <DropDownItem key='1' label={dropDownLabel}/>,
+                <DropDownItem key='2' label={dropDownLabel}/>,
+                <DropDownItem key='3' label={dropDownLabel}/>
             ]
         }
     ];
