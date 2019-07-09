@@ -19,16 +19,20 @@ const Wrapper = styled.div`
 
 const HeaderIcons = props =>
   <Wrapper>
-    { 
-      props.chatModule && <BadgedIcon
-        key={props.chatModule.id}
-        iconName={props.chatModule.iconName}
-        badgeNumber={props.chatModule.notifications}
-        onClick={props.chatModule.onClick}
-        onBadgeClick={props.chatModule.onBadgeClick}
-      />
+    {
+      props.modules.map(module => 
+        <BadgedIcon
+          key={module.id}
+          iconName={module.iconName}
+          badgeNumber={module.notifications}
+          onClick={module.onClick}
+          onBadgeClick={module.onBadgeClick}
+        />
+      )
     }
-    { props.currentUser && <ProfileActions {...props.currentUser}/> }
+    {
+      props.user && <ProfileActions userActions={props.userActions} user={props.user}/>
+    }
   </Wrapper>
 
 export default HeaderIcons;

@@ -27,7 +27,7 @@ const HeaderMenu = props =>
       badgeNumber={props.totalNotifications}
       onClick={props.onClick}
     />
-    <MenuHeader>{props.currentModule && props.currentModule.name}</MenuHeader>
+    <MenuHeader>{props.currentModule && props.currentModule.title}</MenuHeader>
   </MenuItem>
 
 export default HeaderMenu;

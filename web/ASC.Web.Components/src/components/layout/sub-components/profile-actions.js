@@ -11,29 +11,48 @@ class ProfileActions extends React.Component {
 
     this.state = {
       isOpen: props.isOpen,
-      name: props.name,
-      email: props.email,
-      role: props.role,
-      smallAvatar: props.smallAvatar,
-      mediumAvatar: props.mediumAvatar
+      user: props.user,
+      userActions: props.userActions
     };
   };
 
   toggle = () => {
-    console.log(this.state.isOpen);
     this.setState({ isOpen: !this.state.isOpen });
-    console.log(this.state.isOpen);
+  };
+
+  getUserRole = (user) => {
+    if(user.isOwner) return "owner";
+    if(user.isAdmin) return "admin";
+    if(user.isVisitor) return "guest";
+    return "user";
   };
 
   render() {
     return (
       <div>
-        <Avatar size="small" role={this.state.role} source={this.state.smallAvatar} userName={this.state.name} onClick={this.toggle}/>
-        <DropDown isUserPreview withArrow direction='right' isOpen={this.state.isOpen}>
-          <DropDownItem isUserPreview role={this.state.role} source={this.state.mediumAvatar} userName={this.state.name} label={this.state.email}/>
-          <DropDownItem label="Profile"/>
-          <DropDownItem label="About"/>
-          <DropDownItem label="Log out"/>
+        <Avatar
+          size="small"
+          role={this.getUserRole(this.state.user)}
+          source={this.state.user.avatarSmall}
+          userName={this.state.user.userName}
+          onClick={this.toggle}
+        />
+        <DropDown
+          isUserPreview
+          withArrow
+          direction='right'
+          isOpen={this.state.isOpen}
+        >
+          <DropDownItem
+            isUserPreview
+            role={this.getUserRole(this.state.user)}
+            source={this.state.user.avatarMedium}
+            userName={this.state.user.userName}
+            label={this.state.user.email}
+          />
+          {
+            this.state.userActions.map(action => <DropDownItem {...action}/>)
+          }
         </DropDown>
       </div>
     );
@@ -41,11 +60,15 @@ class ProfileActions extends React.Component {
 }
 
 ProfileActions.propTypes = {
-  isOpen: PropTypes.bool
+  isOpen: PropTypes.bool,
+  user: PropTypes.object,
+  userActions: PropTypes.array
 }
 
 ProfileActions.defaultProps = {
-  isOpen: false
+  isOpen: false,
+  user: {},
+  userActions: []
 }
 
 export default ProfileActions
