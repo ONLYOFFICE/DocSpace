@@ -30,7 +30,7 @@ It is a link with 2 types:
 | `title`           | `string`   |    -     | -                           | -        | Title of link                          |
 | `target`           | `oneOf`   |    -     | _blank, _self, _parent, _top   | -    | The *target* attribute specifies where the linked document will open when the link is clicked.                          |                      |
 | `isTextOverflow`   | `bool`   |    -     | -                           | `true`        |Activate or deactivate *text-overflow* CSS property with ellipsis (' … ') value                           |
-| `isHovered`           | `bool`   |    -     | -                           | `false`        | Show hovered state of link. Only for demo        |
+| `isHovered`           | `bool`   |    -     | -                           | `false`        | Set hovered state and effects of link.        |
         |
 | `isSemitransparent`           | `bool`   |    -     | -                           | `false`        | Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status        |
         |
