@@ -7,6 +7,10 @@ echo "ASC.Web.Components Storybook"
 cd ../ASC.Web.Components/example
 call npm ci
 
+echo "ASC.Web.Client"
+cd ../../ASC.Web.Client
+call npm install
+
 echo "ASC.Web.sln"
 cd ../../../
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
