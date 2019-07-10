@@ -21,12 +21,16 @@ const getSizeStyle = size => {
     case 'big':
       return `
         width: ${iconSizes[size]}px;
+        min-width: ${iconSizes[size]}px;
         height: ${iconSizes[size]}px;
+        min-height: ${iconSizes[size]}px;
       `;
     default:
       return `
         width: ${iconSizes.big}px;
+        min-width: ${iconSizes.big}px;
         height: ${iconSizes.big}px;
+        min-height: ${iconSizes.big}px;
       `;
   }
 };

@@ -131,9 +131,11 @@ import OrigCheckboxCheckedHoverIcon from './checkbox.checked.hover.react.svg';
 import OrigCheckboxIndeterminateDisabledIcon from './checkbox.indeterminate.disabled.react.svg';
 import OrigCheckboxIndeterminateHoverIcon from './checkbox.indeterminate.hover.react.svg';
 
-
 import OrigEyeIcon from './eye.react.svg';
 import OrigMenuIcon from './menu.react.svg';
+
+import OrigNavLogoIcon from './nav.logo.react.svg';
+import OrigNavLogoOpenedIcon from './nav.logo.opened.react.svg';
 
 
 export const AZSortingIcon = createStyledIcon(
@@ -659,4 +661,12 @@ export const YahooIcon = createStyledIcon(
 export const ZASortingIcon = createStyledIcon(
   OrigZASortingIcon,
   'ZASortingIcon'
+);
+export const NavLogoIcon = createStyledIcon(
+  OrigNavLogoIcon,
+  'NavLogoIcon'
+);
+export const NavLogoOpenedIcon = createStyledIcon(
+  OrigNavLogoOpenedIcon,
+  'NavLogoOpenedIcon'
 );
