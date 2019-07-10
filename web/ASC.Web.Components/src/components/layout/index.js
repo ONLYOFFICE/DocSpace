@@ -108,7 +108,7 @@ class Layout extends React.Component {
         <Header
           badgeNumber={this.state.totalNotifications}
           onClick={this.showNav}
-          moduleTitle={this.state.currentModule.title}
+          currentModule={this.state.currentModule}
         />
         <Nav
           isOpen={this.state.isNavigationOpen}
