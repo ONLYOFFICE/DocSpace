@@ -1,0 +1,13 @@
+﻿<#@ assembly name="$(MSBuildProjectDirectory)\..\..\..\common\ASC.Core.Common\bin\$(Configuration)\ASC.Core.Common.dll" #>
+<#@ include file="$(MSBuildProjectDirectory)\..\..\..\common\ASC.Core.Common\Resources\ResourceGenerator.tt"  #>
+
+<#+
+string GetNamespace()
+{
+    return "ASC.People"; 
+}
+string GetPath()
+{
+    return this.Host.ResolvePath(@""); 
+}
+#>
