@@ -31,7 +31,7 @@ const Header = props => <StyledHeader>
     badgeNumber={props.badgeNumber}
     onClick={props.onClick}
   />
-  <HeaderText>{props.moduleTitle}</HeaderText>
+  <HeaderText>{props.currentModule && props.currentModule.title}</HeaderText>
 </StyledHeader>
 
 export default Header;
