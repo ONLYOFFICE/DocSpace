@@ -1,6 +1,9 @@
 import {css} from 'styled-components';
 
 const commonInputStyle = css`
+    background-color: ${props => props.isDisabled ? '#F8F9F9' : '#fff'};
+    color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
+
     border-radius: 3px;
     box-shadow: none;
     box-sizing: border-box;

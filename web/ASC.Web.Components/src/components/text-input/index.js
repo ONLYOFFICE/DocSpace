@@ -25,8 +25,6 @@ const StyledInput = styled(Input).attrs((props) => ({
 }))`
     ${commonInputStyle}
     -webkit-appearance: none;
-    background-color: ${props => props.isDisabled ? '#F8F9F9' : '#fff'};
-    color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
     display: flex;
     font-family: 'Open Sans', sans-serif;
     line-height: ${props =>
