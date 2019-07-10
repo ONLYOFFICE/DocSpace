@@ -1,9 +1,9 @@
 import React from 'react'
-import styled from 'styled-components';
-import BadgedIcon from './badged-icon'
+import styled from 'styled-components'
+import NavItem from './nav-item'
 import ProfileActions from './profile-actions'
 
-const Wrapper = styled.div`
+const StyledNav = styled.nav`
   display: flex;
   padding: 0 16px;
   align-items: center;
@@ -13,16 +13,19 @@ const Wrapper = styled.div`
   z-index: 300;
 
   & > div {
-    margin-left: 16px;
+    margin: 0 0 0 16px;
+    padding: 0;
+    min-width: 24px;
   }
 `;
 
-const HeaderIcons = props =>
-  <Wrapper>
+const HeaderNav = props =>
+  <StyledNav>
     {
       props.modules.map(module => 
-        <BadgedIcon
+        <NavItem
           key={module.id}
+          isOpen={false}
           iconName={module.iconName}
           badgeNumber={module.notifications}
           onClick={module.onClick}
@@ -33,6 +36,6 @@ const HeaderIcons = props =>
     {
       props.user && <ProfileActions userActions={props.userActions} user={props.user}/>
     }
-  </Wrapper>
+  </StyledNav>
 
-export default HeaderIcons;
+export default HeaderNav;

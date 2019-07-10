@@ -1,9 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import device from './device';
 import { Icons } from '../../icons';
-
-const logoSrc = "https://static.onlyoffice.com/studio/tag/10.0.0/skins/default/images/onlyoffice_logo/light_small_general.svg";
 
 const LogoItem = styled.div`
   display: flex;
@@ -11,31 +8,24 @@ const LogoItem = styled.div`
   min-height: 56px;
   align-items: center;
   padding: 0 16px;
-
-  .logoitem-menu {
-    cursor: pointer;
-  }
-
-  .logoitem-img {
-    margin-left: 16px;
-  }
-
-  @media ${device.tablet} {
-    .logoitem-menu {
-      display: none; 
-    }
-
-    .logoitem-img {
-      margin-left: 0;
-    }
-  }
+  cursor: pointer;
 `;
 
 const NavLogoItem = props => {
+  const navLogoIconStyle = {
+    display: props.isOpen ? 'none' : 'block'
+  };
+
+  const navLogoOpenedIconStyle = {
+    display: props.isOpen ? 'block' : 'none',
+    maxHeight: '24px',
+    width: 'auto'
+  };
+
   return (
     <LogoItem>
-      <Icons.MenuIcon className="logoitem-menu" onClick={props.onClick}/>
-      { props.isNavigationOpen ? <img className="logoitem-img" alt="ONLYOFFICE" src={logoSrc}/> : "" }
+      <Icons.NavLogoIcon style={navLogoIconStyle} onClick={props.onClick}/>
+      <Icons.NavLogoOpenedIcon style={navLogoOpenedIconStyle} onClick={props.onClick}/>
     </LogoItem>
   );
 };

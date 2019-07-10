@@ -1,58 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components';
-import device from './sub-components/device'
 import Backdrop from './sub-components/backdrop'
-import HeaderIcons from './sub-components/header-icons'
-import HeaderMenu from './sub-components/header-menu'
+import Header from './sub-components/header'
+import Nav from './sub-components/nav'
+import Aside from './sub-components/aside'
+import Main from './sub-components/main'
+import HeaderNav from './sub-components/header-nav'
 import NavLogoItem from './sub-components/nav-logo-item'
 import NavItem from './sub-components/nav-item'
-
-
-const Wrapper = styled.div`
-  display: flex;
-
-  @media ${device.tablet} {
-    display: block;
-  }
-`;
-
-const Header = styled.div`
-  background-color: #0f4071;
-  min-height: 100vh;
-  z-index: 200;
-  min-width: ${props => props.isNavigationOpen ? '240px' : '56px'};
-
-  @media ${device.tablet} {
-    min-height: 56px;
-    position: absolute;
-    width: 100%;
-  }
-`;
-
-const Navigation = styled.div`
-  background-color: #0f4071;  
-  width: ${props => props.isNavigationOpen ? '240px' : 'auto'};
-  position: fixed;
-  min-height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  @media ${device.tablet} {
-    display: ${props => props.isNavigationOpen ? 'block' : 'none'};
-    top: 0px;
-    width: 240px;
-  }
-`;
-
-const Content = styled.div`
-  min-height: 100vh;
-  width: 100vw;
-
-  @media ${device.tablet} {
-    padding-top: 56px;
-  }
-`;
 
 class Layout extends React.Component {
 
@@ -60,10 +15,10 @@ class Layout extends React.Component {
     super(props);
 
     let currentModule = null,
-      isolateModules = [],
-      mainModules = [],
-      totalNotifications = 0,
-      item = null;
+        isolateModules = [],
+        mainModules = [],
+        totalNotifications = 0,
+        item = null;
 
     for (let i=0, l=props.availableModules.length; i<l; i++)
     {
@@ -82,91 +37,121 @@ class Layout extends React.Component {
     }
 
     this.state = {
+      isBackdropOpen: props.isBackdropOpen,
       isNavigationHoverEnabled: props.isNavigationHoverEnabled,
       isNavigationOpen: props.isNavigationOpen,
+      isAsideOpen: props.isAsideOpen,
+
+      onLogoClick: props.onLogoClick,
+      asideContent: props.asideContent,
+
       currentUser: props.currentUser || null,
       currentUserActions: props.currentUserActions || [],
-      currentModule: currentModule,
-      currentModuleId: props.currentModuleId,
+
       availableModules: props.availableModules || [],
       isolateModules: isolateModules,
       mainModules: mainModules,
+
+      currentModule: currentModule,
+      currentModuleId: props.currentModuleId,
+
       totalNotifications: totalNotifications
     };
   };
 
-  toggleTabletNav = () => {
+  backdropClick = () => {
     this.setState({
-      isNavigationOpen: !this.state.isNavigationOpen,
+      isBackdropOpen: false,
+      isNavigationOpen: false,
+      isAsideOpen: false,
       isNavigationHoverEnabled: !this.state.isNavigationHoverEnabled
     });
   };
 
-  handleDesctopNavHover = () => {
-    if(!this.state.isNavigationHoverEnabled) return;
+  showNav = () => {
     this.setState({
-      isNavigationOpen: !this.state.isNavigationOpen
+      isBackdropOpen: true,
+      isNavigationOpen: true,
+      isAsideOpen: false,
+      isNavigationHoverEnabled: false
+    });
+  };
+
+  handleNavHover = () => {
+    if(!this.state.isNavigationHoverEnabled) return;
+    
+    this.setState({
+      isBackdropOpen: false,
+      isNavigationOpen: !this.state.isNavigationOpen,
+      isAsideOpen: false
     });
   }
 
-  toggleDesctopNav = () => {
+  toggleAside = () => {
     this.setState({
-      isNavigationHoverEnabled: !this.state.isNavigationHoverEnabled
+      isBackdropOpen: true,
+      isNavigationOpen: false,
+      isAsideOpen: true,
+      isNavigationHoverEnabled: false
     });
   };
 
   render() {
     return (
-      <Wrapper>
-        <Backdrop isNavigationOpen={this.state.isNavigationOpen} onClick={this.toggleTabletNav}/>
-        <Header isNavigationOpen={this.state.isNavigationOpen}>
-          <HeaderIcons
-            modules={this.state.isolateModules}
-            user={this.state.currentUser}
-            userActions={this.state.currentUserActions}
+      <>
+        <Backdrop isOpen={this.state.isBackdropOpen} onClick={this.backdropClick}/>
+        <HeaderNav
+          modules={this.state.isolateModules}
+          user={this.state.currentUser}
+          userActions={this.state.currentUserActions}
+        />
+        <Header
+          badgeNumber={this.state.totalNotifications}
+          onClick={this.showNav}
+          moduleTitle={this.state.currentModule.title}
+        />
+        <Nav
+          isOpen={this.state.isNavigationOpen}
+          onMouseEnter={this.handleNavHover}
+          onMouseLeave={this.handleNavHover}
+        >
+          <NavLogoItem
+            isOpen={this.state.isNavigationOpen}
+            onClick={this.state.onLogoClick}
           />
-          <HeaderMenu
-            totalNotifications={this.state.totalNotifications}
-            onClick={this.toggleTabletNav}
-            currentModule={this.state.currentModule}
-          />
-          <Navigation
-            isNavigationOpen={this.state.isNavigationOpen}
-            onMouseEnter={this.handleDesctopNavHover}
-            onMouseLeave={this.handleDesctopNavHover}
-          >
-            <NavLogoItem
-              isNavigationOpen={this.state.isNavigationOpen}
-              onClick={this.toggleDesctopNav}
-            />
-            {
-              this.state.mainModules
-                .map(item => 
-                  <NavItem
-                    seporator={!!item.seporator}
-                    key={item.id}
-                    isOpen={this.state.isNavigationOpen}
-                    active={item.id == this.state.currentModuleId}
-                    iconName={item.iconName}
-                    badgeNumber={item.notifications}
-                    onClick={item.onClick}
-                    onBadgeClick={item.onBadgeClick}
-                  >
-                    {item.title}
-                  </NavItem>
-                )
-            }
-          </Navigation>
-        </Header>
-        <Content>{this.props.children}</Content>
-      </Wrapper>
+          {
+            this.state.mainModules.map(item => 
+              <NavItem
+                seporator={!!item.seporator}
+                key={item.id}
+                isOpen={this.state.isNavigationOpen}
+                active={item.id == this.state.currentModuleId}
+                iconName={item.iconName}
+                badgeNumber={item.notifications}
+                onClick={item.onClick}
+                onBadgeClick={(e)=>{item.onBadgeClick(e); this.toggleAside();}}
+              >
+                {item.title}
+              </NavItem>
+            )
+          }
+        </Nav>
+        <Aside isOpen={this.state.isAsideOpen} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
+        <Main>{this.props.children}</Main>
+      </>
     );
   }
 }
 
 Layout.propTypes = {
+  isBackdropOpen: PropTypes.bool,
   isNavigationHoverEnabled: PropTypes.bool,
   isNavigationOpen: PropTypes.bool,
+  isAsideOpen: PropTypes.bool,
+
+  onLogoClick: PropTypes.func,
+  asideContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+
   currentUser: PropTypes.object,
   currentUserActions: PropTypes.array,
   availableModules: PropTypes.array,
@@ -174,8 +159,10 @@ Layout.propTypes = {
 }
 
 Layout.defaultProps = {
+  isBackdropOpen: false,
   isNavigationHoverEnabled: true,
-  isNavigationOpen: false
+  isNavigationOpen: false,
+  isAsideOpen: false
 }
 
 export default Layout

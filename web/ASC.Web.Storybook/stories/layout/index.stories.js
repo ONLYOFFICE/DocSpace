@@ -84,6 +84,12 @@ const availableModules = [
 
 const currentModuleId = '44444444-4444-4444-4444-444444444444';
 
+const onLogoClick = (e) => {action('Logo Clicked')(e)};
+
+const asideContent = <p style={{padding: 40}}>Aside Content</p>;
+
+const pageContent = <p style={{padding: 40}}>Page Content</p>;
+
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
     <Layout
@@ -92,7 +98,9 @@ storiesOf('Components|Layout', module)
       currentUserActions={currentUserActions}
       availableModules={availableModules}
       currentModuleId={currentModuleId}
+      onLogoClick={onLogoClick}
+      asideContent={asideContent}
     >
-      <div style={{padding: 40}}>Page Content</div>
+      {pageContent}
     </Layout>
   ));
