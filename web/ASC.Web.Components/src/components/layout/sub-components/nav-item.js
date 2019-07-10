@@ -1,54 +1,58 @@
 import React from 'react'
-import styled from 'styled-components';
+import styled, {css} from 'styled-components'
 import Badge from '../../badge'
 import { Icons } from '../../icons'
-import BadgedIcon from './badged-icon'
 
 const baseColor = '#7A95B0',
       activeColor = '#FFFFFF';
 
-const Wrapper = styled.div`
+const NavItemSeporator = styled.div`
+  border-bottom: 1px solid ${baseColor};
+  margin: 0 16px;
+`;
+
+const NavItemWrapper = styled.div`
   display: flex;
   min-width: 56px;
   min-height: 56px;
   align-items: center;
   padding: 0 16px;
   cursor: pointer;
-  color: ${props => props.color};
+  position: relative;
 `;
 
-const Label = styled.div`
+const NavItemLabel = styled.div`
   font-weight: bold;
   font-size: 16px;  
-  margin-left: 16px;
-  margin-right: auto;
+  margin: 0 auto 0 16px;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${props => props.color};
+  display: ${props => props.isOpen ? 'block' : 'none'};
 `;
 
-const Seporator = styled.div`
-  border-bottom: 1px solid ${baseColor};
-  margin: 0 16px;
+const badgeCss = css`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+`;
+
+const NavItemBadge = styled(Badge)`
+  ${props => props.isOpen ? "" : badgeCss}
 `;
 
 const NavItem = props => {
-  const { seporator, active, isOpen, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
+  const { seporator, isOpen, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 
   return (
     seporator
-    ? <Seporator/>
-    : <Wrapper color={color} onClick={onClick}>
-        {
-          isOpen
-          ? <>
-              {React.createElement(Icons[iconName], {isfill: true, color: color})}
-              <Label>{children}</Label>
-              <Badge number={badgeNumber} onClick={onBadgeClick}/>
-            </>
-          : <BadgedIcon iconName={iconName} badgeNumber={badgeNumber} color={color} onBadgeClick={onBadgeClick}/>
-        }
-      </Wrapper>
+    ? <NavItemSeporator/>
+    : <NavItemWrapper onClick={onClick}>
+        {React.createElement(Icons[iconName], {size: "big", isfill: true, color: color})}
+        {children && <NavItemLabel isOpen={isOpen} color={color}>{children}</NavItemLabel>}
+        <NavItemBadge isOpen={isOpen} number={badgeNumber} onClick={onBadgeClick}/>
+      </NavItemWrapper>
   );
 };
 
