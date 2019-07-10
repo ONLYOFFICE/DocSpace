@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
+import commonInputStyle from '../text-input/common-input-styles';
 
 const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale,  ...props }) => <input {...props}/>;
 
@@ -22,14 +23,8 @@ const StyledInput = styled(Input).attrs((props) => ({
     disabled: props.isDisabled ? 'disabled' : ''
 
 }))`
+    ${commonInputStyle}
     -webkit-appearance: none;
-    border-radius: 3px;
-    box-shadow: none;
-    box-sizing: border-box;
-    border: solid 1px;
-    border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
     background-color: ${props => props.isDisabled ? '#F8F9F9' : '#fff'};
     color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
     display: flex;
@@ -82,13 +77,6 @@ const StyledInput = styled(Input).attrs((props) => ({
     :-ms-input-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
         font-family: 'Open Sans',sans-serif
-    }
-
-    :hover{
-        border-color: ${props => props.isDisabled ? '#ECEEF1' : '#A3A9AE'};
-    }
-    :focus{
-        border-color: #2DA7DB;
     }
 
 `;
