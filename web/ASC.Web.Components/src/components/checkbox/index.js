@@ -58,9 +58,9 @@ class Checkbox extends React.Component  {
       <IconWrapper isChecked={this.props.isChecked} isIndeterminate={this.props.isIndeterminate}>
       {
         this.props.isIndeterminate
-          ? <Icons.IndeterminateIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
+          ? <Icons.IndeterminateIcon isfill={true} size="scale" color={this.props.isDisabled ? disableColor : activeColor}/>
           : this.props.isChecked
-            ? <Icons.CheckedIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
+            ? <Icons.CheckedIcon isfill={true} size="scale" color={this.props.isDisabled ? disableColor : activeColor}/>
             : ""
       }
       </IconWrapper>
