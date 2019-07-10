@@ -5,7 +5,7 @@ import Header from './sub-components/header'
 import Nav from './sub-components/nav'
 import Aside from './sub-components/aside'
 import Main from './sub-components/main'
-import HeaderIcons from './sub-components/header-icons'
+import HeaderNav from './sub-components/header-nav'
 import NavLogoItem from './sub-components/nav-logo-item'
 import NavItem from './sub-components/nav-item'
 
@@ -100,7 +100,7 @@ class Layout extends React.Component {
     return (
       <>
         <Backdrop isOpen={this.state.isBackdropOpen} onClick={this.backdropClick}/>
-        <HeaderIcons
+        <HeaderNav
           modules={this.state.isolateModules}
           user={this.state.currentUser}
           userActions={this.state.currentUserActions}

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import NavItem from './nav-item'
 import ProfileActions from './profile-actions'
 
-const Wrapper = styled.div`
+const StyledNav = styled.nav`
   display: flex;
   padding: 0 16px;
   align-items: center;
@@ -19,8 +19,8 @@ const Wrapper = styled.div`
   }
 `;
 
-const HeaderIcons = props =>
-  <Wrapper>
+const HeaderNav = props =>
+  <StyledNav>
     {
       props.modules.map(module => 
         <NavItem
@@ -36,6 +36,6 @@ const HeaderIcons = props =>
     {
       props.user && <ProfileActions userActions={props.userActions} user={props.user}/>
     }
-  </Wrapper>
+  </StyledNav>
 
-export default HeaderIcons;
+export default HeaderNav;
