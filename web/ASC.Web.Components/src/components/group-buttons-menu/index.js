@@ -84,7 +84,7 @@ class GroupButtonsMenu extends React.Component {
     }
     
     howManyItemsInMenuArray(array, outerWidth, initialWidth, minimumNumberInNav) {
-        let total = (initialWidth+150);
+        let total = (initialWidth+180);
         for(let i = 0; i < array.length; i++) {
             if(total + array[i] > outerWidth) {
               return i < minimumNumberInNav ? minimumNumberInNav : i;
@@ -129,7 +129,7 @@ class GroupButtonsMenu extends React.Component {
                                 isDropdown={item.isDropdown} 
                                 isSeparator={item.isSeparator}
                                 fontWeight={item.fontWeight} 
-                                action={item.action}>
+                                onClick={item.onClick}>
                         {item.children}
                     </GroupButton>
                 )}

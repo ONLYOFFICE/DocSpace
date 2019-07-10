@@ -89,7 +89,7 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
 }
 
 const GroupButton = (props) => {
-    const { label, isDropdown, opened, disabled, action, isSeparator} = props;
+    const { label, isDropdown, opened, disabled, isSeparator} = props;
     const [isOpen, toggle] = useState(opened);
     const ref = useRef(null);
 
@@ -107,7 +107,7 @@ const GroupButton = (props) => {
         <StyledGroupButton ref={ref} {...props}>
             {isDropdown
                 ? {...dropDownButton}
-                : <StyledDropdownToggle {...props} onClick={action}>
+                : <StyledDropdownToggle {...props}>
                     {label}
                 </StyledDropdownToggle>
             }
@@ -139,7 +139,7 @@ GroupButton.defaultProps = {
     isDropdown: false,
     isSeparator: false,
     tabIndex: -1,
-    action: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
+    onClick: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
     fontWeight: '600'
 };
 
