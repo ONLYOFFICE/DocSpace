@@ -25,7 +25,19 @@ namespace ASC.Common.DependencyInjection
     {
         public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, string currentDir)
         {
-            var productsDir = Path.GetFullPath(Path.Combine(currentDir, configuration["core:products:folder"]));
+            var folder = configuration["core:products:folder"];
+            var subfolder = configuration["core:products:subfolder"];
+            string productsDir;
+
+            if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+            {
+                productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+            }
+            else
+            {
+                productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+            }
+            
             var module = new ConfigurationModule(configuration);
             var builder = new ContainerBuilder();
             builder.RegisterModule(module);
@@ -68,7 +80,7 @@ namespace ASC.Common.DependencyInjection
             void LoadAssembly(string type)
             {
                 var dll = type.Substring(type.IndexOf(",") + 1).Trim();
-                var productPath = Path.Combine(productsDir, dll, configuration["core:products:subfolder"]);
+                var productPath = Path.Combine(productsDir, dll, subfolder);
                 var path = GetPath(Path.Combine(productPath, "bin"), dll, SearchOption.AllDirectories) ?? GetPath(productPath, dll, SearchOption.TopDirectoryOnly);
 
                 if (!string.IsNullOrEmpty(path))

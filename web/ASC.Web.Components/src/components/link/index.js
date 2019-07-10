@@ -23,11 +23,7 @@ const opacityCss = css `
 `;
 
 const colorCss = css`
-    color: ${props =>
-        (props.color === 'black' && '#333333') ||
-        (props.color === 'gray' && '#A3A9AE') ||
-        (props.color === 'blue' && '#316DAA')
-    };
+    color: ${props => getDropdownColor(props.color)};
 `;
 
 const hoveredCss = css`
