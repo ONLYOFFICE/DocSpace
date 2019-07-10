@@ -7,31 +7,45 @@
     <IsPackable>false</IsPackable>
     <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+      <AssemblyTitle>ASC.People</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.People</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
   </PropertyGroup>
-  
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview4-19216-03" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0-preview4-19216-03" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
-    <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj" />
+    <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
+    <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <None Update="Resources\Resources.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
+    <None Update="Resources.tt">
       <LastGenOutput>Resources.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
     </None>
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Compile Update="Resources\Resources.cs">
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Resources.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.tt</DependentUpon>
     </Compile>
   </ItemGroup>
-
+  
 </Project>

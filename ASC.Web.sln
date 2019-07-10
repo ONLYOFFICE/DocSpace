@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Common", "common\ASC.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Core.Common", "common\ASC.Core.Common\ASC.Core.Common.csproj", "{A51D0454-4AFA-46DE-89D4-B03D37E1816C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.People", "products\ASC.People\ASC.People.csproj", "{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.People", "products\ASC.People\Server\ASC.People.csproj", "{BE4816E7-7CD2-4D9B-ABC6-D9E5C04E3926}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Api.Core", "common\ASC.Api.Core\ASC.Api.Core.csproj", "{62C49C91-1A5A-4C0D-A3B3-A9AE8C9718CE}"
 EndProject
