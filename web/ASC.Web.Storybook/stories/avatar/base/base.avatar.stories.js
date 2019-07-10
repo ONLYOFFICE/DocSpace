@@ -15,6 +15,7 @@ storiesOf('Components|Avatar', module)
   .add('base', () => {
     const size = select('size', sizeOptions, 'max');
     const editing =  size === 'max' ? boolean('editing', false) : false;
+    const editLabel = editing ? text('editLabel', 'Edit photo') : '';
 
     return (
     <Section>
@@ -24,6 +25,8 @@ storiesOf('Components|Avatar', module)
             source={text('source', '')}
             userName={text('userName', '')}
             editing={editing}
+            editLabel={editLabel}
+            editAction={() => console.log('Edit action')}
         />
     </Section>
     );
