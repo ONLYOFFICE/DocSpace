@@ -58,6 +58,8 @@ const CheckBox = styled.div`
 
 class GroupButtonsMenu extends React.Component {
 
+    IsMounted = false;
+
     constructor(props) {
         super(props);    
         this.updateMenu = this.updateMenu.bind(this);    
@@ -68,6 +70,9 @@ class GroupButtonsMenu extends React.Component {
         }
         this.fullMenuArray = this.props.menuItems;
         this.checkBox = this.props.checkBox;
+
+        this.groupMenuOuter = React.createRef();
+        this.moreMenu = React.createRef();
     }
     
     componentWillMount() {
@@ -79,8 +84,12 @@ class GroupButtonsMenu extends React.Component {
     componentDidMount() {
         this.widthsArray = Array.from(this.refs.groupMenu.children).map(item => item.getBoundingClientRect().width);
 
-        window.addEventListener('resize', _.throttle(this.updateMenu), 100);
-        this.updateMenu();
+        this.IsMounted = true;
+
+        if (this.IsMounted) {
+            window.addEventListener('resize', _.throttle(this.updateMenu), 100);
+            this.updateMenu();
+        }
     }
     
     howManyItemsInMenuArray(array, outerWidth, initialWidth, minimumNumberInNav) {
@@ -95,8 +104,8 @@ class GroupButtonsMenu extends React.Component {
     }
 
     updateMenu() {
-        this.outerWidth = this.refs.groupMenuOuter ? this.refs.groupMenuOuter.getBoundingClientRect().width : 0;
-        this.moreMenu = this.refs.moreMenu ? this.refs.moreMenu.getBoundingClientRect().width : 0;
+        this.outerWidth = this.groupMenuOuter.current ? this.groupMenuOuter.current.getBoundingClientRect().width : 0;
+        this.moreMenu = this.moreMenu.current ? this.moreMenu.current.getBoundingClientRect().width : 0;
 
         const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, this.outerWidth, this.moreMenu, 1);    
         const navItemsCopy = this.fullMenuArray;
@@ -110,6 +119,8 @@ class GroupButtonsMenu extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateMenu());
+
+        this.IsMounted = false;
     }
 
     render() {
@@ -118,7 +129,7 @@ class GroupButtonsMenu extends React.Component {
         const toggle = () => this.setState({visible: !this.props.visible});
 
         return (
-            <StyledGroupButtonsMenu ref="groupMenuOuter" visible={this.state.visible} {...this.state}>
+            <StyledGroupButtonsMenu ref={this.groupMenuOuter} visible={this.state.visible} {...this.state}>
                 {this.checkBox && 
                     <CheckBox>{this.checkBox}</CheckBox>
                 }
@@ -135,7 +146,7 @@ class GroupButtonsMenu extends React.Component {
                 )}
                 </div>
                 {moreItems.length > 0 && 
-                    <GroupButton ref="moreMenu" isDropdown label={this.props.moreLabel}>
+                    <GroupButton ref={this.moreMenu} isDropdown label={this.props.moreLabel}>
                         {moreItems.map((item, i) => 
                             <DropDownItem 
                                 key={`moreNavItem-${i}`} 
