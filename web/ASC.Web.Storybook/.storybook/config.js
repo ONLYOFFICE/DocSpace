@@ -17,7 +17,8 @@ addParameters({
   {
     name: 'ASC Storybook',
     sortStoriesByKind: true,
-    showAddonPanel: true
+    showAddonPanel: true,
+    addonPanelInRight: true
   }
 });
 
