@@ -49,13 +49,6 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'huge' && '8px 20px')
     };
     transition: all 0.2s ease 0s;
-    width: ${props =>
-            (props.scale && '100%') ||
-            (props.size === 'base' && '173px') ||
-            (props.size === 'middle' && '300px') ||
-            (props.size === 'big' && '350px') ||
-            (props.size === 'huge' && '500px')
-        };
 
     ::-webkit-input-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
