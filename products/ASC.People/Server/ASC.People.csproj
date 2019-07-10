@@ -30,7 +30,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="Resources.tt">
+    <None Update="Resources\Resources.tt">
       <LastGenOutput>Resources.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
@@ -41,7 +41,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Resources.cs">
+    <Compile Update="Resources\Resources.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.tt</DependentUpon>
