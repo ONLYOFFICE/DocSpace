@@ -1,18 +1,13 @@
 import React from 'react'
-import styled from 'styled-components';
-import device from './device';
+import styled from 'styled-components'
 
 const StyledBackdrop = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
-  z-index: 100;
-  width: 100vw;
+  display: ${props => props.isOpen ? 'block' : 'none'};
   height: 100vh;
   position: fixed;
-  display: none;
-
-  @media ${device.tablet} {
-    display: ${props => props.isNavigationOpen ? 'block' : 'none'};
-  }
+  width: 100vw;
+  z-index: 100;
 `;
 
 const Backdrop = props => <StyledBackdrop {...props}/>

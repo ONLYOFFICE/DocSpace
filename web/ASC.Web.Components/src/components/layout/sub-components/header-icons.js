@@ -1,6 +1,6 @@
 import React from 'react'
-import styled from 'styled-components';
-import BadgedIcon from './badged-icon'
+import styled from 'styled-components'
+import NavItem from './nav-item'
 import ProfileActions from './profile-actions'
 
 const Wrapper = styled.div`
@@ -13,7 +13,9 @@ const Wrapper = styled.div`
   z-index: 300;
 
   & > div {
-    margin-left: 16px;
+    margin: 0 0 0 16px;
+    padding: 0;
+    min-width: 24px;
   }
 `;
 
@@ -21,8 +23,9 @@ const HeaderIcons = props =>
   <Wrapper>
     {
       props.modules.map(module => 
-        <BadgedIcon
+        <NavItem
           key={module.id}
+          isOpen={false}
           iconName={module.iconName}
           badgeNumber={module.notifications}
           onClick={module.onClick}
