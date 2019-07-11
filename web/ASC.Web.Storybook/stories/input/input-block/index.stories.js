@@ -23,22 +23,21 @@ storiesOf('Components|Input', module)
   .addDecorator(withReadme(Readme))
   .add('input block', () => {
     const valuesMultiSelect = {
-      Button: "button",
-      Icon: "icon"
+      button: "button",
+      icon: "icon"
     };
     const optionsMultiSelect = options('Children', valuesMultiSelect, ["icon"], {
       display: 'multi-select',
     });
     
     var children = []; 
-    optionsMultiSelect.forEach(function (item) {
-    
+    optionsMultiSelect.forEach(function (item, i) {
       switch (item) {
         case "button":
-          children.push(<Button label="OK"/>); 
+          children.push(<Button label="OK" key={i}/>); 
           break;
         case "icon":
-          children.push(<Icons.SettingsIcon size="medium"/>); 
+          children.push(<Icons.SettingsIcon size="medium" key={i}/>); 
           break;
         default:
           break;
