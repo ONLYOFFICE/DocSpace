@@ -1,2 +1,3 @@
 echo "RUN ASC.People"
-call dotnet watch run --project ..\..\products\ASC.People\Server\ASC.People.csproj
+PUSHD %~dp0..\..\products\ASC.People\Server\
+call dotnet watch run --project ASC.People.csproj

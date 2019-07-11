@@ -1,2 +1,3 @@
 echo "RUN ASC.Web.Api"
-call dotnet watch run --project ..\..\web\ASC.Web.Api\ASC.Web.Api.csproj
+PUSHD %~dp0..\..\web\ASC.Web.Api\
+call dotnet watch run --project ASC.Web.Api.csproj
