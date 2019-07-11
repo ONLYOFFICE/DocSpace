@@ -5,6 +5,7 @@ import babel from "rollup-plugin-babel";
 import cleanup from "rollup-plugin-cleanup";
 import replace from "rollup-plugin-replace";
 import postcss from 'rollup-plugin-postcss';
+import copy from 'rollup-plugin-copy';
 import svgrPlugin from "@svgr/rollup";
 import pkg from "./package.json";
 
@@ -56,25 +57,16 @@ const configureRollupPlugins = (options = {}) => [
   }),
   // To remove comments, trim trailing spaces, compact empty lines,
   // and normalize line endings
-  cleanup()
+  cleanup()  
 ];
 
 const deps = Object.keys(pkg.dependencies || {});
 const peerDeps = Object.keys(pkg.peerDependencies || {});
-const defaultExternal = deps.concat(peerDeps);
+const defaultExternal = ["stream", ...deps.concat(peerDeps)];
 
 // We need to define 2 separate configs (`esm` and `cjs`) so that each can be
 // further customized.
 const config = [
-  {
-    input: "src/index.js",
-    external: defaultExternal,
-    output: {
-      file: pkg.main,
-      format: "cjs"
-    },
-    plugins: configureRollupPlugins()
-  },
   {
     input: "src/index.js",
     external: defaultExternal,
@@ -94,6 +86,24 @@ const config = [
         ]
       }
     })
+  },
+  {
+    input: "src/index.js",
+    external: defaultExternal,
+    output: {
+      file: pkg.main,
+      format: "cjs"
+    },
+    plugins: [
+      ...configureRollupPlugins(),
+      copy({
+      targets: [
+        { src: 'dist', dest: '../npm-local/asc-web-components' },
+        { src: 'package.json', dest: '../npm-local/asc-web-components' },
+        { src: 'README.md', dest: '../npm-local/asc-web-components' },
+      ],
+      verbose: true
+    })]
   }
 ];
 
