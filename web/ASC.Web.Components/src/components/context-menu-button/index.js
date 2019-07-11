@@ -28,18 +28,18 @@ const useOuterClickNotifier = (onOuterClick, ref) => {
 const ContextMenuButton = (props) => {
 
   const [data, setState] = useState(props.data);
-  const [isOpen, toggle] = useState(props.opened);
+  const [opened, toggle] = useState(props.opened);
   const iconNames = Object.keys(Icons);
   const ref = useRef(null);
 
   useOuterClickNotifier((e) => { toggle(false) }, ref);
 
   return (
-      <StyledOuther title={props.title} onClick={() => { setState(props.getData()); toggle(!isOpen); }} ref={ref}>
+      <StyledOuther title={props.title} onClick={() => { setState(props.getData()); toggle(!opened); }} ref={ref}>
         {
           iconNames.includes(props.iconName) && React.createElement(Icons[props.iconName], {size: props.size, color: props.color})
         }
-        <DropDown direction={props.direction || 'left'} isOpen={isOpen}>
+        <DropDown direction={props.direction || 'left'} isOpen={opened}>
           {
             data.map(item => <DropDownItem {...item}/>)
           }
