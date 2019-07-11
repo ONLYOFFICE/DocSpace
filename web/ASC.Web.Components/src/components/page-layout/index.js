@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import device from '../layout/sub-components/device'
-import Backdrop from '../layout/sub-components/backdrop'
+import device from '../device'
+import Backdrop from '../backdrop'
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -116,7 +116,7 @@ class PageLayout extends React.Component {
 
   backdropClick = () => {
     this.setState({
-      isBackdropOpen: false,
+      isBackdropVisible: false,
       isArticleOpen: false,
       isArticlePinned: false
     });
@@ -124,7 +124,7 @@ class PageLayout extends React.Component {
 
   pinArticle = () => {
     this.setState({
-      isBackdropOpen: false,
+      isBackdropVisible: false,
       isArticlePinned: true,
       isArticleOpen: true 
     });
@@ -132,7 +132,7 @@ class PageLayout extends React.Component {
 
   unpinArticle = () => {
     this.setState({
-      isBackdropOpen: true,
+      isBackdropVisible: true,
       isArticlePinned: false,
       isArticleOpen: true 
     });
@@ -140,7 +140,7 @@ class PageLayout extends React.Component {
 
   showArticle = () => {
     this.setState({
-      isBackdropOpen: true,
+      isBackdropVisible: true,
       isArticleOpen: true,
       isArticlePinned: false
     });
@@ -149,7 +149,7 @@ class PageLayout extends React.Component {
   render() {
     return (
       <>
-        <Backdrop isOpen={this.state.isBackdropOpen} onClick={this.backdropClick}/>
+        <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
         <StyledArticle isOpen={this.state.isArticleOpen} isPinned={this.state.isArticlePinned}>
           <StyledArticleHeader isPinned={this.state.isArticlePinned}/>
           <StyledArticleBody/>
@@ -174,13 +174,13 @@ class PageLayout extends React.Component {
 }
 
 PageLayout.propTypes = {
-  isBackdropOpen: PropTypes.bool,
+  isBackdropVisible: PropTypes.bool,
   isArticleOpen: PropTypes.bool,
   isArticlePinned: PropTypes.bool
 }
 
 PageLayout.defaultProps = {
-  isBackdropOpen: false,
+  isBackdropVisible: false,
   isArticleOpen: false,
   isArticlePinned: false
 }

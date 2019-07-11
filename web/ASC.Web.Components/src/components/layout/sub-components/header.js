@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from './device'
+import device from '../../device'
 import NavItem from './nav-item'
 import { Text } from '../../text'
 

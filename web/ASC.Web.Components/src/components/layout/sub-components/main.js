@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from './device'
+import device from '../../device'
 
 const StyledMain = styled.main` 
   height: 100vh;

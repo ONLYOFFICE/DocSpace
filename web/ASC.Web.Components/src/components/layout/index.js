@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Backdrop from './sub-components/backdrop'
+import Backdrop from '../backdrop'
 import Header from './sub-components/header'
 import Nav from './sub-components/nav'
 import Aside from './sub-components/aside'
@@ -37,7 +37,7 @@ class Layout extends React.Component {
     }
 
     this.state = {
-      isBackdropOpen: props.isBackdropOpen,
+      isBackdropVisible: props.isBackdropVisible,
       isNavHoverEnabled: props.isNavHoverEnabled,
       isNavOpen: props.isNavOpen,
       isAsideOpen: props.isAsideOpen,
@@ -61,7 +61,7 @@ class Layout extends React.Component {
 
   backdropClick = () => {
     this.setState({
-      isBackdropOpen: false,
+      isBackdropVisible: false,
       isNavOpen: false,
       isAsideOpen: false,
       isNavHoverEnabled: !this.state.isNavHoverEnabled
@@ -70,7 +70,7 @@ class Layout extends React.Component {
 
   showNav = () => {
     this.setState({
-      isBackdropOpen: true,
+      isBackdropVisible: true,
       isNavOpen: true,
       isAsideOpen: false,
       isNavHoverEnabled: false
@@ -81,7 +81,7 @@ class Layout extends React.Component {
     if(!this.state.isNavHoverEnabled) return;
     
     this.setState({
-      isBackdropOpen: false,
+      isBackdropVisible: false,
       isNavOpen: !this.state.isNavOpen,
       isAsideOpen: false
     });
@@ -89,7 +89,7 @@ class Layout extends React.Component {
 
   toggleAside = () => {
     this.setState({
-      isBackdropOpen: true,
+      isBackdropVisible: true,
       isNavOpen: false,
       isAsideOpen: true,
       isNavHoverEnabled: false
@@ -99,7 +99,7 @@ class Layout extends React.Component {
   render() {
     return (
       <>
-        <Backdrop isOpen={this.state.isBackdropOpen} onClick={this.backdropClick}/>
+        <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
         <HeaderNav
           modules={this.state.isolateModules}
           user={this.state.currentUser}
@@ -144,7 +144,7 @@ class Layout extends React.Component {
 }
 
 Layout.propTypes = {
-  isBackdropOpen: PropTypes.bool,
+  isBackdropVisible: PropTypes.bool,
   isNavHoverEnabled: PropTypes.bool,
   isNavOpen: PropTypes.bool,
   isAsideOpen: PropTypes.bool,
@@ -159,7 +159,7 @@ Layout.propTypes = {
 }
 
 Layout.defaultProps = {
-  isBackdropOpen: false,
+  isBackdropVisible: false,
   isNavHoverEnabled: true,
   isNavOpen: false,
   isAsideOpen: false

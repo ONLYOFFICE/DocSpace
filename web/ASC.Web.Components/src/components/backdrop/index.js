@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const StyledBackdrop = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => props.isOpen ? 'block' : 'none'};
+  display: ${props => props.visible ? 'block' : 'none'};
   height: 100vh;
   position: fixed;
   width: 100vw;
