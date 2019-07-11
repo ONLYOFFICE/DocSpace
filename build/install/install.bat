@@ -1,6 +1,8 @@
-PUSHD %~dp0
-for /R "..\run\" %%f in (*.bat) do (
-	start nssm install Onlyoffice%%~nf "%%~f"
-)
+PUSHD %~dp0..
+call runasadmin.bat "%~dpnx0"
 
-pause
+if %errorlevel% == 0 (
+	for /R "run\" %%f in (*.bat) do (
+		call nssm install Onlyoffice%%~nf "%%~f"
+	)
+)
