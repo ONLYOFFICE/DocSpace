@@ -85,7 +85,6 @@ const NamedAvatar = styled.div`
         (props.size === 'medium' && '20px') ||
         (props.size === 'small' && '12px')
       };
-    line-height: 120px;
 
     color: ${whiteColor};
 `;
