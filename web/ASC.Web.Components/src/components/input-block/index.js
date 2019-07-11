@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { InputGroup, InputGroupAddon } from 'reactstrap';
 import TextInput from '../text-input';
 import { Icons } from '../icons';
+import IconButton from '../icon-button';
 import commonInputStyle from '../text-input/common-input-styles';
 
 const iconNames = Object.keys(Icons);
@@ -16,9 +17,12 @@ const StyledTextInput = styled(Input)`
 const StyledIconBlock = styled.div`
   display: flex;
   align-items: center;
-  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
-  opacity: ${props => props.isDisabled ? '0.5' : '1'};
-  width: 22px;
+  width: ${props =>
+    (props.size === 'base' && '22px') ||
+    (props.size === 'middle' && '27px') ||
+    (props.size === 'big' && '30px') ||
+    (props.size === 'huge' && '30px')
+  };
   height: 100%;
   padding-right: 7px;
 `;
@@ -29,7 +33,7 @@ const StyledChildrenBlock = styled.div`
   padding-left: 2px;
 `;
 
-const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled,  ...props }) => (
+const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
   <InputGroup {...props}></InputGroup>
 )
 const StyledInputGroup = styled(CustomInputGroup)`
@@ -44,7 +48,27 @@ const StyledInputGroup = styled(CustomInputGroup)`
 `;
 
 const InputBlock = props => {
-  const {onChange, value, children } = props;
+  const {onChange, value, children, size } = props;
+  let iconButtonSize = 0;
+
+  switch (size) {
+    case 'base':
+        iconButtonSize = 15;
+      break;
+    case 'middle':
+        iconButtonSize = 18;
+      break;
+    case 'big':
+        iconButtonSize = 21;
+      break;
+    case 'huge':
+        iconButtonSize = 24;
+      break;
+  
+    default:
+      break;
+  }
+
   return (
     <StyledInputGroup  hasError={props.hasError} hasWarning={props.hasWarning} isDisabled={props.isDisabled} scale={props.scale} size={props.size}>
       <InputGroupAddon addonType="prepend">
@@ -76,8 +100,8 @@ const InputBlock = props => {
             iconNames.includes(props.iconName) 
             && 
               <InputGroupAddon addonType="append">
-                <StyledIconBlock onClick={!props.isDisabled ? (e) => props.onIconClick(e, value) : undefined} isDisabled={props.isDisabled} size={props.size}>
-                  {React.createElement(Icons[props.iconName], {size: "scale", color: props.iconColor, isfill: props.isIconFill})}
+                <StyledIconBlock>
+                  <IconButton size={iconButtonSize} color={props.iconColor} iconName={props.iconName} isFill={props.isIconFill} isDisabled={props.isDisabled} onClick={(e) => props.onIconClick(e, value)}/>
                 </StyledIconBlock>
               </InputGroupAddon>
         }

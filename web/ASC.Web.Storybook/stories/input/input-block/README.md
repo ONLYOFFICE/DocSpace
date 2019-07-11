@@ -39,5 +39,5 @@ InputBlock description
 | `scale`                | `bool`   |    -     | -                              | -       | Indicates the input field has scale                                                                    |
 | `iconName`             | `string` |          |                                | -       | Specifies the icon name                                                                                |
 | `iconColor`            | `string` |          |                                | `black` | Specifies the icon color                                                                               |
-| `isIconFill`           | `bool`   |          |                                | `false` | Specifies the icon fiil                                                                                |
+| `isIconFill`           | `bool`   |          |                                | `false` | Determines if icon fill is needed                                                                      |
 | `onIconClick`          | `func`   |    ✅    | -                              | -       | Will be triggered whenever an icon is clicked                                                          |
