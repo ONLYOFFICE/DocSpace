@@ -1,3 +1,2 @@
 echo "RUN ASC.Web.Studio"
-PUSHD %~dp0..\..\web\ASC.Web.Studio\
-call dotnet watch run --project ASC.Web.Studio.csproj
+call dotnet run --project ..\..\web\ASC.Web.Studio\ASC.Web.Studio.csproj --no-build
