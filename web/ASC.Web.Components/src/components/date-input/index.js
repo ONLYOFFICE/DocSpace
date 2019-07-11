@@ -1,53 +1,40 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
-import TextInput from '../text-input'
 import DatePicker from "react-datepicker";
-import { Icons } from '../icons'
+import InputBlock from '../input-block';
 import "react-datepicker/dist/react-datepicker.css";
 
-const StyledOuter = styled.div`
-  position: relative;
-  display: inline-block;
+const StyledDatePicker = styled.div`
+  width: 108px;
 `;
-
-const StyledTextInput = styled(TextInput)`
-  padding-right: 32px;
-  width: 106px;
-`;
-
-const StyledIcon = styled(Icons.CalendarEmptyIcon)`
-  position: absolute;
-  top: 6px;
-  right: 6px;
-`;
-
-class CustomInput extends React.Component {
-  render () {
-    return (
-      <StyledOuter onClick={this.props.onClick}>
-        <StyledTextInput type="text" autoComplete="off" maxLength={10} {...this.props}/>
-        <StyledIcon size="medium"/>
-      </StyledOuter>
-    )
-  }
-}
 
 const DateInput = props => {
+  const iconClick = function(){
+    this.onClick();
+  };
   return (
-    <DatePicker
-      customInput={
-        <CustomInput
-          id={props.id}
-          name={props.name}
-          isDisabled={props.disabled}
-          isReadOnly={props.readOnly}
-          hasError={props.hasError}
-          hasWarning={props.hasWarning}
-        />
-      }
-      {...props}
-    />
+    <StyledDatePicker>
+      <DatePicker
+        customInput={
+          <InputBlock 
+            id={props.id}
+            name={props.name}
+            isDisabled={props.disabled}
+            isReadOnly={props.readOnly}
+            hasError={props.hasError}
+            hasWarning={props.hasWarning}
+            iconName={"CalendarEmptyIcon"}
+            isIconFill={true}
+            iconColor={"#A3A9AE"}
+            onIconClick={iconClick}
+            scale={true}
+          />
+        }
+        {...props}
+      />
+    </StyledDatePicker>
+
   );
 }
 
