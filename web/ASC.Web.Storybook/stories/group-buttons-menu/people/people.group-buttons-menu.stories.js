@@ -23,31 +23,31 @@ const peopleItems = [
     },
     {
         label: 'Make employee',
-        action: () => console.log('Make employee action')
+        onClick: () => console.log('Make employee action')
     },
     {
         label: 'Make guest',
-        action: () => console.log('Make guest action')
+        onClick: () => console.log('Make guest action')
     },
     {
         label: 'Set active',
-        action: () => console.log('Set active action')
+        onClick: () => console.log('Set active action')
     },
     {
         label: 'Set disabled',
-        action: () => console.log('Set disabled action')
+        onClick: () => console.log('Set disabled action')
     },
     {
         label: 'Invite again',
-        action: () => console.log('Invite again action')
+        onClick: () => console.log('Invite again action')
     },
     {
         label: 'Send e-mail',
-        action: () => console.log('Send e-mail action')
+        onClick: () => console.log('Send e-mail action')
     },
     {
         label: 'Delete',
-        action: () => console.log('Delete action')
+        onClick: () => console.log('Delete action')
     }
 ];
 

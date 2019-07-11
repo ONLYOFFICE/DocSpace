@@ -9,8 +9,6 @@ import OrigGuestIcon from './guest.react.svg';
 import OrigAdministratorIcon from './administrator.react.svg';
 import OrigOwnerIcon from './owner.react.svg';
 import OrigVerticalDotsIcon from './vertical-dots.react.svg';
-import OrigCheckedIcon from './checked.react.svg';
-import OrigIndeterminateIcon from './indeterminate.react.svg';
 import OrigCloudServicesGoogleDriveIcon from './cloud.services.google.drive.react.svg';
 import OrigCloudServicesDropboxIcon from './cloud.services.dropbox.react.svg';
 import OrigHorizontalDotsIcon from './horizontal-dots.react.svg';
@@ -338,10 +336,6 @@ export const CheckboxIndeterminateHoverIcon = createStyledIcon(
   OrigCheckboxIndeterminateHoverIcon,
   'CheckboxIndeterminateHoverIcon'
 );
-export const CheckedIcon = createStyledIcon(
-  OrigCheckedIcon,
-  'CheckedIcon'
-);
 export const ClipIcon = createStyledIcon(
   OrigClipIcon,
   'ClipIcon'
@@ -457,10 +451,6 @@ export const IcqIcon = createStyledIcon(
 export const ImportIcon = createStyledIcon(
   OrigImportIcon,
   'ImportIcon'
-);
-export const IndeterminateIcon = createStyledIcon(
-  OrigIndeterminateIcon,
-  'IndeterminateIcon'
 );
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,

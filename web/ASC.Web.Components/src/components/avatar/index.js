@@ -2,7 +2,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
-import Link from '../link'
 
 const whiteColor = '#FFFFFF';
 const avatarBackground = '#ECEEF1';
@@ -108,17 +107,34 @@ const EditContainer = styled.div`
     border-radius: 50%;
     background: linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%);
 
-    & > a {
-        color: ${whiteColor} !important;
+    
+`;
 
-        &:hover{
-            color: ${whiteColor} !important;
-        }
+const EditLink = styled.a`
+    border-bottom: 1px dotted;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    
+    color: ${whiteColor} !important;
+    
+    &:hover{
+        color: ${whiteColor} !important;
+        cursor: pointer;
     }
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
 `;
 
 const Avatar = props => {
-    const {size, source, userName, role, editing, editLabel} = props;
+    const {size, source, userName, role, editing, editLabel, editAction} = props;
 
     const round = {
         borderRadius: '50%'
@@ -141,7 +157,7 @@ const Avatar = props => {
             </AvatarWrapper>
             {editing && (size === 'max') && 
                 <EditContainer {...props}>
-                    <Link type='action' isHovered={true} text={editLabel}/>
+                    <EditLink title={editLabel} onClick={editAction}>{editLabel}</EditLink>
                 </EditContainer>}
             <RoleWrapper {... props}>
                 {role === 'guest' && <Icons.GuestIcon size='scale' />}
@@ -157,6 +173,7 @@ Avatar.propTypes = {
     role: PropTypes.oneOf(['owner', 'admin','guest', 'user']),
     source: PropTypes.string,
     editLabel: PropTypes.string,
+    editAction: PropTypes.function,
     userName: PropTypes.string,
     editing: PropTypes.bool
 };

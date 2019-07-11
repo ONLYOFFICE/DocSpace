@@ -1,36 +1,104 @@
-import React, { useEffect, useRef }  from 'react'
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
 import PropTypes from 'prop-types'
-import styled from 'styled-components';
+import styled from 'styled-components'
 import { Icons } from '../icons'
+import { getCssFromSvg } from '../icons/get-css-from-svg'
 
-const borderColor = '#D0D5DA',
-    activeColor = '#333333',
-    disableColor = '#A3A9AE';
+const activeColor = '#333333',
+  disableColor = '#A3A9AE';
+
+var checkboxIcon,
+    checkboxСheckedIcon,
+    сheckboxDisabledIcon,
+    сheckboxHoverIcon,
+    сheckboxIndeterminateIcon,
+    checkboxCheckedDisabledIcon,
+    checkboxCheckedHoverIcon,
+    checkboxIndeterminateDisabledIcon,
+    checkboxIndeterminateHoverIcon;
+
+(function(){
+  checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon />));
+  checkboxСheckedIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />));
+  сheckboxDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxDisabledIcon />));
+  сheckboxHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxHoverIcon />));
+  сheckboxIndeterminateIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />));
+
+  checkboxCheckedDisabledIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedDisabledIcon />));
+  checkboxCheckedHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedHoverIcon />));
+  checkboxIndeterminateDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateDisabledIcon />));
+  checkboxIndeterminateHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateHoverIcon />));
+}());
 
 const Label = styled.label`
   display: flex;
   align-items: center;
   position: relative;
-  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+  margin: 0;
+
+  .checkbox {
+    line-height: 16px;
+    margin-right: 5px;
+    margin-bottom: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    border: 0 none;
+    cursor: pointer;
+    outline: none;
+    width: 16px;
+    height: 16px;
+    margin: 0 3px;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,${checkboxIcon}");
+
+    &.checked {
+      background-image: url("data:image/svg+xml,${checkboxСheckedIcon}");
+    }
+    &.indeterminate {
+      background-image: url("data:image/svg+xml,${сheckboxIndeterminateIcon}");
+    }
+  }
+
+  ${props => props.isDisabled
+    ? `
+        cursor: not-allowed;
+
+        .checkbox {
+          background-image: url("data:image/svg+xml,${сheckboxDisabledIcon}");
+        }
+        .checkbox.checked {
+          background-image: url("data:image/svg+xml,${checkboxCheckedDisabledIcon}");
+        }
+        .checkbox.indeterminate {
+          background-image: url("data:image/svg+xml,${checkboxIndeterminateDisabledIcon}");
+        }
+      `
+    : `
+        cursor: pointer;
+
+        &:hover {
+          .checkbox {
+            background-image: url("data:image/svg+xml,${сheckboxHoverIcon}");
+          }
+          .checkbox.checked {
+            background-image: url("data:image/svg+xml,${checkboxCheckedHoverIcon}");
+          }
+          .checkbox.indeterminate {
+            background-image: url("data:image/svg+xml,${checkboxIndeterminateHoverIcon}");
+          }
+        }
+      `
+    }
 `;
 
-const HiddenInput = styled.input`
+const Input = styled.input`
   opacity: 0.0001;
   position: absolute;
+  right: 0;
 `;
 
-const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;  
-  border: 1px solid ${borderColor};
-  box-sizing: border-box;
-  border-radius: 3px;
-  width: 16px;
-  height: 16px;
-  padding: ${props => (props.isChecked && !props.isIndeterminate ? '0 2px' : '3px')};
-`;
-
-const TextWrapper = styled.span`
+const Text = styled.span`
   margin-left: 8px;
   color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
@@ -38,34 +106,26 @@ const TextWrapper = styled.span`
 class Checkbox extends React.Component  {
 
   componentDidMount() {
-    if (this.props.isIndeterminate) {
-      this.ref.current.indeterminate = true;
-    }
+    this.ref.current.indeterminate = this.props.isIndeterminate;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.isIndeterminate !== this.props.isIndeterminate) {
-      this.ref.current.indeterminate = this.props.isIndeterminate;
-    }
+  componentDidUpdate() {
+    this.ref.current.indeterminate = this.props.isIndeterminate;
   }
 
   ref = React.createRef();
 
   render() {
+    const cbxClassName = 'checkbox' +
+      (this.props.isIndeterminate ? ' indeterminate' : this.props.isChecked ? ' checked' : '') +
+      (this.props.isDisabled ? ' disabled' : '');
+
     return (
     <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} >
-      <HiddenInput type='checkbox' checked={this.props.isChecked && !this.props.isIndeterminate} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
-      <IconWrapper isChecked={this.props.isChecked} isIndeterminate={this.props.isIndeterminate}>
+      <Input type='checkbox' checked={this.props.isChecked && !this.props.isIndeterminate} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
+      <span className={cbxClassName} />
       {
-        this.props.isIndeterminate
-          ? <Icons.IndeterminateIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
-          : this.props.isChecked
-            ? <Icons.CheckedIcon isfill={true} color={this.props.isDisabled ? disableColor : activeColor}/>
-            : ""
-      }
-      </IconWrapper>
-      {
-        this.props.label && <TextWrapper isDisabled={this.props.isDisabled}>{this.props.label}</TextWrapper>
+        this.props.label && <Text isDisabled={this.props.isDisabled}>{this.props.label}</Text>
       }
     </Label>
     );
