@@ -6,6 +6,7 @@ import { Icons } from '../icons';
 const StyledOuter = styled.div`
     width: ${props => props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
     cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+    line-height: 0;
 `;
 
 const IconButton = (props) =>  {
