@@ -47,7 +47,7 @@ const StyledInputGroup = styled(CustomInputGroup)`
   }
 `;
 
-const InputBlock = props => {
+const InputBlock = React.forwardRef((props, ref) => {
   const {onChange, value, children, size } = props;
   let iconButtonSize = 0;
 
@@ -107,7 +107,7 @@ const InputBlock = props => {
         }
     </StyledInputGroup>
   );
-}
+});
 
 InputBlock.propTypes = {
 
@@ -132,7 +132,7 @@ InputBlock.propTypes = {
   hasWarning: PropTypes.bool,
   autoComplete: PropTypes.string,
 
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
   isIconFill: PropTypes.bool,
