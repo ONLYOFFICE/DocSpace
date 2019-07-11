@@ -173,7 +173,6 @@ Avatar.propTypes = {
     role: PropTypes.oneOf(['owner', 'admin','guest', 'user']),
     source: PropTypes.string,
     editLabel: PropTypes.string,
-    editAction: PropTypes.function,
     userName: PropTypes.string,
     editing: PropTypes.bool
 };
