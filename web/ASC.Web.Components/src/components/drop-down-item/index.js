@@ -3,33 +3,49 @@ import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import Avatar from '../../components/avatar'
 
+const itemTruncate = css`
+    max-width:300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const fontStyle = css`
+    font-family: Open Sans;
+    font-style: normal;
+`;
+
 const StyledDropdownItem = styled.button`
     width: ${props => (props.isSeparator ? 'calc(100% - 32px)' : '100%')};
-    text-align: left;
-    background: none;
-    border: ${props => (props.isSeparator ? '0.5px solid #ECEEF1' : '0')};
-    color: #333333;
     height: ${props => (props.isSeparator && '1px')};
-    cursor: ${props => ((!props.isSeparator || !props.isUserPreview) ? 'pointer' : 'default')};
-    box-sizing: border-box;
     line-height: ${props => (props.isSeparator ? '1px' : '36px')};
+
     margin: ${props => (props.isSeparator ? '0 16px' : '0')};
     padding: ${props => (props.isUserPreview ? '0px' : '0 16px')};
-    text-decoration: none;
-    display: block;
 
+    border: ${props => (props.isSeparator ? '0.5px solid #ECEEF1' : '0')};
+    cursor: ${props => ((!props.isSeparator || !props.isUserPreview) ? 'pointer' : 'default')};
+
+    display: ${props => props.isUserPreview ? 'inline-block' : 'block'};
+    
+    color: #333333;
+    box-sizing: border-box;
+    text-align: left;
+    background: none;
+    text-decoration: none;
+    
     user-select: none;
     -o-user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
-
-    white-space: nowrap;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    -webkit-user-select: none;
-
     stroke: none;
+
+    ${fontStyle}
+
+    font-weight: 600;
+    font-size: 13px;
+
+    ${itemTruncate}
 
     &:hover{
         ${props => (!props.isSeparator 
@@ -58,7 +74,6 @@ const StyledDropdownItem = styled.button`
 
 const UserPreview = styled.div`
     position: relative;
-    min-width: 200px;
     height: 76px;
     background: linear-gradient(200.71deg, #2274AA 0%, #0F4071 100%);
     border-radius: 6px 6px 0px 0px;
@@ -70,32 +85,32 @@ const AvatarWrapper = styled.div`
     & > div > div {
         bottom: 14px;
     }
+
+    display: inline-block;
+    float: left;
 `;
 
 const UserNameWrapper = styled.div`
-    position: absolute;
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 22px;
-    color: #FFFFFF;
+    ${fontStyle}
 
-    top: 18px;
-    left: 73px;
+    font-size: 16px;
+    line-height: 28px;
+    color: #FFFFFF;
+    margin-left: 60px;
+
+    ${itemTruncate}
 `;
 
 const UserEmailWrapper = styled.div`
-    position: absolute;
-    font-family: Open Sans;
-    font-style: normal;
+    ${fontStyle}
+
     font-weight: normal;
     font-size: 11px;
-    line-height: 15px;
+    line-height: 16px;
     color: #FFFFFF;
+    margin-left: 60px;
 
-    top: 40px;
-    left: 73px;
+    ${itemTruncate}
 `;
 
 const DropDownItem = props => {
