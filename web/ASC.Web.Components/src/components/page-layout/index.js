@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import device from '../device'
 import Backdrop from '../backdrop'
+import { Icons } from '../icons'
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -11,10 +12,6 @@ const StyledArticle = styled.article`
   flex-direction: column;
   width: 240px;
   transition: width .3s ease-in-out;
-
-  button {
-    display: none;
-  }
 
   @media ${device.tablet} {
     ${props => props.isOpen
@@ -34,10 +31,6 @@ const StyledArticle = styled.article`
         display: none;
         width: 0px;
       `
-    }
-
-    button {
-      display: inline-block;
     }
   }
 `;
@@ -61,7 +54,9 @@ const StyledArticleBody = styled.div`
 `;
 
 const StyledArticlePinPanel = styled.div`
+  border-top: 1px solid #ECEEF1;
   height: 56px;
+  line-height: 56px;
   display: none;
 
   @media ${device.tablet} {
@@ -70,6 +65,17 @@ const StyledArticlePinPanel = styled.div`
 
   @media ${device.mobile} {
     display: none;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    span {
+      margin-left: 8px;
+    }
   }
 `;
 
@@ -95,11 +101,20 @@ const StyledSectionBody = styled.div`
 `;
 
 const StyledSectionPagingPanel = styled.div`
-  height: 56px;
+  height: 64px;
   display: none;
 
   @media ${device.tablet} {
     display: ${props => props.isPinned ? 'none' : 'block'};
+  }
+
+  div {
+    width: 48px;
+    height: 48px;
+    padding: 14px 13px 13px 14px;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+    border-radius: 48px;
+    cursor: pointer;
   }
 `;
 
@@ -156,8 +171,14 @@ class PageLayout extends React.Component {
           <StyledArticlePinPanel>
             {
               this.state.isArticlePinned
-                ? <button onClick={this.unpinArticle}>UnpinArticleBtn</button>
-                : <button onClick={this.pinArticle}>PinArticleBtn</button>
+                ? <div onClick={this.unpinArticle}>
+                    <Icons.CatalogUnpinIcon size="medium"/>
+                    <span>Unpin this panel</span>
+                  </div>
+                : <div onClick={this.pinArticle}>
+                    <Icons.CatalogPinIcon size="medium"/>
+                    <span>Pin this panel</span>
+                  </div>
             }
           </StyledArticlePinPanel>
         </StyledArticle>
@@ -165,7 +186,9 @@ class PageLayout extends React.Component {
           <StyledSectionHeader/>
           <StyledSectionBody/>
           <StyledSectionPagingPanel isPinned={this.state.isArticlePinned}>
-            <button onClick={this.showArticle}>ShowArticleBtn</button>
+            <div onClick={this.showArticle}>
+              <Icons.CatalogButtonIcon size="scale"/>
+            </div>
           </StyledSectionPagingPanel>
         </StyledSection>
       </>
