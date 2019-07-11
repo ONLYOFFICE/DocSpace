@@ -13,3 +13,4 @@
 /build/deploy
 *.log
 /web/npm-local
+/products/ASC.People/Data/
