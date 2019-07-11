@@ -85,7 +85,6 @@ const NamedAvatar = styled.div`
         (props.size === 'medium' && '20px') ||
         (props.size === 'small' && '12px')
       };
-    line-height: 120px;
 
     color: ${whiteColor};
 `;
@@ -173,7 +172,6 @@ Avatar.propTypes = {
     role: PropTypes.oneOf(['owner', 'admin','guest', 'user']),
     source: PropTypes.string,
     editLabel: PropTypes.string,
-    editAction: PropTypes.function,
     userName: PropTypes.string,
     editing: PropTypes.bool
 };

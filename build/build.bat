@@ -1,5 +1,5 @@
 PUSHD %~dp0
-start /b call start\stop.bat
+call start\stop.bat
 
 PUSHD %~dp0..
 echo "ASC.Web.Components"
