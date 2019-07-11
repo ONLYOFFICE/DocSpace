@@ -24,7 +24,7 @@ storiesOf('Components|ModalDialog', module)
               }}
             />
             <ModalDialog
-              isOpen={value}
+              visible={value}
               headerContent={"Header text"}
               bodyContent={
                 <p>{"Body text"}</p>

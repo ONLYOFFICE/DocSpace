@@ -79,15 +79,15 @@ const Modal = styled.div`
   overflow: hidden;
   outline: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => props.isOpen ? 'block' : 'none'};
+  display: ${props => props.visible ? 'block' : 'none'};
 `;
 
 const ModalDialog = props => {
-  const { isOpen, headerContent, bodyContent, footerContent, onClose } = props;
+  const { visible, headerContent, bodyContent, footerContent, onClose } = props;
 
   return (
     <>
-      <Modal isOpen={isOpen}>
+      <Modal visible={visible}>
         <Dialog>
           <Content>
             <Header>
@@ -104,7 +104,7 @@ const ModalDialog = props => {
 };
 
 ModalDialog.propTypes = {
-  isOpen: PropTypes.bool,
+  visible: PropTypes.bool,
   headerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   bodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   footerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
