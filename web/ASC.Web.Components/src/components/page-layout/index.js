@@ -17,8 +17,8 @@ const StyledArticle = styled.article`
   }
 
   @media ${device.tablet} {
-    ${props => props.isOpen
-      ? props.isPinned
+    ${props => props.visible
+      ? props.pinned
           ? `
             display: flex;
             width: 240px;
@@ -50,7 +50,7 @@ const StyledArticleHeader = styled.div`
   height: 56px;
 
   @media ${device.tablet} {
-    display: ${props => props.isPinned ? 'block' : 'none'};
+    display: ${props => props.visible ? 'block' : 'none'};
   }
 `;
 
@@ -99,7 +99,7 @@ const StyledSectionPagingPanel = styled.div`
   display: none;
 
   @media ${device.tablet} {
-    display: ${props => props.isPinned ? 'none' : 'block'};
+    display: ${props => props.visible ? 'block' : 'none'};
   }
 `;
 
@@ -109,7 +109,8 @@ class PageLayout extends React.Component {
     super(props);
 
     this.state = {
-      isArticleOpen: props.isArticleOpen,
+      isBackdropVisible: props.isBackdropVisible,
+      isArticleVisible: props.isArticleVisible,
       isArticlePinned: props.isArticlePinned
     };
   }
@@ -117,7 +118,7 @@ class PageLayout extends React.Component {
   backdropClick = () => {
     this.setState({
       isBackdropVisible: false,
-      isArticleOpen: false,
+      isArticleVisible: false,
       isArticlePinned: false
     });
   };
@@ -126,7 +127,7 @@ class PageLayout extends React.Component {
     this.setState({
       isBackdropVisible: false,
       isArticlePinned: true,
-      isArticleOpen: true 
+      isArticleVisible: true 
     });
   };
 
@@ -134,14 +135,14 @@ class PageLayout extends React.Component {
     this.setState({
       isBackdropVisible: true,
       isArticlePinned: false,
-      isArticleOpen: true 
+      isArticleVisible: true 
     });
   };
 
   showArticle = () => {
     this.setState({
       isBackdropVisible: true,
-      isArticleOpen: true,
+      isArticleVisible: true,
       isArticlePinned: false
     });
   };
@@ -150,8 +151,8 @@ class PageLayout extends React.Component {
     return (
       <>
         <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
-        <StyledArticle isOpen={this.state.isArticleOpen} isPinned={this.state.isArticlePinned}>
-          <StyledArticleHeader isPinned={this.state.isArticlePinned}/>
+        <StyledArticle visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
+          <StyledArticleHeader visible={this.state.isArticlePinned}/>
           <StyledArticleBody/>
           <StyledArticlePinPanel>
             {
@@ -164,7 +165,7 @@ class PageLayout extends React.Component {
         <StyledSection>
           <StyledSectionHeader/>
           <StyledSectionBody/>
-          <StyledSectionPagingPanel isPinned={this.state.isArticlePinned}>
+          <StyledSectionPagingPanel visible={!this.state.isArticlePinned}>
             <button onClick={this.showArticle}>ShowArticleBtn</button>
           </StyledSectionPagingPanel>
         </StyledSection>
@@ -175,13 +176,13 @@ class PageLayout extends React.Component {
 
 PageLayout.propTypes = {
   isBackdropVisible: PropTypes.bool,
-  isArticleOpen: PropTypes.bool,
+  isArticleVisible: PropTypes.bool,
   isArticlePinned: PropTypes.bool
 }
 
 PageLayout.defaultProps = {
   isBackdropVisible: false,
-  isArticleOpen: false,
+  isArticleVisible: false,
   isArticlePinned: false
 }
 
