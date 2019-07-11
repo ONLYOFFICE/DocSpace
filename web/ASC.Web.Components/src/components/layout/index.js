@@ -38,8 +38,8 @@ class Layout extends React.Component {
 
     this.state = {
       isBackdropOpen: props.isBackdropOpen,
-      isNavigationHoverEnabled: props.isNavigationHoverEnabled,
-      isNavigationOpen: props.isNavigationOpen,
+      isNavHoverEnabled: props.isNavHoverEnabled,
+      isNavOpen: props.isNavOpen,
       isAsideOpen: props.isAsideOpen,
 
       onLogoClick: props.onLogoClick,
@@ -62,27 +62,27 @@ class Layout extends React.Component {
   backdropClick = () => {
     this.setState({
       isBackdropOpen: false,
-      isNavigationOpen: false,
+      isNavOpen: false,
       isAsideOpen: false,
-      isNavigationHoverEnabled: !this.state.isNavigationHoverEnabled
+      isNavHoverEnabled: !this.state.isNavHoverEnabled
     });
   };
 
   showNav = () => {
     this.setState({
       isBackdropOpen: true,
-      isNavigationOpen: true,
+      isNavOpen: true,
       isAsideOpen: false,
-      isNavigationHoverEnabled: false
+      isNavHoverEnabled: false
     });
   };
 
   handleNavHover = () => {
-    if(!this.state.isNavigationHoverEnabled) return;
+    if(!this.state.isNavHoverEnabled) return;
     
     this.setState({
       isBackdropOpen: false,
-      isNavigationOpen: !this.state.isNavigationOpen,
+      isNavOpen: !this.state.isNavOpen,
       isAsideOpen: false
     });
   }
@@ -90,9 +90,9 @@ class Layout extends React.Component {
   toggleAside = () => {
     this.setState({
       isBackdropOpen: true,
-      isNavigationOpen: false,
+      isNavOpen: false,
       isAsideOpen: true,
-      isNavigationHoverEnabled: false
+      isNavHoverEnabled: false
     });
   };
 
@@ -111,12 +111,12 @@ class Layout extends React.Component {
           currentModule={this.state.currentModule}
         />
         <Nav
-          isOpen={this.state.isNavigationOpen}
+          isOpen={this.state.isNavOpen}
           onMouseEnter={this.handleNavHover}
           onMouseLeave={this.handleNavHover}
         >
           <NavLogoItem
-            isOpen={this.state.isNavigationOpen}
+            isOpen={this.state.isNavOpen}
             onClick={this.state.onLogoClick}
           />
           {
@@ -124,7 +124,7 @@ class Layout extends React.Component {
               <NavItem
                 seporator={!!item.seporator}
                 key={item.id}
-                isOpen={this.state.isNavigationOpen}
+                isOpen={this.state.isNavOpen}
                 active={item.id == this.state.currentModuleId}
                 iconName={item.iconName}
                 badgeNumber={item.notifications}
@@ -145,8 +145,8 @@ class Layout extends React.Component {
 
 Layout.propTypes = {
   isBackdropOpen: PropTypes.bool,
-  isNavigationHoverEnabled: PropTypes.bool,
-  isNavigationOpen: PropTypes.bool,
+  isNavHoverEnabled: PropTypes.bool,
+  isNavOpen: PropTypes.bool,
   isAsideOpen: PropTypes.bool,
 
   onLogoClick: PropTypes.func,
@@ -160,8 +160,8 @@ Layout.propTypes = {
 
 Layout.defaultProps = {
   isBackdropOpen: false,
-  isNavigationHoverEnabled: true,
-  isNavigationOpen: false,
+  isNavHoverEnabled: true,
+  isNavOpen: false,
   isAsideOpen: false
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Layout } from 'asc-web-components'
+import { Layout, PageLayout } from 'asc-web-components'
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
@@ -93,7 +93,7 @@ const pageContent = <p style={{padding: 40}}>Page Content</p>;
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
     <Layout
-      isNavigationOpen={false}
+      isNavOpen={false}
       currentUser={currentUser}
       currentUserActions={currentUserActions}
       availableModules={availableModules}
@@ -101,6 +101,6 @@ storiesOf('Components|Layout', module)
       onLogoClick={onLogoClick}
       asideContent={asideContent}
     >
-      {pageContent}
+      <PageLayout/>
     </Layout>
   ));

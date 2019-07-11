@@ -1,2 +1,2 @@
 echo "RUN ASC.People"
-call dotnet watch run --project ..\..\products\ASC.People\Server\ASC.People.csproj
+call dotnet run --project ..\..\products\ASC.People\Server\ASC.People.csproj --no-build

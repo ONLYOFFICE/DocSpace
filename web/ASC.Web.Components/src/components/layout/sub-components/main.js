@@ -7,6 +7,8 @@ const StyledMain = styled.main`
   padding: 0 0 0 56px;
   width: 100vw;
   z-index: 0;
+  display: flex;
+  flex-direction: row;
 
   @media ${device.tablet} {
     padding: 56px 0 0 0;

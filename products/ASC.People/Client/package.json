@@ -28,8 +28,8 @@
     "redux": "4.0.1",
     "redux-thunk": "2.3.0",
     "universal-cookie": "^4.0.0",
-    "lodash": "4.17.11",
-    "lodash-es": "4.17.11"
+    "lodash": "4.17.14",
+    "lodash-es": "4.17.14"
   },
   "devDependencies": {
     "ajv": "^6.10.0",
