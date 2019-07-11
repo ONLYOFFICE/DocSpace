@@ -11,4 +11,5 @@
 **/storybook-static/
 /web/ASC.Web.Components/dist
 /build/deploy
+*.log
 /web/npm-local
