@@ -28,7 +28,7 @@ const NavItemLabel = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${props => props.color};
-  display: ${props => props.isOpen ? 'block' : 'none'};
+  display: ${props => props.opened ? 'block' : 'none'};
 `;
 
 const badgeCss = css`
@@ -38,11 +38,11 @@ const badgeCss = css`
 `;
 
 const NavItemBadge = styled(Badge)`
-  ${props => props.isOpen ? "" : badgeCss}
+  ${props => props.opened ? "" : badgeCss}
 `;
 
 const NavItem = props => {
-  const { seporator, isOpen, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
+  const { seporator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 
   return (
@@ -50,8 +50,8 @@ const NavItem = props => {
     ? <NavItemSeporator/>
     : <NavItemWrapper onClick={onClick}>
         {React.createElement(Icons[iconName], {size: "big", isfill: true, color: color})}
-        {children && <NavItemLabel isOpen={isOpen} color={color}>{children}</NavItemLabel>}
-        <NavItemBadge isOpen={isOpen} number={badgeNumber} onClick={onBadgeClick}/>
+        {children && <NavItemLabel opened={opened} color={color}>{children}</NavItemLabel>}
+        <NavItemBadge opened={opened} number={badgeNumber} onClick={onBadgeClick}/>
       </NavItemWrapper>
   );
 };

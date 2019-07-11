@@ -25,7 +25,6 @@ const HeaderNav = props =>
       props.modules.map(module => 
         <NavItem
           key={module.id}
-          isOpen={false}
           iconName={module.iconName}
           badgeNumber={module.notifications}
           onClick={module.onClick}

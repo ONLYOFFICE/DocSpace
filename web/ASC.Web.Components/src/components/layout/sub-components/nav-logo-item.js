@@ -13,11 +13,11 @@ const LogoItem = styled.div`
 
 const NavLogoItem = props => {
   const navLogoIconStyle = {
-    display: props.isOpen ? 'none' : 'block'
+    display: props.opened ? 'none' : 'block'
   };
 
   const navLogoOpenedIconStyle = {
-    display: props.isOpen ? 'block' : 'none',
+    display: props.opened ? 'block' : 'none',
     maxHeight: '24px',
     width: 'auto'
   };

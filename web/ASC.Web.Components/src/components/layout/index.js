@@ -39,8 +39,8 @@ class Layout extends React.Component {
     this.state = {
       isBackdropVisible: props.isBackdropVisible,
       isNavHoverEnabled: props.isNavHoverEnabled,
-      isNavOpen: props.isNavOpen,
-      isAsideOpen: props.isAsideOpen,
+      isNavOpened: props.isNavOpened,
+      isAsideVisible: props.isAsideVisible,
 
       onLogoClick: props.onLogoClick,
       asideContent: props.asideContent,
@@ -62,8 +62,8 @@ class Layout extends React.Component {
   backdropClick = () => {
     this.setState({
       isBackdropVisible: false,
-      isNavOpen: false,
-      isAsideOpen: false,
+      isNavOpened: false,
+      isAsideVisible: false,
       isNavHoverEnabled: !this.state.isNavHoverEnabled
     });
   };
@@ -71,8 +71,8 @@ class Layout extends React.Component {
   showNav = () => {
     this.setState({
       isBackdropVisible: true,
-      isNavOpen: true,
-      isAsideOpen: false,
+      isNavOpened: true,
+      isAsideVisible: false,
       isNavHoverEnabled: false
     });
   };
@@ -82,16 +82,16 @@ class Layout extends React.Component {
     
     this.setState({
       isBackdropVisible: false,
-      isNavOpen: !this.state.isNavOpen,
-      isAsideOpen: false
+      isNavOpened: !this.state.isNavOpened,
+      isAsideVisible: false
     });
   }
 
   toggleAside = () => {
     this.setState({
       isBackdropVisible: true,
-      isNavOpen: false,
-      isAsideOpen: true,
+      isNavOpened: false,
+      isAsideVisible: true,
       isNavHoverEnabled: false
     });
   };
@@ -111,12 +111,12 @@ class Layout extends React.Component {
           currentModule={this.state.currentModule}
         />
         <Nav
-          isOpen={this.state.isNavOpen}
+          opened={this.state.isNavOpened}
           onMouseEnter={this.handleNavHover}
           onMouseLeave={this.handleNavHover}
         >
           <NavLogoItem
-            isOpen={this.state.isNavOpen}
+            opened={this.state.isNavOpened}
             onClick={this.state.onLogoClick}
           />
           {
@@ -124,7 +124,7 @@ class Layout extends React.Component {
               <NavItem
                 seporator={!!item.seporator}
                 key={item.id}
-                isOpen={this.state.isNavOpen}
+                opened={this.state.isNavOpened}
                 active={item.id == this.state.currentModuleId}
                 iconName={item.iconName}
                 badgeNumber={item.notifications}
@@ -136,7 +136,7 @@ class Layout extends React.Component {
             )
           }
         </Nav>
-        <Aside isOpen={this.state.isAsideOpen} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
+        <Aside visible={this.state.isAsideVisible} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
         <Main>{this.props.children}</Main>
       </>
     );
@@ -146,8 +146,8 @@ class Layout extends React.Component {
 Layout.propTypes = {
   isBackdropVisible: PropTypes.bool,
   isNavHoverEnabled: PropTypes.bool,
-  isNavOpen: PropTypes.bool,
-  isAsideOpen: PropTypes.bool,
+  isNavOpened: PropTypes.bool,
+  isAsideVisible: PropTypes.bool,
 
   onLogoClick: PropTypes.func,
   asideContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
@@ -161,8 +161,8 @@ Layout.propTypes = {
 Layout.defaultProps = {
   isBackdropVisible: false,
   isNavHoverEnabled: true,
-  isNavOpen: false,
-  isAsideOpen: false
+  isNavOpened: false,
+  isAsideVisible: false
 }
 
 export default Layout

@@ -13,11 +13,11 @@ const StyledNav = styled.nav`
   position: fixed;
   top: 0;
   transition: width .3s ease-in-out;
-  width: ${props => props.isOpen ? '240px' : '56px'};
+  width: ${props => props.opened ? '240px' : '56px'};
   z-index: 200;
 
   @media ${device.tablet} {
-    width: ${props => props.isOpen ? '240px' : '0'};
+    width: ${props => props.opened ? '240px' : '0'};
   }
 `;
 

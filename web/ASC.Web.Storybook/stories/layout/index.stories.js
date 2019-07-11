@@ -93,7 +93,6 @@ const pageContent = <p style={{padding: 40}}>Page Content</p>;
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
     <Layout
-      isNavOpen={false}
       currentUser={currentUser}
       currentUserActions={currentUserActions}
       availableModules={availableModules}

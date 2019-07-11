@@ -26,7 +26,6 @@ const HeaderText = styled(Text.MenuHeader)`
 
 const Header = props => <StyledHeader>
   <NavItem
-    isOpen={false}
     iconName="MenuIcon"
     badgeNumber={props.badgeNumber}
     onClick={props.onClick}

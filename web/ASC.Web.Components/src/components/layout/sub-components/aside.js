@@ -9,7 +9,7 @@ const StyledAside = styled.aside`
   position: fixed;
   right: 0;
   top: 0;
-  transform: translateX(${props => props.isOpen ? '0' : '240px'});
+  transform: translateX(${props => props.visible ? '0' : '240px'});
   transition: transform .3s ease-in-out;
   width: 240px;
   z-index: 400;

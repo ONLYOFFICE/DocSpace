@@ -10,14 +10,14 @@ class ProfileActions extends React.Component {
     super(props);
 
     this.state = {
-      isOpen: props.isOpen,
+      opened: props.opened,
       user: props.user,
       userActions: props.userActions
     };
   };
 
   toggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState({ opened: !this.state.opened });
   };
 
   getUserRole = (user) => {
@@ -41,7 +41,7 @@ class ProfileActions extends React.Component {
           isUserPreview
           withArrow
           direction='right'
-          isOpen={this.state.isOpen}
+          isOpen={this.state.opened}
         >
           <DropDownItem
             isUserPreview
@@ -60,13 +60,13 @@ class ProfileActions extends React.Component {
 }
 
 ProfileActions.propTypes = {
-  isOpen: PropTypes.bool,
+  opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array
 }
 
 ProfileActions.defaultProps = {
-  isOpen: false,
+  opened: false,
   user: {},
   userActions: []
 }
