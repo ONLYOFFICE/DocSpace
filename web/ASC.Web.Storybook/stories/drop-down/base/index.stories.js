@@ -21,6 +21,10 @@ storiesOf('Components| DropDown', module)
                     Without active button
                     <DropDown opened={true}>
                         <DropDownItem
+                            isHeader
+                            label='Category 1'
+                        />
+                        <DropDownItem
                             label='Button 1'
                             onClick={() => console.log('Button 1 clicked')}
                         />
@@ -35,6 +39,7 @@ storiesOf('Components| DropDown', module)
                         <DropDownItem
                             label='Button 4'
                             onClick={() => console.log('Button 4 clicked')}
+                            disabled={true}
                         />
                         <DropDownItem isSeparator />
                         <DropDownItem

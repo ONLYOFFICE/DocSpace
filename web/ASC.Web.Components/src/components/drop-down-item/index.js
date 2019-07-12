@@ -28,7 +28,9 @@ const StyledDropdownItem = styled.button`
 
     display: ${props => props.isUserPreview ? 'inline-block' : 'block'};
     
-    color: #333333;
+    color: ${props => props.disabled || props.isHeader ? '#A3A9AE' : '#333333'};
+    text-transform: ${props => props.isHeader ? 'uppercase' : 'none'};
+
     box-sizing: border-box;
     text-align: left;
     background: none;
@@ -46,29 +48,27 @@ const StyledDropdownItem = styled.button`
     font-size: 13px;
 
     ${itemTruncate}
-
+    
     &:hover{
-        ${props => (!props.isSeparator 
-            ? `
+        ${props => props.isSeparator || props.disabled || props.isHeader
+        ? `cursor: default;`
+        : `
             background-color: #F8F9F9;
             width: 100%;
             text-align: left;
 
-            &:first-of-type{
+            &:first-of-type {
                 border-radius: 6px 6px 0 0;
                 -moz-border-radius: 6px 6px 0 0;
                 -webkit-border-radius: 6px 6px 0 0;
             }
 
-            &:last-of-type{
+            &:last-of-type {
                 border-radius: 0 0 6px 6px;
                 -moz-border-radius: 0 0 6px 6px;
                 -webkit-border-radius: 0 0 6px 6px;
             }`
-            : `
-            cursor: default;
-            `
-        )}
+        }
     }
 `;
 
@@ -114,7 +114,7 @@ const UserEmailWrapper = styled.div`
 `;
 
 const DropDownItem = props => {
-    const {isSeparator, isUserPreview, tabIndex, onClick, label} = props;
+    const {isSeparator, isUserPreview, label} = props;
     return (
         <StyledDropdownItem {...props} >
             {isSeparator ? '\u00A0' : !isUserPreview  && label}
@@ -138,17 +138,19 @@ const DropDownItem = props => {
 DropDownItem.propTypes = {
     isSeparator: PropTypes.bool,
     isUserPreview: PropTypes.bool,
+    isHeader: PropTypes.bool,
     tabIndex: PropTypes.number,
-    onClick: PropTypes.func,
-    label: PropTypes.string
+    label: PropTypes.string,
+    disabled: PropTypes.bool
 };
 
 DropDownItem.defaultProps = {
     isSeparator: false,
     isUserPreview: false,
+    isHeader: false,
     tabIndex: -1,
-    onClick: (e) => console.log('Button "' + e.target.innerText + '" clicked!'),
-    label: ''
+    label: '',
+    disabled: false
 };
 
 export default DropDownItem

@@ -24,5 +24,7 @@ To add an avatar username and email when you turn on the isUserPreview parameter
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
 | `isSeparator`      | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like separator        |
 | `isUserPreview`    | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like User preview     |
+| `isHeader`         | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like header           |
 | `label`            | `string` |    -     | -                           | `Dropdown item`| Dropdown item text                                                |
 | `onClick`          | `func`   |    -     | -                           | -              | What the dropdown item will trigger when clicked                  |
+| `disabled          | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like disabled         |
