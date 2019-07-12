@@ -44,12 +44,12 @@ namespace ASC.FederatedLogin.Profile
             return profile.AppendSessionProfile(uri, context);
         }
 
-        public static Uri AddProfileCache(this Uri uri, LoginProfile profile)
+        public static Uri AddProfileCache(this Uri uri, LoginProfile profile, IMemoryCache memoryCache)
         {
-            return profile.AppendCacheProfile(uri);
+            return profile.AppendCacheProfile(uri, memoryCache);
         }
 
-        public static LoginProfile GetProfile(this Uri uri, HttpContext context)
+        public static LoginProfile GetProfile(this Uri uri, HttpContext context, IMemoryCache memoryCache)
         {
             var profile = new LoginProfile();
             var queryString = HttpUtility.ParseQueryString(uri.Query);
@@ -59,12 +59,12 @@ namespace ASC.FederatedLogin.Profile
             }
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryParamName]))
             {
-                profile.ParseFromUrl(context, uri);
+                profile.ParseFromUrl(context, uri, memoryCache);
                 return profile;
             }
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryCacheParamName]))
             {
-                return (LoginProfile)CommonServiceProvider.GetService<IMemoryCache>().Get(queryString[LoginProfile.QuerySessionParamName]);
+                return (LoginProfile)memoryCache.Get(queryString[LoginProfile.QuerySessionParamName]);
             }
             return null;
         }

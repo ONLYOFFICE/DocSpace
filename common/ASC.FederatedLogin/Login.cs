@@ -24,15 +24,6 @@
 */
 
 
-using ASC.Common.DependencyInjection;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.FederatedLogin.Profile;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,11 +32,35 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common.DependencyInjection;
+using ASC.FederatedLogin.Helpers;
+using ASC.FederatedLogin.LoginProviders;
+using ASC.FederatedLogin.Profile;
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Caching.Memory;
+
+using Newtonsoft.Json;
+
 namespace ASC.FederatedLogin
 {
     public class Login
     {
         private Dictionary<string, string> _params;
+
+        private readonly RequestDelegate _next;
+        private IWebHostEnvironment WebHostEnvironment { get; }
+        private IMemoryCache MemoryCache { get; }
+
+        public Login(RequestDelegate next, IWebHostEnvironment webHostEnvironment, IMemoryCache memoryCache)
+        {
+            _next = next;
+            WebHostEnvironment = webHostEnvironment;
+            MemoryCache = memoryCache;
+        }
+
 
         public async Task Invoke(HttpContext context)
         {
@@ -120,11 +135,8 @@ namespace ASC.FederatedLogin
 
         private async Task RenderXrds(HttpContext context)
         {
-            var webHostEnvironment = CommonServiceProvider.GetService<IWebHostEnvironment>();
-            var xrdsloginuri = new Uri(context.Request.GetUrlRewriter(),
-                                       new Uri(context.Request.GetUrlRewriter().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
-            var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(),
-                                       new Uri(webHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
+            var xrdsloginuri = new Uri(context.Request.GetUrlRewriter(), new Uri(context.Request.GetUrlRewriter().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
+            var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(), new Uri(WebHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
             await XrdsHelper.RenderXrds(context.Response, xrdsloginuri, xrdsimageuri);
         }
 
@@ -154,7 +166,6 @@ namespace ASC.FederatedLogin
         {
             get { return false; }
         }
-
 
         private async Task SendClientData(HttpContext context, LoginProfile profile)
         {
@@ -187,9 +198,9 @@ namespace ASC.FederatedLogin
                 //Store in session
                 context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfileSession(profile, context).ToString(), true);
             }
-            else if (CommonServiceProvider.GetService<IMemoryCache>() != null && !useMinimalProfile)
+            else if (MemoryCache != null && !useMinimalProfile)
             {
-                context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfileCache(profile).ToString(), true);
+                context.Response.Redirect(new Uri(ReturnUrl, UriKind.Absolute).AddProfileCache(profile, MemoryCache).ToString(), true);
             }
             else
             {

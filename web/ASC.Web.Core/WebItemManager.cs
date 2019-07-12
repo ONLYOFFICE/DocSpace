@@ -26,19 +26,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using ASC.Common;
+
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Core.Users;
 using ASC.Web.Core.WebZones;
+
 using Autofac;
+
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core
@@ -116,7 +113,6 @@ namespace ASC.Web.Core
 
         private static WebItemManager instance;
         public static WebItemManager Instance { get { return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>()); } }
-        private ApplicationPartManager ApplicationPartManager { get; }
         public IContainer Container { get; }
 
         public IWebItem this[Guid id]

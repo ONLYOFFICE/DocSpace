@@ -284,10 +284,10 @@ namespace ASC.FederatedLogin.Profile
             return new Uri(request.GetDisplayUrl()).HasProfile();
         }
 
-        public static LoginProfile GetProfile(HttpContext context)
+        public static LoginProfile GetProfile(HttpContext context, IMemoryCache memoryCache)
         {
             if (context == null) return new LoginProfile();
-            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context);
+            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache);
         }
 
         internal static LoginProfile FromError(Exception e)
@@ -317,11 +317,11 @@ namespace ASC.FederatedLogin.Profile
             return builder.Uri;
         }
 
-        internal Uri AppendCacheProfile(Uri uri)
+        internal Uri AppendCacheProfile(Uri uri, IMemoryCache memoryCache)
         {
             //gen key
             var key = HashHelper.MD5(Transport());
-            CommonServiceProvider.GetService<IMemoryCache>().Set(key, this, TimeSpan.FromMinutes(15));
+            memoryCache.Set(key, this, TimeSpan.FromMinutes(15));
             return AppendQueryParam(uri, QuerySessionParamName, key);
         }
 
@@ -334,7 +334,7 @@ namespace ASC.FederatedLogin.Profile
         }
 
 
-        internal void ParseFromUrl(HttpContext context, Uri uri)
+        internal void ParseFromUrl(HttpContext context, Uri uri, IMemoryCache memoryCache)
         {
             var queryString = HttpUtility.ParseQueryString(uri.Query);
             if (!string.IsNullOrEmpty(queryString[QueryParamName]))
@@ -347,7 +347,7 @@ namespace ASC.FederatedLogin.Profile
             }
             else if (!string.IsNullOrEmpty(queryString[QueryCacheParamName]))
             {
-                FromTransport((string)CommonServiceProvider.GetService<IMemoryCache>().Get(queryString[QueryCacheParamName]));
+                FromTransport((string)memoryCache.Get(queryString[QueryCacheParamName]));
             }
         }
 
