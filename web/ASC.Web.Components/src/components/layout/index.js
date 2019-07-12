@@ -10,9 +10,26 @@ import NavLogoItem from './sub-components/nav-logo-item'
 import NavItem from './sub-components/nav-item'
 
 class Layout extends React.Component {
-
   constructor(props) {
     super(props);
+    //console.log("constructor: props", props);
+    this.state = this.mapPropsToState(props);
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    // Store prevId in state so we can compare when props change.
+    // Clear out previously-loaded data (so we don't render stale stuff).
+    if (this.props.availableModules !== prevProps.availableModules) {
+      //console.log("componentDidUpdate: currentUser NOT equals", this.props.availableModules, prevState.availableModules);
+      this.setState(this.mapPropsToState(this.props));
+    }
+    /*else {
+      console.log("componentDidUpdate: currentUser  EQUALS", this.props.availableModules, prevState.availableModules);
+    }*/
+  }
+
+  mapPropsToState = (props) => {
+    console.log("mapPropsToState", props);
 
     let currentModule = null,
         isolateModules = [],
@@ -42,7 +59,7 @@ class Layout extends React.Component {
         isNavAvailable = mainModules.length > 0,
         isAsideAvailable = !!props.asideContent;
 
-    this.state = {
+    let newState = {
       isBackdropAvailable: isBackdropAvailable,
       isHeaderNavAvailable: isHeaderNavAvailable,
       isHeaderAvailable: isHeaderAvailable,
@@ -69,7 +86,9 @@ class Layout extends React.Component {
 
       totalNotifications: totalNotifications
     };
-  };
+
+    return newState;
+  }
 
   backdropClick = () => {
     this.setState({
