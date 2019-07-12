@@ -87,8 +87,10 @@ const currentModuleId = '44444444-4444-4444-4444-444444444444';
 const onLogoClick = (e) => {action('Logo Clicked')(e)};
 
 const asideContent = <p style={{padding: 40}}>Aside Content</p>;
-
-const pageContent = <p style={{padding: 40}}>Page Content</p>;
+const articleHeaderContent = "Article Header";
+const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
+const sectionHeaderContent = "Section Header";
+const sectionBodyContent = <p style={{padding: 40}}>Section Content</p>;
 
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
@@ -100,6 +102,11 @@ storiesOf('Components|Layout', module)
       onLogoClick={onLogoClick}
       asideContent={asideContent}
     >
-      <PageLayout/>
+      <PageLayout
+        articleHeaderContent={articleHeaderContent}
+        articleBodyContent={articleBodyContent}
+        sectionHeaderContent={sectionHeaderContent}
+        sectionBodyContent={sectionBodyContent}
+      />
     </Layout>
   ));

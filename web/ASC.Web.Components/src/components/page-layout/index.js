@@ -126,7 +126,12 @@ class PageLayout extends React.Component {
     this.state = {
       isBackdropVisible: props.isBackdropVisible,
       isArticleVisible: props.isArticleVisible,
-      isArticlePinned: props.isArticlePinned
+      isArticlePinned: props.isArticlePinned,
+
+      articleHeaderContent: props.articleHeaderContent,
+      articleBodyContent: props.articleBodyContent,
+      sectionHeaderContent: props.sectionHeaderContent,
+      sectionBodyContent: props.sectionBodyContent
     };
   }
 
@@ -167,8 +172,8 @@ class PageLayout extends React.Component {
       <>
         <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
         <StyledArticle visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
-          <StyledArticleHeader visible={this.state.isArticlePinned}/>
-          <StyledArticleBody/>
+          <StyledArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</StyledArticleHeader>
+          <StyledArticleBody>{this.state.articleBodyContent}</StyledArticleBody>
           <StyledArticlePinPanel>
             {
               this.state.isArticlePinned
@@ -184,8 +189,8 @@ class PageLayout extends React.Component {
           </StyledArticlePinPanel>
         </StyledArticle>
         <StyledSection>
-          <StyledSectionHeader/>
-          <StyledSectionBody/>
+          <StyledSectionHeader>{this.state.sectionHeaderContent}</StyledSectionHeader>
+          <StyledSectionBody>{this.state.sectionBodyContent}</StyledSectionBody>
           <StyledSectionPagingPanel visible={!this.state.isArticlePinned}>
             <div onClick={this.showArticle}>
               <Icons.CatalogButtonIcon size="scale"/>
@@ -200,7 +205,12 @@ class PageLayout extends React.Component {
 PageLayout.propTypes = {
   isBackdropVisible: PropTypes.bool,
   isArticleVisible: PropTypes.bool,
-  isArticlePinned: PropTypes.bool
+  isArticlePinned: PropTypes.bool,
+
+  articleHeaderContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  articleBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  sectionHeaderContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  sectionBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
 }
 
 PageLayout.defaultProps = {
