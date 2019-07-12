@@ -13,7 +13,7 @@ const Tiles = ({ modules, isPrimary, history }) => {
             {
                 modules.filter(m => m.isPrimary === isPrimary).map(module => (
                     <Col key={++index}>
-                        <ModuleTile {...module} onClick={() => history.push(module.link)} />
+                        <ModuleTile {...module} onClick={() => window.open(module.link, "_blank")} />
                     </Col>
                 ))
             }
