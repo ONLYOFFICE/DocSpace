@@ -123,13 +123,13 @@ class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
-    let isBackdropAvailable = !!props.articleBodyContent,
-        isArticleHeaderAvailable = !!props.articleHeaderContent ,
+    let isArticleHeaderAvailable = !!props.articleHeaderContent ,
         isArticleBodyAvailable = !!props.articleBodyContent,
         isArticleAvailable = isArticleHeaderAvailable || isArticleBodyAvailable,
         isSectionHeaderAvailable = !!props.sectionHeaderContent,
         isSectionBodyAvailable = !!props.sectionBodyContent,
-        isSectionAvailable = isSectionHeaderAvailable || isSectionBodyAvailable || isArticleAvailable;
+        isSectionAvailable = isSectionHeaderAvailable || isSectionBodyAvailable || isArticleAvailable,
+        isBackdropAvailable = isArticleAvailable;
 
     this.state = {
       isBackdropAvailable: isBackdropAvailable,
