@@ -10,17 +10,10 @@ html, body {
 
 #root {
     min-height: 100%;
-    position: relative;
 
-    main {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-
-        .pageLoader {
-            position: fixed;
-            left: calc(50% - 32px);
-            top: 35%;
-        }
+    .pageLoader {
+        position: fixed;
+        left: calc(50% - 32px);
+        top: 35%;
     }
 }

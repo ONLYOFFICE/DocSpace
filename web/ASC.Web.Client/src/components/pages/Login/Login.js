@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
-import { Button, TextInput } from 'asc-web-components';
+import { Button, TextInput, PageLayout } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../actions/authActions';
 
-const LoginForm = props => {
+const Form = props => {
     const [identifier, setIdentifier] = useState('');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
@@ -129,6 +129,8 @@ const LoginForm = props => {
         </Container>
     );
 }
+
+const LoginForm = (props) => <PageLayout sectionBodyContent={<Form {...props} />} />;
 
 LoginForm.propTypes = {
     login: PropTypes.func.isRequired,

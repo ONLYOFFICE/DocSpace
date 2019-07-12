@@ -2,19 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Container, Row } from 'reactstrap';
 import { Layout } from 'asc-web-components';
 import { logout } from '../../actions/authActions';
-
-const MainPageContent = ({ children }) => (
-    <main className="main">
-        <Container className="mainPageContent">
-            <Row>
-                {children}
-            </Row>
-        </Container>
-    </main>
-);
 
 const StudioLayout = props => {
     const { auth, logout, children, history } = props;
@@ -40,19 +29,13 @@ const StudioLayout = props => {
     console.log(props);
 
     const layoutProps = { currentUserActions: currentUserActions, ...props };
+    console.log(auth.isAuthenticated, auth.isLoaded);
 
     return (
-        <>
-            {auth.isAuthenticated && auth.isLoaded
-                ? (
-                    <Layout {...layoutProps}>
-                        <MainPageContent>{children}</MainPageContent>
-                    </Layout>
-                )
-                : (<MainPageContent>{children}</MainPageContent>)
-            }
-        </>
-    )
+        auth.isAuthenticated && auth.isLoaded
+                ? <Layout key="1" {...layoutProps}>{children}</Layout>
+                : <Layout key="2">{children}</Layout>
+    );
 };
 
 StudioLayout.propTypes = {
