@@ -36,11 +36,11 @@ class Layout extends React.Component {
       }
     }
 
-    let isBackdropAvailable = mainModules.length > 0 || props.asideContent,
-        isHeaderNavAvailable = isolateModules.length > 0 || props.currentUser,
+    let isBackdropAvailable = mainModules.length > 0 || !!props.asideContent,
+        isHeaderNavAvailable = isolateModules.length > 0 || !!props.currentUser,
         isHeaderAvailable = mainModules.length > 0,
         isNavAvailable = mainModules.length > 0,
-        isAsideAvailable = props.asideContent;
+        isAsideAvailable = !!props.asideContent;
 
     this.state = {
       isBackdropAvailable: isBackdropAvailable,
