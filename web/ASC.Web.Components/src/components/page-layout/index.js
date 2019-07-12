@@ -123,7 +123,23 @@ class PageLayout extends React.Component {
   constructor(props) {
     super(props);
 
+    let isBackdropAvailable = !!props.articleBodyContent,
+        isArticleHeaderAvailable = !!props.articleHeaderContent ,
+        isArticleBodyAvailable = !!props.articleBodyContent,
+        isArticleAvailable = isArticleHeaderAvailable || isArticleBodyAvailable,
+        isSectionHeaderAvailable = !!props.sectionHeaderContent,
+        isSectionBodyAvailable = !!props.sectionBodyContent,
+        isSectionAvailable = isSectionHeaderAvailable || isSectionBodyAvailable || isArticleAvailable;
+
     this.state = {
+      isBackdropAvailable: isBackdropAvailable,
+      isArticleAvailable: isArticleAvailable,
+      isArticleHeaderAvailable: isArticleHeaderAvailable,
+      isArticleBodyAvailable: isArticleBodyAvailable,
+      isSectionAvailable: isSectionAvailable,
+      isSectionHeaderAvailable: isSectionHeaderAvailable,
+      isSectionBodyAvailable: isSectionBodyAvailable,
+
       isBackdropVisible: props.isBackdropVisible,
       isArticleVisible: props.isArticleVisible,
       isArticlePinned: props.isArticlePinned,
@@ -170,33 +186,60 @@ class PageLayout extends React.Component {
   render() {
     return (
       <>
-        <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
-        <StyledArticle visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
-          <StyledArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</StyledArticleHeader>
-          <StyledArticleBody>{this.state.articleBodyContent}</StyledArticleBody>
-          <StyledArticlePinPanel>
+        {
+          this.state.isBackdropAvailable &&
+          <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
+        }
+        {
+          this.state.isArticleAvailable &&
+          <StyledArticle visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
             {
-              this.state.isArticlePinned
-                ? <div onClick={this.unpinArticle}>
-                    <Icons.CatalogUnpinIcon size="medium"/>
-                    <span>Unpin this panel</span>
-                  </div>
-                : <div onClick={this.pinArticle}>
-                    <Icons.CatalogPinIcon size="medium"/>
-                    <span>Pin this panel</span>
-                  </div>
+              this.state.isArticleHeaderAvailable &&
+              <StyledArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</StyledArticleHeader>
             }
-          </StyledArticlePinPanel>
-        </StyledArticle>
-        <StyledSection>
-          <StyledSectionHeader>{this.state.sectionHeaderContent}</StyledSectionHeader>
-          <StyledSectionBody>{this.state.sectionBodyContent}</StyledSectionBody>
-          <StyledSectionPagingPanel visible={!this.state.isArticlePinned}>
-            <div onClick={this.showArticle}>
-              <Icons.CatalogButtonIcon size="scale"/>
-            </div>
-          </StyledSectionPagingPanel>
-        </StyledSection>
+            {
+              this.state.isArticleBodyAvailable &&
+              <StyledArticleBody>{this.state.articleBodyContent}</StyledArticleBody>
+            }
+            {
+              this.state.isArticleBodyAvailable &&
+              <StyledArticlePinPanel>
+                {
+                  this.state.isArticlePinned
+                    ? <div onClick={this.unpinArticle}>
+                        <Icons.CatalogUnpinIcon size="medium"/>
+                        <span>Unpin this panel</span>
+                      </div>
+                    : <div onClick={this.pinArticle}>
+                        <Icons.CatalogPinIcon size="medium"/>
+                        <span>Pin this panel</span>
+                      </div>
+                }
+              </StyledArticlePinPanel>
+            }
+          </StyledArticle>
+        }
+        {
+          this.state.isSectionAvailable &&
+          <StyledSection>
+            {
+              this.state.isSectionHeaderAvailable &&
+              <StyledSectionHeader>{this.state.sectionHeaderContent}</StyledSectionHeader>
+            }
+            {
+              this.state.isSectionBodyAvailable &&
+              <StyledSectionBody>{this.state.sectionBodyContent}</StyledSectionBody>
+            }
+            {
+              this.state.isArticleAvailable &&
+              <StyledSectionPagingPanel visible={!this.state.isArticlePinned}>
+                <div onClick={this.showArticle}>
+                  <Icons.CatalogButtonIcon size="scale"/>
+                </div>
+              </StyledSectionPagingPanel>
+            }
+          </StyledSection>
+        }
       </>
     )
   }
