@@ -36,7 +36,19 @@ class Layout extends React.Component {
       }
     }
 
+    let isBackdropAvailable = mainModules.length > 0 || props.asideContent,
+        isHeaderNavAvailable = isolateModules.length > 0 || props.currentUser,
+        isHeaderAvailable = mainModules.length > 0,
+        isNavAvailable = mainModules.length > 0,
+        isAsideAvailable = props.asideContent;
+
     this.state = {
+      isBackdropAvailable: isBackdropAvailable,
+      isHeaderNavAvailable: isHeaderNavAvailable,
+      isHeaderAvailable: isHeaderAvailable,
+      isNavAvailable: isNavAvailable,
+      isAsideAvailable: isAsideAvailable,
+
       isBackdropVisible: props.isBackdropVisible,
       isNavHoverEnabled: props.isNavHoverEnabled,
       isNavOpened: props.isNavOpened,
@@ -45,10 +57,10 @@ class Layout extends React.Component {
       onLogoClick: props.onLogoClick,
       asideContent: props.asideContent,
 
-      currentUser: props.currentUser || null,
-      currentUserActions: props.currentUserActions || [],
+      currentUser: props.currentUser,
+      currentUserActions: props.currentUserActions,
 
-      availableModules: props.availableModules || [],
+      availableModules: props.availableModules,
       isolateModules: isolateModules,
       mainModules: mainModules,
 
@@ -99,45 +111,60 @@ class Layout extends React.Component {
   render() {
     return (
       <>
-        <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
-        <HeaderNav
-          modules={this.state.isolateModules}
-          user={this.state.currentUser}
-          userActions={this.state.currentUserActions}
-        />
-        <Header
-          badgeNumber={this.state.totalNotifications}
-          onClick={this.showNav}
-          currentModule={this.state.currentModule}
-        />
-        <Nav
-          opened={this.state.isNavOpened}
-          onMouseEnter={this.handleNavHover}
-          onMouseLeave={this.handleNavHover}
-        >
-          <NavLogoItem
-            opened={this.state.isNavOpened}
-            onClick={this.state.onLogoClick}
+        {
+          this.state.isBackdropAvailable &&
+          <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
+        }
+        {
+          this.state.isHeaderNavAvailable &&
+          <HeaderNav
+            modules={this.state.isolateModules}
+            user={this.state.currentUser}
+            userActions={this.state.currentUserActions}
           />
-          {
-            this.state.mainModules.map(item => 
-              <NavItem
-                seporator={!!item.seporator}
-                key={item.id}
-                opened={this.state.isNavOpened}
-                active={item.id == this.state.currentModuleId}
-                iconName={item.iconName}
-                badgeNumber={item.notifications}
-                onClick={item.onClick}
-                onBadgeClick={(e)=>{item.onBadgeClick(e); this.toggleAside();}}
-              >
-                {item.title}
-              </NavItem>
-            )
-          }
-        </Nav>
-        <Aside visible={this.state.isAsideVisible} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
-        <Main>{this.props.children}</Main>
+        }
+        {
+          this.state.isHeaderAvailable &&
+          <Header
+            badgeNumber={this.state.totalNotifications}
+            onClick={this.showNav}
+            currentModule={this.state.currentModule}
+          />
+        }
+        {
+          this.state.isNavAvailable &&
+          <Nav
+            opened={this.state.isNavOpened}
+            onMouseEnter={this.handleNavHover}
+            onMouseLeave={this.handleNavHover}
+          >
+            <NavLogoItem
+              opened={this.state.isNavOpened}
+              onClick={this.state.onLogoClick}
+            />
+            {
+              this.state.mainModules.map(item => 
+                <NavItem
+                  seporator={!!item.seporator}
+                  key={item.id}
+                  opened={this.state.isNavOpened}
+                  active={item.id == this.state.currentModuleId}
+                  iconName={item.iconName}
+                  badgeNumber={item.notifications}
+                  onClick={item.onClick}
+                  onBadgeClick={(e)=>{item.onBadgeClick(e); this.toggleAside();}}
+                >
+                  {item.title}
+                </NavItem>
+              )
+            }
+          </Nav>
+        }
+        {
+          this.state.isAsideAvailable &&
+          <Aside visible={this.state.isAsideVisible} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
+        }
+        <Main fullscreen={!this.state.isNavAvailable}>{this.props.children}</Main>
       </>
     );
   }
@@ -162,7 +189,11 @@ Layout.defaultProps = {
   isBackdropVisible: false,
   isNavHoverEnabled: true,
   isNavOpened: false,
-  isAsideVisible: false
+  isAsideVisible: false,
+
+  currentUser: null,
+  currentUserActions: [],
+  availableModules: [],
 }
 
 export default Layout
