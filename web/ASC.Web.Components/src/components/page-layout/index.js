@@ -56,7 +56,6 @@ const StyledArticleBody = styled.div`
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #ECEEF1;
   height: 56px;
-  line-height: 56px;
   display: none;
 
   @media ${device.tablet} {
@@ -72,6 +71,7 @@ const StyledArticlePinPanel = styled.div`
     align-items: center;
     cursor: pointer;
     user-select: none;
+    height: 100%;
 
     span {
       margin-left: 8px;
@@ -111,7 +111,7 @@ const StyledSectionPagingPanel = styled.div`
   div {
     width: 48px;
     height: 48px;
-    padding: 14px 13px 13px 14px;
+    padding: 12px 13px 14px 15px;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     border-radius: 48px;
     cursor: pointer;
