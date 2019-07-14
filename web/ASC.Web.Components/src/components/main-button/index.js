@@ -115,7 +115,7 @@ class MainButton extends React.Component {
     }
 
     onOuterClick = (e) => this.toggle(false);
-    handleClick = (e) => !this.ref.current.contains(e.target) && onOuterClick(e);
+    handleClick = (e) => !this.ref.current.contains(e.target) && this.onOuterClick(e);
     stopAction = (e) => e.preventDefault();
     toggle = (isOpen) => this.setState({ isOpen: isOpen});
 
