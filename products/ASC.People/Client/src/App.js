@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Loader, ErrorContainer } from 'asc-web-components';
 import PeopleLayout from './components/Layout';
 import Home from './components/pages/Home';
+var config = require('../package.json');
 
 const App = () => {
     return (
@@ -10,7 +11,7 @@ const App = () => {
             <PeopleLayout>
                 <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
                     <Switch>
-                        <Route exact path='/' component={Home} />
+                        <Route exact path={['/', config.homepage]} component={Home} />
                         <Route component={() => (
                             <ErrorContainer>
                                 Sorry, the resource
