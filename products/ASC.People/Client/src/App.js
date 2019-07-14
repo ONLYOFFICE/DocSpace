@@ -1,20 +1,27 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router';
-import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
+import React, { Suspense } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Loader, ErrorContainer } from 'asc-web-components';
+import PeopleLayout from './components/Layout';
+import Home from './components/pages/Home';
 
-export default class App extends Component {
-  static displayName = App.name;
-
-  render () {
+const App = () => {
     return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
-      </Layout>
+        <BrowserRouter>
+            <PeopleLayout>
+                <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
+                    <Switch>
+                        <Route exact path='/' component={Home} />
+                        <Route component={() => (
+                            <ErrorContainer>
+                                Sorry, the resource
+                                cannot be found.
+                            </ErrorContainer>
+                        )} />
+                    </Switch>
+                </Suspense>
+            </PeopleLayout>
+        </BrowserRouter>
     );
-  }
-}
+};
+
+export default App;
