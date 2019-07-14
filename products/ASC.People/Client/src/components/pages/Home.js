@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { PageLayout, MainButton, DropDownItem, TreeMenu, TreeNode, Icons } from 'asc-web-components';
+import { ContentRow, Checkbox, Avatar, Link, ContextMenuButton } from 'asc-web-components';
+import { Container, Row, Col } from 'reactstrap';
 
 const treeData = [
   {
@@ -134,7 +136,7 @@ const PeopleTreeMenu = props => {
       return <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
     }
   };
-
+ 
   return (
     <>
       <MainButton style={{marginBottom: 5}}
@@ -173,24 +175,413 @@ const PeopleTreeMenu = props => {
   );
 };
 
-const Body = () => (
-  <div>
-    <h1>Hello, world!</h1>
-    <p>Welcome to your new single-page application, built with:</p>
-    <ul>
-      <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-      <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>
-      <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-    </ul>
-    <p>To help you get started, we have also set up:</p>
-    <ul>
-      <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-      <li><strong>Development server integration</strong>. In development mode, the development server from <code>create-react-app</code> runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-      <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration produces minified, efficiently bundled JavaScript files.</li>
-    </ul>
-    <p>The <code>ClientApp</code> subdirectory is a standard React application based on the <code>create-react-app</code> template. If you open a command prompt in that directory, you can run <code>npm</code> commands such as <code>npm test</code> or <code>npm install</code>.</p>
-  </div>
+const peopleContent = (userName, department, phone, email, headDepartment, status) => {
+  return (
+    <Container fluid={true}>
+      <Row className="justify-content-start no-gutters">
+        <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
+          <Link
+            style={status === 'pending' ? { color: '#A3A9AE' } : { color: '#333333' }}
+            type="action"
+            title={userName}
+            text={userName}
+            isBold={true}
+            fontSize={15}
+            onClick={() => console.log('User name action')}
+          />
+        </Col>
+        <Col
+          className={`${headDepartment ? 'col-3' : 'col-auto'} col-sm-auto col-lg-2 text-truncate`}
+        >
+          <Link
+            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            type="action"
+            isHovered
+            title={headDepartment ? 'Head of department' : ''}
+            text={headDepartment ? 'Head of department' : ''}
+            onClick={() => console.log('Head of department action')}
+          />
+        </Col>
+        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
+          {headDepartment && (
+            <span className="d-lg-none" style={{ margin: '0 4px' }}>
+              {department.title ? '|' : ''}
+            </span>
+          )}
+          <Link
+            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            type="action"
+            isHovered
+            title={department.title}
+            text={department.title}
+            onClick={department.action}
+          />
+        </Col>
+        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
+          {department.title && (
+            <span className="d-lg-none" style={{ margin: '0 4px' }}>
+              {phone.title ? '|' : ''}
+            </span>
+          )}
+          <Link
+            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            type="action"
+            title={phone.title}
+            text={phone.title}
+            onClick={phone.action}
+          />
+        </Col>
+        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
+          {phone.title && (
+            <span className="d-lg-none" style={{ margin: '0 4px' }}>
+              {email.title ? '|' : ''}
+            </span>
+          )}
+          <Link
+            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            type="action"
+            isHovered
+            title={email.title}
+            text={email.title}
+            onClick={email.action}
+          />
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+const users = [
+  {
+    id: '1',
+    userName: 'Helen Walton',
+    avatar: '',
+    role: 'owner',
+    status: 'normal',
+    isHead: false,
+    departments: [
+      {
+        title: 'Administration',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+5 104 6473420',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'percival1979@yahoo.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      {
+        key: 'key1',
+        label: 'Send e-mail',
+        onClick: () => console.log('Context action: Send e-mail'),
+      },
+      {
+        key: 'key2',
+        label: 'Send message',
+        onClick: () => console.log('Context action: Send message'),
+      },
+      { key: 'key3', isSeparator: true },
+      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key5',
+        label: 'Change password',
+        onClick: () => console.log('Context action: Change password'),
+      },
+      {
+        key: 'key6',
+        label: 'Change e-mail',
+        onClick: () => console.log('Context action: Change e-mail'),
+      },
+      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
+    ],
+  },
+  {
+    id: '2',
+    userName: 'Nellie Harder',
+    avatar: '',
+    role: 'user',
+    status: 'normal',
+    isHead: true,
+    departments: [
+      {
+        title: 'Development',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+1 716 3748605',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'herta.reynol@yahoo.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      {
+        key: 'key1',
+        label: 'Send e-mail',
+        onClick: () => console.log('Context action: Send e-mail'),
+      },
+      {
+        key: 'key2',
+        label: 'Send message',
+        onClick: () => console.log('Context action: Send message'),
+      },
+      { key: 'key3', isSeparator: true },
+      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key5',
+        label: 'Change password',
+        onClick: () => console.log('Context action: Change password'),
+      },
+      {
+        key: 'key6',
+        label: 'Change e-mail',
+        onClick: () => console.log('Context action: Change e-mail'),
+      },
+      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
+    ],
+  },
+  {
+    id: '3',
+    userName: 'Alan Mason',
+    avatar: '',
+    role: 'admin',
+    status: 'normal',
+    isHead: true,
+    departments: [
+      {
+        title: 'Administration',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+3 956 2064314',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'davin_lindgr@hotmail.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      {
+        key: 'key1',
+        label: 'Send e-mail',
+        onClick: () => console.log('Context action: Send e-mail'),
+      },
+      {
+        key: 'key2',
+        label: 'Send message',
+        onClick: () => console.log('Context action: Send message'),
+      },
+      { key: 'key3', isSeparator: true },
+      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key5',
+        label: 'Change password',
+        onClick: () => console.log('Context action: Change password'),
+      },
+      {
+        key: 'key6',
+        label: 'Change e-mail',
+        onClick: () => console.log('Context action: Change e-mail'),
+      },
+      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
+    ],
+  },
+  {
+    id: '4',
+    userName: 'Michael Goldstein',
+    avatar: '',
+    role: 'guest',
+    status: 'normal',
+    isHead: false,
+    departments: [
+      {
+        title: 'Visitors',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+7 715 6018678',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'fidel_kerlu@hotmail.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      {
+        key: 'key1',
+        label: 'Send e-mail',
+        onClick: () => console.log('Context action: Send e-mail'),
+      },
+      {
+        key: 'key2',
+        label: 'Send message',
+        onClick: () => console.log('Context action: Send message'),
+      },
+      { key: 'key3', isSeparator: true },
+      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key5',
+        label: 'Change password',
+        onClick: () => console.log('Context action: Change password'),
+      },
+      {
+        key: 'key6',
+        label: 'Change e-mail',
+        onClick: () => console.log('Context action: Change e-mail'),
+      },
+      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
+    ],
+  },
+  {
+    id: '5',
+    userName: 'Robert Gardner',
+    avatar: '',
+    role: 'user',
+    status: 'pending',
+    isHead: false,
+    departments: [
+      {
+        title: 'Pending',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+0 000 0000000',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'robert_gardner@hotmail.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key2',
+        label: 'Invite again',
+        onClick: () => console.log('Context action: Invite again'),
+      },
+      {
+        key: 'key3',
+        label: 'Delete profile',
+        onClick: () => console.log('Context action: Delete profile'),
+      },
+    ],
+  },
+  {
+    id: '6',
+    userName: 'Timothy Morphis',
+    avatar: '',
+    role: 'user',
+    status: 'disabled',
+    isHead: false,
+    departments: [
+      {
+        title: 'Disabled',
+        action: () => console.log('Department action'),
+      },
+    ],
+    phones: [
+      {
+        title: '+9 641 1689548',
+        action: () => console.log('Phone action'),
+      },
+    ],
+    emails: [
+      {
+        title: 'timothy_j_morphis@hotmail.com',
+        action: () => console.log('Email action'),
+      },
+    ],
+    contextOptions: [
+      { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      {
+        key: 'key2',
+        label: 'Reassign data',
+        onClick: () => console.log('Context action: Reassign data'),
+      },
+      {
+        key: 'key3',
+        label: 'Delete personal data',
+        onClick: () => console.log('Context action: Delete personal data'),
+      },
+      {
+        key: 'key4',
+        label: 'Delete profile',
+        onClick: () => console.log('Context action: Delete profile'),
+      },
+    ],
+  },
+];
+
+const Body = () => {
+  const [isChecked, toggleChecked] = useState(false)
+
+  return (
+    <>
+      {users.map((user, index) =>
+          <ContentRow
+            key={`cr-${index}`}
+            status={user.status}
+            checkBox={
+                  <Checkbox
+                    isChecked={isChecked}
+                    onChange={e => {
+                      console.log('Item with id: ' + e.target.value + ' Checked!');
+                      toggleChecked(e.target.checked);
+                    }}
+                    isDisabled={false}
+                    value={user.id}
+                    id={user.id}
+                  />
+            }
+            avatar={
+              <Avatar size="small" role={user.role} source={user.avatar} userName={user.userName} />
+            }
+            contextButton={
+              <ContextMenuButton direction="right" getData={() => user.contextOptions} />
+            }
+          >
+            {peopleContent(
+              user.userName,
+              user.departments[0],
+              user.phones[0],
+              user.emails[0],
+              user.isHead,
+              user.status
+            )}
+          </ContentRow>
+      )}
+    </>
 );
+};
 
 const articleHeaderContent = 'People';
 const articleBodyContent = <PeopleTreeMenu data={treeData} />;
