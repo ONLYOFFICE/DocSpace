@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import DropDown from '../drop-down';
 import { Icons } from '../icons';
-
 
 const backgroundColor = '#ED7309',
     disableBackgroundColor = '#FFCCA6',
@@ -103,54 +102,63 @@ const StyledSecondaryButton = styled(StyledMainButton)`
     border-bottom-left-radius:0;
 `;
 
-const useOuterClickNotifier = (onOuterClick, ref) => {
-    useEffect(() => { 
-        const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
+class MainButton extends React.Component {
+    constructor(props) {
+        super(props);
 
-        if (ref.current) {
-            document.addEventListener("click", handleClick);
-        }
+        this.ref = React.createRef();
+        this.iconNames = Object.keys(Icons);
 
-        return () => document.removeEventListener("click", handleClick);
-    },
-    [onOuterClick, ref]
-    );
-}
-
-const MainButton = (props) => {
-    const { text, isDropdown, opened } = props;
-    const [isOpen, toggle] = useState(opened);
-    const dropMenu = <StyledDropDown isOpen={isOpen} {...props}/>;
-    const ref = useRef(null);
-    const iconNames = Object.keys(Icons);
-  
-    useOuterClickNotifier((e) => toggle(false), ref);
-
-    function stopAction(e) {
-        e.preventDefault();
+        this.state = {
+            isOpen: props.opened
+        };
     }
 
-    return(
-        <GroupMainButton {...props} ref={ref}>
-            <StyledMainButton {...props} onClick={ 
-                    !props.isDisabled 
-                        ? !props.isDropdown 
-                            ? props.clickAction 
-                            : () => { toggle(!isOpen) }
-                        : stopAction}>
-                {text}
-            </StyledMainButton>
-            {isDropdown 
-                ?   { ...dropMenu } 
-                
-                :   <StyledSecondaryButton {...props} onClick={ !props.isDisabled ? props.clickActionSecondary : stopAction}> 
+    onOuterClick = (e) => this.toggle(false);
+    handleClick = (e) => !this.ref.current.contains(e.target) && onOuterClick(e);
+    stopAction = (e) => e.preventDefault();
+    toggle = (isOpen) => this.setState({ isOpen: isOpen});
+
+    componentDidMount() {
+        if (this.ref.current) {
+            document.addEventListener("click", this.handleClick);
+        }
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("click", this.handleClick)
+    }
+
+    componentDidUpdate(prevProps) {
+        // Store prevId in state so we can compare when props change.
+        // Clear out previously-loaded data (so we don't render stale stuff).
+        if (this.props.opened !== prevProps.opened) {
+          this.toggle(this.props.opened);
+        }
+      }
+
+    render() {
+        return (
+            <GroupMainButton {...this.props} ref={this.ref}>
+                <StyledMainButton {...this.props} onClick={
+                    !this.props.isDisabled
+                        ? !this.props.isDropdown
+                            ? this.props.clickAction
+                            : () => { this.toggle(!this.state.isOpen) }
+                        : this.stopAction}>
+                    {this.props.text}
+                </StyledMainButton>
+                {this.props.isDropdown
+                    ? <StyledDropDown isOpen={this.state.isOpen} {...this.props} />
+                    : <StyledSecondaryButton {...this.props} onClick={!this.props.isDisabled ? this.props.clickActionSecondary : this.stopAction}>
                         {
-                            iconNames.includes(props.iconName)
-                            && React.createElement(Icons[props.iconName], {size: "medium", color: "#ffffff"})
+                            this.iconNames.includes(this.props.iconName)
+                            && React.createElement(Icons[this.props.iconName], { size: "medium", color: "#ffffff" })
                         }
                     </StyledSecondaryButton>}
-        </GroupMainButton>
-    )
+            </GroupMainButton>
+        )
+    };
 }
 
 MainButton.propTypes = {
