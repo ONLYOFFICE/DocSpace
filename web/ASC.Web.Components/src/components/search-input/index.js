@@ -6,7 +6,9 @@ import IconButton from '../icon-button';
 import ContextMenuButton from '../context-menu-button';
 
 const StyledFilterItem = styled.div`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  height: 100%;
   padding: 3px;
   margin-right: 2px;
   border: 1px solid #d4e4ec;
@@ -48,6 +50,7 @@ class SearchInput extends React.Component  {
     this.getData = this.getData.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
     this.onDeleteFilterItem = this.onDeleteFilterItem.bind(this);
+    this.getFilterItems = this.getFilterItems.bind(this);
     
   }
 
@@ -111,8 +114,40 @@ class SearchInput extends React.Component  {
       });
   }
 
+  getFilterItems(){
+    let _this = this;
+
+    const result = this.state.filterItems.map(function(item) {
+      
+      return <FilterItem 
+        isDisabled={_this.props.isDisabled} 
+        key={item.key}
+        id={item.key} 
+        groupLabel={item.groupLabel} 
+        label={item.label} 
+        onClose={_this.onDeleteFilterItem}>
+
+      </FilterItem>
+    })
+    return result;
+  }
+
   render() {
     let _this = this;
+    let iconSize = 32;
+    switch (this.props.size) {
+      case 'base':
+        iconSize = 32
+        break;
+      case 'middle':
+      case 'big':
+      case 'huge':
+        iconSize = 41
+        break;
+      default:
+        break;
+    }
+
     return (
       <InputBlock 
           id={this.props.id}
@@ -127,23 +162,14 @@ class SearchInput extends React.Component  {
           placeholder={this.props.placeholder}
           onChange={this.props.onChange}
       >
-        { this.props.isNeedFilter && 
-          this.state.filterItems.map(item => 
-            <FilterItem 
-              isDisabled={_this.props.isDisabled} 
-              key={item.key}
-              id={item.key} 
-              groupLabel={item.groupLabel} 
-              label={item.label} 
-              onClose={_this.onDeleteFilterItem}>
-
-            </FilterItem>)}
+        { this.props.isNeedFilter && this.getFilterItems()}
         {
           this.props.isNeedFilter && 
           <ContextMenuButton
             title={'Actions'}
             iconName={'RectangleFilterIcon'}
             color='#A3A9AE'
+            size={iconSize}
             getData={_this.getData}
           />
         }
