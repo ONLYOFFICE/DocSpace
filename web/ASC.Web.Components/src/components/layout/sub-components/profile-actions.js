@@ -9,6 +9,8 @@ class ProfileActions extends React.Component {
   constructor(props) {
     super(props);
 
+    this.ref = React.createRef();
+
     this.state = {
       opened: props.opened,
       user: props.user,
@@ -16,9 +18,29 @@ class ProfileActions extends React.Component {
     };
   };
 
-  toggle = () => {
-    this.setState({ opened: !this.state.opened });
-  };
+  handleClick = (e) => {
+    !this.ref.current.contains(e.target) && this.toggle(false);
+  }
+
+  toggle = (opened) => {
+    this.setState({ opened: opened });
+  }
+
+  componentDidMount() {
+    if (this.ref.current) {
+      document.addEventListener("click", this.handleClick);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("click", this.handleClick)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.opened !== prevProps.opened) {
+      this.toggle(this.props.opened);
+    }
+  }
 
   getUserRole = (user) => {
     if(user.isOwner) return "owner";
@@ -29,13 +51,15 @@ class ProfileActions extends React.Component {
 
   render() {
     return (
-      <div>
+      <div ref={this.ref}>
         <Avatar
           size="small"
           role={this.getUserRole(this.state.user)}
           source={this.state.user.avatarSmall}
           userName={this.state.user.userName}
-          onClick={this.toggle}
+          onClick={() => { 
+            this.toggle(!this.state.opened);
+          }}
         />
         <DropDown
           isUserPreview
@@ -51,7 +75,15 @@ class ProfileActions extends React.Component {
             label={this.state.user.email}
           />
           {
-            this.state.userActions.map(action => <DropDownItem {...action}/>)
+            this.state.userActions.map(action => 
+              <DropDownItem 
+                {...action}
+                onClick={() => { 
+                  action.onClick && action.onClick();
+                  this.toggle(!this.state.opened);
+                }}
+              />
+            )
           }
         </DropDown>
       </div>
