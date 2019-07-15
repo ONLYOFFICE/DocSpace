@@ -1,22 +1,37 @@
-import React, { useState } from 'react';
-import { PageLayout, MainButton, DropDownItem, TreeMenu, TreeNode, Icons } from 'asc-web-components';
-import { ContentRow, Checkbox, Avatar, Link, ContextMenuButton } from 'asc-web-components';
-import { Container, Row, Col } from 'reactstrap';
+import React, { useState } from "react";
+import _ from 'lodash';
+import {
+  PageLayout,
+  MainButton,
+  DropDownItem,
+  TreeMenu,
+  TreeNode,
+  Icons
+} from "asc-web-components";
+import {
+  ContentRow,
+  Checkbox,
+  Avatar,
+  Link,
+  ContextMenuButton
+} from "asc-web-components";
+import { GroupButtonsMenu } from "asc-web-components";
+import { Container, Row, Col } from "reactstrap";
 
 const treeData = [
   {
-    key: '0-0',
-    title: 'Departments',
+    key: "0-0",
+    title: "Departments",
     root: true,
     children: [
-      { key: '0-0-0', title: 'Development', root: false },
-      { key: '0-0-1', title: 'Direction', root: false },
-      { key: '0-0-2', title: 'Marketing', root: false },
-      { key: '0-0-3', title: 'Mobile', root: false },
-      { key: '0-0-4', title: 'Support', root: false },
-      { key: '0-0-5', title: 'Web', root: false },
-    ],
-  },
+      { key: "0-0-0", title: "Development", root: false },
+      { key: "0-0-1", title: "Direction", root: false },
+      { key: "0-0-2", title: "Marketing", root: false },
+      { key: "0-0-3", title: "Mobile", root: false },
+      { key: "0-0-4", title: "Support", root: false },
+      { key: "0-0-5", title: "Web", root: false }
+    ]
+  }
 ];
 
 const PeopleTreeMenu = props => {
@@ -25,7 +40,11 @@ const PeopleTreeMenu = props => {
   const [gData, setGData] = useState(data);
   const [autoExpandParent, setAutoExpandParent] = useState(true);
 
-  const [expandedKeys, setExpandedKeys] = useState(['0-0-key', '0-0-0-key', '0-0-0-0-key']);
+  const [expandedKeys, setExpandedKeys] = useState([
+    "0-0-key",
+    "0-0-0-key",
+    "0-0-0-0-key"
+  ]);
 
   const onDragStart = info => {
     info.event.persist();
@@ -39,8 +58,9 @@ const PeopleTreeMenu = props => {
     info.event.persist();
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
-    const dropPos = info.node.props.pos.split('-');
-    const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+    const dropPos = info.node.props.pos.split("-");
+    const dropPosition =
+      info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
     const getItems = (data, key, callback) => {
       data.forEach((item, index, arr) => {
@@ -104,10 +124,14 @@ const PeopleTreeMenu = props => {
             key={item.key}
             icon={
               item.root ? (
-                <Icons.CatalogDepartmentsIcon size="scale" isfill={true} color="dimgray" />
+                <Icons.CatalogDepartmentsIcon
+                  size="scale"
+                  isfill={true}
+                  color="dimgray"
+                />
               ) : (
-                  ''
-                )
+                ""
+              )
             }
           >
             {getItems(item.children)}
@@ -119,9 +143,17 @@ const PeopleTreeMenu = props => {
           key={item.key}
           title={item.title}
           icon={
-            !item.root ? <Icons.CatalogFolderIcon size="scale" isfill={true} color="dimgray" /> : ''
+            !item.root ? (
+              <Icons.CatalogFolderIcon
+                size="scale"
+                isfill={true}
+                color="dimgray"
+              />
+            ) : (
+              ""
+            )
           }
-        ></TreeNode>
+        />
       );
     });
   };
@@ -131,27 +163,50 @@ const PeopleTreeMenu = props => {
       return null;
     }
     if (obj.expanded) {
-      return <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
+      return (
+        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
+      );
     } else {
-      return <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
+      return (
+        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
+      );
     }
   };
- 
+
   return (
     <>
-      <MainButton style={{marginBottom: 5}}
+      <MainButton
+        style={{ marginBottom: 5 }}
         isDisabled={false}
         isDropdown={true}
-        text={'Actions'}
+        text={"Actions"}
         clickAction={() => console.log("MainButton clickAction")}
       >
-        <DropDownItem label="New employee" onClick={() => console.log('New employee clicked')} />
-        <DropDownItem label="New quest" onClick={() => console.log('New quest clicked')} />
-        <DropDownItem label="New department" onClick={() => console.log('New department clicked')} />
+        <DropDownItem
+          label="New employee"
+          onClick={() => console.log("New employee clicked")}
+        />
+        <DropDownItem
+          label="New quest"
+          onClick={() => console.log("New quest clicked")}
+        />
+        <DropDownItem
+          label="New department"
+          onClick={() => console.log("New department clicked")}
+        />
         <DropDownItem isSeparator />
-        <DropDownItem label="Invitation link" onClick={() => console.log('Invitation link clicked')} />
-        <DropDownItem label="Invite again" onClick={() => console.log('Invite again clicked')} />
-        <DropDownItem label="Import people" onClick={() => console.log('Import people clicked')} />
+        <DropDownItem
+          label="Invitation link"
+          onClick={() => console.log("Invitation link clicked")}
+        />
+        <DropDownItem
+          label="Invite again"
+          onClick={() => console.log("Invite again clicked")}
+        />
+        <DropDownItem
+          label="Import people"
+          onClick={() => console.log("Import people clicked")}
+        />
       </MainButton>
       <TreeMenu
         checkable={false}
@@ -175,41 +230,56 @@ const PeopleTreeMenu = props => {
   );
 };
 
-const peopleContent = (userName, department, phone, email, headDepartment, status) => {
+const peopleContent = (
+  userName,
+  department,
+  phone,
+  email,
+  headDepartment,
+  status
+) => {
   return (
     <Container fluid={true}>
       <Row className="justify-content-start no-gutters">
         <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
           <Link
-            style={status === 'pending' ? { color: '#A3A9AE' } : { color: '#333333' }}
+            style={
+              status === "pending" ? { color: "#A3A9AE" } : { color: "#333333" }
+            }
             type="action"
             title={userName}
             text={userName}
             isBold={true}
             fontSize={15}
-            onClick={() => console.log('User name action')}
+            onClick={() => console.log("User name action")}
           />
         </Col>
         <Col
-          className={`${headDepartment ? 'col-3' : 'col-auto'} col-sm-auto col-lg-2 text-truncate`}
+          className={`${
+            headDepartment ? "col-3" : "col-auto"
+          } col-sm-auto col-lg-2 text-truncate`}
         >
           <Link
-            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            style={
+              status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+            }
             type="action"
             isHovered
-            title={headDepartment ? 'Head of department' : ''}
-            text={headDepartment ? 'Head of department' : ''}
-            onClick={() => console.log('Head of department action')}
+            title={headDepartment ? "Head of department" : ""}
+            text={headDepartment ? "Head of department" : ""}
+            onClick={() => console.log("Head of department action")}
           />
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {headDepartment && (
-            <span className="d-lg-none" style={{ margin: '0 4px' }}>
-              {department.title ? '|' : ''}
+            <span className="d-lg-none" style={{ margin: "0 4px" }}>
+              {department.title ? "|" : ""}
             </span>
           )}
           <Link
-            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            style={
+              status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+            }
             type="action"
             isHovered
             title={department.title}
@@ -219,12 +289,14 @@ const peopleContent = (userName, department, phone, email, headDepartment, statu
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {department.title && (
-            <span className="d-lg-none" style={{ margin: '0 4px' }}>
-              {phone.title ? '|' : ''}
+            <span className="d-lg-none" style={{ margin: "0 4px" }}>
+              {phone.title ? "|" : ""}
             </span>
           )}
           <Link
-            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            style={
+              status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+            }
             type="action"
             title={phone.title}
             text={phone.title}
@@ -233,12 +305,14 @@ const peopleContent = (userName, department, phone, email, headDepartment, statu
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {phone.title && (
-            <span className="d-lg-none" style={{ margin: '0 4px' }}>
-              {email.title ? '|' : ''}
+            <span className="d-lg-none" style={{ margin: "0 4px" }}>
+              {email.title ? "|" : ""}
             </span>
           )}
           <Link
-            style={status === 'pending' ? { color: '#D0D5DA' } : { color: '#A3A9AE' }}
+            style={
+              status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+            }
             type="action"
             isHovered
             title={email.title}
@@ -253,351 +327,462 @@ const peopleContent = (userName, department, phone, email, headDepartment, statu
 
 const users = [
   {
-    id: '1',
-    userName: 'Helen Walton',
-    avatar: '',
-    role: 'owner',
-    status: 'normal',
+    id: "1",
+    userName: "Helen Walton",
+    avatar: "",
+    role: "owner",
+    status: "normal",
     isHead: false,
     departments: [
       {
-        title: 'Administration',
-        action: () => console.log('Department action'),
-      },
+        title: "Administration",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+5 104 6473420',
-        action: () => console.log('Phone action'),
-      },
+        title: "+5 104 6473420",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'percival1979@yahoo.com',
-        action: () => console.log('Email action'),
-      },
+        title: "percival1979@yahoo.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
       {
-        key: 'key1',
-        label: 'Send e-mail',
-        onClick: () => console.log('Context action: Send e-mail'),
+        key: "key1",
+        label: "Send e-mail",
+        onClick: () => console.log("Context action: Send e-mail")
       },
       {
-        key: 'key2',
-        label: 'Send message',
-        onClick: () => console.log('Context action: Send message'),
+        key: "key2",
+        label: "Send message",
+        onClick: () => console.log("Context action: Send message")
       },
-      { key: 'key3', isSeparator: true },
-      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      { key: "key3", isSeparator: true },
       {
-        key: 'key5',
-        label: 'Change password',
-        onClick: () => console.log('Context action: Change password'),
+        key: "key4",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key6',
-        label: 'Change e-mail',
-        onClick: () => console.log('Context action: Change e-mail'),
+        key: "key5",
+        label: "Change password",
+        onClick: () => console.log("Context action: Change password")
       },
-      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
-    ],
+      {
+        key: "key6",
+        label: "Change e-mail",
+        onClick: () => console.log("Context action: Change e-mail")
+      },
+      {
+        key: "key7",
+        label: "Disable",
+        onClick: () => console.log("Context action: Disable")
+      }
+    ]
   },
   {
-    id: '2',
-    userName: 'Nellie Harder',
-    avatar: '',
-    role: 'user',
-    status: 'normal',
+    id: "2",
+    userName: "Nellie Harder",
+    avatar: "",
+    role: "user",
+    status: "normal",
     isHead: true,
     departments: [
       {
-        title: 'Development',
-        action: () => console.log('Department action'),
-      },
+        title: "Development",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+1 716 3748605',
-        action: () => console.log('Phone action'),
-      },
+        title: "+1 716 3748605",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'herta.reynol@yahoo.com',
-        action: () => console.log('Email action'),
-      },
+        title: "herta.reynol@yahoo.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
       {
-        key: 'key1',
-        label: 'Send e-mail',
-        onClick: () => console.log('Context action: Send e-mail'),
+        key: "key1",
+        label: "Send e-mail",
+        onClick: () => console.log("Context action: Send e-mail")
       },
       {
-        key: 'key2',
-        label: 'Send message',
-        onClick: () => console.log('Context action: Send message'),
+        key: "key2",
+        label: "Send message",
+        onClick: () => console.log("Context action: Send message")
       },
-      { key: 'key3', isSeparator: true },
-      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      { key: "key3", isSeparator: true },
       {
-        key: 'key5',
-        label: 'Change password',
-        onClick: () => console.log('Context action: Change password'),
+        key: "key4",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key6',
-        label: 'Change e-mail',
-        onClick: () => console.log('Context action: Change e-mail'),
+        key: "key5",
+        label: "Change password",
+        onClick: () => console.log("Context action: Change password")
       },
-      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
-    ],
+      {
+        key: "key6",
+        label: "Change e-mail",
+        onClick: () => console.log("Context action: Change e-mail")
+      },
+      {
+        key: "key7",
+        label: "Disable",
+        onClick: () => console.log("Context action: Disable")
+      }
+    ]
   },
   {
-    id: '3',
-    userName: 'Alan Mason',
-    avatar: '',
-    role: 'admin',
-    status: 'normal',
+    id: "3",
+    userName: "Alan Mason",
+    avatar: "",
+    role: "admin",
+    status: "normal",
     isHead: true,
     departments: [
       {
-        title: 'Administration',
-        action: () => console.log('Department action'),
-      },
+        title: "Administration",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+3 956 2064314',
-        action: () => console.log('Phone action'),
-      },
+        title: "+3 956 2064314",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'davin_lindgr@hotmail.com',
-        action: () => console.log('Email action'),
-      },
+        title: "davin_lindgr@hotmail.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
       {
-        key: 'key1',
-        label: 'Send e-mail',
-        onClick: () => console.log('Context action: Send e-mail'),
+        key: "key1",
+        label: "Send e-mail",
+        onClick: () => console.log("Context action: Send e-mail")
       },
       {
-        key: 'key2',
-        label: 'Send message',
-        onClick: () => console.log('Context action: Send message'),
+        key: "key2",
+        label: "Send message",
+        onClick: () => console.log("Context action: Send message")
       },
-      { key: 'key3', isSeparator: true },
-      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      { key: "key3", isSeparator: true },
       {
-        key: 'key5',
-        label: 'Change password',
-        onClick: () => console.log('Context action: Change password'),
+        key: "key4",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key6',
-        label: 'Change e-mail',
-        onClick: () => console.log('Context action: Change e-mail'),
+        key: "key5",
+        label: "Change password",
+        onClick: () => console.log("Context action: Change password")
       },
-      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
-    ],
+      {
+        key: "key6",
+        label: "Change e-mail",
+        onClick: () => console.log("Context action: Change e-mail")
+      },
+      {
+        key: "key7",
+        label: "Disable",
+        onClick: () => console.log("Context action: Disable")
+      }
+    ]
   },
   {
-    id: '4',
-    userName: 'Michael Goldstein',
-    avatar: '',
-    role: 'guest',
-    status: 'normal',
+    id: "4",
+    userName: "Michael Goldstein",
+    avatar: "",
+    role: "guest",
+    status: "normal",
     isHead: false,
     departments: [
       {
-        title: 'Visitors',
-        action: () => console.log('Department action'),
-      },
+        title: "Visitors",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+7 715 6018678',
-        action: () => console.log('Phone action'),
-      },
+        title: "+7 715 6018678",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'fidel_kerlu@hotmail.com',
-        action: () => console.log('Email action'),
-      },
+        title: "fidel_kerlu@hotmail.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
       {
-        key: 'key1',
-        label: 'Send e-mail',
-        onClick: () => console.log('Context action: Send e-mail'),
+        key: "key1",
+        label: "Send e-mail",
+        onClick: () => console.log("Context action: Send e-mail")
       },
       {
-        key: 'key2',
-        label: 'Send message',
-        onClick: () => console.log('Context action: Send message'),
+        key: "key2",
+        label: "Send message",
+        onClick: () => console.log("Context action: Send message")
       },
-      { key: 'key3', isSeparator: true },
-      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
+      { key: "key3", isSeparator: true },
       {
-        key: 'key5',
-        label: 'Change password',
-        onClick: () => console.log('Context action: Change password'),
+        key: "key4",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key6',
-        label: 'Change e-mail',
-        onClick: () => console.log('Context action: Change e-mail'),
+        key: "key5",
+        label: "Change password",
+        onClick: () => console.log("Context action: Change password")
       },
-      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') },
-    ],
+      {
+        key: "key6",
+        label: "Change e-mail",
+        onClick: () => console.log("Context action: Change e-mail")
+      },
+      {
+        key: "key7",
+        label: "Disable",
+        onClick: () => console.log("Context action: Disable")
+      }
+    ]
   },
   {
-    id: '5',
-    userName: 'Robert Gardner',
-    avatar: '',
-    role: 'user',
-    status: 'pending',
+    id: "5",
+    userName: "Robert Gardner",
+    avatar: "",
+    role: "user",
+    status: "pending",
     isHead: false,
     departments: [
       {
-        title: 'Pending',
-        action: () => console.log('Department action'),
-      },
+        title: "Pending",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+0 000 0000000',
-        action: () => console.log('Phone action'),
-      },
+        title: "+0 000 0000000",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'robert_gardner@hotmail.com',
-        action: () => console.log('Email action'),
-      },
+        title: "robert_gardner@hotmail.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
-      { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
       {
-        key: 'key2',
-        label: 'Invite again',
-        onClick: () => console.log('Context action: Invite again'),
+        key: "key1",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key3',
-        label: 'Delete profile',
-        onClick: () => console.log('Context action: Delete profile'),
+        key: "key2",
+        label: "Invite again",
+        onClick: () => console.log("Context action: Invite again")
       },
-    ],
+      {
+        key: "key3",
+        label: "Delete profile",
+        onClick: () => console.log("Context action: Delete profile")
+      }
+    ]
   },
   {
-    id: '6',
-    userName: 'Timothy Morphis',
-    avatar: '',
-    role: 'user',
-    status: 'disabled',
+    id: "6",
+    userName: "Timothy Morphis",
+    avatar: "",
+    role: "user",
+    status: "disabled",
     isHead: false,
     departments: [
       {
-        title: 'Disabled',
-        action: () => console.log('Department action'),
-      },
+        title: "Disabled",
+        action: () => console.log("Department action")
+      }
     ],
     phones: [
       {
-        title: '+9 641 1689548',
-        action: () => console.log('Phone action'),
-      },
+        title: "+9 641 1689548",
+        action: () => console.log("Phone action")
+      }
     ],
     emails: [
       {
-        title: 'timothy_j_morphis@hotmail.com',
-        action: () => console.log('Email action'),
-      },
+        title: "timothy_j_morphis@hotmail.com",
+        action: () => console.log("Email action")
+      }
     ],
     contextOptions: [
-      { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
       {
-        key: 'key2',
-        label: 'Reassign data',
-        onClick: () => console.log('Context action: Reassign data'),
+        key: "key1",
+        label: "Edit",
+        onClick: () => console.log("Context action: Edit")
       },
       {
-        key: 'key3',
-        label: 'Delete personal data',
-        onClick: () => console.log('Context action: Delete personal data'),
+        key: "key2",
+        label: "Reassign data",
+        onClick: () => console.log("Context action: Reassign data")
       },
       {
-        key: 'key4',
-        label: 'Delete profile',
-        onClick: () => console.log('Context action: Delete profile'),
+        key: "key3",
+        label: "Delete personal data",
+        onClick: () => console.log("Context action: Delete personal data")
       },
-    ],
-  },
+      {
+        key: "key4",
+        label: "Delete profile",
+        onClick: () => console.log("Context action: Delete profile")
+      }
+    ]
+  }
 ];
 
-const Body = () => {
-  const [isChecked, toggleChecked] = useState(false)
-
+const Body = ({onSelect}) => {
+  const [isChecked, toggleChecked] = useState(false);
+  
   return (
     <>
-      {users.map((user, index) =>
-          <ContentRow
-            key={`cr-${index}`}
-            status={user.status}
-            checkBox={
-                  <Checkbox
-                    isChecked={isChecked}
-                    onChange={e => {
-                      console.log('Item with id: ' + e.target.value + ' Checked!');
-                      toggleChecked(e.target.checked);
-                    }}
-                    isDisabled={false}
-                    value={user.id}
-                    id={user.id}
-                  />
-            }
-            avatar={
-              <Avatar size="small" role={user.role} source={user.avatar} userName={user.userName} />
-            }
-            contextButton={
-              <ContextMenuButton direction="right" getData={() => user.contextOptions} />
-            }
-          >
-            {peopleContent(
-              user.userName,
-              user.departments[0],
-              user.phones[0],
-              user.emails[0],
-              user.isHead,
-              user.status
-            )}
-          </ContentRow>
-      )}
+      {users.map((user, index) => (
+        <ContentRow
+          key={`cr-${index}`}
+          status={user.status}
+          checkBox={
+            <Checkbox
+              isChecked={isChecked}
+              onChange={e => {
+                console.log("Item with id: " + e.target.value + " Checked!");
+                toggleChecked(e.target.checked);
+                onSelect(e.target.checked);
+              }}
+              isDisabled={false}
+              value={user.id}
+              id={user.id}
+            />
+          }
+          avatar={
+            <Avatar
+              size="small"
+              role={user.role}
+              source={user.avatar}
+              userName={user.userName}
+            />
+          }
+          contextButton={
+            <ContextMenuButton
+              direction="right"
+              getData={() => user.contextOptions}
+            />
+          }
+        >
+          {peopleContent(
+            user.userName,
+            user.departments[0],
+            user.phones[0],
+            user.emails[0],
+            user.isHead,
+            user.status
+          )}
+        </ContentRow>
+      ))}
     </>
-);
+  );
 };
 
-const articleHeaderContent = 'People';
+const peopleItems = [
+  {
+    label: "Select",
+    isDropdown: true,
+    isSeparator: true,
+    fontWeight: "bold",
+    children: [
+      <DropDownItem key="active" label="Active" />,
+      <DropDownItem key="disabled" label="Disabled" />,
+      <DropDownItem key="invited" label="Invited" />
+    ]
+  },
+  {
+    label: "Make employee",
+    onClick: () => console.log("Make employee action")
+  },
+  {
+    label: "Make guest",
+    onClick: () => console.log("Make guest action")
+  },
+  {
+    label: "Set active",
+    onClick: () => console.log("Set active action")
+  },
+  {
+    label: "Set disabled",
+    onClick: () => console.log("Set disabled action")
+  },
+  {
+    label: "Invite again",
+    onClick: () => console.log("Invite again action")
+  },
+  {
+    label: "Send e-mail",
+    onClick: () => console.log("Send e-mail action")
+  },
+  {
+    label: "Delete",
+    onClick: () => console.log("Delete action")
+  }
+];
+
+const articleHeaderContent = "People";
 const articleBodyContent = <PeopleTreeMenu data={treeData} />;
-const sectionHeaderContent = 'People';
+const SectionHeaderContent = ({isChecked, toggleChecked}) => (
+  isChecked ? 
+      <GroupButtonsMenu
+        checkBox={
+          <Checkbox
+            isChecked={isChecked}
+            onChange={e => {
+              console.log(e.target.value);
+              toggleChecked(e.target.checked);
+            }}
+            isDisabled={false}
+            value="Checkbox"
+            id="check1"
+          />
+        }
+        menuItems={peopleItems}
+        visible={isChecked}
+        moreLabel="More"
+        closeTitle="Close"
+      />
+      : "People" );
 
 const Home = () => {
-
+  const [isChecked, toggleChecked] = useState(true);
+  
   return (
     <PageLayout
       articleHeaderContent={articleHeaderContent}
       articleBodyContent={articleBodyContent}
-      sectionHeaderContent={sectionHeaderContent}
-      sectionBodyContent={<Body />}
+      sectionHeaderContent={<SectionHeaderContent isChecked={isChecked} toggleChecked={toggleChecked} />}
+      sectionBodyContent={<Body onSelect={() => toggleChecked(!isChecked)} />}
     />
   );
-
 };
 
 export default Home;
