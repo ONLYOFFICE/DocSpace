@@ -10,7 +10,7 @@ const StyledArticle = styled.article`
   background: #F8F9F9;
   display: flex;
   flex-direction: column;
-  width: 240px;
+  width: 264px;
   transition: width .3s ease-in-out;
 
   @media ${device.tablet} {
@@ -21,6 +21,7 @@ const StyledArticle = styled.article`
             width: 240px;
           `
           : `
+            width: 240px;
             position: fixed;
             height: 100%;
             top: 0;
@@ -32,7 +33,7 @@ const StyledArticle = styled.article`
         width: 0px;
       `
     }
-    }
+  }
 `;
 
 const StyledArticleHeader = styled.div`
