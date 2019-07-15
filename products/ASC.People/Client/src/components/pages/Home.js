@@ -773,14 +773,18 @@ const SectionHeaderContent = ({isChecked, toggleChecked}) => (
       : "People" );
 
 const Home = () => {
-  const [isChecked, toggleChecked] = useState(true);
+  const [isChecked, toggleChecked] = useState(false);
   
   return (
     <PageLayout
       articleHeaderContent={articleHeaderContent}
       articleBodyContent={articleBodyContent}
       sectionHeaderContent={<SectionHeaderContent isChecked={isChecked} toggleChecked={toggleChecked} />}
-      sectionBodyContent={<Body onSelect={() => toggleChecked(!isChecked)} />}
+      sectionBodyContent={<Body onSelect={(checked) => { 
+        console.log("Body onSelect", checked);
+        toggleChecked(checked);
+      }
+      } />}
     />
   );
 };
