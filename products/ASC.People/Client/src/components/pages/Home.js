@@ -752,6 +752,7 @@ const articleHeaderContent = "People";
 const articleBodyContent = <PeopleTreeMenu data={treeData} />;
 const SectionHeaderContent = ({isChecked, toggleChecked}) => (
   isChecked ? 
+    <div style={{margin: "0 -16px"}}>
       <GroupButtonsMenu
         checkBox={
           <Checkbox
@@ -770,6 +771,7 @@ const SectionHeaderContent = ({isChecked, toggleChecked}) => (
         moreLabel="More"
         closeTitle="Close"
       />
+      </div>
       : "People" );
 
 const Home = () => {
