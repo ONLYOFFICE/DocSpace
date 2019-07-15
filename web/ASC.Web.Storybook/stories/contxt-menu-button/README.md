@@ -17,9 +17,9 @@ import { ContextMenuButton } from 'asc-web-components';
 
 #### Properties
 
-| Props      | Type        | Required | Values                            | Default            | Description              |
-| ---------- | ----------- | :------: | --------------------------------- | ------------------ | ------------------------ |
-| `title`    | `string`    |          |                                   | -                  | Specifies the icon title |
-| `iconName` | `string`    |          |                                   | `VerticalDotsIcon` | Specifies the icon name  |
-| `size`     | `string`    |          | `small`, `medium`, `big` ,`scale` | `medium`           | Specifies the icon size  |
-| `color`    | `string`    |          |                                   | -                  | Specifies the icon color |
+| Props      | Type        | Required | Values | Default            | Description              |
+| ---------- | ----------- | :------: | ------ | ------------------ | ------------------------ |
+| `title`    | `string`    |          |        | -                  | Specifies the icon title |
+| `iconName` | `string`    |          |        | `VerticalDotsIcon` | Specifies the icon name  |
+| `size`     | `number`    |          |        | 16                 | Specifies the icon size  |
+| `color`    | `string`    |          |        | -                  | Specifies the icon color |

@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
-import { Icons } from '../icons'
 import IconButton from '../icon-button'
 
 const StyledOuther = styled.div`
@@ -17,7 +16,6 @@ class ContextMenuButton extends React.Component {
     super(props);
 
     this.ref = React.createRef();
-    this.iconNames = Object.keys(Icons);
 
     this.state = {
       isOpen: props.opened,
@@ -73,7 +71,7 @@ class ContextMenuButton extends React.Component {
                 onClick={() => { 
                   item.onClick && item.onClick();
                   this.toggle(!this.state.isOpen);
-                }} 
+                }}
               />
             )
           }
@@ -89,7 +87,7 @@ ContextMenuButton.propTypes = {
   getData: PropTypes.func.isRequired,
   title: PropTypes.string,
   iconName: PropTypes.string,
-  size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
+  size: PropTypes.number,
   color: PropTypes.string,
   isDisabled: PropTypes.bool
 };
@@ -99,7 +97,7 @@ ContextMenuButton.defaultProps = {
   data: [],
   title: '',
   iconName: 'VerticalDotsIcon',
-  size: 'medium',
+  size: 16,
   isDisabled: false
 };
 
