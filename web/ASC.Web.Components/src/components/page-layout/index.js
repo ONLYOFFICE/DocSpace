@@ -12,6 +12,7 @@ const StyledArticle = styled.article`
   flex-direction: column;
   width: 264px;
   transition: width .3s ease-in-out;
+  overflow: hidden auto;
 
   @media ${device.tablet} {
     ${props => props.visible
@@ -85,6 +86,7 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden auto;
 `;
 
 const StyledSectionHeader = styled.div`
