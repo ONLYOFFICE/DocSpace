@@ -11,6 +11,7 @@ const StyledArticle = styled.article`
   display: flex;
   flex-direction: column;
   width: 264px;
+  min-width: 264px;
   transition: width .3s ease-in-out;
   overflow: hidden auto;
 
@@ -20,9 +21,11 @@ const StyledArticle = styled.article`
           ? `
             display: flex;
             width: 240px;
+            min-width: 240px;
           `
           : `
             width: 240px;
+            min-width: 240px;
             position: fixed;
             height: 100%;
             top: 0;
