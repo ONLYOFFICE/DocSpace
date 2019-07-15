@@ -10,7 +10,7 @@ const StyledArticle = styled.article`
   background: #F8F9F9;
   display: flex;
   flex-direction: column;
-  width: 240px;
+  width: 264px;
   transition: width .3s ease-in-out;
 
   @media ${device.tablet} {
@@ -21,6 +21,7 @@ const StyledArticle = styled.article`
             width: 240px;
           `
           : `
+            width: 240px;
             position: fixed;
             height: 100%;
             top: 0;
@@ -32,7 +33,7 @@ const StyledArticle = styled.article`
         width: 0px;
       `
     }
-    }
+  }
 `;
 
 const StyledArticleHeader = styled.div`
@@ -119,10 +120,25 @@ const StyledSectionPagingPanel = styled.div`
 `;
 
 class PageLayout extends React.Component {
-
   constructor(props) {
     super(props);
+    this.state = this.mapPropsToState(props);
+  };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.hasChanges(this.props,prevProps)) {
+      this.setState(this.mapPropsToState(this.props));
+    }
+  }
+
+  hasChanges = (currentProps, prevProps) => {
+    currentProps.articleHeaderContent != prevProps.articleHeaderContent ||
+    currentProps.articleBodyContent != prevProps.articleBodyContent ||
+    currentProps.sectionHeaderContent != prevProps.sectionHeaderContent ||
+    currentProps.sectionBodyContent != prevProps.sectionBodyContent;
+  }
+
+  mapPropsToState = (props) => {
     let isArticleHeaderAvailable = !!props.articleHeaderContent ,
         isArticleBodyAvailable = !!props.articleBodyContent,
         isArticleAvailable = isArticleHeaderAvailable || isArticleBodyAvailable,
@@ -131,7 +147,7 @@ class PageLayout extends React.Component {
         isSectionAvailable = isSectionHeaderAvailable || isSectionBodyAvailable || isArticleAvailable,
         isBackdropAvailable = isArticleAvailable;
 
-    this.state = {
+    let newState = {
       isBackdropAvailable: isBackdropAvailable,
       isArticleAvailable: isArticleAvailable,
       isArticleHeaderAvailable: isArticleHeaderAvailable,
@@ -149,6 +165,8 @@ class PageLayout extends React.Component {
       sectionHeaderContent: props.sectionHeaderContent,
       sectionBodyContent: props.sectionBodyContent
     };
+
+    return newState;
   }
 
   backdropClick = () => {

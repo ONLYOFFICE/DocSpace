@@ -1,13 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, select, color, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, text, select, number, color, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../.storybook/decorators/section';
 import { ContextMenuButton, Icons } from 'asc-web-components';
 
 const iconNames = Object.keys(Icons);
-const sizeOptions = ['small', 'medium', 'big', 'scale'];
 
 function getData() {
   console.log('getData');
@@ -25,7 +24,7 @@ storiesOf('Components|ContextMenuButton', module)
       <ContextMenuButton 
         title={text('title', 'Actions')}
         iconName={select('iconName', iconNames, 'VerticalDotsIcon')}
-        size={select('size', sizeOptions, 'medium')}
+        size={number('size', 16)}
         color={color('loaderColor', '#A3A9AE')}
         getData={getData}
         isDisabled={boolean("isDisabled", false)} />
