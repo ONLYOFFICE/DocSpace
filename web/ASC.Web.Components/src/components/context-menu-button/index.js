@@ -87,7 +87,7 @@ ContextMenuButton.propTypes = {
   getData: PropTypes.func.isRequired,
   title: PropTypes.string,
   iconName: PropTypes.string,
-  size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
+  size: PropTypes.number,
   color: PropTypes.string,
   isDisabled: PropTypes.bool
 };
@@ -97,7 +97,7 @@ ContextMenuButton.defaultProps = {
   data: [],
   title: '',
   iconName: 'VerticalDotsIcon',
-  size: 'medium',
+  size: 16,
   isDisabled: false
 };
 
