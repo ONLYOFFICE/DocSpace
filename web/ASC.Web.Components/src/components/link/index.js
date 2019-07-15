@@ -1,10 +1,12 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Icons } from '../icons'
 import DropDown from '../drop-down'
 
-const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, text, target, dropdownType,  ...props }) => <a {...props}>{text}</a>;
+const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow,
+    isHovered, isSemitransparent, type, color, text, target,
+    dropdownType, ...props }) => <a {...props}>{text}</a>;
 
 const getDropdownColor = color => {
     switch (color) {
@@ -17,9 +19,9 @@ const getDropdownColor = color => {
     }
 }
 
-const opacityCss = css `
+const opacityCss = css`
     opacity: ${props =>
-        (props.isSemitransparent  && '0.5')};
+        (props.isSemitransparent && '0.5')};
 `;
 
 const colorCss = css`
@@ -28,7 +30,7 @@ const colorCss = css`
 
 const hoveredCss = css`
     ${colorCss};
-    border-bottom: ${props => (props.type === 'action' ?  '1px dotted;' : 'none')};
+    border-bottom: ${props => (props.type === 'action' ? '1px dotted;' : 'none')};
     text-decoration: ${props => (props.type === 'page' ? 'underline' : 'none')};
 `;
 
@@ -85,75 +87,94 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
             }
         }      
         
-${props => (props.isHovered && hoveredCss)
-}
+${props => (props.isHovered && hoveredCss)}
 
-${props => (props.type === 'action' && (props.isHovered || props.dropdownType === 'alwaysDotted') && dottedCss)
-}
+${props => (props.type === 'action' &&
+        (props.isHovered || props.dropdownType === 'alwaysDotted') &&
+        dottedCss)}
 
-${props => (props.isTextOverflow && 
-    css`
+${props => (props.isTextOverflow && css`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
         -moz-text-overflow: ellipsis;
         -webkit-text-overflow: ellipsis;
-    `)
-}
+    `)}
 
 `;
 
-const useOuterClickNotifier = (onOuterClick, ref) => {
-    
-    useEffect(() => { 
-        const handleClick = (e) => !ref.current.contains(e.target) && onOuterClick(e);
+class Link extends React.Component {
 
-        if (ref.current) {
-            document.addEventListener("click", handleClick);
-        }
+    constructor(props) {
+        super(props);
 
-        return () => document.removeEventListener("click", handleClick);
-    },
-    [onOuterClick, ref]
-    );
-}
+        this.ref = React.createRef();
 
+        this.state = {
+            isOpen: false,
+            isHovered: props.isHovered,
+            isDropdown: props.dropdownType != 'none'
+        };
+    }
 
-const Link = props => {
-    let isDropdown;
-    const [isHovered, toggle] = useState(false);
-    const [isOpen, toggleDropdown] = useState(0);
-    const dropMenu = <DropDown isOpen={isOpen} {...props}>
-                    {props.children}
-                     </DropDown>;
+    handleClick = (e) => !this.ref.current.contains(e.target) && this.toggleDropdown(false);
+    stopAction = (e) => !this.props.href && e.preventDefault();
+    toggleDropdown = (isOpen) => this.setState({ isOpen: isOpen });
+    toggleHovered = (isHovered) => this.setState({ isHovered: isHovered });
 
-    const ref = useRef(null);
-    props.dropdownType != 'none' ? isDropdown = true : isDropdown = false;
-    
-    function stopAction(e) {
-        if (props.href === ''){
-            e.preventDefault();
+    componentDidMount() {
+        if (this.ref.current) {
+            document.addEventListener("click", this.handleClick);
         }
     }
 
-    useOuterClickNotifier((e) => toggleDropdown(false), ref);
-    
-    return (
+    componentWillUnmount() {
+        document.removeEventListener("click", this.handleClick)
+    }
 
-        <span ref={ref}
-        onMouseEnter={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}
-        onMouseLeave={() => {props.dropdownType === 'appearDottedAfterHover' && toggle(!isHovered)}}>
-           
-        <StyledLink {...props}  onClick={ 
-                 isDropdown ?
-                     () => { toggleDropdown(!isOpen) }
-                : stopAction}/> 
-        {isDropdown && (isHovered || props.dropdownType === 'alwaysDotted') &&  <Caret isSemitransparent={props.isSemitransparent} size='small' isfill={true} color={getDropdownColor(props.color)} /> }
-        {isDropdown &&  dropMenu }
-        </span>
-        
-    );
+
+    componentDidUpdate(prevProps) {
+        // Store prevId in state so we can compare when props change.
+        // Clear out previously-loaded data (so we don't render stale stuff).
+        if (this.props.dropdownType !== prevProps.dropdownType) {
+            this.setState({isDropdown: this.props.dropdownType != 'none'});
+        }
+    }
+
+    render() {
+        return (
+            <span ref={this.ref}
+                onMouseEnter={() => {
+                    this.props.dropdownType === 'appearDottedAfterHover' &&
+                        this.toggleHovered(!this.state.isHovered)
+                }}
+                onMouseLeave={() => {
+                    this.props.dropdownType === 'appearDottedAfterHover' &&
+                        this.toggleHovered(!this.state.isHovered)
+                }}>
+
+                <StyledLink {...this.props} onClick={
+                    this.state.isDropdown ?
+                        () => { this.toggleDropdown(!this.state.isOpen) }
+                        : this.stopAction}
+                />
+                {this.state.isDropdown &&
+                    (this.state.isHovered || this.props.dropdownType === 'alwaysDotted') &&
+                    <Caret
+                        isSemitransparent={this.props.isSemitransparent}
+                        size='small'
+                        isfill={true}
+                        color={getDropdownColor(this.props.color)} />
+                }
+                {this.state.isDropdown &&
+                    <DropDown isOpen={this.state.isOpen} {...this.props}>
+                        {this.props.children}
+                    </DropDown>}
+            </span>
+
+        );
+    };
 }
 
 Link.propTypes = {
@@ -169,7 +190,7 @@ Link.propTypes = {
     target: PropTypes.oneOf(['_blank', '_self', '_parent', '_top']),
     text: PropTypes.string,
     title: PropTypes.string,
-    type: PropTypes.oneOf(['action', 'page'])  
+    type: PropTypes.oneOf(['action', 'page'])
 };
 
 Link.defaultProps = {

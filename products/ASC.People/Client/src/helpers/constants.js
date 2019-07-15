@@ -1,0 +1,1 @@
+export const AUTH_KEY = 'asc_auth_key';

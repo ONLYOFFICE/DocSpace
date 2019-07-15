@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
@@ -15,8 +15,8 @@ const Form = props => {
     const [isLoading, setIsLoading] = useState(false);
     const { login, match, location, history } = props;
 
-    const onSubmit = (e) => {
-        e.preventDefault();
+    const onSubmit = useCallback((e) => {
+        //e.preventDefault();
 
         errorText && setErrorText("");
 
@@ -53,7 +53,23 @@ const Form = props => {
                 setErrorText(e.message);
                 setIsLoading(false)
             });
-    };
+    }, [errorText, history, identifier, location, login, match, password]);
+
+    const onKeyPress = useCallback((target) => {
+        if (target.code === "Enter") {
+            onSubmit();
+        }
+    }, [onSubmit]);
+
+    useEffect(() => {
+        window.addEventListener('keydown', onKeyPress);
+        window.addEventListener('keyup', onKeyPress);
+      // Remove event listeners on cleanup
+      return () => {
+        window.removeEventListener('keydown', onKeyPress);
+        window.removeEventListener('keyup', onKeyPress);
+      };
+    }, [onKeyPress]);
 
     return (
         <Container style={{ marginTop: "70px" }}>
@@ -83,7 +99,8 @@ const Form = props => {
                             setIdentifier(event.target.value);
                             !identifierValid && setIdentifierValid(true);
                             errorText && setErrorText("");
-                        }} />
+                        }}
+                        onKeyDown={event => onKeyPress(event.target)} />
                 </Col>
             </Row>
             <Row style={{ margin: "23px 0 0" }}>
@@ -104,7 +121,9 @@ const Form = props => {
                             setPassword(event.target.value);
                             !passwordValid && setPasswordValid(true);
                             errorText && setErrorText("");
-                        }} />
+                            onKeyPress(event.target);
+                        }}
+                        onKeyDown={event => onKeyPress(event.target)} />
                 </Col>
             </Row>
             <Row style={{ margin: "23px 0 0" }}>

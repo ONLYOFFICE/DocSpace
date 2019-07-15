@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, select, color } from '@storybook/addon-knobs/react';
+import { withKnobs, text, select, color, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../.storybook/decorators/section';
@@ -20,13 +20,14 @@ function getData() {
 storiesOf('Components|ContextMenuButton', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('context-menu-button', () => (
+  .add('base', () => (
     <Section>
       <ContextMenuButton 
         title={text('title', 'Actions')}
         iconName={select('iconName', iconNames, 'VerticalDotsIcon')}
         size={select('size', sizeOptions, 'medium')}
         color={color('loaderColor', '#A3A9AE')}
-        getData={getData} />
+        getData={getData}
+        isDisabled={boolean("isDisabled", false)} />
     </Section>
   ));
