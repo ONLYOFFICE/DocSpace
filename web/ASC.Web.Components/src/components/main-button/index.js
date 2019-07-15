@@ -149,7 +149,10 @@ class MainButton extends React.Component {
                     {this.props.text}
                 </StyledMainButton>
                 {this.props.isDropdown
-                    ? <StyledDropDown isOpen={this.state.isOpen} {...this.props} />
+                    ? <StyledDropDown isOpen={this.state.isOpen} {...this.props} onClick={() => {
+                        this.props.onClick && this.props.onClick();
+                        this.toggle(!this.state.isOpen);
+                    }} />
                     : <StyledSecondaryButton {...this.props} onClick={!this.props.isDisabled ? this.props.clickActionSecondary : this.stopAction}>
                         {
                             this.iconNames.includes(this.props.iconName)
