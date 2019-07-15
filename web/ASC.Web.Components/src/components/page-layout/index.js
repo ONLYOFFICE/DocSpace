@@ -132,7 +132,7 @@ class PageLayout extends React.Component {
   }
 
   hasChanges = (currentProps, prevProps) => {
-    currentProps.articleHeaderContent != prevProps.articleHeaderContent ||
+    return currentProps.articleHeaderContent != prevProps.articleHeaderContent ||
     currentProps.articleBodyContent != prevProps.articleBodyContent ||
     currentProps.sectionHeaderContent != prevProps.sectionHeaderContent ||
     currentProps.sectionBodyContent != prevProps.sectionBodyContent;
