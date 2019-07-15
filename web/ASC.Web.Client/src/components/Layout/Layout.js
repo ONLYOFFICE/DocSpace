@@ -16,6 +16,7 @@ const StudioLayout = props => {
         {
             key: 'AboutBtn', label: 'About', onClick: () => {
                 console.log('AboutBtn');
+                history.push('/about');
             }
         },
         {
@@ -63,7 +64,7 @@ function convertModules(modules) {
             iconName: 'PeopleIcon',
             notifications: 0,
             url: item.link,
-            onClick: () => window.open(item.link, '_blank'),
+            onClick: () => window.open(item.link, '_self'),
             onBadgeClick: e => console.log('DocumentsIconBadge Clicked')(e)
         };
     }) || [];
