@@ -6,10 +6,10 @@ do
   for j in $@
   do
    if [[ $i == $j* ]]; then
-    exit 0
+    exit 1
    fi
   done
 done
 
-exit 1
+exit 0
 
