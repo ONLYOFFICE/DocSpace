@@ -12,25 +12,36 @@ import NavItem from './sub-components/nav-item'
 class Layout extends React.Component {
   constructor(props) {
     super(props);
-    //console.log("constructor: props", props);
     this.state = this.mapPropsToState(props);
   };
 
   componentDidUpdate(prevProps, prevState) {
-    // Store prevId in state so we can compare when props change.
-    // Clear out previously-loaded data (so we don't render stale stuff).
-    if (this.props.availableModules !== prevProps.availableModules) {
-      //console.log("componentDidUpdate: currentUser NOT equals", this.props.availableModules, prevState.availableModules);
+    let currentHash = this.getPropsHash(this.props);
+    let prevHash = this.getPropsHash(prevProps);
+    if (currentHash !== prevHash) {
       this.setState(this.mapPropsToState(this.props));
     }
-    /*else {
-      console.log("componentDidUpdate: currentUser  EQUALS", this.props.availableModules, prevState.availableModules);
-    }*/
+  }
+
+  getPropsHash = (props) => {
+    let hash = "";
+    if (props.currentModuleId) {
+      hash+=props.currentModuleId;
+    }
+    if (props.currentUser) {
+      hash+=props.currentUser.id;
+    }
+    if (props.availableModules) {
+      for (let i=0, l=props.availableModules.length; i<l; i++)
+      {
+        let item = props.availableModules[i];
+        hash+=item.id + item.notifications;
+      }
+    }
+    return hash;
   }
 
   mapPropsToState = (props) => {
-    console.log("mapPropsToState", props);
-
     let currentModule = null,
         isolateModules = [],
         mainModules = [],
@@ -53,18 +64,12 @@ class Layout extends React.Component {
       }
     }
 
-    let isBackdropAvailable = mainModules.length > 0 || !!props.asideContent,
-        isHeaderNavAvailable = isolateModules.length > 0 || !!props.currentUser,
-        isHeaderAvailable = mainModules.length > 0,
-        isNavAvailable = mainModules.length > 0,
-        isAsideAvailable = !!props.asideContent;
-
     let newState = {
-      isBackdropAvailable: isBackdropAvailable,
-      isHeaderNavAvailable: isHeaderNavAvailable,
-      isHeaderAvailable: isHeaderAvailable,
-      isNavAvailable: isNavAvailable,
-      isAsideAvailable: isAsideAvailable,
+      isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
+      isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
+      isHeaderAvailable: mainModules.length > 0,
+      isNavAvailable: mainModules.length > 0,
+      isAsideAvailable: !!props.asideContent,
 
       isBackdropVisible: props.isBackdropVisible,
       isNavHoverEnabled: props.isNavHoverEnabled,
