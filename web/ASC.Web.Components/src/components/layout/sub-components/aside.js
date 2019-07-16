@@ -19,11 +19,16 @@ const StyledAside = styled.aside`
 const renderAsideThumbVertical = ({ style, ...props }) => 
   <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit'}}/>
 
-const Aside = props => <StyledAside visible={props.visible}>
-  <Scrollbars
-    renderThumbVertical={renderAsideThumbVertical}
-    {...props}
-  />
-</StyledAside>
+const Aside = (props) => { 
+  const { visible, children } = props;
+
+  return (
+    <StyledAside visible={visible}>
+      <Scrollbars renderThumbVertical={renderAsideThumbVertical}>
+        {children}
+      </Scrollbars>
+    </StyledAside>
+  );
+}
 
 export default Aside;
