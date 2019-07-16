@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { withRouter } from "react-router";
 import _ from 'lodash';
 import {
   PageLayout,
@@ -791,4 +794,17 @@ const Home = () => {
   );
 };
 
-export default Home;
+Home.propTypes = {
+  modules: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
+  isLoaded: PropTypes.bool
+};
+
+function mapStateToProps(state) {
+  return {
+      modules: state.auth.modules,
+      isLoaded: state.auth.isLoaded
+  };
+}
+
+export default connect(mapStateToProps)(withRouter(Home));

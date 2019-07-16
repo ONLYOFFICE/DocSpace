@@ -30,7 +30,7 @@ const StyledIconBlock = styled.div`
 const StyledChildrenBlock = styled.div`
   display: flex;
   align-items: center;
-  padding-left: 2px;
+  padding: 2px 0px 2px 2px;
 `;
 
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
