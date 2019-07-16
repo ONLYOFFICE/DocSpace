@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import device from '../device'
 import Backdrop from '../backdrop'
 import { Icons } from '../icons'
-import { Scrollbars } from 'react-custom-scrollbars';
+import Scrollbar from '../scrollbar';
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -125,18 +125,6 @@ const StyledSectionPagingPanel = styled.div`
   }
 `;
 
-const renderArticleThumbVertical = ({ style, ...props }) => 
-  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit'}}/>
-
-const renderArticleThumbHorizontal = ({ style, ...props }) => 
-  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '2px', marginTop: '2px', borderRadius: 'inherit'}}/>
-
-const renderSectionThumbVertical = ({ style, ...props }) => 
-  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '6px', borderRadius: 'inherit'}}/>
-
-const renderSectionThumbHorizontal = ({ style, ...props }) => 
-  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '6px', borderRadius: 'inherit'}}/>
-
 class PageLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -236,9 +224,9 @@ class PageLayout extends React.Component {
             {
               this.state.isArticleBodyAvailable &&
               <StyledArticleBody>
-                <Scrollbars renderThumbVertical={renderArticleThumbVertical} renderThumbHorizontal={renderArticleThumbHorizontal}>
+                <Scrollbar>
                   {this.state.articleBodyContent}
-                </Scrollbars>
+                </Scrollbar>
               </StyledArticleBody>
             }
             {
@@ -269,9 +257,9 @@ class PageLayout extends React.Component {
             {
               this.state.isSectionBodyAvailable &&
               <StyledSectionBody>
-                <Scrollbars renderThumbVertical={renderSectionThumbVertical} renderThumbHorizontal={renderSectionThumbHorizontal}>
+                <Scrollbar stype="mediumBlack">
                   {this.state.sectionBodyContent}
-                </Scrollbars>
+                </Scrollbar>
               </StyledSectionBody>
             }
             {
