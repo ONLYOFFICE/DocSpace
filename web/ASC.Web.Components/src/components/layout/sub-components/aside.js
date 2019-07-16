@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const StyledAside = styled.aside`
   background-color: #fff;
@@ -15,6 +16,14 @@ const StyledAside = styled.aside`
   z-index: 400;
 `;
 
-const Aside = props => <StyledAside {...props}/>
+const renderAsideThumbVertical = ({ style, ...props }) => 
+  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit'}}/>
+
+const Aside = props => <StyledAside visible={props.visible}>
+  <Scrollbars
+    renderThumbVertical={renderAsideThumbVertical}
+    {...props}
+  />
+</StyledAside>
 
 export default Aside;
