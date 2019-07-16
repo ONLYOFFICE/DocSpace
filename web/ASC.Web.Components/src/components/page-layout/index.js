@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import device from '../device'
 import Backdrop from '../backdrop'
 import { Icons } from '../icons'
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -222,7 +223,11 @@ class PageLayout extends React.Component {
             }
             {
               this.state.isArticleBodyAvailable &&
-              <StyledArticleBody>{this.state.articleBodyContent}</StyledArticleBody>
+              <StyledArticleBody>
+                <Scrollbars>
+                  {this.state.articleBodyContent}
+                </Scrollbars>
+              </StyledArticleBody>
             }
             {
               this.state.isArticleBodyAvailable &&
@@ -251,7 +256,11 @@ class PageLayout extends React.Component {
             }
             {
               this.state.isSectionBodyAvailable &&
-              <StyledSectionBody>{this.state.sectionBodyContent}</StyledSectionBody>
+              <StyledSectionBody>
+                <Scrollbars>
+                  {this.state.sectionBodyContent}
+                </Scrollbars>
+              </StyledSectionBody>
             }
             {
               this.state.isArticleAvailable &&

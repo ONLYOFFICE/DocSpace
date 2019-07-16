@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import device from '../../device'
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const backgroundColor = '#0F4071';
 
@@ -21,6 +22,8 @@ const StyledNav = styled.nav`
   }
 `;
 
-const Nav = props => <StyledNav {...props}/>
+const Nav = props => <StyledNav opened={props.opened}>
+  <Scrollbars style={{ width: props.opened ? 240 : 56 }} {...props}/>
+</StyledNav>
 
 export default Nav;
