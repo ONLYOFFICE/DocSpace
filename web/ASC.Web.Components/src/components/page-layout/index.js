@@ -128,8 +128,14 @@ const StyledSectionPagingPanel = styled.div`
 const renderArticleThumbVertical = ({ style, ...props }) => 
   <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '2px', marginLeft: '2px', borderRadius: 'inherit'}}/>
 
+const renderArticleThumbHorizontal = ({ style, ...props }) => 
+  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '2px', marginTop: '2px', borderRadius: 'inherit'}}/>
+
 const renderSectionThumbVertical = ({ style, ...props }) => 
   <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '6px', borderRadius: 'inherit'}}/>
+
+const renderSectionThumbHorizontal = ({ style, ...props }) => 
+  <div {...props} style={{ ...style, backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '6px', borderRadius: 'inherit'}}/>
 
 class PageLayout extends React.Component {
   constructor(props) {
@@ -230,7 +236,7 @@ class PageLayout extends React.Component {
             {
               this.state.isArticleBodyAvailable &&
               <StyledArticleBody>
-                <Scrollbars renderThumbVertical={renderArticleThumbVertical}>
+                <Scrollbars renderThumbVertical={renderArticleThumbVertical} renderThumbHorizontal={renderArticleThumbHorizontal}>
                   {this.state.articleBodyContent}
                 </Scrollbars>
               </StyledArticleBody>
@@ -263,7 +269,7 @@ class PageLayout extends React.Component {
             {
               this.state.isSectionBodyAvailable &&
               <StyledSectionBody>
-                <Scrollbars renderThumbVertical={renderSectionThumbVertical}>
+                <Scrollbars renderThumbVertical={renderSectionThumbVertical} renderThumbHorizontal={renderSectionThumbHorizontal}>
                   {this.state.sectionBodyContent}
                 </Scrollbars>
               </StyledSectionBody>
