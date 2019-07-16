@@ -22,8 +22,15 @@ const StyledNav = styled.nav`
   }
 `;
 
+const renderNavThumbVertical = ({ style, ...props }) => 
+  <div {...props} style={{ ...style, backgroundColor: 'rgba(256, 256, 256, 0.2)', width: '2px', marginLeft: '2px', borderRadius: 'inherit'}}/>
+
 const Nav = props => <StyledNav opened={props.opened}>
-  <Scrollbars style={{ width: props.opened ? 240 : 56 }} {...props}/>
+  <Scrollbars
+    renderThumbVertical={renderNavThumbVertical}
+    style={{ width: props.opened ? 240 : 56 }}
+    {...props}
+  />
 </StyledNav>
 
 export default Nav;
