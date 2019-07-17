@@ -71,6 +71,12 @@ const StyledOptionButton = styled.div`
 `;
 
 class ContentRow extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            checked: this.props.checked
+        }
+    }
 
     componentDidMount() {
         document.addEventListener('contextmenu', this.handleContextMenu);
@@ -84,14 +90,35 @@ class ContentRow extends React.Component {
 
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.checked !== prevProps.checked) {
+            console.log(`ContentRow componentDidUpdate 
+            this.props.checked=${this.props.checked}
+            prevProps.checked=${prevProps.checked}
+            this.state.checked=${this.state.checked}
+            prevState.checked=${prevState.checked}`);
+
+            this.setState({checked: this.props.checked});
+        }
+    };
+
     render () {
-        const { checked, onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
+        const { onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
+        
 
         return (
             <StyledContentRow {...this.props}>
-                {checked !== undefined && 
+                {this.state.hasOwnProperty("checked") && 
                     <StyledCheckbox>
-                        <Checkbox id={avatarName} value={avatarName} isChecked={checked} onChange={onSelect} />
+                        <Checkbox isChecked={this.state.checked} onChange={(e) => { 
+                            let checked = e.target.checked;
+                            console.log("ContentRow Checkbox onChange checked=", checked);
+                            this.setState({checked: checked});
+                            
+                            if(onSelect) { 
+                                onSelect(checked, data); 
+                            }
+                        }} />
                     </StyledCheckbox>
                 }
                 {(avatarRole !== '' || avatarSource !== '' || avatarName !== '')  && 
