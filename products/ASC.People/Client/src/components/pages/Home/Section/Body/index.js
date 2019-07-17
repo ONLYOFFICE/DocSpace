@@ -2,15 +2,14 @@ import React from 'react';
 import { Container, Row, Col } from "reactstrap";
 import {ContentRow, Link} from 'asc-web-components';
 
-const peopleContent = (
+const UserContent = ({
     userName,
     department,
     phone,
     email,
     headDepartment,
     status
-  ) => {
-    return (
+}) => (
       <Container fluid={true}>
         <Row className="justify-content-start no-gutters">
           <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
@@ -95,7 +94,6 @@ const peopleContent = (
         </Row>
       </Container>
     );
-  };
 
 const SectionBodyContent = ({ users, onSelect/*, isHeaderChecked*/ }) => {
     //const [isChecked, toggleChecked] = useState(false);
@@ -118,14 +116,14 @@ const SectionBodyContent = ({ users, onSelect/*, isHeaderChecked*/ }) => {
             avatarName={user.userName}
             contextOptions={user.contextOptions}
           >
-            {peopleContent(
-              user.userName,
-              user.departments[0],
-              user.phones[0],
-              user.emails[0],
-              user.isHead,
-              user.status
-            )}
+            <UserContent 
+              userName={user.userName}
+              department={user.departments[0]}
+              phone={user.phones[0]}
+              email={user.emails[0]}
+              headDepartment={user.isHead}
+              status={user.status}
+               />
           </ContentRow>
         ))}
       </>
