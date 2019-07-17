@@ -1,12 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import Cookies from 'universal-cookie';
+import setAuthorizationToken from './utils/setAuthorizationToken';
+import { AUTH_KEY } from './helpers/constants';
 import store from './store/store';
 import './custom.scss';
 import App from './App';
 import './i18n'
 
 import * as serviceWorker from './serviceWorker';
+import { getUserInfo } from './actions/authActions';
+
+var token = (new Cookies()).get(AUTH_KEY);
+
+if (token) {
+    setAuthorizationToken(token);
+    store.dispatch(getUserInfo);
+}
+else
+    throw new Error("Unauthorized");
 
 ReactDOM.render(
     <Provider store={store}>

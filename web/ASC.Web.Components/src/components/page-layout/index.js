@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import device from '../device'
 import Backdrop from '../backdrop'
 import { Icons } from '../icons'
+import Scrollbar from '../scrollbar';
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -11,6 +12,7 @@ const StyledArticle = styled.article`
   display: flex;
   flex-direction: column;
   width: 264px;
+  min-width: 264px;
   transition: width .3s ease-in-out;
   overflow: hidden auto;
 
@@ -20,9 +22,11 @@ const StyledArticle = styled.article`
           ? `
             display: flex;
             width: 240px;
+            min-width: 240px;
           `
           : `
             width: 240px;
+            min-width: 240px;
             position: fixed;
             height: 100%;
             top: 0;
@@ -219,7 +223,11 @@ class PageLayout extends React.Component {
             }
             {
               this.state.isArticleBodyAvailable &&
-              <StyledArticleBody>{this.state.articleBodyContent}</StyledArticleBody>
+              <StyledArticleBody>
+                <Scrollbar>
+                  {this.state.articleBodyContent}
+                </Scrollbar>
+              </StyledArticleBody>
             }
             {
               this.state.isArticleBodyAvailable &&
@@ -248,7 +256,11 @@ class PageLayout extends React.Component {
             }
             {
               this.state.isSectionBodyAvailable &&
-              <StyledSectionBody>{this.state.sectionBodyContent}</StyledSectionBody>
+              <StyledSectionBody>
+                <Scrollbar stype="mediumBlack">
+                  {this.state.sectionBodyContent}
+                </Scrollbar>
+              </StyledSectionBody>
             }
             {
               this.state.isArticleAvailable &&

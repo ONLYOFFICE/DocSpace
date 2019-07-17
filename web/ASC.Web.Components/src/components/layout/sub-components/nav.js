@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import device from '../../device'
+import Scrollbar from '../../scrollbar';
 
 const backgroundColor = '#0F4071';
 
@@ -21,6 +22,16 @@ const StyledNav = styled.nav`
   }
 `;
 
-const Nav = props => <StyledNav {...props}/>
+const Nav = (props) => { 
+  const { opened, onMouseEnter, onMouseLeave, children } = props;
+
+  return (
+    <StyledNav opened={opened} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      <Scrollbar stype="smallWhite" style={{ width: opened ? 240 : 56 }}>
+        {children}
+      </Scrollbar>
+    </StyledNav>
+  );
+}
 
 export default Nav;

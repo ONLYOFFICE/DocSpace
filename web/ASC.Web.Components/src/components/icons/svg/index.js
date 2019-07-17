@@ -135,6 +135,9 @@ import OrigMenuIcon from './menu.react.svg';
 import OrigNavLogoIcon from './nav.logo.react.svg';
 import OrigNavLogoOpenedIcon from './nav.logo.opened.react.svg';
 
+import OrigCheckIcon from './check.react.svg';
+import OrigDangerIcon from './danger.react.svg';
+import OrigInfoIcon from './info.react.svg';
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -300,6 +303,10 @@ export const ChatIcon = createStyledIcon(
   OrigChatIcon,
   'ChatIcon'
 );
+export const CheckIcon = createStyledIcon(
+  OrigCheckIcon,
+  'CheckIcon'
+);
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   'CheckboxIcon'
@@ -380,6 +387,10 @@ export const CrossIcon = createStyledIcon(
   OrigCrossIcon,
   'CrossIcon'
 );
+export const DangerIcon = createStyledIcon(
+  OrigDangerIcon,
+  'DangerIcon'
+);
 export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   'DocumentsIcon'
@@ -451,6 +462,10 @@ export const IcqIcon = createStyledIcon(
 export const ImportIcon = createStyledIcon(
   OrigImportIcon,
   'ImportIcon'
+);
+export const InfoIcon = createStyledIcon(
+  OrigInfoIcon,
+  'InfoIcon'
 );
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,

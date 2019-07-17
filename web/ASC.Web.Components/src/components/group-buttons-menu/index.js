@@ -15,6 +15,7 @@ const StyledGroupButtonsMenu = styled.div`
     width: 100%;
     white-space: nowrap;
     display: ${state => state.visible ? 'block' : 'none'};
+    z-index: 500;
 `;
 
 const CloseButton = styled.div`
@@ -48,7 +49,7 @@ const CloseButton = styled.div`
 
 const CheckBox = styled.div`
     display: inline-block;
-    margin-left: 20px;
+    margin-left: 16px;
     vertical-align: middle;
 
     & > * {
@@ -58,13 +59,11 @@ const CheckBox = styled.div`
 
 class GroupButtonsMenu extends React.Component {
 
-    IsMounted = false;
-
     constructor(props) {
         super(props);    
         this.updateMenu = this.updateMenu.bind(this);    
         this.state = {
-          priorityItems: [],
+          priorityItems: props.menuItems,
           moreItems: [],
           visible: true
         }
@@ -75,21 +74,11 @@ class GroupButtonsMenu extends React.Component {
         this.moreMenu = React.createRef();
     }
     
-    componentWillMount() {
-        this.setState({
-           priorityItems: this.props.menuItems
-        })
-    }
-
     componentDidMount() {
         this.widthsArray = Array.from(this.refs.groupMenu.children).map(item => item.getBoundingClientRect().width);
 
-        this.IsMounted = true;
-
-        if (this.IsMounted) {
-            window.addEventListener('resize', _.throttle(this.updateMenu), 100);
-            this.updateMenu();
-        }
+        window.addEventListener('resize', _.throttle(this.updateMenu), 100);
+        this.updateMenu();
     }
     
     howManyItemsInMenuArray(array, outerWidth, initialWidth, minimumNumberInNav) {
@@ -119,8 +108,6 @@ class GroupButtonsMenu extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateMenu());
-
-        this.IsMounted = false;
     }
 
     render() {

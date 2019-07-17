@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Scrollbar from '../../scrollbar';
 
 const StyledAside = styled.aside`
   background-color: #fff;
@@ -15,6 +16,16 @@ const StyledAside = styled.aside`
   z-index: 400;
 `;
 
-const Aside = props => <StyledAside {...props}/>
+const Aside = (props) => { 
+  const { visible, children } = props;
+
+  return (
+    <StyledAside visible={visible}>
+      <Scrollbar>
+        {children}
+      </Scrollbar>
+    </StyledAside>
+  );
+}
 
 export default Aside;

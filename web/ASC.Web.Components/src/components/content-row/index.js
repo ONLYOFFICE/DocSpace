@@ -2,6 +2,9 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 
+import Avatar from '../avatar'
+import Checkbox from '../checkbox'
+import ContextMenuButton from '../context-menu-button'
 
 const StyledContentRow = styled.div`
     font-family: Open Sans;
@@ -54,8 +57,6 @@ const StyledCheckbox = styled.div`
     flex-basis: 16px;
     display: flex;
     margin-right: 16px;
-    margin-bottom: 0px;
-    margin-top: 8px;
 `;
 
 const StyledAvatar = styled.div`
@@ -69,22 +70,47 @@ const StyledOptionButton = styled.div`
     margin-left: 16px;
 `;
 
-const ContentRow = props => {
-    const { checkBox, avatar, contextButton, children } = props;
-    return (
-        <StyledContentRow {...props}>
-            {checkBox && <StyledCheckbox>{checkBox}</StyledCheckbox>}
-            {avatar && <StyledAvatar>{avatar}</StyledAvatar>}
-            <StyledContent>{children}</StyledContent>
-            {contextButton && <StyledOptionButton>{contextButton}</StyledOptionButton>}
-        </StyledContentRow>
-    );
+class ContentRow extends React.Component {
+
+    componentDidMount() {
+        document.addEventListener('contextmenu', this.handleContextMenu);
+    };
+
+    componentWillUnmount() {
+      document.removeEventListener('contextmenu', this.handleContextMenu);
+    }
+
+    handleContextMenu = (event) => {
+
+    }
+
+    render () {
+        const { checked, onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
+
+        return (
+            <StyledContentRow {...this.props}>
+                {checked !== undefined && 
+                    <StyledCheckbox>
+                        <Checkbox id={avatarName} value={avatarName} isChecked={checked} onChange={onSelect} />
+                    </StyledCheckbox>
+                }
+                {(avatarRole !== '' || avatarSource !== '' || avatarName !== '')  && 
+                    <StyledAvatar>
+                        <Avatar size='small' role={avatarRole || ''} source={avatarSource || ''} userName={avatarName || ''} />
+                    </StyledAvatar>
+                }
+                <StyledContent>{children}</StyledContent>
+                {contextOptions && 
+                    <StyledOptionButton>
+                        <ContextMenuButton direction='right' getData={() => contextOptions} />
+                    </StyledOptionButton>
+                }
+            </StyledContentRow>
+        );
+    };
 }
 
 ContentRow.propTypes = {
-    checkBox: PropTypes.element,
-    avatar: PropTypes.element,
-    contextButton: PropTypes.element
 };
 
 ContentRow.defaultProps = {
