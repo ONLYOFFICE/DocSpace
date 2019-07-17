@@ -50,24 +50,28 @@ const StyledInputGroup = styled(CustomInputGroup)`
 const InputBlock = React.forwardRef((props, ref) => {
   const {onChange, value, children, size } = props;
   let iconButtonSize = 0;
-
-  switch (size) {
-    case 'base':
-        iconButtonSize = 15;
-      break;
-    case 'middle':
-        iconButtonSize = 18;
-      break;
-    case 'big':
-        iconButtonSize = 21;
-      break;
-    case 'huge':
-        iconButtonSize = 24;
-      break;
-  
-    default:
-      break;
+  if(typeof props.iconSize == "number" && props.iconSize > 0){
+    iconButtonSize = props.iconSize;
+  }else{
+    switch (size) {
+      case 'base':
+          iconButtonSize = 15;
+        break;
+      case 'middle':
+          iconButtonSize = 18;
+        break;
+      case 'big':
+          iconButtonSize = 21;
+        break;
+      case 'huge':
+          iconButtonSize = 24;
+        break;
+    
+      default:
+        break;
+    }
   }
+  
 
   return (
     <StyledInputGroup  hasError={props.hasError} hasWarning={props.hasWarning} isDisabled={props.isDisabled} scale={props.scale} size={props.size}>
@@ -135,6 +139,7 @@ InputBlock.propTypes = {
   value: PropTypes.string,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
+  iconSize: PropTypes.number,
   isIconFill: PropTypes.bool,
   isDisabled: PropTypes.bool,
   onIconClick: PropTypes.func,
