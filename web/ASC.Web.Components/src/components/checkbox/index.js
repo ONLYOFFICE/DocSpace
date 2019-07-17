@@ -109,8 +109,10 @@ class Checkbox extends React.Component  {
     this.ref.current.indeterminate = this.props.isIndeterminate;
   }
 
-  componentDidUpdate() {
-    this.ref.current.indeterminate = this.props.isIndeterminate;
+  componentDidUpdate(prevProps) {
+    if(this.props.isIndeterminate !== prevProps.isIndeterminate) {
+      this.ref.current.indeterminate = this.props.isIndeterminate;
+    }
   }
 
   ref = React.createRef();
@@ -122,7 +124,7 @@ class Checkbox extends React.Component  {
 
     return (
     <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} >
-      <Input type='checkbox' checked={this.props.isChecked && !this.props.isIndeterminate} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
+      <Input type='checkbox' checked={this.props.isChecked} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
       <span className={cbxClassName} />
       {
         this.props.label && <Text isDisabled={this.props.isDisabled}>{this.props.label}</Text>
@@ -133,9 +135,9 @@ class Checkbox extends React.Component  {
 };
 
 Checkbox.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   label: PropTypes.string,
 
   isChecked: PropTypes.bool,
