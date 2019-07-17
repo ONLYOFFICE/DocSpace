@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "ajv": "^6.10.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "10.0.1",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-react-app": "^4.0.1",
