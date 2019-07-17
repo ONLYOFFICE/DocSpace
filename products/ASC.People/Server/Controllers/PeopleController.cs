@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
+using System.Threading.Tasks;
 using ASC.Api.Core;
 using ASC.Common.Web;
 using ASC.Core;
@@ -21,6 +24,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -600,6 +604,100 @@ namespace ASC.Employee.Core.Controllers
             return new ThumbnailsDataWrapper(user.ID);
         }
 
+        [Create("{userid}/photo")]
+        public FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        {
+            var result = new FileUploadResult();
+            try
+            {
+                if (model.Files.Count != 0)
+                {
+                    Guid userId;
+                    try
+                    {
+                        userId = new Guid(userid);
+                    }
+                    catch
+                    {
+                        userId = SecurityContext.CurrentAccount.ID;
+                    }
+
+                    SecurityContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
+
+                    var userPhoto = model.Files[0];
+
+                    if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
+                    {
+                        result.Success = false;
+                        result.Message = FileSizeComment.FileImageSizeExceptionString;
+                        return result;
+                    }
+
+                    var data = new byte[userPhoto.Length];
+                    using var inputStream = userPhoto.OpenReadStream();
+
+                    var br = new BinaryReader(inputStream);
+                    br.Read(data, 0, (int)userPhoto.Length);
+                    br.Close();
+
+                    CheckImgFormat(data);
+
+                    if (model.Autosave)
+                    {
+                        if (data.Length > SetupInfo.MaxImageUploadSize)
+                            throw new ImageSizeLimitException();
+
+                        var mainPhoto = UserPhotoManager.SaveOrUpdatePhoto(userId, data);
+
+                        result.Data =
+                            new
+                            {
+                                main = mainPhoto,
+                                retina = UserPhotoManager.GetRetinaPhotoURL(userId),
+                                max = UserPhotoManager.GetMaxPhotoURL(userId),
+                                big = UserPhotoManager.GetBigPhotoURL(userId),
+                                medium = UserPhotoManager.GetMediumPhotoURL(userId),
+                                small = UserPhotoManager.GetSmallPhotoURL(userId),
+                            };
+                    }
+                    else
+                    {
+                        result.Data = UserPhotoManager.SaveTempPhoto(data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                    }
+
+                    result.Success = true;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = PeopleResource.ErrorEmptyUploadFileSelected;
+                }
+
+            }
+            catch (UnknownImageFormatException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorUnknownFileImageType;
+            }
+            catch (ImageWeightLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageWeightLimit;
+            }
+            catch (ImageSizeLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageSizetLimit;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = ex.Message.HtmlEncode();
+            }
+
+            return result;
+        }
+
         [Update("{userid}/photo")]
         public ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
         {
@@ -1130,6 +1228,33 @@ namespace ASC.Employee.Core.Controllers
             using var br = new BinaryReader(inputStream);
             var imageByteArray = br.ReadBytes((int)response.ContentLength);
             UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
+        }
+
+        private static void CheckImgFormat(byte[] data)
+        {
+            ImageFormat imgFormat;
+
+            try
+            {
+                using (var stream = new MemoryStream(data))
+                using (var img = new Bitmap(stream))
+                {
+                    imgFormat = img.RawFormat;
+                }
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new ImageSizeLimitException();
+            }
+            catch (ArgumentException error)
+            {
+                throw new UnknownImageFormatException(error);
+            }
+
+            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+            {
+                throw new UnknownImageFormatException();
+            }
         }
     }
 }
