@@ -3,27 +3,83 @@ import PropTypes from "prop-types";
 import styled from 'styled-components';
 import InputBlock from '../input-block';
 import IconButton from '../icon-button';
+import { Icons } from '../icons';
 import ContextMenuButton from '../context-menu-button';
+import {UncontrolledPopover, PopoverBody } from 'reactstrap';
 
+const StyledSearchInput = styled.div`
+  min-width: 200px;
+`;
+const Caret = styled.div`
+  width: 7px;
+  position: absolute;
+  right: 6px;
+  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  top: ${props => props.isOpen ? '2px' : '0'};
+`;
 const StyledFilterItem = styled.div`
-  display: flex;
+  display:  ${props => props.block ? 'block' : 'inline-block'};
+  margin-bottom: ${props => props.block ? '3px' : '0'};
+  position relative;
   align-items: center;
   height: 100%;
   padding: 3px;
+  padding-right: 18px;
   margin-right: 2px;
-  border: 1px solid #d4e4ec;
+  border: 1px solid #ECEEF1;
   border-radius: 3px;
-  background-color: #edf6fd;
+  background-color: #F8F9F9;
+  &:last-child{
+    margin-bottom: 0;
+  }
+`;
+const StyledHideFilterButton = styled.div`
+  display: flex;
+  position: relative;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  height: 100%;
+  border: 1px solid #ECEEF1;
+  border-radius: 3px;
+  background-color: #F8F9F9;
+  padding: 0 20px 0 9px;
+  margin-right: 2px;
+  cursor: pointer;
+  font-family: Open Sans;
+  font-style: normal;
+
+  :hover{
+    border-color: #A3A9AE;
+  }
+  :active{
+    background-color: #ECEEF1;
+  }
 `;
 const StyledIconButtonBlock = styled.div`
   display: inline-block;
   margin-left: 5px;
+  position absolute;
+  right: 0;
+  right: 3px;
+  top: calc(50% - 5px);
 `;
+const StyledHideFilter = styled.div`
+  display: inline-block;
+  font-size: 1rem;
+  height: 100%;
+`;
+const StyledPopoverBody = styled(PopoverBody)`
+  font-size: 1rem;
+  border-radius: 6px;
+  box-shadow: 0px 2px 18px rgba(0, 0, 0, 0.13);
+`;
+
 const FilterItem = props => {
-  const { groupLabel, id, label } = props;
+  const { groupLabel, id, label, block } = props;
   return (
-    <StyledFilterItem key={id}>
-        {groupLabel} {label}
+    <StyledFilterItem key={id} id={id} block={block} >
+        {groupLabel}: {label}
         <StyledIconButtonBlock>
           <IconButton
             color={props.color}
@@ -37,21 +93,59 @@ const FilterItem = props => {
     </StyledFilterItem>
   );
 };
+class HideFilter extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      popoverOpen: false
+    };
+  }
+
+  toggle() {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen
+    });
+  }
+
+  render() {
+    return (
+      <StyledHideFilter>
+      <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
+      
+      <UncontrolledPopover isOpen={this.state.popoverOpen} trigger="legacy" placement="bottom-start" target="PopoverLegacy" hideArrow={true} toggle={this.toggle}>
+        <StyledPopoverBody>{this.props.children}</StyledPopoverBody>
+      </UncontrolledPopover>
+    </StyledHideFilter>
+    );
+  }
+}
+
 
 class SearchInput extends React.Component  {
   constructor(props) {
     super(props);
 
+    this.minWidth = 190;
+    this.isUpdateFilter = true;
     this.state = {
-      filterItems: []
+      filterItems: [],
+      openFilterItems: [],
+      hideFilterItems: []
     };
+
+    this.searchWrapper = React.createRef();
+    this.filterWrapper = React.createRef();
 
     this.onClickDropDownItem = this.onClickDropDownItem.bind(this);
     this.getData = this.getData.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
     this.onDeleteFilterItem = this.onDeleteFilterItem.bind(this);
     this.getFilterItems = this.getFilterItems.bind(this);
-    
+    this.updateFilter = this.updateFilter.bind(this);
+    this.resize = this.resize.bind(this);
+
   }
 
   onClickDropDownItem(event, filterItem){
@@ -77,11 +171,12 @@ class SearchInput extends React.Component  {
         inputValue: this.props.value,
         filterValue: this.props.isNeedFilter ? curentFilterItems : null
       });
+    this.isUpdateFilter = false;
   }
 
   getData(){
     let _this = this;
-    let d= this.props.getFilterData();
+    let d = this.props.getFilterData();
     d.map(function(item){
       item.onClick = !item.isSeparator && !item.isHeader && !item.disabled ? ((e) => _this.onClickDropDownItem(e, item)) : undefined;
       return item;
@@ -112,24 +207,108 @@ class SearchInput extends React.Component  {
         inputValue: this.props.value,
         filterValue: this.props.isNeedFilter ? curentFilterItems : null
       });
+    this.isUpdateFilter = false;
   }
 
   getFilterItems(){
     let _this = this;
-
-    const result = this.state.filterItems.map(function(item) {
-      
-      return <FilterItem 
-        isDisabled={_this.props.isDisabled} 
-        key={item.key}
-        id={item.key} 
-        groupLabel={item.groupLabel} 
-        label={item.label} 
-        onClose={_this.onDeleteFilterItem}>
-
-      </FilterItem>
-    })
+    let result = [];
+    let openItems = [];
+    let hideItems = [];
+    if(this.state.filterItems.length > 0 && !this.isUpdateFilter){
+      openItems = this.state.filterItems.map(function(item) {
+            return <FilterItem 
+              isDisabled={_this.props.isDisabled} 
+              key={item.key}
+              id={item.value} 
+              groupLabel={item.groupLabel} 
+              label={item.label} 
+              onClose={_this.onDeleteFilterItem}>
+            </FilterItem>
+          });
+    }
+    if(this.state.hideFilterItems.length > 0 && this.isUpdateFilter){
+      hideItems.push(
+        <HideFilter key="hide-filter" count={this.state.hideFilterItems.length}>
+          {
+            this.state.hideFilterItems.map(function(item) {
+              return <FilterItem 
+                block={true}
+                isDisabled={_this.props.isDisabled} 
+                key={item.key}
+                id={item.key} 
+                groupLabel={item.groupLabel} 
+                label={item.label} 
+                onClose={_this.onDeleteFilterItem}>
+              </FilterItem>
+            })
+          }
+        </HideFilter>
+      ); 
+    }
+    if(this.state.openFilterItems.length > 0 && this.isUpdateFilter){
+      openItems = this.state.openFilterItems.map(function(item) {
+            return <FilterItem 
+              isDisabled={_this.props.isDisabled} 
+              key={item.key}
+              id={item.key} 
+              groupLabel={item.groupLabel} 
+              label={item.label} 
+              onClose={_this.onDeleteFilterItem}>
+            </FilterItem>
+          });
+    }
+    
+    result = hideItems.concat(openItems);
     return result;
+  }
+
+  updateFilter(){
+    let fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
+    let filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
+
+    if(fullWidth <= this.minWidth){
+      this.setState({ openFilterItems: []});
+      this.setState({ hideFilterItems: this.state.filterItems.slice()});
+    }else if(filterWidth > fullWidth/2){
+      let newOpenFilterItems = [];
+      let newHideFilterItems = [];
+      let openFilterWidth = 0;
+
+      let sortArr = Array.from(this.filterWrapper.current.children).sort(function(a,b) {
+        return a.getBoundingClientRect().width - b.getBoundingClientRect().width;
+      });
+      
+      sortArr.forEach(element => {
+        openFilterWidth = openFilterWidth + element.getBoundingClientRect().width;
+        if(openFilterWidth < fullWidth/3){
+          newOpenFilterItems.push(this.state.filterItems.find(x => x.value === element.getAttribute('id')));
+        }else{
+          newHideFilterItems.push(this.state.filterItems.find(x => x.value === element.getAttribute('id')));
+        }
+      });
+      this.setState({ openFilterItems: newOpenFilterItems});
+      this.setState({ hideFilterItems: newHideFilterItems});
+
+    }else{
+      this.setState({ openFilterItems: this.state.filterItems.slice()});
+      this.setState({ hideFilterItems: []});
+    }
+    this.isUpdateFilter = true;
+  }
+  resize(){
+    this.isUpdateFilter = false;
+    this.forceUpdate();
+  }
+  componentDidUpdate(){
+    if(!this.isUpdateFilter) this.updateFilter();
+  }
+  
+  componentDidMount() {
+    window.addEventListener('resize', _.throttle(this.resize), 100);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize());
   }
 
   render() {
@@ -149,7 +328,8 @@ class SearchInput extends React.Component  {
     }
 
     return (
-      <InputBlock 
+      <StyledSearchInput ref={this.searchWrapper}> 
+        <InputBlock 
           id={this.props.id}
           isDisabled={this.props.isDisabled}
           iconName={"SearchIcon"}
@@ -161,19 +341,24 @@ class SearchInput extends React.Component  {
           value={this.props.value}
           placeholder={this.props.placeholder}
           onChange={this.props.onChange}
-      >
-        { this.props.isNeedFilter && this.getFilterItems()}
-        {
-          this.props.isNeedFilter && 
-          <ContextMenuButton
-            title={'Actions'}
-            iconName={'RectangleFilterIcon'}
-            color='#A3A9AE'
-            size={iconSize}
-            getData={_this.getData}
-          />
-        }
-      </InputBlock>
+        >
+            { this.props.isNeedFilter && 
+              <div ref={this.filterWrapper}>
+                {this.getFilterItems()}
+              </div>
+            }
+          
+          { this.props.isNeedFilter && 
+            <ContextMenuButton
+              title={'Actions'}
+              iconName={'RectangleFilterIcon'}
+              color='#A3A9AE'
+              size={iconSize}
+              getData={_this.getData}
+            />
+          }
+        </InputBlock>
+      </StyledSearchInput>
     );
   }
 };

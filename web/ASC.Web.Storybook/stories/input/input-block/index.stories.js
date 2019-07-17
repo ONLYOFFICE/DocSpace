@@ -70,6 +70,7 @@ storiesOf('Components|Input', module)
                 scale={boolean('scale', false)}
                 autoComplete={text('autoComplete', 'off')}
                 tabIndex={number('tabIndex', 1)}
+                iconSize={number('iconSize', 0)}
 
                 isDisabled={boolean('isDisabled', false)}
                 iconName={select('iconName', iconNames, 'SearchIcon')}

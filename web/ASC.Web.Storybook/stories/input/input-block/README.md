@@ -41,3 +41,4 @@ InputBlock description
 | `iconColor`            | `string` |          |                                | `black` | Specifies the icon color                                                                               |
 | `isIconFill`           | `bool`   |          |                                | `false` | Determines if icon fill is needed                                                                      |
 | `onIconClick`          | `func`   |    ✅    | -                              | -       | Will be triggered whenever an icon is clicked                                                          |
+| `iconSize`             | `number` |    ✅    | -                              | -       | Size icon                                                                                              |
