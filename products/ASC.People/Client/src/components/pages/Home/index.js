@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import _ from "lodash";
 import { PageLayout } from "asc-web-components";
-import fakeUsers from './fakseUsers';
+import { fakeUsers } from './fakseUsers';
 import {ArticleHeaderContent, ArticleBodyContent} from './Article';
 import {SectionHeaderContent, SectionBodyContent} from './Section';
 
@@ -14,12 +14,36 @@ const Home = () => {
   const [isHeaderVisible, toggleHeaderVisible] = useState(false);
   const [isHeaderIndeterminate, toggleHeaderIndeterminate] = useState(false);
   const [isHeaderChecked, toggleHeaderChecked] = useState(false);
+  
+  const renderGroupButtonMenu = () => {
+    const headerVisible = selection.length > 0;
+    const headerIndeterminate = headerVisible && selection.length > 0 && selection.length < fakeUsers.length;
+    const headerChecked = headerVisible && selection.length === fakeUsers.length;
+    
+    /*console.log(`renderGroupButtonMenu()
+      headerVisible=${headerVisible} 
+      headerIndeterminate=${headerIndeterminate} 
+      headerChecked=${headerChecked}
+      selection.length=${selection.length}
+      fakeUsers.length=${fakeUsers.length}`);*/
 
-  let id = -1;
+    if(headerVisible)
+      toggleHeaderVisible(headerVisible);
 
-  const onBodySelect = (checked, data) => {
-    //toggleChecked(checked);
-    id = _.result(
+    if(isHeaderIndeterminate !== headerIndeterminate)
+      toggleHeaderIndeterminate(headerIndeterminate);
+
+    if(isHeaderChecked !== headerChecked)
+      toggleHeaderChecked(headerChecked);
+  };
+
+  const onRowSelect = (checked, data) => {
+    /*console.log(`onBodySelect 
+        row.checked=${checked}`,
+          data,
+          selection);*/
+
+    const id = _.result(
       _.find(selection, function(obj) {
         return obj.id === data.id;
       }),
@@ -33,26 +57,7 @@ const Home = () => {
       });
     }
 
-    let headerVisible = selection.length > 0;
-    let headerIndeterminate = headerVisible && selection.length < fakeUsers.length;
-    let headerChecked = !headerIndeterminate;
-    
-    console.log(`onBodySelect 
-        row.checked=${checked} 
-        headerVisible=${headerVisible} 
-        headerIndeterminate=${headerIndeterminate} 
-        headerChecked=${headerChecked}`, 
-        data,
-        selection);
-
-    if(isHeaderVisible !== headerVisible)
-      toggleHeaderVisible(headerVisible);
-
-    if(isHeaderIndeterminate !== headerIndeterminate)
-      toggleHeaderIndeterminate(headerIndeterminate);
-
-    if(isHeaderChecked !== headerChecked)
-      toggleHeaderChecked(headerChecked);
+    renderGroupButtonMenu();
   };
 
   return (
@@ -65,15 +70,19 @@ const Home = () => {
           isHeaderIndeterminate={isHeaderIndeterminate}
           isHeaderChecked={isHeaderChecked}
           onCheck={checked => {
-            console.log("SectionHeaderContent onCheck", checked)
+            toggleHeaderChecked(checked);
+            selection = checked ? [...fakeUsers] : [];
+            /*console.log(`SectionHeaderContent onCheck 
+                selection.length=${selection.length}`)*/
+            renderGroupButtonMenu();
           }}
         />
       }
       sectionBodyContent={
         <SectionBodyContent
           users={fakeUsers}
-          // isHeaderChecked={isHeaderChecked}
-          onSelect={onBodySelect}
+          isHeaderChecked={isHeaderChecked}
+          onSelect={onRowSelect}
         />
       }
     />

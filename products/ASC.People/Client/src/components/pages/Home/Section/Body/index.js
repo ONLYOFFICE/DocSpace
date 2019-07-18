@@ -95,16 +95,14 @@ const UserContent = ({
       </Container>
     );
 
-const SectionBodyContent = ({ users, onSelect/*, isHeaderChecked*/ }) => {
-    //const [isChecked, toggleChecked] = useState(false);
-    //console.log("Body isHeaderChecked=", isHeaderChecked);
+const SectionBodyContent = ({ users, onSelect, isHeaderChecked }) => {
     return (
       <>
         {users.map((user, index) => (
           <ContentRow
             key={user.id}
             status={user.status}
-            checked={false} //{isHeaderChecked}
+            checked={isHeaderChecked}
             data={user}
             onSelect={(checked, data) => {
               //toggleChecked(e.target.checked);
