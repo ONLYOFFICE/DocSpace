@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import Avatar from '../../components/avatar'
 
 const itemTruncate = css`
-    max-width:300px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -97,7 +96,7 @@ const UserNameWrapper = styled.div`
     line-height: 28px;
     color: #FFFFFF;
     margin-left: 60px;
-
+    max-width:300px;
     ${itemTruncate}
 `;
 
@@ -109,7 +108,7 @@ const UserEmailWrapper = styled.div`
     line-height: 16px;
     color: #FFFFFF;
     margin-left: 60px;
-
+    max-width:300px;
     ${itemTruncate}
 `;
 

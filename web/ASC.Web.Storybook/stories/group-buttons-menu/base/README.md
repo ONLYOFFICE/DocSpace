@@ -13,11 +13,15 @@ Menu for group actions on a page.
 #### Usage
 
 ```js
-<GroupButtonsMenu needCollapse={false} />
+<GroupButtonsMenu checked={false} menuItems={menuItems} visible={true} />
 ```
 
 #### Properties
 
 | Props              | Type     | Required | Values                      | Default   | Description                                               |
 | ------------------ | -------- | :------: | --------------------------- | --------- | --------------------------------------------------------- |
-| `needCollapse`     | `bool`   | -        | -                           | `false`   | Displays a button that minimizes non-screen elements      |
+| `checked`          | `bool`   | -        | -                           | `false`   | Sets initial value of checkbox                            |
+| `menuItems`        | `object` | -        | -                           | -         | Button collection                                         |
+| `visible`          | `bool`   | -        | -                           | -         | Sets menu visibility                                      |
+| `moreLabel`        | `string` | -        | -                           | `More`    | Label for more button                                     |
+| `closeTitle`       | `string` | -        | -                           | `Close`   | Title for close menu button                               |
