@@ -11,9 +11,10 @@ const StyledDropdown = styled.div`
 
     position: absolute;
     ${props => props.manualWidth && `width: ${props.manualWidth};`}
-    top: ${props => props.manualTop ? props.manualTop : '100%'};
-    ${props => (props.direction === 'right' && css`right: 0px;`)}
-    ${props => (props.direction === 'left' && css`left: 0px;`)}
+    ${props => (props.directionY === 'top' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
+    ${props => (props.directionY === 'bottom' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
+    ${props => (props.directionX === 'right' && css`right: 0px;`)}
+    ${props => (props.directionX === 'left' && css`left: 0px;`)}
     z-index: 1000;
     margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
     margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
@@ -35,11 +36,12 @@ const Arrow = styled.div`
     width: 24px;
     height: 6px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
-    `;
+`;
+
 const DropDown = props => {
     return (
         <StyledDropdown {...props}>
-        {props.withArrow && <Arrow direction={props.direction} />}
+        {props.withArrow && <Arrow directionX={props.directionX} />}
         {React.Children.map(props.children, (child) => 
             <DropDownItem {...child.props}/>
         )}
@@ -48,14 +50,16 @@ const DropDown = props => {
 };
 
 DropDown.propTypes = {
-    direction: PropTypes.oneOf(['left', 'right']),
+    directionX: PropTypes.oneOf(['left', 'right']),
+    directionY: PropTypes.oneOf(['bottom', 'top']),
     withArrow: PropTypes.bool,
     manualWidth: PropTypes.string,
-    manualTop: PropTypes.string
+    manualY: PropTypes.string
 };
 
 DropDown.defaultProps = {
-    direction: 'left',
+    directionX: 'left',
+    directionY: 'top',
     withArrow: false
 };
 

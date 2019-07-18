@@ -80,7 +80,7 @@ class ComboBox extends React.Component {
                 >
                     <DropDown direction={this.props.direction || 'left'} 
                             manualWidth='100%'
-                            manualTop='102%'
+                            manualY='102%'
                             isOpen={this.state.isOpen}
                     >
                     {this.state.items.map(item => 
