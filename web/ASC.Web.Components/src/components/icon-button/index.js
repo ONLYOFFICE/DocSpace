@@ -13,7 +13,8 @@ class IconButton extends React.Component{
         super(props);
     
         this.state = {
-            currentIconName: this.props.iconName
+            currentIconName: this.props.iconName,
+            currentIconColor: this.props.color
         };
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -23,19 +24,31 @@ class IconButton extends React.Component{
 
    
     onMouseEnter(e){
-        this.setState({currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName});
+        this.setState({
+            currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
+            currentIconColor: this.props.hoverColor ? this.props.hoverColor : this.props.color
+        });
         this.props.onMouseEnter && this.props.onMouseEnter(e);
     }
     onMouseLeave(e){
-        this.setState({currentIconName: this.props.iconName});
+        this.setState({
+            currentIconName: this.props.iconName,
+            currentIconColor: this.props.color
+        });
         this.props.onMouseDown && this.props.onMouseDown(e);
     }
     onMouseDown(e){
-        this.setState({currentIconName: this.props.iconClickName ? this.props.iconClickName : this.props.iconName});
+        this.setState({
+            currentIconName: this.props.iconClickName ? this.props.iconClickName : this.props.iconName,
+            currentIconColor: this.props.clickColor ? this.props.clickColor :  this.props.color
+        });
         this.props.onMouseDown && this.props.onMouseDown(e);
     }
     onMouseUp(e){
-        this.setState({currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName});
+        this.setState({
+            currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
+            currentIconColor: this.props.iconHoverName ? this.props.iconHoverName :  this.props.color
+        });
         this.props.onClick && this.props.onClick(e);
         this.props.onMouseUp && this.props.onMouseUp(e);
     }
@@ -50,7 +63,7 @@ class IconButton extends React.Component{
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
             >
-                {React.createElement(Icons[this.state.currentIconName], {size: "scale", color: this.props.color, isfill: this.props.isFill})}
+                {React.createElement(Icons[this.state.currentIconName], {size: "scale", color: this.state.currentIconColor, isfill: this.props.isFill})}
             </StyledOuter>
         );
     };
@@ -58,6 +71,8 @@ class IconButton extends React.Component{
 
 IconButton.propTypes = {
     color: PropTypes.string,
+    hoverColor: PropTypes.string,
+    clickColor: PropTypes.string,
     size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     isFill: PropTypes.bool,
     isDisabled: PropTypes.bool,
