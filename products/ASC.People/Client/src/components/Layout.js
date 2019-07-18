@@ -25,10 +25,8 @@ const PeopleLayout = props => {
         },
     ];
 
-    console.log(props);
 
     const layoutProps = { currentUserActions: currentUserActions, ...props };
-    console.log(auth.isAuthenticated, auth.isLoaded);
 
     return (
         auth.isAuthenticated && auth.isLoaded

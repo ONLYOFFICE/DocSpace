@@ -54,7 +54,7 @@ storiesOf('Components| DropDown', module)
                 </Col>
                 <Col xs="2"/>
                 <Col>
-                    <GroupButton text='Dropdown demo' isDropdown={true}>
+                    <GroupButton label='Dropdown demo' isDropdown={true}>
                         <DropDownItem
                             label='Button 1'
                         />

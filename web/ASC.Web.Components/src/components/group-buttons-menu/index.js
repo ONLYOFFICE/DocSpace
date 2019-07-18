@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import GroupButton from '../group-button'
 import DropDownItem from '../drop-down-item'
+import Checkbox from '../checkbox'
 
 const StyledGroupButtonsMenu = styled.div`
     position: sticky;
@@ -47,7 +48,7 @@ const CloseButton = styled.div`
     }
 `;
 
-const CheckBox = styled.div`
+const StyledCheckbox = styled.div`
     display: inline-block;
     margin-left: 16px;
     vertical-align: middle;
@@ -117,8 +118,13 @@ class GroupButtonsMenu extends React.Component {
 
         return (
             <StyledGroupButtonsMenu ref={this.groupMenuOuter} visible={this.state.visible} {...this.state}>
-                {this.checkBox && 
-                    <CheckBox>{this.checkBox}</CheckBox>
+                {this.props.hasOwnProperty("checked") && 
+                    <StyledCheckbox>
+                        <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => { 
+                            this.setState({checked: e.target.checked})
+                            this.props.onChange && this.props.onChange(e.target.checked);
+                        }} />
+                    </StyledCheckbox>
                 }
                 <div ref="groupMenu" style={{display: 'inline-block'}}>
                 {priorityItems.map((item, i) => 
