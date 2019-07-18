@@ -10,7 +10,8 @@ const StyledDropdown = styled.div`
     font-size: 13px;
 
     position: absolute;
-    top: 100%;
+    ${props => props.manualWidth && `width: ${props.manualWidth};`}
+    top: ${props => props.manualTop ? props.manualTop : '100%'};
     ${props => (props.direction === 'right' && css`right: 0px;`)}
     ${props => (props.direction === 'left' && css`left: 0px;`)}
     z-index: 1000;
@@ -48,7 +49,9 @@ const DropDown = props => {
 
 DropDown.propTypes = {
     direction: PropTypes.oneOf(['left', 'right']),
-    withArrow: PropTypes.bool
+    withArrow: PropTypes.bool,
+    manualWidth: PropTypes.string,
+    manualTop: PropTypes.string
 };
 
 DropDown.defaultProps = {
