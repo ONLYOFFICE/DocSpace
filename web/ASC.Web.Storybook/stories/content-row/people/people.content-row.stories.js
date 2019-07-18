@@ -211,8 +211,6 @@ const users = [
   }
 ];
 
-
-
 storiesOf('EXAMPLES|ContentRow', module)
   .add('people row', () => {
 
@@ -278,25 +276,18 @@ storiesOf('EXAMPLES|ContentRow', module)
       <Section>
         {users.map(user => {
           return (
-            <BooleanValue>
-              {({ value, toggle }) => (
-                <ContentRow key={user.id}
-                            status={user.status} 
-                            checked={value}
-                            data={user}
-                            onSelect={(e) => {
-                              toggle(e.target.checked);
-                              console.log(user, !value);
-                            }} 
-                            avatarRole={user.role} 
-                            avatarSource={user.avatar} 
-                            avatarName={user.userName} 
-                            contextOptions={user.contextOptions}>
-                  {peopleContent(user.userName, user.departments[0], user.phones[0], user.emails[0], user.isHead, user.status)}
-                </ContentRow>
-              )}
-            </BooleanValue>
-            );
+            <ContentRow key={user.id}
+                        status={user.status} 
+                        checked={false}
+                        data={user}
+                        avatarRole={user.role} 
+                        avatarSource={user.avatar} 
+                        avatarName={user.userName} 
+                        contextOptions={user.contextOptions}
+            >
+              {peopleContent(user.userName, user.departments[0], user.phones[0], user.emails[0], user.isHead, user.status)}
+            </ContentRow>
+          );
         })}
       </Section>
     );
