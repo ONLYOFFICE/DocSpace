@@ -15,6 +15,8 @@ storiesOf('Components|GroupButton', module)
             isDropdown = {boolean('isDropdown', false)}
             opened = {boolean('opened', false)}
         >
-            <DropDownItem/>
+            <DropDownItem label="Action 1" />
+            <DropDownItem label="Action 2" />
+            <DropDownItem label="Action 3" />
         </GroupButton>
     ));

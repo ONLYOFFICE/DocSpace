@@ -25,10 +25,10 @@ storiesOf('Components|GroupButton', module)
                 <Col><GroupButton disabled /></Col>
             </Row>
             <Row style={rowStyle}>
-                <Col><GroupButton isDropdown ><DropDownItem /></GroupButton></Col>
-                <Col><GroupButton isDropdown hovered ><DropDownItem /></GroupButton></Col>
-                <Col><GroupButton isDropdown activated ><DropDownItem /></GroupButton></Col>
-                <Col><GroupButton isDropdown disabled ><DropDownItem /></GroupButton></Col>
+                <Col><GroupButton isDropdown ><DropDownItem label="Action 1" /></GroupButton></Col>
+                <Col><GroupButton isDropdown hovered ><DropDownItem label="Action 2" /></GroupButton></Col>
+                <Col><GroupButton isDropdown activated ><DropDownItem label="Action 3" /></GroupButton></Col>
+                <Col><GroupButton isDropdown disabled ><DropDownItem label="Action 4" /></GroupButton></Col>
             </Row>
         </Container>
     ));

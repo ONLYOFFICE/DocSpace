@@ -62,7 +62,7 @@ class GroupButtonsMenu extends React.Component {
 
     constructor(props) {
         super(props);    
-        this.updateMenu = this.updateMenu.bind(this);    
+        this.updateMenu = this.updateMenu.bind(this);
         this.state = {
           priorityItems: props.menuItems,
           moreItems: [],
@@ -76,7 +76,7 @@ class GroupButtonsMenu extends React.Component {
     }
     
     componentDidMount() {
-        this.widthsArray = Array.from(this.refs.groupMenu.children).map(item => item.getBoundingClientRect().width);
+        this.widthsArray = Array.from(document.getElementById("groupMenu").children).map(item => item.getBoundingClientRect().width);
 
         window.addEventListener('resize', _.throttle(this.updateMenu), 100);
         this.updateMenu();
@@ -126,7 +126,7 @@ class GroupButtonsMenu extends React.Component {
                         }} />
                     </StyledCheckbox>
                 }
-                <div ref="groupMenu" style={{display: 'inline-block'}}>
+                <div id="groupMenu" style={{display: 'inline-block'}}>
                 {priorityItems.map((item, i) => 
                     <GroupButton key={`navItem-${i}`} 
                                 label={item.label} 
