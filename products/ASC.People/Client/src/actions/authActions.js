@@ -1,5 +1,6 @@
 import * as api from '../utils/api';
 import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from './actionTypes';
+import { setGroups, setUsers } from './peopleActions';
 import setAuthorizationToken from '../utils/setAuthorizationToken';
 
 export function setCurrentUser(user) {
@@ -35,6 +36,10 @@ export function getUserInfo(dispatch) {
         .then((res) => dispatch(setCurrentUser(res.data.response)))
         .then(api.getModulesList)
         .then((res) => dispatch(setModules(res.data.response)))
+        .then(api.getGroupList)
+        .then((res) => dispatch(setGroups(res.data.response)))
+        .then(api.getUserList)
+        .then((res) => dispatch(setUsers(res.data.response)))
         .then(() => dispatch(setIsLoaded(true)));
 };
 

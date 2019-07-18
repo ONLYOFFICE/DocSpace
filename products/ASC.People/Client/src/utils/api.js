@@ -28,3 +28,11 @@ export function getModulesList() {
 export function getUser() {
     return IS_FAKE ? fakeApi.getUser() :  axios.get(`${API_URL}/people/@self.json`);
 };
+
+export function getUserList() {
+    return IS_FAKE ? fakeApi.getUsers() :  axios.get(`${API_URL}/people`);
+};
+
+export function getGroupList() {
+    return fakeApi.getGroups(); // IS_FAKE ? fakeApi.getGroups() :  axios.get(`${API_URL}/api/2.0/group`);
+};
