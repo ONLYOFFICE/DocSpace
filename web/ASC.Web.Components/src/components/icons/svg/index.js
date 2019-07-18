@@ -115,6 +115,9 @@ import OrigMainMenuFeedbackIcon from './main.menu.feedback.react.svg';
 import OrigMainMenuVideoGuideIcon from './main.menu.video.guide.react.svg';
 import OrigChatIcon from './chat.react.svg';
 import OrigRectangleFilterIcon from './rectangle.filter.react.svg';
+import OrigRectangleFilterDisabledIcon from './rectangle.filter.click.disabled.react.svg';
+import OrigRectangleFilterHoverIcon from './rectangle.filter.hover.react.svg';
+import OrigRectangleFilterClickIcon from './rectangle.filter.click.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
@@ -586,6 +589,18 @@ export const RadiobuttonIcon = createStyledIcon(
 export const RectangleFilterIcon = createStyledIcon(
   OrigRectangleFilterIcon,
   'RectangleFilterIcon'
+);
+export const RectangleFilterDisabledIcon = createStyledIcon(
+  OrigRectangleFilterDisabledIcon,
+  'RectangleFilterDisabledIcon'
+);
+export const RectangleFilterHoverIcon = createStyledIcon(
+  OrigRectangleFilterHoverIcon,
+  'RectangleFilterHoverIcon'
+);
+export const RectangleFilterClickIcon = createStyledIcon(
+  OrigRectangleFilterClickIcon,
+  'RectangleFilterClickIcon'
 );
 export const RefreshIcon = createStyledIcon(
   OrigRefreshIcon,
