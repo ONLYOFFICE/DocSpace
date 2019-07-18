@@ -6743,7 +6743,7 @@ react-testing-library@7.0.0:
     "@babel/runtime" "^7.4.3"
     dom-testing-library "^4.0.0"
 
-react-toastify@^5.3.1:
+react-toastify@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-5.3.2.tgz#9de4b426656587722f7e2f99f5f90e974ba5fee6"
   integrity sha512-YHTTey7JWqXVkkBIeJ34PAvQELmGfLEGCx9bu68aIZYd+kRU2u9k/nG3AydgbX/uevIb4QNpeeE98DjkooMs5w==
