@@ -50,6 +50,8 @@ class ContextMenuButton extends React.Component {
       <StyledOuther ref={this.ref}>
         <IconButton
           color={this.props.color}
+          hoverColor={this.props.hoverColor}
+          clickColor={this.props.clickColor}
           size={this.props.size}
           iconName={this.props.iconName}
           iconHoverName={this.props.iconHoverName}
