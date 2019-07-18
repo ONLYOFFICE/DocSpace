@@ -36,16 +36,19 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 }))`
   height: ${props =>
     (props.size === 'big' && '36px') ||
+    (props.size === 'medium' && '32px') ||
     (props.size === 'base' && '24px')
   };
 
   line-height: ${props =>
     (props.size === 'big' && '19px') ||
+    (props.size === 'medium' && '18px') ||
     (props.size === 'base' && '16px')
   };
 
   font-size: ${props =>
     (props.size === 'big' && '14px') ||
+    (props.size === 'medium' && '13px') ||
     (props.size === 'base' && '12px')
   };
 
@@ -66,6 +69,16 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : (props.icon 
           ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
           : (props.label ? '8px 27px 9px 28px' : '8px 10px 9px 10px')
+        ))
+    ) ||
+    (props.size === 'medium' && (props.primary 
+      ? (props.icon 
+          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+        ) 
+      : (props.icon 
+          ? (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
+          : (props.label ? '7px 24px 7px 24px' : '7px 10px 7px 10px')
         ))
     ) ||
     (props.size === 'base' && (props.primary 
@@ -180,7 +193,7 @@ const Button = props => {
 Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'big']),
+  size: PropTypes.oneOf(['base', 'medium', 'big']),
   icon: PropTypes.node,
 
   tabIndex: PropTypes.number,
