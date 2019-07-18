@@ -29,8 +29,8 @@ const toastr = {
 };
 
 
-const notify = (type, text, title, autoClosed = true) => {
-
+const notify = (type, text, title, autoClosed = true, centerPosition) => {
+  console.log(centerPosition, ' is position')
   return toast(
     <>
       <div>
@@ -45,25 +45,26 @@ const notify = (type, text, title, autoClosed = true) => {
       type: type,
       closeOnClick: autoClosed,
       closeButton: !autoClosed,
-      autoClose: autoClosed
+      autoClose: autoClosed,
+      position: centerPosition && toast.POSITION.TOP_CENTER
     }
   );
 };
 
-function success(text, title, autoClosed) {
-  return notify('success', text, title, autoClosed);
+function success(text, title, autoClosed, centerPosition) {
+  return notify('success', text, title, autoClosed, centerPosition);
 }
 
-function error(text, title, autoClosed) {
-  return notify('error', text, title, autoClosed);
+function error(text, title, autoClosed, centerPosition) {
+  return notify('error', text, title, autoClosed, centerPosition);
 }
 
-function warning(text, title, autoClosed) {
-  return notify('warning', text, title, autoClosed);
+function warning(text, title, autoClosed, centerPosition) {
+  return notify('warning', text, title, autoClosed, centerPosition);
 }
 
-function info(text, title, autoClosed) {
-  return notify('info', text, title, autoClosed);
+function info(text, title, autoClosed, centerPosition) {
+  return notify('info', text, title, autoClosed, centerPosition);
 }
 
 function clear() {
