@@ -13,25 +13,25 @@ storiesOf('Components|Toast', module)
 
           <Toast>
 
-            {toastr.success('Demo text for success Toast')}
-            {toastr.error('Demo text for error Toast')}
-            {toastr.warning('Demo text for warning Toast')}
-            {toastr.info('Demo text for info Toast')}
+            {toastr.success('Demo text for success Toast closes in 30 seconds or on click', null, 30000)}
+            {toastr.error('Demo text for error Toast closes in 28 seconds or on click', null, 28000)}
+            {toastr.warning('Demo text for warning Toast closes in 25 seconds or on click', null, 25000)}
+            {toastr.info('Demo text for info Toast closes in 15 seconds or on click', null, 15000)}
 
-            {toastr.success('Demo text for success Toast with title', 'Demo title')}
-            {toastr.error('Demo text for error Toast with title', 'Demo title')}
-            {toastr.warning('Demo text for warning Toast with title', 'Demo title')}
-            {toastr.info('Demo text for info Toast with title', 'Demo title')}
+            {toastr.success('Demo text for success Toast with title closes in 12 seconds or on click', 'Demo title', 12000)}
+            {toastr.error('Demo text for error Toast with title closes in 10 seconds or on click', 'Demo title', 10000)}
+            {toastr.warning('Demo text for warning Toast with title closes in 8 seconds or on click', 'Demo title', 8000)}
+            {toastr.info('Demo text for info Toast with title closes in 6 seconds or on click', 'Demo title', 6000)}
 
-            {toastr.success('Demo text for success manual closed Toast', null, false, true)}
-            {toastr.error('Demo text for error manual closed Toast', null, false, true)}
-            {toastr.warning('Demo text for warning manual closed Toast', null, false, true)}
-            {toastr.info('Demo text for info manual closed Toast', null, false, true)}
+            {toastr.success('Demo text for success manual closed Toast', null, 0, true, true)}
+            {toastr.error('Demo text for error manual closed Toast', null, 0, true, true)}
+            {toastr.warning('Demo text for warning manual closed Toast', null, 0, true, true)}
+            {toastr.info('Demo text for info manual closed Toast', null, 0, true, true)}
 
-            {toastr.success('Demo text for success manual closed Toast with title', 'Demo title', false, true)}
-            {toastr.error('Demo text for error manual closed Toast with title', 'Demo title', false, true)}
-            {toastr.warning('Demo text for warning manual closed Toast with title', 'Demo title', false, true)}
-            {toastr.info('Demo text for info manual closed Toast with title', 'Demo title', false, true)}
+            {toastr.success('Demo text for success manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.error('Demo text for error manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.warning('Demo text for warning manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.info('Demo text for info manual closed Toast with title', 'Demo title', 0, true, true)}
 
           </Toast>
           <button onClick = {()=> toastr.clear()}>Remove toasts</button>
