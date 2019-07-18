@@ -52,6 +52,8 @@ class ContextMenuButton extends React.Component {
           color={this.props.color}
           size={this.props.size}
           iconName={this.props.iconName}
+          iconHoverName={this.props.iconHoverName}
+          iconClickName={this.props.iconClickName}
           isFill={false}
           isDisabled={this.props.isDisabled}
           onClick={
