@@ -34,8 +34,7 @@ storiesOf('Components|Toast', module)
             {toastr.info('Demo text for info manual closed Toast with title', 'Demo title', 0, true, true)}
 
           </Toast>
-          <button onClick = {()=> toastr.clear()}>Remove toasts</button>
-
+          
         </Section>
       </>
     );

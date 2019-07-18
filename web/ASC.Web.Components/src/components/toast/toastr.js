@@ -29,8 +29,7 @@ const toastr = {
 };
 
 
-const notify = (type, text, title, timeout = 5000, withCross = false,  centerPosition) => {
-  console.log(centerPosition, ' is position')
+const notify = (type, text, title, timeout = 5000, withCross = false,  centerPosition = false) => {
   return toast(
     <>
       <div>
