@@ -1,6 +1,5 @@
 import React from 'react'
 import { ToastContainer, cssTransition } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
