@@ -1,11 +1,10 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { withKnobs, text } from '@storybook/addon-knobs/react';
-import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme'
 import styled from '@emotion/styled';
 import Readme from './README.md'
-import { GroupButtonsMenu, Checkbox, DropDownItem } from 'asc-web-components'
+import { GroupButtonsMenu, DropDownItem } from 'asc-web-components'
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
@@ -47,18 +46,8 @@ storiesOf('Components|GroupButtonsMenu', module)
 
         return (
         <GroupButtonsMenuContainer>
-            <GroupButtonsMenu checkBox={
-                <BooleanValue>
-                    {({ value, toggle }) => (
-                        <Checkbox isChecked={value} 
-                                onChange={e => {
-                                    console.log(e.target.value+' is checked');
-                                    toggle(e.target.checked);
-                                }}
-                                isDisabled={false}
-                                value='Checkbox' 
-                                id='check1' />)}
-                </BooleanValue>}
+            <GroupButtonsMenu
+                checked={false}                
                 menuItems={menuItems}
                 visible={true}
                 moreLabel={text('moreLabel', 'More')}
