@@ -2,21 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from 'styled-components';
 import InputBlock from '../input-block';
-import IconButton from '../icon-button';
-import { Icons } from '../icons';
-import ContextMenuButton from '../context-menu-button';
-import {UncontrolledPopover, PopoverBody } from 'reactstrap';
+
+import FilterButton from './filter-button';
+import HideFilter from './hide-filter';
+import CloseButton from './close-button';
 
 const StyledSearchInput = styled.div`
   min-width: 200px;
 `;
-const Caret = styled.div`
-  width: 7px;
-  position: absolute;
-  right: 6px;
-  transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-  top: ${props => props.isOpen ? '2px' : '0'};
-`;
+
 const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'block' : 'inline-block'};
   margin-bottom: ${props => props.block ? '3px' : '0'};
@@ -33,29 +27,7 @@ const StyledFilterItem = styled.div`
     margin-bottom: 0;
   }
 `;
-const StyledHideFilterButton = styled.div`
-  display: flex;
-  position: relative;
-  align-items: center;
-  font-weight: 600;
-  font-size: 16px;
-  height: 100%;
-  border: 1px solid #ECEEF1;
-  border-radius: 3px;
-  background-color: #F8F9F9;
-  padding: 0 20px 0 9px;
-  margin-right: 2px;
-  cursor: pointer;
-  font-family: Open Sans;
-  font-style: normal;
 
-  :hover{
-    border-color: #A3A9AE;
-  }
-  :active{
-    background-color: #ECEEF1;
-  }
-`;
 const StyledIconButtonBlock = styled.div`
   display: inline-block;
   margin-left: 5px;
@@ -64,16 +36,7 @@ const StyledIconButtonBlock = styled.div`
   right: 3px;
   top: calc(50% - 5px);
 `;
-const StyledHideFilter = styled.div`
-  display: inline-block;
-  font-size: 1rem;
-  height: 100%;
-`;
-const StyledPopoverBody = styled(PopoverBody)`
-  font-size: 1rem;
-  border-radius: 6px;
-  box-shadow: 0px 2px 18px rgba(0, 0, 0, 0.13);
-`;
+
 
 const FilterItem = props => {
   const { groupLabel, id, label, block } = props;
@@ -81,11 +44,7 @@ const FilterItem = props => {
     <StyledFilterItem key={id} id={id} block={block} >
         {groupLabel}: {label}
         <StyledIconButtonBlock>
-          <IconButton
-            color={props.color}
-            size={10}
-            iconName={"CrossIcon"}
-            isFill={true}
+          <CloseButton
             isDisabled={props.isDisabled}
             onClick={!props.isDisabled ? ((e) => props.onClose(e, id)) : undefined}
           />
@@ -93,35 +52,6 @@ const FilterItem = props => {
     </StyledFilterItem>
   );
 };
-class HideFilter extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      popoverOpen: false
-    };
-  }
-
-  toggle() {
-    this.setState({
-      popoverOpen: !this.state.popoverOpen
-    });
-  }
-
-  render() {
-    return (
-      <StyledHideFilter>
-      <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
-      
-      <UncontrolledPopover isOpen={this.state.popoverOpen} trigger="legacy" placement="bottom-start" target="PopoverLegacy" hideArrow={true} toggle={this.toggle}>
-        <StyledPopoverBody>{this.props.children}</StyledPopoverBody>
-      </UncontrolledPopover>
-    </StyledHideFilter>
-    );
-  }
-}
-
 
 class SearchInput extends React.Component  {
   constructor(props) {
@@ -145,7 +75,6 @@ class SearchInput extends React.Component  {
     this.getFilterItems = this.getFilterItems.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resize = this.resize.bind(this);
-
   }
 
   onClickDropDownItem(event, filterItem){
@@ -349,13 +278,7 @@ class SearchInput extends React.Component  {
             }
           
           { this.props.isNeedFilter && 
-            <ContextMenuButton
-              title={'Actions'}
-              iconName={'RectangleFilterIcon'}
-              color='#A3A9AE'
-              size={iconSize}
-              getData={_this.getData}
-            />
+            <FilterButton iconSize={iconSize} getData={_this.getData} isDisabled={this.props.isDisabled}/>
           }
         </InputBlock>
       </StyledSearchInput>

@@ -62,6 +62,10 @@ class ContextMenuButton extends React.Component {
               }
               : this.stopAction
           }
+          onMouseEnter={this.props.onMouseEnter}
+          onMouseLeave={this.props.onMouseLeave}
+          onMouseOver={this.props.onMouseOver}
+          onMouseOut={this.props.onMouseOut}
         />
         <DropDown direction={this.props.direction || 'left'} isOpen={this.state.isOpen}>
           {
