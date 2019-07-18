@@ -12,7 +12,16 @@ const StyledOuter = styled.div`
 const IconButton = (props) =>  {
     const { color, isFill, iconName, size, isDisabled } = props;
     return (
-        <StyledOuter size={size} isDisabled={isDisabled} onClick={!props.isDisabled ? props.onClick : undefined}>
+        <StyledOuter 
+            size={size} 
+            isDisabled={isDisabled} 
+            onClick={!props.isDisabled ? props.onClick : undefined}
+            onMouseEnter={!props.isDisabled ? props.onMouseEnter : undefined}
+            onMouseLeave={!props.isDisabled ? props.onMouseLeave : undefined}
+            onMouseOver={!props.isDisabled ? props.onMouseOver : undefined}
+            onMouseOut={!props.isDisabled ? props.onMouseOut : undefined}
+
+        >
             {React.createElement(Icons[iconName], {size: "scale", color: color, isfill: isFill})}
         </StyledOuter>
     );
