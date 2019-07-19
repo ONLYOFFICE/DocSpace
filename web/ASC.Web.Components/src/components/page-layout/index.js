@@ -50,6 +50,10 @@ const StyledArticleHeader = styled.div`
   }
 `;
 
+const StyledArticleMainButton = styled.div`
+  margin: 16px 0 0;
+`;
+
 const StyledArticleBody = styled.div`
   margin: 16px 0;
   outline: 1px dotted;
@@ -95,13 +99,21 @@ const StyledSectionHeader = styled.div`
   height: 56px;
 `;
 
+const StyledSectionFilter = styled.div`
+  margin: 16px 0 0;
+`;
+
 const StyledSectionBody = styled.div`
   margin: 16px 0;
   outline: 1px dotted;
   flex-grow: 1;
 `;
 
-const StyledSectionPagingPanel = styled.div`
+const StyledSectionPaging = styled.div`
+  margin: 0 0 16px;
+`;
+
+const StyledSectionToggler = styled.div`
   height: 64px;
   display: none;
 
@@ -133,37 +145,49 @@ class PageLayout extends React.Component {
 
   hasChanges = (currentProps, prevProps) => {
     return currentProps.articleHeaderContent != prevProps.articleHeaderContent ||
+    currentProps.articleMainButtonContent != prevProps.articleMainButtonContent ||
     currentProps.articleBodyContent != prevProps.articleBodyContent ||
     currentProps.sectionHeaderContent != prevProps.sectionHeaderContent ||
-    currentProps.sectionBodyContent != prevProps.sectionBodyContent;
+    currentProps.sectionFilterContent != prevProps.sectionFilterContent ||
+    currentProps.sectionBodyContent != prevProps.sectionBodyContent ||
+    currentProps.sectionPagingContent != prevProps.sectionPagingContent;
   }
 
   mapPropsToState = (props) => {
-    let isArticleHeaderAvailable = !!props.articleHeaderContent ,
+    let isArticleHeaderAvailable = !!props.articleHeaderContent,
+        isArticleMainButtonAvailable = !!props.articleMainButtonContent,
         isArticleBodyAvailable = !!props.articleBodyContent,
-        isArticleAvailable = isArticleHeaderAvailable || isArticleBodyAvailable,
+        isArticleAvailable = isArticleHeaderAvailable || isArticleMainButtonAvailable || isArticleBodyAvailable,
         isSectionHeaderAvailable = !!props.sectionHeaderContent,
+        isSectionFilterAvailable = !!props.sectionFilterContent,
         isSectionBodyAvailable = !!props.sectionBodyContent,
-        isSectionAvailable = isSectionHeaderAvailable || isSectionBodyAvailable || isArticleAvailable,
+        isSectionPagingAvailable = !!props.sectionPagingContent,
+        isSectionAvailable = isSectionHeaderAvailable || isSectionFilterAvailable || isSectionBodyAvailable || isSectionPagingAvailable || isArticleAvailable,
         isBackdropAvailable = isArticleAvailable;
 
     let newState = {
       isBackdropAvailable: isBackdropAvailable,
       isArticleAvailable: isArticleAvailable,
       isArticleHeaderAvailable: isArticleHeaderAvailable,
+      isArticleMainButtonAvailable: isArticleMainButtonAvailable,
       isArticleBodyAvailable: isArticleBodyAvailable,
       isSectionAvailable: isSectionAvailable,
       isSectionHeaderAvailable: isSectionHeaderAvailable,
+      isSectionFilterAvailable: isSectionFilterAvailable,
       isSectionBodyAvailable: isSectionBodyAvailable,
+      isSectionPagingAvailable: isSectionPagingAvailable,
 
       isBackdropVisible: props.isBackdropVisible,
       isArticleVisible: props.isArticleVisible,
       isArticlePinned: props.isArticlePinned,
 
       articleHeaderContent: props.articleHeaderContent,
+      articleMainButtonContent: props.articleMainButtonContent,
       articleBodyContent: props.articleBodyContent,
       sectionHeaderContent: props.sectionHeaderContent,
-      sectionBodyContent: props.sectionBodyContent
+      sectionFilterContent: props.sectionFilterContent,
+      sectionBodyContent: props.sectionBodyContent,
+      sectionPagingContent: props.sectionPagingContent,
     };
 
     return newState;
@@ -216,6 +240,10 @@ class PageLayout extends React.Component {
               <StyledArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</StyledArticleHeader>
             }
             {
+              this.state.isArticleMainButtonAvailable &&
+              <StyledArticleMainButton>{this.state.articleMainButtonContent}</StyledArticleMainButton>
+            }
+            {
               this.state.isArticleBodyAvailable &&
               <StyledArticleBody>
                 <Scrollbar>
@@ -249,6 +277,10 @@ class PageLayout extends React.Component {
               <StyledSectionHeader>{this.state.sectionHeaderContent}</StyledSectionHeader>
             }
             {
+              this.state.isSectionFilterAvailable &&
+              <StyledSectionFilter>{this.state.sectionFilterContent}</StyledSectionFilter>
+            }
+            {
               this.state.isSectionBodyAvailable &&
               <StyledSectionBody>
                 <Scrollbar stype="mediumBlack">
@@ -257,12 +289,16 @@ class PageLayout extends React.Component {
               </StyledSectionBody>
             }
             {
+              this.state.isSectionPagingAvailable &&
+              <StyledSectionPaging>{this.state.sectionPagingContent}</StyledSectionPaging>
+            }
+            {
               this.state.isArticleAvailable &&
-              <StyledSectionPagingPanel visible={!this.state.isArticlePinned}>
+              <StyledSectionToggler visible={!this.state.isArticlePinned}>
                 <div onClick={this.showArticle}>
                   <Icons.CatalogButtonIcon size="scale"/>
                 </div>
-              </StyledSectionPagingPanel>
+              </StyledSectionToggler>
             }
           </StyledSection>
         }
@@ -277,9 +313,12 @@ PageLayout.propTypes = {
   isArticlePinned: PropTypes.bool,
 
   articleHeaderContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  articleMainButtonContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   articleBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   sectionHeaderContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  sectionBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
+  sectionFilterContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  sectionBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  sectionPagingContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
 }
 
 PageLayout.defaultProps = {

@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import styled from '@emotion/styled'
-import { Layout, PageLayout, Text, IconButton, ContextMenuButton } from 'asc-web-components'
+import { Layout, PageLayout, Text, IconButton, ContextMenuButton, MainButton, SearchInput, Paging } from 'asc-web-components'
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
@@ -96,8 +96,35 @@ const HeaderContent = styled.div`
   }
 `;
 
+const pageItems = [
+  {
+    key: '1',
+    label: '1 of 2',
+    onClick: () => console.log('set paging 1 of 2'),
+  },
+  {
+    key: '2',
+    label: '2 of 2',
+    onClick: () => console.log('set paging 2 of 2'),
+  }
+];
+
+const perPageItems = [
+  {
+    key: '1-1',
+    label: '25 per page',
+    onClick: () => console.log('set paging 25 action'),
+  },
+  {
+    key: '1-2',
+    label: '50 per page',
+    onClick: () => console.log('set paging 50 action'),
+  }
+];
+
 const asideContent = <p style={{padding: 40}}>Aside Content</p>;
 const articleHeaderContent = <Text.MenuHeader>Article Header</Text.MenuHeader>;
+const articleMainButtonContent = <MainButton text='Actions' clickAction={() => alert('MainButton Clicked')} />;
 const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
 const sectionHeaderContent = <HeaderContent>
   <IconButton size='16'onClick={() => alert('ProjectDocumentsUpIcon Clicked')} iconName={"ProjectDocumentsUpIcon"} />
@@ -105,7 +132,19 @@ const sectionHeaderContent = <HeaderContent>
   <IconButton size='16' onClick={() => alert('PlusIcon Clicked')} iconName={"PlusIcon"} />
   <ContextMenuButton title="Actions" getData={() => [{key: 'key', label: 'label', onClick: () => alert('label Clicked')}]} />
 </HeaderContent>;
+const sectionFilterContent = <SearchInput isNeedFilter={true}
+  getFilterData={() => [
+    { key: 'filter-example', group: 'filter-example', label: 'example group', isHeader: true },
+    { key: 'filter-example-test', group: 'filter-example', label: 'Test' }
+  ]}
+  onSearchClick={(result) => {console.log(result)}}
+  onChangeFilter={(result) => {console.log(result)}}
+/>
 const sectionBodyContent = <p style={{padding: 40}}>Section Content</p>;
+const sectionPagingContent = <Paging previousLabel="Previous" nextLabel="Next"
+  pageItems={pageItems} perPageItems={perPageItems}
+  previousAction={() => console.log('Prev')}
+  nextAction={() => console.log('Next')} openDirection="top" />
 
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
@@ -119,9 +158,12 @@ storiesOf('Components|Layout', module)
     >
       <PageLayout
         articleHeaderContent={articleHeaderContent}
+        articleMainButtonContent={articleMainButtonContent}
         articleBodyContent={articleBodyContent}
         sectionHeaderContent={sectionHeaderContent}
+        sectionFilterContent={sectionFilterContent}
         sectionBodyContent={sectionBodyContent}
+        sectionPagingContent={sectionPagingContent}
       />
     </Layout>
   ));
