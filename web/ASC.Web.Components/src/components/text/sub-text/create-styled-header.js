@@ -12,6 +12,7 @@ export default function createStyledHeader(headlineType) {
 
    const StyledHeadline = styled.h1`
       font-family: 'Open Sans',sans-serif,Arial;
+      margin: 0;
       font-size: ${fontSize}px;
       font-weight: 700;
       color: ${props => props.isDisabled == true ? '#ECEEF1' : '#333333'};
