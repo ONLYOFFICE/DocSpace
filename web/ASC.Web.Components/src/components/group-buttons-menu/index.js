@@ -70,9 +70,6 @@ class GroupButtonsMenu extends React.Component {
         }
         this.fullMenuArray = this.props.menuItems;
         this.checkBox = this.props.checkBox;
-
-        this.groupMenuOuter = React.createRef();
-        this.moreMenu = React.createRef();
     }
     
     componentDidMount() {
@@ -81,6 +78,12 @@ class GroupButtonsMenu extends React.Component {
         window.addEventListener('resize', _.throttle(this.updateMenu), 100);
         this.updateMenu();
     }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.visible !== prevProps.visible) {
+            this.setState({visible: this.props.visible});
+        }
+    };
     
     howManyItemsInMenuArray(array, outerWidth, initialWidth, minimumNumberInNav) {
         let total = (initialWidth+180);
@@ -94,8 +97,8 @@ class GroupButtonsMenu extends React.Component {
     }
 
     updateMenu() {
-        this.outerWidth = this.groupMenuOuter.current ? this.groupMenuOuter.current.getBoundingClientRect().width : 0;
-        this.moreMenu = this.moreMenu.current ? this.moreMenu.current.getBoundingClientRect().width : 0;
+        this.outerWidth =  document.getElementById("groupMenuOuter") ? document.getElementById("groupMenuOuter").getBoundingClientRect().width : 0;
+        this.moreMenu = document.getElementById("moreMenu") ? document.getElementById("moreMenu").getBoundingClientRect().width : 0;
 
         const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, this.outerWidth, this.moreMenu, 1);    
         const navItemsCopy = this.fullMenuArray;
@@ -111,13 +114,12 @@ class GroupButtonsMenu extends React.Component {
         window.removeEventListener('resize', this.updateMenu());
     }
 
-    render() {
-        const { priorityItems, moreItems } = this.state;
 
-        const toggle = () => this.setState({visible: !this.props.visible});
+    render() {
+        const closeMenu = () => {this.setState({visible: false})};
 
         return (
-            <StyledGroupButtonsMenu ref={this.groupMenuOuter} visible={this.state.visible} {...this.state}>
+            <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
                 {this.props.hasOwnProperty("checked") && 
                     <StyledCheckbox>
                         <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => { 
@@ -127,20 +129,23 @@ class GroupButtonsMenu extends React.Component {
                     </StyledCheckbox>
                 }
                 <div id="groupMenu" style={{display: 'inline-block'}}>
-                {priorityItems.map((item, i) => 
+                {this.state.priorityItems.map((item, i) => 
                     <GroupButton key={`navItem-${i}`} 
                                 label={item.label} 
                                 isDropdown={item.isDropdown} 
                                 isSeparator={item.isSeparator}
                                 fontWeight={item.fontWeight} 
-                                onClick={item.onClick}>
+                                onClick={(e) => {
+                                    item.onClick(e);
+                                    closeMenu(e);
+                                }}>
                         {item.children}
                     </GroupButton>
                 )}
                 </div>
-                {moreItems.length > 0 && 
-                    <GroupButton ref={this.moreMenu} isDropdown label={this.props.moreLabel}>
-                        {moreItems.map((item, i) => 
+                {this.state.moreItems.length > 0 && 
+                    <GroupButton id="moreMenu" isDropdown label={this.props.moreLabel}>
+                        {this.state.moreItems.map((item, i) => 
                             <DropDownItem 
                                 key={`moreNavItem-${i}`} 
                                 label={item.label}
@@ -148,7 +153,7 @@ class GroupButtonsMenu extends React.Component {
                         )}
                     </GroupButton>
                 }
-                <CloseButton title={this.props.closeTitle} onClick={() => toggle()} />
+                <CloseButton title={this.props.closeTitle} onClick={closeMenu} />
             </StyledGroupButtonsMenu>
         );
     }
