@@ -43,9 +43,10 @@ const StyledArticle = styled.article`
 
 const StyledArticleHeader = styled.div`
   border-bottom: 1px solid #ECEEF1;
+  font-weight: bold;
+  font-size: 27px;
+  line-height: 56px;
   height: 56px;
-  display: flex;
-  align-items: center;
 
   @media ${device.tablet} {
     display: ${props => props.visible ? 'block' : 'none'};
@@ -94,13 +95,10 @@ const StyledSection = styled.section`
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #ECEEF1;
+  font-weight: bold;
+  font-size: 21px;
+  line-height: 56px;
   height: 56px;
-  display: flex;
-  align-items: center;
-
-  & > * {
-    margin-right: 8px;
-  }
 `;
 
 const StyledSectionBody = styled.div`
