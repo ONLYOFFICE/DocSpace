@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import _ from "lodash";
 import { PageLayout } from "asc-web-components";
-import {ArticleHeaderContent, ArticleBodyContent} from './Article';
+import {ArticleHeaderContent, ArticleBodyContent} from '../../Article';
 import {SectionHeaderContent, SectionBodyContent} from './Section';
 
 let selection = [];
