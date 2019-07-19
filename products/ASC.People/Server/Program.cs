@@ -32,7 +32,8 @@ namespace ASC.People
                     .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddJsonFile("autofac.json")
                     .AddJsonFile("autofac.products.json")
-                    .AddJsonFile("storage.json");
+                    .AddJsonFile("storage.json")
+                    .AddJsonFile("kafka.json");
             });
     }
 }

@@ -43,6 +43,8 @@ namespace ASC.Common.Caching
 
         public static readonly ICacheNotify Notify;
 
+        public readonly ICacheNotify<AscCacheItem> KafkaNotify;
+
 
         private readonly ConcurrentDictionary<Type, ConcurrentBag<Action<object, CacheNotifyAction>>> actions =
             new ConcurrentDictionary<Type, ConcurrentBag<Action<object, CacheNotifyAction>>>();
@@ -52,18 +54,20 @@ namespace ASC.Common.Caching
             Memory = new AscCache();
             Default = ConfigurationManager.GetSection("redisCacheClient") != null ? new RedisCache() : Memory;
             Notify = (ICacheNotify) Default;
-            try
-            {
-                Notify.Subscribe<AscCacheItem>((item, action) => { OnClearCache(); });
-            }
-            catch (Exception)
-            {
-                
-            }
         }
 
         private AscCache()
         {
+            KafkaNotify = new KafkaCache<AscCacheItem>();
+
+            try
+            {
+                KafkaNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public T Get<T>(string key) where T : class
@@ -156,7 +160,7 @@ namespace ASC.Common.Caching
         {
             if (onchange != null)
             {
-                Action<object, CacheNotifyAction> action = (o, a) => onchange((T) o, a);
+                void action(object o, CacheNotifyAction a) => onchange((T)o, a);
                 actions.AddOrUpdate(typeof(T), 
                     new ConcurrentBag<Action<object, CacheNotifyAction>> { action },
                     (type, bag) =>
@@ -167,15 +171,13 @@ namespace ASC.Common.Caching
             }
             else
             {
-                ConcurrentBag<Action<object, CacheNotifyAction>> removed;
-                actions.TryRemove(typeof(T), out removed);
+                actions.TryRemove(typeof(T), out var removed);
             }
         }
 
         public void Publish<T>(T obj, CacheNotifyAction action)
         {
-            ConcurrentBag<Action<object, CacheNotifyAction>> onchange;
-            actions.TryGetValue(typeof(T), out onchange);
+            actions.TryGetValue(typeof(T), out var onchange);
 
             if (onchange != null)
             {
@@ -183,9 +185,9 @@ namespace ASC.Common.Caching
             }
         }
 
-        public static void ClearCache()
+        public void ClearCache()
         {
-            Notify.Publish(new AscCacheItem(), CacheNotifyAction.Any);
+            KafkaNotify.Publish(new AscCacheItem() { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
         }
 
         private MemoryCache GetCache()
@@ -202,17 +204,6 @@ namespace ASC.Common.Caching
             {
                 MemoryCache.Default.Remove(k);
             }
-        }
-    }
-
-    [Serializable]
-    public class AscCacheItem
-    {
-        public Guid Id { get; set; }
-
-        public AscCacheItem()
-        {
-            Id = Guid.NewGuid();
         }
     }
 }
