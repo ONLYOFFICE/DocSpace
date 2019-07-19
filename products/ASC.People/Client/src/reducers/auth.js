@@ -24,7 +24,9 @@ const auth = (state = initialState, action) => {
                 isLoaded: action.isLoaded
             });
         case LOGOUT:
-            return initialState;
+            return Object.assign({}, initialState, {
+                isLoaded: true
+            });
         default:
             return state;
     }

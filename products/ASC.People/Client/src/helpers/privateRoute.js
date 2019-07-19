@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Redirect, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
+import ExternalRedirect from '../helpers/externalRedirect';
 import { PageLayout, Loader } from "asc-web-components";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -19,12 +20,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         ) : isAuthenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location }
-            }}
-          />
+          <ExternalRedirect to="/login" />
         )
       }
     />
