@@ -45,12 +45,22 @@ class IconButton extends React.Component{
         this.props.onMouseDown && this.props.onMouseDown(e);
     }
     onMouseUp(e){
-        this.setState({
-            currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
-            currentIconColor: this.props.iconHoverName ? this.props.iconHoverName :  this.props.color
-        });
-        this.props.onClick && this.props.onClick(e);
-        this.props.onMouseUp && this.props.onMouseUp(e);
+        switch (e.nativeEvent.which) {
+            case 1: //Left click
+                this.setState({
+                    currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
+                    currentIconColor: this.props.iconHoverName ? this.props.iconHoverName :  this.props.color
+                });
+                this.props.onClick && this.props.onClick(e);
+                this.props.onMouseUp && this.props.onMouseUp(e);
+                break;
+            case 3://Right click
+                this.props.onMouseUp && this.props.onMouseUp(e);
+                break;
+        
+            default:
+                break;
+        }
     }
     render(){
         return (
