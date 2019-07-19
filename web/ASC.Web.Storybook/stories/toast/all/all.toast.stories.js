@@ -9,33 +9,33 @@ storiesOf('Components|Toast', module)
   .add('all', () => {
     return (
       <>
-      <Toast/> 
-      <Section>
-        <button onClick = {()=> {
-              toastr.success('Demo text for success Toast');
-              toastr.error('Demo text for error Toast');
-              toastr.warning('Demo text for warning Toast');
-              toastr.info('Demo text for info Toast');
-              
-              toastr.success('Demo text for success Toast with title', 'Demo title');
-              toastr.error('Demo text for error Toast with title', 'Demo title');
-              toastr.warning('Demo text for warning Toast with title', 'Demo title');
-              toastr.info('Demo text for info Toast with title', 'Demo title');
+        <Section>
 
-              toastr.success('Demo text for success manual closed Toast', null, false);
-              toastr.error('Demo text for error manual closed Toast', null, false);
-              toastr.warning('Demo text for warning manual closed Toast', null, false);
-              toastr.info('Demo text for info manual closed Toast', null, false);
+          <Toast>
 
-              toastr.success('Demo text for success manual closed Toast with title', 'Demo title', false);
-              toastr.error('Demo text for error manual closed Toast with title', 'Demo title', false);
-              toastr.warning('Demo text for warning manual closed Toast with title', 'Demo title', false);
-              toastr.info('Demo text for info manual closed Toast with title', 'Demo title', false);
+            {toastr.success('Demo text for success Toast closes in 30 seconds or on click', null, 30000)}
+            {toastr.error('Demo text for error Toast closes in 28 seconds or on click', null, 28000)}
+            {toastr.warning('Demo text for warning Toast closes in 25 seconds or on click', null, 25000)}
+            {toastr.info('Demo text for info Toast closes in 15 seconds or on click', null, 15000)}
 
-               }}>Show all Toastr</button>
+            {toastr.success('Demo text for success Toast with title closes in 12 seconds or on click', 'Demo title', 12000)}
+            {toastr.error('Demo text for error Toast with title closes in 10 seconds or on click', 'Demo title', 10000)}
+            {toastr.warning('Demo text for warning Toast with title closes in 8 seconds or on click', 'Demo title', 8000)}
+            {toastr.info('Demo text for info Toast with title closes in 6 seconds or on click', 'Demo title', 6000)}
 
-      </Section>
-    </>
-   );
-});
-   
+            {toastr.success('Demo text for success manual closed Toast', null, 0, true, true)}
+            {toastr.error('Demo text for error manual closed Toast', null, 0, true, true)}
+            {toastr.warning('Demo text for warning manual closed Toast', null, 0, true, true)}
+            {toastr.info('Demo text for info manual closed Toast', null, 0, true, true)}
+
+            {toastr.success('Demo text for success manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.error('Demo text for error manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.warning('Demo text for warning manual closed Toast with title', 'Demo title', 0, true, true)}
+            {toastr.info('Demo text for info manual closed Toast with title', 'Demo title', 0, true, true)}
+
+          </Toast>
+          
+        </Section>
+      </>
+    );
+  });

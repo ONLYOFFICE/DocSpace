@@ -129,7 +129,7 @@ class ContentRow extends React.Component {
                 <StyledContent>{children}</StyledContent>
                 {contextOptions && 
                     <StyledOptionButton>
-                        <ContextMenuButton direction='right' getData={() => contextOptions} />
+                        <ContextMenuButton directionX='right' getData={() => contextOptions} />
                     </StyledOptionButton>
                 }
             </StyledContentRow>

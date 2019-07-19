@@ -22,3 +22,4 @@ import { Paging } from 'asc-web-components';
 | `nextLabel`            | `string`          |    -     | -                            | `Next`  | Label for next button                        |
 | `previousAction`       | `function`        |    -     | -                            | -       | Action for previous button                   |
 | `nextAction`           | `function`        |    -     | -                            | -       | Action for next button                       |
+| `openDirection`        | `string`          |    -     | `top`, `bottom`              | `bottom`| Indicates opening direction of combo box     |

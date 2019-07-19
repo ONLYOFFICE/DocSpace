@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
-using System.Threading.Tasks;
+
 using ASC.Api.Core;
 using ASC.Common.Web;
 using ASC.Core;
@@ -28,10 +28,12 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
@@ -41,7 +43,9 @@ namespace ASC.Employee.Core.Controllers
     public class PeopleController : ControllerBase
     {
         public Common.Logging.LogManager LogManager { get; }
-        public ApiContext ApiContext { get; }
+
+        private ApiContext apiContext;
+        public ApiContext ApiContext { get { return apiContext ?? (apiContext = HttpContext); } }
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
@@ -49,7 +53,6 @@ namespace ASC.Employee.Core.Controllers
         public PeopleController(Common.Logging.LogManager logManager, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove)
         {
             LogManager = logManager;
-            ApiContext = HttpContext;
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;

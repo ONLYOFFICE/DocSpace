@@ -19,13 +19,14 @@ namespace ASC.Employee.Core.Controllers
     public class GroupController : ControllerBase
     {
         public Common.Logging.LogManager LogManager { get; }
-        public ApiContext ApiContext { get; }
+
+        private ApiContext apiContext;
+        public ApiContext ApiContext { get { return apiContext ?? (apiContext = HttpContext); } }
         public MessageService MessageService { get; }
 
         public GroupController(Common.Logging.LogManager logManager, MessageService messageService)
         {
             LogManager = logManager;
-            ApiContext = HttpContext;
             MessageService = messageService;
         }
 

@@ -29,8 +29,7 @@ const toastr = {
 };
 
 
-const notify = (type, text, title, autoClosed = true) => {
-
+const notify = (type, text, title, timeout = 5000, withCross = false,  centerPosition = false) => {
   return toast(
     <>
       <div>
@@ -43,27 +42,28 @@ const notify = (type, text, title, autoClosed = true) => {
     </>,
     {
       type: type,
-      closeOnClick: autoClosed,
-      closeButton: !autoClosed,
-      autoClose: autoClosed
+      closeOnClick: !withCross,
+      closeButton: withCross,
+      autoClose: timeout === 0 ? false : timeout < 0 ? 5000 : (timeout || 5000),
+      position: centerPosition && toast.POSITION.TOP_CENTER
     }
   );
 };
 
-function success(text, title, autoClosed) {
-  return notify('success', text, title, autoClosed);
+function success(text, title, timeout, withCross, centerPosition) {
+  return notify('success', text, title, timeout, withCross, centerPosition);
 }
 
-function error(text, title, autoClosed) {
-  return notify('error', text, title, autoClosed);
+function error(text, title, timeout, withCross, centerPosition) {
+  return notify('error', text, title, timeout, withCross, centerPosition);
 }
 
-function warning(text, title, autoClosed) {
-  return notify('warning', text, title, autoClosed);
+function warning(text, title, timeout, withCross, centerPosition) {
+  return notify('warning', text, title, timeout, withCross, centerPosition);
 }
 
-function info(text, title, autoClosed) {
-  return notify('info', text, title, autoClosed);
+function info(text, title, timeout, withCross, centerPosition) {
+  return notify('info', text, title, timeout, withCross, centerPosition);
 }
 
 function clear() {

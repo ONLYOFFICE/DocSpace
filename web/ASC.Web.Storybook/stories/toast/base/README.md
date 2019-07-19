@@ -35,7 +35,8 @@ or
 | `type`             | `oneOf`  |    ✅    | success, error, warning, info | -     | Define color and icon of toast                                           |
 | `text`             | `string` |    -     | -                             | -     | Text inside a toast                                                      |
 | `title`            | `string` |    -     | -                             | -     | Title inside a toast                                                     |
-| `autoClosed`       | `bool`   |    -     | true, false                   | `true`|If `true`: toast disappeared after 5 seconds or after clicking on any area of toast. If `false`: included close button, toast can be closed by clicking on it.|
+| `withCross`       | `bool`   |    -     | true, false                   | `false`|If `false`: toast disappeared after clicking on any area of toast. If `true`:  toast disappeared after clicking on  close button|
+| `timeout`       | `number`   |    -     | all positive numbers                   | `5000`|Time (in milliseconds) for showing your toast. Setting in `0` let you to show toast constantly until clicking on it|
 
 #### Other Options
 ```js

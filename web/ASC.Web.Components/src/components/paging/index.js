@@ -31,7 +31,7 @@ const StyledPage = styled.div`
 `;
 
 const Paging = props => {
-    const {previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems} = props;
+    const {previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection} = props;
     
     return (
         <StyledPaging>
@@ -39,13 +39,13 @@ const Paging = props => {
             <>
                 <Button size='medium' label={previousLabel} onClick={previousAction}/>
                 <StyledPage>
-                    <ComboBox items={pageItems} />
+                    <ComboBox directionY={openDirection} items={pageItems} />
                 </StyledPage>
                 <Button size='medium' label={nextLabel} onClick={nextAction}/>
             </>
             }
             <StyledOnPage>
-                <ComboBox items={perPageItems} />
+                <ComboBox directionY={openDirection} items={perPageItems} />
             </StyledOnPage>
         </StyledPaging>
     );
