@@ -11,4 +11,10 @@ html, body {
 #root {
     min-height: 100%;
     position: relative;
+
+    .pageLoader {
+        position: fixed;
+        left: calc(50% - 32px);
+        top: 35%;
+    }
 }

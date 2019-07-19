@@ -64,7 +64,7 @@ class ProfileActions extends React.Component {
         <DropDown
           isUserPreview
           withArrow
-          direction='right'
+          directionX='right'
           isOpen={this.state.opened}
         >
           <DropDownItem
