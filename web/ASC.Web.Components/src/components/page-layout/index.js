@@ -43,9 +43,6 @@ const StyledArticle = styled.article`
 
 const StyledArticleHeader = styled.div`
   border-bottom: 1px solid #ECEEF1;
-  font-weight: bold;
-  font-size: 27px;
-  line-height: 56px;
   height: 56px;
 
   @media ${device.tablet} {
@@ -95,9 +92,6 @@ const StyledSection = styled.section`
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #ECEEF1;
-  font-weight: bold;
-  font-size: 21px;
-  line-height: 56px;
   height: 56px;
 `;
 
