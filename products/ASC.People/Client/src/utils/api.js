@@ -34,5 +34,5 @@ export function getUserList() {
 };
 
 export function getGroupList() {
-    return fakeApi.getGroups(); // IS_FAKE ? fakeApi.getGroups() :  axios.get(`${API_URL}/api/2.0/group`);
+    return IS_FAKE ? fakeApi.getGroups() :  axios.get(`${API_URL}/group`);
 };
