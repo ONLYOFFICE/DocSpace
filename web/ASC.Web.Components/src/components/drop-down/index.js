@@ -11,8 +11,8 @@ const StyledDropdown = styled.div`
 
     position: absolute;
     ${props => props.manualWidth && `width: ${props.manualWidth};`}
-    ${props => (props.directionY === 'top' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
-    ${props => (props.directionY === 'bottom' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
+    ${props => (props.directionY === 'top' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
+    ${props => (props.directionY === 'bottom' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
     ${props => (props.directionX === 'right' && css`right: 0px;`)}
     ${props => (props.directionX === 'left' && css`left: 0px;`)}
     z-index: 1000;
@@ -31,8 +31,8 @@ const StyledDropdown = styled.div`
 const Arrow = styled.div`
     position: absolute;
     top: -6px;
-    ${props => (props.direction === 'right' && css`right: 16px;`)}
-    ${props => (props.direction === 'left' && css`left: 16px;`)}
+    ${props => (props.directionX === 'right' && css`right: 16px;`)}
+    ${props => (props.directionX === 'left' && css`left: 16px;`)}
     width: 24px;
     height: 6px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
@@ -59,7 +59,7 @@ DropDown.propTypes = {
 
 DropDown.defaultProps = {
     directionX: 'left',
-    directionY: 'top',
+    directionY: 'bottom',
     withArrow: false
 };
 
