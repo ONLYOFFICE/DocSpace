@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Layout, PageLayout } from 'asc-web-components'
+import { Layout, PageLayout, Text, IconButton, ContextMenuButton } from 'asc-web-components'
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
@@ -87,9 +87,14 @@ const currentModuleId = '44444444-4444-4444-4444-444444444444';
 const onLogoClick = (e) => {action('Logo Clicked')(e)};
 
 const asideContent = <p style={{padding: 40}}>Aside Content</p>;
-const articleHeaderContent = "Article Header";
+const articleHeaderContent = <Text.MenuHeader>Article Header</Text.MenuHeader>;
 const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
-const sectionHeaderContent = "Section Header";
+const sectionHeaderContent = <>
+  <IconButton size='16'onClick={() => alert('ProjectDocumentsUpIcon Clicked')} iconName={"ProjectDocumentsUpIcon"} />
+  <Text.ContentHeader>Section Header</Text.ContentHeader>
+  <IconButton size='16' onClick={() => alert('PlusIcon Clicked')} iconName={"PlusIcon"} />
+  <ContextMenuButton title="Actions" getData={() => [{key: 'key', label: 'label', onClick: () => alert('label Clicked')}]} />
+</>;
 const sectionBodyContent = <p style={{padding: 40}}>Section Content</p>;
 
 storiesOf('Components|Layout', module)
