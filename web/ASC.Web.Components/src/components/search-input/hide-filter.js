@@ -1,7 +1,7 @@
 import React from "react";
 import styled from 'styled-components';
 import { Icons } from '../icons';
-import {UncontrolledPopover, PopoverBody } from 'reactstrap';
+import {Popover, PopoverBody } from 'reactstrap';
 
 const Caret = styled.div`
   width: 7px;
@@ -35,11 +35,8 @@ const StyledHideFilterButton = styled.div`
 `;
 const StyledHideFilter = styled.div`
   display: inline-block;
-  font-size: 1rem;
-  height: 100%;
 `;
 const StyledPopoverBody = styled(PopoverBody)`
-  font-size: 1rem;
   border-radius: 6px;
   box-shadow: 0px 2px 18px rgba(0, 0, 0, 0.13);
 `;
@@ -63,12 +60,18 @@ class HideFilter extends React.Component {
   render() {
     return (
       <StyledHideFilter>
-      <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
-      
-      <UncontrolledPopover isOpen={this.state.popoverOpen} trigger="legacy" placement="bottom-start" target="PopoverLegacy" hideArrow={true} toggle={this.toggle}>
-        <StyledPopoverBody>{this.props.children}</StyledPopoverBody>
-      </UncontrolledPopover>
-    </StyledHideFilter>
+        <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
+        
+        <Popover 
+          isOpen={this.state.popoverOpen} 
+          trigger="legacy" 
+          placement="bottom-start" 
+          target="PopoverLegacy"
+          hideArrow={true} 
+          toggle={this.toggle}>
+          <StyledPopoverBody>{this.props.children}</StyledPopoverBody>
+        </Popover>
+      </StyledHideFilter>
     );
   }
 }

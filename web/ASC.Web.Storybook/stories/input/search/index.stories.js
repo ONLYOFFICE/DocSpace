@@ -15,7 +15,7 @@ function getData() {
       { key: 'filter-status-active', group: 'filter-status', label: 'Active' },
       { key: 'filter-status-disabled', group: 'filter-status', label: 'Disabled' },
       { key: 'filter-type', group: 'filter-type', label: 'Type', isHeader: true },
-      { key: 'filter-type-administrator', group: 'filter-type', label: 'Administrator' },
+      { key: 'filter-type-administrator', group: 'filter-type', label: 'Folders' },
       { key: 'filter-type-employee', group: 'filter-type', label: 'Employee' },
     ];
   }

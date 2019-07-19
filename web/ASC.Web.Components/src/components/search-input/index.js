@@ -9,32 +9,44 @@ import CloseButton from './close-button';
 
 const StyledSearchInput = styled.div`
   min-width: 200px;
+  font-family: Open Sans;
+  font-style: normal;
 `;
 
+const StyledFilterBlock = styled.div`
+  display: flex;
+  align-items: center;
+`
 const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'block' : 'inline-block'};
   margin-bottom: ${props => props.block ? '3px' : '0'};
   position relative;
-  align-items: center;
+  
   height: 100%;
-  padding: 3px;
-  padding-right: 18px;
+  padding: 3px 44px 3px 7px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
   background-color: #F8F9F9;
+
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+
   &:last-child{
     margin-bottom: 0;
   }
 `;
 
-const StyledIconButtonBlock = styled.div`
-  display: inline-block;
-  margin-left: 5px;
-  position absolute;
+const StyledCloseButtonBlock = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 25px;
+  border-left: 1px solid #ECEEF1;
   right: 0;
-  right: 3px;
-  top: calc(50% - 5px);
+  top: 0;
 `;
 
 
@@ -43,12 +55,12 @@ const FilterItem = props => {
   return (
     <StyledFilterItem key={id} id={id} block={block} >
         {groupLabel}: {label}
-        <StyledIconButtonBlock>
+        <StyledCloseButtonBlock>
           <CloseButton
             isDisabled={props.isDisabled}
             onClick={!props.isDisabled ? ((e) => props.onClose(e, id)) : undefined}
           />
-        </StyledIconButtonBlock>
+        </StyledCloseButtonBlock>
     </StyledFilterItem>
   );
 };
@@ -272,9 +284,9 @@ class SearchInput extends React.Component  {
           onChange={this.props.onChange}
         >
             { this.props.isNeedFilter && 
-              <div ref={this.filterWrapper}>
+              <StyledFilterBlock ref={this.filterWrapper}>
                 {this.getFilterItems()}
-              </div>
+              </StyledFilterBlock>
             }
           
           { this.props.isNeedFilter && 
