@@ -25,14 +25,13 @@ const PeopleLayout = props => {
         },
     ];
 
+    const newProps = auth.isAuthenticated && auth.isLoaded 
+        ? { currentUserActions: currentUserActions, 
+            onLogoClick: () => window.open("/", '_self'), 
+            ...props } 
+        : {};
 
-    const layoutProps = { currentUserActions: currentUserActions, ...props };
-
-    return (
-        auth.isAuthenticated && auth.isLoaded
-                ? <Layout key="1" {...layoutProps}>{children}</Layout>
-                : <Layout key="2">{children}</Layout>
-    );
+    return (<Layout key="1" {...newProps}>{children}</Layout>);
 };
 
 PeopleLayout.propTypes = {
@@ -48,7 +47,7 @@ function convertModules(modules) {
         iconName: 'ChatIcon',
         notifications: 3,
         url: '/products/chat/',
-        onClick: () => window.open('/products/chat/', '_blank'),
+        onClick: () => window.open('/products/chat/', '_self'),
         onBadgeClick: e => console.log('ChatIconBadge Clicked')(e),
         isolateMode: true
     };
