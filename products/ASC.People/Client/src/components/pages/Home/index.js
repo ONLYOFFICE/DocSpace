@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import _ from "lodash";
 import { PageLayout } from "asc-web-components";
 import {ArticleHeaderContent, ArticleBodyContent, ArticleMainButtonContent} from '../../Article';
-import {SectionHeaderContent, SectionBodyContent} from './Section';
+import {SectionHeaderContent, SectionBodyContent, SectionFilterContent} from './Section';
 
 let selection = [];
 
@@ -78,6 +78,7 @@ const Home = ({users}) => {
           }}
         />
       }
+      sectionFilterContent={<SectionFilterContent />}
       sectionBodyContent={
         <SectionBodyContent
           users={users}
