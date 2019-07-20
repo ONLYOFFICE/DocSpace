@@ -16,9 +16,21 @@ const currentUser = {
 };
 
 const currentUserActions = [
-  { key: 'ProfileBtn', label: 'Profile', onClick: () => console.log('ProfileBtn') },
-  { key: 'AboutBtn', label: 'About', onClick: () => console.log('AboutBtn') },
-  { key: 'LogoutBtn', label: 'Log out', onClick: () => console.log('LogoutBtn') },
+  { 
+    key: 'ProfileBtn',
+    label: 'Profile',
+    onClick: (e) => action('ProfileBtn Clicked')(e)
+  },
+  {
+    key: 'AboutBtn',
+    label: 'About',
+    onClick: (e) => action('AboutBtn Clicked')(e)
+  },
+  {
+    key: 'LogoutBtn',
+    label: 'Log out',
+    onClick: (e) => action('LogoutBtn Clicked')(e)
+  }
 ];
 
 const availableModules = [
@@ -85,7 +97,7 @@ const availableModules = [
 
 const currentModuleId = '44444444-4444-4444-4444-444444444444';
 
-const onLogoClick = (e) => {action('Logo Clicked')(e)};
+const onLogoClick = (e) => action('Logo Clicked')(e);
 
 const HeaderContent = styled.div`
   display: flex;
@@ -100,12 +112,12 @@ const pageItems = [
   {
     key: '1',
     label: '1 of 2',
-    onClick: () => console.log('set paging 1 of 2'),
+    onClick: (e) => action('set paging 1 of 2')(e)
   },
   {
     key: '2',
     label: '2 of 2',
-    onClick: () => console.log('set paging 2 of 2'),
+    onClick: (e) => action('set paging 2 of 2')(e)
   }
 ];
 
@@ -113,38 +125,80 @@ const perPageItems = [
   {
     key: '1-1',
     label: '25 per page',
-    onClick: () => console.log('set paging 25 action'),
+    onClick: (e) => action('set paging 25 action')(e)
   },
   {
     key: '1-2',
     label: '50 per page',
-    onClick: () => console.log('set paging 50 action'),
+    onClick: (e) => action('set paging 50 action')(e)
   }
 ];
 
 const asideContent = <p style={{padding: 40}}>Aside Content</p>;
+
 const articleHeaderContent = <Text.MenuHeader>Article Header</Text.MenuHeader>;
-const articleMainButtonContent = <MainButton text='Actions' clickAction={() => alert('MainButton Clicked')} />;
+
+const articleMainButtonContent = <MainButton
+  text='Actions'
+  clickAction={(e) => action('MainButton Clicked')(e)}
+/>;
+
 const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
+
 const sectionHeaderContent = <HeaderContent>
-  <IconButton size='16'onClick={() => alert('ProjectDocumentsUpIcon Clicked')} iconName={"ProjectDocumentsUpIcon"} />
+  <IconButton
+    iconName={"ProjectDocumentsUpIcon"}
+    size='16'
+    onClick={(e) => action('ProjectDocumentsUpIcon Clicked')(e)}
+  />
   <Text.ContentHeader>Section Header</Text.ContentHeader>
-  <IconButton size='16' onClick={() => alert('PlusIcon Clicked')} iconName={"PlusIcon"} />
-  <ContextMenuButton title="Actions" getData={() => [{key: 'key', label: 'label', onClick: () => alert('label Clicked')}]} />
+  <IconButton 
+    iconName={"PlusIcon"}
+    size='16'
+    onClick={(e) => action('PlusIcon Clicked')(e)}
+  />
+  <ContextMenuButton
+    title="Actions"
+    getData={() => [
+      {
+        key: 'key',
+        label: 'label',
+        onClick: (e) => action('label Clicked')(e)
+      }
+    ]}
+  />
 </HeaderContent>;
-const sectionFilterContent = <SearchInput isNeedFilter={true}
+
+const sectionFilterContent = <SearchInput
+  isNeedFilter={true}
   getFilterData={() => [
-    { key: 'filter-example', group: 'filter-example', label: 'example group', isHeader: true },
-    { key: 'filter-example-test', group: 'filter-example', label: 'Test' }
+    {
+      key: 'filter-example',
+      group: 'filter-example',
+      label: 'example group',
+      isHeader: true
+    },
+    {
+      key: 'filter-example-test',
+      group: 'filter-example',
+      label: 'Test'
+    }
   ]}
   onSearchClick={(result) => {console.log(result)}}
   onChangeFilter={(result) => {console.log(result)}}
 />
+
 const sectionBodyContent = <p style={{padding: 40}}>Section Content</p>;
-const sectionPagingContent = <Paging previousLabel="Previous" nextLabel="Next"
-  pageItems={pageItems} perPageItems={perPageItems}
-  previousAction={() => console.log('Prev')}
-  nextAction={() => console.log('Next')} openDirection="top" />
+
+const sectionPagingContent = <Paging
+  previousLabel="Previous"
+  nextLabel="Next"
+  pageItems={pageItems}
+  perPageItems={perPageItems}
+  previousAction={(e) => action('Prev Clicked')(e)}
+  nextAction={(e) => action('Next Clicked')(e)}
+  openDirection="top"
+/>
 
 storiesOf('Components|Layout', module)
   .add('Layout', () => (
