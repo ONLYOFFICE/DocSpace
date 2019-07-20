@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupButtonsMenu, DropDownItem } from 'asc-web-components';
+import { GroupButtonsMenu, DropDownItem, Text } from 'asc-web-components';
 
 const peopleItems = [
     {
@@ -62,7 +62,7 @@ const SectionHeaderContent = ({
         />
       </div>
     ) : (
-      "People"
+      <Text.ContentHeader> People</Text.ContentHeader>
     );
 
 export default SectionHeaderContent;
