@@ -20,7 +20,6 @@ const StyledHeader = styled.header`
 `;
 
 const HeaderText = styled(Text.MenuHeader)`
-  margin: 0;
   color: #FFFFFF;
 `;
 
