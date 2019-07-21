@@ -78,6 +78,7 @@ class ComboBox extends React.Component {
                             isReadOnly={true}
                             onIconClick={() => false}
                 >
+                    {this.props.children}
                     <DropDown 
                             directionX={this.props.directionX}
                             directionY={this.props.directionY}
