@@ -7,8 +7,8 @@ import { PageLayout } from "asc-web-components";
 import {ArticleHeaderContent, ArticleBodyContent} from '../../Article';
 import {SectionHeaderContent, SectionBodyContent} from './Section';
 
-const Profile = ({profile}) => {
-
+const Profile = (props) => {
+    console.log("Profile userId", props.match.params.userId);
     return (
         <PageLayout
             articleHeaderContent={<ArticleHeaderContent />}
@@ -20,15 +20,14 @@ const Profile = ({profile}) => {
 };
 
 Profile.propTypes = {
-    profile: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    isLoaded: PropTypes.bool
+    match: PropTypes.object.isRequired,
+    auth: PropTypes.object
   };
 
   function mapStateToProps(state) {
     return {
-      profile: {},
-      isLoaded: state.auth.isLoaded
+      auth: state.auth
     };
   }
 
