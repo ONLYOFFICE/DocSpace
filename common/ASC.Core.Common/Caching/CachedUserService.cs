@@ -42,7 +42,11 @@ namespace ASC.Core.Caching
 
         private readonly IUserService service;
         private readonly ICache cache;
-        private readonly ICacheNotify cacheNotify;
+        private readonly ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem;
+        private readonly ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem;
+        private readonly ICacheNotify<UserInfoCacheItem> cacheUserInfoItem;
+        private readonly ICacheNotify<GroupCacheItem> cacheGroupCacheItem;
+
         private readonly TrustInterval trustInterval;
         private int getchanges;
 
@@ -56,9 +60,7 @@ namespace ASC.Core.Caching
 
         public CachedUserService(IUserService service)
         {
-            if (service == null) throw new ArgumentNullException("service");
-
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             trustInterval = new TrustInterval();
 
@@ -66,11 +68,17 @@ namespace ASC.Core.Caching
             DbExpiration = TimeSpan.FromMinutes(1);
             PhotoExpiration = TimeSpan.FromMinutes(10);
 
-            cacheNotify = AscCache.Notify;
-            cacheNotify.Subscribe<UserInfo>((u, a) => InvalidateCache(u));
-            cacheNotify.Subscribe<UserPhoto>((p, a) => cache.Remove(p.Key));
-            cacheNotify.Subscribe<Group>((g, a) => InvalidateCache());
-            cacheNotify.Subscribe<UserGroupRef>((r, a) => UpdateUserGroupRefCache(r, a == CacheNotifyAction.Remove));
+            cacheUserInfoItem = new KafkaCache<UserInfoCacheItem>();
+            cacheUserPhotoItem = new KafkaCache<UserPhotoCacheItem>();
+            cacheGroupCacheItem = new KafkaCache<GroupCacheItem>();
+            cacheUserGroupRefItem = new KafkaCache<UserGroupRefCacheItem>();
+
+            cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
+            cacheUserPhotoItem.Subscribe((p) => cache.Remove(p.Key), CacheNotifyAction.Remove);
+            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.InsertOrUpdate);
+
+            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
+            cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
         }
 
 
@@ -133,14 +141,14 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = service.SaveUser(tenant, user);
-            cacheNotify.Publish(user, CacheNotifyAction.InsertOrUpdate);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem() { ID = user.ID.ToString(), Tenant = tenant }, CacheNotifyAction.InsertOrUpdate);
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
         {
             service.RemoveUser(tenant, id);
-            cacheNotify.Publish(new UserInfo { Tenant = tenant, ID = id }, CacheNotifyAction.Remove);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, ID = id.ToString() }, CacheNotifyAction.Any);
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -157,7 +165,7 @@ namespace ASC.Core.Caching
         public void SetUserPhoto(int tenant, Guid id, byte[] photo)
         {
             service.SetUserPhoto(tenant, id, photo);
-            cacheNotify.Publish(new UserPhoto { Key = GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
+            cacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
         }
 
         public string GetUserPassword(int tenant, Guid id)
@@ -194,14 +202,14 @@ namespace ASC.Core.Caching
         public Group SaveGroup(int tenant, Group group)
         {
             group = service.SaveGroup(tenant, group);
-            cacheNotify.Publish(group, CacheNotifyAction.InsertOrUpdate);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = group.Id.ToString() }, CacheNotifyAction.InsertOrUpdate);
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
             service.RemoveGroup(tenant, id);
-            cacheNotify.Publish(new Group { Id = id }, CacheNotifyAction.Remove);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = id.ToString() }, CacheNotifyAction.Remove);
         }
 
 
@@ -225,7 +233,7 @@ namespace ASC.Core.Caching
         public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
         {
             r = service.SaveUserGroupRef(tenant, r);
-            cacheNotify.Publish(r, CacheNotifyAction.InsertOrUpdate);
+            cacheUserGroupRefItem.Publish(r, CacheNotifyAction.InsertOrUpdate);
             return r;
         }
 
@@ -234,7 +242,7 @@ namespace ASC.Core.Caching
             service.RemoveUserGroupRef(tenant, userId, groupId, refType);
 
             var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant };
-            cacheNotify.Publish(r, CacheNotifyAction.Remove);
+            cacheUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
         }
 
         public void InvalidateCache()
@@ -242,11 +250,11 @@ namespace ASC.Core.Caching
             InvalidateCache(null);
         }
 
-        private void InvalidateCache(UserInfo userInfo)
+        private void InvalidateCache(UserInfoCacheItem userInfo)
         {
             if (CoreContext.Configuration.Personal && userInfo != null)
             {
-                var key = GetUserCacheKeyForPersonal(userInfo.Tenant, userInfo.ID);
+                var key = GetUserCacheKeyForPersonal(userInfo.Tenant, Guid.Parse(userInfo.ID));
                 cache.Remove(key);
             }
 

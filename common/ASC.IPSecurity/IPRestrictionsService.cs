@@ -34,13 +34,14 @@ namespace ASC.IPSecurity
     {
         private const string cacheKey = "iprestrictions";
         private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify notify = AscCache.Notify;
+        private static readonly ICacheNotify<IPRestrictionItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
 
 
         static IPRestrictionsService()
         {
-            notify.Subscribe<IPRestriction>((r, a) => cache.Remove(GetCacheKey(r.TenantId)));
+            notify = new KafkaCache<IPRestrictionItem>();
+            notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
         }
 
 
@@ -58,7 +59,7 @@ namespace ASC.IPSecurity
         public static IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
         {
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
-            notify.Publish(new IPRestriction { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
+            notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
         }
 

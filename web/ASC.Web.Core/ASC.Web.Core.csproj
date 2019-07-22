@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="protos\UserPhotoManagerCacheItem.proto" />
+    <None Remove="protos\WebItemSecurityNotifier.proto" />
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
@@ -142,6 +144,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="protos\WebItemSecurityNotifier.proto" />
+    <Protobuf Include="protos\UserPhotoManagerCacheItem.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   
 </Project>

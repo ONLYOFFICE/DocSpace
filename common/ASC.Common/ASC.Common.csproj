@@ -53,11 +53,10 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
-    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="5.0.3" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos/AscCacheItem.proto"  />
+    <Protobuf Include="protos/AscCacheItem.proto" />
+    <Protobuf Include="protos\DistributedTaskCancelation.proto" />
   </ItemGroup>
 </Project>

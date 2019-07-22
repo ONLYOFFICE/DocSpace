@@ -35,7 +35,7 @@ namespace ASC.VoipService.Dao
     public class CachedVoipDao : VoipDao
     {
         private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify notify = AscCache.Notify;
+        private static readonly ICacheNotify<CachedVoipItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromDays(1);
 
 
@@ -43,7 +43,8 @@ namespace ASC.VoipService.Dao
         {
             try
             {
-                notify.Subscribe<CachedVoipItem>((c, a) => ResetCache(c.Tenant));
+                notify = new KafkaCache<CachedVoipItem>();
+                notify.Subscribe((c) => ResetCache(c.Tenant), CacheNotifyAction.Any);
             }
             catch (Exception)
             {
@@ -59,14 +60,14 @@ namespace ASC.VoipService.Dao
         public override VoipPhone SaveOrUpdateNumber(VoipPhone phone)
         {
             var result = base.SaveOrUpdateNumber(phone);
-            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.InsertOrUpdate);
+            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.Any);
             return result;
         }
 
         public override void DeleteNumber(string phoneId = "")
         {
             base.DeleteNumber(phoneId);
-            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.Remove);
+            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.Any);
         }
 
         public override IEnumerable<VoipPhone> GetNumbers(params object[] ids)
@@ -90,12 +91,6 @@ namespace ASC.VoipService.Dao
         private static string GetCacheKey(int tenant)
         {
             return "voip" + tenant.ToString(CultureInfo.InvariantCulture);
-        }
-
-        [Serializable]
-        class CachedVoipItem
-        {
-            public int Tenant { get; set; }
         }
     }
 }

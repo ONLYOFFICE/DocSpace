@@ -120,53 +120,51 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    public class UserPhotoManagerCacheItem
-    {
-        public Guid UserID { get; set; }
-        public Size Size { get; set; }
-        public string FileName { get; set; }
-    }
-
     public class UserPhotoManager
     {
         private static readonly IDictionary<Guid, IDictionary<Size, string>> Photofiles = new Dictionary<Guid, IDictionary<Size, string>>();
-        private static readonly ICacheNotify CacheNotify;
+        private static readonly ICacheNotify<UserPhotoManagerCacheItem> CacheNotify;
 
         static UserPhotoManager()
         {
             try
             {
-                CacheNotify = AscCache.Notify;
+                CacheNotify = new KafkaCache<UserPhotoManagerCacheItem>();
 
-                CacheNotify.Subscribe<UserPhotoManagerCacheItem>((data, action) =>
+                CacheNotify.Subscribe((data) =>
                 {
-                    if (action == CacheNotifyAction.InsertOrUpdate)
+                    var userId = new Guid(data.UserID);
+                    var size = new Size(data.Size.Width, data.Size.Height);
+
+                    lock (Photofiles)
+                    {
+
+                        if (!Photofiles.ContainsKey(userId))
+                        {
+                            Photofiles[userId] = new ConcurrentDictionary<Size, string>();
+                        }
+
+                        Photofiles[userId][size] = data.FileName;
+                    }
+                }, CacheNotifyAction.InsertOrUpdate);
+
+                CacheNotify.Subscribe((data) =>
+                {
+                    var userId = new Guid(data.UserID);
+                    var size = new Size(data.Size.Width, data.Size.Height);
+
+                    try
                     {
                         lock (Photofiles)
                         {
-                            if (!Photofiles.ContainsKey(data.UserID))
-                            {
-                                Photofiles[data.UserID] = new ConcurrentDictionary<Size, string>();
-                            }
-
-                            Photofiles[data.UserID][data.Size] = data.FileName;
+                            Photofiles.Remove(userId);
                         }
+                        var storage = GetDataStore();
+                        storage.DeleteFiles("", data.UserID + "*.*", false);
+                        SetCacheLoadedForTenant(false);
                     }
-                    if (action == CacheNotifyAction.Remove)
-                    {
-                        try
-                        {
-                            lock (Photofiles)
-                            {
-                                Photofiles.Remove(data.UserID);
-                            }
-                            var storage = GetDataStore();
-                            storage.DeleteFiles("", data.UserID.ToString() + "*.*", false);
-                            SetCacheLoadedForTenant(false);
-                        }
-                        catch { }
-                    }
-                });
+                    catch { }
+                }, CacheNotifyAction.Remove);
             }
             catch (Exception)
             {
@@ -460,7 +458,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userID}, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userID.ToString()}, CacheNotifyAction.Remove);
             }
         }
 
@@ -468,7 +466,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userId, Size = size, FileName = fileName}, CacheNotifyAction.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userId.ToString(), Size = new CacheSize() { Height = size.Height, Width = size.Width }, FileName = fileName}, CacheNotifyAction.InsertOrUpdate);
             }
         }
 

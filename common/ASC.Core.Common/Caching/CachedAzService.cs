@@ -34,7 +34,7 @@ namespace ASC.Core.Caching
     {
         private readonly IAzService service;
         private readonly ICache cache;
-        private readonly ICacheNotify cacheNotify;
+        private readonly ICacheNotify<AzRecordCache> cacheNotify;
 
 
         public TimeSpan CacheExpiration { get; set; }
@@ -42,14 +42,13 @@ namespace ASC.Core.Caching
 
         public CachedAzService(IAzService service)
         {
-            if (service == null) throw new ArgumentNullException("service");
-
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             CacheExpiration = TimeSpan.FromMinutes(10);
 
-            cacheNotify = AscCache.Notify;
-            cacheNotify.Subscribe<AzRecord>((r, a) => UpdateCache(r.Tenant, r, a == CacheNotifyAction.Remove));
+            cacheNotify = new KafkaCache<AzRecordCache>();
+            cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
+            cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
         }
 
 
@@ -59,7 +58,7 @@ namespace ASC.Core.Caching
             var aces = cache.Get<AzRecordStore>(key);
             if (aces == null)
             {
-                var records = service.GetAces(tenant, default(DateTime));
+                var records = service.GetAces(tenant, default);
                 cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
             }
             return aces;
@@ -84,7 +83,7 @@ namespace ASC.Core.Caching
             return "acl" + tenant.ToString();
         }
 
-        private void UpdateCache(int tenant, AzRecord r, bool remove)
+        private void UpdateCache(AzRecord r, bool remove)
         {
             var aces = cache.Get<AzRecordStore>(GetKey(r.Tenant));
             if (aces != null)

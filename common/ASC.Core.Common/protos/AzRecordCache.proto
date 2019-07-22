@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+
+package ASC.Core;
+
+message AzRecordCache {
+    string SubjectId  = 1;
+
+    string ActionId  = 2;
+
+    string ObjectId = 3;
+
+    string Reaction = 4;
+
+    int32 Tenant = 5;
+}

@@ -30,6 +30,20 @@
     <Compile Remove="Resources\ResourceGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="protos\AzRecordCache.proto" />
+    <None Remove="protos\ConsumerCacheItem.proto" />
+    <None Remove="protos\GroupCacheItem.proto" />
+    <None Remove="protos\QuotaCacheItem.proto" />
+    <None Remove="protos\SettingsCacheItem.proto" />
+    <None Remove="protos\SubscriptionMethodCache.proto" />
+    <None Remove="protos\SubscriptionRecord.proto" />
+    <None Remove="protos\TenantCacheItem.proto" />
+    <None Remove="protos\TenantSetting.proto" />
+    <None Remove="protos\UserGroupRefCacheItem.proto" />
+    <None Remove="protos\UserInfoCacheItem.proto" />
+    <None Remove="protos\UserPhotoCacheItem.proto" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\ResourceGenerator.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -41,6 +55,10 @@
     <PackageReference Include="AWSSDK.Core" Version="3.3.101.9" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.101.16" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.100.18" />
+    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="MailKit" Version="2.1.5.1" />
   </ItemGroup>
   <ItemGroup>
@@ -48,5 +66,20 @@
       <LastGenOutput>ResourceGenerator.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="protos\SettingsCacheItem.proto" />
+    <Protobuf Include="protos\ConsumerCacheItem.proto" />
+    <Protobuf Include="protos\TenantCacheItem.proto" />
+    <Protobuf Include="protos\GroupCacheItem.proto" />
+    <Protobuf Include="protos\UserGroupRefCacheItem.proto" />
+    <Protobuf Include="protos\UserInfoCacheItem.proto" />
+    <Protobuf Include="protos\UserPhotoCacheItem.proto" />
+    <Protobuf Include="protos\TenantSetting.proto" />
+    <Protobuf Include="protos\SubscriptionMethodCache.proto" />
+    <Protobuf Include="protos\SubscriptionRecord.proto" />
+    <Protobuf Include="protos\TariffCacheItem.proto" />
+    <Protobuf Include="protos\AzRecordCache.proto" />
+    <Protobuf Include="protos\QuotaCacheItem.proto" />
   </ItemGroup>
 </Project>
