@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Icons } from '../icons'
 import { Text } from '../text'
+import PropTypes from 'prop-types'
 
 
 const StyledContent = styled.div.attrs((props) => ({
@@ -24,15 +25,21 @@ const Arrow = styled(Icons.ArrowContentIcon).attrs((props) => ({
 
 class ToggleContent extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: this.props.isOpen
     };
   }
 
   toggleContent = (isOpen) => this.setState({ isOpen: isOpen });
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isOpen !== prevProps.isOpen) {
+      this.setState({ isOpen: this.props.isOpen });
+    }
+  };
 
   render() {
     return (
@@ -47,7 +54,12 @@ class ToggleContent extends React.Component {
   }
 }
 
+ToggleContent.propTypes = {
+  isOpen: PropTypes.bool
+}
+
 ToggleContent.defaultProps = {
+  isOpen: false,
   label: "Some label"
 }
 
