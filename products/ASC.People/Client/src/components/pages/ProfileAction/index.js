@@ -8,24 +8,36 @@ import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { getUser } from '../../../utils/api';
 
 const ProfileAction = (props) => {
-  const { auth, history, match } = props;
+  const { auth, history, match, location } = props;
   const { userId } = match.params;
   const [profile, setProfile] = useState(props.profile);
   const [isLoaded, setLoaded] = useState(props.isLoaded);
+  const isEdit = location.pathname.split('/').includes('edit');
 
   useEffect(() => {
-    if(userId === "@self") {
-      setProfile(auth.user);
+    if (isEdit) {
+      if (userId === "@self") {
+        setProfile(auth.user);
+        setLoaded(true);
+      } else {
+        getUser(userId)
+          .then((res) => {
+            if (res.data.error)
+              throw (res.data.error);
+
+            setProfile(res.data.response);
+            setLoaded(true);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    } else {
+      setProfile(null);
       setLoaded(true);
     }
-    else {
-      getUser(userId)
-      .then((res) => { 
-        setProfile(res.data.response);
-        setLoaded(true);
-      });
-    }
   }, []);
+  
 
   return (
     isLoaded ?
@@ -33,7 +45,7 @@ const ProfileAction = (props) => {
         articleHeaderContent={<ArticleHeaderContent />}
         articleBodyContent={<ArticleBodyContent />}
         sectionHeaderContent={<SectionHeaderContent profile={profile} history={history} />}
-        sectionBodyContent={<SectionBodyContent profile={profile} history={history} /> }
+        sectionBodyContent={<SectionBodyContent profile={profile} />}
       />
     : <PageLayout
         sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}

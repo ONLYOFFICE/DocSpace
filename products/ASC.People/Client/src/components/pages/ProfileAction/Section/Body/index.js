@@ -13,27 +13,35 @@ const SectionBodyContent = (props) => {
     return "user";
   };
 
-  const avatarLabel = profile && profile.id ? "Edit photo" : "Add photo";
-
   const onEditAvatar = () => {};
 
   return (
     <div>
-      <Avatar
-          size="max"
-          role={getUserRole(profile)}
-          source={profile.avatarBig}
-          userName={profile.userName}
-          editing={true}
-          editLabel={avatarLabel}
-          editAction={onEditAvatar}
-        />
+      {
+        profile
+        ? <Avatar
+            size="max"
+            role={getUserRole(profile)}
+            source={profile.avatar}
+            userName={profile.userName}
+            editing={true}
+            editLabel={"Edit photo"}
+            editAction={onEditAvatar}
+          />
+        : <Avatar
+            size="max"
+            role="user"
+            editing={true}
+            editLabel={"Add photo"}
+            editAction={onEditAvatar}
+          />
+      }
     </div>
   );
 };
 
 SectionBodyContent.propTypes = {
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object
 };
 
 export default SectionBodyContent;
