@@ -29,13 +29,6 @@ using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
-    public interface ICacheNotify
-    {
-        void Publish<T>(T obj, CacheNotifyAction action);
-
-        void Subscribe<T>(Action<T, CacheNotifyAction> onchange);
-    }
-
     public interface ICacheNotify<T> where T : IMessage<T>, new()
     {
         void Publish(T obj, CacheNotifyAction action);

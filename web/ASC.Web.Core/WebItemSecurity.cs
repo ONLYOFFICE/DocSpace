@@ -44,18 +44,18 @@ namespace ASC.Web.Core
     {
         private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
         private static readonly ICache cache;
-        private static readonly ICacheNotify cacheNotify;
+        private static readonly ICacheNotify<WebItemSecurityNotifier> cacheNotify;
 
         static WebItemSecurity()
         {
             try
             {
                 cache = AscCache.Memory;
-                cacheNotify = AscCache.Notify;
-                cacheNotify.Subscribe<WebItemSecurityNotifier>((r, act) =>
+                cacheNotify = new KafkaCache<WebItemSecurityNotifier>();
+                cacheNotify.Subscribe((r) =>
                 {
                     ClearCache();
-                });
+                }, CacheNotifyAction.Any);
             }
             catch
             {
@@ -383,10 +383,5 @@ namespace ASC.Web.Core
                 throw new NotImplementedException();
             }
         }
-    }
-
-    public class WebItemSecurityNotifier
-    {
-        
     }
 }

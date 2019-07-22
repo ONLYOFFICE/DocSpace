@@ -38,13 +38,13 @@ namespace ASC.FederatedLogin
     public class AccountLinker
     {
         private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify notify = AscCache.Notify;
+        private static readonly ICacheNotify<LinkerCacheItem> notify = new KafkaCache<LinkerCacheItem>();
         private readonly string dbid;
 
 
         static AccountLinker()
         {
-            notify.Subscribe<LinkerCacheItem>((c, a) => cache.Remove(c.Obj));
+            notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
         }
 
 
@@ -142,13 +142,6 @@ namespace ASC.FederatedLogin
                 db.ExecuteScalar<int>(sql);
             }
             notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
-        }
-
-
-        [Serializable]
-        class LinkerCacheItem
-        {
-            public string Obj { get; set; }
         }
     }
 }

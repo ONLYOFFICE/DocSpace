@@ -49,7 +49,7 @@ namespace ASC.Core.Billing
         private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
 
         private readonly static ICache cache;
-        private readonly static ICacheNotify notify;
+        private readonly static ICacheNotify<TariffCacheItem> notify;
         private readonly static bool billingConfigured = false;
 
         private static readonly ILog log = LogManager.GetLogger("ASC");
@@ -66,13 +66,13 @@ namespace ASC.Core.Billing
         static TariffService()
         {
             cache = AscCache.Memory;
-            notify = AscCache.Notify;
-            notify.Subscribe<TariffCacheItem>((i, a) =>
+            notify = new KafkaCache<TariffCacheItem>();
+            notify.Subscribe((i) =>
             {
                 cache.Remove(GetTariffCacheKey(i.TenantId));
                 cache.Remove(GetBillingUrlCacheKey(i.TenantId));
                 cache.Remove(GetBillingPaymentCacheKey(i.TenantId, DateTime.MinValue, DateTime.MaxValue)); // clear all payments
-            });
+            }, CacheNotifyAction.Remove);
 
             //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
             /*try
@@ -589,13 +589,6 @@ namespace ASC.Core.Billing
                     log.Error(error.Message);
                 }
             }
-        }
-
-
-        [Serializable]
-        class TariffCacheItem
-        {
-            public int TenantId { get; set; }
         }
     }
 }

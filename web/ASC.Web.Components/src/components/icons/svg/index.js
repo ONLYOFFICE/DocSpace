@@ -142,6 +142,8 @@ import OrigCheckIcon from './check.react.svg';
 import OrigDangerIcon from './danger.react.svg';
 import OrigInfoIcon from './info.react.svg';
 
+import OrigArrowPathIcon from './arrow.path.react.svg'
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
@@ -689,4 +691,8 @@ export const NavLogoIcon = createStyledIcon(
 export const NavLogoOpenedIcon = createStyledIcon(
   OrigNavLogoOpenedIcon,
   'NavLogoOpenedIcon'
+);
+export const ArrowPathIcon = createStyledIcon(
+  OrigArrowPathIcon,
+  'ArrowPathIcon'
 );

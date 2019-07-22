@@ -49,25 +49,24 @@ namespace ASC.Data.Storage.Configuration
             return new T();
         }
 
+        private static readonly ICacheNotify<ConsumerCacheItem> Cache;
         static BaseStorageSettings()
         {
-            AscCache.Notify.Subscribe<Consumer>((i, a) =>
+            Cache = new KafkaCache<ConsumerCacheItem>();
+            Cache.Subscribe((i) =>
             {
-                if (a == CacheNotifyAction.Remove)
+                var settings = StorageSettings.Load();
+                if (i.Name == settings.Module)
                 {
-                    var settings = StorageSettings.Load();
-                    if (i.Name == settings.Module)
-                    {
-                        settings.Clear();
-                    }
-
-                    var cdnSettings = CdnStorageSettings.Load();
-                    if (i.Name == cdnSettings.Module)
-                    {
-                        cdnSettings.Clear();
-                    }
+                    settings.Clear();
                 }
-            });
+
+                var cdnSettings = CdnStorageSettings.Load();
+                if (i.Name == cdnSettings.Module)
+                {
+                    cdnSettings.Clear();
+                }
+            }, CacheNotifyAction.Remove);
         }
 
         public override bool Save()

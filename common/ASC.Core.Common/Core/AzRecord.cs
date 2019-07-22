@@ -68,6 +68,42 @@ namespace ASC.Core
         }
 
 
+        public static implicit operator AzRecord(AzRecordCache cache)
+        {
+            var result = new AzRecord();
+
+            if (Guid.TryParse(cache.SubjectId, out var subjectId))
+            {
+                result.SubjectId = subjectId;
+            }
+
+            if (Guid.TryParse(cache.ActionId, out var actionId))
+            {
+                result.ActionId = actionId;
+            }
+
+            result.ObjectId = cache.ObjectId;
+
+            if (Enum.TryParse<AceType>(cache.Reaction, out var reaction))
+            {
+                result.Reaction = reaction;
+            }
+
+            return result;
+        }
+
+        public static implicit operator AzRecordCache(AzRecord cache)
+        {
+            return new AzRecordCache
+            {
+                SubjectId = cache.SubjectId.ToString(),
+                ActionId = cache.ActionId.ToString(),
+                ObjectId = cache.ObjectId,
+                Reaction = cache.Reaction.ToString(),
+                Tenant = cache.Tenant
+            };
+        }
+
         public override bool Equals(object obj)
         {
             var r = obj as AzRecord;

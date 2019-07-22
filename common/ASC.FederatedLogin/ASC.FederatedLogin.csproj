@@ -9,6 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetOpenAuth.Ultimate" Version="4.3.4.13329" />
+    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="JWT" Version="1.3.4" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
   </ItemGroup>
@@ -16,6 +20,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="protos\LinkerCacheItem.proto" />
   </ItemGroup>
 
 </Project>

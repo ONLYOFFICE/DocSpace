@@ -31,34 +31,37 @@ namespace ASC.Core
     [Serializable]
     public class SubscriptionMethod
     {
-        public int Tenant
+        public int Tenant { get; set; }
+
+        public string SourceId { get; set; }
+
+        public string ActionId { get; set; }
+
+        public string RecipientId { get; set; }
+
+        public string[] Methods { get; set; }
+
+
+        public static implicit operator SubscriptionMethod(SubscriptionMethodCache cache)
         {
-            get;
-            set;
+            return new SubscriptionMethod()
+            {
+                Tenant = cache.Tenant,
+                SourceId = cache.SourceId,
+                ActionId = cache.ActionId,
+                RecipientId= cache.RecipientId
+            };
         }
 
-        public string SourceId
+        public static implicit operator SubscriptionMethodCache(SubscriptionMethod cache)
         {
-            get;
-            set;
-        }
-
-        public string ActionId
-        {
-            get;
-            set;
-        }
-
-        public string RecipientId
-        {
-            get;
-            set;
-        }
-
-        public string[] Methods
-        {
-            get;
-            set;
+            return new SubscriptionMethodCache
+            {
+                Tenant = cache.Tenant,
+                SourceId = cache.SourceId,
+                ActionId = cache.ActionId,
+                RecipientId = cache.RecipientId
+            };
         }
     }
 }

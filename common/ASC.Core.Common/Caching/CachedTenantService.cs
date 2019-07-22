@@ -24,11 +24,11 @@
 */
 
 
-using ASC.Common.Caching;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
 using System;
 using System.Collections.Generic;
+
+using ASC.Common.Caching;
+using ASC.Core.Tenants;
 
 namespace ASC.Core.Caching
 {
@@ -37,41 +37,36 @@ namespace ASC.Core.Caching
         private const string KEY = "tenants";
         private readonly ITenantService service;
         private readonly ICache cache;
-        private readonly ICacheNotify cacheNotify;
+        private readonly ICacheNotify<TenantSetting> cacheNotifySettings;
+        private readonly ICacheNotify<TenantCacheItem> cacheNotifyItem;
 
 
-        public TimeSpan CacheExpiration
-        {
-            get;
-            set;
-        }
+        public TimeSpan CacheExpiration { get; set; }
 
-        public TimeSpan SettingsExpiration
-        {
-            get;
-            set;
-        }
+        public TimeSpan SettingsExpiration { get; set; }
 
 
         public CachedTenantService(ITenantService service)
         {
-            if (service == null) throw new ArgumentNullException("service");
-
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             CacheExpiration = TimeSpan.FromMinutes(2);
             SettingsExpiration = TimeSpan.FromMinutes(2);
-            cacheNotify = AscCache.Notify;
-            cacheNotify.Subscribe<Tenant>((t, a) =>
+
+            cacheNotifyItem = new KafkaCache<TenantCacheItem>();
+            cacheNotifySettings = new KafkaCache<TenantSetting>();
+
+            cacheNotifyItem.Subscribe((t) =>
             {
                 var tenants = GetTenantStore();
                 tenants.Remove(t.TenantId);
                 tenants.Clear();
-            });
-            cacheNotify.Subscribe<TenantSetting>((s, a) =>
+            }, CacheNotifyAction.InsertOrUpdate);
+
+            cacheNotifySettings.Subscribe((s) =>
             {
                 cache.Remove(s.Key);
-            });
+            }, CacheNotifyAction.Remove);
         }
 
 
@@ -138,14 +133,14 @@ namespace ASC.Core.Caching
         public Tenant SaveTenant(Tenant tenant)
         {
             tenant = service.SaveTenant(tenant);
-            cacheNotify.Publish(new Tenant() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
+            cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
             return tenant;
         }
 
         public void RemoveTenant(int id, bool auto = false)
         {
             service.RemoveTenant(id, auto);
-            cacheNotify.Publish(new Tenant() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
+            cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
         }
 
         public IEnumerable<TenantVersion> GetTenantVersions()
@@ -169,7 +164,7 @@ namespace ASC.Core.Caching
         {
             service.SetTenantSettings(tenant, key, data);
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
-            cacheNotify.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Any);
+            cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
         }
 
         private TenantStore GetTenantStore()
@@ -180,13 +175,6 @@ namespace ASC.Core.Caching
                 cache.Insert(KEY, store = new TenantStore(), DateTime.UtcNow.Add(CacheExpiration));
             }
             return store;
-        }
-
-
-        [Serializable]
-        class TenantSetting
-        {
-            public string Key { get; set; }
         }
 
 

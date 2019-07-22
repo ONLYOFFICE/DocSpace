@@ -42,12 +42,12 @@ namespace ASC.Data.Storage
     public static class StorageFactory
     {
         private const string DefaultTenantName = "default";
-        private static readonly ICacheNotify Cache;
+        private static readonly ICacheNotify<DataStoreCacheItem> Cache;
 
         static StorageFactory()
         {
-            Cache = AscCache.Notify;
-            Cache.Subscribe<DataStoreCacheItem>((r, act) => DataStoreCache.Remove(r.TenantId, r.Module));
+            Cache = new KafkaCache<DataStoreCacheItem>();
+            Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
         }
 
         public static IDataStore GetStorage(string tenant, string module)
@@ -205,7 +205,7 @@ namespace ASC.Data.Storage
             var path = TennantPath.CreatePath(tenantId);
             foreach (var module in GetModuleList("", true))
             {
-                Cache.Publish(DataStoreCacheItem.Create(path, module), CacheNotifyAction.Remove);
+                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
             }
         }
 

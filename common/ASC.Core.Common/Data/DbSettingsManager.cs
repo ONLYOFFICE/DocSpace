@@ -32,6 +32,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
 using System.Text;
+
 using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
@@ -45,7 +46,7 @@ namespace ASC.Core.Data
         private static readonly ILog log = LogManager.GetLogger("ASC");
 
         private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify notify = AscCache.Notify;
+        private static readonly ICacheNotify<SettingsCacheItem> notify;
 
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
@@ -59,7 +60,8 @@ namespace ASC.Core.Data
 
         static DbSettingsManager()
         {
-            notify.Subscribe<SettingsCacheItem>((i, a) => cache.Remove(i.Key));
+            notify = new KafkaCache<SettingsCacheItem>();
+            notify.Subscribe((i) => cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
 
 
@@ -210,13 +212,6 @@ namespace ASC.Core.Data
                 }
                 return jsonSerializers[type];
             }
-        }
-
-
-        [Serializable]
-        class SettingsCacheItem
-        {
-            public string Key { get; set; }
         }
     }
 }
