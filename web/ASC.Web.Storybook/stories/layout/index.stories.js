@@ -147,9 +147,9 @@ const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
 
 const sectionHeaderContent = <HeaderContent>
   <IconButton
-    iconName={"ProjectDocumentsUpIcon"}
+    iconName={"ArrowPathIcon"}
     size='16'
-    onClick={(e) => action('ProjectDocumentsUpIcon Clicked')(e)}
+    onClick={(e) => action('ArrowPathIcon Clicked')(e)}
   />
   <Text.ContentHeader>Section Header</Text.ContentHeader>
   <IconButton 

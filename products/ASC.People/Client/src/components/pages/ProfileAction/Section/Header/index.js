@@ -18,7 +18,7 @@ const SectionHeaderContent = (props) => {
 
   return (
     <div style={wrapperStyle}>
-      <IconButton iconName={'ProjectDocumentsUpIcon'} size="16" onClick={history.goBack}/>
+      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={history.goBack}/>
       <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
     </div>
   );
