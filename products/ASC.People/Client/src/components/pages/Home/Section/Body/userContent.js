@@ -1,6 +1,8 @@
 import React from 'react';
+import { withRouter } from "react-router";
 import { Container, Row, Col } from "reactstrap";
 import {Link} from 'asc-web-components';
+var config = require('../../../../../../package.json');
 
 const UserContent = ({
     userName,
@@ -8,7 +10,8 @@ const UserContent = ({
     phone,
     email,
     headDepartment,
-    status
+    status,
+    history
 }) => (
       <Container fluid={true}>
         <Row className="justify-content-start no-gutters">
@@ -22,7 +25,10 @@ const UserContent = ({
               text={userName}
               isBold={true}
               fontSize={15}
-              onClick={() => console.log("User name action")}
+              onClick={() => { 
+                console.log("User name action"); 
+                history.push(`${config.homepage}/view/${userName}`);
+              }}
             />
           </Col>
           <Col
@@ -95,4 +101,4 @@ const UserContent = ({
       </Container>
     );
 
-export default UserContent;
+export default withRouter(UserContent);

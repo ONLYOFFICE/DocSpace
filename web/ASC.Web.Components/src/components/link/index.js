@@ -157,7 +157,11 @@ class Link extends React.Component {
                 <StyledLink {...this.props} onClick={
                     this.state.isDropdown ?
                         () => { this.toggleDropdown(!this.state.isOpen) }
-                        : this.stopAction}
+                        : (e) => {
+                            this.stopAction(e);
+                            this.props.hasOwnProperty("onClick") && this.props.onClick(e);
+                        } 
+                    }
                 />
                 {this.state.isDropdown &&
                     (this.state.isHovered || this.props.dropdownType === 'alwaysDotted') &&

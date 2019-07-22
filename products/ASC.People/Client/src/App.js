@@ -16,8 +16,8 @@ const App = () => {
                 <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
                     <Switch>
                         <PrivateRoute exact path={config.homepage} component={Home} />
-                        <PrivateRoute path={`${config.homepage}/view`} component={Profile} />
-                        <PrivateRoute path={`${config.homepage}/edit`} component={ProfileAction} />
+                        <PrivateRoute path={`${config.homepage}/view/:userId`} component={Profile} />
+                        <PrivateRoute path={`${config.homepage}/edit/:userId`} component={ProfileAction} />
                         <PrivateRoute path={`${config.homepage}/create`} component={ProfileAction} />
                         <PrivateRoute component={() => (
                             <ErrorContainer>

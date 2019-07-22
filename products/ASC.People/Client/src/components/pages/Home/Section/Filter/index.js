@@ -29,6 +29,8 @@ const SectionFilterContent = () => (
         onChangeFilter={result => {
             console.log(result);
         }}
+        value=""
+        onChange={() => console.log("Filter onChange")}
     />
 );
 

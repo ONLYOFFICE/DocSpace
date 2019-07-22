@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout } from 'asc-web-components';
 import { logout } from '../actions/authActions';
+var config = require('../../package.json');
 
 const PeopleLayout = props => {
-    const { auth, logout, children } = props;
+    const { auth, logout, children, history } = props;
     const currentUserActions = [
         {
             key: 'ProfileBtn', label: 'Profile', onClick: () => {
                 console.log('ProfileBtn')
+                history.push(`${config.homepage}/view/@self`);
             }
         },
         {
