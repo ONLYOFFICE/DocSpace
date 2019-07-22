@@ -5,7 +5,7 @@
 		},
 		{
 			"name": "ASC.People.Client"
-			"path": "D:\\GitHub\\portals_core\\products\\ASC.People\\Client"
+			"path": "..\\..\\products\\ASC.People\\Client"
 		}
 	],
 	"settings": {}

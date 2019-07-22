@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
-  MainButton,
-  DropDownItem,
   TreeMenu,
   TreeNode,
   Icons
 } from "asc-web-components";
-
 
 const PeopleTreeMenu = props => {
   const { data } = props;
@@ -149,59 +146,24 @@ const PeopleTreeMenu = props => {
   };
 
   return (
-    <>
-      <MainButton
-        style={{ marginBottom: 5 }}
-        isDisabled={false}
-        isDropdown={true}
-        text={"Actions"}
-        clickAction={() => console.log("MainButton clickAction")}
-      >
-        <DropDownItem
-          label="New employee"
-          onClick={() => console.log("New employee clicked")}
-        />
-        <DropDownItem
-          label="New quest"
-          onClick={() => console.log("New quest clicked")}
-        />
-        <DropDownItem
-          label="New department"
-          onClick={() => console.log("New department clicked")}
-        />
-        <DropDownItem isSeparator />
-        <DropDownItem
-          label="Invitation link"
-          onClick={() => console.log("Invitation link clicked")}
-        />
-        <DropDownItem
-          label="Invite again"
-          onClick={() => console.log("Invite again clicked")}
-        />
-        <DropDownItem
-          label="Import people"
-          onClick={() => console.log("Import people clicked")}
-        />
-      </MainButton>
-      <TreeMenu
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        defaultExpandParent={true}
-        onExpand={onExpand}
-        autoExpandParent={autoExpandParent}
-        expandedKeys={expandedKeys}
-        onDragStart={info => onDragStart(info)}
-        onDrop={info => onDrop(info)}
-        onDragEnter={onDragEnter}
-        switcherIcon={switcherIcon}
-      >
-        {getItems(gData)}
-      </TreeMenu>
-    </>
+    <TreeMenu
+      checkable={false}
+      draggable={false}
+      disabled={false}
+      multiple={false}
+      showIcon={true}
+      defaultExpandAll={true}
+      defaultExpandParent={true}
+      onExpand={onExpand}
+      autoExpandParent={autoExpandParent}
+      expandedKeys={expandedKeys}
+      onDragStart={info => onDragStart(info)}
+      onDrop={info => onDrop(info)}
+      onDragEnter={onDragEnter}
+      switcherIcon={switcherIcon}
+    >
+      {getItems(gData)}
+    </TreeMenu>
   );
 };
 

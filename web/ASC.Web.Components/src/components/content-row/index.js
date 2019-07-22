@@ -108,7 +108,7 @@ class ContentRow extends React.Component {
 
         return (
             <StyledContentRow {...this.props}>
-                {this.state.hasOwnProperty("checked") && 
+                {this.props.hasOwnProperty("checked") && 
                     <StyledCheckbox>
                         <Checkbox isChecked={this.state.checked} onChange={(e) => { 
                             let checked = e.target.checked;
@@ -127,7 +127,7 @@ class ContentRow extends React.Component {
                     </StyledAvatar>
                 }
                 <StyledContent>{children}</StyledContent>
-                {contextOptions && 
+                {this.props.hasOwnProperty("contextOptions") && 
                     <StyledOptionButton>
                         <ContextMenuButton directionX='right' getData={() => contextOptions} />
                     </StyledOptionButton>

@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout } from 'asc-web-components';
 import { logout } from '../actions/authActions';
+var config = require('../../package.json');
 
 const PeopleLayout = props => {
-    const { auth, logout, children } = props;
+    const { auth, logout, children, history } = props;
     const currentUserActions = [
         {
             key: 'ProfileBtn', label: 'Profile', onClick: () => {
                 console.log('ProfileBtn')
+                history.push(`${config.homepage}/view/@self`);
             }
         },
         {
@@ -25,14 +27,13 @@ const PeopleLayout = props => {
         },
     ];
 
+    const newProps = auth.isAuthenticated && auth.isLoaded 
+        ? { currentUserActions: currentUserActions, 
+            onLogoClick: () => window.open("/", '_self'), 
+            ...props } 
+        : {};
 
-    const layoutProps = { currentUserActions: currentUserActions, ...props };
-
-    return (
-        auth.isAuthenticated && auth.isLoaded
-                ? <Layout key="1" {...layoutProps}>{children}</Layout>
-                : <Layout key="2">{children}</Layout>
-    );
+    return (<Layout key="1" {...newProps}>{children}</Layout>);
 };
 
 PeopleLayout.propTypes = {
@@ -48,7 +49,7 @@ function convertModules(modules) {
         iconName: 'ChatIcon',
         notifications: 3,
         url: '/products/chat/',
-        onClick: () => window.open('/products/chat/', '_blank'),
+        onClick: () => window.open('/products/chat/', '_self'),
         onBadgeClick: e => console.log('ChatIconBadge Clicked')(e),
         isolateMode: true
     };

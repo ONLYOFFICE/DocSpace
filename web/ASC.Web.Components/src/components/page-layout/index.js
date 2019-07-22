@@ -1,135 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import device from '../device'
 import Backdrop from '../backdrop'
-import { Icons } from '../icons'
-import Scrollbar from '../scrollbar';
 
-const StyledArticle = styled.article`
-  padding: 0 16px;
-  background: #F8F9F9;
-  display: flex;
-  flex-direction: column;
-  width: 264px;
-  min-width: 264px;
-  transition: width .3s ease-in-out;
-  overflow: hidden auto;
-
-  @media ${device.tablet} {
-    ${props => props.visible
-      ? props.pinned
-          ? `
-            display: flex;
-            width: 240px;
-            min-width: 240px;
-          `
-          : `
-            width: 240px;
-            min-width: 240px;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 400;
-          `
-      : `
-        display: none;
-        width: 0px;
-      `
-    }
-  }
-`;
-
-const StyledArticleHeader = styled.div`
-  border-bottom: 1px solid #ECEEF1;
-  height: 56px;
-
-  @media ${device.tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
-  }
-`;
-
-const StyledArticleMainButton = styled.div`
-  margin: 16px 0 0;
-`;
-
-const StyledArticleBody = styled.div`
-  margin: 16px 0;
-  outline: 1px dotted;
-  flex-grow: 1;
-`;
-
-const StyledArticlePinPanel = styled.div`
-  border-top: 1px solid #ECEEF1;
-  height: 56px;
-  display: none;
-
-  @media ${device.tablet} {
-    display: block;
-  }
-
-  @media ${device.mobile} {
-    display: none;
-  }
-
-  div {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-    height: 100%;
-
-    span {
-      margin-left: 8px;
-    }
-  }
-`;
-
-const StyledSection = styled.section`
-  padding: 0 16px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden auto;
-`;
-
-const StyledSectionHeader = styled.div`
-  border-bottom: 1px solid #ECEEF1;
-  height: 56px;
-`;
-
-const StyledSectionFilter = styled.div`
-  margin: 16px 0 0;
-`;
-
-const StyledSectionBody = styled.div`
-  margin: 16px 0;
-  outline: 1px dotted;
-  flex-grow: 1;
-`;
-
-const StyledSectionPaging = styled.div`
-  margin: 0 0 16px;
-`;
-
-const StyledSectionToggler = styled.div`
-  height: 64px;
-  display: none;
-
-  @media ${device.tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
-  }
-
-  div {
-    width: 48px;
-    height: 48px;
-    padding: 12px 13px 14px 15px;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    border-radius: 48px;
-    cursor: pointer;
-  }
-`;
+import Article from './sub-comoponents/article'
+import ArticleHeader from './sub-comoponents/article-header'
+import ArticleMainButton from './sub-comoponents/article-main-button'
+import ArticleBody from './sub-comoponents/article-body'
+import ArticlePinPanel from './sub-comoponents/article-pin-panel'
+import Section from './sub-comoponents/section'
+import SectionHeader from './sub-comoponents/section-header'
+import SectionFilter from './sub-comoponents/section-filter'
+import SectionBody from './sub-comoponents/section-body'
+import SectionPaging from './sub-comoponents/section-paging'
+import SectionToggler from './sub-comoponents/section-toggler'
 
 class PageLayout extends React.Component {
   constructor(props) {
@@ -234,73 +117,49 @@ class PageLayout extends React.Component {
         }
         {
           this.state.isArticleAvailable &&
-          <StyledArticle visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
+          <Article visible={this.state.isArticleVisible} pinned={this.state.isArticlePinned}>
             {
               this.state.isArticleHeaderAvailable &&
-              <StyledArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</StyledArticleHeader>
+              <ArticleHeader visible={this.state.isArticlePinned}>{this.state.articleHeaderContent}</ArticleHeader>
             }
             {
               this.state.isArticleMainButtonAvailable &&
-              <StyledArticleMainButton>{this.state.articleMainButtonContent}</StyledArticleMainButton>
+              <ArticleMainButton>{this.state.articleMainButtonContent}</ArticleMainButton>
             }
             {
               this.state.isArticleBodyAvailable &&
-              <StyledArticleBody>
-                <Scrollbar>
-                  {this.state.articleBodyContent}
-                </Scrollbar>
-              </StyledArticleBody>
+              <ArticleBody>{this.state.articleBodyContent}</ArticleBody>
             }
             {
               this.state.isArticleBodyAvailable &&
-              <StyledArticlePinPanel>
-                {
-                  this.state.isArticlePinned
-                    ? <div onClick={this.unpinArticle}>
-                        <Icons.CatalogUnpinIcon size="medium"/>
-                        <span>Unpin this panel</span>
-                      </div>
-                    : <div onClick={this.pinArticle}>
-                        <Icons.CatalogPinIcon size="medium"/>
-                        <span>Pin this panel</span>
-                      </div>
-                }
-              </StyledArticlePinPanel>
+              <ArticlePinPanel pinned={this.state.isArticlePinned} pinText="Pin this panel" onPin={this.pinArticle} unpinText="Unpin this panel" onUnpin={this.unpinArticle}/>
             }
-          </StyledArticle>
+          </Article>
         }
         {
           this.state.isSectionAvailable &&
-          <StyledSection>
+          <Section>
             {
               this.state.isSectionHeaderAvailable &&
-              <StyledSectionHeader>{this.state.sectionHeaderContent}</StyledSectionHeader>
+              <SectionHeader>{this.state.sectionHeaderContent}</SectionHeader>
             }
             {
               this.state.isSectionFilterAvailable &&
-              <StyledSectionFilter>{this.state.sectionFilterContent}</StyledSectionFilter>
+              <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
             }
             {
               this.state.isSectionBodyAvailable &&
-              <StyledSectionBody>
-                <Scrollbar stype="mediumBlack">
-                  {this.state.sectionBodyContent}
-                </Scrollbar>
-              </StyledSectionBody>
+              <SectionBody>{this.state.sectionBodyContent}</SectionBody>
             }
             {
               this.state.isSectionPagingAvailable &&
-              <StyledSectionPaging>{this.state.sectionPagingContent}</StyledSectionPaging>
+              <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
             }
             {
               this.state.isArticleAvailable &&
-              <StyledSectionToggler visible={!this.state.isArticlePinned}>
-                <div onClick={this.showArticle}>
-                  <Icons.CatalogButtonIcon size="scale"/>
-                </div>
-              </StyledSectionToggler>
+              <SectionToggler visible={!this.state.isArticlePinned} onClick={this.showArticle}/>
             }
-          </StyledSection>
+          </Section>
         }
       </>
     )
