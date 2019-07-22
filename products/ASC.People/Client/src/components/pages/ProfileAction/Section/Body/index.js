@@ -4,9 +4,7 @@ import { Avatar } from 'asc-web-components';
 
 
 const SectionBodyContent = (props) => {
-  const {profile, history} = props;
-
-  const isEditProfile = profile && profile.id;
+  const {profile} = props;
 
   const getUserRole = (user) => {
     if(user.isOwner) return "owner";
@@ -15,9 +13,7 @@ const SectionBodyContent = (props) => {
     return "user";
   };
 
-  const getEditAvatarLabel = () => {
-    return isEditProfile ? "Edity photo" : "Add photo";
-  }
+  const avatarLabel = profile && profile.id ? "Edit photo" : "Add photo";
 
   const onEditAvatar = () => {};
 
@@ -29,7 +25,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarBig}
           userName={profile.userName}
           editing={true}
-          editLabel={getEditAvatarLabel()}
+          editLabel={avatarLabel}
           editAction={onEditAvatar}
         />
     </div>
@@ -37,8 +33,7 @@ const SectionBodyContent = (props) => {
 };
 
 SectionBodyContent.propTypes = {
-  profile: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
+  profile: PropTypes.object.isRequired
 };
 
 export default SectionBodyContent;
