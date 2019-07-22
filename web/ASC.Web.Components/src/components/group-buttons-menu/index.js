@@ -116,7 +116,10 @@ class GroupButtonsMenu extends React.Component {
 
 
     render() {
-        const closeMenu = () => {this.setState({visible: false})};
+        const closeMenu = (e) => {
+            this.setState({visible: false}); 
+            this.props.onClose && this.props.onClose(e);
+        };
 
         return (
             <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
@@ -149,7 +152,11 @@ class GroupButtonsMenu extends React.Component {
                             <DropDownItem 
                                 key={`moreNavItem-${i}`} 
                                 label={item.label}
-                                onClick={item.onClick} />      
+                                onClick={(e) => {
+                                    item.onClick(e);
+                                    closeMenu(e);
+                                }}
+                            />      
                         )}
                     </GroupButton>
                 }
@@ -157,6 +164,17 @@ class GroupButtonsMenu extends React.Component {
             </StyledGroupButtonsMenu>
         );
     }
+}
+
+GroupButtonsMenu.propTypes ={
+    onClick: PropTypes.func,
+    onClose: PropTypes.func,
+    onChange: PropTypes.func,
+    menuItems: PropTypes.array,
+    checked: PropTypes.bool,
+    visible: PropTypes.bool,
+    moreLabel: PropTypes.string,
+    closeTitle: PropTypes.string
 }
 
 export default GroupButtonsMenu;

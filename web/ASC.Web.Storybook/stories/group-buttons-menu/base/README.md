@@ -21,7 +21,10 @@ Menu for group actions on a page.
 | Props              | Type     | Required | Values                      | Default   | Description                                               |
 | ------------------ | -------- | :------: | --------------------------- | --------- | --------------------------------------------------------- |
 | `checked`          | `bool`   | -        | -                           | `false`   | Sets initial value of checkbox                            |
-| `menuItems`        | `object` | -        | -                           | -         | Button collection                                         |
+| `menuItems`        | `array`  | -        | -                           | -         | Button collection                                         |
 | `visible`          | `bool`   | -        | -                           | -         | Sets menu visibility                                      |
 | `moreLabel`        | `string` | -        | -                           | `More`    | Label for more button                                     |
 | `closeTitle`       | `string` | -        | -                           | `Close`   | Title for close menu button                               |
+| `onClick`          | `function` | -      | -                           | -         | onClick action on GroupButton`s                           |
+| `onClose`          | `function` | -      | -                           | -         | onClose action if menu closing                            |
+| `onChange`         | `function` | -      | -                           | -         | onChange action on use selecting                          |

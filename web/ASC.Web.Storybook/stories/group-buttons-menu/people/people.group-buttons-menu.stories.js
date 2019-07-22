@@ -1,8 +1,9 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { withKnobs, text} from '@storybook/addon-knobs/react';
+import { BooleanValue } from 'react-values'
 import styled from '@emotion/styled';
-import { GroupButtonsMenu, DropDownItem } from 'asc-web-components'
+import { GroupButtonsMenu, DropDownItem, Button } from 'asc-web-components'
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
@@ -53,13 +54,33 @@ const peopleItems = [
 storiesOf('EXAMPLES|GroupButtonsMenu', module)
     .addDecorator(withKnobs)
     .add('people', () => (
-        <GroupButtonsMenuContainer>
-            <GroupButtonsMenu
-                checked={false}
-                menuItems={peopleItems}
-                visible={true}
-                moreLabel={text('moreLabel', 'More')}
-                closeTitle={text('closeTitle', 'Close')}
-            />
-        </GroupButtonsMenuContainer>
+        <BooleanValue>
+        {({ value: visible, toggle }) => (
+            <>
+                <Button
+                    label="Show menu"
+                    onClick={(e) => {
+                        toggle(visible);
+                    }}
+                />
+                <GroupButtonsMenuContainer>
+                    <BooleanValue>
+                        {({ value: checked, toggle }) => (
+
+                            <GroupButtonsMenu
+                                checked={checked}
+                                menuItems={peopleItems}
+                                visible={visible}
+                                moreLabel={text('moreLabel', 'More')}
+                                closeTitle={text('closeTitle', 'Close')}
+                                onClose={() => console.log('Close action')}
+                                onChange={(e) => toggle(checked)}
+                            />
+                        )}
+                    </BooleanValue>
+
+                </GroupButtonsMenuContainer>
+            </>
+        )}
+    </BooleanValue>
     ));
