@@ -1,7 +1,9 @@
 import React from "react";
+import { withRouter } from 'react-router';
 import { connect } from "react-redux";
 import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
+import config from '../../../../../../package.json';
 import _ from "lodash";
 
 const getUserDepartment = user => {
@@ -47,7 +49,7 @@ const getUserStatus = user => {
     return "normal";
 };
 
-const getUserContextOptions = user => {
+const getUserContextOptions = (user, isAdmin, history) => {
   return [
     {
       key: "key1",
@@ -63,7 +65,7 @@ const getUserContextOptions = user => {
     {
       key: "key4",
       label: "Edit",
-      onClick: () => console.log("Context action: Edit")
+      onClick: () => history.push(`${config.homepage}/edit/${user.userName}`)
     },
     {
       key: "key5",
@@ -127,7 +129,7 @@ class SectionBodyContent extends React.Component {
         user: user,
         status: status,
         role: getUserRole(user),
-        contextOptions: getUserContextOptions(user, this.props.isAdmin),
+        contextOptions: getUserContextOptions(user, this.props.isAdmin, this.props.history),
         department: getUserDepartment(user),
         phone: getUserPhone(user),
         email: getUserEmail(user),
@@ -216,4 +218,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(SectionBodyContent);
+export default connect(mapStateToProps)(withRouter(SectionBodyContent));
