@@ -54,11 +54,20 @@ storiesOf('Components|ToggleContent', module)
          }
       });
 
+      let isOpen = boolean('isOpen', true);
+
       return (
          <>
             <ToggleContent
                label={text('label', 'Some label')}
-               isOpen={boolean('isOpen', true)}
+               isOpen={isOpen}
+               onChange={(checked) => {
+                  window.__STORYBOOK_ADDONS.channel.emit('storybookjs/knobs/change', {
+                     name: 'isOpen',
+                     value: checked
+                  });
+               }
+               }
             >
                {children}
             </ToggleContent>
