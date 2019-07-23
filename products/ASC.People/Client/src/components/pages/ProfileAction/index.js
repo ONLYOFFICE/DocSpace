@@ -43,7 +43,7 @@ const ProfileAction = (props) => {
       setProfile(null);
       setLoaded(true);
     }
-  }, []);
+  }, [isEdit, auth.user, userId]);
   
 
   return (

@@ -31,7 +31,7 @@ const Profile = (props) => {
           console.error(error);
         });
     }
-  }, []);
+  }, [auth.user, userId]);
 
   return (
     isLoaded ?
