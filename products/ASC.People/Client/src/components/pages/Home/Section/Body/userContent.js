@@ -6,6 +6,7 @@ var config = require('../../../../../../package.json');
 
 const UserContent = ({
     userName,
+    displayName,
     department,
     phone,
     email,
@@ -21,8 +22,8 @@ const UserContent = ({
                 status === "pending" ? { color: "#A3A9AE" } : { color: "#333333" }
               }
               type="action"
-              title={userName}
-              text={userName}
+              title={displayName}
+              text={displayName}
               isBold={true}
               fontSize={15}
               onClick={() => { 
