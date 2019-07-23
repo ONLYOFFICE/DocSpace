@@ -44,7 +44,7 @@ const notify = (type, text, title, timeout = 5000, withCross = false,  centerPos
       type: type,
       closeOnClick: !withCross,
       closeButton: withCross,
-      autoClose: timeout === 0 ? false : timeout < 0 ? 5000 : (timeout || 5000),
+      autoClose: timeout === 0 ? false : timeout < 750 ? 5000 : (timeout || 5000),
       position: centerPosition && toast.POSITION.TOP_CENTER
     }
   );
