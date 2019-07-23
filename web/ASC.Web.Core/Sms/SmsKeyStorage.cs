@@ -41,7 +41,7 @@ namespace ASC.Web.Core.Sms
         public static readonly int AttemptCount;
         private static readonly object KeyLocker = new object();
         private static readonly ICacheNotify<SmsKeyCacheKey> KeyCacheNotify;
-        private static readonly ICache KeyCache = AscCache.Default;
+        private static readonly ICache KeyCache = AscCache.Memory;
         private static readonly ICache CheckCache = AscCache.Memory;
 
         static SmsKeyStorage()
