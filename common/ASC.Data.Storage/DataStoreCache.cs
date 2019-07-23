@@ -36,39 +36,27 @@ namespace ASC.Data.Storage
  
         public static void Put(IDataStore store, string tenantId, string module)
         {
-            Cache.Insert(DataStoreCacheItem.Create(tenantId, module).MakeCacheKey(), store, DateTime.MaxValue);
+            Cache.Insert(DataStoreCacheItemExtenstion.MakeCacheKey(tenantId, module), store, DateTime.MaxValue);
         }
 
         public static IDataStore Get(string tenantId, string module)
         {
-            return Cache.Get<IDataStore>(DataStoreCacheItem.Create(tenantId, module).MakeCacheKey());
+            return Cache.Get<IDataStore>(DataStoreCacheItemExtenstion.MakeCacheKey(tenantId, module));
         }
 
         public static void Remove(string tenantId, string module)
         {
-            Cache.Remove(DataStoreCacheItem.Create(tenantId, module).MakeCacheKey());
+            Cache.Remove(DataStoreCacheItemExtenstion.MakeCacheKey(tenantId, module));
         }
         
 
     }
 
-    public class DataStoreCacheItem
+    public static class DataStoreCacheItemExtenstion
     {
-        public string TenantId { get; set; }
-        public string Module { get; set; }
-
-        public static DataStoreCacheItem Create(string tenantId, string module)
+        internal static string MakeCacheKey(string tenantId, string module)
         {
-            return new DataStoreCacheItem
-            {
-                TenantId = tenantId,
-                Module = module
-            };
-        }
-
-        internal string MakeCacheKey()
-        {
-            return string.Format("{0}:\\{1}", TenantId, Module);
+            return string.Format("{0}:\\{1}", tenantId, module);
         }
     }
 }

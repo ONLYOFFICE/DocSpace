@@ -14,18 +14,23 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const {profile, history} = props;
-  const headerText = profile && profile.userName ? profile.userName : "New employee";
+
+  const headerText = profile
+    ? profile.userName
+    : props.userType == "guest"
+      ? "New guest"
+      : "New employee";
 
   return (
     <div style={wrapperStyle}>
-      <IconButton iconName={'ProjectDocumentsUpIcon'} size="16" onClick={history.goBack}/>
+      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={history.goBack}/>
       <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
     </div>
   );
 };
 
 SectionHeaderContent.propTypes = {
-  profile: PropTypes.object.isRequired,
+  profile: PropTypes.object,
   history: PropTypes.object.isRequired
 };
 

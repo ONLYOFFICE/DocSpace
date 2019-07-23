@@ -50,8 +50,15 @@ namespace ASC.Web.Core.Mail
         public const int DefaultPort = 8081;
         public const string DefaultVersion = "v1";
 
-        private static readonly ICache Cache = AscCache.Default;
+        private static readonly ICacheNotify<MailServiceHelperCache> CacheNotify;
+        private static readonly ICache Cache = AscCache.Memory;
         private const string CacheKey = "mailserverinfo";
+
+        static MailServiceHelper()
+        {
+            CacheNotify = new KafkaCache<MailServiceHelperCache>();
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
 
         private static string GetDefaultDatabase()
         {
@@ -283,7 +290,7 @@ namespace ASC.Web.Core.Mail
 
                 transaction.Commit();
 
-                Cache.Remove(CacheKey);
+                CacheNotify.Publish(new MailServiceHelperCache() { Key = CacheKey }, CacheNotifyAction.Remove);
             }
         }
     }

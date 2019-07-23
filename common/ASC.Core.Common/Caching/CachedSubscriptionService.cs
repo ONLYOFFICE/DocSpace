@@ -35,55 +35,53 @@ namespace ASC.Core.Caching
     {
         private readonly ISubscriptionService service;
         private readonly ICache cache;
-        private readonly ICacheNotify notify;
+        private readonly ICacheNotify<SubscriptionRecord> notifyRecord;
+        private readonly ICacheNotify<SubscriptionMethodCache> notifyMethod;
 
-
-        public TimeSpan CacheExpiration
-        {
-            get;
-            set;
-        }
+        public TimeSpan CacheExpiration { get; set; }
 
 
         public CachedSubscriptionService(ISubscriptionService service)
         {
-            if (service == null) throw new ArgumentNullException("service");
-
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
-            notify = AscCache.Notify;
+            notifyRecord = new KafkaCache<SubscriptionRecord>();
+            notifyMethod = new KafkaCache<SubscriptionMethodCache>();
             CacheExpiration = TimeSpan.FromMinutes(5);
 
-            notify.Subscribe<SubscriptionRecord>((s, a) =>
+            notifyRecord.Subscribe((s) =>
             {
                 var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
                 lock (store)
                 {
-                    if (a == CacheNotifyAction.InsertOrUpdate)
+                    store.SaveSubscription(s);
+                }
+            }, CacheNotifyAction.InsertOrUpdate);
+
+            notifyRecord.Subscribe((s) =>
+            {
+                var store = GetSubsciptionsStore(s.Tenant, s.SourceId, s.ActionId);
+                lock (store)
+                {
+                    if (s.ObjectId == null)
                     {
-                        store.SaveSubscription(s);
+                        store.RemoveSubscriptions();
                     }
-                    else if (a == CacheNotifyAction.Remove)
+                    else
                     {
-                        if (s.ObjectId == null)
-                        {
-                            store.RemoveSubscriptions();
-                        }
-                        else
-                        {
-                            store.RemoveSubscriptions(s.ObjectId);
-                        }
+                        store.RemoveSubscriptions(s.ObjectId);
                     }
                 }
-            });
-            notify.Subscribe<SubscriptionMethod>((m, a) =>
+            }, CacheNotifyAction.Remove);
+
+            notifyMethod.Subscribe((m) =>
             {
                 var store = GetSubsciptionsStore(m.Tenant, m.SourceId, m.ActionId);
                 lock (store)
                 {
                     store.SetSubscriptionMethod(m);
                 }
-            });
+            }, CacheNotifyAction.Any);
         }
 
 
@@ -117,19 +115,19 @@ namespace ASC.Core.Caching
         public void SaveSubscription(SubscriptionRecord s)
         {
             service.SaveSubscription(s);
-            notify.Publish(s, CacheNotifyAction.InsertOrUpdate);
+            notifyRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
         {
             service.RemoveSubscriptions(tenant, sourceId, actionId);
-            notify.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
+            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
         {
             service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
-            notify.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
+            notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
         }
 
         public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
@@ -144,7 +142,7 @@ namespace ASC.Core.Caching
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
             service.SetSubscriptionMethod(m);
-            notify.Publish(m, CacheNotifyAction.Any);
+            notifyMethod.Publish(m, CacheNotifyAction.Any);
         }
 
 

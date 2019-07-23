@@ -38,7 +38,7 @@ namespace ASC.Core.Common.Configuration
 {
     public class Consumer : IDictionary<string, string>
     {
-        private static ICacheNotify Cache = AscCache.Notify;
+        private static readonly ICacheNotify<ConsumerCacheItem> Cache = new KafkaCache<ConsumerCacheItem>();
 
         public bool CanSet { get; private set; }
 
@@ -143,7 +143,7 @@ namespace ASC.Core.Common.Configuration
                 this[providerProp.Key] = null;
             }
 
-            Cache.Publish(this, CacheNotifyAction.Remove);
+            Cache.Publish(new ConsumerCacheItem() { Name = this.Name }, CacheNotifyAction.Remove);
         }
 
         public bool Contains(KeyValuePair<string, string> item)

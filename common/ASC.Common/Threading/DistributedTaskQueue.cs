@@ -40,7 +40,7 @@ namespace ASC.Common.Threading
 
         private readonly string key;
         private readonly ICache cache;
-        private readonly ICacheNotify notify;
+        private static readonly ICacheNotify<DistributedTaskCancelation> notify;
         private readonly TaskScheduler scheduler;
         private static readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
@@ -48,6 +48,14 @@ namespace ASC.Common.Threading
         static DistributedTaskQueue()
         {
             InstanseId = Process.GetCurrentProcess().Id.ToString();
+            notify = new KafkaCache<DistributedTaskCancelation>();
+            notify.Subscribe((c) =>
+            {
+                if (cancelations.TryGetValue(c.Id, out var s))
+                {
+                    s.Cancel();
+                }
+            }, CacheNotifyAction.Remove);
         }
 
 
@@ -65,19 +73,9 @@ namespace ASC.Common.Threading
 
             key = name + GetType().Name;
             cache = AscCache.Default;
-            notify = AscCache.Notify;
             scheduler = maxThreadsCount <= 0
                 ? TaskScheduler.Default
                 : new LimitedConcurrencyLevelTaskScheduler(maxThreadsCount);
-
-            notify.Subscribe<DistributedTaskCancelation>((c, a) =>
-            {
-                CancellationTokenSource s;
-                if (cancelations.TryGetValue(c.Id, out s))
-                {
-                    s.Cancel();
-                }
-            });
         }
 
 
@@ -113,7 +111,7 @@ namespace ASC.Common.Threading
 
         public void CancelTask(string id)
         {
-            notify.Publish(new DistributedTaskCancelation(id), CacheNotifyAction.Remove);
+            notify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
         }
 
         public IEnumerable<DistributedTask> GetTasks()
@@ -175,18 +173,6 @@ namespace ASC.Common.Threading
         private Action<DistributedTask> GetPublication()
         {
             return (t) => SetTask(t);
-        }
-
-
-        [Serializable]
-        class DistributedTaskCancelation
-        {
-            public string Id { get; private set; }
-
-            public DistributedTaskCancelation(string id)
-            {
-                Id = id;
-            }
         }
     }
 }

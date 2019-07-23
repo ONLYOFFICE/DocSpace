@@ -38,7 +38,7 @@ namespace ASC.Core.Caching
         private const string KEY_QUOTA_ROWS = "quotarows";
         private readonly IQuotaService service;
         private readonly ICache cache;
-        private readonly ICacheNotify cacheNotify;
+        private readonly ICacheNotify<QuotaCacheItem> cacheNotify;
         private readonly TrustInterval interval;
 
 
@@ -51,15 +51,13 @@ namespace ASC.Core.Caching
 
         public CachedQuotaService(IQuotaService service)
         {
-            if (service == null) throw new ArgumentNullException("service");
-
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             interval = new TrustInterval();
             CacheExpiration = TimeSpan.FromMinutes(10);
 
-            cacheNotify = AscCache.Notify;
-            cacheNotify.Subscribe<QuotaCacheItem>((i, a) =>
+            cacheNotify = new KafkaCache<QuotaCacheItem>();
+            cacheNotify.Subscribe((i) =>
             {
                 if (i.Key == KEY_QUOTA_ROWS)
                 {
@@ -69,7 +67,7 @@ namespace ASC.Core.Caching
                 {
                     cache.Remove(KEY_QUOTA);
                 }
-            });
+            }, CacheNotifyAction.Any);
         }
 
 
@@ -91,7 +89,7 @@ namespace ASC.Core.Caching
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
             var q = service.SaveTenantQuota(quota);
-            cacheNotify.Publish(new QuotaCacheItem { Key = KEY_QUOTA }, CacheNotifyAction.Remove);
+            cacheNotify.Publish(new QuotaCacheItem { Key = KEY_QUOTA }, CacheNotifyAction.Any);
             return q;
         }
 
@@ -104,7 +102,7 @@ namespace ASC.Core.Caching
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
             service.SetTenantQuotaRow(row, exchange);
-            cacheNotify.Publish(new QuotaCacheItem { Key = KEY_QUOTA_ROWS }, CacheNotifyAction.InsertOrUpdate);
+            cacheNotify.Publish(new QuotaCacheItem { Key = KEY_QUOTA_ROWS }, CacheNotifyAction.Any);
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
@@ -170,13 +168,6 @@ namespace ASC.Core.Caching
                 }
                 return list.ToList();
             }
-        }
-
-
-        [Serializable]
-        class QuotaCacheItem
-        {
-            public string Key { get; set; }
         }
     }
 }

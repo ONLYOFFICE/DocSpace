@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+
+package ASC.Web.Core.Users;
+
+message UserPhotoManagerCacheItem {
+    string UserID  = 1;
+
+    CacheSize Size  = 2;
+
+    string FileName = 3;
+}
+
+message CacheSize {
+    int32 Width  = 1;
+
+    int32 Height  = 2;
+}

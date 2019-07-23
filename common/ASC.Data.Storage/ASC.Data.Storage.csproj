@@ -21,6 +21,10 @@
     <PackageReference Include="Google.Apis.Core" Version="1.40.2" />
     <PackageReference Include="Google.Apis.Storage.v1" Version="1.40.2.1635" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.4.0-beta02" />
+    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="openstack.net" Version="1.7.8" />
     <PackageReference Include="Rackspace" Version="0.2.0" />
   </ItemGroup>
@@ -30,4 +34,8 @@
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="protos\DataStoreCacheItem.proto" />
+  </ItemGroup>
+  
 </Project>

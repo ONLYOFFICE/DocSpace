@@ -143,5 +143,20 @@
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="protos\SmsKeyCacheKey.proto" />
+    <Protobuf Include="protos\TenantLogoCacheItem.proto" />
+    <Protobuf Include="protos\MailServiceHelperCache.proto" />
+    <Protobuf Include="protos\WebItemSecurityNotifier.proto" />
+    <Protobuf Include="protos\UserPhotoManagerCacheItem.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
   
 </Project>

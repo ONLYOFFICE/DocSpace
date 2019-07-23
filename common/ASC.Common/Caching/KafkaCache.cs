@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,12 +16,12 @@ namespace ASC.Common.Caching
     {
         private ClientConfig ClientConfig { get; set; }
         private ILog Log { get; set; }
-        private Dictionary<CacheNotifyAction, CancellationTokenSource> Cts { get; set; }
+        private ConcurrentDictionary<CacheNotifyAction, CancellationTokenSource> Cts { get; set; }
         private MemoryCacheNotify<T> MemoryCacheNotify { get; set; }
         public KafkaCache()
         {
             Log = LogManager.GetLogger("ASC");
-            Cts = new Dictionary<CacheNotifyAction, CancellationTokenSource>();
+            Cts = new ConcurrentDictionary<CacheNotifyAction, CancellationTokenSource>();
 
             var settings = ConfigurationManager.GetSetting<KafkaSettings>("kafka");
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
@@ -70,11 +71,13 @@ namespace ASC.Common.Caching
                 return;
             }
 
+            Cts[cacheNotifyAction] = new CancellationTokenSource();
+
             void action()
             {
                 var conf = new ConsumerConfig(ClientConfig)
                 {
-                    GroupId = new Guid().ToString(),
+                    GroupId = Guid.NewGuid().ToString(),
                     EnableAutoCommit = true
                 };
 
@@ -83,9 +86,7 @@ namespace ASC.Common.Caching
                     .SetValueDeserializer(new ProtobufDeserializer<T>())
                     .Build();
 
-                c.Subscribe(GetChannelName(cacheNotifyAction));
-
-                Cts[cacheNotifyAction] = new CancellationTokenSource();
+                c.Assign(new TopicPartition(GetChannelName(cacheNotifyAction), new Partition()));
 
                 try
                 {
@@ -122,7 +123,11 @@ namespace ASC.Common.Caching
 
         public void Unsubscribe(CacheNotifyAction action)
         {
-            Cts[action].Cancel();
+            Cts.TryGetValue(action, out var source);
+            if(source != null)
+            {
+                source.Cancel();
+            }
         }
     }
 
