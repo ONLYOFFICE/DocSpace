@@ -53,8 +53,8 @@ const SectionPagingContent = () => (
         nextLabel="Next"
         pageItems={pageItems}
         perPageItems={perPageItems}
-        previousAction={e => console.log('Prev Clicked')(e)}
-        nextAction={e => console.log('Next Clicked')(e)}
+        previousAction={e => console.log('Prev Clicked', e)}
+        nextAction={e => console.log('Next Clicked', e)}
         openDirection="top"
     />
 );
