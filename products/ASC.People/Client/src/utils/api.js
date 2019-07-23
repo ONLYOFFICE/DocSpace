@@ -39,3 +39,11 @@ export function getUserList(filterOptions = {}) {
 export function getGroupList() {
     return IS_FAKE ? fakeApi.getGroups() :  axios.get(`${API_URL}/group`);
 };
+
+export function createUser(data) {
+    return axios.post(`${API_URL}/people`, data);
+};
+
+export function updateUser(data) {
+    return axios.put(`${API_URL}/people/${data.id}`, data);
+};

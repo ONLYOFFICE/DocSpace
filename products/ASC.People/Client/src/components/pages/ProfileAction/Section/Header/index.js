@@ -13,11 +13,11 @@ const textStyle = {
 };
 
 const SectionHeaderContent = (props) => {
-  const {profile, history} = props;
+  const {profile, history, userType} = props;
 
   const headerText = profile
     ? profile.userName
-    : props.userType == "guest"
+    : userType === "user"
       ? "New guest"
       : "New employee";
 
@@ -31,7 +31,13 @@ const SectionHeaderContent = (props) => {
 
 SectionHeaderContent.propTypes = {
   profile: PropTypes.object,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  userType: PropTypes.oneOf(["user", "guest"])
 };
+
+SectionHeaderContent.defaultProps = {
+  profile: null,
+  userType: "user"
+}
 
 export default SectionHeaderContent;

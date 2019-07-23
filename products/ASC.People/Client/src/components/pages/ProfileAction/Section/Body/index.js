@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import { Avatar } from 'asc-web-components';
+import UserForm from './userForm';
 
 
 const SectionBodyContent = (props) => {
@@ -30,18 +31,25 @@ const SectionBodyContent = (props) => {
           />
         : <Avatar
             size="max"
-            role={props.userType == "guest" ? "guest" : "user"}
+            role={props.userType}
             editing={true}
             editLabel={"Add photo"}
             editAction={onEditAvatar}
           />
       }
+      <UserForm initialValues={profile}/>
     </div>
   );
 };
 
 SectionBodyContent.propTypes = {
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  userType: PropTypes.oneOf(["user", "guest"])
 };
+
+SectionBodyContent.defaultProps = {
+  profile: null,
+  userType: "user"
+}
 
 export default SectionBodyContent;
