@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton, Text } from 'asc-web-components';
 
@@ -40,4 +41,4 @@ SectionHeaderContent.defaultProps = {
   userType: "user"
 }
 
-export default SectionHeaderContent;
+export default withRouter(SectionHeaderContent);
