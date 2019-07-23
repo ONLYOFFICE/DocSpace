@@ -18,6 +18,12 @@ const Arrow = styled(Icons.ArrowContentIcon)`
   transform: ${props => props.isOpen && 'rotate(180deg)'};
 `;
 
+const StyledSpan = styled.span`
+
+  cursor: pointer;
+  user-select: none;
+`;
+
 class ToggleContent extends React.Component {
 
   constructor(props) {
@@ -39,10 +45,10 @@ class ToggleContent extends React.Component {
   render() {
     return (
       <>
-        <div onClick={() => { this.toggleContent(!this.state.isOpen) }}>
+        <StyledSpan onClick={() => { this.toggleContent(!this.state.isOpen) }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
           <Text.Headline tag='h2' isInline={true}>{this.props.label}</Text.Headline>
-        </div>
+        </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
       </>
     )
