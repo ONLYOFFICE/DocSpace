@@ -5,18 +5,13 @@ import { Text } from '../text'
 import PropTypes from 'prop-types'
 
 
-const StyledContent = styled.div.attrs((props) => ({
-  isOpen: props.isOpen
-}))`
-
+const StyledContent = styled.div`
 color: #333;
 display: ${props => props.isOpen ? 'block' : 'none'};
 padding-top: 9px;
 `;
 
-const Arrow = styled(Icons.ArrowContentIcon).attrs((props) => ({
-  isOpen: props.isOpen
-}))`
+const Arrow = styled(Icons.ArrowContentIcon)`
 
   margin-right: 9px;
   margin-bottom: 5px;
