@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from "lodash";
-import { Text, Avatar, Button, ToggleContent, IconButton } from 'asc-web-components';
+import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
 
 const profileWrapper = {
   display: "flex",
@@ -36,24 +36,24 @@ const notesWrapper = {
 };
 
 let socialProfiles = [
-  { type: "facebook", value: "", icon:"ShareFacebookIcon" },
-  { type: "livejournal", value: "", icon:"LivejournalIcon" },
-  { type: "myspace", value: "", icon:"MyspaceIcon" },
-  { type: "twitter", value: "", icon:"ShareTwitterIcon" },
-  { type: "blogger", value: "", icon:"BloggerIcon" },
-  { type: "yahoo", value: "", icon:"YahooIcon" }
+  { type: "facebook", value: "", icon: "ShareFacebookIcon" },
+  { type: "livejournal", value: "", icon: "LivejournalIcon" },
+  { type: "myspace", value: "", icon: "MyspaceIcon" },
+  { type: "twitter", value: "", icon: "ShareTwitterIcon" },
+  { type: "blogger", value: "", icon: "BloggerIcon" },
+  { type: "yahoo", value: "", icon: "YahooIcon" }
 ];
 
 let contacts = [
-  { type: "mail", value: "", icon:"MailIcon" },
-  { type: "phone", value: "", icon:"PhoneIcon" },
-  { type: "mobphone", value: "", icon:"MobileIcon" },
-  { type: "gmail", value: "", icon:"GmailIcon" },
-  { type: "skype", value: "", icon:"SkypeIcon" },
-  { type: "msn", value: "", icon:"WindowsMsnIcon" },
-  { type: "icq", value: "", icon:"IcqIcon" },
-  { type: "jabber", value: "", icon:"JabberIcon" },
-  { type: "aim", value: "", icon:"AimIcon" }
+  { type: "mail", value: "", icon: "MailIcon" },
+  { type: "phone", value: "", icon: "PhoneIcon" },
+  { type: "mobphone", value: "", icon: "MobileIcon" },
+  { type: "gmail", value: "", icon: "GmailIcon" },
+  { type: "skype", value: "", icon: "SkypeIcon" },
+  { type: "msn", value: "", icon: "WindowsMsnIcon" },
+  { type: "icq", value: "", icon: "IcqIcon" },
+  { type: "jabber", value: "", icon: "JabberIcon" },
+  { type: "aim", value: "", icon: "AimIcon" }
 ];
 
 let userContacts = [];
@@ -69,7 +69,7 @@ const getUserRole = (user) => {
 const getFormattedDate = (date) => {
   if (!date) return;
   let d = date.slice(0, 10).split('-');
-  return d[1] + '/' + d[2] + '/' + d[0];
+  return d[1] + '.' + d[2] + '.' + d[0];
 };
 
 const getFormattedContacts = (profile) => {
@@ -78,7 +78,23 @@ const getFormattedContacts = (profile) => {
 
   let filledSocialProfiles = _.merge({}, socialProfiles, profile.contacts);
   userSocialProfiles = _.reject(filledSocialProfiles, (o) => { return o.icon === undefined; });
+};
 
+const getFormattedDepartments = (departments) => {
+  let splittedDepartments = departments.split(',');
+  const departmentsLength = splittedDepartments.length - 1;
+  return splittedDepartments.map((department, index) => {
+    return (
+      <span>
+        <Link key={index} type="action" fontSize={13} isHovered={true} text={department.trim()} />
+        {(departmentsLength !== index) ? ', ' : ''}
+      </span>
+    )
+  });
+};
+
+const sendMail = (email) => {
+  window.open('mailto:'+email);
 };
 
 const createContacts = (contacts) => {
@@ -108,7 +124,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatar}
           userName={profile.displayName}
         />
-        <Button style={{marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => console.log('Edit action')} />
+        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => console.log('Edit action')} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -124,8 +140,8 @@ const SectionBodyContent = (props) => {
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
-          <Text.Body style={restMargins}>{profile.email}</Text.Body>
-          <Text.Body style={restMargins}>{profile.department}</Text.Body>
+          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} text={profile.email} onClick={() => sendMail(profile.email)}/></Text.Body>
+          <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
           <Text.Body style={restMargins}>{profile.sex}</Text.Body>
@@ -134,27 +150,33 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
         </div>
       </div>
-      <div style={{ width: "100%" }}>
-        <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
-          <Text.Body tag="span">
-            {profile.notes}
-          </Text.Body>
-        </ToggleContent>
-      </div>
-      <div style={{ width: "100%", marginTop: "24px" }}>
-        <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
-          <Text.Body tag="span">
-            {createContacts(userContacts)}
-          </Text.Body>
-        </ToggleContent>
-      </div>
-      <div style={{ width: "100%", marginTop: "24px" }}>
-        <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
-          <Text.Body tag="span">
-            {createContacts(userSocialProfiles)}
-          </Text.Body>
-        </ToggleContent>
-      </div>
+      {profile.notes &&
+        <div style={{ width: "100%" }}>
+          <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
+            <Text.Body tag="span">
+              {profile.notes}
+            </Text.Body>
+          </ToggleContent>
+        </div>
+      }
+      {profile.contacts &&
+        <div style={{ width: "100%", marginTop: "24px" }}>
+          <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
+            <Text.Body tag="span">
+              {createContacts(userContacts)}
+            </Text.Body>
+          </ToggleContent>
+        </div>
+      }
+      {profile.contacts &&
+        <div style={{ width: "100%", marginTop: "24px" }}>
+          <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
+            <Text.Body tag="span">
+              {createContacts(userSocialProfiles)}
+            </Text.Body>
+          </ToggleContent>
+        </div>
+      }
     </div>
   );
 };
