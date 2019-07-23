@@ -43,7 +43,7 @@ namespace ASC.Common.Caching
         static AscCache()
         {
             Memory = new AscCache();
-            Default = Memory;//ConfigurationManager.GetSection("redisCacheClient") != null ? new RedisCache() : Memory;
+            Default = Memory;
         }
 
         private AscCache()
@@ -109,13 +109,12 @@ namespace ASC.Common.Caching
         public T HashGet<T>(string key, string field)
         {
             var cache = GetCache();
-            T value;
-            var dic = (IDictionary<string, T>) cache.Get(key);
-            if (dic != null && dic.TryGetValue(field, out value))
+            var dic = (IDictionary<string, T>)cache.Get(key);
+            if (dic != null && dic.TryGetValue(field, out var value))
             {
                 return value;
             }
-            return default(T);
+            return default;
         }
 
         public void HashSet<T>(string key, string field, T value)
@@ -157,7 +156,6 @@ namespace ASC.Common.Caching
 
         private static void OnClearCache()
         {
-            Default.Remove(new Regex(".*"));
             var keys = MemoryCache.Default.Select(r => r.Key).ToList();
 
             foreach (var k in keys)
