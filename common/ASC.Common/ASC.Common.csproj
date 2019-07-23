@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos/AscCacheItem.proto" />
+    <Protobuf Include="protos\DistributedTaskCache.proto" />
     <Protobuf Include="protos\DistributedTaskCancelation.proto" />
   </ItemGroup>
 </Project>
