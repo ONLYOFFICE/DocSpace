@@ -13,30 +13,32 @@ const Home = ({users}) => {
   const [isHeaderVisible, toggleHeaderVisible] = useState(false);
   const [isHeaderIndeterminate, toggleHeaderIndeterminate] = useState(false);
   const [isHeaderChecked, toggleHeaderChecked] = useState(false);
-  
+  const [selected, setSelected] = useState("none");
+
   const renderGroupButtonMenu = () => {
     const headerVisible = selection.length > 0;
     const headerIndeterminate = headerVisible && selection.length > 0 && selection.length < users.length;
     const headerChecked = headerVisible && selection.length === users.length;
-    
-    /*console.log(`renderGroupButtonMenu()
+
+    console.log(`renderGroupButtonMenu()
       headerVisible=${headerVisible} 
       headerIndeterminate=${headerIndeterminate} 
       headerChecked=${headerChecked}
       selection.length=${selection.length}
-      users.length=${users.length}`);*/
+      users.length=${users.length}
+      selected=${selected}`);
 
-    if(headerVisible)
+    if(headerVisible || selected === "close") {
       toggleHeaderVisible(headerVisible);
+      if(selected === "close")
+        setSelected("none");
+    }
 
-    if(isHeaderIndeterminate !== headerIndeterminate)
-      toggleHeaderIndeterminate(headerIndeterminate);
-
-    if(isHeaderChecked !== headerChecked)
-      toggleHeaderChecked(headerChecked);
+    toggleHeaderIndeterminate(headerIndeterminate);
+    toggleHeaderChecked(headerChecked);
   };
 
-  const onRowSelect = (checked, data) => {
+  const onRowChange = (checked, data) => {
     /*console.log(`onBodySelect 
         row.checked=${checked}`,
           data,
@@ -70,11 +72,24 @@ const Home = ({users}) => {
           isHeaderIndeterminate={isHeaderIndeterminate}
           isHeaderChecked={isHeaderChecked}
           onCheck={checked => {
-            toggleHeaderChecked(checked);
-            selection = checked ? [...users] : [];
             /*console.log(`SectionHeaderContent onCheck 
-                selection.length=${selection.length}`)*/
-            renderGroupButtonMenu();
+                selection.length=${selection.length}`);*/
+            setSelected(checked ? "all" : "none");
+          }}
+          onSelect={(selected) => {
+            /*console.log(`SectionHeaderContent onSelect 
+              selected=${selected}`);*/
+            setSelected(selected);
+          }}
+          onClose={() => {
+            /*console.log('SectionHeaderContent onClose');*/
+            if(!selection.length) {
+              setSelected("none");
+              toggleHeaderVisible(false);
+            }
+            else {
+              setSelected("close");
+            }
           }}
         />
       }
@@ -82,8 +97,8 @@ const Home = ({users}) => {
       sectionBodyContent={
         <SectionBodyContent
           users={users}
-          isHeaderChecked={isHeaderChecked}
-          onSelect={onRowSelect}
+          selected={selected}
+          onRowChange={onRowChange}
         />
       }
       sectionPagingContent={<SectionPagingContent />}

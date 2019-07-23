@@ -37,7 +37,8 @@ namespace ASC.Web.Core.WhiteLabel
 {
     public class TenantLogoManager
     {
-        private static readonly ICache Cache = AscCache.Default;
+        private static readonly ICache Cache = AscCache.Memory;
+        private static readonly ICacheNotify<TenantLogoCacheItem> CacheNotify;
 
         private static string CacheKey
         {
@@ -55,6 +56,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var hideSettings = (ConfigurationManager.AppSettings["web.hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
+            CacheNotify = new KafkaCache<TenantLogoCacheItem>();
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
 
@@ -179,7 +182,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public static void RemoveMailLogoDataFromCache()
         {
-            Cache.Remove(CacheKey);
+            CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
         }
     }
 }

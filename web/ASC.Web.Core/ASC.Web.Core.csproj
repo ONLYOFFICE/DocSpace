@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\UserPhotoManagerCacheItem.proto" />
-    <None Remove="protos\WebItemSecurityNotifier.proto" />
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
@@ -147,6 +145,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="protos\SmsKeyCacheKey.proto" />
+    <Protobuf Include="protos\TenantLogoCacheItem.proto" />
+    <Protobuf Include="protos\MailServiceHelperCache.proto" />
     <Protobuf Include="protos\WebItemSecurityNotifier.proto" />
     <Protobuf Include="protos\UserPhotoManagerCacheItem.proto" />
   </ItemGroup>
