@@ -26,17 +26,25 @@ const getUserEmail = user => {
 };
 
 const getUserRole = user => {
-  if (user.isOwner) return "owner";
-  else if (user.isAdmin) return "admin";
-  else if (user.isVisitor) return "guest";
-  else return "user";
+  if (user.isOwner) 
+    return "owner";
+  else if (user.isAdmin) 
+    return "admin";
+  else if (user.isVisitor) 
+    return "guest";
+  else 
+    return "user";
 };
 
 const getUserStatus = user => {
-  if (user.state === 1 && user.activationStatus === 1) return "normal";
-  else if (user.state === 1 && user.activationStatus === 2) return "pending";
-  else if (user.state === 2) return "disabled";
-  else return "normal";
+  if (user.status === 1 && user.activationStatus === 1) 
+    return "normal";
+  else if (user.status === 1 && user.activationStatus === 2) 
+    return "pending";
+  else if (user.status === 2) 
+    return "disabled";
+  else 
+    return "normal";
 };
 
 const getUserContextOptions = user => {
@@ -170,6 +178,7 @@ class SectionBodyContent extends React.Component {
             >
               <UserContent
                 userName={item.user.userName}
+                displayName={item.user.displayName}
                 department={item.department}
                 phone={item.phone}
                 email={item.email}

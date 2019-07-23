@@ -26,80 +26,93 @@
 
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Linq;
 
 namespace ASC.Common.Threading
 {
-    public class DistributedTask : ISerializable
+    public class DistributedTask
     {
-        [JsonProperty]
-        private readonly Dictionary<string, string> props = new Dictionary<string, string>();
-
-
         internal Action<DistributedTask> Publication { get; set; }
 
-        [JsonProperty]
-        public string InstanseId { get; internal set; }
+        public DistributedTaskCache DistributedTaskCache { get; internal set; }
 
-        [JsonProperty]
-        public string Id { get; private set; }
+        public string InstanseId
+        {
+            get
+            {
+                return DistributedTaskCache.InstanseId;
+            }
+            set
+            {
+                DistributedTaskCache.InstanseId = value;
+            }
+        }
+        public string Id
+        {
+            get
+            {
+                return DistributedTaskCache.Id;
+            }
+            private set
+            {
+                DistributedTaskCache.Id = value;
+            }
+        }
 
-        [JsonProperty]
-        public DistributedTaskStatus Status { get; internal set; }
+        public DistributedTaskStatus Status
+        {
+            get
+            {
+                return Enum.Parse<DistributedTaskStatus>(DistributedTaskCache.Status);
+            }
+            internal set
+            {
+                DistributedTaskCache.Status = value.ToString();
+            }
+        }
 
-        [JsonProperty]
-        public AggregateException Exception { get; internal set; }
-
-
+        public AggregateException Exception
+        {
+            get
+            {
+                return new AggregateException(DistributedTaskCache.Exception);
+            }
+            internal set
+            {
+                DistributedTaskCache.Exception = value.ToString();
+            }
+        }
 
         public DistributedTask()
         {
-            Id = Guid.NewGuid().ToString();
-        }
-
-        protected DistributedTask(SerializationInfo info, StreamingContext context)
-        {
-            InstanseId = info.GetValue("InstanseId", typeof(object)).ToString();
-            Id = info.GetValue("Id", typeof(object)).ToString();
-            Status = (DistributedTaskStatus)info.GetValue("Status", typeof(DistributedTaskStatus));
-            Exception = (AggregateException)info.GetValue("Exception", typeof(AggregateException));
-            foreach (var p in info)
+            DistributedTaskCache = new DistributedTaskCache
             {
-                if (p.Name.StartsWith("_"))
-                {
-                    props[p.Name.TrimStart('_')] = p.Value.ToString();
-                }
-            }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("InstanseId", InstanseId);
-            info.AddValue("Id", Id);
-            info.AddValue("Status", Status);
-            info.AddValue("Exception", Exception);
-            foreach (var p in props)
-            {
-                info.AddValue("_" + p.Key, p.Value);
-            }
+                Id = Guid.NewGuid().ToString()
+            };
         }
 
 
         public T GetProperty<T>(string name)
         {
-            return props.ContainsKey(name) ? JsonConvert.DeserializeObject<T>(props[name]) : default(T);
+            return DistributedTaskCache.Props.Any(r=> r.Key == name) ? 
+                JsonConvert.DeserializeObject<T>(DistributedTaskCache.Props.Single(r => r.Key == name).Value) : 
+                default;
         }
 
         public void SetProperty(string name, object value)
         {
+            var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp() {
+                Key = name,
+                Value = JsonConvert.SerializeObject(value)
+            };
+
             if (value != null)
             {
-                props[name] = JsonConvert.SerializeObject(value);
+                DistributedTaskCache.Props.Add(prop);
             }
             else
             {
-                props.Remove(name);
+                DistributedTaskCache.Props.Remove(prop);
             }
         }
 

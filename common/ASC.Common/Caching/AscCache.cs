@@ -34,8 +34,6 @@ namespace ASC.Common.Caching
 {
     public class AscCache : ICache
     {
-        public static readonly ICache Default;
-
         public static readonly ICache Memory;
 
         public readonly ICacheNotify<AscCacheItem> KafkaNotify;
@@ -43,7 +41,6 @@ namespace ASC.Common.Caching
         static AscCache()
         {
             Memory = new AscCache();
-            Default = Memory;
         }
 
         private AscCache()

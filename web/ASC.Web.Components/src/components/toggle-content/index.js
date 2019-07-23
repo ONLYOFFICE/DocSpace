@@ -45,7 +45,10 @@ class ToggleContent extends React.Component {
   render() {
     return (
       <div>
-        <StyledSpan onClick={() => { this.toggleContent(!this.state.isOpen) }}>
+        <StyledSpan onClick={() => {
+          this.toggleContent(!this.state.isOpen);
+          this.props.onChange && this.props.onChange(!this.state.isOpen);
+        }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
           <Text.Headline tag='h2' isInline={true}>{this.props.label}</Text.Headline>
         </StyledSpan>
@@ -56,7 +59,8 @@ class ToggleContent extends React.Component {
 }
 
 ToggleContent.propTypes = {
-  isOpen: PropTypes.bool
+  isOpen: PropTypes.bool,
+  onChange: PropTypes.func
 }
 
 ToggleContent.defaultProps = {

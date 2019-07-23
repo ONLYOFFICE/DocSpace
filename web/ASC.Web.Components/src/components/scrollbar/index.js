@@ -18,7 +18,7 @@ const Scrollbar = (props) => {
     },
   };
   
-  const stype = scrollbarType[props.stype || "smallBlack"];
+  const stype = scrollbarType[props.stype];
 
   const thumbV = stype ? stype.thumbV : {};
   const thumbH = stype ? stype.thumbH : {};
@@ -32,8 +32,12 @@ const Scrollbar = (props) => {
   );
 
   return (
-    <Scrollbars renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props}/>
+    <Scrollbars renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} />
   );
 }
+
+Scrollbar.defaultProps = {
+  stype: "smallBlack"
+};
 
 export default Scrollbar;
