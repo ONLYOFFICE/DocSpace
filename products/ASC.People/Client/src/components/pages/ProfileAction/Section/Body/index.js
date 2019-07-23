@@ -30,7 +30,7 @@ const SectionBodyContent = (props) => {
           />
         : <Avatar
             size="max"
-            role="user"
+            role={props.userType == "guest" ? "guest" : "user"}
             editing={true}
             editLabel={"Add photo"}
             editAction={onEditAvatar}
