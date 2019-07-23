@@ -1,16 +1,16 @@
 import React from 'react';
 import { GroupButtonsMenu, DropDownItem, Text } from 'asc-web-components';
 
-const peopleItems = [
+const getPeopleItems = (onSelect) => [
     {
       label: "Select",
       isDropdown: true,
       isSeparator: true,
       fontWeight: "bold",
       children: [
-        <DropDownItem key="active" label="Active" />,
-        <DropDownItem key="disabled" label="Disabled" />,
-        <DropDownItem key="invited" label="Invited" />
+        <DropDownItem key="active" label="Active" onClick={() => onSelect("active")} />,
+        <DropDownItem key="disabled" label="Disabled" onClick={() => onSelect("disabled")} />,
+        <DropDownItem key="invited" label="Invited" onClick={() => onSelect("invited")} />
       ]
     },
     {
@@ -47,7 +47,9 @@ const SectionHeaderContent = ({
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
-    onCheck
+    onCheck,
+    onSelect,
+    onClose
   }) =>
     isHeaderVisible ? (
       <div style={{ margin: "0 -16px" }}>
@@ -55,14 +57,15 @@ const SectionHeaderContent = ({
           checked={isHeaderChecked}
           isIndeterminate={isHeaderIndeterminate}
           onChange={onCheck}
-          menuItems={peopleItems}
+          menuItems={getPeopleItems(onSelect)}
           visible={isHeaderVisible}
           moreLabel="More"
           closeTitle="Close"
+          onClose={onClose}
         />
       </div>
     ) : (
-      <Text.ContentHeader> People</Text.ContentHeader>
+      <Text.ContentHeader>People</Text.ContentHeader>
     );
 
 export default SectionHeaderContent;
