@@ -96,6 +96,7 @@ const Input = styled.input`
   opacity: 0.0001;
   position: absolute;
   right: 0;
+  z-index: -1;
 `;
 
 const Text = styled.span`
