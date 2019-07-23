@@ -1,25 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
+import config from '../../../../package.json';
 import {
     MainButton,
     DropDownItem,
 } from "asc-web-components";
 
-const ArticleMainButtonContent = ({ isAdmin }) => (
+const ArticleMainButtonContent = ({ isAdmin, history }) => (
     isAdmin ?
         <MainButton
             isDisabled={false}
             isDropdown={true}
             text={"Actions"}
-            clickAction={() => console.log("MainButton clickAction")}
         >
             <DropDownItem
                 label="New employee"
-                onClick={() => console.log("New employee clicked")}
+                onClick={() => history.push(`${config.homepage}/create/user`) }
             />
             <DropDownItem
                 label="New quest"
-                onClick={() => console.log("New quest clicked")}
+                onClick={() => history.push(`${config.homepage}/create/guest`)}
             />
             <DropDownItem
                 label="New department"
@@ -43,10 +45,15 @@ const ArticleMainButtonContent = ({ isAdmin }) => (
         <></>
 );
 
+ArticleMainButtonContent.propTypes = {
+    isAdmin: PropTypes.bool.isRequired,
+    history: PropTypes.object.isRequired
+};
+
 const mapStateToProps = (state) => {
     return {
         isAdmin: state.auth.user.isAdmin || state.auth.user.isOwner
     }
 }
 
-export default connect(mapStateToProps)(ArticleMainButtonContent);
+export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
