@@ -44,13 +44,13 @@ class ToggleContent extends React.Component {
 
   render() {
     return (
-      <>
+      <div>
         <StyledSpan onClick={() => { this.toggleContent(!this.state.isOpen) }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
           <Text.Headline tag='h2' isInline={true}>{this.props.label}</Text.Headline>
         </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
-      </>
+      </div>
     )
   }
 }
