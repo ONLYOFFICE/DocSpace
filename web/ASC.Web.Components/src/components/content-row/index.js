@@ -68,6 +68,7 @@ const StyledOptionButton = styled.div`
     flex: 0 0 auto;
     display: flex;
     margin-left: 16px;
+    margin-right: 16px;
 `;
 
 class ContentRow extends React.Component {
