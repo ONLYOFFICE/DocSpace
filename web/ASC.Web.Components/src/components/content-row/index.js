@@ -92,11 +92,11 @@ class ContentRow extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(this.props.checked !== prevProps.checked) {
-            console.log(`ContentRow componentDidUpdate 
+            /*console.log(`ContentRow componentDidUpdate 
             this.props.checked=${this.props.checked}
             prevProps.checked=${prevProps.checked}
             this.state.checked=${this.state.checked}
-            prevState.checked=${prevState.checked}`);
+            prevState.checked=${prevState.checked}`);*/
 
             this.setState({checked: this.props.checked});
         }
@@ -112,7 +112,7 @@ class ContentRow extends React.Component {
                     <StyledCheckbox>
                         <Checkbox isChecked={this.state.checked} onChange={(e) => { 
                             let checked = e.target.checked;
-                            console.log("ContentRow Checkbox onChange checked=", checked);
+                            // console.log("ContentRow Checkbox onChange checked=", checked);
                             this.setState({checked: checked});
                             
                             if(onSelect) { 
