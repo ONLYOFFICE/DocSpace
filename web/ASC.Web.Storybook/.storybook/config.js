@@ -3,7 +3,7 @@ import { addParameters, configure } from '@storybook/react';
 import { addDecorator } from '@storybook/react';
 import { withConsole } from '@storybook/addon-console';
 import 'bootstrap/dist/css/bootstrap.css';
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 // automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /\.stories\.js$/);
