@@ -31,13 +31,17 @@ class FilterInput extends React.Component {
         this.state = {
             sortDirection: false,
             sortId: this.props.getSortData().length > 0 ? this.props.getSortData()[0].id : "",
-            filterValue: []
+            filterValue: [],
+            searchText: this.props.value
         };
+
+        this.timerId = null;
 
         this.getSortData = this.getSortData.bind(this);
         this.onClickSortItem = this.onClickSortItem.bind(this);
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
         this.onSearch = this.onSearch.bind(this);
+        this.setFilterTimer = this.setFilterTimer.bind(this);
         
     }
     getSortData(){
@@ -59,14 +63,13 @@ class FilterInput extends React.Component {
         this.setState({ sortDirection: !this.state.sortDirection});
     }
     onSearch(result){
-        
         this.setState({ filterValue: result.filterValue});
         this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc")
     }
 
     onFilter(filterValue, sortId, sortDirection){
         let result = {
-            inputValue:  this.props.value,
+            inputValue: this.state.searchText,
             filterValue: filterValue,
             sortId: sortId,
             sortDirection: sortDirection
@@ -74,7 +77,18 @@ class FilterInput extends React.Component {
         this.props.onFilter(result);
     }
 
+    setFilterTimer() {
+        this.timerId && clearTimeout(this.timerId);
+        this.timerId = null;
+        this.timerId = setTimeout(() => {
+            this.onSearch({ filterValue: this.state.filterValue });
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }, this.props.refreshTimeout);
+    }
+
     render(){
+        
         return(
             <StyledFilterInput>
                 <StyledSearchInput>
@@ -88,8 +102,13 @@ class FilterInput extends React.Component {
                         placeholder={this.props.placeholder}
                         onSearchClick={(result) => {this.onSearch(result)}}
                         onChangeFilter={(result) => {this.onSearch(result)}}
-                        value={this.props.value}
-                        onChange={this.props.onChange}
+                        value={this.state.searchText}
+                        onChange={(e) => { 
+                            this.setState({searchText: e.target.value})
+                            
+                            if(this.props.autoRefresh)
+                                this.setFilterTimer();
+                        }}
                     />
                 </StyledSearchInput>
                 
@@ -115,6 +134,16 @@ class FilterInput extends React.Component {
             
         );
     }
-}
+};
+
+FilterInput.protoTypes = {
+    autoRefresh: PropTypes.bool,
+    refreshTimeout: PropTypes.number
+};
+
+FilterInput.defaultProps = {
+    autoRefresh: true,
+    refreshTimeout: 1000
+};
 
 export default FilterInput;
