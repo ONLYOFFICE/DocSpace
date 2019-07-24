@@ -36,10 +36,11 @@ export default function createStyledHeadline() {
 
    const Text = props => {
       //console.log("Text.Headerline render");
-      return
+      return (
          (props.tag === 'h1' && <StyledH1 {...props} title={props.title}></StyledH1>) ||
          (props.tag === 'h2' && <StyledH2 {...props} title={props.title}></StyledH2>) ||
-         (props.tag === 'h3' && <StyledH3 {...props} title={props.title}></StyledH3>);
+         (props.tag === 'h3' && <StyledH3 {...props} title={props.title}></StyledH3>)
+      );
    };
 
    Text.propTypes = {
