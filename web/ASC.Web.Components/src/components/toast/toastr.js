@@ -29,7 +29,7 @@ const toastr = {
 };
 
 
-const notify = (type, text, title, timeout = 5000, withCross = false,  centerPosition = false) => {
+const notify = (type, data, title, timeout = 5000, withCross = false,  centerPosition = false) => {
   return toast(
     <>
       <div>
@@ -37,7 +37,7 @@ const notify = (type, text, title, timeout = 5000, withCross = false,  centerPos
       </div>
       <StyledDiv>
         <ToastTitle>{title}</ToastTitle>
-        {text}
+        {data}
       </StyledDiv>
     </>,
     {
@@ -50,20 +50,20 @@ const notify = (type, text, title, timeout = 5000, withCross = false,  centerPos
   );
 };
 
-function success(text, title, timeout, withCross, centerPosition) {
-  return notify('success', text, title, timeout, withCross, centerPosition);
+function success(data, title, timeout, withCross, centerPosition) {
+  return notify('success', data, title, timeout, withCross, centerPosition);
 }
 
-function error(text, title, timeout, withCross, centerPosition) {
-  return notify('error', text, title, timeout, withCross, centerPosition);
+function error(data, title, timeout, withCross, centerPosition) {
+  return notify('error', data, title, timeout, withCross, centerPosition);
 }
 
-function warning(text, title, timeout, withCross, centerPosition) {
-  return notify('warning', text, title, timeout, withCross, centerPosition);
+function warning(data, title, timeout, withCross, centerPosition) {
+  return notify('warning', data, title, timeout, withCross, centerPosition);
 }
 
-function info(text, title, timeout, withCross, centerPosition) {
-  return notify('info', text, title, timeout, withCross, centerPosition);
+function info(data, title, timeout, withCross, centerPosition) {
+  return notify('info', data, title, timeout, withCross, centerPosition);
 }
 
 function clear() {

@@ -13,7 +13,7 @@ storiesOf('Components|Toast', module)
    .addDecorator(withReadme(Readme))
    .add('base', () => {
       const toastType = `${select('type', type, 'success')}`;
-      const toastText = `${text('text', 'Demo text for Toast')}`;
+      const toastData = `${text('data (only text in storybook)', 'Demo text for Toast')}`;
       const titleToast = `${text('title', 'Demo title')}`;
       const withCross = boolean('withCross', false);
       const timeout = number('timeout', '5000');
@@ -24,16 +24,16 @@ storiesOf('Components|Toast', module)
                <button onClick={() => {
                   switch (toastType) {
                      case 'error':
-                        toastr.error(toastText, titleToast, timeout, withCross);
+                        toastr.error(toastData, titleToast, timeout, withCross);
                         break;
                      case 'warning':
-                        toastr.warning(toastText, titleToast, timeout, withCross);
+                        toastr.warning(toastData, titleToast, timeout, withCross);
                         break;
                      case 'info':
-                        toastr.info(toastText, titleToast, timeout, withCross);
+                        toastr.info(toastData, titleToast, timeout, withCross);
                         break;
                      default:
-                        toastr.success(toastText, titleToast, timeout, withCross);
+                        toastr.success(toastData, titleToast, timeout, withCross);
                         break;
                   }
                }}>
