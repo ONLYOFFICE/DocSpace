@@ -126,7 +126,6 @@ class GroupButtonsMenu extends React.Component {
                 {this.props.hasOwnProperty("checked") && 
                     <StyledCheckbox>
                         <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => { 
-                            this.setState({checked: e.target.checked})
                             this.props.onChange && this.props.onChange(e.target.checked);
                         }} />
                     </StyledCheckbox>
