@@ -104,24 +104,22 @@ class ContentRow extends React.Component {
     };
 
     render () {
+        //console.log("ContentRow render()");
         const { onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
         
 
         return (
             <StyledContentRow {...this.props}>
-                {this.props.hasOwnProperty("checked") && 
+                
                     <StyledCheckbox>
-                        <Checkbox isChecked={this.state.checked} onChange={(e) => { 
-                            let checked = e.target.checked;
-                            // console.log("ContentRow Checkbox onChange checked=", checked);
-                            this.setState({checked: checked});
+                        <Checkbox isChecked={this.props.checked} onChange={(e) => { 
+                            const checked = e.target.checked;
+
                             
-                            if(onSelect) { 
-                                onSelect(checked, data); 
-                            }
+                            onSelect && onSelect(checked, data);
                         }} />
                     </StyledCheckbox>
-                }
+
                 {(avatarRole !== '' || avatarSource !== '' || avatarName !== '')  && 
                     <StyledAvatar>
                         <Avatar size='small' role={avatarRole || ''} source={avatarSource || ''} userName={avatarName || ''} />
