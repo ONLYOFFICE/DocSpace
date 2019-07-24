@@ -17,9 +17,9 @@ class ProfileActions extends React.PureComponent {
       userActions: props.userActions
     };
 
-    this.handleClick.bind(this);
-    this.toggle.bind(this);
-    this.getUserRole.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.getUserRole = this.getUserRole.bind(this);
   };
 
   handleClick = (e) => {

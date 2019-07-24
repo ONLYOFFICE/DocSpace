@@ -34,9 +34,9 @@ class ComboBox extends React.PureComponent {
             items: props.items
         };
 
-        this.handleClick.bind(this);
-        this.stopAction.bind(this);
-        this.toggle.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.stopAction = this.stopAction.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
 
 

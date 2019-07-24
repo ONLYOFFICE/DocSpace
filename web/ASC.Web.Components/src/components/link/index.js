@@ -117,10 +117,10 @@ class Link extends React.PureComponent {
             isDropdown: props.dropdownType != 'none'
         };
 
-        this.handleClick.bind(this);
-        this.stopAction.bind(this);
-        this.toggleDropdown.bind(this);
-        this.toggleHovered.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.stopAction = this.stopAction.bind(this);
+        this.toggleDropdown = this.toggleDropdown.bind(this);
+        this.toggleHovered = this.toggleHovered.bind(this);
     }
 
     handleClick = (e) => !this.ref.current.contains(e.target) && this.toggleDropdown(false);
