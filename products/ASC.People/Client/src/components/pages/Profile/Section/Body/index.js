@@ -121,7 +121,7 @@ const SectionBodyContent = (props) => {
         <Avatar
           size="max"
           role={getUserRole(profile)}
-          source={profile.avatar}
+          source={profile.avatarMax}
           userName={profile.displayName}
         />
         <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => console.log('Edit action')} />
