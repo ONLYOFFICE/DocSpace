@@ -84,13 +84,13 @@ namespace ASC.Employee.Core.Controllers
                 query = query.Where(x => CoreContext.UserManager.IsUserInGroup(x.ID, groupId));
                 ApiContext.SetDataFiltered();
             }
-            return query.Select(x => new EmployeeWraperFull(x, ApiContext));
+            return query.Select(x => new EmployeeWraperFull(x));
         }
 
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext);
+            return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
         }
 
         [Read("email")]

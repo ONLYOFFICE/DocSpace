@@ -33,7 +33,7 @@ or
 | Props              | Type     | Required | Values                      | Default        | Description                                                       |
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
 | `type`             | `oneOf`  |    ✅    | success, error, warning, info | -     | Define color and icon of toast                                           |
-| `text`             | `string` |    -     | -                             | -     | Text inside a toast                                                      |
+| `data`             | `JSX` or `string` |    -     | -                             | -     | Any components or data inside a toast                                                      |
 | `title`            | `string` |    -     | -                             | -     | Title inside a toast                                                     |
 | `withCross`       | `bool`   |    -     | true, false                   | `false`|If `false`: toast disappeared after clicking on any area of toast. If `true`:  toast disappeared after clicking on  close button|
 | `timeout`       | `number`   |    -     | from 750ms, `0` for disabling                   | `5000`|Time (in milliseconds) for showing your toast. Setting in `0` let you to show toast constantly until clicking on it|

@@ -7,9 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.5.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0-preview6.19304.6" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview6.19304.6" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview6.19304.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0-preview7.19362.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview7.19362.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview7.19362.4" />
   </ItemGroup>
 
 

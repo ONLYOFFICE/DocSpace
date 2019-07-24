@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,6 +62,9 @@ namespace ASC.People
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+
+                config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
+                config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);

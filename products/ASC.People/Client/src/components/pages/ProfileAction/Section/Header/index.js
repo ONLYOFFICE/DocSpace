@@ -19,8 +19,8 @@ const SectionHeaderContent = (props) => {
   const headerText = profile
     ? profile.userName
     : userType === "user"
-      ? "New guest"
-      : "New employee";
+      ? "New employee"
+      : "New guest";
 
   return (
     <div style={wrapperStyle}>

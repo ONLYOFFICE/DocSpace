@@ -20,7 +20,7 @@ const ArticleMainButtonContent = ({ isAdmin, history }) => (
                 onClick={() => history.push(`${config.homepage}/create/user`) }
             />
             <DropDownItem
-                label="New quest"
+                label="New guest"
                 onClick={() => history.push(`${config.homepage}/create/guest`)}
             />
             <DropDownItem

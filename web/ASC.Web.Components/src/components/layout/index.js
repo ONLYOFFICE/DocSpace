@@ -16,9 +16,11 @@ class Layout extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    //console.log("Layout componentDidUpdate");
     let currentHash = this.getPropsHash(this.props);
     let prevHash = this.getPropsHash(prevProps);
     if (currentHash !== prevHash) {
+      console.log("Layout componentDidUpdate hasChanges");
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -133,6 +135,8 @@ class Layout extends React.Component {
   };
 
   render() {
+    console.log("Layout render");
+    
     return (
       <>
         {

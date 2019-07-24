@@ -11,13 +11,15 @@ storiesOf('Components|Text', module)
   .addDecorator(withReadme(Readme))
   .add('menu header', () => (
     <Section>
-      <Text.MenuHeader
-        title={text('title', '')}
-        truncate={boolean('truncate', false)}
-        isDisabled={boolean('isDisabled', false)}
-        isInline={boolean('isInline', false)}
-      >
-        {text('Text', 'Sample text Headline')}
-      </Text.MenuHeader>
+      <div style={{ width: "100%" }}>
+        <Text.MenuHeader
+          title={text('title', '')}
+          truncate={boolean('truncate', false)}
+          isDisabled={boolean('isDisabled', false)}
+          isInline={boolean('isInline', false)}
+        >
+          {text('Text', 'Sample text Headline')}
+        </Text.MenuHeader>
+      </div>
     </Section>
   ));

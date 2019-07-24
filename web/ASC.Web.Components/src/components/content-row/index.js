@@ -104,7 +104,8 @@ class ContentRow extends React.Component {
     };
 
     render () {
-        //console.log("ContentRow render()");
+        // console.log("ContentRow render");
+        
         const { onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
         
 

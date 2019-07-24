@@ -96,6 +96,7 @@ const Input = styled.input`
   opacity: 0.0001;
   position: absolute;
   right: 0;
+  z-index: -1;
 `;
 
 const Text = styled.span`
@@ -128,6 +129,8 @@ class Checkbox extends React.Component  {
     }
   }
   render() {
+    console.log("Checkbox render");
+    
     const cbxClassName = 'checkbox' +
       (this.props.isIndeterminate ? ' indeterminate' : this.state.checked ? ' checked' : '') +
       (this.props.isDisabled ? ' disabled' : '');

@@ -6,7 +6,7 @@ import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-const tag = ['h1','h2','h3'];
+const tag = ['h1', 'h2', 'h3'];
 
 storiesOf('Components|Text', module)
   .addDecorator(withKnobs)
@@ -14,14 +14,16 @@ storiesOf('Components|Text', module)
   .add('headline', () => (
 
     <Section>
-      <Text.Headline
-        tag={select('tag', tag, 'h1')}
-        title={text('title', '')}
-        truncate={boolean('truncate', false)}
-        isDisabled={boolean('isDisabled', false)}
-        isInline={boolean('isInline', false)}
-      >
-        {text('Text', 'Sample text Headline')}
-      </Text.Headline>
+      <div style={{ width: "100%" }}>
+        <Text.Headline
+          tag={select('tag', tag, 'h1')}
+          title={text('title', '')}
+          truncate={boolean('truncate', false)}
+          isDisabled={boolean('isDisabled', false)}
+          isInline={boolean('isInline', false)}
+        >
+          {text('Text', 'Sample text Headline')}
+        </Text.Headline>
+      </div>
     </Section>
   ));
