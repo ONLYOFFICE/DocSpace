@@ -15,18 +15,20 @@ storiesOf('Components|Text', module)
   .add('body', () => (
 
     <Section>
-      <Text.Body
-        title={text('title', '')}
-        tag = {select('tag', tag, 'p')}
-        truncate={boolean('truncate', false)}
-        isDisabled={boolean('isDisabled', false)}
-        color={select('color', color, 'black')}
-        backgroundColor={boolean('backgroundColor', false)}
-        isBold={boolean('isBold', false)}
-        isItalic={boolean('isItalic', false)}
-        isInline={boolean('isInline', false)}
-      >
-        {text('Text', 'Sample text Headline')}
-      </Text.Body>
+      <div style={{ width: "100%" }}>
+        <Text.Body
+          title={text('title', '')}
+          tag={select('tag', tag, 'p')}
+          truncate={boolean('truncate', false)}
+          isDisabled={boolean('isDisabled', false)}
+          color={select('color', color, 'black')}
+          backgroundColor={boolean('backgroundColor', false)}
+          isBold={boolean('isBold', false)}
+          isItalic={boolean('isItalic', false)}
+          isInline={boolean('isInline', false)}
+        >
+          {text('Text', 'Sample text Headline')}
+        </Text.Body>
+      </div>
     </Section>
   ));

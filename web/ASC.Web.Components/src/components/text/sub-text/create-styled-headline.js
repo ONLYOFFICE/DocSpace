@@ -18,7 +18,6 @@ export default function createStyledHeadline() {
       font-weight: 600;
       color: ${props => props.isDisabled == true ? '#ECEEF1' : '#333333'};
       text-align: left;
-      max-width: 1000px;
       ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
       ${props => props.isInline == true && 'display: inline-block;'}
    `
