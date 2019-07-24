@@ -71,7 +71,7 @@ const StyledOptionButton = styled.div`
     margin-right: 16px;
 `;
 
-class ContentRow extends React.Component {
+class ContentRow extends React.PureComponent {
     constructor(props){
         super(props);
         this.state = {

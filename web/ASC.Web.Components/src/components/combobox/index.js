@@ -21,7 +21,7 @@ const StyledComboBox = styled.div`
     }
 `;
 
-class ComboBox extends React.Component {
+class ComboBox extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -33,6 +33,10 @@ class ComboBox extends React.Component {
             boxLabel: props.items[0].label,
             items: props.items
         };
+
+        this.handleClick.bind(this);
+        this.stopAction.bind(this);
+        this.toggle.bind(this);
     }
 
 
@@ -57,6 +61,7 @@ class ComboBox extends React.Component {
     }
 
     render () {
+        //console.log("ComboBox render");
         return (
             <StyledComboBox ref={this.ref} {...this.props}
                 onClick={

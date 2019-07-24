@@ -58,7 +58,7 @@ const StyledCheckbox = styled.div`
     }
 `;
 
-class GroupButtonsMenu extends React.Component {
+class GroupButtonsMenu extends React.PureComponent {
 
     constructor(props) {
         super(props);    
@@ -116,6 +116,7 @@ class GroupButtonsMenu extends React.Component {
 
 
     render() {
+        console.log("GroupButtonsMenu render");
         const closeMenu = (e) => {
             this.setState({visible: false}); 
             this.props.onClose && this.props.onClose(e);

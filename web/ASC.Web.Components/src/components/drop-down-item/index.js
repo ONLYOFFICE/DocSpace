@@ -112,7 +112,8 @@ const UserEmailWrapper = styled.div`
     ${itemTruncate}
 `;
 
-const DropDownItem = props => {
+const DropDownItem = React.memo(props => {
+    //console.log("DropDownItem render");
     const {isSeparator, isUserPreview, label} = props;
     return (
         <StyledDropdownItem {...props} >
@@ -132,7 +133,7 @@ const DropDownItem = props => {
             }
         </StyledDropdownItem>
     );
-};
+});
 
 DropDownItem.propTypes = {
     isSeparator: PropTypes.bool,

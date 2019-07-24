@@ -104,7 +104,7 @@ ${props => (props.isTextOverflow && css`
 
 `;
 
-class Link extends React.Component {
+class Link extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -116,6 +116,11 @@ class Link extends React.Component {
             isHovered: props.isHovered,
             isDropdown: props.dropdownType != 'none'
         };
+
+        this.handleClick.bind(this);
+        this.stopAction.bind(this);
+        this.toggleDropdown.bind(this);
+        this.toggleHovered.bind(this);
     }
 
     handleClick = (e) => !this.ref.current.contains(e.target) && this.toggleDropdown(false);
@@ -143,6 +148,7 @@ class Link extends React.Component {
     }
 
     render() {
+        console.log("Link render");
         return (
             <span ref={this.ref}
                 onMouseEnter={() => {
