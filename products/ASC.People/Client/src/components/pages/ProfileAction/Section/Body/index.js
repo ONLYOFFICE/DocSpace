@@ -1,44 +1,13 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import { Avatar } from 'asc-web-components';
-import UserForm from './userForm';
+import UserForm from './Form/userForm'
 
 
 const SectionBodyContent = (props) => {
-  const {profile} = props;
-
-  const getUserRole = (user) => {
-    if(user.isOwner) return "owner";
-    if(user.isAdmin) return "admin";
-    if(user.isVisitor) return "guest";
-    return "user";
-  };
-
-  const onEditAvatar = () => {};
+  const {profile, userType} = props;
 
   return (
-    <div>
-      {
-        profile
-        ? <Avatar
-            size="max"
-            role={getUserRole(profile)}
-            source={profile.avatar}
-            userName={profile.userName}
-            editing={true}
-            editLabel={"Edit photo"}
-            editAction={onEditAvatar}
-          />
-        : <Avatar
-            size="max"
-            role={props.userType}
-            editing={true}
-            editLabel={"Add photo"}
-            editAction={onEditAvatar}
-          />
-      }
-      <UserForm initialValues={profile}/>
-    </div>
+    <UserForm initialValues={profile} userType={userType}/>
   );
 };
 

@@ -41,9 +41,9 @@ export function getGroupList() {
 };
 
 export function createUser(data) {
-    return axios.post(`${API_URL}/people`, data);
+    return IS_FAKE ? fakeApi.createUser() :  axios.post(`${API_URL}/people`, data);
 };
 
 export function updateUser(data) {
-    return axios.put(`${API_URL}/people/${data.id}`, data);
+    return IS_FAKE ? fakeApi.updateUser() :  axios.put(`${API_URL}/people/${data.id}`, data);
 };

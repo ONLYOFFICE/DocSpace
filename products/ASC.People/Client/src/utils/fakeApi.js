@@ -229,3 +229,12 @@ export function getGroups() {
 
     return fakeResponse(data);
 }
+
+export function createUser(data) {
+    data.id = "00000000-0000-0000-0000-000000000000"
+    return fakeResponse(data);
+};
+
+export function updateUser(data) {
+    return fakeResponse(data);
+};
