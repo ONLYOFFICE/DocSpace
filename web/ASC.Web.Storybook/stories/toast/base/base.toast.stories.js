@@ -15,8 +15,8 @@ storiesOf('Components|Toast', module)
       const toastType = `${select('type', type, 'success')}`;
       const toastText = `${text('text', 'Demo text for Toast')}`;
       const titleToast = `${text('title', 'Demo title')}`;
-      const withCross = `${boolean('withCross', false)}`;
-      const timeout = `${number('timeout', '5000')}`;
+      const withCross = boolean('withCross', false);
+      const timeout = number('timeout', '5000');
       return (
          <>
             <Toast />
@@ -24,16 +24,16 @@ storiesOf('Components|Toast', module)
                <button onClick={() => {
                   switch (toastType) {
                      case 'error':
-                        toastr.error(toastText, titleToast, JSON.parse(timeout), JSON.parse(withCross));
+                        toastr.error(toastText, titleToast, timeout, withCross);
                         break;
                      case 'warning':
-                        toastr.warning(toastText, titleToast, JSON.parse(timeout), JSON.parse(withCross));
+                        toastr.warning(toastText, titleToast, timeout, withCross);
                         break;
                      case 'info':
-                        toastr.info(toastText, titleToast, JSON.parse(timeout), JSON.parse(withCross));
+                        toastr.info(toastText, titleToast, timeout, withCross);
                         break;
                      default:
-                        toastr.success(toastText, titleToast, JSON.parse(timeout), JSON.parse(withCross));
+                        toastr.success(toastText, titleToast, timeout, withCross);
                         break;
                   }
                }}>

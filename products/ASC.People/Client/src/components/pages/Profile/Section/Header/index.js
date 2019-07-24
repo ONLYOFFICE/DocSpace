@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, IconButton, ContextMenuButton } from 'asc-web-components';
+import { withRouter } from "react-router";
 
 const wrapperStyle = {
   display: "flex",
@@ -53,4 +54,4 @@ const SectionHeaderContent = (props) => {
     );
 };
 
-export default SectionHeaderContent;
+export default withRouter(SectionHeaderContent);

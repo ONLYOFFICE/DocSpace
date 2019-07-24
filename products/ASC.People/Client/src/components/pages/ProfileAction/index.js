@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
@@ -14,7 +13,7 @@ const getUrlParam = (inputString, paramName, defaultValue) => {
 }
 
 const ProfileAction = (props) => {
-  const { auth, history, match, location } = props;
+  const { auth, match, location } = props;
   const { userId } = match.params;
   const [profile, setProfile] = useState(props.profile);
   const [isLoaded, setLoaded] = useState(props.isLoaded);
@@ -43,7 +42,7 @@ const ProfileAction = (props) => {
       setProfile(null);
       setLoaded(true);
     }
-  }, []);
+  }, [isEdit, auth.user, userId]);
   
 
   return (
@@ -51,7 +50,7 @@ const ProfileAction = (props) => {
       <PageLayout
         articleHeaderContent={<ArticleHeaderContent />}
         articleBodyContent={<ArticleBodyContent />}
-        sectionHeaderContent={<SectionHeaderContent profile={profile} history={history} userType={userType} />}
+        sectionHeaderContent={<SectionHeaderContent profile={profile} userType={userType} />}
         sectionBodyContent={<SectionBodyContent profile={profile} userType={userType} />}
       />
     : <PageLayout
@@ -62,7 +61,6 @@ const ProfileAction = (props) => {
 
 ProfileAction.propTypes = {
   auth: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   isLoaded: PropTypes.bool
@@ -74,4 +72,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(ProfileAction));
+export default connect(mapStateToProps)(ProfileAction);

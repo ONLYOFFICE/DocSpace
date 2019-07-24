@@ -36,7 +36,7 @@ or
 | `text`             | `string` |    -     | -                             | -     | Text inside a toast                                                      |
 | `title`            | `string` |    -     | -                             | -     | Title inside a toast                                                     |
 | `withCross`       | `bool`   |    -     | true, false                   | `false`|If `false`: toast disappeared after clicking on any area of toast. If `true`:  toast disappeared after clicking on  close button|
-| `timeout`       | `number`   |    -     | all positive numbers                   | `5000`|Time (in milliseconds) for showing your toast. Setting in `0` let you to show toast constantly until clicking on it|
+| `timeout`       | `number`   |    -     | from 750ms, `0` for disabling                   | `5000`|Time (in milliseconds) for showing your toast. Setting in `0` let you to show toast constantly until clicking on it|
 
 #### Other Options
 ```js

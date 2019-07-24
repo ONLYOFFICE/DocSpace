@@ -18,7 +18,7 @@ const App = () => {
                         <PrivateRoute exact path={config.homepage} component={Home} />
                         <PrivateRoute path={`${config.homepage}/view/:userId`} component={Profile} />
                         <PrivateRoute path={`${config.homepage}/edit/:userId`} component={ProfileAction} />
-                        <PrivateRoute path={`${config.homepage}/create`} component={ProfileAction} />
+                        <PrivateRoute path={`${config.homepage}/create/:type`} component={ProfileAction} />
                         <PrivateRoute component={() => (
                             <ErrorContainer>
                                 Sorry, the resource
