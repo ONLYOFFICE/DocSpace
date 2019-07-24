@@ -98,7 +98,7 @@ const Home = ({users}) => {
         <SectionBodyContent
           users={users}
           selected={selected}
-          onRowChange={onRowChange}
+          onChange={onRowChange}
         />
       }
       sectionPagingContent={<SectionPagingContent />}

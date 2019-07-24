@@ -146,16 +146,17 @@ class SectionBodyContent extends React.Component {
     if (this.props.selected !== prevProps.selected) {
       this.state.people.forEach(item => {
         const checked = this.getChecked(item, this.props.selected);
-        if(this.state.checkedItems.get(item.user.id) !== checked) {
+        //if(this.state.checkedItems.get(item.user.id) !== checked) {
           this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item.user.id, checked) }));
-          this.props.onRowChange && this.props.onRowChange(checked, item.user);
-        }
+          this.props.onChange && this.props.onChange(checked, item.user);
+        //}
       });
     }
   }
 
   render() {
-    const { isAdmin, onRowChange } = this.props;
+    console.log("Home SectionBodyContent render()");
+    const { isAdmin, onChange } = this.props;
     // console.log("SectionBodyContent props ", this.props);
 
     return (
@@ -173,9 +174,9 @@ class SectionBodyContent extends React.Component {
               contextOptions={item.contextOptions}
               checked={this.state.checkedItems.get(user.id)}
               onSelect={(checked, data) => {
-                // console.log("ContentRow onSelect", checked, data);
-                this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(data.id, checked) }));
-                onRowChange && onRowChange(checked, data);
+                console.log("ContentRow onSelect", checked, data);
+                //this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(data.id, checked) }));
+                onChange && onChange(checked, data);
               }}
             >
               <UserContent
