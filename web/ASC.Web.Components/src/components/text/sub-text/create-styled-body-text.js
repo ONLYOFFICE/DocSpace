@@ -21,7 +21,6 @@ const style = css`
    ${props => props.backgroundColor == true && 'background-color: #F8F9F9;'}
    ${props => props.isInline == true && 'display: inline-block;'}
    text-align: left;
-   max-width: 1000px;
    ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
 
 `

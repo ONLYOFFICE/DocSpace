@@ -84,6 +84,9 @@ namespace ASC.Web.Api.Models
         public string Notes { get; set; }
 
         [DataMember(Order = 20)]
+        public string AvatarMax { get; set; }
+
+        [DataMember(Order = 20)]
         public string AvatarMedium { get; set; }
 
         [DataMember(Order = 20)]
@@ -184,14 +187,21 @@ namespace ASC.Web.Api.Models
                 }
             }
 
+            var userInfoLM = userInfo.LastModified.GetHashCode();
+
+            if (context.Check("avatarMax"))
+            {
+                AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
+            }
+
             if (context.Check("avatarMedium"))
             {
-                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
 
             if (context.Check("avatar"))
             {
-                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
 
             IsAdmin = userInfo.IsAdmin();
@@ -251,6 +261,7 @@ namespace ASC.Web.Api.Models
             {
                 Avatar = "url to big avatar",
                 AvatarSmall = "url to small avatar",
+                AvatarMax = "url to max avatar",
                 Contacts = new List<Contact> { Contact.GetSample() },
                 Email = "my@gmail.com",
                 FirstName = "Mike",

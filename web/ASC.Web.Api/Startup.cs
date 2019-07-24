@@ -62,6 +62,9 @@ namespace ASC.Web.Api
                 config.Filters.Add(new CustomResponseFilterAttribute());
                 config.Filters.Add(new CustomExceptionFilterAttribute());
                 config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
+
+                config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
+                config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);

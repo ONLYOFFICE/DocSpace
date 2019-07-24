@@ -178,30 +178,54 @@ namespace ASC.Web.Core.Users
             return WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
-
         public static string GetRetinaPhotoURL(Guid userID)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, RetinaFotoSize);
+            return GetRetinaPhotoURL(userID, out _);
+        }
+
+        public static string GetRetinaPhotoURL(Guid userID, out bool isdef)
+        {
+            return GetSizedPhotoAbsoluteWebPath(userID, RetinaFotoSize, out isdef);
         }
 
         public static string GetMaxPhotoURL(Guid userID)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, MaxFotoSize);
+            return GetMaxPhotoURL(userID, out _);
+        }
+
+        public static string GetMaxPhotoURL(Guid userID, out bool isdef)
+        {
+            return GetSizedPhotoAbsoluteWebPath(userID, MaxFotoSize, out isdef);
         }
 
         public static string GetBigPhotoURL(Guid userID)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, BigFotoSize);
+            return GetBigPhotoURL(userID, out _);
+        }
+
+        public static string GetBigPhotoURL(Guid userID, out bool isdef)
+        {
+            return GetSizedPhotoAbsoluteWebPath(userID, BigFotoSize, out isdef);
         }
 
         public static string GetMediumPhotoURL(Guid userID)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, MediumFotoSize);
+            return GetMediumPhotoURL(userID, out _);
+        }
+
+        public static string GetMediumPhotoURL(Guid userID, out bool isdef)
+        {
+            return GetSizedPhotoAbsoluteWebPath(userID, MediumFotoSize, out isdef);
         }
 
         public static string GetSmallPhotoURL(Guid userID)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, SmallFotoSize);
+            return GetSmallPhotoURL(userID, out _);
+        }
+
+        public static string GetSmallPhotoURL(Guid userID, out bool isdef)
+        {
+            return GetSizedPhotoAbsoluteWebPath(userID, SmallFotoSize, out isdef);
         }
 
 
@@ -332,8 +356,17 @@ namespace ASC.Web.Core.Users
 
         private static string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size)
         {
+            return GetSizedPhotoAbsoluteWebPath(userID, size, out _);
+        }
+
+        private static string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size, out bool isdef)
+        {
             var res = SearchInCache(userID, size);
-            if (!string.IsNullOrEmpty(res)) return res;
+            if (!string.IsNullOrEmpty(res))
+            {
+                isdef = res == "default";
+                return res;
+            }
 
             try
             {
@@ -345,6 +378,7 @@ namespace ASC.Web.Core.Users
                     var photoUrl = GetDefaultPhotoAbsoluteWebPath(size);
 
                     AddToCache(userID, size, "default");
+                    isdef = true;
                     return photoUrl;
                 }
 
@@ -353,6 +387,7 @@ namespace ASC.Web.Core.Users
             }
             catch { }
 
+            isdef = false;
             return GetDefaultPhotoAbsoluteWebPath(size);
         }
 

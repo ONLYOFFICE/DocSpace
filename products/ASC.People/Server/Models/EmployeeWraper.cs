@@ -55,9 +55,11 @@ namespace ASC.Web.Api.Models
                 Title = userInfo.Title;
             }
 
+            var userInfoLM = userInfo.LastModified.GetHashCode();
+
             if (httpContext.Check("avatarSmall"))
             {
-                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
         }
 
