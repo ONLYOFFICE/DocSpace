@@ -5,6 +5,9 @@ const StyledArticleMainButton = styled.div`
   margin: 16px 0 0;
 `;
 
-const ArticleMainButton = (props) => <StyledArticleMainButton {...props}/>
+const ArticleMainButton = (props) => {
+  //console.log("ArticleMainButton render");
+  return (<StyledArticleMainButton {...props} />);
+};
 
 export default ArticleMainButton;

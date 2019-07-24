@@ -2,6 +2,7 @@ import React from "react";
 import ContextMenuButton from '../context-menu-button';
 
 const FilterButton = props => {
+  //console.log("FilterButton render");
   return (
     <ContextMenuButton
           title={'Actions'}

@@ -12,6 +12,7 @@ const LogoItem = styled.div`
 `;
 
 const NavLogoItem = props => {
+  //console.log("NavLogoItem render");
   const navLogoIconStyle = {
     display: props.opened ? 'none' : 'block'
   };

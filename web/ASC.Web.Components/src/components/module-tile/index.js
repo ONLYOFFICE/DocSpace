@@ -50,6 +50,7 @@ const TileCard = styled(Card)`
 `;
 
 const ModuleTile = (props) => {
+    //console.log("ModuleTile render");
     const { title, imageUrl, link, description, isPrimary, onClick } = props;
 
     return (

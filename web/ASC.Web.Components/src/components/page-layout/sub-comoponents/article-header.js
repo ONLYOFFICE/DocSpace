@@ -11,6 +11,9 @@ const StyledArticleHeader = styled.div`
   }
 `;
 
-const ArticleHeader = (props) => <StyledArticleHeader {...props}/>
+const ArticleHeader = (props) => { 
+  //console.log("ArticleHeader render");
+  return (<StyledArticleHeader {...props}/>) 
+}
 
 export default ArticleHeader;

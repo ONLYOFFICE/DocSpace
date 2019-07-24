@@ -19,6 +19,8 @@ const StyledBadge = styled.div`
 `;
 
 const Badge = props => {
+  //console.log("Badge render");
+  
   const onClick = (e) => {
     if (props.onClick) {
       e.stopPropagation();

@@ -133,6 +133,7 @@ const EditLink = styled.a`
 `;
 
 const Avatar = props => {
+    //console.log("Avatar render");
     const {size, source, userName, role, editing, editLabel, editAction} = props;
 
     const round = {

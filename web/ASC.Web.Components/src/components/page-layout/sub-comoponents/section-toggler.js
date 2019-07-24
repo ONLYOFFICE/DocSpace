@@ -23,6 +23,7 @@ const StyledSectionToggler = styled.div`
 
 
 const SectionToggler = (props) => { 
+  //console.log("SectionToggler render");
   const { visible, onClick } = props;
 
   return (

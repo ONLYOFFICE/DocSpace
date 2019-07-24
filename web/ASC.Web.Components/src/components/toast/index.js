@@ -124,6 +124,7 @@ svg {
 `;
 
 const Toast = props => {
+  //console.log("Toast render");
   return (
     <StyledToastContainer
       draggable={false}

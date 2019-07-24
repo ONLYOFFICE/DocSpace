@@ -19,7 +19,9 @@ const StyledNav = styled.nav`
   }
 `;
 
-const HeaderNav = props =>
+const HeaderNav = props => {
+  //console.log("HeaderNav render");
+  return (
   <StyledNav>
     {
       props.modules.map(module => 
@@ -36,5 +38,7 @@ const HeaderNav = props =>
       props.user && <ProfileActions userActions={props.userActions} user={props.user}/>
     }
   </StyledNav>
+  );
+};
 
 export default HeaderNav;

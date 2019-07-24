@@ -43,6 +43,7 @@ class ToggleContent extends React.Component {
   };
 
   render() {
+    //console.log("ToggleContent render");
     return (
       <div>
         <StyledSpan onClick={() => {

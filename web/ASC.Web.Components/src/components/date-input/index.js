@@ -10,6 +10,7 @@ const StyledDatePicker = styled.div`
 `;
 
 const DateInput = props => {
+  //console.log("DateInput render");
   const iconClick = function(){
     this.onClick();
   };

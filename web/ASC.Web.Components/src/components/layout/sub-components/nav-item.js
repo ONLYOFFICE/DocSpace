@@ -42,6 +42,7 @@ const NavItemBadge = styled(Badge)`
 `;
 
 const NavItem = props => {
+  //console.log("NavItem render");
   const { seporator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 

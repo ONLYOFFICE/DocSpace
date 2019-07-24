@@ -3,6 +3,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 
 
 const Scrollbar = (props) => {
+  console.log("Scrollbar render");
   const scrollbarType = {
     smallWhite: {
       thumbV: { backgroundColor: 'rgba(256, 256, 256, 0.2)', width: '2px', marginLeft: '2px', borderRadius: 'inherit' },

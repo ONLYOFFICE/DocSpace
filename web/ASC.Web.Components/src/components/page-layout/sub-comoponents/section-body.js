@@ -9,6 +9,7 @@ const StyledSectionBody = styled.div`
 `;
 
 const SectionBody = (props) => { 
+  //console.log("SectionBody render");
   const { children } = props;
 
   return (

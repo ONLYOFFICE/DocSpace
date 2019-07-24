@@ -17,6 +17,7 @@ const StyledAside = styled.aside`
 `;
 
 const Aside = (props) => { 
+  //console.log("Aside render");
   const { visible, children } = props;
 
   return (

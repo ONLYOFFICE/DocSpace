@@ -15,6 +15,9 @@ const StyledMain = styled.main`
   }
 `;
 
-const Main = props => <StyledMain {...props}/>
+const Main = props => { 
+  //console.log("Main render");
+  return (<StyledMain {...props}/>); 
+}
 
 export default Main;

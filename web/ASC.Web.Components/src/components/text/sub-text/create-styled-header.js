@@ -22,7 +22,10 @@ export default function createStyledHeader(headlineType) {
       ${props => props.isInline == true && 'display: inline-block;'}
    `
 
-   const Text = props => <StyledHeadline {...props} title={props.title}></StyledHeadline>
+   const Text = props => {
+      //console.log("Text.Header render");
+      return (<StyledHeadline {...props} title={props.title}></StyledHeadline>);
+   };
 
    Text.propTypes = {
       title: PropTypes.string,

@@ -37,6 +37,11 @@ const StyledArticle = styled.article`
   }
 `;
 
-const Article = (props) => <StyledArticle {...props}/>
+const Article = (props) => {
+  //console.log("Article render");
+  return (
+   <StyledArticle {...props}/>
+  );
+}
 
 export default Article;

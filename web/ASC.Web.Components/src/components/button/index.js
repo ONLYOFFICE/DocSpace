@@ -177,6 +177,7 @@ Icon.defaultProps = {
 };
 
 const Button = props => {
+  //console.log("Button render");
   const { isLoading, label, primary, size, icon } = props;
   return (
     <StyledButton {...props}>

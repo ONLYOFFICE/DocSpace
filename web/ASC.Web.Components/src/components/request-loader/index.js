@@ -37,6 +37,7 @@ const OvalLoader = styled(Loader)`
 `;
 
 const RequestLoader = props => {
+  //console.log("RequestLoader render");
   const { loaderColor, loaderSize, label } = props;
   return (
     <StyledOuter {...props}>

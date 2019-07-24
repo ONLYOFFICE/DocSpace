@@ -88,7 +88,7 @@ class FilterInput extends React.Component {
     }
 
     render(){
-        
+        //console.log("FilterInput render");
         return(
             <StyledFilterInput>
                 <StyledSearchInput>

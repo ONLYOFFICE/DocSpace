@@ -9,6 +9,7 @@ const StyledArticleBody = styled.div`
 `;
 
 const ArticleBody = (props) => { 
+  //console.log("ArticleBody render");
   const { children } = props;
 
   return (

@@ -13,7 +13,12 @@ const StyledBackdrop = styled.div`
   top: 0;
 `;
 
-const Backdrop = props => <StyledBackdrop {...props}/>
+const Backdrop = props => { 
+  //console.log("Backdrop render");
+  return (
+    <StyledBackdrop {...props}/> 
+  );
+}
 
 Backdrop.propTypes = {
   visible: PropTypes.bool,

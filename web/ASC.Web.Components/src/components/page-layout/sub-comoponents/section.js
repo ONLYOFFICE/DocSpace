@@ -9,6 +9,9 @@ const StyledSection = styled.section`
   overflow: hidden auto;
 `;
 
-const Section = (props) => <StyledSection {...props}/>
+const Section = (props) => {
+  //console.log("Section render");
+  return  (<StyledSection {...props} />);
+};
 
 export default Section;

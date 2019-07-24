@@ -23,6 +23,7 @@ const StyledNav = styled.nav`
 `;
 
 const Nav = (props) => { 
+  //console.log("Nav render");
   const { opened, onMouseEnter, onMouseLeave, children } = props;
 
   return (

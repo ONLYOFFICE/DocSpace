@@ -30,6 +30,7 @@ const StyledArticlePinPanel = styled.div`
 `;
 
 const ArticlePinPanel = (props) => { 
+  //console.log("ArticlePinPanel render");
   const { pinned, pinText, onPin, unpinText, onUnpin } = props;
 
   return (

@@ -31,6 +31,7 @@ const StyledPage = styled.div`
 `;
 
 const Paging = props => {
+    //console.log("Paging render");
     const {previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection} = props;
     
     return (

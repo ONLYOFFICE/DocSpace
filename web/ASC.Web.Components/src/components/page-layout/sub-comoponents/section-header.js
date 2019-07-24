@@ -6,6 +6,9 @@ const StyledSectionHeader = styled.div`
   height: 56px;
 `;
 
-const SectionHeader = (props) => <StyledSectionHeader {...props}/>
+const SectionHeader = (props) => {
+  //console.log("SectionHeader render");
+  return (<StyledSectionHeader {...props} />);
+}
 
 export default SectionHeader;

@@ -37,6 +37,7 @@ const ErrorText = styled(Container)`
 `;
 
 const ErrorContainer = ({children}) => {
+    //console.log("ErrorContainer render");
     return (
         <ErrorFrame fluid>
             <ErrorWrapper fluid>

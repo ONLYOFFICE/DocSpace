@@ -33,9 +33,11 @@ const style = css`
    ${style}
   `;
 
-  const Text = props => 
-      (props.tag === 'p' && <StyledP {...props} title={props.title}></StyledP>) ||
-      (props.tag === 'span' && <StyledSpan {...props} title={props.title}></StyledSpan>) 
+  const Text = props => {
+     //console.log("Text render");
+     return (props.tag === 'p' && <StyledP {...props} title={props.title}></StyledP>) ||
+      (props.tag === 'span' && <StyledSpan {...props} title={props.title}></StyledSpan>); 
+  };
 
    Text.propTypes = {
      tag: PropTypes.oneOf(['p','span']),
