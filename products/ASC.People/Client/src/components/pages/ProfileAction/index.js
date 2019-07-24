@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { PageLayout, Loader } from "asc-web-components";
-import { ArticleHeaderContent, ArticleBodyContent } from '../../Article';
+import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
+import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { getUser } from '../../../utils/api';
 
-const getUrlParam = (inputString, paramName, defaultValue) => {
-  var regex = new RegExp(`${paramName}=([^&]+)`);
-  var res = regex.exec(inputString);
-  return res && res[1] ? res[1] : defaultValue;
-}
 
 const ProfileAction = (props) => {
+  console.log("ProfileAction render");
+  
   const { auth, match, location } = props;
-  const { userId } = match.params;
+  const { userId, type } = match.params;
+
   const [profile, setProfile] = useState(props.profile);
   const [isLoaded, setLoaded] = useState(props.isLoaded);
+
+  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
+  const [isArticleVisible, setIsArticleVisible] = useState(false);
+  const [isArticlePinned, setIsArticlePinned] = useState(false);
+  
   const isEdit = location.pathname.split("/").includes("edit");
-  const userType = getUrlParam(location.search, "type", "user");
 
   useEffect(() => {
     if (isEdit) {
@@ -43,19 +45,64 @@ const ProfileAction = (props) => {
       setLoaded(true);
     }
   }, [isEdit, auth.user, userId]);
-  
+
+  const onBackdropClick = () => {
+    setIsBackdropVisible(false);
+    setIsArticleVisible(false);
+    setIsArticlePinned(false);
+  };
+
+  const onPinArticle = () => {
+    setIsBackdropVisible(false);
+    setIsArticleVisible(true);
+    setIsArticlePinned(true);
+  };
+
+  const onUnpinArticle = () => {
+    setIsBackdropVisible(true);
+    setIsArticleVisible(true);
+    setIsArticlePinned(false);
+  };
+
+  const onShowArticle = () => {
+    setIsBackdropVisible(true);
+    setIsArticleVisible(true);
+    setIsArticlePinned(false);
+  };
 
   return (
-    isLoaded ?
-      <PageLayout
-        articleHeaderContent={<ArticleHeaderContent />}
-        articleBodyContent={<ArticleBodyContent />}
-        sectionHeaderContent={<SectionHeaderContent profile={profile} userType={userType} />}
-        sectionBodyContent={<SectionBodyContent profile={profile} userType={userType} />}
-      />
-    : <PageLayout
-        sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
-      />
+    isLoaded
+      ? <>
+        <Backdrop visible={isBackdropVisible} onClick={onBackdropClick} />
+        <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
+          <NPL.ArticleHeader visible={isArticlePinned}>
+            <ArticleHeaderContent />
+          </NPL.ArticleHeader>
+          <NPL.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </NPL.ArticleMainButton>
+          <NPL.ArticleBody>
+            <ArticleBodyContent />
+          </NPL.ArticleBody>
+          <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={onPinArticle} unpinText="Unpin this panel" onUnpin={onUnpinArticle} />
+        </NPL.Article>
+        <NPL.Section>
+          <NPL.SectionHeader>
+            <SectionHeaderContent profile={profile} userType={type} />
+          </NPL.SectionHeader>
+          <NPL.SectionBody>
+            <SectionBodyContent profile={profile} userType={type} />
+          </NPL.SectionBody>
+          <NPL.SectionToggler visible={!isArticlePinned} onClick={onShowArticle} />
+        </NPL.Section>
+      </>
+      : <>
+        <NPL.Section>
+          <NPL.SectionBody>
+            <Loader className="pageLoader" type="rombs" size={40} />
+          </NPL.SectionBody>
+        </NPL.Section>
+      </> 
   );
 };
 

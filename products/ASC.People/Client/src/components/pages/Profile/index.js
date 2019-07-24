@@ -2,16 +2,23 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { PageLayout, Loader } from "asc-web-components";
-import { ArticleHeaderContent, ArticleBodyContent } from '../../Article';
+import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
+import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { getUser } from '../../../utils/api';
 
 const Profile = (props) => {
+  console.log("Profile render");
+  
   const { auth, match } = props;
   const { userId } = match.params;
+
   const [profile, setProfile] = useState(props.profile);
   const [isLoaded, setLoaded] = useState(props.isLoaded);
+
+  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
+  const [isArticleVisible, setIsArticleVisible] = useState(false);
+  const [isArticlePinned, setIsArticlePinned] = useState(false);
 
   useEffect(() => {
     if (userId === "@self") {
@@ -32,17 +39,63 @@ const Profile = (props) => {
     }
   }, [auth.user, userId]);
 
+  const onBackdropClick = () => {
+    setIsBackdropVisible(false);
+    setIsArticleVisible(false);
+    setIsArticlePinned(false);
+  };
+
+  const onPinArticle = () => {
+    setIsBackdropVisible(false);
+    setIsArticleVisible(true);
+    setIsArticlePinned(true);
+  };
+
+  const onUnpinArticle = () => {
+    setIsBackdropVisible(true);
+    setIsArticleVisible(true);
+    setIsArticlePinned(false);
+  };
+
+  const onShowArticle = () => {
+    setIsBackdropVisible(true);
+    setIsArticleVisible(true);
+    setIsArticlePinned(false);
+  };
+
   return (
-    isLoaded ?
-      <PageLayout
-        articleHeaderContent={<ArticleHeaderContent />}
-        articleBodyContent={<ArticleBodyContent />}
-        sectionHeaderContent={<SectionHeaderContent profile={profile} />}
-        sectionBodyContent={<SectionBodyContent profile={profile} />}
-      />
-      : <PageLayout
-        sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
-      />
+    isLoaded
+      ? <>
+        <Backdrop visible={isBackdropVisible} onClick={onBackdropClick} />
+        <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
+          <NPL.ArticleHeader visible={isArticlePinned}>
+            <ArticleHeaderContent />
+          </NPL.ArticleHeader>
+          <NPL.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </NPL.ArticleMainButton>
+          <NPL.ArticleBody>
+            <ArticleBodyContent />
+          </NPL.ArticleBody>
+          <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={onPinArticle} unpinText="Unpin this panel" onUnpin={onUnpinArticle} />
+        </NPL.Article>
+        <NPL.Section>
+          <NPL.SectionHeader>
+            <SectionHeaderContent profile={profile} />
+          </NPL.SectionHeader>
+          <NPL.SectionBody>
+            <SectionBodyContent profile={profile} />
+          </NPL.SectionBody>
+          <NPL.SectionToggler visible={!isArticlePinned} onClick={onShowArticle} />
+        </NPL.Section>
+      </>
+      : <>
+        <NPL.Section>
+          <NPL.SectionBody>
+            <Loader className="pageLoader" type="rombs" size={40} />
+          </NPL.SectionBody>
+        </NPL.Section>
+      </>
   );
 };
 
