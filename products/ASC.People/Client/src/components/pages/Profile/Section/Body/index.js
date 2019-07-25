@@ -1,5 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import _ from "lodash";
+import config from '../../../../../../package.json';
 import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
 
 const profileWrapper = {
@@ -114,7 +116,7 @@ const createContacts = (contacts) => {
 };
 
 const SectionBodyContent = (props) => {
-  const { profile } = props;
+  const { profile, history } = props;
 
   getFormattedContacts(profile);
 
@@ -129,7 +131,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => console.log('Edit action')} />
+        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => history.push(`${config.homepage}/edit/${profile.userName}`)} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -187,4 +189,4 @@ const SectionBodyContent = (props) => {
 };
 
 
-export default SectionBodyContent;
+export default withRouter(SectionBodyContent);
