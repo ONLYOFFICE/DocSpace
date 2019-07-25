@@ -56,7 +56,7 @@ RadioButtonGroup.propTypes = {
                             label: PropTypes.string,
                             disabled: PropTypes.bool
                           })).isRequired,
-  selected: PropTypes.string
+  selected: PropTypes.string.isRequired
 }
 
 RadioButtonGroup.defaultProps = {
