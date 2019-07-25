@@ -50,7 +50,7 @@ const SectionHeaderContent = (props) => {
       <div style={{ width: '16px' }}>
         <IconButton iconName={'ArrowPathIcon'} color='#A3A9AE' size='16' onClick={history.goBack} />
       </div>
-      <Text.ContentHeader truncate={true} style={textStyle}>{profile.displayName}</Text.ContentHeader>
+      <Text.ContentHeader truncate={true} style={textStyle}>{profile.displayName}{profile.isLDAP && ' (LDAP)'}</Text.ContentHeader>
       <ContextMenuButton 
         directionX='right' 
         title='Actions' 
