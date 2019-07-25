@@ -143,6 +143,9 @@ import OrigDangerIcon from './danger.react.svg';
 import OrigInfoIcon from './info.react.svg';
 
 import OrigArrowPathIcon from './arrow.path.react.svg'
+import OrigRadiobuttonDisabledIcon from './radiobutton.disabled.react.svg'
+import OrigRadiobuttonDisabledCheckedIcon from './radiobutton.disabled.checked.react.svg'
+import OrigRadiobuttonHoverCheckedIcon from './radiobutton.hover.checked.react.svg'
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -580,9 +583,21 @@ export const RadiobuttonCheckedIcon = createStyledIcon(
   OrigRadiobuttonCheckedIcon,
   'RadiobuttonCheckedIcon'
 );
+export const RadiobuttonDisabledIcon = createStyledIcon(
+  OrigRadiobuttonDisabledIcon,
+  'RadiobuttonDisabledIcon'
+);
+export const RadiobuttonDisabledCheckedIcon = createStyledIcon(
+  OrigRadiobuttonDisabledCheckedIcon,
+  'RadiobuttonDisabledCheckedIcon'
+);
 export const RadiobuttonHoverIcon = createStyledIcon(
   OrigRadiobuttonHoverIcon,
   'RadiobuttonHoverIcon'
+);
+export const RadiobuttonHoverCheckedIcon = createStyledIcon(
+  OrigRadiobuttonHoverCheckedIcon,
+  'RadiobuttonHoverCheckedIcon'
 );
 export const RadiobuttonIcon = createStyledIcon(
   OrigRadiobuttonIcon,
