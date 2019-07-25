@@ -139,7 +139,7 @@ ContentRow.propTypes = {
     avatarRole: PropTypes.string,
     avatarSource: PropTypes.string,
     avatarName: PropTypes.string,
-    contextOptions: PropTypes.func,
+    contextOptions: PropTypes.array,
     data: PropTypes.object,
     children: PropTypes.element
 };
