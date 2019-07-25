@@ -21,7 +21,7 @@ const Profile = (props) => {
   const [isArticlePinned, setIsArticlePinned] = useState(false);
 
   useEffect(() => {
-    if (userId === "@self") {
+    if (userId === "@self" || userId === auth.user.userName) {
       setProfile(auth.user);
       setLoaded(true);
     } else {
@@ -84,7 +84,7 @@ const Profile = (props) => {
             <SectionHeaderContent profile={profile} />
           </NPL.SectionHeader>
           <NPL.SectionBody>
-            <SectionBodyContent profile={profile} />
+            <SectionBodyContent profile={profile} isAdmin={auth.user.isAdmin || auth.user.isOwner} isSelf={userId === "@self" || userId === auth.user.userName} />
           </NPL.SectionBody>
           <NPL.SectionToggler visible={!isArticlePinned} onClick={onShowArticle} />
         </NPL.Section>
