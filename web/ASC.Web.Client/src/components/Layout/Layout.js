@@ -10,12 +10,11 @@ const StudioLayout = props => {
     const currentUserActions = [
         {
             key: 'ProfileBtn', label: 'Profile', onClick: () => {
-                console.log('ProfileBtn')
+                window.location.href = '/products/people/view/@self';
             }
         },
         {
             key: 'AboutBtn', label: 'About', onClick: () => {
-                console.log('AboutBtn');
                 history.push('/about');
             }
         },
