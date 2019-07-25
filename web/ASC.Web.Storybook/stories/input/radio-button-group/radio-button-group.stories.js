@@ -10,14 +10,13 @@ storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('radio-button-group', () => {
-    console.log('radio box rendering')
     return (
       <Section>
         <>
         <div> First list</div>
           <RadioButtonGroup
            selected='apple'
-           spaceBtwnElems='50' 
+           spaceBtwnElems={50} 
            name="test" 
            options={
                     [

@@ -33,6 +33,7 @@ class RadioButtonGroup extends React.Component {
         {options.map(option => {
           return (
             <RadioButton
+              key={option.value}
               name={this.props.name}
               value={option.value}
               checked={this.state.selectedOption === option.value}
@@ -63,7 +64,7 @@ RadioButtonGroup.propTypes = {
 
 RadioButtonGroup.defaultProps = {
   selected: undefined,
-  spaceBtwnElems: '33'
+  spaceBtwnElems: 33
 }
 
 export default RadioButtonGroup;
