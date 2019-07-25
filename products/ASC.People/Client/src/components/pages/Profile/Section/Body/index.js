@@ -118,6 +118,8 @@ const SectionBodyContent = (props) => {
 
   getFormattedContacts(profile);
 
+  console.log(props);
+
   return (
     <div style={profileWrapper}>
       <div style={avatarWrapper}>
@@ -143,7 +145,7 @@ const SectionBodyContent = (props) => {
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
-          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} text={profile.email} onClick={() => sendMail(profile.email)}/></Text.Body>
+          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} text={profile.email} onClick={() => sendMail(profile.email)}/>{profile.activationStatus === 2 && ' (Pending)'}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
