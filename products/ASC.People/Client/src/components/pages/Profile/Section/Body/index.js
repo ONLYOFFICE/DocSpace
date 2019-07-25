@@ -85,8 +85,8 @@ const getFormattedDepartments = (departments) => {
   const departmentsLength = splittedDepartments.length - 1;
   return splittedDepartments.map((department, index) => {
     return (
-      <span>
-        <Link key={index} type="action" fontSize={13} isHovered={true} text={department.trim()} />
+      <span key={index}>
+        <Link type="action" fontSize={13} isHovered={true} text={department.trim()} />
         {(departmentsLength !== index) ? ', ' : ''}
       </span>
     )
@@ -97,16 +97,19 @@ const sendMail = (email) => {
   window.open('mailto:'+email);
 };
 
+const capitalizeFirstLetter = (string) => {
+  if (!string) return;
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 const createContacts = (contacts) => {
   return contacts.map((contact, index) => {
-    if (contact.value) {
       return (
         <div key={index} style={{ display: "inline-flex", width: "300px" }}>
           <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} onClick={() => { }} />
           <div style={{ marginLeft: "8px" }}>{contact.value}</div>
         </div>
       );
-    }
   })
 };
 
@@ -144,7 +147,7 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
-          <Text.Body style={restMargins}>{profile.sex}</Text.Body>
+          <Text.Body style={restMargins}>{capitalizeFirstLetter(profile.sex)}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDate(profile.workFrom)}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDate(profile.birthday)}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
