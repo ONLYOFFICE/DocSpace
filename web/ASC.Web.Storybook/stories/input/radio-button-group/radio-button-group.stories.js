@@ -16,7 +16,8 @@ storiesOf('Components|Input', module)
         <>
         <div> First list</div>
           <RadioButtonGroup
-           selected='apple' 
+           selected='apple'
+           spaceBtwnElems='50' 
            name="test" 
            options={
                     [
