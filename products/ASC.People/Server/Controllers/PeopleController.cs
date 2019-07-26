@@ -422,14 +422,14 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}")]
-        public EmployeeWraperFull UpdateMember(UpdateMemberModel memberModel)
+        public EmployeeWraperFull UpdateMember(string userid, UpdateMemberModel memberModel)
         {
-            SecurityContext.DemandPermissions(new UserSecurityProvider(new Guid(memberModel.UserId)), Constants.Action_EditUser);
-
-            var user = GetUserInfo(memberModel.UserId);
+            var user = GetUserInfo(userid);
 
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
+
+            SecurityContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             var self = SecurityContext.CurrentAccount.ID.Equals(user.ID);
             var resetDate = new DateTime(1900, 01, 01);

@@ -5,6 +5,7 @@ export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 export const SET_GROUPS = 'SET_GROUPS';
 export const SET_USERS = 'SET_USERS';
+export const SET_TARGET_USER = 'SET_TARGET_USER';
 export const SET_FILTER = 'SET_FILTER';
 export const SET_PAGING = 'SET_PAGING';
 export const SET_SELECTION = 'SET_SELECTION';

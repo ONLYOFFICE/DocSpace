@@ -1,6 +1,7 @@
 import {
   SET_GROUPS,
   SET_USERS,
+  SET_TARGET_USER,
   SET_FILTER,
   SET_PAGING,
   SET_SELECTION,
@@ -14,6 +15,7 @@ import Filter from '../helpers/filter';
 const initialState = {
   users: [],
   groups: [],
+  targetUser: null,
   filter: Filter.getDefault(),
   paging: {
     page: 0,
@@ -34,6 +36,10 @@ const people = (state = initialState, action) => {
     case SET_USERS:
       return Object.assign({}, state, {
         users: action.users
+      });
+    case SET_TARGET_USER:
+      return Object.assign({}, state, {
+        targetUser: action.targetUser
       });
     case SET_FILTER:
       return Object.assign({}, state, {

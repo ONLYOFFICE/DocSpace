@@ -1,7 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { BooleanValue } from 'react-values'
-import { ContentRow, Link} from 'asc-web-components';
+import { ContentRow, Link, Icons} from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import { Container, Row, Col } from 'reactstrap';
 
@@ -226,6 +225,8 @@ storiesOf('EXAMPLES|ContentRow', module)
                     isBold={true} 
                     fontSize={15} 
                     onClick={()=> console.log('User name action')} />
+                    {status === "pending" && <Icons.SendClockIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
+                    {status === "disabled" && <Icons.CatalogSpamIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
             </Col>
             <Col className={`${headDepartment ? 'col-3': 'col-auto' } col-sm-auto col-lg-2 text-truncate`}>
               <Link style={status === 'pending' ? {color: '#D0D5DA'} : {color: '#A3A9AE'}} 

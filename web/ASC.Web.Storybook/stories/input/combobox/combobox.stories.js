@@ -6,18 +6,21 @@ import Readme from './README.md';
 import Section from '../../../.storybook/decorators/section';
 import { ComboBox } from 'asc-web-components'
 
-let items = [
+let options = [
     {
+        key: '0',
         label: '25 per page',
-        onClick: () => console.log('set paging 25 action')
+        onClick: (e) => console.log(e.target)
     },
     {
+        key: '1',
         label: '50 per page',
-        onClick: () => console.log('set paging 50 action')
+        onClick: (e) => console.log(e.target)
     },
     {
+        key: '2',
         label: '100 per page',
-        onClick: () => console.log('set paging 100 action')
+        onClick: (e) => console.log(e.target)
     }
 ];
 
@@ -27,8 +30,9 @@ storiesOf('Components|Input', module)
     .add('combo box', () => (
         <Section>
             <ComboBox 
-                items={items}
+                options={options}
                 isDisabled={boolean('isDisabled', false)}
+                withBorder={boolean('withBorder', true)}
             />
         </Section>
     ));

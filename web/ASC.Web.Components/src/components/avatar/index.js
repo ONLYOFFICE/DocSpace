@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 
@@ -105,8 +105,6 @@ const EditContainer = styled.div`
 
     border-radius: 50%;
     background: linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%);
-
-    
 `;
 
 const EditLink = styled.a`
@@ -132,13 +130,9 @@ const EditLink = styled.a`
     -webkit-text-overflow: ellipsis;
 `;
 
-const Avatar = props => {
+const Avatar = React.memo(props => {
     //console.log("Avatar render");
     const {size, source, userName, role, editing, editLabel, editAction} = props;
-
-    const round = {
-        borderRadius: '50%'
-    };
 
     const setNamedAvatar = userName => {
         let initials = userName.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substring(0,2)
@@ -153,7 +147,7 @@ const Avatar = props => {
             <AvatarWrapper {...props}>
                 {source !== '' && <ImageStyled src={source} />}
                 {(source === '' && userName !== '') && setNamedAvatar(userName)}
-                {(source === '' && userName === '') && <Icons.CameraIcon size='scale' style={round} />}
+                {(source === '' && userName === '') && <Icons.CameraIcon size='scale' style={{borderRadius: '50%'}} />}
             </AvatarWrapper>
             {editing && (size === 'max') && 
                 <EditContainer {...props}>
@@ -166,7 +160,7 @@ const Avatar = props => {
             </RoleWrapper>
         </StyledAvatar>
     );
-};
+});
 
 Avatar.propTypes = {
     size: PropTypes.oneOf(['max', 'big', 'medium', 'small']),

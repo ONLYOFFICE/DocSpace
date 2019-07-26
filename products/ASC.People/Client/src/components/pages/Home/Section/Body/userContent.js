@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from "react-router";
 import { Container, Row, Col } from "reactstrap";
-import {Link} from 'asc-web-components';
+import { Link, Icons} from 'asc-web-components';
 var config = require('../../../../../../package.json');
 
 const UserContent = ({
@@ -19,7 +19,7 @@ const UserContent = ({
           <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
             <Link
               style={
-                status === "pending" ? { color: "#A3A9AE" } : { color: "#333333" }
+                status === "pending" || status === "disabled" ? { color: "#A3A9AE" } : { color: "#333333" }
               }
               type="action"
               title={displayName}
@@ -31,6 +31,8 @@ const UserContent = ({
                 history.push(`${config.homepage}/view/${userName}`);
               }}
             />
+            {status === "pending" && <Icons.SendClockIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
+            {status === "disabled" && <Icons.CatalogSpamIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
           </Col>
           <Col
             className={`${
@@ -39,7 +41,7 @@ const UserContent = ({
           >
             <Link
               style={
-                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered
@@ -56,7 +58,7 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered
@@ -73,7 +75,7 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               title={phone.title}
@@ -89,7 +91,7 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered

@@ -1,6 +1,7 @@
 import {
   SET_GROUPS,
   SET_USERS,
+  SET_TARGET_USER,
   SET_SELECTION,
   SET_SELECTED,
   SELECT_USER,
@@ -21,6 +22,24 @@ export function setGroups(groups) {
     groups
   };
 };
+
+export function setUser(targetUser) {
+    return {
+        type: SET_TARGET_USER,
+        targetUser
+    };
+};
+
+export function fetchAndSetUser(userId) {
+    return async(dispatch, getState) => {
+        try {
+            const res = await api.getUser(userId);
+            dispatch(setUser(res.data.response))
+        } catch (error) {
+            console.error(error);
+        }
+    };
+}
 
 export function setSelection(selection) {
   return {
