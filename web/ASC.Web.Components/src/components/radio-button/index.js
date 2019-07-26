@@ -31,6 +31,7 @@ const Label = styled.label`
   position: relative;
   margin: 0;
   user-select: none;
+  cursor: pointer;
 
   .radiobutton {
     line-height: 16px;
@@ -38,7 +39,6 @@ const Label = styled.label`
     display: inline-block;
     vertical-align: middle;
     border: 0 none;
-    cursor: pointer;
     outline: none;
     width: 16px;
     height: 16px;
