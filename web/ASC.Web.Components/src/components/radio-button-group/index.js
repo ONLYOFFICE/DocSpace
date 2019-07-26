@@ -46,14 +46,14 @@ class RadioButtonGroup extends React.Component {
                 this.handleOptionChange(e);
                 this.props.onClick && this.props.onClick(e);
               }}
-              
+
               disabled={this.props.isDisabledGroup || option.disabled}
               label={option.label}
               radiobuttonSpacing={this.props.radiobuttonSpacing}
             />
-              )
-            }
           )
+        }
+        )
         }
       </StyledDiv>
     );
@@ -65,10 +65,10 @@ RadioButtonGroup.propTypes = {
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   options: PropTypes.arrayOf(PropTypes.shape({
-                            value: PropTypes.string.isRequired,
-                            label: PropTypes.string,
-                            disabled: PropTypes.bool
-                          })).isRequired,
+    value: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    disabled: PropTypes.bool
+  })).isRequired,
   selected: PropTypes.string.isRequired,
   radiobuttonSpacing: PropTypes.number
 }
