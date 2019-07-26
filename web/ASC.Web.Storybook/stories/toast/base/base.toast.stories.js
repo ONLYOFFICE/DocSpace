@@ -12,9 +12,9 @@ storiesOf('Components|Toast', module)
    .addDecorator(withKnobs)
    .addDecorator(withReadme(Readme))
    .add('base', () => {
-      const toastType = `${select('type', type, 'success')}`;
-      const toastData = `${text('data (only text in storybook)', 'Demo text for Toast')}`;
-      const titleToast = `${text('title', 'Demo title')}`;
+      const type = `${select('type', type, 'success')}`;
+      const data = `${text('data', 'Demo text for Toast')}`;
+      const title = `${text('title', 'Demo title')}`;
       const withCross = boolean('withCross', false);
       const timeout = number('timeout', '5000');
       return (
@@ -22,18 +22,18 @@ storiesOf('Components|Toast', module)
             <Toast />
             <Section>
                <button onClick={() => {
-                  switch (toastType) {
+                  switch (type) {
                      case 'error':
-                        toastr.error(toastData, titleToast, timeout, withCross);
+                        toastr.error(data, title, timeout, withCross);
                         break;
                      case 'warning':
-                        toastr.warning(toastData, titleToast, timeout, withCross);
+                        toastr.warning(data, title, timeout, withCross);
                         break;
                      case 'info':
-                        toastr.info(toastData, titleToast, timeout, withCross);
+                        toastr.info(data, title, timeout, withCross);
                         break;
                      default:
-                        toastr.success(toastData, titleToast, timeout, withCross);
+                        toastr.success(data, title, timeout, withCross);
                         break;
                   }
                }}>
