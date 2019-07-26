@@ -16,7 +16,7 @@ const StyledGroupButtonsMenu = styled.div`
     width: 100%;
     white-space: nowrap;
     display: ${state => state.visible ? 'block' : 'none'};
-    z-index: 500;
+    z-index: 350;
 `;
 
 const CloseButton = styled.div`
@@ -61,17 +61,21 @@ const StyledCheckbox = styled.div`
 class GroupButtonsMenu extends React.PureComponent {
 
     constructor(props) {
-        super(props);    
-        this.updateMenu = this.updateMenu.bind(this);
+        super(props);
+
         this.state = {
-          priorityItems: props.menuItems,
-          moreItems: [],
-          visible: true
+            priorityItems: props.menuItems,
+            moreItems: [],
+            visible: true
         }
+
         this.fullMenuArray = this.props.menuItems;
         this.checkBox = this.props.checkBox;
+
+        this.updateMenu = this.updateMenu.bind(this);
+        this.howManyItemsInMenuArray = this.howManyItemsInMenuArray.bind(this);
     }
-    
+
     componentDidMount() {
         this.widthsArray = Array.from(document.getElementById("groupMenu").children).map(item => item.getBoundingClientRect().width);
 
@@ -80,35 +84,35 @@ class GroupButtonsMenu extends React.PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        if(this.props.visible !== prevProps.visible) {
-            this.setState({visible: this.props.visible});
+        if (this.props.visible !== prevProps.visible) {
+            this.setState({ visible: this.props.visible });
         }
     };
-    
-    howManyItemsInMenuArray(array, outerWidth, initialWidth, minimumNumberInNav) {
-        let total = (initialWidth+180);
-        for(let i = 0; i < array.length; i++) {
-            if(total + array[i] > outerWidth) {
-              return i < minimumNumberInNav ? minimumNumberInNav : i;
-            } else {
-              total += array[i];
-            }
-        }    
-    }
 
-    updateMenu() {
-        this.outerWidth =  document.getElementById("groupMenuOuter") ? document.getElementById("groupMenuOuter").getBoundingClientRect().width : 0;
+    howManyItemsInMenuArray = (array, outerWidth, initialWidth, minimumNumberInNav) => {
+        let total = (initialWidth + 180);
+        for (let i = 0; i < array.length; i++) {
+            if (total + array[i] > outerWidth) {
+                return i < minimumNumberInNav ? minimumNumberInNav : i;
+            } else {
+                total += array[i];
+            }
+        }
+    };
+
+    updateMenu = () => {
+        this.outerWidth = document.getElementById("groupMenuOuter") ? document.getElementById("groupMenuOuter").getBoundingClientRect().width : 0;
         this.moreMenu = document.getElementById("moreMenu") ? document.getElementById("moreMenu").getBoundingClientRect().width : 0;
 
-        const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, this.outerWidth, this.moreMenu, 1);    
+        const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, this.outerWidth, this.moreMenu, 1);
         const navItemsCopy = this.fullMenuArray;
         const priorityItems = navItemsCopy.slice(0, arrayAmount);
-        
+
         this.setState({
-          priorityItems: priorityItems,
-          moreItems: priorityItems.length !== navItemsCopy.length ? navItemsCopy.slice(arrayAmount, navItemsCopy.length) : []
+            priorityItems: priorityItems,
+            moreItems: priorityItems.length !== navItemsCopy.length ? navItemsCopy.slice(arrayAmount, navItemsCopy.length) : []
         });
-    }
+    };
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateMenu());
@@ -118,45 +122,45 @@ class GroupButtonsMenu extends React.PureComponent {
     render() {
         console.log("GroupButtonsMenu render");
         const closeMenu = (e) => {
-            this.setState({visible: false}); 
+            this.setState({ visible: false });
             this.props.onClose && this.props.onClose(e);
         };
 
         return (
             <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
-                {this.props.hasOwnProperty("checked") && 
+                {this.props.hasOwnProperty("checked") &&
                     <StyledCheckbox>
-                        <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => { 
+                        <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => {
                             this.props.onChange && this.props.onChange(e.target.checked);
                         }} />
                     </StyledCheckbox>
                 }
-                <div id="groupMenu" style={{display: 'inline-block'}}>
-                {this.state.priorityItems.map((item, i) => 
-                    <GroupButton key={`navItem-${i}`} 
-                                label={item.label} 
-                                isDropdown={item.isDropdown} 
-                                isSeparator={item.isSeparator}
-                                fontWeight={item.fontWeight} 
-                                onClick={(e) => {
-                                    item.onClick(e);
-                                    closeMenu(e);
-                                }}>
-                        {item.children}
-                    </GroupButton>
-                )}
+                <div id="groupMenu" style={{ display: 'inline-block' }}>
+                    {this.state.priorityItems.map((item, i) =>
+                        <GroupButton key={`navItem-${i}`}
+                            label={item.label}
+                            isDropdown={item.isDropdown}
+                            isSeparator={item.isSeparator}
+                            fontWeight={item.fontWeight}
+                            onClick={(e) => {
+                                item.onClick(e);
+                                closeMenu(e);
+                            }}>
+                            {item.children}
+                        </GroupButton>
+                    )}
                 </div>
-                {this.state.moreItems.length > 0 && 
+                {this.state.moreItems.length > 0 &&
                     <GroupButton id="moreMenu" isDropdown label={this.props.moreLabel}>
-                        {this.state.moreItems.map((item, i) => 
-                            <DropDownItem 
-                                key={`moreNavItem-${i}`} 
+                        {this.state.moreItems.map((item, i) =>
+                            <DropDownItem
+                                key={`moreNavItem-${i}`}
                                 label={item.label}
                                 onClick={(e) => {
                                     item.onClick(e);
                                     closeMenu(e);
                                 }}
-                            />      
+                            />
                         )}
                     </GroupButton>
                 }
@@ -166,7 +170,7 @@ class GroupButtonsMenu extends React.PureComponent {
     }
 }
 
-GroupButtonsMenu.propTypes ={
+GroupButtonsMenu.propTypes = {
     onClick: PropTypes.func,
     onClose: PropTypes.func,
     onChange: PropTypes.func,

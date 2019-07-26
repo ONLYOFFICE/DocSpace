@@ -1,5 +1,7 @@
 import React from 'react';
+import { withRouter } from 'react-router';
 import _ from "lodash";
+import config from '../../../../../../package.json';
 import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
 
 const profileWrapper = {
@@ -17,6 +19,13 @@ const avatarWrapper = {
 const infoWrapper = {
   display: "inline-flex",
   marginBottom: "24px"
+};
+
+const textTruncate = {
+  padding: "0 8px",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis"
 };
 
 const titlesWrapper = {
@@ -85,8 +94,8 @@ const getFormattedDepartments = (departments) => {
   const departmentsLength = splittedDepartments.length - 1;
   return splittedDepartments.map((department, index) => {
     return (
-      <span>
-        <Link key={index} type="action" fontSize={13} isHovered={true} text={department.trim()} />
+      <span key={index}>
+        <Link type="action" fontSize={13} isHovered={true} text={department.trim()} />
         {(departmentsLength !== index) ? ', ' : ''}
       </span>
     )
@@ -94,26 +103,32 @@ const getFormattedDepartments = (departments) => {
 };
 
 const sendMail = (email) => {
-  window.open('mailto:'+email);
+  window.open('mailto:' + email);
+};
+
+const capitalizeFirstLetter = (string) => {
+  if (!string) return;
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 const createContacts = (contacts) => {
   return contacts.map((contact, index) => {
-    if (contact.value) {
+    if (contact.value)
       return (
         <div key={index} style={{ display: "inline-flex", width: "300px" }}>
           <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} onClick={() => { }} />
-          <div style={{ marginLeft: "8px" }}>{contact.value}</div>
+          <div style={textTruncate}>{contact.value}</div>
         </div>
       );
-    }
   })
 };
 
 const SectionBodyContent = (props) => {
-  const { profile } = props;
+  const { profile, history, isSelf, isAdmin } = props;
 
   getFormattedContacts(profile);
+
+  console.log(props);
 
   return (
     <div style={profileWrapper}>
@@ -124,7 +139,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => console.log('Edit action')} />
+        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => history.push(`${config.homepage}/edit/${profile.userName}`)} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -137,19 +152,45 @@ const SectionBodyContent = (props) => {
           {profile.workFrom && <Text.Body style={restMargins} color='lightGray' title='Employed since'>Employed since:</Text.Body>}
           {profile.birthday && <Text.Body style={restMargins} color='lightGray' title='Date of birth'>Date of birth:</Text.Body>}
           {profile.location && <Text.Body style={restMargins} color='lightGray' title='Location'>Location:</Text.Body>}
+          {isSelf && <Text.Body style={restMargins} color='lightGray' title='Language'>Language:</Text.Body>}
+          {isSelf && <Text.Body style={{marginTop: "24px"}} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
-          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} text={profile.email} onClick={() => sendMail(profile.email)}/></Text.Body>
+          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} text={profile.email} onClick={() => sendMail(profile.email)} />{profile.activationStatus === 2 && ' (Pending)'}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
-          <Text.Body style={restMargins}>{profile.sex}</Text.Body>
+          <Text.Body style={restMargins}>{capitalizeFirstLetter(profile.sex)}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDate(profile.workFrom)}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDate(profile.birthday)}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
+          {isSelf && <Text.Body style={restMargins}>{profile.cultureName}</Text.Body>}
+          {isSelf && <Button style={{marginTop: "22px"}} size="base" label="Become our Affiliate" onClick={() => console.log('Become our Affiliate onClick()')}/>}
         </div>
       </div>
+      {isSelf &&
+        <div style={{ width: "100%", marginBottom: "24px" }}>
+          <ToggleContent label="Login settings" style={notesWrapper} isOpen={true}>
+            <Text.Body tag="span">
+              Two-factor authentication via code generating application was enabled for all users by cloud service administrator. 
+              <div style={{marginTop: "10px"}}>
+                <Link type="action" isBold={true} isHovered={true} fontSize={13} text='Reset application' />
+                <Link style={{marginLeft: "18px"}} type="action" isBold={true} isHovered={true} fontSize={13} text='Show backup codes' />
+              </div>
+            </Text.Body>
+          </ToggleContent>
+        </div>
+      }
+      {isSelf &&
+        <div style={{ width: "100%", marginBottom: "24px" }}>
+          <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
+            <Text.Body tag="span">
+              <Button size="big" label="Edit subscriptions" primary={true} onClick={() => console.log('Edit subscriptions onClick()')}/>
+            </Text.Body>
+          </ToggleContent>
+        </div>
+      }
       {profile.notes &&
         <div style={{ width: "100%" }}>
           <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
@@ -182,4 +223,4 @@ const SectionBodyContent = (props) => {
 };
 
 
-export default SectionBodyContent;
+export default withRouter(SectionBodyContent);

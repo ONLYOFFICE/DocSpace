@@ -11,7 +11,9 @@ display: ${props => props.isOpen ? 'block' : 'none'};
 padding-top: 9px;
 `;
 
-const Arrow = styled(Icons.ArrowContentIcon)`
+const IconArrow= ({ isOpen, ...props }) => <Icons.ArrowContentIcon {...props} />;
+
+const Arrow = styled(IconArrow)`
 
   margin-right: 9px;
   margin-bottom: 5px;

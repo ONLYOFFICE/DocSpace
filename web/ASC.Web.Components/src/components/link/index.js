@@ -41,10 +41,9 @@ const visitedCss = css`
 const dottedCss = css`
     border-bottom: 1px dotted;
 `;
+const ExpanderDownIcon= ({ isSemitransparent, ...props }) => <Icons.ExpanderDownIcon {...props} />;
 
-const Caret = styled(Icons.ExpanderDownIcon).attrs((props) => ({
-    isSemitransparent: props.isSemitransparent
-}))`
+const Caret = styled(ExpanderDownIcon)`
     width: 10px;
     margin-left: 5px;
     margin-top: -4px;
