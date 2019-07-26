@@ -25,6 +25,11 @@ class RadioButtonGroup extends React.Component {
     });
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.selected !== prevProps.selected) {
+      this.setState({ selectedOption: this.props.selected });
+    }
+  };
 
   render() {
     const options = this.props.options;
