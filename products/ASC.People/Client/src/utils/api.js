@@ -1,8 +1,7 @@
 
 import axios from 'axios';
 import * as fakeApi from './fakeApi';
-import isEmpty from 'lodash/isEmpty';
-import { objectToUrlQuery } from './converter'
+import Filter from '../helpers/filter';
 
 const PREFIX = 'api';
 const VERSION = '2.0';
@@ -31,9 +30,9 @@ export function getUser(userId) {
     return IS_FAKE ? fakeApi.getUser() :  axios.get(`${API_URL}/people/${userId || "@self"}.json`);
 };
 
-export function getUserList(filterOptions = {}) {
-    const filter = !isEmpty(filterOptions) ? `/filter.json?${objectToUrlQuery(filterOptions)}` : ""; // /filter.json?StartIndex=0&Count=25&sortby=lastname&sortorder=ascending
-    return IS_FAKE ? fakeApi.getUsers() :  axios.get(`${API_URL}/people${filter}`);
+export function getUserList(filter = Filter.getDefault()) {
+    const params = filter && (filter instanceof Filter) ? `/filter.json?${filter.toUrlParams()}` : "";
+    return IS_FAKE ? fakeApi.getUsers() :  axios.get(`${API_URL}/people${params}`);
 };
 
 export function getGroupList() {

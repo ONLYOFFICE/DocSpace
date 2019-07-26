@@ -1,10 +1,11 @@
 import React from "react";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
-import config from '../../../../../../package.json';
-import _ from "lodash";
+import config from "../../../../../../package.json";
+import { selectUser, deselectUser, setSelection } from "../../../../../actions/peopleActions";
+import { getSelectedUser } from '../../../../../reducers/people';
 
 const getUserDepartment = user => {
   return {
@@ -28,25 +29,17 @@ const getUserEmail = user => {
 };
 
 const getUserRole = user => {
-  if (user.isOwner) 
-    return "owner";
-  else if (user.isAdmin) 
-    return "admin";
-  else if (user.isVisitor) 
-    return "guest";
-  else 
-    return "user";
+  if (user.isOwner) return "owner";
+  else if (user.isAdmin) return "admin";
+  else if (user.isVisitor) return "guest";
+  else return "user";
 };
 
 const getUserStatus = user => {
-  if (user.status === 1 && user.activationStatus === 1) 
-    return "normal";
-  else if (user.status === 1 && user.activationStatus === 2) 
-    return "pending";
-  else if (user.status === 2) 
-    return "disabled";
-  else 
-    return "normal";
+  if (user.status === 1 && user.activationStatus === 1) return "normal";
+  else if (user.status === 1 && user.activationStatus === 2) return "pending";
+  else if (user.status === 2) return "disabled";
+  else return "normal";
 };
 
 const getUserContextOptions = (user, isAdmin, history) => {
@@ -90,31 +83,21 @@ const getIsHead = user => {
 };
 
 class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      people: this.getPeople(),
-      checkedItems: new Map()
-    };
-  }
-
-  getChecked = (item, selected) => {
-    const { status } = item;
+  getChecked = (status, selected) => {
     let checked;
     switch (selected) {
       case "all":
-          checked = true;
-          break;
+        checked = true;
+        break;
       case "active":
-          checked = status === "normal";
-          break;
+        checked = status === "normal";
+        break;
       case "disabled":
-          checked = status === "disabled";
-          break;
+        checked = status === "disabled";
+        break;
       case "invited":
-          checked = status === "pending";
-          break;
+        checked = status === "pending";
+        break;
       default:
         checked = false;
     }
@@ -122,21 +105,25 @@ class SectionBodyContent extends React.Component {
     return checked;
   };
 
-  getPeople() {
+  getPeople = () => {
     return this.props.users.map(user => {
       const status = getUserStatus(user);
       return {
         user: user,
         status: status,
         role: getUserRole(user),
-        contextOptions: getUserContextOptions(user, this.props.isAdmin, this.props.history),
+        contextOptions: getUserContextOptions(
+          user,
+          this.props.isAdmin,
+          this.props.history
+        ),
         department: getUserDepartment(user),
         phone: getUserPhone(user),
         email: getUserEmail(user),
         isHead: getIsHead(user)
       };
     });
-  }
+  };
 
   componentDidUpdate(prevProps) {
     /*console.log(`SectionBodyContent componentDidUpdate
@@ -144,24 +131,28 @@ class SectionBodyContent extends React.Component {
     prevProps.selected=${prevProps.selected}`);*/
 
     if (this.props.selected !== prevProps.selected) {
-      this.state.people.forEach(item => {
-        const checked = this.getChecked(item, this.props.selected);
-        //if(this.state.checkedItems.get(item.user.id) !== checked) {
-          this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item.user.id, checked) }));
-          this.props.onChange && this.props.onChange(checked, item.user);
-        //}
+      const { setSelection } = this.props;
+
+      let newSelection = [];
+      this.props.users.forEach(user => {
+        const checked = this.getChecked(getUserStatus(user), this.props.selected);
+
+        if(checked)
+          newSelection.push(user);
       });
+
+      setSelection(newSelection);
     }
   }
 
   render() {
     console.log("Home SectionBodyContent render()");
-    const { isAdmin, onChange } = this.props;
+    const { isAdmin, selection, selectUser, deselectUser } = this.props;
     // console.log("SectionBodyContent props ", this.props);
 
     return (
       <>
-        {this.state.people.map(item => {
+        {this.getPeople().map(item => {
           const user = item.user;
           return isAdmin ? (
             <ContentRow
@@ -172,11 +163,17 @@ class SectionBodyContent extends React.Component {
               avatarSource={user.avatar}
               avatarName={user.userName}
               contextOptions={item.contextOptions}
-              checked={this.state.checkedItems.get(user.id)}
+              checked={getSelectedUser(selection, user.id)}
               onSelect={(checked, data) => {
                 console.log("ContentRow onSelect", checked, data);
                 //this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(data.id, checked) }));
-                onChange && onChange(checked, data);
+                //onChange && onChange(checked, data);
+                if (checked) {
+                  selectUser(user);
+                }
+                else {
+                  deselectUser(user);
+                }
               }}
             >
               <UserContent
@@ -211,12 +208,18 @@ class SectionBodyContent extends React.Component {
       </>
     );
   }
-}
+};
 
 const mapStateToProps = state => {
   return {
+    selection: state.people.selection,
+    selected: state.people.selected,
+    users: state.people.users,
     isAdmin: state.auth.user.isAdmin || state.auth.user.isOwner
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(
+  mapStateToProps,
+  { selectUser, deselectUser, setSelection }
+)(withRouter(SectionBodyContent));
