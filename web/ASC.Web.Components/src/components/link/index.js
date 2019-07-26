@@ -147,7 +147,7 @@ class Link extends React.PureComponent {
     }
 
     render() {
-        console.log("Link render");
+        //console.log("Link render");
         return (
             <span ref={this.ref}
                 onMouseEnter={() => {

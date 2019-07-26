@@ -39,7 +39,7 @@ const Arrow = styled.div`
 `;
 
 const DropDown = React.memo(props => {
-    console.log("DropDown render");
+    //console.log("DropDown render");
 
     return (
         <StyledDropdown {...props}>

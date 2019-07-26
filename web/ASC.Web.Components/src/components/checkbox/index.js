@@ -129,7 +129,7 @@ class Checkbox extends React.Component  {
     }
   }
   render() {
-    console.log("Checkbox render");
+    //console.log("Checkbox render");
     
     const cbxClassName = 'checkbox' +
       (this.props.isIndeterminate ? ' indeterminate' : this.state.checked ? ' checked' : '') +
