@@ -6,13 +6,42 @@ import Section from '../../../.storybook/decorators/section';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 import { action } from '@storybook/addon-actions';
+import { optionsKnob as options } from '@storybook/addon-knobs';
 
-const values = ['first', 'second', 'third'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('radio-button-group', () => {
+  .add('radio button group', () => {
+
+    const values = ['first', 'second', 'third'];
+    const valuesMultiSelect = {
+      radio1: 'radio1',
+      radio2: 'radio2',
+      radio3: 'radio3'
+    };
+
+    const optionsMultiSelect = options('options', valuesMultiSelect, ['radio1'], {
+      display: 'multi-select',
+    });
+
+    let children = [];
+    optionsMultiSelect.forEach(function (item, i) {
+      switch (item) {
+        case 'radio1':
+          children.push({ value: values[0], label: text('label 1', 'First radiobtn') });
+          break;
+        case 'radio2':
+          children.push({ value: values[1], label: text('label 2', 'Second radiobtn') });
+          break;
+        case 'radio3':
+          children.push({ value: values[2], label: text('label 3', 'Third radiobtn') });
+          break;
+        default:
+          break;
+      }
+    });
+
     return (
       <Section>
         <>
@@ -24,14 +53,8 @@ storiesOf('Components|Input', module)
             isDisabled={boolean('isDisabled', false)}
             selected={values[0]}
             spacing={number('spacing', 33)}
-            name={text('name of your group', 'group')}
-            options={
-              [
-                { value: values[0], label: text('label 1st radiobutton', '1st button'), disabled: boolean('disabled 1st radiobutton', true) },
-                { value: values[1], label: text('label 2nd radiobutton', '2nd button'), },
-                { value: values[2], label: text('label 3rd radiobutton', '3rd button') },
-              ]
-            }
+            name={text('name', 'group')}
+            options={children}
           />
         </>
       </Section>
