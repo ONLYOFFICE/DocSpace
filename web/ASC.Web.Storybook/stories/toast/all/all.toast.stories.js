@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { storiesOf } from '@storybook/react';
-import { Toast, toastr, Link, Icons, Button } from 'asc-web-components';
+import { Toast, toastr, Link } from 'asc-web-components';
 
 class TostWrapper extends React.Component {
   componentDidMount() {
@@ -25,7 +25,7 @@ class TostWrapper extends React.Component {
         toastr.warning('Demo text for warning manual closed Toast', null, 0, true, true);
         toastr.info('Demo text for info manual closed Toast', null, 0, true, true);
         toastr.success(<>
-                        Demo text for success manual closed Toast with title and contains icon <Icons.AimIcon /> and button <Button label='OK' onClick={()=>alert('button clicked!')} /> and <Link type = "page" color="gray" href="https://github.com"  text = 'gray link' />
+                        Demo text for success manual closed Toast with title and contains <Link type = "page" color="gray" href="https://github.com"  text = 'gray link' />
                       </>, 'Demo title', 0, true, true);
         toastr.error('Demo text for error manual closed Toast with title', 'Demo title', 0, true, true);
         toastr.warning('Demo text for warning manual closed Toast with title', 'Demo title', 0, true, true);
