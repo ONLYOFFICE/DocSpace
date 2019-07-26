@@ -40,7 +40,7 @@ class RadioButtonGroup extends React.Component {
               onChange={this.handleOptionChange}
               disabled={this.props.isDisabledGroup || option.disabled}
               label={option.label}
-              spaceBtwnElems={this.props.spaceBtwnElems}
+              radiobuttonSpacing={this.props.radiobuttonSpacing}
             />
               )
             }
@@ -60,13 +60,13 @@ RadioButtonGroup.propTypes = {
                             disabled: PropTypes.bool
                           })).isRequired,
   selected: PropTypes.string.isRequired,
-  spaceBtwnElems: PropTypes.number
+  radiobuttonSpacing: PropTypes.number
 }
 
 RadioButtonGroup.defaultProps = {
   isDisabledGroup: false,
   selected: undefined,
-  spaceBtwnElems: 33
+  radiobuttonSpacing: 33
 }
 
 export default RadioButtonGroup;

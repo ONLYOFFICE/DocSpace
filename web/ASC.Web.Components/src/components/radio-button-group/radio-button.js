@@ -84,7 +84,7 @@ const StyledText = styled(TextBody)`
 
 const StyledSpan = styled.span`
   &:not(:first-child) {
-    margin-left: ${props => props.spaceBtwnElems}px;
+    margin-left: ${props => props.radiobuttonSpacing}px;
   }
 `;
 
@@ -96,7 +96,7 @@ class RadioButton extends React.Component {
       (this.props.disabled ? ' disabled' : '');
 
     return (
-      <StyledSpan spaceBtwnElems={this.props.spaceBtwnElems}>
+      <StyledSpan radiobuttonSpacing={this.props.radiobuttonSpacing}>
         <Label>
           <span>
             <Input type='radio'

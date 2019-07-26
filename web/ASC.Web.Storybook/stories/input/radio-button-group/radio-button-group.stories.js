@@ -16,7 +16,7 @@ storiesOf('Components|Input', module)
           <RadioButtonGroup
             isDisabledGroup={boolean('isDisabledGroup', false)}
             selected={text('selected radio button(value)', 'second')}
-            spaceBtwnElems={number('spaceBtwnElems', 33)}
+            radiobuttonSpacing={number('radiobuttonSpacing', 33)}
             name={text('name of your group', 'group')}
             options={
               [
