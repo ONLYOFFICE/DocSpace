@@ -30,8 +30,8 @@ import { RadioButtonGroup } from 'asc-web-components';
 | `name`                 | `string` |    ✅     | -                            | -       | Used as HTML `name` property for `<input>` tag. Used for identification RadioButtonGroup                             
 | `selected`                | `string` |    ✅    | -                            | -       | Value of the selected radiobutton      
 | `options`                | `arrayOf` |    ✅    | -           | -       | Radiobuttons data: it is array of objects, each of this can include next information: `value` (required), `label`, `disabled`
-| `radiobuttonSpacing`                | `number` |    -    | -           | 33       | Margin (in px) between radiobuttons
-| `isDisabledGroup`                | `bool` |    -    | -           | `false`       | Disabling all radiobuttons in group
+| `spacing`                | `number` |    -    | -           | 33       | Margin (in px) between radiobuttons
+| `isDisabled`                | `bool` |    -    | -           | `false`       | Disabling all radiobuttons in group
 | `onClick`                | `func` |    -    | -           | -       | Allow you to handle clicking events on radiobuttons
 
 #### Prop `options`

@@ -17,9 +17,9 @@ storiesOf('Components|Input', module)
             onClick={e => {
               console.log('Value of selected radiobutton: ', e.target.value);
             }}
-            isDisabledGroup={boolean('isDisabledGroup', false)}
+            isDisabled={boolean('isDisabled', false)}
             selected={text('selected radio button(value)', 'second')}
-            radiobuttonSpacing={number('radiobuttonSpacing', 33)}
+            spacing={number('spacing', 33)}
             name={text('name of your group', 'group')}
             options={
               [
