@@ -16,8 +16,8 @@ const textStyle = {
 const SectionHeaderContent = (props) => {
   const {profile, history, userType} = props;
 
-  const headerText = profile
-    ? profile.userName
+  const headerText = profile && profile.displayName
+    ? profile.displayName
     : userType === "user"
       ? "New employee"
       : "New guest";
