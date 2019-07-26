@@ -186,7 +186,7 @@ class SectionBodyContent extends React.Component {
                 phone={item.phone}
                 email={item.email}
                 headDepartment={item.isHead}
-                status={item.user.status}
+                status={item.status}
               />
             </ContentRow>
           ) : (

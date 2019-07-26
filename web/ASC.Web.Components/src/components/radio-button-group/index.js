@@ -25,6 +25,11 @@ class RadioButtonGroup extends React.Component {
     });
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.selected !== prevProps.selected) {
+      this.setState({ selectedOption: this.props.selected });
+    }
+  };
 
   render() {
     const options = this.props.options;
@@ -37,14 +42,18 @@ class RadioButtonGroup extends React.Component {
               name={this.props.name}
               value={option.value}
               checked={this.state.selectedOption === option.value}
-              onChange={this.handleOptionChange}
-              disabled={this.props.isDisabledGroup || option.disabled}
+              onChange={(e) => {
+                this.handleOptionChange(e);
+                this.props.onClick && this.props.onClick(e);
+              }}
+
+              disabled={this.props.isDisabled || option.disabled}
               label={option.label}
-              radiobuttonSpacing={this.props.radiobuttonSpacing}
+              spacing={this.props.spacing}
             />
-              )
-            }
           )
+        }
+        )
         }
       </StyledDiv>
     );
@@ -52,21 +61,22 @@ class RadioButtonGroup extends React.Component {
 };
 
 RadioButtonGroup.propTypes = {
-  isDisabledGroup: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   name: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
   options: PropTypes.arrayOf(PropTypes.shape({
-                            value: PropTypes.string.isRequired,
-                            label: PropTypes.string,
-                            disabled: PropTypes.bool
-                          })).isRequired,
+    value: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    disabled: PropTypes.bool
+  })).isRequired,
   selected: PropTypes.string.isRequired,
-  radiobuttonSpacing: PropTypes.number
+  spacing: PropTypes.number
 }
 
 RadioButtonGroup.defaultProps = {
-  isDisabledGroup: false,
+  isDisabled: false,
   selected: undefined,
-  radiobuttonSpacing: 33
+  spacing: 33
 }
 
 export default RadioButtonGroup;

@@ -5,6 +5,9 @@ import { RadioButtonGroup } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
+import { action } from '@storybook/addon-actions';
+
+const values = ['first', 'second', 'third'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
@@ -14,17 +17,19 @@ storiesOf('Components|Input', module)
       <Section>
         <>
           <RadioButtonGroup
-            isDisabledGroup={boolean('isDisabledGroup', false)}
-            selected={text('selected radio button(value)', 'second')}
-            radiobuttonSpacing={number('radiobuttonSpacing', 33)}
+            onClick={e => {
+              action('onChange')(e);
+              console.log('Value of selected radiobutton: ', e.target.value);
+            }}
+            isDisabled={boolean('isDisabled', false)}
+            selected={values[0]}
+            spacing={number('spacing', 33)}
             name={text('name of your group', 'group')}
             options={
               [
-                { value: text('value 1st radiobutton', 'first'), label: text('label 1st radiobutton', 'First radiobtn'), disabled: boolean('isDisabled 1st radiobutton', false) },
-                { value: text('value 2nd radiobutton', 'second'), label: text('label 2nd radiobutton', 'Second radiobtn'), disabled: boolean('isDisabled 2nd radiobutton', true) },
-                { value: text('value 3rd radiobutton', 'third'), label: text('label 3rd radiobutton', '3nd radiobtn'), disabled: boolean('isDisabled 3rd radiobutton', false) },
-                { value: text('value 4th radiobutton', 'fourth'), label: text('label 4th radiobutton', '4th radiobtn'), disabled: boolean('isDisabled 4th radiobutton', true) },
-
+                { value: values[0], label: text('label 1st radiobutton', '1st button'), disabled: boolean('disabled 1st radiobutton', true) },
+                { value: values[1], label: text('label 2nd radiobutton', '2nd button'), },
+                { value: values[2], label: text('label 3rd radiobutton', '3rd button') },
               ]
             }
           />
