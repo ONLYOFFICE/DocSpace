@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 const StyledDiv = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 class RadioButtonGroup extends React.Component {
@@ -38,7 +39,7 @@ class RadioButtonGroup extends React.Component {
               value={option.value}
               checked={this.state.selectedOption === option.value}
               onChange={this.handleOptionChange}
-              disabled={option.disabled}
+              disabled={this.props.isDisabledGroup || option.disabled}
               label={option.label}
               spaceBtwnElems={this.props.spaceBtwnElems}
             />
@@ -52,6 +53,7 @@ class RadioButtonGroup extends React.Component {
 };
 
 RadioButtonGroup.propTypes = {
+  isDisabledGroup: PropTypes.bool,
   name: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.shape({
                             value: PropTypes.string.isRequired,
@@ -63,6 +65,7 @@ RadioButtonGroup.propTypes = {
 }
 
 RadioButtonGroup.defaultProps = {
+  isDisabledGroup: false,
   selected: undefined,
   spaceBtwnElems: 33
 }
