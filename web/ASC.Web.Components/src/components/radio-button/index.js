@@ -119,9 +119,9 @@ class RadioButton extends React.Component {
               name={this.props.name}
               value={this.props.value}
               checked={this.props.isChecked}
-              onChange={this.props.onChange ? this.props.onChange : () => {
+              onChange={this.props.onChange ? this.props.onChange : (e) => {
                 this.setState({ isChecked: true })
-                this.props.onClick && this.props.onClick(true);
+                this.props.onClick && this.props.onClick(e);
               }}
               disabled={this.props.isDisabled} />
 
@@ -140,6 +140,7 @@ RadioButton.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
+  onClick: PropTypes.func,
   value: PropTypes.string.isRequired,
 }
 

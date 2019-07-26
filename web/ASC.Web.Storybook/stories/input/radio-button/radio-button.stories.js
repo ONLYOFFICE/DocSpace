@@ -20,11 +20,12 @@ storiesOf('Components|Input', module)
             label={text('label', 'Label')}
             isDisabled={boolean('isDisabled', false)}
             isChecked={boolean('isChecked', false)}
-            onClick={(checked) => {
+            onClick={(e) => {
               window.__STORYBOOK_ADDONS.channel.emit('storybookjs/knobs/change', {
                 name: 'isChecked',
-                value: checked
+                value: e.target.checked
               });
+              console.log('onChange', e);
             }
             }
           />

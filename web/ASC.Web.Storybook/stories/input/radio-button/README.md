@@ -9,8 +9,8 @@ RadioButton allow you to add radiobutton
 ```js
 import { RadioButton } from 'asc-web-components';
 
-<RadioButton 
-  name='fruits' 
+<RadioButton
+  name='fruits'
   value= 'apple'
   label= 'Sweet apple'
   />
@@ -26,4 +26,4 @@ import { RadioButton } from 'asc-web-components';
 | `label`                | `string` |    -    | -                            | -       | Name of the radiobutton. If missed, `value` will be used
 | `isChecked`                | `bool` |    -    | -           | `false`       |  Used as HTML `checked` property for each `<input>` tag
 | `isDisabled`                | `bool` |    -    | -           | `false`       |  Used as HTML `disabled` property for each `<input>` tag
-| `onChange`                | `func` |    -    | -           | -       | Allow you to handle changing events on component
+| `onClick`                | `func` |    -    | -           | -       | Allow you to handle clicking events on component
