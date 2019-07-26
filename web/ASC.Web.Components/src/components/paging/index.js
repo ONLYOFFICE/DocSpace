@@ -40,13 +40,13 @@ const Paging = props => {
             <>
                 <Button size='medium' label={previousLabel} onClick={previousAction}/>
                 <StyledPage>
-                    <ComboBox directionY={openDirection} items={pageItems} />
+                    <ComboBox directionY={openDirection} options={pageItems} />
                 </StyledPage>
                 <Button size='medium' label={nextLabel} onClick={nextAction}/>
             </>
             }
             <StyledOnPage>
-                <ComboBox directionY={openDirection} items={perPageItems} />
+                <ComboBox directionY={openDirection} options={perPageItems} />
             </StyledOnPage>
         </StyledPaging>
     );
