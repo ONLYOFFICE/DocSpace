@@ -31,8 +31,8 @@ const UserContent = ({
                 history.push(`${config.homepage}/view/${userName}`);
               }}
             />
-            {status === "pending" && <Icons.SendClockIcon style={{marginLeft: "8px", marginTop: "-5px"}} size='medium' isfill color='#3B72A7' />}
-            {status === "disabled" && <Icons.CatalogSpamIcon style={{marginLeft: "8px", marginTop: "-5px"}} size='small' isfill color='#3B72A7' />}
+            {status === "pending" && <Icons.SendClockIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
+            {status === "disabled" && <Icons.CatalogSpamIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
           </Col>
           <Col
             className={`${
