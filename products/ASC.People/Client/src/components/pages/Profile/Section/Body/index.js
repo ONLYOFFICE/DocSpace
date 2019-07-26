@@ -21,6 +21,13 @@ const infoWrapper = {
   marginBottom: "24px"
 };
 
+const textTruncate = {
+  padding: "0 8px",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis"
+};
+
 const titlesWrapper = {
   marginRight: "8px"
 };
@@ -110,7 +117,7 @@ const createContacts = (contacts) => {
       return (
         <div key={index} style={{ display: "inline-flex", width: "300px" }}>
           <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} onClick={() => { }} />
-          <div style={{ marginLeft: "8px" }}>{contact.value}</div>
+          <div style={textTruncate}>{contact.value}</div>
         </div>
       );
   })
@@ -179,7 +186,7 @@ const SectionBodyContent = (props) => {
         <div style={{ width: "100%", marginBottom: "24px" }}>
           <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              <Button size="big"  label="Edit subscriptions" primary={true} onClick={() => console.log('Edit subscriptions onClick()')}/>
+              <Button size="big" label="Edit subscriptions" primary={true} onClick={() => console.log('Edit subscriptions onClick()')}/>
             </Text.Body>
           </ToggleContent>
         </div>
