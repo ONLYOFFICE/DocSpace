@@ -13,7 +13,7 @@ storiesOf('Components|Input', module)
     return (
       <Section>
         <>
-          <RadioButtonGroup selected={text('selected radio button(value)', 'second')} spaceBtwnElems={number('spaceBtwnElems', 33)}  name={text('name of your group', 'group')} options={
+          <RadioButtonGroup isDisabledGroup={boolean('isDisabledGroup', false)} selected={text('selected radio button(value)', 'second')} spaceBtwnElems={number('spaceBtwnElems', 33)}  name={text('name of your group', 'group')} options={
                 [
                   { value: text('value 1st radiobutton', 'first'), label: text('label 1st radiobutton', 'First radiobtn'), disabled: boolean('isDisabled 1st radiobutton', false) },
                   { value: text('value 2nd radiobutton', 'second'), label: text('label 2nd radiobutton', 'Second radiobtn'), disabled: boolean('isDisabled 2nd radiobutton', true) },
