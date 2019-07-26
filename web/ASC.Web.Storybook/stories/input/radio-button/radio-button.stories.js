@@ -1,0 +1,34 @@
+import React from 'react';
+import { storiesOf } from '@storybook/react';
+import withReadme from 'storybook-readme/with-readme';
+import { RadioButton } from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
+import Readme from './README.md';
+
+
+storiesOf('Components|Input', module)
+  .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
+  .add('radio button', () => {
+    return (
+      <Section>
+        <>
+          <RadioButton
+            value={text('value', 'value')}
+            name={text('name', 'name')}
+            label={text('label', 'Label')}
+            isDisabled={boolean('isDisabled', false)}
+            isChecked={boolean('isChecked', false)}
+            onClick={(checked) => {
+              window.__STORYBOOK_ADDONS.channel.emit('storybookjs/knobs/change', {
+                name: 'isChecked',
+                value: checked
+              });
+            }
+            }
+          />
+        </>
+      </Section>
+    );
+  });
