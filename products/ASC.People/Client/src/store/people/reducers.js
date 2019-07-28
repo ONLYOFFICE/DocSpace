@@ -6,7 +6,7 @@ import {
     DESELECT_USER,
     SET_SELECTED
 } from "./actions";
-import { isSelected, skipUser } from './selectors';
+import { isSelected, skipUser, getUsersBySelected } from './selectors';
 
 const initialState = {
     users: [],
@@ -43,7 +43,8 @@ const peopleReducer = (state = initialState, action) => {
             } else return state;
         case SET_SELECTED:
             return Object.assign({}, state, {
-                selected: action.selected
+                selected: action.selected,
+                selection: getUsersBySelected(state.users, action.selected)
             });
         default:
             return state;
