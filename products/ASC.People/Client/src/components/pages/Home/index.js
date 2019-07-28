@@ -14,7 +14,7 @@ import {
   SectionFilterContent,
   SectionPagingContent
 } from "./Section";
-import { setSelected } from "../../../actions/peopleActions";
+import { setSelected } from "../../../store/people/actions";
 
 class Home extends React.Component {
   constructor(props) {

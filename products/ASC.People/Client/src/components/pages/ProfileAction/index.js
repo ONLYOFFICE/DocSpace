@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { setUser, fetchAndSetUser } from '../../../actions/peopleActions';
-
+import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
+import { isMe } from '../../../store/auth/selectors';
 
 class ProfileAction extends React.Component {
   constructor(props) {
@@ -56,38 +56,39 @@ class ProfileAction extends React.Component {
   }
 
   componentDidMount() {
-    const { auth, match } = this.props;
+    const { auth, match, setProfile, fetchProfile } = this.props;
     const { userId, type } = match.params;
-    if (userId) {
-      if (userId === "@self") {
-        this.props.setUser(auth.user);
-      } else {
-        this.props.fetchAndSetUser(userId);
-      }
+
+    if(!userId) {
+      setProfile({isVisitor: type === "guest"});
+    }
+    else if (isMe(auth, userId)) {
+      setProfile(auth.user);
     } else {
-      this.props.setUser({isVisitor: type === "guest"});
-    } 
+      fetchProfile(userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const currentParams = this.props.match.params;
-    const prevParams = prevProps.match.params;
+    const { auth, match, setProfile, fetchProfile } = this.props;
+    const { userId, type } = match.params;
+    const prevUserId = prevProps.match.params.userId;
+    const prevType = prevProps.match.params.type;
 
-    if (currentParams.userId !== prevParams.userId || currentParams.type !== prevParams.type) {
-      if (currentParams.userId) {
-        if (currentParams.userId === "@self") {
-          this.props.setUser(this.props.auth.user);
-        } else {
-          this.props.fetchAndSetUser(currentParams.userId);
-        }
+    if(!userId && type !== prevType) {
+      setProfile({isVisitor: type === "guest"});
+    }
+    else if (userId !== prevUserId) {
+      if (isMe(auth, userId)) {
+        setProfile(auth.user);
       } else {
-        this.props.setUser({isVisitor: currentParams.type === "guest"});
+        fetchProfile(userId);
       }
     }
   }
 
   componentWillUnmount() {
-    this.props.setUser(null);
+    this.props.resetProfile();
   }
 
   render() {
@@ -138,26 +139,19 @@ ProfileAction.propTypes = {
   auth: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  fetchAndSetUser: PropTypes.func.isRequired,
-  setUser: PropTypes.func.isRequired
+  fetchProfile: PropTypes.func.isRequired,
+  setProfile: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    profile: state.people.targetUser
+    profile: state.profile.targetUser
   };
 }
 
-function mapDispatchToProps(dispatch){
-  return {
-    fetchAndSetUser: function (userId) {
-      dispatch(fetchAndSetUser(userId));
-    },
-    setUser: function (user){
-      dispatch(setUser(user));
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileAction);
+export default connect(mapStateToProps, {
+  setProfile,
+  fetchProfile,
+  resetProfile
+})(ProfileAction);

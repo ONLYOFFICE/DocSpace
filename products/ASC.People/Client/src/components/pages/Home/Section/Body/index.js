@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
 import config from "../../../../../../package.json";
-import { selectUser, deselectUser, setSelection } from "../../../../../actions/peopleActions";
-import { getSelectedUser } from '../../../../../reducers/people';
+import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
+import { getSelectedUser } from '../../../../../store/people/selectors';
 
 const getUserDepartment = user => {
   return {

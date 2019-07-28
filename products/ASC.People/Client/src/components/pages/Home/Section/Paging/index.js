@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getPeople } from "../../../../../actions/peopleActions";
+import { getPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
 import Filter from '../../../../../helpers/filter';
 
