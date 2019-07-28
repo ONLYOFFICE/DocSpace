@@ -7,7 +7,7 @@ export function getAvailableModules(modules) {
         notifications: 3,
         url: '/products/chat/',
         onClick: () => window.open('/products/chat/', '_self'),
-        onBadgeClick: e => console.log('ChatIconBadge Clicked')(e),
+        onBadgeClick: e => console.log('ChatIconBadge Clicked', e),
         isolateMode: true
     };
 
@@ -19,7 +19,7 @@ export function getAvailableModules(modules) {
             notifications: 0,
             url: item.link,
             onClick: () => window.open(item.link, '_self'),
-            onBadgeClick: e => console.log('PeopleIconBadge Clicked')(e)
+            onBadgeClick: e => console.log('PeopleIconBadge Clicked', e)
         };
     }) || [];
 
