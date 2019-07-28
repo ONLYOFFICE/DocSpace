@@ -23,8 +23,8 @@ const HeaderText = styled(Text.MenuHeader)`
   color: #FFFFFF;
 `;
 
-const Header = props => {
-  //console.log("Header render");
+const Header = React.memo(props => {
+  console.log("Header render");
   return (
   <StyledHeader>
     <NavItem
@@ -34,6 +34,6 @@ const Header = props => {
     />
     <HeaderText>{props.currentModule && props.currentModule.title}</HeaderText>
   </StyledHeader>);
-};
+});
 
 export default Header;

@@ -22,8 +22,8 @@ const StyledSectionToggler = styled.div`
 `;
 
 
-const SectionToggler = (props) => { 
-  //console.log("SectionToggler render");
+const SectionToggler = React.memo(props => { 
+  console.log("PageLayout SectionToggler render");
   const { visible, onClick } = props;
 
   return (
@@ -33,6 +33,6 @@ const SectionToggler = (props) => {
       </div>
     </StyledSectionToggler>
   );
-}
+});
 
 export default SectionToggler;

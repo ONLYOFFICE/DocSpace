@@ -15,9 +15,9 @@ const StyledMain = styled.main`
   }
 `;
 
-const Main = props => { 
-  //console.log("Main render");
+const Main = React.memo(props => { 
+  console.log("Main render");
   return (<StyledMain {...props}/>); 
-}
+});
 
 export default Main;
