@@ -6,6 +6,7 @@ import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } fr
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
 import { isMe } from '../../../store/auth/selectors';
+import { getUserByUserName } from '../../../store/people/selectors';
 
 class ProfileAction extends React.Component {
   constructor(props) {
@@ -56,33 +57,41 @@ class ProfileAction extends React.Component {
   }
 
   componentDidMount() {
-    const { auth, match, setProfile, fetchProfile } = this.props;
+    const { auth, users, match, setProfile, fetchProfile } = this.props;
     const { userId, type } = match.params;
 
-    if(!userId) {
-      setProfile({isVisitor: type === "guest"});
+    if (!userId) {
+      setProfile({ isVisitor: type === "guest" });
     }
     else if (isMe(auth, userId)) {
       setProfile(auth.user);
     } else {
-      fetchProfile(userId);
+      const user = getUserByUserName(users, userId);
+      if (!user)
+        fetchProfile(userId);
+      else
+        setProfile(user);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { auth, match, setProfile, fetchProfile } = this.props;
+    const { auth, users, match, setProfile, fetchProfile } = this.props;
     const { userId, type } = match.params;
     const prevUserId = prevProps.match.params.userId;
     const prevType = prevProps.match.params.type;
 
-    if(!userId && type !== prevType) {
-      setProfile({isVisitor: type === "guest"});
+    if (!userId && type !== prevType) {
+      setProfile({ isVisitor: type === "guest" });
     }
     else if (userId !== prevUserId) {
       if (isMe(auth, userId)) {
         setProfile(auth.user);
       } else {
-        fetchProfile(userId);
+        const user = getUserByUserName(users, userId);
+        if (!user)
+          fetchProfile(userId);
+        else
+          setProfile(user);
       }
     }
   }
@@ -130,7 +139,7 @@ class ProfileAction extends React.Component {
               <Loader className="pageLoader" type="rombs" size={40} />
             </NPL.SectionBody>
           </NPL.Section>
-        </> 
+        </>
     );
   }
 }
@@ -146,7 +155,8 @@ ProfileAction.propTypes = {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    users: state.people.users
   };
 }
 

@@ -6,6 +6,12 @@ export function getSelectedUser(selection, userId) {
     });
 };
 
+export function getUserByUserName(users, userName) {
+    return _.find(users, function (obj) {
+        return obj.userName === userName;
+    });
+};
+
 export function isSelected(selection, userId) {
     return getSelectedUser(selection, userId) !== undefined;
 };
