@@ -6,7 +6,6 @@ import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } fr
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
 import { isAdmin, isMe } from '../../../store/auth/selectors';
-import { getUserByUserName } from '../../../store/people/selectors';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -57,35 +56,19 @@ class Profile extends React.Component {
   }
 
   componentDidMount() {
-    const { auth, users, match, setProfile, fetchProfile } = this.props;
+    const { match, fetchProfile } = this.props;
     const { userId } = match.params;
 
-    if (isMe(auth, userId)) {
-      setProfile(auth.user);
-    } else {
-      const user = getUserByUserName(users, userId);
-      if (!user)
-        fetchProfile(userId);
-      else
-        setProfile(user);
-    }
+    fetchProfile(userId);
   }
 
   componentDidUpdate(prevProps) {
-    const { auth, users, match, setProfile, fetchProfile } = this.props;
+    const { match, fetchProfile } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== prevUserId) {
-      if (isMe(auth, userId)) {
-        setProfile(auth.user);
-      } else {
-        const user = getUserByUserName(users, userId);
-        if (!user)
-          fetchProfile(userId);
-        else
-          setProfile(user);
-      }
+      fetchProfile(userId);
     }
   }
 
@@ -147,9 +130,8 @@ Profile.propTypes = {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    isAdmin: isAdmin(state.auth), // state.auth.user.isAdmin || state.auth.user.isOwner,
-    profile: state.profile.targetUser,
-    users: state.people.users
+    isAdmin: isAdmin(state.auth),
+    profile: state.profile.targetUser
   };
 }
 

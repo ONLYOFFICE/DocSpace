@@ -5,8 +5,6 @@ import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
-import { isMe } from '../../../store/auth/selectors';
-import { getUserByUserName } from '../../../store/people/selectors';
 
 class ProfileAction extends React.Component {
   constructor(props) {
@@ -57,25 +55,19 @@ class ProfileAction extends React.Component {
   }
 
   componentDidMount() {
-    const { auth, users, match, setProfile, fetchProfile } = this.props;
+    const { match, setProfile, fetchProfile } = this.props;
     const { userId, type } = match.params;
 
     if (!userId) {
       setProfile({ isVisitor: type === "guest" });
     }
-    else if (isMe(auth, userId)) {
-      setProfile(auth.user);
-    } else {
-      const user = getUserByUserName(users, userId);
-      if (!user)
-        fetchProfile(userId);
-      else
-        setProfile(user);
+    else {
+      fetchProfile(userId);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { auth, users, match, setProfile, fetchProfile } = this.props;
+    const { match, setProfile, fetchProfile } = this.props;
     const { userId, type } = match.params;
     const prevUserId = prevProps.match.params.userId;
     const prevType = prevProps.match.params.type;
@@ -84,15 +76,7 @@ class ProfileAction extends React.Component {
       setProfile({ isVisitor: type === "guest" });
     }
     else if (userId !== prevUserId) {
-      if (isMe(auth, userId)) {
-        setProfile(auth.user);
-      } else {
-        const user = getUserByUserName(users, userId);
-        if (!user)
-          fetchProfile(userId);
-        else
-          setProfile(user);
-      }
+      fetchProfile(userId);
     }
   }
 
@@ -145,7 +129,6 @@ class ProfileAction extends React.Component {
 }
 
 ProfileAction.propTypes = {
-  auth: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   fetchProfile: PropTypes.func.isRequired,
@@ -154,9 +137,7 @@ ProfileAction.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
-    profile: state.profile.targetUser,
-    users: state.people.users
+    profile: state.profile.targetUser
   };
 }
 
