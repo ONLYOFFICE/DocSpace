@@ -18,7 +18,8 @@ namespace ASC.Api.Core.Middleware
         {
             if (context.Result is ObjectResult result)
             {
-                result.Value = new SuccessApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, result.Value);
+                context.HttpContext.Items.TryGetValue("TotalCount", out var total);
+                result.Value = new SuccessApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, result.Value, (long?)total);
             }
 
             base.OnResultExecuting(context);
