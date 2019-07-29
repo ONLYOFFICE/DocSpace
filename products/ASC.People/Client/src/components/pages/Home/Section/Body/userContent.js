@@ -19,18 +19,19 @@ const UserContent = ({
           <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
             <Link
               style={
-                status === "pending" || status === "disabled" ? { color: "#A3A9AE" } : { color: "#333333" }
+                status === "pending" ? { color: "#A3A9AE" } : { color: "#333333" }
               }
               type="action"
               title={displayName}
-              text={displayName}
               isBold={true}
               fontSize={15}
               onClick={() => { 
                 console.log("User name action"); 
                 history.push(`${config.homepage}/view/${userName}`);
               }}
-            />
+            >
+              {displayName}
+            </Link>
             {status === "pending" && <Icons.SendClockIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
             {status === "disabled" && <Icons.CatalogSpamIcon style={{marginLeft: "8px", marginTop: "-4px"}} size='small' isfill color='#3B72A7' />}
           </Col>
@@ -41,14 +42,15 @@ const UserContent = ({
           >
             <Link
               style={
-                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered
               title={headDepartment ? "Head of department" : ""}
-              text={headDepartment ? "Head of department" : ""}
               onClick={() => console.log("Head of department action")}
-            />
+            >
+              {headDepartment ? "Head of department" : ""}
+            </Link>
           </Col>
           <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
             {headDepartment && (
@@ -58,14 +60,15 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered
               title={department.title}
-              text={department.title}
               onClick={department.action}
-            />
+            >
+            {department.title}
+            </Link>
           </Col>
           <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
             {department.title && (
@@ -75,13 +78,14 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               title={phone.title}
-              text={phone.title}
               onClick={phone.action}
-            />
+            >
+              {phone.title}
+            </Link>
           </Col>
           <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
             {phone.title && (
@@ -91,14 +95,15 @@ const UserContent = ({
             )}
             <Link
               style={
-                status === "pending" || status === "disabled" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
+                status === "pending" ? { color: "#D0D5DA" } : { color: "#A3A9AE" }
               }
               type="action"
               isHovered
               title={email.title}
-              text={email.title}
               onClick={email.action}
-            />
+            >
+              {email.title}
+            </Link>
           </Col>
         </Row>
       </Container>
