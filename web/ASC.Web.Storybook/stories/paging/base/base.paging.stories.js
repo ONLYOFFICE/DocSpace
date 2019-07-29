@@ -1,11 +1,14 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { Paging } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
+import { isUndefined } from 'util';
 
 storiesOf('Components|Paging', module)
+    .addDecorator(withKnobs)
     .addDecorator(withReadme(Readme))
     .add('base', () => {
 
@@ -54,13 +57,18 @@ storiesOf('Components|Paging', module)
                 onClick: () => console.log('set paging 100 action')
             }
         ];
+
+        const displayItems = boolean('Display pageItems', true);
+        const displayPerPage = boolean('Display perPageItems', true);
       
         return (
             <Section>
-                <Paging previousLabel='Previous' 
-                        nextLabel='Next' 
-                        pageItems={pageItems}
-                        perPageItems={perPageItems}
+                <Paging previousLabel={text('previousLabel', 'Previous')} 
+                        nextLabel={text('nextLabel', 'Next')} 
+                        pageItems={displayItems ? pageItems : undefined}
+                        perPageItems={displayPerPage ? perPageItems : undefined}
+                        disablePrevious={boolean('disablePrevious', false)}
+                        disableNext={boolean('disableNext', false)}
                         previousAction={ () => console.log('Prev')}
                         nextAction={ () => console.log('Next')}
                         openDirection='bottom'
