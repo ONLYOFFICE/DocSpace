@@ -25,17 +25,17 @@ var radiobuttonIcon,
   radiobuttonDisabledCheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonDisabledCheckedIcon />));
 }());
 
-const Label = styled.label`
+const Span = styled.span`
   display: flex;
   align-items: center;
   position: relative;
   margin: 0;
   user-select: none;
-  cursor: pointer;
+  cursor: ${props => !props.isDisabled && 'pointer'};
 
   .radiobutton {
     line-height: 16px;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     display: inline-block;
     vertical-align: middle;
     border: 0 none;
@@ -113,8 +113,8 @@ class RadioButton extends React.Component {
 
     return (
       <StyledSpan spacing={this.props.spacing}>
-        <Label>
-          <span>
+        <label>
+          <Span isDisabled={this.props.isDisabled}>
             <Input type='radio'
               name={this.props.name}
               value={this.props.value}
@@ -127,8 +127,8 @@ class RadioButton extends React.Component {
 
             <span className={rbtnClassName} />
             <StyledText tag='span' isDisabled={this.props.isDisabled}>{this.props.label || this.props.value}</StyledText>
-          </span>
-        </Label>
+          </Span>
+        </label>
       </StyledSpan>
     );
   };
