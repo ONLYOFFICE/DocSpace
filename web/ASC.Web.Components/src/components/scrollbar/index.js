@@ -14,8 +14,12 @@ const Scrollbar = (props) => {
       thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '2px', marginTop: '2px', borderRadius: 'inherit' }
     },
     mediumBlack: {
-      thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '6px', borderRadius: 'inherit' },
-      thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '6px', borderRadius: 'inherit' }
+      thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '8px', borderRadius: 'inherit' },
+      thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '8px', borderRadius: 'inherit' }
+    },
+    preMediumBlack: {
+      thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '5px', borderRadius: 'inherit', cursor: 'default' },
+      thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '5px', borderRadius: 'inherit', cursor: 'default' }
     },
   };
   
