@@ -49,7 +49,7 @@ export function deselectUser(user) {
     };
 };
 
-export function getPeople(filter) {
+export function fetchPeople(filter) {
     return dispatch => {
         return api.getUserList(filter).then(res => {
             console.log("api.getUserList", res);

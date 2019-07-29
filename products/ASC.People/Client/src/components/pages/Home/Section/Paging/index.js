@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { getPeople } from "../../../../../store/people/actions";
+import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
 import Filter from '../../../../../helpers/filter';
 
@@ -50,7 +50,7 @@ const perPageItems = [
   }
 ];
 
-const SectionPagingContent = ({ users, getPeople }) => {
+const SectionPagingContent = ({ users, fetchPeople }) => {
   console.log("SectionPagingContent render", users);
   return (
     <Paging
@@ -60,11 +60,11 @@ const SectionPagingContent = ({ users, getPeople }) => {
       perPageItems={perPageItems}
       previousAction={e => {
         console.log("Prev Clicked", e);
-        getPeople(new Filter(1, 25));
+        fetchPeople(new Filter(1, 25));
       }}
       nextAction={e => {
         console.log("Next Clicked", e);
-        getPeople(new Filter(2, 25));
+        fetchPeople(new Filter(2, 25));
       }}
       openDirection="top"
     />
@@ -80,5 +80,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { getPeople }
+  { fetchPeople: fetchPeople }
 )(SectionPagingContent);

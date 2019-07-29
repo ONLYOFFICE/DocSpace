@@ -1,7 +1,7 @@
 import * as api from '../../utils/api';
 import { setGroups, setUsers } from '../people/actions';
 import setAuthorizationToken from '../../utils/setAuthorizationToken';
-import { getPeople } from '../people/actions';
+import { fetchPeople } from '../people/actions';
 
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -43,7 +43,7 @@ export function getUserInfo(dispatch) {
         .then((res) => dispatch(setModules(res.data.response)))
         .then(() => api.getGroupList())
         .then((res) => dispatch(setGroups(res.data.response)))
-        .then(() => dispatch(getPeople()))
+        .then(() => dispatch(fetchPeople()))
         .then(() => dispatch(setIsLoaded(true)));
 };
 
