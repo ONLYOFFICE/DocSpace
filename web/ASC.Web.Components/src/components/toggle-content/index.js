@@ -29,6 +29,7 @@ const StyledSpan = styled.span`
 const StyledText = styled(Text.Headline)`
     &:hover{
     border-bottom: 1px dotted;
+    margin-bottom: 5.5px;
   }
 `;
 
