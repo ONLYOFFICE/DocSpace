@@ -1,5 +1,5 @@
 using System.Threading;
-
+using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -73,6 +74,7 @@ namespace ASC.People
             services.AddLogManager()
                     .AddStorage()
                     .AddWebItemManager()
+                    .AddScoped(r => new ApiContext(r.GetService<IHttpContextAccessor>().HttpContext))
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
                     .AddScoped<QueueWorkerRemove>();

@@ -213,7 +213,20 @@ namespace ASC.Api.Core
             return this;
         }
 
-        public long? TotalCount { get; set; }
+        public long? TotalCount
+        {
+            set
+            {
+                if (HttpContext.Items.ContainsKey(nameof(TotalCount)))
+                {
+                    HttpContext.Items[nameof(TotalCount)] = value;
+                }
+                else
+                {
+                    HttpContext.Items.Add(nameof(TotalCount), value);
+                }
+            }
+        }
 
 
         public void RegisterType(Type type)

@@ -44,18 +44,18 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
 
-        private ApiContext apiContext;
-        public ApiContext ApiContext { get { return apiContext ?? (apiContext = HttpContext); } }
+        public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
 
-        public PeopleController(Common.Logging.LogManager logManager, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove)
+        public PeopleController(Common.Logging.LogManager logManager, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, ApiContext apiContext)
         {
             LogManager = logManager;
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
+            ApiContext = apiContext;
         }
 
         [Read("info")]
@@ -328,8 +328,8 @@ namespace ASC.Employee.Core.Controllers
 
             users = users.Skip((int)ApiContext.StartIndex).Take((int)ApiContext.Count - 1);
 
-            ApiContext.SetDataSorted();
-            ApiContext.SetDataPaginated();
+            //ApiContext.SetDataSorted();
+            //ApiContext.SetDataPaginated();
 
             return users;
         }

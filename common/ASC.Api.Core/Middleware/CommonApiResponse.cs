@@ -51,13 +51,17 @@ namespace ASC.Api.Core.Middleware
         [DataMember(EmitDefaultValue = false, Order = 0)]
         public int? Count { get; set; }
 
+        [DataMember(EmitDefaultValue = false, Order = 1)]
+        public long? Total { get; set; }
+
         [DataMember(EmitDefaultValue = false, Order = 3)]
         public object Response { get; set; }
 
-        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response) : base(statusCode)
+        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null) : base(statusCode)
         {
             Status = 0;
             Response = response;
+            Total = total;
 
             if (response is IEnumerable<object> collection)
             {
