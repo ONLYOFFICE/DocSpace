@@ -4,7 +4,7 @@ import Scrollbar from '../../scrollbar'
 
 const StyledSectionBody = styled.div`
   margin: 16px 0;
-  outline: 1px dotted;
+  ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
 `;
 
