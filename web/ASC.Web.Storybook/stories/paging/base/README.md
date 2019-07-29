@@ -16,10 +16,12 @@ import { Paging } from 'asc-web-components';
 
 | Props                  | Type              | Required | Values                       | Default | Description                                  |
 | ---------------------- | ----------------- | :------: | ---------------------------- | ------- | -------------------------------------------- |
-| `pageItems`            | `object`          |     -    | -                            | -       | Paging combo box items                       |
-| `perPageItems`         | `object`          |    ✅    | -                            | -       | Items per page combo box items               |
-| `previousLabel`        | `string`          |    -     | -                            | `Previous`| Label for previous button                    |
+| `pageItems`            | `array`           |    -     | -                            | -       | Paging combo box items                       |
+| `perPageItems`         | `array`           |    -     | -                            | -       | Items per page combo box items               |
+| `previousLabel`        | `string`          |    -     | -                            | `Previous`| Label for previous button                  |
 | `nextLabel`            | `string`          |    -     | -                            | `Next`  | Label for next button                        |
 | `previousAction`       | `function`        |    -     | -                            | -       | Action for previous button                   |
 | `nextAction`           | `function`        |    -     | -                            | -       | Action for next button                       |
 | `openDirection`        | `string`          |    -     | `top`, `bottom`              | `bottom`| Indicates opening direction of combo box     |
+| `disablePrevious`      | `bool`            |    -     | -                            | `false` | Set previous button disabled                 |
+| `disableNext`          | `bool`            |    -     | -                            | `false` | Set next button disabled                     |

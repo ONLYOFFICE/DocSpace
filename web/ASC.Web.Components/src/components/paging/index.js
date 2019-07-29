@@ -31,37 +31,41 @@ const StyledPage = styled.div`
 `;
 
 const Paging = props => {
-    //console.log("Paging render");
-    const {previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection} = props;
-    
-    return (
-        <StyledPaging>
-            {pageItems && 
-            <>
-                <Button size='medium' label={previousLabel} onClick={previousAction}/>
-                <StyledPage>
-                    <ComboBox directionY={openDirection} options={pageItems} />
-                </StyledPage>
-                <Button size='medium' label={nextLabel} onClick={nextAction}/>
-            </>
-            }
-            <StyledOnPage>
-                <ComboBox directionY={openDirection} options={perPageItems} />
-            </StyledOnPage>
-        </StyledPaging>
-    );
+  //console.log("Paging render");
+  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection, disablePrevious, disableNext } = props;
+
+  return (
+    <StyledPaging>
+      <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
+      {pageItems &&
+        <StyledPage>
+          <ComboBox directionY={openDirection} options={pageItems} />
+        </StyledPage>
+      }
+      <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
+      {perPageItems && 
+      <StyledOnPage>
+        <ComboBox directionY={openDirection} options={perPageItems} />
+      </StyledOnPage>
+      }
+    </StyledPaging>
+  );
 };
 
 Paging.propTypes = {
-    previousAction: PropTypes.func,
-    nextAction: PropTypes.func,
-    previousLabel: PropTypes.string,
-    nextLabel: PropTypes.string
+  previousAction: PropTypes.func,
+  nextAction: PropTypes.func,
+  previousLabel: PropTypes.string,
+  nextLabel: PropTypes.string,
+  disablePrevious: PropTypes.bool,
+  disableNext: PropTypes.bool,
 }
 
 Paging.defaultProps = {
-    previousAction: () => console.log('Prev action'),
-    nextAction: () => console.log('Next action')
+  previousAction: () => console.log('Prev action'),
+  nextAction: () => console.log('Next action'),
+  disablePrevious: false,
+  disableNext: false
 }
 
 export default Paging;
