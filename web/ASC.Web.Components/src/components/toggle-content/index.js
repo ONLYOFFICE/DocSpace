@@ -69,6 +69,7 @@ class ToggleContent extends React.Component {
 }
 
 ToggleContent.propTypes = {
+  label: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
   onChange: PropTypes.func
 }
