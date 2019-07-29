@@ -8,8 +8,8 @@ const StyledArticleBody = styled.div`
   flex-grow: 1;
 `;
 
-const ArticleBody = (props) => { 
-  //console.log("ArticleBody render");
+const ArticleBody = React.memo(props => { 
+  console.log("PageLayout ArticleBody render");
   const { children } = props;
 
   return (
@@ -19,6 +19,6 @@ const ArticleBody = (props) => {
       </Scrollbar>
     </StyledArticleBody>
   );
-}
+});
 
 export default ArticleBody;

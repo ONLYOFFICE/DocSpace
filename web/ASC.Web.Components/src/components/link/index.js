@@ -3,10 +3,11 @@ import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Icons } from '../icons'
 import DropDown from '../drop-down'
+import DropDownItem from '../drop-down-item'
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow,
-    isHovered, isSemitransparent, type, color, text, target,
-    dropdownType, ...props }) => <a {...props}>{text}</a>;
+    isHovered, isSemitransparent, type, color, target,
+    dropdownType, data, ...props }) => <a {...props}></a>;
 
 const getDropdownColor = color => {
     switch (color) {
@@ -41,7 +42,7 @@ const visitedCss = css`
 const dottedCss = css`
     border-bottom: 1px dotted;
 `;
-const ExpanderDownIcon= ({ isSemitransparent, ...props }) => <Icons.ExpanderDownIcon {...props} />;
+const ExpanderDownIcon = ({ isSemitransparent, ...props }) => <Icons.ExpanderDownIcon {...props} />;
 
 const Caret = styled(ExpanderDownIcon)`
     width: 10px;
@@ -59,7 +60,6 @@ const StyledLink = styled(SimpleLink).attrs((props) => ({
     ${colorCss};
     ${opacityCss};
     font-size: ${props => props.fontSize}px;
-    cursor: pointer;
     position: relative;
     text-decoration: none;
     font-weight: ${props => (props.isBold && 'bold')};
@@ -103,6 +103,12 @@ ${props => (props.isTextOverflow && css`
 
 `;
 
+const StyledSpan = styled.span`
+    cursor: pointer;
+`;
+
+const DataDropDown = ({ data, ...props }) => <DropDown {...props}></DropDown>;
+
 class Link extends React.PureComponent {
 
     constructor(props) {
@@ -113,7 +119,8 @@ class Link extends React.PureComponent {
         this.state = {
             isOpen: false,
             isHovered: props.isHovered,
-            isDropdown: props.dropdownType != 'none'
+            isDropdown: props.dropdownType != 'none',
+            data: props.data
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -142,12 +149,15 @@ class Link extends React.PureComponent {
         // Store prevId in state so we can compare when props change.
         // Clear out previously-loaded data (so we don't render stale stuff).
         if (this.props.dropdownType !== prevProps.dropdownType) {
-            this.setState({isDropdown: this.props.dropdownType != 'none'});
+            this.setState({ isDropdown: this.props.dropdownType != 'none' });
+        }
+        if (this.props.isOpen !== prevProps.isOpen) {
+            this.toggleDropdown(this.props.isOpen);
         }
     }
 
     render() {
-        console.log("Link render");
+        //console.log("Link render");
         return (
             <span ref={this.ref}
                 onMouseEnter={() => {
@@ -158,28 +168,42 @@ class Link extends React.PureComponent {
                     this.props.dropdownType === 'appearDottedAfterHover' &&
                         this.toggleHovered(!this.state.isHovered)
                 }}>
-
-                <StyledLink {...this.props} onClick={
+                <StyledSpan onClick={
                     this.state.isDropdown ?
-                        () => { this.toggleDropdown(!this.state.isOpen) }
+                        () => {
+                            this.setState({ data: this.props.data });
+                            this.toggleDropdown(!this.state.isOpen);
+                        }
                         : (e) => {
                             this.stopAction(e);
                             this.props.hasOwnProperty("onClick") && this.props.onClick(e);
-                        } 
+                        }
+                }>
+                    <StyledLink {...this.props}
+                    >{this.props.children}</StyledLink>
+                    {this.state.isDropdown &&
+                        (this.state.isHovered || this.props.dropdownType === 'alwaysDotted') &&
+                        <Caret
+                            isSemitransparent={this.props.isSemitransparent}
+                            size='small'
+                            isfill={true}
+                            color={getDropdownColor(this.props.color)} />
                     }
-                />
+                </StyledSpan>
                 {this.state.isDropdown &&
-                    (this.state.isHovered || this.props.dropdownType === 'alwaysDotted') &&
-                    <Caret
-                        isSemitransparent={this.props.isSemitransparent}
-                        size='small'
-                        isfill={true}
-                        color={getDropdownColor(this.props.color)} />
-                }
-                {this.state.isDropdown &&
-                    <DropDown isOpen={this.state.isOpen} {...this.props}>
-                        {this.props.children}
-                    </DropDown>}
+                    <DataDropDown isOpen={this.state.isOpen} {...this.props}>
+                        {
+                            this.state.data.map(item =>
+                                <DropDownItem
+                                    {...item}
+                                    onClick={() => {
+                                        item.onClick && item.onClick();
+                                        this.toggleDropdown(!this.state.isOpen);
+                                    }}
+                                />
+                            )
+                        }
+                    </DataDropDown>}
             </span>
 
         );
@@ -188,6 +212,7 @@ class Link extends React.PureComponent {
 
 Link.propTypes = {
     color: PropTypes.oneOf(['gray', 'black', 'blue']),
+    data: PropTypes.array,
     dropdownType: PropTypes.oneOf(['alwaysDotted', 'appearDottedAfterHover', 'none']),
     fontSize: PropTypes.number,
     href: PropTypes.string,
@@ -204,6 +229,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
     color: 'black',
+    data: [],
     dropdownType: 'none',
     fontSize: 12,
     href: undefined,

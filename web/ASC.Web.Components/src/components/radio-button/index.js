@@ -31,6 +31,7 @@ const Label = styled.label`
   position: relative;
   margin: 0;
   user-select: none;
+  cursor: pointer;
 
   .radiobutton {
     line-height: 16px;
@@ -38,7 +39,6 @@ const Label = styled.label`
     display: inline-block;
     vertical-align: middle;
     border: 0 none;
-    cursor: pointer;
     outline: none;
     width: 16px;
     height: 16px;
@@ -75,11 +75,11 @@ const Input = styled.input`
   opacity: 0.0001;
 `;
 
-const TextBody = ({disabled, ...props}) => <Text.Body {...props} />;
+const TextBody = ({ isDisabled, ...props }) => <Text.Body {...props} />;
 
 const StyledText = styled(TextBody)`
   margin-left: 4px;
-  color: ${props => props.disabled ? disableColor : activeColor};
+  color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
 
 const StyledSpan = styled.span`
@@ -90,10 +90,26 @@ const StyledSpan = styled.span`
 
 class RadioButton extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isChecked: this.props.isChecked
+
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isChecked !== prevProps.isChecked) {
+      this.setState({ isChecked: this.props.isChecked });
+    }
+  };
+
+
   render() {
     const rbtnClassName = 'radiobutton' +
-      (this.props.checked ? ' checked' : '') +
-      (this.props.disabled ? ' disabled' : '');
+      (this.state.isChecked ? ' checked' : '') +
+      (this.props.isDisabled ? ' disabled' : '');
 
     return (
       <StyledSpan spacing={this.props.spacing}>
@@ -102,12 +118,15 @@ class RadioButton extends React.Component {
             <Input type='radio'
               name={this.props.name}
               value={this.props.value}
-              checked={this.props.checked}
-              onChange={this.props.onChange}
-              disabled={this.props.disabled} />
+              checked={this.props.isChecked}
+              onChange={this.props.onChange ? this.props.onChange : (e) => {
+                this.setState({ isChecked: true })
+                this.props.onClick && this.props.onClick(e);
+              }}
+              disabled={this.props.isDisabled} />
 
             <span className={rbtnClassName} />
-            <StyledText tag='span' disabled={this.props.disabled}>{this.props.label || this.props.value}</StyledText>
+            <StyledText tag='span' isDisabled={this.props.isDisabled}>{this.props.label || this.props.value}</StyledText>
           </span>
         </Label>
       </StyledSpan>
@@ -116,16 +135,18 @@ class RadioButton extends React.Component {
 };
 
 RadioButton.propTypes = {
-  name: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  disabled: PropTypes.bool,
-  checked: PropTypes.bool,
-  onChange: PropTypes.func,
+  isChecked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
   label: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  onClick: PropTypes.func,
+  value: PropTypes.string.isRequired,
 }
 
 RadioButton.defaultProps = {
-  disabled: false
+  isChecked: false,
+  isDisabled: false,
 }
 
 export default RadioButton;

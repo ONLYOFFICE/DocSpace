@@ -8,8 +8,8 @@ const StyledSectionBody = styled.div`
   flex-grow: 1;
 `;
 
-const SectionBody = (props) => { 
-  //console.log("SectionBody render");
+const SectionBody = React.memo(props => { 
+  console.log("PageLayout SectionBody render");
   const { children } = props;
 
   return (
@@ -19,6 +19,6 @@ const SectionBody = (props) => {
       </Scrollbar>
     </StyledSectionBody>
   );
-}
+});
 
 export default SectionBody;

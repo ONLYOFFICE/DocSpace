@@ -1,167 +1,21 @@
 import React from "react";
-import { withRouter } from 'react-router';
+import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
-import config from '../../../../../../package.json';
-import _ from "lodash";
+//import config from "../../../../../../package.json";
+import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
+import { isSelected, getPeople } from '../../../../../store/people/selectors';
+import { isAdmin } from '../../../../../store/auth/selectors';
 
-const getUserDepartment = user => {
-  return {
-    title: user.department,
-    action: () => console.log("Department action")
-  };
-};
-
-const getUserPhone = user => {
-  return {
-    title: user.mobilePhone,
-    action: () => console.log("Phone action")
-  };
-};
-
-const getUserEmail = user => {
-  return {
-    title: user.email,
-    action: () => console.log("Email action")
-  };
-};
-
-const getUserRole = user => {
-  if (user.isOwner) 
-    return "owner";
-  else if (user.isAdmin) 
-    return "admin";
-  else if (user.isVisitor) 
-    return "guest";
-  else 
-    return "user";
-};
-
-const getUserStatus = user => {
-  if (user.status === 1 && user.activationStatus === 1) 
-    return "normal";
-  else if (user.status === 1 && user.activationStatus === 2) 
-    return "pending";
-  else if (user.status === 2) 
-    return "disabled";
-  else 
-    return "normal";
-};
-
-const getUserContextOptions = (user, isAdmin, history) => {
-  return [
-    {
-      key: "key1",
-      label: "Send e-mail",
-      onClick: () => console.log("Context action: Send e-mail")
-    },
-    {
-      key: "key2",
-      label: "Send message",
-      onClick: () => console.log("Context action: Send message")
-    },
-    { key: "key3", isSeparator: true },
-    {
-      key: "key4",
-      label: "Edit",
-      onClick: () => history.push(`${config.homepage}/edit/${user.userName}`)
-    },
-    {
-      key: "key5",
-      label: "Change password",
-      onClick: () => console.log("Context action: Change password")
-    },
-    {
-      key: "key6",
-      label: "Change e-mail",
-      onClick: () => console.log("Context action: Change e-mail")
-    },
-    {
-      key: "key7",
-      label: "Disable",
-      onClick: () => console.log("Context action: Disable")
-    }
-  ];
-};
-
-const getIsHead = user => {
-  return false;
-};
-
-class SectionBodyContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      people: this.getPeople(),
-      checkedItems: new Map()
-    };
-  }
-
-  getChecked = (item, selected) => {
-    const { status } = item;
-    let checked;
-    switch (selected) {
-      case "all":
-          checked = true;
-          break;
-      case "active":
-          checked = status === "normal";
-          break;
-      case "disabled":
-          checked = status === "disabled";
-          break;
-      case "invited":
-          checked = status === "pending";
-          break;
-      default:
-        checked = false;
-    }
-
-    return checked;
-  };
-
-  getPeople() {
-    return this.props.users.map(user => {
-      const status = getUserStatus(user);
-      return {
-        user: user,
-        status: status,
-        role: getUserRole(user),
-        contextOptions: getUserContextOptions(user, this.props.isAdmin, this.props.history),
-        department: getUserDepartment(user),
-        phone: getUserPhone(user),
-        email: getUserEmail(user),
-        isHead: getIsHead(user)
-      };
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    /*console.log(`SectionBodyContent componentDidUpdate
-    this.props.selected=${this.props.selected}
-    prevProps.selected=${prevProps.selected}`);*/
-
-    if (this.props.selected !== prevProps.selected) {
-      this.state.people.forEach(item => {
-        const checked = this.getChecked(item, this.props.selected);
-        //if(this.state.checkedItems.get(item.user.id) !== checked) {
-          this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(item.user.id, checked) }));
-          this.props.onChange && this.props.onChange(checked, item.user);
-        //}
-      });
-    }
-  }
-
+class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
-    const { isAdmin, onChange } = this.props;
-    // console.log("SectionBodyContent props ", this.props);
+    const { users, isAdmin, selection, selectUser, deselectUser, history} = this.props;
 
     return (
       <>
-        {this.state.people.map(item => {
+        {getPeople(users, isAdmin, history).map(item => {
           const user = item.user;
           return isAdmin ? (
             <ContentRow
@@ -172,11 +26,15 @@ class SectionBodyContent extends React.Component {
               avatarSource={user.avatar}
               avatarName={user.userName}
               contextOptions={item.contextOptions}
-              checked={this.state.checkedItems.get(user.id)}
+              checked={isSelected(selection, user.id)}
               onSelect={(checked, data) => {
                 console.log("ContentRow onSelect", checked, data);
-                //this.setState(prevState => ({ checkedItems: prevState.checkedItems.set(data.id, checked) }));
-                onChange && onChange(checked, data);
+                if (checked) {
+                  selectUser(user);
+                }
+                else {
+                  deselectUser(user);
+                }
               }}
             >
               <UserContent
@@ -211,12 +69,18 @@ class SectionBodyContent extends React.Component {
       </>
     );
   }
-}
+};
 
 const mapStateToProps = state => {
   return {
-    isAdmin: state.auth.user.isAdmin || state.auth.user.isOwner
+    selection: state.people.selection,
+    selected: state.people.selected,
+    users: state.people.users,
+    isAdmin: isAdmin(state.auth)
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(
+  mapStateToProps,
+  { selectUser, deselectUser, setSelection }
+)(withRouter(SectionBodyContent));

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RadioButton from './radio-button';
+import RadioButton from '../radio-button';
 import styled from 'styled-components';
 
 const StyledDiv = styled.div`
@@ -41,13 +41,13 @@ class RadioButtonGroup extends React.Component {
               key={option.value}
               name={this.props.name}
               value={option.value}
-              checked={this.state.selectedOption === option.value}
+              isChecked={this.state.selectedOption === option.value}
               onChange={(e) => {
                 this.handleOptionChange(e);
                 this.props.onClick && this.props.onClick(e);
               }}
 
-              disabled={this.props.isDisabled || option.disabled}
+              isDisabled={this.props.isDisabled || option.disabled}
               label={option.label}
               spacing={this.props.spacing}
             />

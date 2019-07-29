@@ -57,12 +57,15 @@ storiesOf('Components| DropDown', module)
                     <GroupButton label='Dropdown demo' isDropdown={true}>
                         <DropDownItem
                             label='Button 1'
+                            onClick={() => console.log('Button 1 clicked')}
                         />
                         <DropDownItem
                             label='Button 2'
+                            onClick={() => console.log('Button 2 clicked')}
                         />
                         <DropDownItem
                             label='Button 3'
+                            onClick={() => console.log('Button 3 clicked')}
                         />
                     </GroupButton>
                 </Col>

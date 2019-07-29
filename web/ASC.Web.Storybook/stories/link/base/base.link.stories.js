@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Link, DropDownItem } from 'asc-web-components';
+import { Link } from 'asc-web-components';
 import Readme from './README.md';
 import {text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
@@ -35,7 +35,7 @@ const dropdownItems = [
   {
     key: 'key4',
     label: 'Button 3',
-    onClick: () => console.log('Button2 action'),
+    onClick: () => console.log('Button3 action'),
   },
 ];
 
@@ -62,19 +62,10 @@ return (
       isTextOverflow={boolean('isTextOverflow', false)}
       isHovered={boolean('isHovered', false)}
       isSemitransparent={boolean('isSemitransparent', false)}
-      text={text('text', 'Simple link')}
+      data={dropdownItems}
       {...userProps}
       >
-      {dropdownItems.map(dropdownItem =>{
-        return (
-          <DropDownItem
-          key={dropdownItem.key}
-          isSeparator={dropdownItem.isSeparator}
-          onClick={dropdownItem.onClick}
-          label={dropdownItem.label}
-          />
-        );
-      })}
+      {text('text', 'Simple link')}
       </Link>
     </Col>
   </Section>

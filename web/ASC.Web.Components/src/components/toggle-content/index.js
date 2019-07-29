@@ -26,6 +26,12 @@ const StyledSpan = styled.span`
   user-select: none;
 `;
 
+const StyledText = styled(Text.Headline)`
+    &:hover{
+    border-bottom: 1px dotted;
+  }
+`;
+
 class ToggleContent extends React.Component {
 
   constructor(props) {
@@ -53,7 +59,7 @@ class ToggleContent extends React.Component {
           this.props.onChange && this.props.onChange(!this.state.isOpen);
         }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
-          <Text.Headline tag='h2' isInline={true}>{this.props.label}</Text.Headline>
+          <StyledText tag='h2' isInline={true}>{this.props.label}</StyledText>
         </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
       </div>

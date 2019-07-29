@@ -21,7 +21,7 @@ storiesOf('Components|Input', module)
       radio3: 'radio3'
     };
 
-    const optionsMultiSelect = options('options', valuesMultiSelect, ['radio1'], {
+    const optionsMultiSelect = options('options', valuesMultiSelect, ['radio1','radio2'], {
       display: 'multi-select',
     });
 

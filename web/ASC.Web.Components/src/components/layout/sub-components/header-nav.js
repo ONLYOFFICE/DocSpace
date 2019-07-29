@@ -19,8 +19,8 @@ const StyledNav = styled.nav`
   }
 `;
 
-const HeaderNav = props => {
-  //console.log("HeaderNav render");
+const HeaderNav = React.memo(props => {
+  console.log("HeaderNav render");
   return (
   <StyledNav>
     {
@@ -39,6 +39,6 @@ const HeaderNav = props => {
     }
   </StyledNav>
   );
-};
+});
 
 export default HeaderNav;

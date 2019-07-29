@@ -9,9 +9,14 @@ const StyledSection = styled.section`
   overflow: hidden auto;
 `;
 
-const Section = (props) => {
-  //console.log("Section render");
-  return  (<StyledSection {...props} />);
+class Section extends React.Component {
+  /*shouldComponentUpdate() {
+    return false;
+  }*/
+  render() {
+    console.log("PageLayout Section render");
+    return (<StyledSection {...this.props} />);
+  };
 };
 
 export default Section;

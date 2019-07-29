@@ -6,9 +6,9 @@ const StyledSectionHeader = styled.div`
   height: 56px;
 `;
 
-const SectionHeader = (props) => {
-  //console.log("SectionHeader render");
+const SectionHeader = React.memo(props => {
+  console.log("PageLayout SectionHeader render");
   return (<StyledSectionHeader {...props} />);
-}
+});
 
 export default SectionHeader;

@@ -1,102 +1,122 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import _ from "lodash";
 import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { getUser } from '../../../utils/api';
+import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
+import { isAdmin, isMe } from '../../../store/auth/selectors';
 
-const Profile = (props) => {
-  console.log("Profile render");
-  
-  const { auth, match } = props;
-  const { userId } = match.params;
+class Profile extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const [profile, setProfile] = useState(props.profile);
-  const [isLoaded, setLoaded] = useState(props.isLoaded);
-
-  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
-  const [isArticleVisible, setIsArticleVisible] = useState(false);
-  const [isArticlePinned, setIsArticlePinned] = useState(false);
-
-  useEffect(() => {
-    if (userId === "@self" || userId === auth.user.userName) {
-      setProfile(auth.user);
-      setLoaded(true);
-    } else {
-      getUser(userId)
-        .then((res) => {
-          if (res.data.error)
-            throw (res.data.error);
-
-          setProfile(res.data.response);
-          setLoaded(true);
-        })
-        .catch(error => {
-          console.error(error);
-        });
+    this.state = {
+      isBackdropVisible: false,
+      isArticleVisible: false,
+      isArticlePinned: false
     }
-  }, [auth.user, userId]);
 
-  const onBackdropClick = () => {
-    setIsBackdropVisible(false);
-    setIsArticleVisible(false);
-    setIsArticlePinned(false);
+    this.onBackdropClick = this.onBackdropClick.bind(this);
+    this.onPinArticle = this.onPinArticle.bind(this);
+    this.onUnpinArticle = this.onUnpinArticle.bind(this);
+    this.onShowArticle = this.onShowArticle.bind(this);
+  }
+
+  onBackdropClick() {
+    this.setState({
+      isBackdropVisible: false,
+      isArticleVisible: false,
+      isArticlePinned: false
+    });
+  }
+
+  onPinArticle() {
+    this.setState({
+      isBackdropVisible: false,
+      isArticleVisible: true,
+      isArticlePinned: true
+    });
+  }
+
+  onUnpinArticle() {
+    this.setState({
+      isBackdropVisible: true,
+      isArticleVisible: true,
+      isArticlePinned: false
+    });
+  }
+
+  onShowArticle() {
+    this.setState({
+      isBackdropVisible: true,
+      isArticleVisible: true,
+      isArticlePinned: false
+    });
+  }
+
+  componentDidMount() {
+    const { match, fetchProfile } = this.props;
+    const { userId } = match.params;
+
+    fetchProfile(userId);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { match, fetchProfile } = this.props;
+    const { userId } = match.params;
+    const prevUserId = prevProps.match.params.userId;
+
+    if (userId !== prevUserId) {
+      fetchProfile(userId);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.resetProfile();
+  }
+
+  render() {
+    console.log("Profile render")
+
+    const { isBackdropVisible, isArticleVisible, isArticlePinned } = this.state;
+    const { profile, auth, isAdmin, match } = this.props;
+    const { userId } = match.params;
+    return (
+      profile
+        ? <>
+          <Backdrop visible={isBackdropVisible} onClick={this.onBackdropClick} />
+          <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
+            <NPL.ArticleHeader visible={isArticlePinned}>
+              <ArticleHeaderContent />
+            </NPL.ArticleHeader>
+            <NPL.ArticleMainButton>
+              <ArticleMainButtonContent />
+            </NPL.ArticleMainButton>
+            <NPL.ArticleBody>
+              <ArticleBodyContent />
+            </NPL.ArticleBody>
+            <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={this.onPinArticle} unpinText="Unpin this panel" onUnpin={this.onUnpinArticle} />
+          </NPL.Article>
+          <NPL.Section>
+            <NPL.SectionHeader>
+              <SectionHeaderContent profile={profile} />
+            </NPL.SectionHeader>
+            <NPL.SectionBody>
+              <SectionBodyContent profile={profile} isAdmin={isAdmin} isSelf={isMe(auth, userId)} />
+            </NPL.SectionBody>
+            <NPL.SectionToggler visible={!isArticlePinned} onClick={this.onShowArticle} />
+          </NPL.Section>
+        </>
+        : <>
+          <NPL.Section>
+            <NPL.SectionBody>
+              <Loader className="pageLoader" type="rombs" size={40} />
+            </NPL.SectionBody>
+          </NPL.Section>
+        </>
+    );
   };
-
-  const onPinArticle = () => {
-    setIsBackdropVisible(false);
-    setIsArticleVisible(true);
-    setIsArticlePinned(true);
-  };
-
-  const onUnpinArticle = () => {
-    setIsBackdropVisible(true);
-    setIsArticleVisible(true);
-    setIsArticlePinned(false);
-  };
-
-  const onShowArticle = () => {
-    setIsBackdropVisible(true);
-    setIsArticleVisible(true);
-    setIsArticlePinned(false);
-  };
-
-  return (
-    isLoaded
-      ? <>
-        <Backdrop visible={isBackdropVisible} onClick={onBackdropClick} />
-        <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
-          <NPL.ArticleHeader visible={isArticlePinned}>
-            <ArticleHeaderContent />
-          </NPL.ArticleHeader>
-          <NPL.ArticleMainButton>
-            <ArticleMainButtonContent />
-          </NPL.ArticleMainButton>
-          <NPL.ArticleBody>
-            <ArticleBodyContent />
-          </NPL.ArticleBody>
-          <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={onPinArticle} unpinText="Unpin this panel" onUnpin={onUnpinArticle} />
-        </NPL.Article>
-        <NPL.Section>
-          <NPL.SectionHeader>
-            <SectionHeaderContent profile={profile} />
-          </NPL.SectionHeader>
-          <NPL.SectionBody>
-            <SectionBodyContent profile={profile} isAdmin={auth.user.isAdmin || auth.user.isOwner} isSelf={userId === "@self" || userId === auth.user.userName} />
-          </NPL.SectionBody>
-          <NPL.SectionToggler visible={!isArticlePinned} onClick={onShowArticle} />
-        </NPL.Section>
-      </>
-      : <>
-        <NPL.Section>
-          <NPL.SectionBody>
-            <Loader className="pageLoader" type="rombs" size={40} />
-          </NPL.SectionBody>
-        </NPL.Section>
-      </>
-  );
 };
 
 Profile.propTypes = {
@@ -109,8 +129,14 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    isAdmin: isAdmin(state.auth),
+    profile: state.profile.targetUser
   };
 }
 
-export default connect(mapStateToProps)(Profile);
+export default connect(mapStateToProps, {
+  setProfile,
+  fetchProfile,
+  resetProfile
+})(Profile);

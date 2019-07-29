@@ -50,7 +50,7 @@ class ContextMenuButton extends React.PureComponent {
   }
 
   render() {
-    console.log("ContextMenuButton render");
+    //console.log("ContextMenuButton render");
     return (
       <StyledOuther ref={this.ref}>
         <IconButton

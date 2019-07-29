@@ -5,9 +5,9 @@ const StyledArticleMainButton = styled.div`
   margin: 16px 0 0;
 `;
 
-const ArticleMainButton = (props) => {
-  //console.log("ArticleMainButton render");
+const ArticleMainButton = React.memo(props => {
+  console.log("PageLayout ArticleMainButton render");
   return (<StyledArticleMainButton {...props} />);
-};
+});
 
 export default ArticleMainButton;
