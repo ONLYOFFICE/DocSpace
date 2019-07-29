@@ -43,15 +43,24 @@ const getUserContextOptions = user => {
 };
 
 const SectionHeaderContent = (props) => {
-    const {profile, history} = props;
+  const { profile, history } = props;
 
-    return(
-        <div style={wrapperStyle}>
-            <IconButton iconName={'ArrowPathIcon'} color="#A3A9AE" size="16" onClick={history.goBack}/>
-            <Text.ContentHeader style={textStyle}>{profile.displayName}</Text.ContentHeader>
-            <ContextMenuButton title="Actions" iconName="VerticalDotsIcon" size={16} color="#A3A9AE" getData={getUserContextOptions} isDisabled={false}/>
-        </div>
-    );
+  return (
+    <div style={wrapperStyle}>
+      <div style={{ width: '16px' }}>
+        <IconButton iconName={'ArrowPathIcon'} color='#A3A9AE' size='16' onClick={history.goBack} />
+      </div>
+      <Text.ContentHeader truncate={true} style={textStyle}>{profile.displayName}{profile.isLDAP && ' (LDAP)'}</Text.ContentHeader>
+      <ContextMenuButton 
+        directionX='right' 
+        title='Actions' 
+        iconName='VerticalDotsIcon' 
+        size={16} 
+        color='#A3A9AE' 
+        getData={getUserContextOptions} 
+        isDisabled={false}/>
+    </div>
+  );
 };
 
 export default withRouter(SectionHeaderContent);

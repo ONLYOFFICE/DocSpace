@@ -48,6 +48,7 @@ const StyledInputGroup = styled(CustomInputGroup)`
 `;
 
 const InputBlock = React.forwardRef((props, ref) => {
+  //console.log("InputBlock render");
   const {onChange, value, children, size } = props;
   let iconButtonSize = 0;
   if(typeof props.iconSize == "number" && props.iconSize > 0){

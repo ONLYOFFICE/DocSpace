@@ -11,7 +11,7 @@ const StyledOuther = styled.div`
   cursor: pointer;
 `;
 
-class ContextMenuButton extends React.Component {
+class ContextMenuButton extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -21,6 +21,10 @@ class ContextMenuButton extends React.Component {
       isOpen: props.opened,
       data: props.data
     };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.stopAction = this.stopAction.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
@@ -46,6 +50,7 @@ class ContextMenuButton extends React.Component {
   }
 
   render() {
+    //console.log("ContextMenuButton render");
     return (
       <StyledOuther ref={this.ref}>
         <IconButton

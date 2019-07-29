@@ -71,12 +71,14 @@ const StyledOptionButton = styled.div`
     margin-right: 16px;
 `;
 
-class ContentRow extends React.Component {
-    constructor(props){
+class ContentRow extends React.PureComponent {
+    constructor(props) {
         super(props);
         this.state = {
             checked: this.props.checked
         }
+
+        this.handleContextMenu = this.handleContextMenu.bind(this);
     }
 
     componentDidMount() {
@@ -84,7 +86,7 @@ class ContentRow extends React.Component {
     };
 
     componentWillUnmount() {
-      document.removeEventListener('contextmenu', this.handleContextMenu);
+        document.removeEventListener('contextmenu', this.handleContextMenu);
     }
 
     handleContextMenu = (event) => {
@@ -92,43 +94,37 @@ class ContentRow extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.checked !== prevProps.checked) {
+        if (this.props.checked !== prevProps.checked) {
             /*console.log(`ContentRow componentDidUpdate 
             this.props.checked=${this.props.checked}
             prevProps.checked=${prevProps.checked}
             this.state.checked=${this.state.checked}
             prevState.checked=${prevState.checked}`);*/
 
-            this.setState({checked: this.props.checked});
+            this.setState({ checked: this.props.checked });
         }
     };
 
-    render () {
+    render() {
+        //console.log("ContentRow render");
+
         const { onSelect, avatarRole, avatarSource, avatarName, contextOptions, data, children } = this.props;
-        
 
         return (
             <StyledContentRow {...this.props}>
-                {this.props.hasOwnProperty("checked") && 
-                    <StyledCheckbox>
-                        <Checkbox isChecked={this.state.checked} onChange={(e) => { 
-                            let checked = e.target.checked;
-                            // console.log("ContentRow Checkbox onChange checked=", checked);
-                            this.setState({checked: checked});
-                            
-                            if(onSelect) { 
-                                onSelect(checked, data); 
-                            }
-                        }} />
-                    </StyledCheckbox>
-                }
-                {(avatarRole !== '' || avatarSource !== '' || avatarName !== '')  && 
+                <StyledCheckbox>
+                    <Checkbox isChecked={this.props.checked} onChange={(e) => {
+                        const checked = e.target.checked;
+                        onSelect && onSelect(checked, data);
+                    }} />
+                </StyledCheckbox>
+                {(avatarRole !== '' || avatarSource !== '' || avatarName !== '') &&
                     <StyledAvatar>
                         <Avatar size='small' role={avatarRole || ''} source={avatarSource || ''} userName={avatarName || ''} />
                     </StyledAvatar>
                 }
                 <StyledContent>{children}</StyledContent>
-                {this.props.hasOwnProperty("contextOptions") && 
+                {this.props.hasOwnProperty("contextOptions") &&
                     <StyledOptionButton>
                         <ContextMenuButton directionX='right' getData={() => contextOptions} />
                     </StyledOptionButton>
@@ -139,9 +135,19 @@ class ContentRow extends React.Component {
 }
 
 ContentRow.propTypes = {
+    onSelect: PropTypes.func,
+    avatarRole: PropTypes.string,
+    avatarSource: PropTypes.string,
+    avatarName: PropTypes.string,
+    contextOptions: PropTypes.array,
+    data: PropTypes.object,
+    children: PropTypes.element
 };
 
 ContentRow.defaultProps = {
+    avatarRole: '',
+    avatarSource: '',
+    avatarName: ''
 };
 
 export default ContentRow;

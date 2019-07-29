@@ -11,7 +11,8 @@ const LogoItem = styled.div`
   cursor: pointer;
 `;
 
-const NavLogoItem = props => {
+const NavLogoItem = React.memo(props => {
+  console.log("NavLogoItem render");
   const navLogoIconStyle = {
     display: props.opened ? 'none' : 'block'
   };
@@ -28,6 +29,6 @@ const NavLogoItem = props => {
       <Icons.NavLogoOpenedIcon style={navLogoOpenedIconStyle} onClick={props.onClick}/>
     </LogoItem>
   );
-};
+});
 
 export default NavLogoItem;

@@ -8,7 +8,7 @@ export default function createStyledHeadline() {
       ${props =>
          (props.tag === 'h1' && 23) ||
          (props.tag === 'h2' && 19) ||
-         (props.tag === 'h3' && 15) 
+         (props.tag === 'h3' && 15)
       }
    `;
 
@@ -18,8 +18,7 @@ export default function createStyledHeadline() {
       font-weight: 600;
       color: ${props => props.isDisabled == true ? '#ECEEF1' : '#333333'};
       text-align: left;
-      max-width: 1000px;
-      ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
+      ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;')}
       ${props => props.isInline == true && 'display: inline-block;'}
    `
 
@@ -35,14 +34,17 @@ export default function createStyledHeadline() {
       ${styles}
    `;
 
-   const Text = props => 
-
-   (props.tag === 'h1' && <StyledH1 {...props} title={props.title}></StyledH1>) ||
-   (props.tag === 'h2' && <StyledH2 {...props} title={props.title}></StyledH2>) || 
-   (props.tag === 'h3' && <StyledH3 {...props} title={props.title}></StyledH3>)
+   const Text = props => {
+      //console.log("Text.Headerline render");
+      return (
+         (props.tag === 'h1' && <StyledH1 {...props} title={props.title}></StyledH1>) ||
+         (props.tag === 'h2' && <StyledH2 {...props} title={props.title}></StyledH2>) ||
+         (props.tag === 'h3' && <StyledH3 {...props} title={props.title}></StyledH3>)
+      );
+   };
 
    Text.propTypes = {
-      tag: PropTypes.oneOf(['h1','h2','h3']),
+      tag: PropTypes.oneOf(['h1', 'h2', 'h3']),
       title: PropTypes.string,
       truncate: PropTypes.bool,
       isDisabled: PropTypes.bool,

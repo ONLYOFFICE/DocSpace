@@ -58,6 +58,7 @@ class HideFilter extends React.Component {
   }
 
   render() {
+    //console.log("HideFilter render");
     return (
       <StyledHideFilter>
         <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>

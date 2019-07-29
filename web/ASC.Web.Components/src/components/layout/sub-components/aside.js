@@ -16,7 +16,8 @@ const StyledAside = styled.aside`
   z-index: 400;
 `;
 
-const Aside = (props) => { 
+const Aside = React.memo(props => { 
+  console.log("Aside render");
   const { visible, children } = props;
 
   return (
@@ -26,6 +27,6 @@ const Aside = (props) => {
       </Scrollbar>
     </StyledAside>
   );
-}
+});
 
 export default Aside;

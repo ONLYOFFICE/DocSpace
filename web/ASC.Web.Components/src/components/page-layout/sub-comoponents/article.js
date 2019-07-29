@@ -14,13 +14,13 @@ const StyledArticle = styled.article`
 
   @media ${device.tablet} {
     ${props => props.visible
-      ? props.pinned
-          ? `
+    ? props.pinned
+      ? `
             display: flex;
             width: 240px;
             min-width: 240px;
           `
-          : `
+      : `
             width: 240px;
             min-width: 240px;
             position: fixed;
@@ -29,14 +29,25 @@ const StyledArticle = styled.article`
             left: 0;
             z-index: 400;
           `
-      : `
+    : `
         display: none;
         width: 0px;
       `
-    }
+  }
   }
 `;
 
-const Article = (props) => <StyledArticle {...props}/>
+class Article extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    console.log("PageLayout Article render");
+    return (
+      <StyledArticle {...this.props} />
+    );
+  };
+};
 
 export default Article;

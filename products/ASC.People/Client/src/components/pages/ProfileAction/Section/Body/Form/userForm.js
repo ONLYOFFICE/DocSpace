@@ -36,7 +36,7 @@ const UserForm = props => {
                 size="max"
                 role={getUserRole(initialValues)}
                 source={initialValues.avatarMax}
-                userName={initialValues.userName}
+                userName={initialValues.displayName}
                 editing={true}
                 editLabel={"Edit photo"}
                 editAction={onEditAvatar}

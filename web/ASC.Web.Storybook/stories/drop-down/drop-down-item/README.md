@@ -15,7 +15,7 @@ To add an avatar username and email when you turn on the isUserPreview parameter
 #### Usage
 
 ```js
-<DropDownItem isSeparator={false} isUserPreview={false} label='Button 1' onClick={() => console.log('Button 1 clicked')} />
+<DropDownItem isSeparator={false} isUserPreview={false} isHeader={false} label='Button 1' icon='NavLogoIcon' onClick={() => console.log('Button 1 clicked')} />
 ```
 
 #### Properties
@@ -26,5 +26,6 @@ To add an avatar username and email when you turn on the isUserPreview parameter
 | `isUserPreview`    | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like User preview     |
 | `isHeader`         | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like header           |
 | `label`            | `string` |    -     | -                           | `Dropdown item`| Dropdown item text                                                |
+| `icon`             | `string` |    -     | -                           | -              | Dropdown item icon                                                |
 | `onClick`          | `func`   |    -     | -                           | -              | What the dropdown item will trigger when clicked                  |
-| `disabled          | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like disabled         |
+| `disabled`         | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like disabled         |

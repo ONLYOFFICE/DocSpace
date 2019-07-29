@@ -102,7 +102,7 @@ const StyledSecondaryButton = styled(StyledMainButton)`
     border-bottom-left-radius:0;
 `;
 
-class MainButton extends React.Component {
+class MainButton extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -112,10 +112,13 @@ class MainButton extends React.Component {
         this.state = {
             isOpen: props.opened
         };
+
+        this.handleClick = this.handleClick.bind(this);
+        this.stopAction = this.stopAction.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
 
-    onOuterClick = (e) => this.toggle(false);
-    handleClick = (e) => !this.ref.current.contains(e.target) && this.onOuterClick(e);
+    handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
     stopAction = (e) => e.preventDefault();
     toggle = (isOpen) => this.setState({ isOpen: isOpen});
 
@@ -138,6 +141,7 @@ class MainButton extends React.Component {
       }
 
     render() {
+        //console.log("MainButton render");
         return (
             <GroupMainButton {...this.props} ref={this.ref}>
                 <StyledMainButton {...this.props} onClick={

@@ -15,10 +15,16 @@ class Layout extends React.Component {
     this.state = this.mapPropsToState(props);
   };
 
+  /*shouldComponentUpdate() {
+    return false;
+  }*/
+
   componentDidUpdate(prevProps, prevState) {
+    //console.log("Layout componentDidUpdate");
     let currentHash = this.getPropsHash(this.props);
     let prevHash = this.getPropsHash(prevProps);
     if (currentHash !== prevHash) {
+      console.log("Layout componentDidUpdate hasChanges");
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -64,7 +70,7 @@ class Layout extends React.Component {
       }
     }
 
-    let newState = {
+    const newState = {
       isBackdropAvailable: mainModules.length > 0 || !!props.asideContent,
       isHeaderNavAvailable: isolateModules.length > 0 || !!props.currentUser,
       isHeaderAvailable: mainModules.length > 0,
@@ -133,6 +139,8 @@ class Layout extends React.Component {
   };
 
   render() {
+    console.log("Layout render");
+    
     return (
       <>
         {
@@ -192,7 +200,7 @@ class Layout extends React.Component {
       </>
     );
   }
-}
+};
 
 Layout.propTypes = {
   isBackdropVisible: PropTypes.bool,
@@ -207,7 +215,7 @@ Layout.propTypes = {
   currentUserActions: PropTypes.array,
   availableModules: PropTypes.array,
   currentModuleId: PropTypes.string
-}
+};
 
 Layout.defaultProps = {
   isBackdropVisible: false,
@@ -218,6 +226,6 @@ Layout.defaultProps = {
   currentUser: null,
   currentUserActions: [],
   availableModules: [],
-}
+};
 
-export default Layout
+export default Layout;

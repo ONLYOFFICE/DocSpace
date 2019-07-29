@@ -63,6 +63,7 @@ class IconButton extends React.Component{
         }
     }
     render(){
+        //console.log("IconButton render");
         return (
             <StyledOuter 
                 size={this.props.size} 

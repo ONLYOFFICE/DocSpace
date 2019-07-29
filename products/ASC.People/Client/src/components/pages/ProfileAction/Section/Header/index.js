@@ -16,11 +16,11 @@ const textStyle = {
 const SectionHeaderContent = (props) => {
   const {profile, history, userType} = props;
 
-  const headerText = profile
-    ? profile.userName
+  const headerText = profile && profile.displayName
+    ? profile.displayName
     : userType === "user"
-      ? "New guest"
-      : "New employee";
+      ? "New employee"
+      : "New guest";
 
   return (
     <div style={wrapperStyle}>

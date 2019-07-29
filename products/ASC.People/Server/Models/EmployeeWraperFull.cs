@@ -187,19 +187,21 @@ namespace ASC.Web.Api.Models
                 }
             }
 
+            var userInfoLM = userInfo.LastModified.GetHashCode();
+
             if (context.Check("avatarMax"))
             {
-                AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
 
             if (context.Check("avatarMedium"))
             {
-                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
 
             if (context.Check("avatar"))
             {
-                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID) + "?_=" + userInfo.LastModified.GetHashCode();
+                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
             }
 
             IsAdmin = userInfo.IsAdmin();

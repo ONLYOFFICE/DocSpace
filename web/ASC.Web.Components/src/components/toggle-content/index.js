@@ -11,7 +11,9 @@ display: ${props => props.isOpen ? 'block' : 'none'};
 padding-top: 9px;
 `;
 
-const Arrow = styled(Icons.ArrowContentIcon)`
+const IconArrow= ({ isOpen, ...props }) => <Icons.ArrowContentIcon {...props} />;
+
+const Arrow = styled(IconArrow)`
 
   margin-right: 9px;
   margin-bottom: 5px;
@@ -22,6 +24,13 @@ const StyledSpan = styled.span`
 
   cursor: pointer;
   user-select: none;
+`;
+
+const StyledText = styled(Text.Headline)`
+    &:hover{
+    border-bottom: 1px dotted;
+    margin-bottom: 5.5px;
+  }
 `;
 
 class ToggleContent extends React.Component {
@@ -43,6 +52,7 @@ class ToggleContent extends React.Component {
   };
 
   render() {
+    //console.log("ToggleContent render");
     return (
       <div>
         <StyledSpan onClick={() => {
@@ -50,7 +60,7 @@ class ToggleContent extends React.Component {
           this.props.onChange && this.props.onChange(!this.state.isOpen);
         }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
-          <Text.Headline tag='h2' isInline={true}>{this.props.label}</Text.Headline>
+          <StyledText tag='h2' isInline={true}>{this.props.label}</StyledText>
         </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
       </div>
@@ -59,6 +69,7 @@ class ToggleContent extends React.Component {
 }
 
 ToggleContent.propTypes = {
+  label: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
   onChange: PropTypes.func
 }

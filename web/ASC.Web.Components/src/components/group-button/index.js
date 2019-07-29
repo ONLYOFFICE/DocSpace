@@ -82,7 +82,7 @@ const Separator = styled.div`
   margin-top: 16px;
 `;
 
-class GroupButton extends React.Component {
+class GroupButton extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -91,11 +91,14 @@ class GroupButton extends React.Component {
     this.state = {
       isOpen: props.opened
     };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.stopAction = this.stopAction.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  onOuterClick = e => this.toggle(false);
   handleClick = e =>
-    !this.ref.current.contains(e.target) && this.onOuterClick(e);
+    !this.ref.current.contains(e.target) && this.toggle(false);
   stopAction = e => e.preventDefault();
   toggle = isOpen => this.setState({ isOpen: isOpen });
 
@@ -118,6 +121,7 @@ class GroupButton extends React.Component {
   }
 
   render() {
+    //console.log("GroupButton render");
     const { label, isDropdown, disabled, isSeparator } = this.props;
 
     return (

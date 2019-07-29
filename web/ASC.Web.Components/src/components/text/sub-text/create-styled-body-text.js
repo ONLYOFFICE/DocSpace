@@ -21,7 +21,6 @@ const style = css`
    ${props => props.backgroundColor == true && 'background-color: #F8F9F9;'}
    ${props => props.isInline == true && 'display: inline-block;'}
    text-align: left;
-   max-width: 1000px;
    ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
 
 `
@@ -34,9 +33,11 @@ const style = css`
    ${style}
   `;
 
-  const Text = props => 
-      (props.tag === 'p' && <StyledP {...props} title={props.title}></StyledP>) ||
-      (props.tag === 'span' && <StyledSpan {...props} title={props.title}></StyledSpan>) 
+  const Text = props => {
+     //console.log("Text render");
+     return (props.tag === 'p' && <StyledP {...props} title={props.title}></StyledP>) ||
+      (props.tag === 'span' && <StyledSpan {...props} title={props.title}></StyledSpan>); 
+  };
 
    Text.propTypes = {
      tag: PropTypes.oneOf(['p','span']),

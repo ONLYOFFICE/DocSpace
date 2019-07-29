@@ -41,7 +41,8 @@ const NavItemBadge = styled(Badge)`
   ${props => props.opened ? "" : badgeCss}
 `;
 
-const NavItem = props => {
+const NavItem = React.memo(props => {
+  console.log("NavItem render");
   const { seporator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 
@@ -54,6 +55,6 @@ const NavItem = props => {
         <NavItemBadge opened={opened} number={badgeNumber} onClick={onBadgeClick}/>
       </NavItemWrapper>
   );
-};
+});
 
 export default NavItem;

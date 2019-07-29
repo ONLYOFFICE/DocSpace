@@ -71,6 +71,7 @@ const Dialog = styled.div`
 `;
 
 const ModalDialog = props => {
+  //console.log("ModalDialog render");
   const { visible, headerContent, bodyContent, footerContent, onClose } = props;
 
   return (

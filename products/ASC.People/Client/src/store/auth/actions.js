@@ -1,7 +1,13 @@
-import * as api from '../utils/api';
-import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from './actionTypes';
-import { setGroups, setUsers } from './peopleActions';
-import setAuthorizationToken from '../utils/setAuthorizationToken';
+import * as api from '../../utils/api';
+import { setGroups, setUsers } from '../people/actions';
+import setAuthorizationToken from '../../utils/setAuthorizationToken';
+import { getPeople } from '../people/actions';
+
+export const LOGIN_POST = 'LOGIN_POST';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_MODULES = 'SET_MODULES';
+export const SET_IS_LOADED = 'SET_IS_LOADED';
+export const LOGOUT = 'LOGOUT';
 
 export function setCurrentUser(user) {
     return {
@@ -24,24 +30,20 @@ export function setIsLoaded(isLoaded) {
     };
 };
 
-
 export function setLogout() {
     return {
         type: LOGOUT
     };
 };
 
-const filterOptions = {StartIndex: 0, Count: 25, sortby: "lastname", sortorder: "ascending"};
-
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(api.getModulesList)
+        .then(() => api.getModulesList())
         .then((res) => dispatch(setModules(res.data.response)))
-        .then(api.getGroupList)
+        .then(() => api.getGroupList())
         .then((res) => dispatch(setGroups(res.data.response)))
-        .then(() => api.getUserList(filterOptions))
-        .then((res) => dispatch(setUsers(res.data.response)))
+        .then(() => dispatch(getPeople()))
         .then(() => dispatch(setIsLoaded(true)));
 };
 

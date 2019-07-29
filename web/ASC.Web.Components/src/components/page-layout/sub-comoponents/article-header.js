@@ -11,6 +11,9 @@ const StyledArticleHeader = styled.div`
   }
 `;
 
-const ArticleHeader = (props) => <StyledArticleHeader {...props}/>
+const ArticleHeader = React.memo(props => { 
+  console.log("PageLayout ArticleHeader render");
+  return (<StyledArticleHeader {...props}/>) 
+});
 
 export default ArticleHeader;

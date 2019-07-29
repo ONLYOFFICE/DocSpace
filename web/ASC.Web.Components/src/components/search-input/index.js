@@ -51,6 +51,7 @@ const StyledCloseButtonBlock = styled.div`
 
 
 const FilterItem = props => {
+  //console.log("FilterItem render");
   const { groupLabel, id, label, block } = props;
   return (
     <StyledFilterItem key={id} id={id} block={block} >

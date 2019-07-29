@@ -23,5 +23,4 @@ ToggleContent allow you to adding information, which you may hide/show by clicki
 | Props              | Type     | Required | Values                      | Default        | Description                                                       |
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
 | `label`             | `text`  |    ✅    | - | Some label     | Define label for header                                        |
-
-
+| `isOpen`             | `bool`  |   -     | - | `false`     | State of component                                        |

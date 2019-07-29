@@ -22,7 +22,8 @@ const StyledNav = styled.nav`
   }
 `;
 
-const Nav = (props) => { 
+const Nav = React.memo(props => { 
+  console.log("Nav render");
   const { opened, onMouseEnter, onMouseLeave, children } = props;
 
   return (
@@ -32,6 +33,6 @@ const Nav = (props) => {
       </Scrollbar>
     </StyledNav>
   );
-}
+});
 
 export default Nav;

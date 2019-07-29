@@ -124,6 +124,7 @@ svg {
 `;
 
 const Toast = props => {
+  //console.log("Toast render");
   return (
     <StyledToastContainer
       draggable={false}
@@ -140,7 +141,7 @@ Toast.propTypes = {
   autoClosed: PropTypes.bool,
   text: PropTypes.string,
   title: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'warning', 'info']),
+  type: PropTypes.oneOf(['success', 'error', 'warning', 'info']).isRequired,
 };
 
 Toast.defaultProps = {

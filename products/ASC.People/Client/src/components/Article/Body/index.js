@@ -5,6 +5,7 @@ import {
   TreeNode,
   Icons
 } from "asc-web-components";
+import { getTreeGroups } from '../../../store/people/selectors';
 
 const PeopleTreeMenu = props => {
   const { data } = props;
@@ -169,31 +170,9 @@ const PeopleTreeMenu = props => {
 
 const ArticleBodyContent = ({ treeData }) => <PeopleTreeMenu data={treeData} />;
 
-const convertGroups = (groups) => {
-  const children = groups.map(g => {
-    return {
-      key: g.id, title: g.name, root: false
-    };
-  }) || [];
-
-  const treeData = [
-    {
-      key: "0-0",
-      title: "Departments",
-      root: true,
-      children: children
-    }
-  ];
-
-  return treeData;
-};
-
 function mapStateToProps(state) {
-  console.log("ArticleBodyContent mapStateToProps state=", state);
-  const treeData = convertGroups(state.people.groups);
-  console.log("ArticleBodyContent mapStateToProps treeData=", treeData);
   return {
-    treeData: treeData
+    treeData: getTreeGroups(state.people.groups)
   };
 }
 

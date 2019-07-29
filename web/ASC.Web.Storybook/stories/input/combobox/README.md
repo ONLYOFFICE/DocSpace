@@ -9,12 +9,14 @@ Custom combo box input
 ```js
 import { ComboBox } from 'asc-web-components';
 
-<ComboBox items={items} isDisabled={false}/>
+<ComboBox options={options} isDisabled={false}/>
 ```
 
 #### Properties
 
 | Props                  | Type              | Required | Values                       | Default | Description                                  |
 | ---------------------- | ----------------- | :------: | ---------------------------- | ------- | -------------------------------------------- |
-| `items`                | `array of object` |    ✅    | -                            | -       | Combo box items                              |
+| `options`              | `array`           |    ✅    | -                            | -       | Combo box options                            |
 | `isDisabled`           | `bool`            |    -     | -                            | `false` | Indicates that component is disabled         |
+| `withBorder`           | `bool`            |    -     | -                            | `true`  | Indicates that component contain border      |
+| `selectedIndex`        | `number`          |    -     | -                            | `0`     | Index of option selected by default          |

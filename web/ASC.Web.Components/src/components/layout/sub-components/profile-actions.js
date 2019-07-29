@@ -4,7 +4,7 @@ import Avatar from '../../avatar'
 import DropDown from '../../drop-down'
 import DropDownItem from '../../drop-down-item'
 
-class ProfileActions extends React.Component {
+class ProfileActions extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -16,6 +16,10 @@ class ProfileActions extends React.Component {
       user: props.user,
       userActions: props.userActions
     };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.getUserRole = this.getUserRole.bind(this);
   };
 
   handleClick = (e) => {
@@ -50,6 +54,7 @@ class ProfileActions extends React.Component {
   };
 
   render() {
+    console.log("Layout sub-component ProfileActions render");
     return (
       <div ref={this.ref}>
         <Avatar

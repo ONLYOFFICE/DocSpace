@@ -23,13 +23,17 @@ const HeaderText = styled(Text.MenuHeader)`
   color: #FFFFFF;
 `;
 
-const Header = props => <StyledHeader>
-  <NavItem
-    iconName="MenuIcon"
-    badgeNumber={props.badgeNumber}
-    onClick={props.onClick}
-  />
-  <HeaderText>{props.currentModule && props.currentModule.title}</HeaderText>
-</StyledHeader>
+const Header = React.memo(props => {
+  console.log("Header render");
+  return (
+  <StyledHeader>
+    <NavItem
+      iconName="MenuIcon"
+      badgeNumber={props.badgeNumber}
+      onClick={props.onClick}
+    />
+    <HeaderText>{props.currentModule && props.currentModule.title}</HeaderText>
+  </StyledHeader>);
+});
 
 export default Header;

@@ -106,6 +106,16 @@ const Text = styled.span`
 
 class Checkbox extends React.Component  {
 
+  constructor(props) {
+    super(props);
+
+    this.ref = React.createRef();
+
+    this.state = {
+      checked: props.isChecked
+    };
+  }
+
   componentDidMount() {
     this.ref.current.indeterminate = this.props.isIndeterminate;
   }
@@ -114,18 +124,23 @@ class Checkbox extends React.Component  {
     if(this.props.isIndeterminate !== prevProps.isIndeterminate) {
       this.ref.current.indeterminate = this.props.isIndeterminate;
     }
+    if(this.props.isChecked !== prevProps.isChecked) {
+      this.setState({checked: this.props.isChecked});
+    }
   }
-
-  ref = React.createRef();
-
   render() {
+    //console.log("Checkbox render");
+    
     const cbxClassName = 'checkbox' +
-      (this.props.isIndeterminate ? ' indeterminate' : this.props.isChecked ? ' checked' : '') +
+      (this.props.isIndeterminate ? ' indeterminate' : this.state.checked ? ' checked' : '') +
       (this.props.isDisabled ? ' disabled' : '');
 
     return (
     <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} >
-      <Input type='checkbox' checked={this.props.isChecked} disabled={this.props.isDisabled} ref={this.ref} {...this.props}/>
+      <Input type='checkbox' checked={this.state.checked} disabled={this.props.isDisabled} ref={this.ref} {...this.props} onChange={(e) => {
+        this.setState({checked: e.target.checked});
+        this.props.onChange && this.props.onChange(e);
+      }}/>
       <span className={cbxClassName} />
       {
         this.props.label && <Text isDisabled={this.props.isDisabled}>{this.props.label}</Text>
@@ -134,6 +149,7 @@ class Checkbox extends React.Component  {
     );
   };
 };
+
 
 Checkbox.propTypes = {
   id: PropTypes.string,
@@ -146,6 +162,10 @@ Checkbox.propTypes = {
   isDisabled: PropTypes.bool,
 
   onChange: PropTypes.func,
-}
+};
+
+Checkbox.defaultProps = {
+  isChecked: false
+};
 
 export default Checkbox

@@ -10,7 +10,7 @@ import App from "./App";
 import "./i18n";
 
 import * as serviceWorker from "./serviceWorker";
-import { getUserInfo, setIsLoaded } from "./actions/authActions";
+import { setIsLoaded, getUserInfo } from "./store/auth/actions";
 
 var token = new Cookies().get(AUTH_KEY);
 

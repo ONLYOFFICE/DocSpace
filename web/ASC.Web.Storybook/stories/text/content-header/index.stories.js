@@ -12,13 +12,15 @@ storiesOf('Components|Text', module)
   .add('content header', () => (
 
     <Section>
-      <Text.ContentHeader
-        title={text('title', '')}
-        truncate={boolean('truncate', false)}
-        isDisabled={boolean('isDisabled', false)}
-        isInline={boolean('isInline', false)}
-      >
-        {text('Text', 'Sample text Headline')}
-      </Text.ContentHeader>
+      <div style={{ width: "100%" }}>
+        <Text.ContentHeader
+          title={text('title', '')}
+          truncate={boolean('truncate', false)}
+          isDisabled={boolean('isDisabled', false)}
+          isInline={boolean('isInline', false)}
+        >
+          {text('Text', 'Sample text Headline')}
+        </Text.ContentHeader>
+      </div>
     </Section>
   ));

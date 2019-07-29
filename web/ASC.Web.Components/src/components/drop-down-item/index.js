@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import Avatar from '../../components/avatar'
+import IconButton from '../icon-button';
 
 const itemTruncate = css`
     white-space: nowrap;
@@ -67,7 +68,7 @@ const StyledDropdownItem = styled.button`
                 -moz-border-radius: 0 0 6px 6px;
                 -webkit-border-radius: 0 0 6px 6px;
             }`
-        }
+    }
     }
 `;
 
@@ -112,18 +113,29 @@ const UserEmailWrapper = styled.div`
     ${itemTruncate}
 `;
 
-const DropDownItem = props => {
-    const {isSeparator, isUserPreview, label} = props;
+const IconWrapper = styled.span`
+    display: inline-block;
+    margin-right: 8px;
+`;
+
+const DropDownItem = React.memo(props => {
+    //console.log("DropDownItem render");
+    const { isSeparator, isUserPreview, label, icon } = props;
     return (
         <StyledDropdownItem {...props} >
-            {isSeparator ? '\u00A0' : !isUserPreview  && label}
-            {isUserPreview && 
+            {icon &&
+                <IconWrapper>
+                    <IconButton size={16} iconName={icon} color={props.disabled || props.isHeader ? '#A3A9AE' : '#333333'} />
+                </IconWrapper>
+            }
+            {isSeparator ? '\u00A0' : !isUserPreview && label}
+            {isUserPreview &&
                 <UserPreview {...props}>
                     <AvatarWrapper>
                         <Avatar size='medium'
-                                role={props.role}
-                                source={props.source}
-                                userName={props.userName}
+                            role={props.role}
+                            source={props.source}
+                            userName={props.userName}
                         />
                     </AvatarWrapper>
                     <UserNameWrapper>{props.userName}</UserNameWrapper>
@@ -132,7 +144,7 @@ const DropDownItem = props => {
             }
         </StyledDropdownItem>
     );
-};
+});
 
 DropDownItem.propTypes = {
     isSeparator: PropTypes.bool,
@@ -140,7 +152,8 @@ DropDownItem.propTypes = {
     isHeader: PropTypes.bool,
     tabIndex: PropTypes.number,
     label: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    icon: PropTypes.string
 };
 
 DropDownItem.defaultProps = {

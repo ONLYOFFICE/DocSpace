@@ -1,6 +1,4 @@
-﻿using System.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using System;
 
 namespace ASC.Common.Web
 {
@@ -8,8 +6,13 @@ namespace ASC.Common.Web
     {
         public static string ToAbsolute(string virtualPath)
         {
-            var originalUri = HttpContext.Current.Request.GetUrlRewriter();
-            return UriHelper.BuildAbsolute(originalUri.Scheme, new HostString(originalUri.Host, originalUri.Port), virtualPath);
+            if (string.IsNullOrEmpty(virtualPath))
+                return virtualPath;
+
+            if (Uri.IsWellFormedUriString(virtualPath, UriKind.Absolute))
+                return virtualPath;
+
+            return "/" + virtualPath.TrimStart('~', '/');
         }
     }
 }

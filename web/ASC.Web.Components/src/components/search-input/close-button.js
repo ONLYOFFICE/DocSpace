@@ -7,6 +7,7 @@ const StyledCloseButton = styled.div`
     margin-top: -1px;
 `;
 const CloseButton = props => {
+  //console.log("CloseButton render");
   return (
       <StyledCloseButton>
           <IconButton

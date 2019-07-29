@@ -72,7 +72,10 @@ const StyledInput = styled(Input).attrs((props) => ({
 
 `;
 
-const TextInput = props => <StyledInput {...props} />
+const TextInput = props => { 
+    //console.log("TextInput render");
+    return (<StyledInput {...props} />);
+}
 
 TextInput.propTypes = {
     id: PropTypes.string,

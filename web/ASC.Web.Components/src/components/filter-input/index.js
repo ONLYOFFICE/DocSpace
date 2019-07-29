@@ -88,7 +88,7 @@ class FilterInput extends React.Component {
     }
 
     render(){
-        
+        //console.log("FilterInput render");
         return(
             <StyledFilterInput>
                 <StyledSearchInput>
@@ -113,7 +113,7 @@ class FilterInput extends React.Component {
                 </StyledSearchInput>
                 
                 <StyledComboBox 
-                    items={this.getSortData()}
+                    options={this.getSortData()}
                     isDisabled={this.props.isDisabled}
                 >
                     <StyledIconButton {...this.state}>
