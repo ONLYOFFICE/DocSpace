@@ -75,7 +75,7 @@ const getUserStatus = user => {
     else return "normal";
 };
 
-const getUserContextOptions = (user, isAdmin, history) => {
+const getUserContextOptions = (user, isAdmin, history, settings) => {
     return [
         {
             key: "key1",
@@ -91,7 +91,7 @@ const getUserContextOptions = (user, isAdmin, history) => {
         {
             key: "key4",
             label: "Edit",
-            onClick: () => history.push(`${config.homepage}/edit/${user.userName}`)
+            onClick: () => history.push(`${settings.homepage}/edit/${user.userName}`)
         },
         {
             key: "key5",
@@ -115,7 +115,7 @@ const getIsHead = user => {
     return false;
 };
 
-export function getPeople(users, isAdmin, history) {
+export function convertPeople(users, isAdmin, history, settings) {
     return users.map(user => {
         const status = getUserStatus(user);
         return {
@@ -125,7 +125,8 @@ export function getPeople(users, isAdmin, history) {
             contextOptions: getUserContextOptions(
                 user,
                 isAdmin,
-                history
+                history,
+                settings
             ),
             department: getUserDepartment(user),
             phone: getUserPhone(user),

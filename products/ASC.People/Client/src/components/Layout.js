@@ -6,15 +6,13 @@ import { Layout } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
 import { getAvailableModules } from '../store/auth/selectors';
 
-var config = require('../../package.json');
-
 const PeopleLayout = props => {
-    const { auth, logout, children, history } = props;
+    const { auth, logout, children, history, settings } = props;
     const currentUserActions = [
         {
             key: 'ProfileBtn', label: 'Profile', onClick: () => {
                 console.log('ProfileBtn')
-                history.push(`${config.homepage}/view/@self`);
+                history.push(`${settings.homepage}/view/@self`);
             }
         },
         {
@@ -48,7 +46,8 @@ function mapStateToProps(state) {
         auth: state.auth,
         availableModules: getAvailableModules(state.auth.modules),
         currentUser: state.auth.user,
-        currentModuleId: state.auth.currentModuleId
+        currentModuleId: state.settings.currentProductId,
+        settings: state.settings
     };
 }
 

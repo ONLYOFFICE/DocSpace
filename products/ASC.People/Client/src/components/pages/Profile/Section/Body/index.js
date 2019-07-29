@@ -1,8 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import _ from "lodash";
-import config from '../../../../../../package.json';
 import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
+import { connect } from 'react-redux';
 
 const profileWrapper = {
   display: "flex",
@@ -126,7 +126,7 @@ const createContacts = (contacts) => {
 };
 
 const SectionBodyContent = (props) => {
-  const { profile, history, isSelf } = props;
+  const { profile, history, isSelf, settings} = props;
 
   getFormattedContacts(profile);
 
@@ -141,7 +141,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => history.push(`${config.homepage}/edit/${profile.userName}`)} />
+        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => history.push(`${settings.homepage}/edit/${profile.userName}`)} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -224,5 +224,10 @@ const SectionBodyContent = (props) => {
   );
 };
 
+function mapStateToProps(state) {
+  return {
+    settings: state.settings
+  };
+}
 
-export default withRouter(SectionBodyContent);
+export default connect(mapStateToProps)(withRouter(SectionBodyContent));

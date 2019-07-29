@@ -2,14 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import config from '../../../../package.json';
 import {
     MainButton,
     DropDownItem,
 } from "asc-web-components";
+import { isAdmin } from '../../../store/auth/selectors';
 
-
-const ArticleMainButtonContent = ({ isAdmin, history }) => {
+const ArticleMainButtonContent = ({ isAdmin, history, settings }) => {
     console.log("People ArticleMainButtonContent");
     return (
         isAdmin ?
@@ -20,11 +19,11 @@ const ArticleMainButtonContent = ({ isAdmin, history }) => {
             >
                 <DropDownItem
                     label="New employee"
-                    onClick={() => history.push(`${config.homepage}/create/user`)}
+                    onClick={() => history.push(`${settings.homepage}/create/user`)}
                 />
                 <DropDownItem
                     label="New guest"
-                    onClick={() => history.push(`${config.homepage}/create/guest`)}
+                    onClick={() => history.push(`${settings.homepage}/create/guest`)}
                 />
                 <DropDownItem
                     label="New department"
@@ -56,7 +55,8 @@ ArticleMainButtonContent.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        isAdmin: state.auth.user.isAdmin || state.auth.user.isOwner
+        isAdmin: isAdmin(state.auth),
+        settings: state.settings
     }
 }
 

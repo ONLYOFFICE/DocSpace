@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from "react-router";
 import { Container, Row, Col } from "reactstrap";
 import { Link, Icons} from 'asc-web-components';
-var config = require('../../../../../../package.json');
+import { connect } from 'react-redux';
 
 const UserContent = ({
     userName,
@@ -12,7 +12,8 @@ const UserContent = ({
     email,
     headDepartment,
     status,
-    history
+    history,
+    settings
 }) => (
       <Container fluid={true}>
         <Row className="justify-content-start no-gutters">
@@ -27,7 +28,7 @@ const UserContent = ({
               fontSize={15}
               onClick={() => { 
                 console.log("User name action"); 
-                history.push(`${config.homepage}/view/${userName}`);
+                history.push(`${settings.homepage}/view/${userName}`);
               }}
             >
               {displayName}
@@ -109,4 +110,10 @@ const UserContent = ({
       </Container>
     );
 
-export default withRouter(UserContent);
+    function mapStateToProps(state) {
+      return {
+        settings: state.settings
+      };
+    }
+
+export default connect(mapStateToProps)(withRouter(UserContent));

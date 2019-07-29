@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton, Text } from 'asc-web-components';
@@ -14,7 +15,7 @@ const textStyle = {
 };
 
 const SectionHeaderContent = (props) => {
-  const {profile, history, userType} = props;
+  const {profile, history, userType, settings} = props;
 
   const headerText = profile && profile.displayName
     ? profile.displayName
@@ -24,7 +25,7 @@ const SectionHeaderContent = (props) => {
 
   return (
     <div style={wrapperStyle}>
-      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={history.goBack}/>
+      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={() => history.push(settings.homepage)}/>
       <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
     </div>
   );
@@ -39,6 +40,12 @@ SectionHeaderContent.propTypes = {
 SectionHeaderContent.defaultProps = {
   profile: null,
   userType: "user"
-}
+};
 
-export default withRouter(SectionHeaderContent);
+function mapStateToProps(state) {
+  return {
+    settings: state.settings
+  };
+};
+
+export default connect(mapStateToProps)(withRouter(SectionHeaderContent));

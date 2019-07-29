@@ -4,6 +4,7 @@ import peopleReducer from './people/reducers';
 import profileReducer from './profile/reducers';
 import filterReducer from './filter/reducers';
 import pagingReducer from './paging/reducers';
+import settingsReducer from './settings/reducer';
 import { reducer as formReducer } from 'redux-form';
 
 const rootReducer = combineReducers({
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
     profile: profileReducer,
     form: formReducer,
     filter: filterReducer,
-    paging: pagingReducer
+    paging: pagingReducer,
+    settings: settingsReducer
 });
 
 export default rootReducer;

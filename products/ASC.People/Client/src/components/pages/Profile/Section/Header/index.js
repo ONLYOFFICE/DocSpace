@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Text, IconButton, ContextMenuButton } from 'asc-web-components';
 import { withRouter } from "react-router";
 
@@ -43,12 +44,12 @@ const getUserContextOptions = user => {
 };
 
 const SectionHeaderContent = (props) => {
-  const { profile, history } = props;
+  const { profile, history, settings } = props;
 
   return (
     <div style={wrapperStyle}>
       <div style={{ width: '16px' }}>
-        <IconButton iconName={'ArrowPathIcon'} color='#A3A9AE' size='16' onClick={history.goBack} />
+        <IconButton iconName={'ArrowPathIcon'} color='#A3A9AE' size='16' onClick={() => history.push(settings.homepage)} />
       </div>
       <Text.ContentHeader truncate={true} style={textStyle}>{profile.displayName}{profile.isLDAP && ' (LDAP)'}</Text.ContentHeader>
       <ContextMenuButton 
@@ -63,4 +64,10 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default withRouter(SectionHeaderContent);
+function mapStateToProps(state) {
+  return {
+    settings: state.settings
+  };
+}
+
+export default connect(mapStateToProps)(withRouter(SectionHeaderContent));

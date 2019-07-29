@@ -5,17 +5,17 @@ import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
-import { isSelected, getPeople } from '../../../../../store/people/selectors';
+import { isSelected, convertPeople } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
-    const { users, isAdmin, selection, selectUser, deselectUser, history} = this.props;
+    const { users, isAdmin, selection, selectUser, deselectUser, history, settings} = this.props;
 
     return (
       <>
-        {getPeople(users, isAdmin, history).map(item => {
+        {convertPeople(users, isAdmin, history, settings).map(item => {
           const user = item.user;
           return isAdmin ? (
             <ContentRow
@@ -76,7 +76,8 @@ const mapStateToProps = state => {
     selection: state.people.selection,
     selected: state.people.selected,
     users: state.people.users,
-    isAdmin: isAdmin(state.auth)
+    isAdmin: isAdmin(state.auth),
+    settings: state.settings
   };
 };
 
