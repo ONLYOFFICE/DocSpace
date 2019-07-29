@@ -32,9 +32,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.MessagingSystem", "comm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.IPSecurity", "common\ASC.IPSecurity\ASC.IPSecurity.csproj", "{2FF2177F-2D1A-4396-84EB-51F14FD99385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Feed", "common\ASC.Feed\ASC.Feed.csproj", "{B0431EC9-21D8-4D96-B333-6DD430031C82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Feed", "common\ASC.Feed\ASC.Feed.csproj", "{B0431EC9-21D8-4D96-B333-6DD430031C82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Data.Reassigns", "common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj", "{104D045A-F9CC-4DD7-B04D-8DA7543435DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Reassigns", "common\ASC.Data.Reassigns\ASC.Data.Reassigns.csproj", "{104D045A-F9CC-4DD7-B04D-8DA7543435DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASC.Notify", "common\services\ASC.Notify\ASC.Notify.csproj", "{8484A675-1C93-4D87-8FF2-7530A5711208}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +104,10 @@ Global
 		{104D045A-F9CC-4DD7-B04D-8DA7543435DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{104D045A-F9CC-4DD7-B04D-8DA7543435DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{104D045A-F9CC-4DD7-B04D-8DA7543435DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8484A675-1C93-4D87-8FF2-7530A5711208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8484A675-1C93-4D87-8FF2-7530A5711208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8484A675-1C93-4D87-8FF2-7530A5711208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8484A675-1C93-4D87-8FF2-7530A5711208}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
