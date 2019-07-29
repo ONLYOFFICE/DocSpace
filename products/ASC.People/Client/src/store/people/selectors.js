@@ -1,5 +1,4 @@
 import _ from "lodash";
-import config from '../../../package.json';
 
 export function getSelectedUser(selection, userId) {
     return _.find(selection, function (obj) {
