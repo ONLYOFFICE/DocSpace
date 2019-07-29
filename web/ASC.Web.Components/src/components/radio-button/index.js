@@ -57,13 +57,11 @@ const Span = styled.span`
                 }
 
         &.disabled {
-          cursor: default;
           background-image: url("data:image/svg+xml,${radiobuttonDisabledCheckedIcon}");
                   }
     }
 
     &.disabled {
-      cursor: default;
       background-image: url("data:image/svg+xml,${radiobuttonDisabledIcon}");
     }
   }
