@@ -28,7 +28,7 @@ storiesOf('Components|ContentRow', module)
                     contextOptions={contextButton ? [
                       {key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit')},
                       {key: 'key2', label: 'Delete', onClick: () => console.log('Context action: Delete')}
-                    ] : ''}
+                    ] : []}
               >
                 <Text.Body truncate={true} >{text('content', '')}</Text.Body>
               </ContentRow>
