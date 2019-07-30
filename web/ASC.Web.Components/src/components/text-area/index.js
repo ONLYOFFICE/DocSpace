@@ -1,21 +1,25 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 import Scrollbar from '../scrollbar/index';
-import { Text } from '../text'
-import PropTypes from 'prop-types'
+import { Text } from '../text';
+import PropTypes from 'prop-types';
+import commonInputStyle from '../text-input/common-input-styles';
 
 
 const StyledScrollbar = styled(Scrollbar)`
+  ${commonInputStyle};
+    :focus-within {
+      border-color: #2DA7DB;
+    }
+    :focus{
+    outline: none;
+    }
   width: 100% !important;
   height: 91px !important;
 
   @media only screen and (max-width: 768px) {
     height: 190px !important;
 }
-
-  border: 1px solid #D0D5DA;
-  box-sizing: border-box;
-  border-radius: 3px;
 
   & > div {
     padding: 5px 8px 2px 8px;
