@@ -41,7 +41,7 @@ namespace ASC.Api.Core
             HttpContext = httpContext;
 
             //TODO
-            uint ItemsPerPage = 25;
+            uint ItemsPerPage = 1000;
             Count = 0;
             //Try parse values
             string count = GetRequestValue("count");

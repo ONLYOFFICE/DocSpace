@@ -9,18 +9,15 @@ import { ComboBox } from 'asc-web-components'
 let options = [
     {
         key: '0',
-        label: '25 per page',
-        onClick: (e) => console.log(e.target)
+        label: '25 per page'
     },
     {
         key: '1',
         label: '50 per page',
-        onClick: (e) => console.log(e.target)
     },
     {
         key: '2',
-        label: '100 per page',
-        onClick: (e) => console.log(e.target)
+        label: '100 per page'
     }
 ];
 

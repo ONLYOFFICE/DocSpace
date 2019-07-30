@@ -34,18 +34,26 @@ const Paging = props => {
   //console.log("Paging render");
   const { previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection, disablePrevious, disableNext } = props;
 
+  const onSelectPageAction = (option) => {
+    props.onSelectPage(option);
+  }
+
+  const onSelectPerPageAction = (option) => {
+    props.onSelectPerPage(option)
+  }
+
   return (
     <StyledPaging>
       <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox directionY={openDirection} options={pageItems} onSelect={(a)=> props.onSelectPage(a)} />
+          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} />
         </StyledPage>
       }
       <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
       {perPageItems && 
       <StyledOnPage>
-        <ComboBox directionY={openDirection} options={perPageItems} onSelect={(a) => props.onSelectPerPage(a)} />
+        <ComboBox directionY={openDirection} options={perPageItems} onSelect={onSelectPerPageAction} />
       </StyledOnPage>
       }
     </StyledPaging>
