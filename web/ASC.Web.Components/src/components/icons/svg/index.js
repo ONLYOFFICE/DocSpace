@@ -717,10 +717,12 @@ export const ArrowPathIcon = createStyledIcon(
 
 export const ToggleButtonCheckedIcon = createStyledIcon(
   OrigToggleButtonCheckedIcon,
-  'ToggleButtonCheckedIcon'
+  'ToggleButtonCheckedIcon',
+  "rect"
 );
 
 export const ToggleButtonUncheckedIcon = createStyledIcon(
   OrigToggleButtonUncheckedIcon,
-  'ToggleButtonUncheckedIcon'
+  'ToggleButtonUncheckedIcon',
+  "rect"
 );
