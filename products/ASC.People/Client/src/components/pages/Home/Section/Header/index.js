@@ -6,12 +6,14 @@ const getPeopleItems = (onSelect) => [
       label: "Select",
       isDropdown: true,
       isSeparator: true,
+      isSelect: true,
       fontWeight: "bold",
       children: [
-        <DropDownItem key="active" label="Active" onClick={() => onSelect("active")} />,
-        <DropDownItem key="disabled" label="Disabled" onClick={() => onSelect("disabled")} />,
-        <DropDownItem key="invited" label="Invited" onClick={() => onSelect("invited")} />
-      ]
+        <DropDownItem key="active" label="Active" />,
+        <DropDownItem key="disabled" label="Disabled" />,
+        <DropDownItem key="invited" label="Invited" />
+      ],
+      onSelect: (item) => onSelect(item.key)
     },
     {
       label: "Make employee",
@@ -62,6 +64,7 @@ const SectionHeaderContent = ({
           moreLabel="More"
           closeTitle="Close"
           onClose={onClose}
+          selected={getPeopleItems(onSelect)[0].label}
         />
       </div>
     ) : (
