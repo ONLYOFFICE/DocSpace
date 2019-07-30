@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback, useMemo} from "react";
 import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
@@ -32,26 +32,9 @@ import Filter from '../../../../../helpers/filter';
   }
 ];*/
 
-const perPageItems = [
-  {
-    key: "25",
-    label: "25 per page",
-    onClick: () => console.log("set paging 25 action")
-  },
-  {
-    key: "50",
-    label: "50 per page",
-    onClick: () => console.log("set paging 50 action")
-  },
-  {
-    key: "100",
-    label: "100 per page",
-    onClick: () => console.log("set paging 100 action")
-  }
-];
 
 const SectionPagingContent = ({ fetchPeople, filter }) => {
-  const onNextClick = e => {
+  const onNextClick = useCallback(e => {
     if(!filter.hasNext) {
       e.preventDefault();
       return;
@@ -59,8 +42,9 @@ const SectionPagingContent = ({ fetchPeople, filter }) => {
     console.log("Next Clicked", e);
     const newFilter = Filter.nextPage(filter);
     fetchPeople(newFilter);
-  };
-  const onPrevClick = e => {
+  }, [filter, fetchPeople]);
+
+  const onPrevClick = useCallback(e => {
     if(!filter.hasPrev) {
       e.preventDefault();
       return;
@@ -68,7 +52,31 @@ const SectionPagingContent = ({ fetchPeople, filter }) => {
     console.log("Prev Clicked", e);
     const newFilter = Filter.prevPage(filter);
     fetchPeople(newFilter);
-  }
+  }, [filter, fetchPeople]);
+
+  const onChangePageSize = useCallback(pageCount => {
+    const newFilter = new Filter(0, pageCount, filter.total, filter.sortby, filter.sortorder, filter.employeestatus, filter.activationstatus);
+    fetchPeople(newFilter);
+  }, [filter, fetchPeople]);
+
+  const perPageItems = useMemo(() => [
+    {
+      key: "25",
+      label: "25 per page",
+      onClick: () => onChangePageSize(25)
+    },
+    {
+      key: "50",
+      label: "50 per page",
+      onClick: () => onChangePageSize(50)
+    },
+    {
+      key: "100",
+      label: "100 per page",
+      onClick: () => onChangePageSize(100)
+    }
+  ], [onChangePageSize]);
+
   console.log("SectionPagingContent render", filter);
   return (
     <Paging
