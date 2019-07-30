@@ -4,15 +4,18 @@ import {
     SET_SELECTION,
     SELECT_USER,
     DESELECT_USER,
-    SET_SELECTED
+    SET_SELECTED,
+    SET_FILTER
 } from "./actions";
 import { isSelected, skipUser, getUsersBySelected } from './selectors';
+import Filter from "../../helpers/filter";
 
 const initialState = {
     users: [],
     groups: [],
     selection: [],
-    selected: "none"
+    selected: "none",
+    filter: Filter.getDefault()
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -45,6 +48,10 @@ const peopleReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 selected: action.selected,
                 selection: getUsersBySelected(state.users, action.selected)
+            });
+        case SET_FILTER:
+            return Object.assign({}, state, {
+                filter: action.filter
             });
         default:
             return state;

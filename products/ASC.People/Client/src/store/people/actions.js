@@ -1,4 +1,5 @@
 import * as api from "../../utils/api";
+import Filter from "../../helpers/filter";
 
 export const SET_GROUPS = 'SET_GROUPS';
 export const SET_USERS = 'SET_USERS';
@@ -6,6 +7,7 @@ export const SET_SELECTION = 'SET_SELECTION';
 export const SELECT_USER = 'SELECT_USER';
 export const DESELECT_USER = 'DESELECT_USER';
 export const SET_SELECTED = 'SET_SELECTED';
+export const SET_FILTER = 'SET_FILTER';
 
 export function setUsers(users) {
     return {
@@ -49,10 +51,18 @@ export function deselectUser(user) {
     };
 };
 
+export function setFilter(filter) {
+    return {
+      type: SET_FILTER,
+      filter
+    };
+  };
+
 export function fetchPeople(filter) {
     return dispatch => {
         return api.getUserList(filter).then(res => {
             console.log("api.getUserList", res);
+            dispatch(setFilter(filter || Filter.getDefault(res.data.total)));
             return dispatch(setUsers(res.data.response));
         });
     };

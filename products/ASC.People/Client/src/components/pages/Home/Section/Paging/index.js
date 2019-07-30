@@ -4,7 +4,7 @@ import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
 import Filter from '../../../../../helpers/filter';
 
-const pageItems = [
+/*const pageItems = [
   {
     key: "1",
     label: "1 of 5",
@@ -30,42 +30,57 @@ const pageItems = [
     label: "5 of 5",
     onClick: () => console.log("set paging 5 of 5")
   }
-];
+];*/
 
 const perPageItems = [
   {
-    key: "1-1",
+    key: "25",
     label: "25 per page",
     onClick: () => console.log("set paging 25 action")
   },
   {
-    key: "1-2",
+    key: "50",
     label: "50 per page",
     onClick: () => console.log("set paging 50 action")
   },
   {
-    key: "1-3",
+    key: "100",
     label: "100 per page",
     onClick: () => console.log("set paging 100 action")
   }
 ];
 
-const SectionPagingContent = ({ users, fetchPeople }) => {
-  console.log("SectionPagingContent render", users);
+const SectionPagingContent = ({ fetchPeople, filter }) => {
+  const onNextClick = e => {
+    if(!filter.hasNext) {
+      e.preventDefault();
+      return;
+    }
+    console.log("Next Clicked", e);
+    const newFilter = Filter.nextPage(filter);
+    fetchPeople(newFilter);
+  };
+  const onPrevClick = e => {
+    if(!filter.hasPrev) {
+      e.preventDefault();
+      return;
+    }
+    console.log("Prev Clicked", e);
+    const newFilter = Filter.prevPage(filter);
+    fetchPeople(newFilter);
+  }
+  console.log("SectionPagingContent render", filter);
   return (
     <Paging
       previousLabel="Previous"
       nextLabel="Next"
-      pageItems={pageItems}
+      // pageItems={pageItems}
       perPageItems={perPageItems}
-      previousAction={e => {
-        console.log("Prev Clicked", e);
-        fetchPeople(new Filter(1, 25));
-      }}
-      nextAction={e => {
-        console.log("Next Clicked", e);
-        fetchPeople(new Filter(2, 25));
-      }}
+      displayItems={false}
+      disablePrevious={!filter.hasPrev}
+      disableNext={!filter.hasNext}
+      previousAction={onPrevClick}
+      nextAction={onNextClick}
       openDirection="top"
     />
   );
@@ -73,12 +88,11 @@ const SectionPagingContent = ({ users, fetchPeople }) => {
 
 function mapStateToProps(state) {
   return {
-    users: state.people.users,
-    isLoaded: state.auth.isLoaded
+    filter: state.people.filter
   };
 }
 
 export default connect(
   mapStateToProps,
-  { fetchPeople: fetchPeople }
+  { fetchPeople }
 )(SectionPagingContent);
