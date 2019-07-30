@@ -5,101 +5,71 @@ class Filter {
     return new Filter(0, 25, total);
   }
 
-  static nextPage(filter) {
-    const {
-      page,
-      pageCount,
-      total,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
-    } = filter;
-
-    let nextPage = page + 1;
-
-    const nextFilter = new Filter(
-      nextPage,
-      pageCount,
-      total,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
-    );
-
-    return nextFilter;
-  }
-
-  static prevPage(filter) {
-    const {
-      page,
-      pageCount,
-      total,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
-    } = filter;
-
-    let prevPage = page - 1;
-
-    const nextFilter = new Filter(
-      prevPage,
-      pageCount,
-      total,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
-    );
-
-    return nextFilter;
-  }
-
   constructor(
     page = 0,
     pageCount = 25,
     total = 0,
-    sortby = "firstname",
-    sortorder = "ascending",
-    employeestatus = null,
-    activationstatus = null
+    sortBy = "firstname",
+    sortOrder = "ascending",
+    employeeStatus = null,
+    activationStatus = null
   ) {
     this.page = page;
-    this.startIndex = page * pageCount;
     this.pageCount = pageCount;
-    this.sortby = sortby;
-    this.sortorder = sortorder;
-    this.employeestatus = employeestatus;
-    this.activationstatus = activationstatus;
+    this.sortBy = sortBy;
+    this.sortOrder = sortOrder;
+    this.employeeStatus = employeeStatus;
+    this.activationStatus = activationStatus;
     this.total = total;
-    this.hasNext = total - this.startIndex > pageCount;
-    this.hasPrev = page > 0;
   }
+
+  getStartIndex = () => {
+    return this.page * this.pageCount;
+  };
+
+  hasNext = () => {
+    return this.total - this.getStartIndex() > this.pageCount;
+  };
+
+  hasPrev = () => {
+    return this.page > 0;
+  };
 
   toDto = () => {
     const {
-      startIndex,
       pageCount,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
+      sortBy,
+      sortOrder,
+      employeeStatus,
+      activationStatus
     } = this;
     return {
-      StartIndex: startIndex,
+      StartIndex: this.getStartIndex(),
       Count: pageCount,
-      sortby,
-      sortorder,
-      employeestatus,
-      activationstatus
+      sortby: sortBy,
+      sortorder: sortOrder,
+      employeestatus: employeeStatus,
+      activationstatus: activationStatus
     };
   };
 
   toUrlParams = () => {
-    return toUrlParams(this.toDto(), true);
+    const dtoFilter = this.toDto();
+    const str = toUrlParams(dtoFilter, true);
+    return str;
   };
+
+  clone() {
+    return new Filter(
+      this.page,
+      this.pageCount,
+      this.total,
+      this.sortBy,
+      this.sortOrder,
+      this.employeeStatus,
+      this.activationStatus
+    );
+  }
 }
 
 export default Filter;

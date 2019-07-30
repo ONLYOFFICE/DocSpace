@@ -32,61 +32,75 @@ import Filter from '../../../../../helpers/filter';
   }
 ];*/
 
-
 const SectionPagingContent = ({ fetchPeople, filter }) => {
   const onNextClick = useCallback(e => {
-    if(!filter.hasNext) {
+    if(!filter.hasNext()) {
       e.preventDefault();
       return;
     }
     console.log("Next Clicked", e);
-    const newFilter = Filter.nextPage(filter);
+
+    const newFilter = filter.clone();
+    newFilter.page++;
     fetchPeople(newFilter);
+
   }, [filter, fetchPeople]);
 
   const onPrevClick = useCallback(e => {
-    if(!filter.hasPrev) {
+    if(!filter.hasPrev()) {
       e.preventDefault();
       return;
     }
+
     console.log("Prev Clicked", e);
-    const newFilter = Filter.prevPage(filter);
+
+    const newFilter = filter.clone();
+    newFilter.page--;
     fetchPeople(newFilter);
+
   }, [filter, fetchPeople]);
 
-  const onChangePageSize = useCallback(pageCount => {
-    const newFilter = new Filter(0, pageCount, filter.total, filter.sortby, filter.sortorder, filter.employeestatus, filter.activationstatus);
+  const onChangePageSize = useCallback(pageItem => {
+    console.log("Paging onChangePageSize", pageItem);
+    
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.pageCount = pageItem.key;
     fetchPeople(newFilter);
+
   }, [filter, fetchPeople]);
+
+  /*const onChangePage = useCallback(pageItem => {
+    console.log("Paging onChangePage", pageItem);
+  }, []);*/
 
   const perPageItems = useMemo(() => [
     {
-      key: "25",
-      label: "25 per page",
-      onClick: () => onChangePageSize(25)
+      key: 25,
+      label: "25 per page"
     },
     {
-      key: "50",
-      label: "50 per page",
-      onClick: () => onChangePageSize(50)
+      key: 50,
+      label: "50 per page"
     },
     {
-      key: "100",
-      label: "100 per page",
-      onClick: () => onChangePageSize(100)
+      key: 100,
+      label: "100 per page"
     }
-  ], [onChangePageSize]);
+  ], []);
 
   console.log("SectionPagingContent render", filter);
   return (
     <Paging
       previousLabel="Previous"
       nextLabel="Next"
-      // pageItems={pageItems}
+      //pageItems={pageItems}
+      //onSelectPage={onChangePage}
       perPageItems={perPageItems}
+      onSelectPerPage={onChangePageSize}
       displayItems={false}
-      disablePrevious={!filter.hasPrev}
-      disableNext={!filter.hasNext}
+      disablePrevious={!filter.hasPrev()}
+      disableNext={!filter.hasNext()}
       previousAction={onPrevClick}
       nextAction={onNextClick}
       openDirection="top"
