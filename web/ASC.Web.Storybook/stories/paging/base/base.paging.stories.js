@@ -8,65 +8,65 @@ import Section from '../../../.storybook/decorators/section';
 import { isUndefined } from 'util';
 
 storiesOf('Components|Paging', module)
-    .addDecorator(withKnobs)
-    .addDecorator(withReadme(Readme))
-    .add('base', () => {
+  .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
+  .add('base', () => {
 
-        const pageItems = [
-            {
-                key: '1',
-                label: '1 of 5'
-            },
-            {
-                key: '2',
-                label: '2 of 5'
-            },
-            {
-                key: '3',
-                label: '3 of 5'
-            },
-            {
-                key: '4',
-                label: '4 of 5'
-            },
-            {
-                key: '5',
-                label: '5 of 5'
-            }
-        ];
+    const pageItems = [
+      {
+        key: '1',
+        label: '1 of 5'
+      },
+      {
+        key: '2',
+        label: '2 of 5'
+      },
+      {
+        key: '3',
+        label: '3 of 5'
+      },
+      {
+        key: '4',
+        label: '4 of 5'
+      },
+      {
+        key: '5',
+        label: '5 of 5'
+      }
+    ];
 
-        const perPageItems = [
-            {
-                key: '1-1',
-                label: '25 per page'
-            },
-            {
-                key: '1-2',
-                label: '50 per page'
-            },
-            {
-                key: '1-3',
-                label: '100 per page'
-            }
-        ];
+    const perPageItems = [
+      {
+        key: '1-1',
+        label: '25 per page'
+      },
+      {
+        key: '1-2',
+        label: '50 per page'
+      },
+      {
+        key: '1-3',
+        label: '100 per page'
+      }
+    ];
 
-        const displayItems = boolean('Display pageItems', true);
-        const displayPerPage = boolean('Display perPageItems', true);
-      
-        return (
-            <Section>
-                <Paging previousLabel={text('previousLabel', 'Previous')} 
-                        nextLabel={text('nextLabel', 'Next')} 
-                        pageItems={displayItems ? pageItems : undefined}
-                        perPageItems={displayPerPage ? perPageItems : undefined}
-                        disablePrevious={boolean('disablePrevious', false)}
-                        disableNext={boolean('disableNext', false)}
-                        previousAction={ () => console.log('Prev')}
-                        nextAction={ () => console.log('Next')}
-                        openDirection='bottom'
-                        onSelectPage={(a) => console.log(a)}
-                        onSelectPerPage={(a) => console.log(a)}
-                />
-            </Section>
-        )
-    });
+    const displayItems = boolean('Display pageItems', true);
+    const displayPerPage = boolean('Display perPageItems', true);
+
+    return (
+      <Section>
+        <Paging previousLabel={text('previousLabel', 'Previous')}
+          nextLabel={text('nextLabel', 'Next')}
+          pageItems={displayItems ? pageItems : undefined}
+          perPageItems={displayPerPage ? perPageItems : undefined}
+          disablePrevious={boolean('disablePrevious', false)}
+          disableNext={boolean('disableNext', false)}
+          previousAction={() => console.log('Prev')}
+          nextAction={() => console.log('Next')}
+          openDirection='bottom'
+          onSelectPage={(a) => console.log(a)}
+          onSelectPerPage={(a) => console.log(a)}
+        />
+      </Section>
+    )
+  });

@@ -28,103 +28,100 @@ const StyledComboBox = styled.div`
 `;
 
 class ComboBox extends React.PureComponent {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.ref = React.createRef();
+    this.ref = React.createRef();
 
-        this.state = {
-            isOpen: props.opened,
-            boxLabel: props.options[props.selectedIndex].label,
-            options: props.options
-        };
+    this.state = {
+      isOpen: props.opened,
+      boxLabel: props.options[props.selectedIndex].label,
+      options: props.options
+    };
 
-        this.handleClick = this.handleClick.bind(this);
-        this.stopAction = this.stopAction.bind(this);
-        this.toggle = this.toggle.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.stopAction = this.stopAction.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.comboBoxClick = this.comboBoxClick.bind(this);
+    this.optionClick = this.optionClick.bind(this);
+  }
+
+  handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
+  stopAction = (e) => e.preventDefault();
+  toggle = (isOpen) => this.setState({ isOpen: isOpen });
+  comboBoxClick = () => {
+    this.setState({ option: this.props.option });
+    this.toggle(!this.state.isOpen);
+  };
+  optionClick = (option) => {
+    option.onClick && option.onClick();
+    this.toggle(!this.state.isOpen);
+    this.setState({ boxLabel: option.label });
+    this.props.onSelect && this.props.onSelect(option);
+  };
+
+  componentDidMount() {
+    if (this.ref.current) {
+      document.addEventListener("click", this.handleClick);
     }
+  }
 
-    handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
-    stopAction = (e) => e.preventDefault();
-    toggle = (isOpen) => this.setState({ isOpen: isOpen });
+  componentWillUnmount() {
+    document.removeEventListener("click", this.handleClick)
+  }
 
-    componentDidMount() {
-        if (this.ref.current) {
-            document.addEventListener("click", this.handleClick);
-        }
+  componentDidUpdate(prevProps) {
+    if (this.props.opened !== prevProps.opened) {
+      this.toggle(this.props.opened);
     }
+  }
 
-    componentWillUnmount() {
-        document.removeEventListener("click", this.handleClick)
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.opened !== prevProps.opened) {
-            this.toggle(this.props.opened);
-        }
-    }
-
-    render() {
-        //console.log("ComboBox render");
-        return (
-            <StyledComboBox ref={this.ref} {...this.props} data={this.state.boxLabel}
-                onClick={
-                    !this.props.isDisabled
-                        ? () => {
-                            this.setState({ option: this.props.option });
-                            this.toggle(!this.state.isOpen);
-                        }
-                        : this.stopAction
-                }
-            >
-                <InputBlock placeholder={this.state.boxLabel}
-                    iconName='ExpanderDownIcon'
-                    iconSize={8}
-                    isIconFill={true}
-                    iconColor='#A3A9AE'
-                    scale={true}
-                    isDisabled={this.props.isDisabled}
-                    isReadOnly={true}
-                    onIconClick={() => false}
-                >
-                    {this.props.children}
-                    <DropDown
-                        directionX={this.props.directionX}
-                        directionY={this.props.directionY}
-                        manualWidth='100%'
-                        manualY='102%'
-                        isOpen={this.state.isOpen}
-                    >
-                        {this.state.options.map((option, index) =>
-                            <DropDownItem {...option}
-                                disabled={option.label === this.state.boxLabel}
-                                onClick={() => {
-                                    option.onClick && option.onClick();
-                                    this.toggle(!this.state.isOpen);
-                                    this.setState({ boxLabel: option.label });
-                                    this.props.onSelect && this.props.onSelect(option);
-                                }}
-                            />
-                        )}
-                    </DropDown>
-                </InputBlock>
-            </StyledComboBox>
-        );
-    }
+  render() {
+    //console.log("ComboBox render");
+    return (
+      <StyledComboBox ref={this.ref} {...this.props} data={this.state.boxLabel} onClick={this.comboBoxClick} onSelect={this.stopAction} >
+        <InputBlock placeholder={this.state.boxLabel}
+          iconName='ExpanderDownIcon'
+          iconSize={8}
+          isIconFill={true}
+          iconColor='#A3A9AE'
+          scale={true}
+          isDisabled={this.props.isDisabled}
+          isReadOnly={true}
+        >
+          {this.props.children}
+          <DropDown
+            directionX={this.props.directionX}
+            directionY={this.props.directionY}
+            manualWidth='100%'
+            manualY='102%'
+            isOpen={this.state.isOpen}
+          >
+            {this.state.options.map((option) =>
+              <DropDownItem {...option}
+                disabled={option.label === this.state.boxLabel}
+                onClick={() => this.optionClick(option)}
+              />
+            )}
+          </DropDown>
+        </InputBlock>
+      </StyledComboBox>
+    );
+  }
 };
 
 ComboBox.propTypes = {
-    isDisabled: PropTypes.bool,
-    withBorder: PropTypes.bool,
-    selectedIndex: PropTypes.number,
-    options: PropTypes.array,
-    onSelect: PropTypes.func
+  isDisabled: PropTypes.bool,
+  withBorder: PropTypes.bool,
+  selectedIndex: PropTypes.number,
+  options: PropTypes.array,
+  onSelect: PropTypes.func
 }
 
 ComboBox.defaultProps = {
-    isDisabled: false,
-    withBorder: true,
-    selectedIndex: 0
+  isDisabled: false,
+  withBorder: true,
+  selectedIndex: 0
 }
 
 export default ComboBox;
