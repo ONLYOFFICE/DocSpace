@@ -11,69 +11,126 @@ const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
 `;
 
-const createItems = (label, dropDownLabel, menuItemLabel, count) => {
-    var items =[
-        {
-            label: label,
-            isDropdown: true,
-            isSeparator: true,
-            fontWeight: 'bold',
-            children: [
-                <DropDownItem key='1' label={dropDownLabel}/>,
-                <DropDownItem key='2' label={dropDownLabel}/>,
-                <DropDownItem key='3' label={dropDownLabel}/>
-            ]
-        }
-    ];
-
-    for (var i=0; i<count; i++){
-        items.push({label:menuItemLabel, onClick: () => console.log('Click action')});
-    }
-
-    return items;
-}
+const groupItems = [
+  {
+    label: 'Select',
+    isDropdown: true,
+    isSeparator: true,
+    isSelect: true,
+    fontWeight: 'bold',
+    children: [
+      <DropDownItem key='aaa' label='aaa' />,
+      <DropDownItem key='bbb' label='bbb' />,
+      <DropDownItem key='ccc' label='ccc' />,
+    ],
+    onSelect: (a) => console.log(a)
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  },
+  {
+    label: 'Menu item',
+    onClick: () => console.log('Menu item action')
+  }
+];
 
 storiesOf('Components|GroupButtonsMenu', module)
-    .addDecorator(withReadme(Readme))
-    .addDecorator(withKnobs)
-    .add('base', () => {
-
-        const elements = 10;
-        const selectLabel = 'Select';
-        const dropLabel = 'Dropdown item';
-        const menuItemLabel = 'Menu item';
-
-        const menuItems = createItems(selectLabel, dropLabel, menuItemLabel, elements);
-
-        return (
-            <BooleanValue>
-                {({ value: visible, toggle }) => (
-                    <>
-                        <Button
-                            label="Show menu"
-                            onClick={(e) => {
-                                toggle(visible);
-                            }}
-                        />
-                        <GroupButtonsMenuContainer>
-                            <BooleanValue>
-                                {({ value: checked, toggle }) => (
-
-                                    <GroupButtonsMenu
-                                        checked={checked}
-                                        menuItems={menuItems}
-                                        visible={visible}
-                                        moreLabel={text('moreLabel', 'More')}
-                                        closeTitle={text('closeTitle', 'Close')}
-                                        onClose={() => console.log('Close action')}
-                                        onChange={(e) => toggle(checked)}
-                                    />
-                                )}
-                            </BooleanValue>
-
-                        </GroupButtonsMenuContainer>
-                    </>
+  .addDecorator(withReadme(Readme))
+  .addDecorator(withKnobs)
+  .add('base', () => {
+    return (
+      <BooleanValue>
+        {({ value: visible, toggle }) => (
+          <>
+            <Button
+              label="Show menu"
+              onClick={(e) => {
+                toggle(visible);
+              }}
+            />
+            <GroupButtonsMenuContainer>
+              <BooleanValue>
+                {({ value: checked, toggle }) => (
+                  <GroupButtonsMenu
+                    checked={checked}
+                    menuItems={groupItems}
+                    visible={visible}
+                    moreLabel={text('moreLabel', 'More')}
+                    closeTitle={text('closeTitle', 'Close')}
+                    onClose={() => console.log('Close action')}
+                    onChange={(e) => toggle(checked)}
+                    selected={groupItems[0].label}
+                  />
                 )}
-            </BooleanValue>
-        );
-    });
+              </BooleanValue>
+            </GroupButtonsMenuContainer>
+          </>
+        )}
+      </BooleanValue>
+    );
+  });

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
+import Checkbox from "../checkbox";
 
 const textColor = "#333333",
   disabledTextColor = "#A3A9AE";
@@ -82,6 +83,15 @@ const Separator = styled.div`
   margin-top: 16px;
 `;
 
+const StyledCheckbox = styled.div`
+    display: inline-block;
+    margin: auto 0 auto 16px;
+
+    & > * {
+        margin: 0px;
+    }
+`;
+
 class GroupButton extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -89,7 +99,8 @@ class GroupButton extends React.PureComponent {
     this.ref = React.createRef();
 
     this.state = {
-      isOpen: props.opened
+      isOpen: props.opened,
+      selected: props.selected
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -122,41 +133,46 @@ class GroupButton extends React.PureComponent {
 
   render() {
     //console.log("GroupButton render");
-    const { label, isDropdown, disabled, isSeparator } = this.props;
+    const { label, isDropdown, disabled, isSeparator, isSelect, onSelect, checked, isIndeterminate, onChange, children, selected } = this.props;
+    const color = disabled ? disabledTextColor : textColor;
 
     return (
       <StyledGroupButton ref={this.ref}>
-        {isDropdown ? (
-          <>
-            <StyledDropdownToggle
-              {...this.props}
+        {isDropdown
+          ? <>
+            {isSelect &&
+              <StyledCheckbox>
+                <Checkbox
+                  isChecked={checked}
+                  isIndeterminate={isIndeterminate}
+                  onChange={(e) => {
+                    onChange && onChange(e.target.checked);
+                    this.setState({ selected: selected });
+                  }} />
+              </StyledCheckbox>
+            }
+            <StyledDropdownToggle {...this.props}
               onClick={() => {
                 disabled ? false : this.toggle(!this.state.isOpen);
               }}
             >
-              {label}
-              <Caret
-                size="small"
-                color={disabled ? disabledTextColor : textColor}
-              />
+              {!isSelect ? label : this.state.selected}
+              <Caret size="small" color={color} />
             </StyledDropdownToggle>
             <DropDown isOpen={this.state.isOpen}>
-            {
-                React.Children.map(this.props.children, (child) => 
-                <DropDownItem 
-                    {...child.props}
-                    onClick={() => { 
-                        child.props.onClick && child.props.onClick();
-                    this.toggle(!this.state.isOpen);
-                    }}
-                />
-                )
-            }
+              {React.Children.map(children, (child) => {
+                return <DropDownItem {...child.props} onClick={() => {
+                  child.props.onClick && child.props.onClick();
+                  onSelect && onSelect(child);
+                  this.setState({ selected: child.props.label });
+                  this.toggle(!this.state.isOpen);
+                }} />;
+              })}
+
             </DropDown>
           </>
-        ) : (
-          <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>
-        )}
+          : <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>
+        }
         {isSeparator && <Separator />}
       </StyledGroupButton>
     );
@@ -173,7 +189,9 @@ GroupButton.propTypes = {
   isSeparator: PropTypes.bool,
   tabIndex: PropTypes.number,
   onClick: PropTypes.func,
-  fontWeight: PropTypes.string
+  fontWeight: PropTypes.string,
+  onSelect: PropTypes.func,
+  isSelect: PropTypes.bool
 };
 
 GroupButton.defaultProps = {
@@ -185,7 +203,8 @@ GroupButton.defaultProps = {
   isDropdown: false,
   isSeparator: false,
   tabIndex: -1,
-  fontWeight: "600"
+  fontWeight: "600",
+  isSelect: false
 };
 
 export default GroupButton;

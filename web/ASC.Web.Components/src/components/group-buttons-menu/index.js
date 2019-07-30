@@ -1,9 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import GroupButton from '../group-button'
-import DropDownItem from '../drop-down-item'
-import Checkbox from '../checkbox'
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import GroupButton from '../group-button';
+import DropDownItem from '../drop-down-item';
 
 const StyledGroupButtonsMenu = styled.div`
     position: sticky;
@@ -48,137 +47,125 @@ const CloseButton = styled.div`
     }
 `;
 
-const StyledCheckbox = styled.div`
-    display: inline-block;
-    margin-left: 16px;
-    vertical-align: middle;
-
-    & > * {
-        margin: 0px;
-    }
-`;
-
 class GroupButtonsMenu extends React.PureComponent {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            priorityItems: props.menuItems,
-            moreItems: [],
-            visible: true
-        }
-
-        this.fullMenuArray = this.props.menuItems;
-        this.checkBox = this.props.checkBox;
-
-        this.updateMenu = this.updateMenu.bind(this);
-        this.howManyItemsInMenuArray = this.howManyItemsInMenuArray.bind(this);
+    this.state = {
+      priorityItems: props.menuItems,
+      moreItems: [],
+      visible: true
     }
 
-    componentDidMount() {
-        this.widthsArray = Array.from(document.getElementById("groupMenu").children).map(item => item.getBoundingClientRect().width);
+    this.fullMenuArray = this.props.menuItems;
+    this.checkBox = this.props.checkBox;
 
-        window.addEventListener('resize', _.throttle(this.updateMenu), 100);
-        this.updateMenu();
+    this.updateMenu = this.updateMenu.bind(this);
+    this.howManyItemsInMenuArray = this.howManyItemsInMenuArray.bind(this);
+  }
+
+  componentDidMount() {
+    this.widthsArray = Array.from(document.getElementById("groupMenu").children).map(item => item.getBoundingClientRect().width);
+
+    window.addEventListener('resize', _.throttle(this.updateMenu), 300);
+
+    this.updateMenu();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.visible !== prevProps.visible) {
+      this.setState({ visible: this.props.visible });
     }
+  };
 
-    componentDidUpdate(prevProps) {
-        if (this.props.visible !== prevProps.visible) {
-            this.setState({ visible: this.props.visible });
-        }
+  howManyItemsInMenuArray = (array, outerWidth, initialWidth) => {
+    let total = (initialWidth + 80);
+    for (let i = 0, len = array.length; i < len; i++) {
+      if (total + array[i] > outerWidth) {
+        return i < 1 ? 1 : i;
+      } else {
+        total += array[i];
+      }
+    }
+  };
+
+  updateMenu = () => {
+    const moreMenuElement = document.getElementById("moreMenu");
+    const outerWidth = document.getElementById("groupMenuOuter").getBoundingClientRect().width;
+    const moreMenuWidth = moreMenuElement ? moreMenuElement.getBoundingClientRect().width : 0;
+    const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, outerWidth, moreMenuWidth);
+    const navItemsCopy = this.fullMenuArray;
+    const priorityItems = navItemsCopy.slice(0, arrayAmount);
+
+    this.setState({
+      priorityItems: priorityItems,
+      moreItems: priorityItems.length !== navItemsCopy.length ? navItemsCopy.slice(arrayAmount, navItemsCopy.length) : []
+    });
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateMenu());
+  }
+
+  render() {
+    //console.log("GroupButtonsMenu render");
+
+    const closeMenu = (e) => {
+      this.setState({ visible: false });
+      this.props.onClose && this.props.onClose(e);
     };
 
-    howManyItemsInMenuArray = (array, outerWidth, initialWidth, minimumNumberInNav) => {
-        let total = (initialWidth + 180);
-        for (let i = 0; i < array.length; i++) {
-            if (total + array[i] > outerWidth) {
-                return i < minimumNumberInNav ? minimumNumberInNav : i;
-            } else {
-                total += array[i];
-            }
+    return (
+      <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
+        <div id="groupMenu" style={{ display: 'inline-block' }}>
+          {this.state.priorityItems.map((item, i) =>
+            <GroupButton key={`navItem-${i}`}
+              label={item.label}
+              isDropdown={item.isDropdown}
+              isSeparator={item.isSeparator}
+              isSelect={item.isSelect}
+              onSelect={item.onSelect}
+              fontWeight={item.fontWeight}
+              onClick={(e) => {
+                item.onClick(e);
+                closeMenu(e);
+              }}
+              {...this.props}>
+              {item.children}
+            </GroupButton>
+          )}
+        </div>
+        {this.state.moreItems.length > 0 &&
+          <GroupButton id="moreMenu" isDropdown label={this.props.moreLabel}>
+            {this.state.moreItems.map((item, i) =>
+              <DropDownItem
+                key={`moreNavItem-${i}`}
+                label={item.label}
+                onClick={(e) => {
+                  item.onClick(e);
+                  closeMenu(e);
+                }}
+              />
+            )}
+          </GroupButton>
         }
-    };
-
-    updateMenu = () => {
-        this.outerWidth = document.getElementById("groupMenuOuter") ? document.getElementById("groupMenuOuter").getBoundingClientRect().width : 0;
-        this.moreMenu = document.getElementById("moreMenu") ? document.getElementById("moreMenu").getBoundingClientRect().width : 0;
-
-        const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, this.outerWidth, this.moreMenu, 1);
-        const navItemsCopy = this.fullMenuArray;
-        const priorityItems = navItemsCopy.slice(0, arrayAmount);
-
-        this.setState({
-            priorityItems: priorityItems,
-            moreItems: priorityItems.length !== navItemsCopy.length ? navItemsCopy.slice(arrayAmount, navItemsCopy.length) : []
-        });
-    };
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateMenu());
-    }
-
-
-    render() {
-        console.log("GroupButtonsMenu render");
-        const closeMenu = (e) => {
-            this.setState({ visible: false });
-            this.props.onClose && this.props.onClose(e);
-        };
-
-        return (
-            <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
-                {this.props.hasOwnProperty("checked") &&
-                    <StyledCheckbox>
-                        <Checkbox isChecked={this.props.checked} isIndeterminate={this.props.isIndeterminate} onChange={(e) => {
-                            this.props.onChange && this.props.onChange(e.target.checked);
-                        }} />
-                    </StyledCheckbox>
-                }
-                <div id="groupMenu" style={{ display: 'inline-block' }}>
-                    {this.state.priorityItems.map((item, i) =>
-                        <GroupButton key={`navItem-${i}`}
-                            label={item.label}
-                            isDropdown={item.isDropdown}
-                            isSeparator={item.isSeparator}
-                            fontWeight={item.fontWeight}
-                            onClick={(e) => {
-                                item.onClick(e);
-                                closeMenu(e);
-                            }}>
-                            {item.children}
-                        </GroupButton>
-                    )}
-                </div>
-                {this.state.moreItems.length > 0 &&
-                    <GroupButton id="moreMenu" isDropdown label={this.props.moreLabel}>
-                        {this.state.moreItems.map((item, i) =>
-                            <DropDownItem
-                                key={`moreNavItem-${i}`}
-                                label={item.label}
-                                onClick={(e) => {
-                                    item.onClick(e);
-                                    closeMenu(e);
-                                }}
-                            />
-                        )}
-                    </GroupButton>
-                }
-                <CloseButton title={this.props.closeTitle} onClick={closeMenu} />
-            </StyledGroupButtonsMenu>
-        );
-    }
+        <CloseButton title={this.props.closeTitle} onClick={closeMenu} />
+      </StyledGroupButtonsMenu>
+    );
+  }
 }
 
 GroupButtonsMenu.propTypes = {
-    onClick: PropTypes.func,
-    onClose: PropTypes.func,
-    onChange: PropTypes.func,
-    menuItems: PropTypes.array,
-    checked: PropTypes.bool,
-    visible: PropTypes.bool,
-    moreLabel: PropTypes.string,
-    closeTitle: PropTypes.string
+  onClick: PropTypes.func,
+  onClose: PropTypes.func,
+  onChange: PropTypes.func,
+  onSelect: PropTypes.func,
+  menuItems: PropTypes.array,
+  checked: PropTypes.bool,
+  selected: PropTypes.string,
+  visible: PropTypes.bool,
+  moreLabel: PropTypes.string,
+  closeTitle: PropTypes.string
 }
 
 export default GroupButtonsMenu;
