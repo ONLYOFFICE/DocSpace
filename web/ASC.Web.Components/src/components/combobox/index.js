@@ -98,10 +98,11 @@ class ComboBox extends React.PureComponent {
                         {this.state.options.map((option, index) =>
                             <DropDownItem {...option}
                                 disabled={option.label === this.state.boxLabel}
-                                onClick={(e) => {
-                                    option.onClick && option.onClick(e);
+                                onClick={() => {
+                                    option.onClick && option.onClick();
                                     this.toggle(!this.state.isOpen);
                                     this.setState({ boxLabel: option.label });
+                                    this.props.onSelect && this.props.onSelect(option);
                                 }}
                             />
                         )}
@@ -116,7 +117,8 @@ ComboBox.propTypes = {
     isDisabled: PropTypes.bool,
     withBorder: PropTypes.bool,
     selectedIndex: PropTypes.number,
-    options: PropTypes.array
+    options: PropTypes.array,
+    onSelect: PropTypes.func
 }
 
 ComboBox.defaultProps = {

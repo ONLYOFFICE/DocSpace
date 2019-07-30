@@ -39,13 +39,13 @@ const Paging = props => {
       <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox directionY={openDirection} options={pageItems} />
+          <ComboBox directionY={openDirection} options={pageItems} onSelect={(a)=> props.onSelectPage(a)} />
         </StyledPage>
       }
       <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
       {perPageItems && 
       <StyledOnPage>
-        <ComboBox directionY={openDirection} options={perPageItems} />
+        <ComboBox directionY={openDirection} options={perPageItems} onSelect={(a) => props.onSelectPerPage(a)} />
       </StyledOnPage>
       }
     </StyledPaging>
@@ -59,6 +59,8 @@ Paging.propTypes = {
   nextLabel: PropTypes.string,
   disablePrevious: PropTypes.bool,
   disableNext: PropTypes.bool,
+  onSelectPage: PropTypes.func,
+  onSelectPerPage: PropTypes.func
 }
 
 Paging.defaultProps = {
