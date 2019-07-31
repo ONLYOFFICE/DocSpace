@@ -5,8 +5,9 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../../.storybook/decorators/section';
 import { ComboBox } from 'asc-web-components'
+import { action } from '@storybook/addon-actions';
 
-let options = [
+const options = [
     {
         key: '0',
         label: '25 per page'
@@ -28,6 +29,7 @@ storiesOf('Components|Input', module)
         <Section>
             <ComboBox 
                 options={options}
+                onSelect={option => action("Selected option")(option)}
                 isDisabled={boolean('isDisabled', false)}
                 withBorder={boolean('withBorder', true)}
             />

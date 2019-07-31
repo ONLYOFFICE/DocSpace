@@ -50,13 +50,16 @@ class ComboBox extends React.PureComponent {
   stopAction = (e) => e.preventDefault();
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
   comboBoxClick = () => {
-    this.setState({ option: this.props.option });
-    this.toggle(!this.state.isOpen);
+    this.setState({ 
+      option: this.props.option,
+      isOpen: !this.state.isOpen
+    });
   };
   optionClick = (option) => {
-    option.onClick && option.onClick();
-    this.toggle(!this.state.isOpen);
-    this.setState({ boxLabel: option.label });
+    this.setState({ 
+      boxLabel: option.label,
+      isOpen: !this.state.isOpen
+    });
     this.props.onSelect && this.props.onSelect(option);
   };
 
@@ -100,7 +103,7 @@ class ComboBox extends React.PureComponent {
             {this.state.options.map((option) =>
               <DropDownItem {...option}
                 disabled={option.label === this.state.boxLabel}
-                onClick={() => this.optionClick(option)}
+                onClick={this.optionClick.bind(this, option)}
               />
             )}
           </DropDown>
