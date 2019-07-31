@@ -47,6 +47,10 @@ const CloseButton = styled.div`
     }
 `;
 
+const GroupMenuWrapper = styled.div`
+  display: inline-block;
+`;
+
 class GroupButtonsMenu extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -62,13 +66,23 @@ class GroupButtonsMenu extends React.PureComponent {
 
     this.updateMenu = this.updateMenu.bind(this);
     this.howManyItemsInMenuArray = this.howManyItemsInMenuArray.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
+    this.groupButtonClick = this.groupButtonClick.bind(this);
   }
+
+  closeMenu = (e) => {
+    this.setState({ visible: false });
+    this.props.onClose && this.props.onClose(e);
+  };
+
+  groupButtonClick = (item) => {
+    item.onClick();
+    this.closeMenu();
+  };
 
   componentDidMount() {
     this.widthsArray = Array.from(document.getElementById("groupMenu").children).map(item => item.getBoundingClientRect().width);
-
     window.addEventListener('resize', _.throttle(this.updateMenu), 300);
-
     this.updateMenu();
   }
 
@@ -91,7 +105,8 @@ class GroupButtonsMenu extends React.PureComponent {
 
   updateMenu = () => {
     const moreMenuElement = document.getElementById("moreMenu");
-    const outerWidth = document.getElementById("groupMenuOuter").getBoundingClientRect().width;
+    const groupMenuOuterElement = document.getElementById("groupMenuOuter");
+    const outerWidth = groupMenuOuterElement ? groupMenuOuterElement.getBoundingClientRect().width : 0;
     const moreMenuWidth = moreMenuElement ? moreMenuElement.getBoundingClientRect().width : 0;
     const arrayAmount = this.howManyItemsInMenuArray(this.widthsArray, outerWidth, moreMenuWidth);
     const navItemsCopy = this.fullMenuArray;
@@ -109,15 +124,9 @@ class GroupButtonsMenu extends React.PureComponent {
 
   render() {
     //console.log("GroupButtonsMenu render");
-
-    const closeMenu = (e) => {
-      this.setState({ visible: false });
-      this.props.onClose && this.props.onClose(e);
-    };
-
     return (
       <StyledGroupButtonsMenu id="groupMenuOuter" visible={this.state.visible} {...this.state}>
-        <div id="groupMenu" style={{ display: 'inline-block' }}>
+        <GroupMenuWrapper id="groupMenu">
           {this.state.priorityItems.map((item, i) =>
             <GroupButton key={`navItem-${i}`}
               label={item.label}
@@ -126,30 +135,25 @@ class GroupButtonsMenu extends React.PureComponent {
               isSelect={item.isSelect}
               onSelect={item.onSelect}
               fontWeight={item.fontWeight}
-              onClick={(e) => {
-                item.onClick(e);
-                closeMenu(e);
-              }}
-              {...this.props}>
+              onClick={() => this.groupButtonClick(item)}
+              {...this.props}
+            >
               {item.children}
             </GroupButton>
           )}
-        </div>
+        </GroupMenuWrapper>
         {this.state.moreItems.length > 0 &&
           <GroupButton id="moreMenu" isDropdown label={this.props.moreLabel}>
             {this.state.moreItems.map((item, i) =>
               <DropDownItem
                 key={`moreNavItem-${i}`}
                 label={item.label}
-                onClick={(e) => {
-                  item.onClick(e);
-                  closeMenu(e);
-                }}
+                onClick={() => this.groupButtonClick(item)}
               />
             )}
           </GroupButton>
         }
-        <CloseButton title={this.props.closeTitle} onClick={closeMenu} />
+        <CloseButton title={this.props.closeTitle} onClick={this.closeMenu} />
       </StyledGroupButtonsMenu>
     );
   }
