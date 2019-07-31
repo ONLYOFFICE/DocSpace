@@ -60,6 +60,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       : (props.primary ? '#A6DCF2' : '#FFFFFF'))
   };
 
+  ${props => props.scale && `width: 100%;`}
+
   padding: ${props =>
     (props.size === 'big' && (props.primary 
       ? (props.icon 
@@ -195,6 +197,7 @@ Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'medium', 'big']),
+  scale: PropTypes.bool,
   icon: PropTypes.node,
 
   tabIndex: PropTypes.number,
@@ -211,6 +214,7 @@ Button.defaultProps = {
   label: '',
   primary: false,
   size: 'base',
+  scale: false,
   icon: null,
 
   tabIndex: -1,

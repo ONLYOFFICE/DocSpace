@@ -24,6 +24,7 @@ storiesOf('Components|Buttons', module)
           label={text('label', 'Base button')}
           primary={boolean('primary', true)}
           size={select('size', sizeOptions, 'big')}
+          scale={boolean('scale', false)}
 
           isLoading={boolean('isLoading', false)}
           isHovered={boolean('isHovered', false)}
