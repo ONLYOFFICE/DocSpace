@@ -127,6 +127,7 @@ class Link extends React.PureComponent {
         this.stopAction = this.stopAction.bind(this);
         this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleHovered = this.toggleHovered.bind(this);
+        this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
     }
 
     handleClick = (e) => !this.ref.current.contains(e.target) && this.toggleDropdown(false);
@@ -135,8 +136,10 @@ class Link extends React.PureComponent {
     toggleHovered = (isHovered) => this.setState({ isHovered: isHovered });
     onMouseAction = () => this.props.dropdownType === 'appearDottedAfterHover' && this.toggleHovered(!this.state.isHovered);
     clickToSpan = () => {
-        this.setState({ data: this.props.data });
-        this.toggleDropdown(!this.state.isOpen);
+        this.setState({
+            data: this.props.data,
+            isOpen: !this.state.isOpen
+        });
     }
     clickToSpanWithHandleEvent = (e) => {
         this.stopAction(e);
@@ -153,16 +156,28 @@ class Link extends React.PureComponent {
         document.removeEventListener("click", this.handleClick)
     }
 
-
     componentDidUpdate(prevProps) {
         // Store prevId in state so we can compare when props change.
         // Clear out previously-loaded data (so we don't render stale stuff).
         if (this.props.dropdownType !== prevProps.dropdownType) {
-            this.setState({ isDropdown: this.props.dropdownType != 'none' });
+            if (this.props.isOpen !== prevProps.isOpen) {
+                this.setState({ 
+                    isDropdown: this.props.dropdownType != 'none',
+                    isOpen: this.props.isOpen
+                });
+            }
+            else {
+                this.setState({ isDropdown: this.props.dropdownType != 'none' });
+            }
         }
-        if (this.props.isOpen !== prevProps.isOpen) {
+        else if (this.props.isOpen !== prevProps.isOpen) {
             this.toggleDropdown(this.props.isOpen);
         }
+    }
+
+    onDropDownItemClick = (item) => {
+        item.onClick && item.onClick();
+        this.toggleDropdown(!this.state.isOpen);
     }
 
     render() {
@@ -194,10 +209,7 @@ class Link extends React.PureComponent {
                             this.state.data.map(item =>
                                 <DropDownItem
                                     {...item}
-                                    onClick={() => {
-                                        item.onClick && item.onClick();
-                                        this.toggleDropdown(!this.state.isOpen);
-                                    }}
+                                    onClick={this.onDropDownItemClick.bind(this.props, item)}
                                 />
                             )
                         }
