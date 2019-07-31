@@ -133,6 +133,15 @@ class Link extends React.PureComponent {
     stopAction = (e) => !this.props.href && e.preventDefault();
     toggleDropdown = (isOpen) => this.setState({ isOpen: isOpen });
     toggleHovered = (isHovered) => this.setState({ isHovered: isHovered });
+    onMouseAction = () => this.props.dropdownType === 'appearDottedAfterHover' && this.toggleHovered(!this.state.isHovered);
+    clickToSpan = () => {
+        this.setState({ data: this.props.data });
+        this.toggleDropdown(!this.state.isOpen);
+    }
+    clickToSpanWithHandleEvent = (e) => {
+        this.stopAction(e);
+        this.props.hasOwnProperty("onClick") && this.props.onClick(e);
+    }
 
     componentDidMount() {
         if (this.ref.current) {
@@ -157,27 +166,16 @@ class Link extends React.PureComponent {
     }
 
     render() {
-        //console.log("Link render");
+        console.log("Link render");
         return (
             <span ref={this.ref}
-                onMouseEnter={() => {
-                    this.props.dropdownType === 'appearDottedAfterHover' &&
-                        this.toggleHovered(!this.state.isHovered)
-                }}
-                onMouseLeave={() => {
-                    this.props.dropdownType === 'appearDottedAfterHover' &&
-                        this.toggleHovered(!this.state.isHovered)
-                }}>
+                onMouseEnter={this.onMouseAction}
+                onMouseLeave={this.onMouseAction}
+            >
                 <StyledSpan onClick={
                     this.state.isDropdown ?
-                        () => {
-                            this.setState({ data: this.props.data });
-                            this.toggleDropdown(!this.state.isOpen);
-                        }
-                        : (e) => {
-                            this.stopAction(e);
-                            this.props.hasOwnProperty("onClick") && this.props.onClick(e);
-                        }
+                        this.clickToSpan
+                        : this.clickToSpanWithHandleEvent
                 }>
                     <StyledLink {...this.props}
                     >{this.props.children}</StyledLink>
