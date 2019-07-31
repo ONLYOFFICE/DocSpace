@@ -35,30 +35,36 @@ const getSizeStyle = size => {
   }
 };
 
-export default function createStyledIcon(Component, displayName, fillMask = "*") {
+export default function createStyledIcon(Component, displayName, fillPath="*", strokePath="rect") {
 
-  const Icon = ({ isfill, ...props }) => (
-    <Component {...props}></Component>
-  )
-  const StyledComponent = styled(Icon)(
+  const Icon = ({ isfill, isStroke, color, stroke, fillPath, strokePath, ...props }) => <Component {...props}></Component>;
+  const StyledIcon = styled(Icon)(
     props => `
-    ${props.fillMask} {
+    ${props.fillPath} {
       ${props.isfill ? 'fill:' + props.color : ''};
+    }
+    ${props.strokePath} {
+      ${props.isStroke ? 'stroke:' + props.stroke : ''};
     }
     ${getSizeStyle(props.size)}
   `
   );
-  StyledComponent.displayName = displayName;
-  StyledComponent.propTypes = {
+
+  StyledIcon.displayName = displayName;
+  StyledIcon.propTypes = {
     color: PropTypes.string,
+    stroke: PropTypes.string,
     size: PropTypes.oneOf(['small', 'medium', 'big', 'scale']),
     isfill: PropTypes.bool,
-    fillMask: PropTypes.string
+    isStroke: PropTypes.bool,
+    fillPath: PropTypes.string,
+    strokePath: PropTypes.string
   };
 
-  StyledComponent.defaultProps = {
-    fillMask: fillMask
+  StyledIcon.defaultProps = {
+    fillPath: fillPath,
+    strokePath: strokePath
   }
 
-  return StyledComponent;
+  return StyledIcon;
 }

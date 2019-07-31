@@ -37,6 +37,9 @@ storiesOf('Components|Icons', module)
         let isFill = boolean('isfill', false);
         let iconColor = isFill ? {color: `${color('color', "dimgray")}`} : {};
 
+        let isStroke = boolean('isStroke', false);
+        let iconStroke = isStroke ? {stroke: `${color('stroke', "dimgray")}`} : {};
+
         const containerWidth =
           sizeValue === 'scale'
             ? {
@@ -48,8 +51,10 @@ storiesOf('Components|Icons', module)
             <IconContainer style={containerWidth}>
               <Icon
                 isfill={isFill}
+                isStroke={isStroke}
                 size={sizeValue}
                 {...iconColor}
+                {...iconStroke}
               />
             </IconContainer>
             <span>{iconNames[index]}</span>
