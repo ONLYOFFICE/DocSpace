@@ -14,25 +14,21 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: inline-block;
+  display: ${props => props.number > 0 ? 'inline-block' : 'none'};
   user-select: none;
 `;
 
 const Badge = props => {
   //console.log("Badge render");
-  
-  const onClick = (e) => {
+
+  const onClick = e => {
     if (props.onClick) {
       e.stopPropagation();
       props.onClick(e);
     }
-  }
+  };
 
-  return (
-    props.number > 0
-      ? <StyledBadge {...props} onClick={onClick}>{props.number}</StyledBadge>
-      : ""
-  );
+  return (<StyledBadge {...props} onClick={onClick}>{props.number}</StyledBadge>);
 };
 
 Badge.propTypes = {
