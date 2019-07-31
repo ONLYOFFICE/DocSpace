@@ -46,10 +46,6 @@ const StyledTextarea = styled(TextareaAutosize)`
 
 class TextArea extends React.PureComponent {
 
-  constructor() {
-    super();
-  }
-
   onChange = (e) => this.props.onChange && this.props.onChange(e);
 
   render() {
