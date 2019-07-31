@@ -175,7 +175,7 @@ class GroupButton extends React.PureComponent {
             </StyledDropdownToggle>
             <DropDown isOpen={this.state.isOpen}>
               {React.Children.map(children, (child) =>
-                <DropDownItem {...child.props} onClick={() => this.dropDownItemClick(child)} />)}
+                <DropDownItem {...child.props} onClick={this.dropDownItemClick.bind(this, child)} />)}
             </DropDown>
           </>
           : <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>
