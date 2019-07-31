@@ -16,6 +16,11 @@ const avatarWrapper = {
   marginBottom: "24px"
 };
 
+const editButtonWrapper = {
+  marginTop: "16px",
+  width: "160px"
+};
+
 const infoWrapper = {
   display: "inline-flex",
   marginBottom: "24px"
@@ -42,6 +47,41 @@ const notesWrapper = {
   display: "block",
   marginTop: "24px",
   width: "100%"
+};
+
+const marginTop24 = {
+  marginTop: "24px"
+};
+
+const marginTop22 = {
+  marginTop: "22px"
+};
+
+const marginTop10 = {
+  marginTop: "10px"
+};
+
+const marginLeft18 = {
+  marginLeft: "18px"
+};
+
+const selfToggleWrapper = {
+  width: "100%",
+  marginBottom: "24px"
+}
+
+const contactsToggleWrapper = {
+  width: "100%",
+  marginTop: "24px"
+};
+
+const notesToggleWrapper = {
+  width: "100%"
+};
+
+const contactWrapper = {
+  display: "inline-flex",
+  width: "300px"
 };
 
 let socialProfiles = [
@@ -90,9 +130,9 @@ const getFormattedContacts = (profile) => {
 };
 
 const getFormattedDepartments = (departments) => {
-  let splittedDepartments = departments.split(',');
+  const splittedDepartments = departments.split(',');
   const departmentsLength = splittedDepartments.length - 1;
-  return splittedDepartments.map((department, index) => {
+  const formattedDepartments = splittedDepartments.map((department, index) => {
     return (
       <span key={index}>
         <Link type="action" fontSize={13} isHovered={true} >
@@ -102,6 +142,8 @@ const getFormattedDepartments = (departments) => {
       </span>
     )
   });
+
+  return formattedDepartments;
 };
 
 const sendMail = (email) => {
@@ -114,23 +156,23 @@ const capitalizeFirstLetter = (string) => {
 };
 
 const createContacts = (contacts) => {
-  return contacts.map((contact, index) => {
+  const completeContacts = contacts.map((contact, index) => {
     if (contact.value)
       return (
-        <div key={index} style={{ display: "inline-flex", width: "300px" }}>
+        <div key={index} style={contactWrapper}>
           <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} onClick={() => { }} />
           <div style={textTruncate}>{contact.value}</div>
         </div>
       );
-  })
+  });
+
+  return completeContacts;
 };
 
 const SectionBodyContent = (props) => {
-  const { profile, history, isSelf, settings} = props;
+  const { profile, history, isSelf, settings } = props;
 
   getFormattedContacts(profile);
-
-  console.log(props);
 
   return (
     <div style={profileWrapper}>
@@ -141,7 +183,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        <Button style={{ marginTop: "16px", width: '160px' }} size="big" label="Edit profile" onClick={() => history.push(`${settings.homepage}/edit/${profile.userName}`)} />
+        <Button style={editButtonWrapper} size="big" label="Edit profile" onClick={() => history.push(`${settings.homepage}/edit/${profile.userName}`)} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -155,7 +197,7 @@ const SectionBodyContent = (props) => {
           {profile.birthday && <Text.Body style={restMargins} color='lightGray' title='Date of birth'>Date of birth:</Text.Body>}
           {profile.location && <Text.Body style={restMargins} color='lightGray' title='Location'>Location:</Text.Body>}
           {isSelf && <Text.Body style={restMargins} color='lightGray' title='Language'>Language:</Text.Body>}
-          {isSelf && <Text.Body style={{ marginTop: "24px" }} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}
+          {isSelf && <Text.Body style={marginTop24} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
@@ -168,24 +210,24 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{getFormattedDate(profile.birthday)}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
           {isSelf && <Text.Body style={restMargins}>{profile.cultureName}</Text.Body>}
-          {isSelf && <Button style={{ marginTop: "22px" }} size="base" label="Become our Affiliate" onClick={() => console.log('Become our Affiliate onClick()')} />}
+          {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={() => console.log('Become our Affiliate onClick()')} />}
         </div>
       </div>
       {isSelf &&
-        <div style={{ width: "100%", marginBottom: "24px" }}>
+        <div style={selfToggleWrapper}>
           <ToggleContent label="Login settings" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
               Two-factor authentication via code generating application was enabled for all users by cloud service administrator.
-              <div style={{ marginTop: "10px" }}>
+              <div style={marginTop10}>
                 <Link type="action" isBold={true} isHovered={true} fontSize={13} >{'Reset application'}</Link>
-                <Link style={{ marginLeft: "18px" }} type="action" isBold={true} isHovered={true} fontSize={13} >{'Show backup codes'}</Link>
+                <Link style={marginLeft18} type="action" isBold={true} isHovered={true} fontSize={13} >{'Show backup codes'}</Link>
               </div>
             </Text.Body>
           </ToggleContent>
         </div>
       }
       {isSelf &&
-        <div style={{ width: "100%", marginBottom: "24px" }}>
+        <div style={selfToggleWrapper}>
           <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
               <Button size="big" label="Edit subscriptions" primary={true} onClick={() => console.log('Edit subscriptions onClick()')} />
@@ -194,7 +236,7 @@ const SectionBodyContent = (props) => {
         </div>
       }
       {profile.notes &&
-        <div style={{ width: "100%" }}>
+        <div style={notesToggleWrapper}>
           <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
               {profile.notes}
@@ -203,7 +245,7 @@ const SectionBodyContent = (props) => {
         </div>
       }
       {profile.contacts &&
-        <div style={{ width: "100%", marginTop: "24px" }}>
+        <div style={contactsToggleWrapper}>
           <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
               {createContacts(userContacts)}
@@ -212,7 +254,7 @@ const SectionBodyContent = (props) => {
         </div>
       }
       {profile.contacts &&
-        <div style={{ width: "100%", marginTop: "24px" }}>
+        <div style={contactsToggleWrapper}>
           <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
               {createContacts(userSocialProfiles)}
