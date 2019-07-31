@@ -51,8 +51,8 @@ const StyledDropdownItem = styled.button`
     
     &:hover{
         ${props => props.isSeparator || props.disabled || props.isHeader
-        ? `cursor: default;`
-        : `
+    ? `cursor: default;`
+    : `
             background-color: #F8F9F9;
             width: 100%;
             text-align: left;
@@ -68,7 +68,7 @@ const StyledDropdownItem = styled.button`
                 -moz-border-radius: 0 0 6px 6px;
                 -webkit-border-radius: 0 0 6px 6px;
             }`
-    }
+  }
     }
 `;
 
@@ -119,50 +119,50 @@ const IconWrapper = styled.span`
 `;
 
 const DropDownItem = React.memo(props => {
-    //console.log("DropDownItem render");
-    const { isSeparator, isUserPreview, label, icon } = props;
-    return (
-        <StyledDropdownItem {...props} >
-            {icon &&
-                <IconWrapper>
-                    <IconButton size={16} iconName={icon} color={props.disabled || props.isHeader ? '#A3A9AE' : '#333333'} />
-                </IconWrapper>
-            }
-            {isSeparator ? '\u00A0' : !isUserPreview && label}
-            {isUserPreview &&
-                <UserPreview {...props}>
-                    <AvatarWrapper>
-                        <Avatar size='medium'
-                            role={props.role}
-                            source={props.source}
-                            userName={props.userName}
-                        />
-                    </AvatarWrapper>
-                    <UserNameWrapper>{props.userName}</UserNameWrapper>
-                    <UserEmailWrapper>{label}</UserEmailWrapper>
-                </UserPreview>
-            }
-        </StyledDropdownItem>
-    );
+  //console.log("DropDownItem render");
+  const { isSeparator, isUserPreview, label, icon } = props;
+  return (
+    <StyledDropdownItem {...props} >
+      {icon &&
+        <IconWrapper>
+          <IconButton size={16} iconName={icon} color={props.disabled || props.isHeader ? '#A3A9AE' : '#333333'} />
+        </IconWrapper>
+      }
+      {isSeparator ? '\u00A0' : !isUserPreview && label}
+      {isUserPreview &&
+        <UserPreview {...props}>
+          <AvatarWrapper>
+            <Avatar size='medium'
+              role={props.role}
+              source={props.source}
+              userName={props.userName}
+            />
+          </AvatarWrapper>
+          <UserNameWrapper>{props.userName}</UserNameWrapper>
+          <UserEmailWrapper>{label}</UserEmailWrapper>
+        </UserPreview>
+      }
+    </StyledDropdownItem>
+  );
 });
 
 DropDownItem.propTypes = {
-    isSeparator: PropTypes.bool,
-    isUserPreview: PropTypes.bool,
-    isHeader: PropTypes.bool,
-    tabIndex: PropTypes.number,
-    label: PropTypes.string,
-    disabled: PropTypes.bool,
-    icon: PropTypes.string
+  isSeparator: PropTypes.bool,
+  isUserPreview: PropTypes.bool,
+  isHeader: PropTypes.bool,
+  tabIndex: PropTypes.number,
+  label: PropTypes.string,
+  disabled: PropTypes.bool,
+  icon: PropTypes.string
 };
 
 DropDownItem.defaultProps = {
-    isSeparator: false,
-    isUserPreview: false,
-    isHeader: false,
-    tabIndex: -1,
-    label: '',
-    disabled: false
+  isSeparator: false,
+  isUserPreview: false,
+  isHeader: false,
+  tabIndex: -1,
+  label: '',
+  disabled: false
 };
 
 export default DropDownItem
