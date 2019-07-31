@@ -28,7 +28,7 @@ const hoverCss = css`
     `}
 `;
 
-const ButtonWrapper = ({primary, isHovered, isClicked, isDisabled, isLoading, ...props}) => <button type="button" {...props}></button>;
+const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, ...props}) => <button type="button" {...props}></button>;
 
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
