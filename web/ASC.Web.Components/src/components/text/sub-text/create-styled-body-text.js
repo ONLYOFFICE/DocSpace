@@ -17,7 +17,7 @@ const style = css`
    font-size: 13px;
    font-weight: ${props => props.isBold == true ? 700 : 500};
    ${props => props.isItalic == true && 'font-style: italic'};
-   color: ${props => props.isDisabled == true ? '#ECEEF1' : fontColor};
+   color: ${props => props.isDisabled == true ? props.disableColor : fontColor};
    ${props => props.backgroundColor == true && 'background-color: #F8F9F9;'}
    ${props => props.isInline == true && 'display: inline-block;'}
    text-align: left;
@@ -43,6 +43,7 @@ const style = css`
      tag: PropTypes.oneOf(['p','span']),
      title: PropTypes.string,
      color: PropTypes.oneOf(['black', 'gray', 'lightGray']),
+     disableColor: PropTypes.string,
      backgroundColor: PropTypes.bool,
      truncate: PropTypes.bool,
      isDisabled: PropTypes.bool,
@@ -55,6 +56,7 @@ const style = css`
       tag: 'p',
       title: '',
       color: 'black',
+      disableColor: '#ECEEF1',
       backgroundColor: false,
       truncate: false,
       isDisabled: false,

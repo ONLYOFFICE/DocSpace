@@ -28,6 +28,7 @@ Wraps the given text in a `<p>` or `<span>` element, for normal content.
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |
 | `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property           |
 | `color`            | `oneOf`  |    -     | `black`, `gray`, `lightGray`      | `black`     | Sets the text color                   |
+| `disableColor`     | `string`  |    -     |                      | `lightGray`     | Sets the text disabled color                   |
 | `isBold`           | `bool`   |    -     | -                     | false     | Sets the font weight                                |
 | `isItalic`         | `bool`   |    -     | -                     | false     | Sets the font style                                 |
 | `backgroundColor`  | `bool`   |    -     | -                     | false     | Sets background color                               |
