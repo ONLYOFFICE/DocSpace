@@ -13,13 +13,13 @@ const StyledAvatar = styled.div`
         (props.size === 'big' && '82px') ||
         (props.size === 'medium' && '48px') ||
         (props.size === 'small' && '32px')
-      };
+    };
     height: ${props =>
         (props.size === 'max' && '160px') ||
         (props.size === 'big' && '82px') ||
         (props.size === 'medium' && '48px') ||
         (props.size === 'small' && '32px')
-      };
+    };
 
     font-family: 'Open Sans';
     font-style: normal;
@@ -32,25 +32,25 @@ const RoleWrapper = styled.div`
         (props.size === 'big' && '-2px') ||
         (props.size === 'medium' && '0px') ||
         (props.size === 'small' && '-2px')
-      };
+    };
     bottom: ${props =>
         (props.size === 'max' && '0px') ||
         (props.size === 'big' && '4px') ||
         (props.size === 'medium' && '0px') ||
         (props.size === 'small' && '3px')
-      };
+    };
     width: ${props =>
         (props.size === 'max' && '24px') ||
         (props.size === 'big' && '12px') ||
         (props.size === 'medium' && '12px') ||
         (props.size === 'small' && '12px')
-      };
+    };
     height: ${props =>
         (props.size === 'max' && '24px') ||
         (props.size === 'big' && '12px') ||
         (props.size === 'medium' && '12px') ||
         (props.size === 'small' && '12px')
-      };
+    };
 `;
 
 const ImageStyled = styled.img`
@@ -59,7 +59,7 @@ const ImageStyled = styled.img`
     border-radius: 50%;
 `;
 
-const AvatarWrapper= styled.div`
+const AvatarWrapper = styled.div`
     border-radius: 50%;
     height: 100%;
     background-color: ${avatarBackground};
@@ -84,7 +84,7 @@ const NamedAvatar = styled.div`
         (props.size === 'big' && '34px') ||
         (props.size === 'medium' && '20px') ||
         (props.size === 'small' && '12px')
-      };
+    };
 
     color: ${whiteColor};
 `;
@@ -130,30 +130,38 @@ const EditLink = styled.a`
     -webkit-text-overflow: ellipsis;
 `;
 
+const EmptyIcon = styled(Icons.CameraIcon)`
+    border-radius: '50%';
+`;
+
+const getInitials = userName => {
+    const initials = userName
+        ? userName
+            .split(/\s/)
+            .reduce((response, word) => response += word.slice(0, 1), '')
+            .substring(0, 2)
+        : "";
+    return initials;
+};
+
 const Avatar = React.memo(props => {
     //console.log("Avatar render");
-    const {size, source, userName, role, editing, editLabel, editAction} = props;
+    const { size, source, userName, role, editing, editLabel, editAction } = props;
 
-    const setNamedAvatar = userName => {
-        let initials = userName.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substring(0,2)
-
-        return (
-            <NamedAvatar {...props}>{initials}</NamedAvatar>
-        );
-    };
+    const initials = getInitials(userName);
 
     return (
         <StyledAvatar {...props}>
             <AvatarWrapper {...props}>
                 {source !== '' && <ImageStyled src={source} />}
-                {(source === '' && userName !== '') && setNamedAvatar(userName)}
-                {(source === '' && userName === '') && <Icons.CameraIcon size='scale' style={{borderRadius: '50%'}} />}
+                {(source === '' && userName !== '') && <NamedAvatar {...props}>{initials}</NamedAvatar>}
+                {(source === '' && userName === '') && <EmptyIcon size='scale' />}
             </AvatarWrapper>
-            {editing && (size === 'max') && 
+            {editing && (size === 'max') &&
                 <EditContainer {...props}>
                     <EditLink title={editLabel} onClick={editAction}>{editLabel}</EditLink>
                 </EditContainer>}
-            <RoleWrapper {... props}>
+            <RoleWrapper {...props}>
                 {role === 'guest' && <Icons.GuestIcon size='scale' />}
                 {role === 'admin' && <Icons.AdministratorIcon size='scale' />}
                 {role === 'owner' && <Icons.OwnerIcon size='scale' />}
@@ -164,7 +172,7 @@ const Avatar = React.memo(props => {
 
 Avatar.propTypes = {
     size: PropTypes.oneOf(['max', 'big', 'medium', 'small']),
-    role: PropTypes.oneOf(['owner', 'admin','guest', 'user']),
+    role: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
     source: PropTypes.string,
     editLabel: PropTypes.string,
     userName: PropTypes.string,
