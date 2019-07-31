@@ -121,16 +121,8 @@ import OrigRectangleFilterClickIcon from './rectangle.filter.click.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
-import OrigCheckboxCheckedIcon from './checkboxchecked.react.svg';
-
-import OrigCheckboxDisabledIcon from './checkbox.disabled.react.svg';
-import OrigCheckboxHoverIcon from './checkbox.hover.react.svg';
+import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
-
-import OrigCheckboxCheckedDisabledIcon from './checkbox.checked.disabled.react.svg';
-import OrigCheckboxCheckedHoverIcon from './checkbox.checked.hover.react.svg';
-import OrigCheckboxIndeterminateDisabledIcon from './checkbox.indeterminate.disabled.react.svg';
-import OrigCheckboxIndeterminateHoverIcon from './checkbox.indeterminate.hover.react.svg';
 
 import OrigEyeIcon from './eye.react.svg';
 import OrigMenuIcon from './menu.react.svg';
@@ -320,39 +312,20 @@ export const CheckIcon = createStyledIcon(
 );
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
+  "*",
   'CheckboxIcon'
-);
-export const CheckboxDisabledIcon = createStyledIcon(
-  OrigCheckboxDisabledIcon,
-  'CheckboxDisabledIcon'
-);
-export const CheckboxHoverIcon = createStyledIcon(
-  OrigCheckboxHoverIcon,
-  'CheckboxHoverIcon'
 );
 export const CheckboxCheckedIcon = createStyledIcon(
   OrigCheckboxCheckedIcon,
-  'CheckboxCheckedIcon'
-);
-export const CheckboxCheckedHoverIcon = createStyledIcon(
-  OrigCheckboxCheckedHoverIcon,
-  'CheckboxCheckedHoverIcon'
-);
-export const CheckboxCheckedDisabledIcon = createStyledIcon(
-  OrigCheckboxCheckedDisabledIcon,
-  'CheckboxCheckedDisabledIcon'
+  'CheckboxCheckedIcon',
+  "rect",
+  'rect'
 );
 export const CheckboxIndeterminateIcon = createStyledIcon(
   OrigCheckboxIndeterminateIcon,
-  'CheckboxIndeterminateIcon'
-);
-export const CheckboxIndeterminateDisabledIcon = createStyledIcon(
-  OrigCheckboxIndeterminateDisabledIcon,
-  'CheckboxIndeterminateDisabledIcon'
-);
-export const CheckboxIndeterminateHoverIcon = createStyledIcon(
-  OrigCheckboxIndeterminateHoverIcon,
-  'CheckboxIndeterminateHoverIcon'
+  'CheckboxIndeterminateIcon',
+  "rect:first-child",
+  'rect:first-child'
 );
 export const ClipIcon = createStyledIcon(
   OrigClipIcon,

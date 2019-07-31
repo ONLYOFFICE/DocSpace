@@ -5,7 +5,6 @@ import { getCssFromSvg } from '../icons/get-css-from-svg';
 import {TreeNode} from 'rc-tree';
 import ReactDOMServer from 'react-dom/server';
 
-
 var checkboxIcon,
     checkboxСheckedIcon,
     сheckboxDisabledIcon,
@@ -19,15 +18,17 @@ var checkboxIcon,
 
 (function(){
     checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon />));
-    checkboxСheckedIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />));
-    сheckboxDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxDisabledIcon />));
-    сheckboxHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxHoverIcon />));
-    сheckboxIndeterminateIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />));
+    сheckboxDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon isfill={true} color="#F8F9F9" />));
+    сheckboxHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon isfill={true} color="white" />));
 
-    checkboxCheckedDisabledIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedDisabledIcon />));
-    checkboxCheckedHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedHoverIcon />));
-    checkboxIndeterminateDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateDisabledIcon />));
-    checkboxIndeterminateHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateHoverIcon />));
+    checkboxСheckedIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />));
+    checkboxCheckedDisabledIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon isfill={true} color="#F8F9F9" isStroke={true} stroke="#ECEEF1" />));
+    checkboxCheckedHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon isfill={true} color="white" isStroke={true} stroke="#A3A9AE" />));
+
+    сheckboxIndeterminateIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />));
+    checkboxIndeterminateDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon isfill={true} color="#F8F9F9" isStroke={true} stroke="#ECEEF1" />));
+    checkboxIndeterminateHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon isfill={true} color="white" isStroke={true} stroke="#A3A9AE" />));
+
     treeIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CatalogFolderIcon />));
 }());
 
