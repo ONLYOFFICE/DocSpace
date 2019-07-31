@@ -106,12 +106,32 @@ class GroupButton extends React.PureComponent {
     this.handleClick = this.handleClick.bind(this);
     this.stopAction = this.stopAction.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.checkboxChange = this.checkboxChange.bind(this);
+    this.dropDownItemClick = this.dropDownItemClick.bind(this);
   }
 
   handleClick = e =>
     !this.ref.current.contains(e.target) && this.toggle(false);
+
   stopAction = e => e.preventDefault();
+
   toggle = isOpen => this.setState({ isOpen: isOpen });
+
+  checkboxChange = e => {
+    this.props.onChange && this.props.onChange(e.target.checked);
+    this.setState({ selected: this.props.selected });
+  };
+
+  dropDownItemClick = child => {
+    child.props.onClick && child.props.onClick();
+    this.props.onSelect && this.props.onSelect(child);
+    this.setState({ selected: child.props.label });
+    this.toggle(!this.state.isOpen);
+  };
+
+  dropDownToggleClick = e => {
+    this.props.disabled ? this.stopAction(e) : this.toggle(!this.state.isOpen);
+  };
 
   componentDidMount() {
     if (this.ref.current) {
@@ -133,8 +153,9 @@ class GroupButton extends React.PureComponent {
 
   render() {
     //console.log("GroupButton render");
-    const { label, isDropdown, disabled, isSeparator, isSelect, onSelect, checked, isIndeterminate, onChange, children, selected } = this.props;
+    const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked } = this.props;
     const color = disabled ? disabledTextColor : textColor;
+    const itemLabel = !isSelect ? label : this.state.selected;
 
     return (
       <StyledGroupButton ref={this.ref}>
@@ -145,30 +166,16 @@ class GroupButton extends React.PureComponent {
                 <Checkbox
                   isChecked={checked}
                   isIndeterminate={isIndeterminate}
-                  onChange={(e) => {
-                    onChange && onChange(e.target.checked);
-                    this.setState({ selected: selected });
-                  }} />
+                  onChange={this.checkboxChange} />
               </StyledCheckbox>
             }
-            <StyledDropdownToggle {...this.props}
-              onClick={() => {
-                disabled ? false : this.toggle(!this.state.isOpen);
-              }}
-            >
-              {!isSelect ? label : this.state.selected}
+            <StyledDropdownToggle {...this.props} onClick={this.dropDownToggleClick} >
+              {itemLabel}
               <Caret size="small" color={color} />
             </StyledDropdownToggle>
             <DropDown isOpen={this.state.isOpen}>
-              {React.Children.map(children, (child) => {
-                return <DropDownItem {...child.props} onClick={() => {
-                  child.props.onClick && child.props.onClick();
-                  onSelect && onSelect(child);
-                  this.setState({ selected: child.props.label });
-                  this.toggle(!this.state.isOpen);
-                }} />;
-              })}
-
+              {React.Children.map(children, (child) =>
+                <DropDownItem {...child.props} onClick={() => this.dropDownItemClick(child)} />)}
             </DropDown>
           </>
           : <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>

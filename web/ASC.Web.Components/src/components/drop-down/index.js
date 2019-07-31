@@ -39,30 +39,29 @@ const Arrow = styled.div`
 `;
 
 const DropDown = React.memo(props => {
-    //console.log("DropDown render");
-
-    return (
-        <StyledDropdown {...props}>
-        {props.withArrow && <Arrow directionX={props.directionX} />}
-        {React.Children.map(props.children, (child) => 
-            <DropDownItem {...child.props}/>
-        )}
-        </StyledDropdown>
-    );
+  //console.log("DropDown render");
+  return (
+    <StyledDropdown {...props}>
+      {props.withArrow && <Arrow directionX={props.directionX} />}
+      {React.Children.map(props.children, (child) =>
+        <DropDownItem {...child.props} />
+      )}
+    </StyledDropdown>
+  );
 });
 
 DropDown.propTypes = {
-    directionX: PropTypes.oneOf(['left', 'right']),
-    directionY: PropTypes.oneOf(['bottom', 'top']),
-    withArrow: PropTypes.bool,
-    manualWidth: PropTypes.string,
-    manualY: PropTypes.string
+  directionX: PropTypes.oneOf(['left', 'right']),
+  directionY: PropTypes.oneOf(['bottom', 'top']),
+  withArrow: PropTypes.bool,
+  manualWidth: PropTypes.string,
+  manualY: PropTypes.string
 };
 
 DropDown.defaultProps = {
-    directionX: 'left',
-    directionY: 'bottom',
-    withArrow: false
+  directionX: 'left',
+  directionY: 'bottom',
+  withArrow: false
 };
 
 export default DropDown
