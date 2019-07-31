@@ -22,15 +22,19 @@ const StyledNav = styled.nav`
   }
 `;
 
+const StyledScrollbar = styled(Scrollbar)`
+  width: ${props => props.opened ? 240 : 56};
+`;
+
 const Nav = React.memo(props => { 
   console.log("Nav render");
   const { opened, onMouseEnter, onMouseLeave, children } = props;
 
   return (
     <StyledNav opened={opened} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-      <Scrollbar stype="smallWhite" style={{ width: opened ? 240 : 56 }}>
+      <StyledScrollbar stype="smallWhite">
         {children}
-      </Scrollbar>
+      </StyledScrollbar>
     </StyledNav>
   );
 });
