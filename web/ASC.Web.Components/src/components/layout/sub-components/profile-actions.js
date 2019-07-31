@@ -20,6 +20,8 @@ class ProfileActions extends React.PureComponent {
     this.handleClick = this.handleClick.bind(this);
     this.toggle = this.toggle.bind(this);
     this.getUserRole = this.getUserRole.bind(this);
+    this.onAvatarClick = this.onAvatarClick.bind(this);
+    this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
   };
 
   handleClick = (e) => {
@@ -53,6 +55,15 @@ class ProfileActions extends React.PureComponent {
     return "user";
   };
 
+  onAvatarClick = () => {
+    this.toggle(!this.state.opened);
+  }
+
+  onDropDownItemClick = (action) => {
+    action.onClick && action.onClick();
+    this.toggle(!this.state.opened);
+  }
+
   render() {
     console.log("Layout sub-component ProfileActions render");
     return (
@@ -62,9 +73,7 @@ class ProfileActions extends React.PureComponent {
           role={this.getUserRole(this.state.user)}
           source={this.state.user.avatarSmall}
           userName={this.state.user.userName}
-          onClick={() => { 
-            this.toggle(!this.state.opened);
-          }}
+          onClick={this.onAvatarClick}
         />
         <DropDown
           isUserPreview
@@ -83,10 +92,7 @@ class ProfileActions extends React.PureComponent {
             this.state.userActions.map(action => 
               <DropDownItem 
                 {...action}
-                onClick={() => { 
-                  action.onClick && action.onClick();
-                  this.toggle(!this.state.opened);
-                }}
+                onClick={this.onDropDownItemClick.bind(this, action)}
               />
             )
           }
