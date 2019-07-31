@@ -27,7 +27,7 @@ const StyledComboBox = styled(ComboBox)`
 class FilterInput extends React.Component {
     constructor(props) {
         super(props);
-    
+
         this.state = {
             sortDirection: false,
             sortId: this.props.getSortData().length > 0 ? this.props.getSortData()[0].id : "",
@@ -42,32 +42,33 @@ class FilterInput extends React.Component {
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.setFilterTimer = this.setFilterTimer.bind(this);
-        
+        this.onSearchChanged = this.onSearchChanged.bind(this);
+
     }
-    getSortData(){
+    getSortData() {
         let _this = this;
         let d = this.props.getSortData();
-        d.map(function(item){
+        d.map(function (item) {
             item.key = item.id;
-            item.onClick = (e) => _this.onClickSortItem(e, item);
+            item.onClick = _this.onClickSortItem.bind(_this, item);
             return item;
         });
         return d;
     }
-    onClickSortItem(e, item){
-        this.setState({ sortId: item.id});
+    onClickSortItem(item) {
+        this.setState({ sortId: item.id });
         this.onFilter(this.state.filterValue, item.id, this.state.sortDirection ? "asc" : "desc");
     }
-    onSortDirectionClick(e){
+    onSortDirectionClick(e) {
         this.onFilter(this.state.filterValue, this.state.sortId, !this.state.sortDirection ? "asc" : "desc")
-        this.setState({ sortDirection: !this.state.sortDirection});
+        this.setState({ sortDirection: !this.state.sortDirection });
     }
-    onSearch(result){
-        this.setState({ filterValue: result.filterValue});
+    onSearch(result) {
+        this.setState({ filterValue: result.filterValue });
         this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc")
     }
 
-    onFilter(filterValue, sortId, sortDirection){
+    onFilter(filterValue, sortId, sortDirection) {
         let result = {
             inputValue: this.state.searchText,
             filterValue: filterValue,
@@ -87,12 +88,19 @@ class FilterInput extends React.Component {
         }, this.props.refreshTimeout);
     }
 
-    render(){
+    onSearchChanged(e) {
+        this.setState({ searchText: e.target.value })
+
+        if (this.props.autoRefresh)
+            this.setFilterTimer();
+    }
+
+    render() {
         //console.log("FilterInput render");
-        return(
+        return (
             <StyledFilterInput>
                 <StyledSearchInput>
-                    <SearchInput 
+                    <SearchInput
                         id={this.props.id}
                         isDisabled={this.props.isDisabled}
                         size={this.props.size}
@@ -100,19 +108,14 @@ class FilterInput extends React.Component {
                         isNeedFilter={true}
                         getFilterData={this.props.getFilterData}
                         placeholder={this.props.placeholder}
-                        onSearchClick={(result) => {this.onSearch(result)}}
-                        onChangeFilter={(result) => {this.onSearch(result)}}
+                        onSearchClick={this.onSearch}
+                        onChangeFilter={this.onSearch}
                         value={this.state.searchText}
-                        onChange={(e) => { 
-                            this.setState({searchText: e.target.value})
-                            
-                            if(this.props.autoRefresh)
-                                this.setFilterTimer();
-                        }}
+                        onChange={this.onSearchChanged}
                     />
                 </StyledSearchInput>
-                
-                <StyledComboBox 
+
+                <StyledComboBox
                     options={this.getSortData()}
                     isDisabled={this.props.isDisabled}
                 >
@@ -128,10 +131,10 @@ class FilterInput extends React.Component {
                             onClick={this.onSortDirectionClick}
                         />
                     </StyledIconButton>
-                    
+
                 </StyledComboBox>
             </StyledFilterInput>
-            
+
         );
     }
 };
