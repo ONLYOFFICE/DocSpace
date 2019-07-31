@@ -14,6 +14,7 @@ const DateInput = props => {
   const iconClick = function(){
     this.onClick();
   };
+
   return (
     <StyledDatePicker>
       <DatePicker
@@ -25,9 +26,9 @@ const DateInput = props => {
             isReadOnly={props.readOnly}
             hasError={props.hasError}
             hasWarning={props.hasWarning}
-            iconName={"CalendarEmptyIcon"}
+            iconName="CalendarEmptyIcon"
             isIconFill={true}
-            iconColor={"#A3A9AE"}
+            iconColor="#A3A9AE"
             onIconClick={iconClick}
             scale={true}
           />
