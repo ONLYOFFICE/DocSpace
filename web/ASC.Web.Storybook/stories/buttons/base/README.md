@@ -26,5 +26,5 @@ Button is used for a action on a page.
 | `scale`             | `bool`  |    -     | -             | false     | Scale width of button to 100%     |
 | `isDisabled`         | `bool`   |    -     | -                           | -         | Tells when the button should present a disabled state                                  |
 | `isLoading`             | `bool`  |    -     | -             | -     | Tells when the button should show loader icon                      |
-| `onClick`          | `func`   |    ✅    | -                           | -         | What the button will trigger when clicked                                              |
+| `onClick`          | `func`   |    -    | -                           | -         | What the button will trigger when clicked                                              |
 

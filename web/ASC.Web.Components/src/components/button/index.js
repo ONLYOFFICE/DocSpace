@@ -207,7 +207,7 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
