@@ -4,7 +4,7 @@ import Scrollbar from '../scrollbar/index';
 import { Text } from '../text';
 import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
-
+import TextareaAutosize from 'react-autosize-textarea';
 
 const StyledScrollbar = styled(Scrollbar)`
   ${commonInputStyle};
@@ -16,90 +16,85 @@ const StyledScrollbar = styled(Scrollbar)`
     }
   width: 100% !important;
   height: 91px !important;
+  background-color: ${props => props.isDisabled && '#F8F9F9'};
 
   @media only screen and (max-width: 768px) {
     height: 190px !important;
 }
 
-  & > div {
-    padding: 5px 8px 2px 8px;
-  }
-
-  br {
-  display: none;
-  }
 `;
 
-class TextArea extends React.Component {
+const StyledTextarea = styled(TextareaAutosize)`
+  ${commonInputStyle};
+  width: 100%;
+  height: 96%;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  padding: 5px 8px 2px 8px;
 
-  constructor(props) {
-    super(props);
+    :focus-within {
+      border-color: #2DA7DB;
+    }
 
-    this.ref = React.createRef();
+    :focus {
+    outline: none;
+    }
 
-    this.state = {
-      value: this.props.children,
-      placeholder: this.props.placeholder,
-      isFocus: false
-    };
-    this.setValue = this.setValue.bind(this);
-    this.toggleFocus = this.toggleFocus.bind(this);
+`;
+
+class TextArea extends React.PureComponent {
+
+  constructor() {
+    super();
   }
 
-
-  setValue = (innerText) => innerText == '\n' ? this.setState({ value: '' }) : this.setState({ value: innerText });
-  toggleFocus = (isFocus) => this.setState({ isFocus: isFocus });
-
+  onChange = (e) => this.props.onChange && this.props.onChange(e);
 
   render() {
     // console.log('TextArea render');
     return (
       <StyledScrollbar
         stype='preMediumBlack'
-        contentEditable={true}
-        suppressContentEditableWarning={true}
-        onInput={(e) => {
-          this.setValue(e.target.innerText);
-          this.props.onChange && this.props.onChange(e);
-        }
-        }
-        onBlur={() => {
-          this.toggleFocus(false);
-        }
-        }
-        onFocus={() => {
-          this.toggleFocus(true);
-        }
-        }
+        isDisabled={this.props.isDisabled}
       >
-        <Text.Body
-          tag='span'
+        <StyledTextarea
+          id={this.props.id}
+          placeholder={this.props.placeholder}
+          onChange={this.onChange}
+          maxLength={this.props.maxLength}
+          name={this.props.name}
+          tabIndex={this.props.tabIndex}
+          isDisabled={this.props.isDisabled}
+          disabled={this.props.isDisabled}
+          readOnly={this.props.isReadOnly}
         >
-          {this.props.children}
-        </Text.Body>
-
-        {
-          this.state.value === '' && !this.state.isFocus &&
-          <Text.Body
-            tag='span'
-            color='lightGray'
-          >
-            {this.props.placeholder}
-          </Text.Body>
-        }
-
+          {this.props.value}
+        </StyledTextarea>
       </StyledScrollbar>
     )
   }
 }
 
 TextArea.propTypes = {
+  id: PropTypes.string,
+  isDisabled: PropTypes.bool,
+  isReadOnly: PropTypes.bool,
+  maxLength: PropTypes.number,
+  name: PropTypes.string,
   onChange: PropTypes.func,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
+  tabIndex: PropTypes.number,
+  value: PropTypes.string
 }
 
 TextArea.defaultProps = {
+  isDisabled: false,
+  isReadOnly: false,
   placeholder: '',
+  value: '',
+  tabIndex: -1,
 }
 
 export default TextArea;
