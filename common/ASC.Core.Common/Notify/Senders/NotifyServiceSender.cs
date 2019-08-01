@@ -32,9 +32,9 @@ namespace ASC.Core.Notify.Senders
     public class NotifyServiceSender : INotifySender
     {
         public NotifyServiceClient NotifyServiceClient { get; }
-        public NotifyServiceSender(NotifyServiceClient notifyServiceClient)
+        public NotifyServiceSender()
         {
-            NotifyServiceClient = notifyServiceClient;
+            NotifyServiceClient = new NotifyServiceClient();
         }
 
         public void Init(IDictionary<string, string> properties)
