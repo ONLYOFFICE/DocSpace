@@ -70,11 +70,13 @@ namespace ASC.Data.Reassigns
         public Guid FromUser { get { return _userId; } }
 
         public MessageService MessageService { get; }
+        public StudioNotifyService StudioNotifyService { get; }
 
-        public RemoveProgressItem(HttpContext context, MessageService messageService, QueueWorkerRemove queueWorkerRemove, int tenantId, UserInfo user, Guid currentUserId, bool notify)
+        public RemoveProgressItem(HttpContext context, MessageService messageService, QueueWorkerRemove queueWorkerRemove, StudioNotifyService studioNotifyService, int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             _context = context;
             MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -223,7 +225,7 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.Instance.SendMsgRemoveUserDataCompleted(_currentUserId, _userId, _userName,
+                StudioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, _userId, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
@@ -236,7 +238,7 @@ namespace ASC.Data.Reassigns
         {
             if (!_notify) return;
 
-            StudioNotifyService.Instance.SendMsgRemoveUserDataFailed(_currentUserId, _userId, _userName,
+            StudioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, _userId, _userName,
                                                                      errorMessage);
         }
     }

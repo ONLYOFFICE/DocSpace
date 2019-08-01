@@ -214,7 +214,7 @@ namespace ASC.Core.Notify.Senders
                     ContentTransferEncoding = ContentEncoding.QuotedPrintable
                 };
 
-                if (m.EmbeddedAttachments != null && m.EmbeddedAttachments.Length > 0)
+                if (m.EmbeddedAttachments != null && m.EmbeddedAttachments.Count > 0)
                 {
                     var multipartRelated = new MultipartRelated
                         {
@@ -291,7 +291,7 @@ namespace ASC.Core.Notify.Senders
                 return new MimePart("image", extension.TrimStart('.'))
                 {
                     ContentId = attachment.ContentId,
-                    Content = new MimeContent(new MemoryStream(attachment.Content)),
+                    Content = new MimeContent(new MemoryStream(attachment.Content.ToByteArray())),
                     ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                     ContentTransferEncoding = ContentEncoding.Base64,
                     FileName = attachment.FileName

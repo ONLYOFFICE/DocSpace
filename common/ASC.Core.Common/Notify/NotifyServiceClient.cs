@@ -24,22 +24,30 @@
 */
 
 
-using ASC.Common.Module;
+using System;
+using ASC.Common.Caching;
 using ASC.Notify;
 using ASC.Notify.Messages;
 
 namespace ASC.Core.Notify
 {
-    public class NotifyServiceClient : BaseWcfClient<INotifyService>, INotifyService
+    public class NotifyServiceClient : INotifyService
     {
+        private readonly ICacheNotify<NotifyMessage> cacheNotify;
+        public NotifyServiceClient()
+        {
+            cacheNotify = new KafkaCache<NotifyMessage>();
+        }
+
         public void SendNotifyMessage(NotifyMessage m)
         {
-            Channel.SendNotifyMessage(m);
+            cacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
         }
 
         public void InvokeSendMethod(string service, string method, int tenant, params object[] parameters)
         {
-            Channel.InvokeSendMethod(service, method, tenant, parameters);
+//TODO
+            //Channel.InvokeSendMethod(service, method, tenant, parameters);
         }
     }
 }

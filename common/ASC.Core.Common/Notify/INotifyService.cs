@@ -24,18 +24,14 @@
 */
 
 
-using System.ServiceModel;
 using ASC.Notify.Messages;
 
 namespace ASC.Notify
 {
-    [ServiceContract]
     public interface INotifyService
     {
-        [OperationContract(IsOneWay = true)]
         void SendNotifyMessage(NotifyMessage notifyMessage);
 
-        [OperationContract(IsOneWay = true)]
         void InvokeSendMethod(string service, string method, int tenant, params object[] parameters);
     }
 }

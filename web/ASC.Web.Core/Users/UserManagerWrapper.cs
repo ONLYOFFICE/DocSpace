@@ -46,6 +46,13 @@ namespace ASC.Web.Core.Users
     /// </summary>
     public sealed class UserManagerWrapper
     {
+        public StudioNotifyService StudioNotifyService { get; }
+
+        public UserManagerWrapper(StudioNotifyService studioNotifyService)
+        {
+            StudioNotifyService = studioNotifyService;
+        }
+
         private static bool TestUniqueUserName(string uniqueName)
         {
             if (String.IsNullOrEmpty(uniqueName))
@@ -74,7 +81,7 @@ namespace ASC.Web.Core.Users
             return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
         }
 
-        public static UserInfo AddUser(UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+        public UserInfo AddUser(UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
             if (userInfo == null) throw new ArgumentNullException("userInfo");
 
@@ -104,7 +111,7 @@ namespace ASC.Web.Core.Users
 
             if (CoreContext.Configuration.Personal)
             {
-                StudioNotifyService.Instance.SendUserWelcomePersonal(newUserInfo);
+                StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
                 return newUserInfo;
             }
 
@@ -115,16 +122,16 @@ namespace ASC.Web.Core.Users
                 {
                     if (isVisitor)
                     {
-                        StudioNotifyService.Instance.GuestInfoAddedAfterInvite(newUserInfo);
+                        StudioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.Instance.UserInfoAddedAfterInvite(newUserInfo);
+                        StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                     }
 
                     if (fromInviteLink)
                     {
-                        StudioNotifyService.Instance.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
+                        StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                     }
                 }
                 else
@@ -132,11 +139,11 @@ namespace ASC.Web.Core.Users
                     //Send user invite
                     if (isVisitor)
                     {
-                        StudioNotifyService.Instance.GuestInfoActivation(newUserInfo);
+                        StudioNotifyService.GuestInfoActivation(newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.Instance.UserInfoActivation(newUserInfo);
+                        StudioNotifyService.UserInfoActivation(newUserInfo);
                     }
 
                 }
@@ -163,7 +170,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 
-        public static UserInfo SendUserPassword(string email, MessageService messageService, HttpContext context)
+        public UserInfo SendUserPassword(string email, MessageService messageService, HttpContext context)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
@@ -193,7 +200,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(Resource.CouldNotRecoverPasswordForSsoUser);
             }
 
-            StudioNotifyService.Instance.UserPasswordChange(userInfo);
+            StudioNotifyService.UserPasswordChange(userInfo);
 
             var displayUserName = userInfo.DisplayUserName(false);
             messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
