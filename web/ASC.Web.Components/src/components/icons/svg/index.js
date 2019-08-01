@@ -140,7 +140,7 @@ import OrigRadiobuttonDisabledCheckedIcon from './radiobutton.disabled.checked.r
 import OrigRadiobuttonHoverCheckedIcon from './radiobutton.hover.checked.react.svg'
 
 import OrigToggleButtonCheckedIcon from './toggle.button.checked.react.svg';
-import OrigToggleButtonUncheckedIcon from './toggle.button.unchecked.react.svg';
+import OrigToggleButtonIcon from './toggle.button.react.svg';
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -694,8 +694,8 @@ export const ToggleButtonCheckedIcon = createStyledIcon(
   "rect"
 );
 
-export const ToggleButtonUncheckedIcon = createStyledIcon(
-  OrigToggleButtonUncheckedIcon,
-  'ToggleButtonUncheckedIcon',
+export const ToggleButtonIcon = createStyledIcon(
+  OrigToggleButtonIcon,
+  'ToggleButtonIcon',
   "rect"
 );
