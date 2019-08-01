@@ -52,7 +52,7 @@ storiesOf('Components|Link', module)
             <Link type="action" color="black">Black action link</Link>
           </Col>
           <Col>
-            <Link type="action" color="gray" dropdownType='appearDottedAfterHover' text='Gray dropdown and dotted appear after hover' data={data}>Black action link</Link> </Col>
+            <Link type="action" color="gray" dropdownType='appearDottedAfterHover' data={data}>Gray dropdown and dotted appear after hover</Link> </Col>
         </Row>
         <Row style={rowStyle}>
           <Col>

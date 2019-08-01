@@ -6,6 +6,7 @@ import {text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/
 import withReadme from 'storybook-readme/with-readme';
 import Section from '../../../.storybook/decorators/section';
 import {Col} from 'reactstrap';
+import { action } from '@storybook/addon-actions';
 
 const type = ['action', 'page'];
 const colors = ['black', 'gray', 'blue'];
@@ -14,7 +15,7 @@ const dropdownType = ['alwaysDotted', 'appearDottedAfterHover', 'none'];
 
 
 function clickActionLink(e) {
-  console.log('Clicked action link', e);
+  action('actionClick')(e);
 }
 
 const dropdownItems = [
