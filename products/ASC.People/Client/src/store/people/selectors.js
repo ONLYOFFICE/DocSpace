@@ -44,14 +44,49 @@ export const getUserStatus = user => {
     else if (user.status === 1 && user.activationStatus === 2) return "pending";
     else if (user.status === 2) return "disabled";
     else return "normal";
-  };
+};
 
-  export const getUserRole = user => {
+export const getUserRole = user => {
     if (user.isOwner) return "owner";
     else if (user.isAdmin) return "admin";
     else if (user.isVisitor) return "guest";
     else return "user";
-  };
+};
+
+export const getContacts = (contacts) => {
+    const pattern = {
+        contact: [
+            { type: "mail", value: "", icon: "MailIcon" },
+            { type: "phone", value: "", icon: "PhoneIcon" },
+            { type: "mobphone", value: "", icon: "MobileIcon" },
+            { type: "gmail", value: "", icon: "GmailIcon" },
+            { type: "skype", value: "", icon: "SkypeIcon" },
+            { type: "msn", value: "", icon: "WindowsMsnIcon" },
+            { type: "icq", value: "", icon: "IcqIcon" },
+            { type: "jabber", value: "", icon: "JabberIcon" },
+            { type: "aim", value: "", icon: "AimIcon" }
+        ],
+        social: [
+            { type: "facebook", value: "", icon: "ShareFacebookIcon" },
+            { type: "livejournal", value: "", icon: "LivejournalIcon" },
+            { type: "myspace", value: "", icon: "MyspaceIcon" },
+            { type: "twitter", value: "", icon: "ShareTwitterIcon" },
+            { type: "blogger", value: "", icon: "BloggerIcon" },
+            { type: "yahoo", value: "", icon: "YahooIcon" }
+        ]
+    };
+
+    const mapContacts = (a, b) => {
+        return a.map(a => ({ ...a, ...b.find(({ type }) => type === a.type) })).filter(c => c.value !== "");
+    }
+
+    let info = {};
+
+    info.contact = mapContacts(pattern.contact, contacts);
+    info.social = mapContacts(pattern.social, contacts);
+
+    return info;
+};
 
 const getUserChecked = (user, selected) => {
     const status = getUserStatus(user);

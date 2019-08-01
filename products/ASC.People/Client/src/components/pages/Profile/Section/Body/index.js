@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { withRouter } from 'react-router';
-import _ from "lodash";
 import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
 import { connect } from 'react-redux';
+import { getUserRole, getContacts } from '../../../../../store/people/selectors';
 
 const profileWrapper = {
   display: "flex",
@@ -84,49 +84,10 @@ const contactWrapper = {
   width: "300px"
 };
 
-let socialProfiles = [
-  { type: "facebook", value: "", icon: "ShareFacebookIcon" },
-  { type: "livejournal", value: "", icon: "LivejournalIcon" },
-  { type: "myspace", value: "", icon: "MyspaceIcon" },
-  { type: "twitter", value: "", icon: "ShareTwitterIcon" },
-  { type: "blogger", value: "", icon: "BloggerIcon" },
-  { type: "yahoo", value: "", icon: "YahooIcon" }
-];
-
-let contacts = [
-  { type: "mail", value: "", icon: "MailIcon" },
-  { type: "phone", value: "", icon: "PhoneIcon" },
-  { type: "mobphone", value: "", icon: "MobileIcon" },
-  { type: "gmail", value: "", icon: "GmailIcon" },
-  { type: "skype", value: "", icon: "SkypeIcon" },
-  { type: "msn", value: "", icon: "WindowsMsnIcon" },
-  { type: "icq", value: "", icon: "IcqIcon" },
-  { type: "jabber", value: "", icon: "JabberIcon" },
-  { type: "aim", value: "", icon: "AimIcon" }
-];
-
-let userContacts = [];
-let userSocialProfiles = [];
-
-const getUserRole = (user) => {
-  if (user.isOwner) return "owner";
-  if (user.isAdmin) return "admin";
-  if (user.isVisitor) return "guest";
-  return "user";
-};
-
 const getFormattedDate = (date) => {
   if (!date) return;
   let d = date.slice(0, 10).split('-');
   return d[1] + '.' + d[2] + '.' + d[0];
-};
-
-const getFormattedContacts = (profile) => {
-  let filledUserContacts = _.merge({}, contacts, profile.contacts);
-  userContacts = _.reject(filledUserContacts, (o) => { return o.icon === undefined; });
-
-  let filledSocialProfiles = _.merge({}, socialProfiles, profile.contacts);
-  userSocialProfiles = _.reject(filledSocialProfiles, (o) => { return o.icon === undefined; });
 };
 
 const getFormattedDepartments = (departments) => {
@@ -146,33 +107,47 @@ const getFormattedDepartments = (departments) => {
   return formattedDepartments;
 };
 
-const sendMail = (email) => {
-  window.open('mailto:' + email);
-};
-
 const capitalizeFirstLetter = (string) => {
   if (!string) return;
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 const createContacts = (contacts) => {
-  const completeContacts = contacts.map((contact, index) => {
-    if (contact.value)
-      return (
-        <div key={index} style={contactWrapper}>
-          <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} onClick={() => { }} />
-          <div style={textTruncate}>{contact.value}</div>
-        </div>
-      );
+  return contacts.map((contact, index) => {
+    return (
+      <div key={index} style={contactWrapper}>
+        <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} />
+        <div style={textTruncate}>{contact.value}</div>
+      </div>
+    );
   });
-
-  return completeContacts;
 };
 
 const SectionBodyContent = (props) => {
   const { profile, history, isSelf, settings } = props;
+  const contacts = getContacts(profile.contacts);
 
-  getFormattedContacts(profile);
+  const onEmailClick = useCallback(
+    () => window.open('mailto:' + profile.email),
+    [profile.email]
+  );
+
+  const onEditSubscriptionsClick = useCallback(
+    () => console.log('Edit subscriptions onClick()'),
+    []
+  );
+
+  const onBecomeAffiliateClick = useCallback(
+    () => console.log('Become our Affiliate onClick()'),
+    []
+  );
+
+  const onEditProfileClick = useCallback(
+    () => history.push(`${settings.homepage}/edit/${profile.userName}`),
+    [history, settings.homepage, profile.userName]
+  );
+
+  console.log(profile);
 
   return (
     <div style={profileWrapper}>
@@ -183,7 +158,7 @@ const SectionBodyContent = (props) => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        <Button style={editButtonWrapper} size="big" label="Edit profile" onClick={() => history.push(`${settings.homepage}/edit/${profile.userName}`)} />
+        <Button style={editButtonWrapper} size="big" label="Edit profile" onClick={onEditProfileClick} />
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
@@ -201,7 +176,7 @@ const SectionBodyContent = (props) => {
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
-          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} onClick={() => sendMail(profile.email)} >{profile.email}</Link>{profile.activationStatus === 2 && ' (Pending)'}</Text.Body>
+          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} onClick={onEmailClick} >{profile.email}</Link>{profile.activationStatus === 2 && ' (Pending)'}</Text.Body>
           <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
@@ -210,7 +185,7 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{getFormattedDate(profile.birthday)}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
           {isSelf && <Text.Body style={restMargins}>{profile.cultureName}</Text.Body>}
-          {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={() => console.log('Become our Affiliate onClick()')} />}
+          {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}
         </div>
       </div>
       {isSelf &&
@@ -230,7 +205,7 @@ const SectionBodyContent = (props) => {
         <div style={selfToggleWrapper}>
           <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              <Button size="big" label="Edit subscriptions" primary={true} onClick={() => console.log('Edit subscriptions onClick()')} />
+              <Button size="big" label="Edit subscriptions" primary={true} onClick={onEditSubscriptionsClick} />
             </Text.Body>
           </ToggleContent>
         </div>
@@ -248,7 +223,7 @@ const SectionBodyContent = (props) => {
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              {createContacts(userContacts)}
+              {createContacts(contacts.contact)}
             </Text.Body>
           </ToggleContent>
         </div>
@@ -257,7 +232,7 @@ const SectionBodyContent = (props) => {
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              {createContacts(userSocialProfiles)}
+              {createContacts(contacts.social)}
             </Text.Body>
           </ToggleContent>
         </div>
