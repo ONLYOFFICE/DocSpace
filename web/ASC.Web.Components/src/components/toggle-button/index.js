@@ -23,14 +23,14 @@ const ToggleContainer = styled.label`
     -moz-user-select: none;
     -o-user-select: none;
 
-    ${props => props.isDisabled ? 
-    css`
+    ${props => props.isDisabled ?
+        css`
         cursor: default !important;
         svg {
             ${DisableCss}
           }
-    `  
-    : css` 
+    `
+        : css` 
         cursor: pointer;
         `
     };
@@ -44,7 +44,7 @@ const HiddenInput = styled.input`
 `;
 
 const CheckboxIcon = ({ isChecked }) => {
-   
+
     const iconName = isChecked ? "ToggleButtonCheckedIcon" : "ToggleButtonIcon";
 
     return <>{React.createElement(Icons[iconName])}</>;
@@ -66,7 +66,7 @@ class ToggleButton extends Component {
 
     onInputChange = (e) => {
         this.setState({ checked: e.target.checked });
-        this.props.onChange 
+        this.props.hasOwnProperty("onChange") && this.props.onChange(e);
     }
 
     render() {
@@ -86,7 +86,6 @@ class ToggleButton extends Component {
 }
 
 ToggleButton.propTypes = {
-    value: PropTypes.string.isRequired,
     isChecked: PropTypes.bool.isRequired,
     isDisabled: PropTypes.bool,
     onChange: PropTypes.func

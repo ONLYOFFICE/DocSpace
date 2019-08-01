@@ -1,8 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { BooleanValue } from 'react-values'
-import { withKnobs, boolean, text} from '@storybook/addon-knobs/react';
+import { withKnobs, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { ToggleButton } from 'asc-web-components';
@@ -14,19 +12,16 @@ storiesOf('Components|Input', module)
   .add('toggle button', () => {
     return (
       <Section>
-        <BooleanValue>
-          {({ value, toggle }) => (
-            <ToggleButton
-              value={text('value', 'value')}
-              isChecked={value}
-              isDisabled={boolean('isDisabled', false)}
-              onChange={e => {
-                action('onChange')(e);
-                toggle(e.target.checked);
-              }}
-            />
-          )}
-        </BooleanValue>
+        <ToggleButton
+          isChecked={boolean('isChecked', false)}
+          isDisabled={boolean('isDisabled', false)}
+          onChange={(e) => {
+            window.__STORYBOOK_ADDONS.channel.emit('storybookjs/knobs/change', {
+              name: 'isChecked',
+              value: e.target.checked
+            });
+          }}
+        />
       </Section>
     )
   });
