@@ -33,6 +33,7 @@
     <None Remove="protos\AzRecordCache.proto" />
     <None Remove="protos\ConsumerCacheItem.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
+    <None Remove="protos\NotifyMessage.proto" />
     <None Remove="protos\QuotaCacheItem.proto" />
     <None Remove="protos\SettingsCacheItem.proto" />
     <None Remove="protos\SubscriptionMethodCache.proto" />
@@ -68,6 +69,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\SettingsCacheItem.proto" />
     <Protobuf Include="protos\ConsumerCacheItem.proto" />
     <Protobuf Include="protos\TenantCacheItem.proto" />

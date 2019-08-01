@@ -30,7 +30,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+
 using ASC.Common.Logging;
+using ASC.Common.Notify.Engine;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -39,10 +41,12 @@ using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
-using ASC.Web.Studio.Utility;
-using MimeKit.Utils;
 using ASC.Web.Core.WhiteLabel;
-using ASC.Common.Notify.Engine;
+using ASC.Web.Studio.Utility;
+
+using Google.Protobuf;
+
+using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -65,11 +69,6 @@ namespace ASC.Web.Studio.Core.Notify
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
             }
-        }
-
-        public static void RegisterSendMethods()
-        {
-            StudioNotifyService.Instance.RegisterSendMethod();
         }
 
 
@@ -301,7 +300,7 @@ namespace ASC.Web.Studio.Core.Notify
                         var attachment = new NotifyMessageAttachment
                         {
                             FileName = "logo.png",
-                            Content = logoData,
+                            Content = ByteString.CopyFrom(logoData),
                             ContentId = MimeUtils.GenerateMessageId()
                         };
 

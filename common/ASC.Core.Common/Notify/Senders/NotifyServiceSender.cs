@@ -31,16 +31,19 @@ namespace ASC.Core.Notify.Senders
 {
     public class NotifyServiceSender : INotifySender
     {
+        public NotifyServiceClient NotifyServiceClient { get; }
+        public NotifyServiceSender(NotifyServiceClient notifyServiceClient)
+        {
+            NotifyServiceClient = notifyServiceClient;
+        }
+
         public void Init(IDictionary<string, string> properties)
         {
         }
 
         public NoticeSendResult Send(NotifyMessage m)
         {
-            using (var notifyClient = new NotifyServiceClient())
-            {
-                notifyClient.SendNotifyMessage(m);
-            }
+            NotifyServiceClient.SendNotifyMessage(m);
             return NoticeSendResult.OK;
         }
     }

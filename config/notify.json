@@ -16,10 +16,6 @@
 		],
 		"schedulers": [
 			{
-				"name": "WhatsNew",
-				"register": "ASC.Web.Studio.Core.Notify.NotifyConfiguration.RegisterSendMethods, ASC.Web.Studio"
-			},
-			{
 				"name": "Calendar",
 				"register": "ASC.Api.Calendar.Notification.CalendarNotifyClient.RegisterSendMethod, ASC.Api.Calendar"
 			},			

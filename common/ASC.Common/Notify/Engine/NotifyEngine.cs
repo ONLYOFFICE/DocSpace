@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Patterns;
 using ASC.Notify.Channels;
@@ -585,7 +586,6 @@ namespace ASC.Notify.Engine
             private readonly object locker = new object();
             private readonly CronExpression cronExpression;
             private readonly Action<DateTime> method;
-            private volatile bool invoke;
 
             public DateTime? ScheduleDate { get; private set; }
 
@@ -618,42 +618,22 @@ namespace ASC.Notify.Engine
             {
                 lock (locker)
                 {
-                    if (!invoke)
-                    {
-                        method.BeginInvoke(d, InvokeSendCallback, method);
-                        invoke = true;
-                    }
-                    else
-                    {
-                        log.WarnFormat("InvokeSendMethod: {0} at {1} send but previus call not finished.", method.Method.Name, d);
-                    }
-                }
-            }
-
-            private void InvokeSendCallback(IAsyncResult ar)
-            {
-                lock (locker)
-                {
-                    try
-                    {
-                        var m = (Action<DateTime>)ar.AsyncState;
-                        m.EndInvoke(ar);
-                    }
-                    catch (Exception error)
-                    {
-                        log.Error(error);
-                    }
-                    finally
-                    {
-                        invoke = false;
-                    }
+                    Task.Run(() => {
+                        try
+                        {
+                            method(d);
+                        }
+                        catch(Exception e)
+                        {
+                            log.Error(e);
+                        }
+                    }).Wait();
                 }
             }
 
             public override bool Equals(object obj)
             {
-                var w = obj as SendMethodWrapper;
-                return w != null && method.Equals(w.method);
+                return obj is SendMethodWrapper w && method.Equals(w.method);
             }
 
             public override int GetHashCode()

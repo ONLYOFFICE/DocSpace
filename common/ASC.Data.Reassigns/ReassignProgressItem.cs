@@ -67,12 +67,14 @@ namespace ASC.Data.Reassigns
 
         public MessageService MessageService { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
+        public StudioNotifyService StudioNotifyService { get; }
 
-        public ReassignProgressItem(HttpContext context, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        public ReassignProgressItem(HttpContext context, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, StudioNotifyService studioNotifyService, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             _context = context;
             MessageService = messageService;
             QueueWorkerRemove = queueWorkerRemove;
+            StudioNotifyService = studioNotifyService;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -164,7 +166,7 @@ namespace ASC.Data.Reassigns
             var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
             var toUser = CoreContext.UserManager.GetUsers(_toUserId);
 
-            StudioNotifyService.Instance.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
+            StudioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
 
             var fromUserName = fromUser.DisplayUserName(false);
             var toUserName = toUser.DisplayUserName(false);
@@ -180,7 +182,7 @@ namespace ASC.Data.Reassigns
             var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
             var toUser = CoreContext.UserManager.GetUsers(_toUserId);
 
-            StudioNotifyService.Instance.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
+            StudioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
         private void DeleteUserProfile()

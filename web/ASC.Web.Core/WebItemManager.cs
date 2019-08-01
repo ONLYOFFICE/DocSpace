@@ -112,7 +112,16 @@ namespace ASC.Web.Core
         }
 
         private static WebItemManager instance;
-        public static WebItemManager Instance { get { return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>()); } }
+        public static WebItemManager Instance {
+            get
+            {
+                return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>());
+            }
+            internal set
+            {
+                instance = value;
+            }
+        }
         public IContainer Container { get; }
 
         public IWebItem this[Guid id]
@@ -255,8 +264,15 @@ namespace ASC.Web.Core
         }
         public static IApplicationBuilder UseWebItemManager(this IApplicationBuilder applicationBuilder)
         {
-            WebItemManager.Instance.LoadItems();
+            UseWebItemManager(applicationBuilder.ApplicationServices);
             return applicationBuilder;
+        }
+        public static IServiceProvider UseWebItemManager(this IServiceProvider serviceProvider)
+        {
+            var webItemManager = serviceProvider.GetService<WebItemManager>();
+            WebItemManager.Instance = webItemManager;
+            webItemManager.LoadItems();
+            return serviceProvider;
         }
     }
 }

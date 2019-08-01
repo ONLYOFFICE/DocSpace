@@ -53,7 +53,7 @@ namespace ASC.Core
 
         public static IAccount CurrentAccount
         {
-            get { return Principal.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
+            get { return Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
         }
 
         public static bool IsAuthenticated

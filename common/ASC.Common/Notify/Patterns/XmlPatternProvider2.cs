@@ -152,12 +152,18 @@ namespace ASC.Notify.Patterns
             }
 
             var resourceManagerType = Type.GetType(array[1], true, true);
-            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ?? 
+                           resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             if (property == null)
             {
                 throw new NotifyException(string.Format("Resource {0} not found in resourceManager {1}", array[0], array[1]));
             }
             return property.GetValue(resourceManagerType, null) as string;
+
+            string ToUpper(string name)
+            {
+                return name.Substring(0, 1).ToUpper() + name.Substring(1);
+            }
         }
     }
 }
