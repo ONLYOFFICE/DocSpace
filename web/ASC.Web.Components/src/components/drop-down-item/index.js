@@ -121,11 +121,13 @@ const IconWrapper = styled.span`
 const DropDownItem = React.memo(props => {
   //console.log("DropDownItem render");
   const { isSeparator, isUserPreview, label, icon } = props;
+  const color = props.disabled || props.isHeader ? '#A3A9AE' : '#333333';
+  
   return (
     <StyledDropdownItem {...props} >
       {icon &&
         <IconWrapper>
-          <IconButton size={16} iconName={icon} color={props.disabled || props.isHeader ? '#A3A9AE' : '#333333'} />
+          <IconButton size={16} iconName={icon} color={color} />
         </IconWrapper>
       }
       {isSeparator ? '\u00A0' : !isUserPreview && label}
