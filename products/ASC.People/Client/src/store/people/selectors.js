@@ -53,32 +53,26 @@ export const getUserStatus = user => {
     else return "user";
   };
 
-const getChecked = (status, selected) => {
-    let checked;
+const getUserChecked = (user, selected) => {
+    const status = getUserStatus(user);
     switch (selected) {
         case "all":
-            checked = true;
-            break;
+            return true;
         case "active":
-            checked = status === "normal";
-            break;
+            return status === "normal";
         case "disabled":
-            checked = status === "disabled";
-            break;
+            return status === "disabled";
         case "invited":
-            checked = status === "pending";
-            break;
+            return status === "pending";
         default:
-            checked = false;
+            return false;
     }
-
-    return checked;
 };
 
 export function getUsersBySelected(users, selected) {
     let newSelection = [];
     users.forEach(user => {
-        const checked = getChecked(getUserStatus(user), selected);
+        const checked = getUserChecked(user, selected);
 
         if (checked)
             newSelection.push(user);
