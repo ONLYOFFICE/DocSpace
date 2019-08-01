@@ -39,101 +39,19 @@ export function getTreeGroups(groups) {
     return treeData;
 };
 
-const getUserDepartment = user => {
-    return {
-        title: user.department,
-        action: () => console.log("Department action")
-    };
-};
-
-const getUserPhone = user => {
-    return {
-        title: user.mobilePhone,
-        action: () => console.log("Phone action")
-    };
-};
-
-const getUserEmail = user => {
-    return {
-        title: user.email,
-        action: () => console.log("Email action")
-    };
-};
-
-const getUserRole = user => {
-    if (user.isOwner) return "owner";
-    else if (user.isAdmin) return "admin";
-    else if (user.isVisitor) return "guest";
-    else return "user";
-};
-
-const getUserStatus = user => {
+export const getUserStatus = user => {
     if (user.status === 1 && user.activationStatus === 1) return "normal";
     else if (user.status === 1 && user.activationStatus === 2) return "pending";
     else if (user.status === 2) return "disabled";
     else return "normal";
-};
+  };
 
-const getUserContextOptions = (user, isAdmin, history, settings) => {
-    return [
-        {
-            key: "key1",
-            label: "Send e-mail",
-            onClick: () => console.log("Context action: Send e-mail")
-        },
-        {
-            key: "key2",
-            label: "Send message",
-            onClick: () => console.log("Context action: Send message")
-        },
-        { key: "key3", isSeparator: true },
-        {
-            key: "key4",
-            label: "Edit",
-            onClick: () => history.push(`${settings.homepage}/edit/${user.userName}`)
-        },
-        {
-            key: "key5",
-            label: "Change password",
-            onClick: () => console.log("Context action: Change password")
-        },
-        {
-            key: "key6",
-            label: "Change e-mail",
-            onClick: () => console.log("Context action: Change e-mail")
-        },
-        {
-            key: "key7",
-            label: "Disable",
-            onClick: () => console.log("Context action: Disable")
-        }
-    ];
-};
-
-const getIsHead = user => {
-    return false;
-};
-
-export function convertPeople(users, isAdmin, history, settings) {
-    return users.map(user => {
-        const status = getUserStatus(user);
-        return {
-            user: user,
-            status: status,
-            role: getUserRole(user),
-            contextOptions: getUserContextOptions(
-                user,
-                isAdmin,
-                history,
-                settings
-            ),
-            department: getUserDepartment(user),
-            phone: getUserPhone(user),
-            email: getUserEmail(user),
-            isHead: getIsHead(user)
-        };
-    });
-};
+  export const getUserRole = user => {
+    if (user.isOwner) return "owner";
+    else if (user.isAdmin) return "admin";
+    else if (user.isVisitor) return "guest";
+    else return "user";
+  };
 
 const getChecked = (status, selected) => {
     let checked;
