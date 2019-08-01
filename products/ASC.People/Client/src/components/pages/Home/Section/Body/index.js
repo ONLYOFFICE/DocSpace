@@ -5,63 +5,95 @@ import { ContentRow } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
-import { isSelected, convertPeople } from '../../../../../store/people/selectors';
+import { isSelected, getUserStatus, getUserRole } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
+
+  getUserContextOptions = (user, isAdmin, history, settings) => {
+    return [
+        {
+            key: "key1",
+            label: "Send e-mail",
+            onClick: () => console.log("Context action: Send e-mail")
+        },
+        {
+            key: "key2",
+            label: "Send message",
+            onClick: () => console.log("Context action: Send message")
+        },
+        { key: "key3", isSeparator: true },
+        {
+            key: "key4",
+            label: "Edit",
+            onClick: () => history.push(`${settings.homepage}/edit/${user.userName}`)
+        },
+        {
+            key: "key5",
+            label: "Change password",
+            onClick: () => console.log("Context action: Change password")
+        },
+        {
+            key: "key6",
+            label: "Change e-mail",
+            onClick: () => console.log("Context action: Change e-mail")
+        },
+        {
+            key: "key7",
+            label: "Disable",
+            onClick: () => console.log("Context action: Disable")
+        }
+    ];
+  };
+
+  onContentRowSelect = (checked, data, user) => {
+    console.log("ContentRow onSelect", checked, data);
+    if (checked) {
+      this.props.selectUser(user);
+    }
+    else {
+      this.props.deselectUser(user);
+    }
+  }
+
   render() {
     console.log("Home SectionBodyContent render()");
-    const { users, isAdmin, selection, selectUser, deselectUser, history, settings} = this.props;
+    const { users, isAdmin, selection, history, settings} = this.props;
 
     return (
       <>
-        {convertPeople(users, isAdmin, history, settings).map(item => {
-          const user = item.user;
+        {users.map(user => {
+          const contextOptions = this.getUserContextOptions(user, isAdmin, history, settings);
           return isAdmin ? (
             <ContentRow
               key={user.id}
-              status={item.status}
+              status={getUserStatus(user)}
               data={user}
-              avatarRole={item.role}
+              avatarRole={getUserRole(user)}
               avatarSource={user.avatar}
               avatarName={user.userName}
-              contextOptions={item.contextOptions}
+              contextOptions={contextOptions}
               checked={isSelected(selection, user.id)}
-              onSelect={(checked, data) => {
-                console.log("ContentRow onSelect", checked, data);
-                if (checked) {
-                  selectUser(user);
-                }
-                else {
-                  deselectUser(user);
-                }
-              }}
+              onSelect={this.onContentRowSelect.bind(this, user)}
             >
               <UserContent
-                userName={item.user.userName}
-                displayName={item.user.displayName}
-                department={item.department}
-                phone={item.phone}
-                email={item.email}
-                headDepartment={item.isHead}
-                status={item.status}
+                user={user}
+                history={history}
+                settings={settings}
               />
             </ContentRow>
           ) : (
             <ContentRow
-              key={item.user.id}
-              status={item.status}
-              avatarRole={item.role}
-              avatarSource={item.user.avatar}
-              avatarName={item.user.userName}
+              key={user.id}
+              status={getUserStatus(user)}
+              avatarRole={getUserRole(user)}
+              avatarSource={user.avatar}
+              avatarName={user.userName}
             >
               <UserContent
-                userName={item.user.userName}
-                department={item.department}
-                phone={item.phone}
-                email={item.email}
-                headDepartment={item.isHead}
-                status={item.user.status}
+                user={user}
+                history={history}
+                settings={settings}
               />
             </ContentRow>
           );

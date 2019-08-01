@@ -7,18 +7,6 @@ import { Text } from "../text";
 const disableColor = "#A3A9AE";
 const hoverColor = disableColor;
 
-const IndeterminateHoverCss = css`
-  rect:first-child {
-    stroke: ${hoverColor};
-  }
-`;
-
-const HoverCss = css`
-  rect:first-child {
-    stroke: ${hoverColor};
-  }
-`;
-
 const Label = styled.label`
   display: flex;
   align-items: center;
@@ -43,7 +31,9 @@ const Label = styled.label`
 
           &:hover {
             svg {
-              ${props => props.isIndeterminate ? IndeterminateHoverCss : HoverCss}
+              rect:first-child {
+                stroke: ${hoverColor};
+              }
             }
           }
         `}

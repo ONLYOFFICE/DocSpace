@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { GroupButtonsMenu, DropDownItem, Text } from 'asc-web-components';
 
 const getPeopleItems = (onSelect) => [
@@ -45,21 +45,24 @@ const getPeopleItems = (onSelect) => [
     }
   ];
 
-const SectionHeaderContent = ({
+const SectionHeaderContent = React.memo(({
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
     onCheck,
     onSelect,
     onClose
-  }) =>
+  }) => {
+    console.log("SectionHeaderContent render");
+    const menuItems = getPeopleItems(onSelect);
+    return (
     isHeaderVisible ? (
       <div style={{ margin: "0 -16px" }}>
         <GroupButtonsMenu
           checked={isHeaderChecked}
           isIndeterminate={isHeaderIndeterminate}
           onChange={onCheck}
-          menuItems={getPeopleItems(onSelect)}
+          menuItems={menuItems}
           visible={isHeaderVisible}
           moreLabel="More"
           closeTitle="Close"
@@ -69,6 +72,8 @@ const SectionHeaderContent = ({
       </div>
     ) : (
       <Text.ContentHeader>People</Text.ContentHeader>
+    )
     );
+  });
 
 export default SectionHeaderContent;
