@@ -15,19 +15,19 @@ const DisableCss = css`
 const ToggleContainer = styled.label`
     position: absolute;
     -webkit-appearance: none;
-    outline: none;
     margin: 0;
     display: flex;
     align-items: center;
+    outline: none;
 
     user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
     -webkit-user-select: none;
 
-    .svg {
-      margin-right: 8px;
-    }    
+    svg {
+        margin-right: 8px;
+    }
 
     ${props => props.isDisabled ?
         css`
@@ -36,7 +36,7 @@ const ToggleContainer = styled.label`
             ${DisableCss}
           }
     `
-        : css` 
+        : css`
         cursor: pointer;
         `
     };
@@ -103,7 +103,8 @@ class ToggleButton extends Component {
 ToggleButton.propTypes = {
     isChecked: PropTypes.bool.isRequired,
     isDisabled: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    label: PropTypes.label
 };
 
 export default ToggleButton;
