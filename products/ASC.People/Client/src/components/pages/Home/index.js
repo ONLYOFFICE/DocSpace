@@ -99,8 +99,27 @@ class Home extends React.Component {
     });
   };
 
-  render() {
+  onSectionHeaderContentCheck = (checked) => {
+      this.props.setSelected(checked ? "all" : "none");
+  }
+
+  onSectionHeaderContentSelect = (selected) => {
+    this.props.setSelected(selected);
+  }
+
+  onClose = () => {
     const { selection, setSelected } = this.props;
+
+    if (!selection.length) {
+      setSelected("none");
+      this.setState({ isHeaderVisible: false });
+    } else {
+      setSelected("close");
+    }
+  }
+
+  render() {
+    
     const {
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -137,25 +156,9 @@ class Home extends React.Component {
               isHeaderVisible={isHeaderVisible}
               isHeaderIndeterminate={isHeaderIndeterminate}
               isHeaderChecked={isHeaderChecked}
-              onCheck={checked => {
-                /*console.log(`SectionHeaderContent onCheck 
-                selection.length=${selection.length}`);*/
-                setSelected(checked ? "all" : "none");
-              }}
-              onSelect={selected => {
-                /*console.log(`SectionHeaderContent onSelect 
-              selected=${selected}`);*/
-                setSelected(selected);
-              }}
-              onClose={() => {
-                /*console.log('SectionHeaderContent onClose');*/
-                if (!selection.length) {
-                  setSelected("none");
-                  this.setState({ isHeaderVisible: false });
-                } else {
-                  setSelected("close");
-                }
-              }}
+              onCheck={this.onSectionHeaderContentCheck}
+              onSelect={this.onSectionHeaderContentSelect}
+              onClose={this.onClose}
             />
           </NPL.SectionHeader>
           <NPL.SectionFilter>
