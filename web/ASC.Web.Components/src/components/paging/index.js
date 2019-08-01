@@ -30,6 +30,14 @@ const StyledPage = styled.div`
     width: 80px;
 `;
 
+const previousAction = () => {
+  console.log('Prev action');
+};
+
+const nextAction = () => {
+  console.log('Next action');
+};
+
 const Paging = props => {
   //console.log("Paging render");
   const { previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection, disablePrevious, disableNext } = props;
@@ -72,8 +80,8 @@ Paging.propTypes = {
 }
 
 Paging.defaultProps = {
-  previousAction: () => console.log('Prev action'),
-  nextAction: () => console.log('Next action'),
+  previousAction: previousAction,
+  nextAction: nextAction,
   disablePrevious: false,
   disableNext: false
 }
