@@ -5,31 +5,6 @@ import { Link, Icons } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 
-const getUserDepartment = user => {
-  return {
-      title: user.department,
-      action: () => console.log("Department action")
-  };
-};
-
-const getUserPhone = user => {
-  return {
-      title: user.mobilePhone,
-      action: () => console.log("Phone action")
-  };
-};
-
-const getUserEmail = user => {
-  return {
-      title: user.email,
-      action: () => console.log("Email action")
-  };
-};
-
-const getIsHead = user => {
-  return false;
-};
-
 const UserContent = ({user, history,settings }) => {
   const { userName, displayName, headDepartment, department, mobilePhone, email  } = user;
   const status = getUserStatus(user);
