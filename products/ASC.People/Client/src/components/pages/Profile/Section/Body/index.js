@@ -125,7 +125,7 @@ const createContacts = (contacts) => {
 
 const SectionBodyContent = (props) => {
   const { profile, history, isSelf, settings } = props;
-  const contacts = getContacts(profile.contacts);
+  const contacts = profile.contacts && getContacts(profile.contacts);
 
   const onEmailClick = useCallback(
     () => window.open('mailto:' + profile.email),
