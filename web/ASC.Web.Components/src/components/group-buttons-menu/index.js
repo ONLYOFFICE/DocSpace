@@ -135,7 +135,7 @@ class GroupButtonsMenu extends React.PureComponent {
               isSelect={item.isSelect}
               onSelect={item.onSelect}
               fontWeight={item.fontWeight}
-              onClick={() => this.groupButtonClick(item)}
+              onClick={this.groupButtonClick.bind(this, item)}
               {...this.props}
             >
               {item.children}
@@ -148,7 +148,7 @@ class GroupButtonsMenu extends React.PureComponent {
               <DropDownItem
                 key={`moreNavItem-${i}`}
                 label={item.label}
-                onClick={() => this.groupButtonClick(item)}
+                onClick={this.groupButtonClick.bind(this, item)}
               />
             )}
           </GroupButton>

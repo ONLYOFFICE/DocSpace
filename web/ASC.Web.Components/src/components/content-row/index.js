@@ -80,6 +80,7 @@ class ContentRow extends React.PureComponent {
 
     this.handleContextMenu = this.handleContextMenu.bind(this);
     this.changeCheckbox = this.changeCheckbox.bind(this);
+    this.getOptions = this.getOptions.bind(this);
   };
 
   componentDidMount() {
@@ -110,9 +111,12 @@ class ContentRow extends React.PureComponent {
     }
   };
 
+  getOptions = () => this.props.contextOptions;
+
   render() {
     //console.log("ContentRow render");
-    const { avatarRole, avatarSource, avatarName, contextOptions, children } = this.props;
+    const { avatarRole, avatarSource, avatarName, children } = this.props;
+    
 
     return (
       <StyledContentRow {...this.props}>
@@ -127,7 +131,7 @@ class ContentRow extends React.PureComponent {
         <StyledContent>{children}</StyledContent>
         {this.props.hasOwnProperty("contextOptions") &&
           <StyledOptionButton>
-            <ContextMenuButton directionX='right' getData={() => contextOptions} />
+            <ContextMenuButton directionX='right' getData={this.getOptions} />
           </StyledOptionButton>
         }
       </StyledContentRow>

@@ -25,6 +25,8 @@ class ContextMenuButton extends React.PureComponent {
     this.handleClick = this.handleClick.bind(this);
     this.stopAction = this.stopAction.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.onIconButtonClick = this.onIconButtonClick.bind(this);
+    this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
   }
 
   handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
@@ -49,6 +51,23 @@ class ContextMenuButton extends React.PureComponent {
     }
   }
 
+  onIconButtonClick = () => {
+    if(!this.props.isDisabled) {
+        this.setState({ 
+          data: this.props.getData(),
+          isOpen: !this.state.isOpen
+        });
+    }
+    else {
+      this.stopAction
+    }
+  }
+
+  onDropDownItemClick = (item) => {
+    item.onClick && item.onClick();
+    this.toggle(!this.state.isOpen);
+  }
+
   render() {
     //console.log("ContextMenuButton render");
     return (
@@ -63,14 +82,7 @@ class ContextMenuButton extends React.PureComponent {
           iconClickName={this.props.iconClickName}
           isFill={false}
           isDisabled={this.props.isDisabled}
-          onClick={
-            !this.props.isDisabled
-              ? () => { 
-                this.setState({ data: this.props.getData()});
-                this.toggle(!this.state.isOpen);
-              }
-              : this.stopAction
-          }
+          onClick={this.onIconButtonClick}
           onMouseEnter={this.props.onMouseEnter}
           onMouseLeave={this.props.onMouseLeave}
           onMouseOver={this.props.onMouseOver}
@@ -78,13 +90,10 @@ class ContextMenuButton extends React.PureComponent {
         />
         <DropDown directionX={this.props.directionX || 'left'} isOpen={this.state.isOpen}>
           {
-            this.state.data.map(item => 
-              <DropDownItem 
+            this.state.data.map(item =>
+              <DropDownItem
                 {...item}
-                onClick={() => { 
-                  item.onClick && item.onClick();
-                  this.toggle(!this.state.isOpen);
-                }}
+                onClick={this.onDropDownItemClick.bind(this, item)}
               />
             )
           }

@@ -28,7 +28,7 @@ const hoverCss = css`
     `}
 `;
 
-const ButtonWrapper = ({primary, isHovered, isClicked, isDisabled, isLoading, ...props}) => <button type="button" {...props}></button>;
+const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, ...props}) => <button type="button" {...props}></button>;
 
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
@@ -59,6 +59,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
       ? (props.primary ? '#2DA7DB' : '#FFFFFF') 
       : (props.primary ? '#A6DCF2' : '#FFFFFF'))
   };
+
+  ${props => props.scale && `width: 100%;`}
 
   padding: ${props =>
     (props.size === 'big' && (props.primary 
@@ -195,6 +197,7 @@ Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'medium', 'big']),
+  scale: PropTypes.bool,
   icon: PropTypes.node,
 
   tabIndex: PropTypes.number,
@@ -204,13 +207,14 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
   label: '',
   primary: false,
   size: 'base',
+  scale: false,
   icon: null,
 
   tabIndex: -1,

@@ -9,7 +9,22 @@ Custom combo box input
 ```js
 import { ComboBox } from 'asc-web-components';
 
-<ComboBox options={options} isDisabled={false}/>
+const options = [
+    {
+        key: '0',
+        label: '25 per page'
+    },
+    {
+        key: '1',
+        label: '50 per page',
+    },
+    {
+        key: '2',
+        label: '100 per page'
+    }
+];
+
+<ComboBox options={options} isDisabled={false} onSelect={option => console.log('selected', option)}/>
 ```
 
 #### Properties
@@ -20,3 +35,4 @@ import { ComboBox } from 'asc-web-components';
 | `isDisabled`           | `bool`            |    -     | -                            | `false` | Indicates that component is disabled         |
 | `withBorder`           | `bool`            |    -     | -                            | `true`  | Indicates that component contain border      |
 | `selectedIndex`        | `number`          |    -     | -                            | `0`     | Index of option selected by default          |
+| `onSelect`                | `func` |    -    | -                            | -       | Will be triggered whenever an ComboBox is selected option |

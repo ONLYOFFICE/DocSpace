@@ -9,7 +9,7 @@ import commonInputStyle from '../text-input/common-input-styles';
 
 const iconNames = Object.keys(Icons);
 
-const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, iconName, scale, ...props }) => <input {...props}/>;
+const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, iconName, scale, ...props }) => <input {...props} />;
 const StyledTextInput = styled(Input)`
   border: none;
 `;
@@ -49,67 +49,78 @@ const StyledInputGroup = styled(CustomInputGroup)`
 
 const InputBlock = React.forwardRef((props, ref) => {
   //console.log("InputBlock render");
-  const {onChange, value, children, size } = props;
+  const { onChange, value, children, size } = props;
+  
   let iconButtonSize = 0;
-  if(typeof props.iconSize == "number" && props.iconSize > 0){
+  
+  if (typeof props.iconSize == "number" && props.iconSize > 0) {
     iconButtonSize = props.iconSize;
-  }else{
+  } else {
     switch (size) {
       case 'base':
-          iconButtonSize = 15;
+        iconButtonSize = 15;
         break;
       case 'middle':
-          iconButtonSize = 18;
+        iconButtonSize = 18;
         break;
       case 'big':
-          iconButtonSize = 21;
+        iconButtonSize = 21;
         break;
       case 'huge':
-          iconButtonSize = 24;
+        iconButtonSize = 24;
         break;
-    
+
       default:
         break;
     }
   }
-  
+
+  const onIconClick = (e) => {
+    props.onIconClick && props.onIconClick(e, value);
+  }
 
   return (
-    <StyledInputGroup  hasError={props.hasError} hasWarning={props.hasWarning} isDisabled={props.isDisabled} scale={props.scale} size={props.size}>
+    <StyledInputGroup hasError={props.hasError} hasWarning={props.hasWarning} isDisabled={props.isDisabled} scale={props.scale} size={props.size}>
       <InputGroupAddon addonType="prepend">
         <StyledChildrenBlock>
           {children}
         </StyledChildrenBlock>
       </InputGroupAddon>
-       <StyledTextInput 
-          value={value}
-          isDisabled={props.isDisabled}
-          hasError={props.hasError}
-          hasWarning={props.hasWarning}
-          placeholder={props.placeholder}
-          tabIndex={props.tabIndex}
-          type={props.type}
-          maxLength={props.maxLength}
-          onBlur={props.onBlur}
-          onFocus={props.onFocus}
-          readOnly={props.isReadOnly}
-          autoFocus={props.autoFocus}
-          autoComplete={props.autoComplete}
-          size={props.size}
-          scale={props.scale}
-          onChange={onChange}
+      <StyledTextInput
+        value={value}
+        isDisabled={props.isDisabled}
+        hasError={props.hasError}
+        hasWarning={props.hasWarning}
+        placeholder={props.placeholder}
+        tabIndex={props.tabIndex}
+        type={props.type}
+        maxLength={props.maxLength}
+        onBlur={props.onBlur}
+        onFocus={props.onFocus}
+        readOnly={props.isReadOnly}
+        autoFocus={props.autoFocus}
+        autoComplete={props.autoComplete}
+        size={props.size}
+        scale={props.scale}
+        onChange={onChange}
 
-          as={TextInput}
-        />
-        {
-            iconNames.includes(props.iconName) 
-            && 
-              <InputGroupAddon addonType="append">
-                <StyledIconBlock>
-                  <IconButton size={iconButtonSize} color={props.iconColor} iconName={props.iconName} isFill={props.isIconFill} isDisabled={props.isDisabled} onClick={(e) => props.onIconClick(e, value)}/>
-                </StyledIconBlock>
-              </InputGroupAddon>
-        }
+        as={TextInput}
+      />
+      {
+        iconNames.includes(props.iconName)
+        &&
+        <InputGroupAddon addonType="append">
+          <StyledIconBlock>
+            <IconButton 
+              size={iconButtonSize} 
+              color={props.iconColor} 
+              iconName={props.iconName} 
+              isFill={props.isIconFill} 
+              isDisabled={props.isDisabled} 
+              onClick={onIconClick} />
+          </StyledIconBlock>
+        </InputGroupAddon>
+      }
     </StyledInputGroup>
   );
 });
@@ -167,8 +178,7 @@ InputBlock.defaultProps = {
   iconName: "",
   iconColor: "#ffffff",
   isIconFill: false,
-  isDisabled: false,
-  onIconClick: (e) => console.log("Icon click")
+  isDisabled: false
 }
 
 export default InputBlock
