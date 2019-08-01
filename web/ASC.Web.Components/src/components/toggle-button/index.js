@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Icons } from '../icons';
 import { Text } from "../text";
-
-const disableColor = "#ECEFF1";
-const disableTextColor = "#A3A9AE";
-const DisableCss = css`
-    rect {
-        fill: ${disableColor};
-    }
-`;
 
 const ToggleContainer = styled.label`
     position: absolute;
@@ -25,21 +17,11 @@ const ToggleContainer = styled.label`
     -o-user-select: none;
     -webkit-user-select: none;
 
+    cursor: ${props => props.isDisabled ? 'default !important' : 'pointer'}
     svg {
-        margin-right: 8px;
+        margin-right: 8px; 
+        ${props => props.isDisabled ? 'rect { fill: #ECEFF1}' : ''}
     }
-
-    ${props => props.isDisabled ?
-        css`
-        cursor: default !important;
-        svg {
-            ${DisableCss}
-          }
-    `
-        : css`
-        cursor: pointer;
-        `
-    };
 `;
 
 const HiddenInput = styled.input`
@@ -50,9 +32,7 @@ const HiddenInput = styled.input`
 `;
 
 const CheckboxIcon = ({ isChecked }) => {
-
     const iconName = isChecked ? "ToggleButtonCheckedIcon" : "ToggleButtonIcon";
-
     return <>{React.createElement(Icons[iconName])}</>;
 };
 
@@ -90,7 +70,7 @@ class ToggleButton extends Component {
                     <Text.Body
                         tag="span"
                         isDisabled={this.props.isDisabled}
-                        disableColor={disableTextColor}
+                        disableColor={'#A3A9AE'}
                     >
                         {this.props.label}
                     </Text.Body>

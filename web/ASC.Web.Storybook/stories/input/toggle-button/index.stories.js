@@ -1,6 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { ToggleButton } from 'asc-web-components';
@@ -21,6 +22,7 @@ storiesOf('Components|Input', module)
               name: 'isChecked',
               value: e.target.checked
             });
+            action('onChange')(e);
           }}
         />
       </Section>
