@@ -112,27 +112,6 @@ namespace ASC.Core.Notify
             return new string[0];
         }
 
-
-        public IRecipient GetRecipient(string id, string objectID)
-        {
-            return GetRecipient(id);
-        }
-
-        public IRecipient[] GetGroupEntries(IRecipientsGroup group, string objectID)
-        {
-            return GetGroupEntries(group);
-        }
-
-        public IRecipientsGroup[] GetGroups(IRecipient recipient, string objectID)
-        {
-            return GetGroups(recipient);
-        }
-
-        public string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName, string objectID)
-        {
-            return GetRecipientAddresses(recipient, senderName);
-        }
-
         /// <summary>
         /// Check if user with this email is activated
         /// </summary>
