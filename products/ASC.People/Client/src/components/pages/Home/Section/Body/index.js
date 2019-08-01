@@ -10,38 +10,63 @@ import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
 
-  getUserContextOptions = (user, isAdmin, history, settings) => {
+  onEmailSentClick = () => {
+    console.log("Context action: Send e-mail");
+  }
+
+  onSendMessageClick = () => {
+    console.log("Context action: Send message");
+  }
+
+  onEditClick = (user) => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/edit/${user.userName}`);
+  }
+
+  onChangePasswordClick = () => {
+    console.log("Context action: Change password");
+  }
+
+  onChangeEmailClick = () => {
+    console.log("Context action: Change e-mail");
+  }
+
+  onDisableClick = () => {
+    console.log("Context action: Disable");
+  }
+
+  getUserContextOptions = (user) => {
     return [
         {
             key: "key1",
             label: "Send e-mail",
-            onClick: () => console.log("Context action: Send e-mail")
+            onClick: this.onEmailSentClick
         },
         {
             key: "key2",
             label: "Send message",
-            onClick: () => console.log("Context action: Send message")
+            onClick: this.onSendMessageClick
         },
         { key: "key3", isSeparator: true },
         {
             key: "key4",
             label: "Edit",
-            onClick: () => history.push(`${settings.homepage}/edit/${user.userName}`)
+            onClick: this.onEditClick.bind(this, user)
         },
         {
             key: "key5",
             label: "Change password",
-            onClick: () => console.log("Context action: Change password")
+            onClick: this.onChangePasswordClick
         },
         {
             key: "key6",
             label: "Change e-mail",
-            onClick: () => console.log("Context action: Change e-mail")
+            onClick: this.onChangeEmailClick
         },
         {
             key: "key7",
             label: "Disable",
-            onClick: () => console.log("Context action: Disable")
+            onClick: this.onDisableClick
         }
     ];
   };
@@ -63,7 +88,7 @@ class SectionBodyContent extends React.PureComponent {
     return (
       <>
         {users.map(user => {
-          const contextOptions = this.getUserContextOptions(user, isAdmin, history, settings);
+          const contextOptions = this.getUserContextOptions(user);
           return isAdmin ? (
             <ContentRow
               key={user.id}
