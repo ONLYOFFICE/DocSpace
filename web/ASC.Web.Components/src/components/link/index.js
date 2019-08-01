@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { Icons } from '../icons';
 import DropDown from '../drop-down';
 import DropDownItem from '../drop-down-item';
+import { Text } from '../text';
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow,
-    isHovered, isSemitransparent, type, color, target,
+    isHovered, isSemitransparent, type, color, title,
     dropdownType, data, ...props }) => <a {...props}></a>;
 
 const getColor = color => {
@@ -61,16 +62,10 @@ const Caret = styled(ExpanderDownIcon)`
 
 const StyledLink = styled(SimpleLink).attrs((props) => ({
     href: props.href,
-    target: props.target,
     rel: props.target === '_blank' && 'noopener noreferrer',
-    title: props.title
 }))`
-    ${colorCss};
     ${opacityCss};
-    font-size: ${props => props.fontSize}px;
-    position: relative;
     text-decoration: none;
-    font-weight: ${props => (props.isBold && 'bold')};
     user-select: none;
 
         &:hover { 
@@ -115,6 +110,12 @@ const StyledSpan = styled.span`
     }
 `;
 
+const SimpleText = ({ color, fontSize, ...props }) => <Text.Body {...props} />
+const StyledText = styled(SimpleText)`
+    ${colorCss};
+    font-size: ${props => props.fontSize}px;
+`;
+
 const DataDropDown = ({ data, type, color, fontSize, ...props }) => <DropDown {...props}></DropDown>;
 
 class Link extends React.PureComponent {
@@ -126,7 +127,6 @@ class Link extends React.PureComponent {
 
         this.state = {
             isOpen: false,
-            isHovered: props.isHovered,
             isDropdown: props.dropdownType != 'none',
             data: props.data
         };
@@ -198,7 +198,15 @@ class Link extends React.PureComponent {
                             : this.clickAction
                     }>
                     <StyledLink {...this.props}>
-                        {this.props.children}
+                        <StyledText
+                            fontSize={this.props.fontSize}
+                            color={this.props.color}
+                            isBold={this.props.isBold}
+                            title={this.props.title}
+                            tag='span'
+                        >
+                            {this.props.children}
+                        </StyledText>
                     </StyledLink>
 
                     <Caret
