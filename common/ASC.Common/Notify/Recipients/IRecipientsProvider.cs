@@ -36,9 +36,6 @@ namespace ASC.Notify.Recipients
 
         string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
 
-        IRecipient[] GetGroupEntries(IRecipientsGroup group, string objectID);
-
-        string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName, string objectID);
         IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
     }
 }
