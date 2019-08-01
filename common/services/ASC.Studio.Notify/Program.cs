@@ -1,14 +1,17 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Notify.Config;
+using ASC.Data.Storage.Configuration;
+using ASC.Notify;
 using ASC.Web.Core;
+using ASC.Web.Studio.Core.Notify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ASC.Notify
+namespace ASC.Studio.Notify
 {
     public class Program
     {
@@ -27,7 +30,9 @@ namespace ASC.Notify
                     config
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
+                        .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("autofac.json")
+                        .AddJsonFile("autofac.products.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json");
@@ -36,20 +41,16 @@ namespace ASC.Notify
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddWebItemManager();
+                    services.AddSingleton<StudioNotifyService>();
+                    services.AddHostedService<ServiceLauncher>();
+                    services.AddHttpContextAccessor()
+                            .AddStorage()
+                            .AddLogManager();
 
                     var serviceProvider = services.BuildServiceProvider();
                     ConfigurationManager.Init(serviceProvider);
                     CommonServiceProvider.Init(serviceProvider);
                     serviceProvider.UseWebItemManager();
-
-                    var c = ConfigurationManager.GetSetting<NotifyServiceCfg>("notify");
-                    c.Init();
-                    services.AddSingleton(c);
-                    services.AddSingleton<DbWorker>();
-                    services.AddSingleton<NotifyCleaner>();
-                    services.AddSingleton<NotifySender>();
-                    services.AddSingleton<NotifyService>();
-                    services.AddHostedService<NotifyServiceLauncher>();
                 })
                 .UseConsoleLifetime()
                 .Build();

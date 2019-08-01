@@ -26,6 +26,7 @@
 
 using System;
 using System.Reflection;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Notify.Messages;
@@ -33,15 +34,28 @@ using ASC.Web.Core.WhiteLabel;
 
 namespace ASC.Notify
 {
-    public class NotifyService : INotifyService
+    public class NotifyService : INotifyService, IDisposable
     {
         private static readonly ILog log = LogManager.GetLogger("ASC");
+
+        private readonly ICacheNotify<NotifyMessage> cacheNotify;
 
         private readonly DbWorker db;
 
         public NotifyService(DbWorker db)
         {
             this.db = db;
+            cacheNotify = new KafkaCache<NotifyMessage>();
+        }
+
+        public void Start()
+        {
+            cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
+        }
+
+        public void Stop()
+        {
+            cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         }
 
         public void SendNotifyMessage(NotifyMessage notifyMessage)
@@ -76,6 +90,11 @@ namespace ASC.Notify
             CoreContext.TenantManager.SetCurrentTenant(tenant);
             TenantWhiteLabelSettings.Apply(tenant);
             methodInfo.Invoke(instance, parameters);
+        }
+
+        public void Dispose()
+        {
+            cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         }
     }
 }

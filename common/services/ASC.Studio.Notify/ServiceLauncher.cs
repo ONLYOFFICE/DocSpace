@@ -24,85 +24,42 @@
 */
 
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common.Data;
-using ASC.Common.Logging;
-using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
 {
-    public class NotifyServiceLauncher : IHostedService
+    public class ServiceLauncher : IHostedService
     {
-        public NotifyServiceCfg NotifyServiceCfg { get; }
-        public NotifyService NotifyService { get; }
-        public NotifySender NotifySender { get; }
-        public NotifyCleaner NotifyCleaner { get; }
         public WebItemManager WebItemManager { get; }
+        public StudioNotifyService StudioNotifyService { get; }
 
-        public NotifyServiceLauncher(NotifyServiceCfg notifyServiceCfg,
-            NotifySender notifySender,
-            NotifyService notifyService,
-            NotifyCleaner notifyCleaner,
-            WebItemManager webItemManager)
+        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyService studioNotifyService)
         {
-            NotifyServiceCfg = notifyServiceCfg;
-            NotifyService = notifyService;
-            NotifySender = notifySender;
-            NotifyCleaner = notifyCleaner;
             WebItemManager = webItemManager;
+            StudioNotifyService = studioNotifyService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyService.Start();
-            NotifySender.StartSending();
+            DbRegistry.Configure();
+            NotifyConfiguration.Configure();
+            WebItemManager.LoadItems();
 
-            if (0 < NotifyServiceCfg.Schedulers.Count)
-            {
-                InitializeNotifySchedulers();
-            }
-
-            NotifyCleaner.Start();
+            StudioNotifyService.RegisterSendMethod();
 
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            NotifyService.Stop();
-
-            if (NotifySender != null)
-            {
-                NotifySender.StopSending();
-            }
-
-            if (NotifyCleaner != null)
-            {
-                NotifyCleaner.Stop();
-            }
-
             return Task.CompletedTask;
-        }
-
-        private void InitializeNotifySchedulers()
-        {
-            CommonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
-            DbRegistry.Configure();
-            NotifyConfiguration.Configure();
-            WebItemManager.LoadItems();
-            foreach (var pair in NotifyServiceCfg.Schedulers.Where(r=> r.MethodInfo != null))
-            {
-                LogManager.GetLogger("ASC.Notify").DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
-                pair.MethodInfo.Invoke(null, null);
-            }
         }
     }
 }

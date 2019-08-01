@@ -65,7 +65,7 @@ namespace ASC.Core.Notify
                         ContentType = message.ContentType,
                         Content = message.Body,
                         Sender = senderName,
-                        CreationDate = DateTime.UtcNow,
+                        CreationDate = DateTime.UtcNow.Ticks,
                     };
 
                     var tenant = CoreContext.TenantManager.GetCurrentTenant(false);

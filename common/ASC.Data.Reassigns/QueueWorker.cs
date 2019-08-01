@@ -31,6 +31,7 @@ using System.Web;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
+using ASC.Web.Studio.Core.Notify;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Data.Reassigns
@@ -48,11 +49,12 @@ namespace ASC.Data.Reassigns
 
         public IHttpContextAccessor HttpContextAccessor { get; }
         public MessageService MessageService { get; }
-
-        public QueueWorker(IHttpContextAccessor httpContextAccessor, MessageService messageService)
+        public StudioNotifyService StudioNotifyService { get; }
+        public QueueWorker(IHttpContextAccessor httpContextAccessor, MessageService messageService, StudioNotifyService studioNotifyService)
         {
             HttpContextAccessor = httpContextAccessor;
             MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
         }
 
         public string GetProgressItemId(int tenantId, Guid userId)
@@ -103,25 +105,28 @@ namespace ASC.Data.Reassigns
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
         public QueueWorkerRemove QueueWorkerRemove { get; }
-        public QueueWorkerReassign(IHttpContextAccessor httpContextAccessor, MessageService messageService, QueueWorkerRemove queueWorkerRemove) : base(httpContextAccessor, messageService)
+        public QueueWorkerReassign(IHttpContextAccessor httpContextAccessor, 
+            MessageService messageService,
+            StudioNotifyService studioNotifyService,
+            QueueWorkerRemove queueWorkerRemove) : base(httpContextAccessor, messageService, studioNotifyService)
         {
             QueueWorkerRemove = queueWorkerRemove;
         }
 
         public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
-            return Start(tenantId, fromUserId, () => new ReassignProgressItem(HttpContextAccessor.HttpContext, MessageService, this, QueueWorkerRemove, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
+            return Start(tenantId, fromUserId, () => new ReassignProgressItem(HttpContextAccessor.HttpContext, MessageService, this, QueueWorkerRemove, StudioNotifyService, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
         }
     }
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
-        public QueueWorkerRemove(IHttpContextAccessor httpContextAccessor, MessageService messageService) : base(httpContextAccessor, messageService)
+        public QueueWorkerRemove(IHttpContextAccessor httpContextAccessor, MessageService messageService, StudioNotifyService studioNotifyService) : base(httpContextAccessor, messageService, studioNotifyService)
         {
         }
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
         }
     }
 }

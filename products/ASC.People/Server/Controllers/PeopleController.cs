@@ -48,13 +48,23 @@ namespace ASC.Employee.Core.Controllers
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
+        public StudioNotifyService StudioNotifyService { get; }
+        public UserManagerWrapper UserManagerWrapper { get; }
 
-        public PeopleController(Common.Logging.LogManager logManager, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, ApiContext apiContext)
+        public PeopleController(Common.Logging.LogManager logManager,
+            MessageService messageService,
+            QueueWorkerReassign queueWorkerReassign,
+            QueueWorkerRemove queueWorkerRemove,
+            StudioNotifyService studioNotifyService,
+            UserManagerWrapper userManagerWrapper,
+            ApiContext apiContext)
         {
             LogManager = logManager;
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
+            StudioNotifyService = studioNotifyService;
+            UserManagerWrapper = userManagerWrapper;
             ApiContext = apiContext;
         }
 
@@ -492,7 +502,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (self && !isAdmin)
             {
-                StudioNotifyService.Instance.SendMsgToAdminAboutProfileUpdated();
+                StudioNotifyService.SendMsgToAdminAboutProfileUpdated();
             }
 
             // change user type
@@ -947,16 +957,16 @@ namespace ASC.Employee.Core.Controllers
                 {
                     if (user.IsVisitor())
                     {
-                        StudioNotifyService.Instance.GuestInfoActivation(user);
+                        StudioNotifyService.GuestInfoActivation(user);
                     }
                     else
                     {
-                        StudioNotifyService.Instance.UserInfoActivation(user);
+                        StudioNotifyService.UserInfoActivation(user);
                     }
                 }
                 else
                 {
-                    StudioNotifyService.Instance.SendEmailActivationInstructions(user, user.Email);
+                    StudioNotifyService.SendEmailActivationInstructions(user, user.Email);
                 }
             }
 
@@ -1001,7 +1011,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            StudioNotifyService.Instance.SendMsgProfileDeletion(user);
+            StudioNotifyService.SendMsgProfileDeletion(user);
             MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");

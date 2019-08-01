@@ -108,7 +108,7 @@ namespace ASC.Web.Studio.Core.Notify
                             )
                             .GroupBy(f => products[f.Product]);
 
-                        var ProjectsProductName = products["projects"].Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
+                        var ProjectsProductName = products["projects"]?.Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
  
                         var activities = feedMinGroupedWrappers
                             .Where(f => f.Key.Name != ProjectsProductName) //not for project product

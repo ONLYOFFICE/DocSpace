@@ -95,7 +95,7 @@ namespace ASC.Core.Notify
                 ContentType = message.ContentType,
                 Content = message.Body,
                 Sender = senderName,
-                CreationDate = DateTime.UtcNow,
+                CreationDate = DateTime.UtcNow.Ticks,
             };
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
@@ -143,7 +143,7 @@ namespace ASC.Core.Notify
             var attachmentTag = message.Arguments.FirstOrDefault(x => x.Tag == "EmbeddedAttachments");
             if (attachmentTag != null && attachmentTag.Value != null)
             {
-                m.EmbeddedAttachments = attachmentTag.Value as NotifyMessageAttachment[];
+                m.EmbeddedAttachments.AddRange(attachmentTag.Value as NotifyMessageAttachment[]);
             }
 
             return m;

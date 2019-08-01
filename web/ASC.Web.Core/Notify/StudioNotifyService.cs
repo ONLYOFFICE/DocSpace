@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -53,18 +54,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
-        public static StudioNotifyService Instance
-        {
-            get;
-            private set;
-        }
-
-        static StudioNotifyService()
-        {
-            Instance = new StudioNotifyService();
-        }
-
-        private StudioNotifyService()
+        public StudioNotifyService()
         {
             client = WorkContext.NotifyContext.NotifyService.RegisterClient(StudioNotifyHelper.NotifySource);
         }
@@ -74,9 +64,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void RegisterSendMethod()
         {
-            var cron = ConfigurationManager.AppSettings["core.notify.cron"] ?? "0 0 5 ? * *"; // 5am every day
+            var cron = ConfigurationManager.AppSettings["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
-            if (ConfigurationManager.AppSettings["core.notify.tariff"] != "false")
+            if (ConfigurationManager.AppSettings["core:notify:tariff"] != "false")
             {
                 if (TenantExtra.Enterprise)
                 {

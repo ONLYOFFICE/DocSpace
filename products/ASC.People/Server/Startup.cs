@@ -10,7 +10,8 @@ using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
-
+using ASC.Web.Core.Users;
+using ASC.Web.Studio.Core.Notify;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -75,6 +76,8 @@ namespace ASC.People
                     .AddStorage()
                     .AddWebItemManager()
                     .AddScoped(r => new ApiContext(r.GetService<IHttpContextAccessor>().HttpContext))
+                    .AddSingleton<StudioNotifyService>()
+                    .AddSingleton<UserManagerWrapper>()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
                     .AddScoped<QueueWorkerRemove>();
