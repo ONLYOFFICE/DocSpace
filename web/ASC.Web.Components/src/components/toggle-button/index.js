@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { Icons } from '../icons'
+import { Icons } from '../icons';
+import { Text } from "../text";
 
 const disableColor = "#ECEFF1";
+const disableTextColor = "#A3A9AE";
 const DisableCss = css`
     rect {
         fill: ${disableColor};
@@ -11,7 +13,6 @@ const DisableCss = css`
 `;
 
 const ToggleContainer = styled.label`
-
     position: absolute;
     -webkit-appearance: none;
     outline: none;
@@ -22,6 +23,11 @@ const ToggleContainer = styled.label`
     user-select: none;
     -moz-user-select: none;
     -o-user-select: none;
+    -webkit-user-select: none;
+
+    .svg {
+      margin-right: 8px;
+    }    
 
     ${props => props.isDisabled ?
         css`
@@ -80,6 +86,15 @@ class ToggleButton extends Component {
                     {...this.props}
                 />
                 <CheckboxIcon {...this.props} />
+                {this.props.label && (
+                    <Text.Body
+                        tag="span"
+                        isDisabled={this.props.isDisabled}
+                        disableColor={disableTextColor}
+                    >
+                        {this.props.label}
+                    </Text.Body>
+                )}
             </ToggleContainer>
         )
     }

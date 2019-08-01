@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { ToggleButton } from 'asc-web-components';
@@ -15,6 +15,7 @@ storiesOf('Components|Input', module)
         <ToggleButton
           isChecked={boolean('isChecked', false)}
           isDisabled={boolean('isDisabled', false)}
+          label={text('label', 'label text')}
           onChange={(e) => {
             window.__STORYBOOK_ADDONS.channel.emit('storybookjs/knobs/change', {
               name: 'isChecked',
