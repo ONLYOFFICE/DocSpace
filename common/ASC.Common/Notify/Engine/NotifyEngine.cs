@@ -314,7 +314,7 @@ namespace ASC.Notify.Engine
 
                         try
                         {
-                            var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup, request.ObjectID) ?? new IRecipient[0];
+                            var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
                             foreach (var recipient in recipients)
                             {
                                 try
@@ -429,7 +429,7 @@ namespace ASC.Notify.Engine
             var addresses = recipient.Addresses;
             if (addresses == null || !addresses.Any())
             {
-                addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender, request.ObjectID);
+                addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
                 recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
             }
 

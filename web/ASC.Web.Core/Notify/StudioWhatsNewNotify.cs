@@ -179,7 +179,7 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             log.InfoFormat("Send whats new to {0}", user.Email);
                             client.SendNoticeAsync(
-                                Actions.SendWhatsNew, null, user, null,
+                                Actions.SendWhatsNew, null, user,
                                 new TagValue(Tags.Activities, activities),
                                 new TagValue(Tags.Date, DateToString(scheduleDate.AddDays(-1), culture)),
                                 new TagValue(CommonTags.Priority, 1)

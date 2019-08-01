@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using ASC.Notify.Engine;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -49,36 +48,36 @@ namespace ASC.Notify.Model
         }
 
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, SendNoticeCallback sendCallback, params ITagValue[] args)
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
         {
-            SendNoticeToAsync(action, objectID, recipients, senderNames, sendCallback, false, args);
+            SendNoticeToAsync(action, objectID, recipients, senderNames, false, args);
         }
 
-        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, SendNoticeCallback sendCallback, params ITagValue[] args)
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, params ITagValue[] args)
         {
-            SendNoticeToAsync(action, objectID, recipients, null, sendCallback, false, args);
+            SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args)
         {
-            SendNoticeToAsync(action, objectID, recipients, null, null, checkSubscription, args);
+            SendNoticeToAsync(action, objectID, recipients, null, checkSubscription, args);
         }
 
-        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, SendNoticeCallback sendCallback, params ITagValue[] args)
+        public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args)
         {
-            SendNoticeToAsync(action, objectID, new[] { recipient }, null, sendCallback, false, args);
+            SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
         }
 
-        public void SendNoticeAsync(INotifyAction action, string objectID, SendNoticeCallback sendCallback, params ITagValue[] args)
+        public void SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
         {
             var subscriptionSource = notifySource.GetSubscriptionProvider();
             var recipients = subscriptionSource.GetRecipients(action, objectID);
-            SendNoticeToAsync(action, objectID, recipients, null, sendCallback, false, args);
+            SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 
         public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
         {
-            SendNoticeToAsync(action, objectID, new[] { recipient }, null, null, checkSubscription, args);
+            SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
         }
 
 
@@ -117,7 +116,7 @@ namespace ASC.Notify.Model
         }
 
 
-        private void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, SendNoticeCallback sendCallback, bool checkSubsciption, params ITagValue[] args)
+        private void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
             if (recipients == null) throw new ArgumentNullException("recipients");
 
@@ -125,7 +124,7 @@ namespace ASC.Notify.Model
 
             foreach (var recipient in recipients)
             {
-                var r = CreateRequest(action, objectID, recipient, sendCallback, args, senderNames, checkSubsciption);
+                var r = CreateRequest(action, objectID, recipient, args, senderNames, checkSubsciption);
                 SendAsync(r);
             }
         }
@@ -136,11 +135,10 @@ namespace ASC.Notify.Model
             ctx.NotifyEngine.QueueRequest(request);
         }
 
-        private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, SendNoticeCallback sendCallback, ITagValue[] args, string[] senders, bool checkSubsciption)
+        private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
-            if (sendCallback != null) throw new NotImplementedException("sendCallback");
 
             var request = new NotifyRequest(notifySource, action, objectID, recipient);
             request.SenderNames = senders;
