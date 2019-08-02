@@ -92,7 +92,10 @@ class Filter {
       this.sortBy,
       this.sortOrder,
       this.employeeStatus,
-      this.activationStatus
+      this.activationStatus,
+      this.role,
+      this.search,
+      this.total
     );
   }
 }
