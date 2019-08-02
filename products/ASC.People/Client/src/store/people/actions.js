@@ -60,9 +60,11 @@ export function setFilter(filter) {
 
 export function fetchPeople(filter) {
     return dispatch => {
-        return api.getUserList(filter).then(res => {
-            console.log("api.getUserList", res);
-            dispatch(setFilter(filter || Filter.getDefault(res.data.total)));
+
+        let filterData = (filter && filter.clone()) || Filter.getDefault();
+        return api.getUserList(filterData).then(res => {
+            filterData.total = res.data.total;
+            dispatch(setFilter(filterData));
             return dispatch(setUsers(res.data.response));
         });
     };
