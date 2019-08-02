@@ -1,18 +1,16 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Icons } from '../icons';
-import { getCssFromSvg } from '../icons/get-css-from-svg';
 import { Text } from '../text';
 
-const activeColor = '#000000',
-  disableColor = '#A3A9AE';
+const disableColor = '#A3A9AE';
 const hoverColor = disableColor;
 const internalCircleDisabledColor = '#D0D5DA';
 const externalCircleDisabledColor = '#eceef1';
 
-const Span = styled.span`
+const ClearLabel = ({ spacing, ...props }) => <label {...props} />
+const Label = styled(ClearLabel)`
   display: flex;
   align-items: center;
   position: relative;
@@ -46,24 +44,16 @@ const Span = styled.span`
             }
           }
         `}
+
+  &:not(:first-child) {
+    margin-left: ${props => props.spacing}px;
+  }
 `;
 
 const Input = styled.input`
   position: absolute;
   z-index: -1;
   opacity: 0.0001;
-`;
-
-const TextBody = ({ isDisabled, ...props }) => <Text.Body {...props} />;
-
-const StyledText = styled(TextBody)`
-  color: ${props => props.isDisabled ? disableColor : activeColor};
-`;
-const ClearSpan = ({ spacing, ...props }) => <span {...props}></span>;
-const StyledSpan = styled(ClearSpan)`
-  &:not(:first-child) {
-    margin-left: ${props => props.spacing}px;
-  }
 `;
 
 const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
@@ -104,23 +94,27 @@ class RadioButton extends React.Component {
 
   render() {
     return (
-      <StyledSpan spacing={this.props.spacing}>
-        <label>
-          <Span isDisabled={this.props.isDisabled}>
-            <Input type='radio'
-              name={this.props.name}
-              value={this.props.value}
-              checked={this.props.isChecked}
-              onChange={this.props.onChange ? this.props.onChange : (e) => {
-                this.setState({ isChecked: true })
-                this.props.onClick && this.props.onClick(e);
-              }}
-              disabled={this.props.isDisabled} />
-            <RadiobuttonIcon {...this.props} />
-            <StyledText tag='span' isDisabled={this.props.isDisabled}>{this.props.label || this.props.value}</StyledText>
-          </Span>
-        </label>
-      </StyledSpan>
+      <Label
+        spacing={this.props.spacing}
+        isDisabled={this.props.isDisabled}>
+        <Input type='radio'
+          name={this.props.name}
+          value={this.props.value}
+          checked={this.props.isChecked}
+          onChange={this.props.onChange ? this.props.onChange : (e) => {
+            this.setState({ isChecked: true })
+            this.props.onClick && this.props.onClick(e);
+          }}
+          disabled={this.props.isDisabled} />
+        <RadiobuttonIcon {...this.props} />
+        <Text.Body
+          tag='span'
+          isDisabled={this.props.isDisabled}
+          disableColor={disableColor}
+        >
+          {this.props.label || this.props.value}
+        </Text.Body>
+      </Label>
     );
   };
 };
