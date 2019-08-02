@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Layout } from 'asc-web-components';
+import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
 import { getAvailableModules } from '../store/auth/selectors';
 
@@ -47,7 +47,12 @@ class PeopleLayout extends React.PureComponent {
             : {};
 
         console.log("PeopleLayout render");
-        return (<Layout key="1" {...newProps}>{children}</Layout>);
+        return (
+            <>
+                <Toast />
+                <Layout key="1" {...newProps}>{children}</Layout>
+            </>
+        );
     }
 };
 
