@@ -56,7 +56,8 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="protos/AscCacheItem.proto" />
+    <Protobuf Include="protos\AscCacheItem.proto" />
+    <Protobuf Include="protos\NotifyItem.proto" />
     <Protobuf Include="protos\DistributedTaskCache.proto" />
     <Protobuf Include="protos\DistributedTaskCancelation.proto" />
   </ItemGroup>

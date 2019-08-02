@@ -38,12 +38,12 @@ namespace ASC.Notify
     public class ServiceLauncher : IHostedService
     {
         public WebItemManager WebItemManager { get; }
-        public StudioNotifyService StudioNotifyService { get; }
+        public StudioNotifyServiceSender StudioNotifyServiceSender { get; }
 
-        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyService studioNotifyService)
+        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender)
         {
             WebItemManager = webItemManager;
-            StudioNotifyService = studioNotifyService;
+            StudioNotifyServiceSender = studioNotifyServiceSender;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ namespace ASC.Notify
             NotifyConfiguration.Configure();
             WebItemManager.LoadItems();
 
-            StudioNotifyService.RegisterSendMethod();
+            StudioNotifyServiceSender.RegisterSendMethod();
 
             return Task.CompletedTask;
         }

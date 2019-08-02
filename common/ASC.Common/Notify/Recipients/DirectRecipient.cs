@@ -24,12 +24,8 @@
 */
 
 
-#region usings
-
 using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace ASC.Notify.Recipients
 {
