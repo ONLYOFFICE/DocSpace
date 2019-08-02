@@ -71,8 +71,8 @@ class SectionBodyContent extends React.PureComponent {
     ];
   };
 
-  onContentRowSelect = (checked, data, user) => {
-    console.log("ContentRow onSelect", checked, data);
+  onContentRowSelect = (checked, user) => {
+    console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     }
@@ -99,7 +99,7 @@ class SectionBodyContent extends React.PureComponent {
               avatarName={user.userName}
               contextOptions={contextOptions}
               checked={isSelected(selection, user.id)}
-              onSelect={this.onContentRowSelect.bind(this, user)}
+              onSelect={this.onContentRowSelect}
             >
               <UserContent
                 user={user}
