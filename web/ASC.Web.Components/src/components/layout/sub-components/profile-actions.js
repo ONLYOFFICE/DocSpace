@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Avatar from '../../avatar'
 import DropDown from '../../drop-down'
 import DropDownItem from '../../drop-down-item'
+import { handleAnyClick } from '../../../utils/event';
 
 class ProfileActions extends React.PureComponent {
 
@@ -22,29 +23,30 @@ class ProfileActions extends React.PureComponent {
     this.getUserRole = this.getUserRole.bind(this);
     this.onAvatarClick = this.onAvatarClick.bind(this);
     this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
+
+    if(props.opened)
+      handleAnyClick(true, this.handleClick);
   };
 
   handleClick = (e) => {
-    !this.ref.current.contains(e.target) && this.toggle(false);
+    this.state.opened && !this.ref.current.contains(e.target) && this.toggle(false);
   }
 
   toggle = (opened) => {
     this.setState({ opened: opened });
   }
 
-  componentDidMount() {
-    if (this.ref.current) {
-      document.addEventListener("click", this.handleClick);
-    }
-  }
-
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleClick)
+    handleAnyClick(false, this.handleClick);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
+    }
+
+    if(this.state.opened !== prevState.opened) {
+      handleAnyClick(this.state.opened, this.handleClick);
     }
   }
 
