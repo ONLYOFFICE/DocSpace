@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { ContentRow } from "asc-web-components";
+import { ContentRow, toastr } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
@@ -11,11 +11,11 @@ import { isAdmin } from '../../../../../store/auth/selectors';
 class SectionBodyContent extends React.PureComponent {
 
   onEmailSentClick = () => {
-    console.log("Context action: Send e-mail");
+    toastr.success("Context action: Send e-mail");
   }
 
   onSendMessageClick = () => {
-    console.log("Context action: Send message");
+    toastr.success("Context action: Send message");
   }
 
   onEditClick = (user) => {
@@ -24,15 +24,15 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onChangePasswordClick = () => {
-    console.log("Context action: Change password");
+    toastr.success("Context action: Change password");
   }
 
   onChangeEmailClick = () => {
-    console.log("Context action: Change e-mail");
+    toastr.success("Context action: Change e-mail");
   }
 
   onDisableClick = () => {
-    console.log("Context action: Disable");
+    toastr.success("Context action: Disable");
   }
 
   getUserContextOptions = (user) => {
