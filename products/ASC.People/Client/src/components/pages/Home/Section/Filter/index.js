@@ -64,17 +64,17 @@ const getEmployeeStatus = filterValues => {
   return null;
 };
 
-const getEmailStatus = filterValues => {
-  const employeeStatus = result(
+const getActivationStatus = filterValues => {
+  const activationStatus = result(
     find(filterValues, value => {
-      return value.key === "filter-type";
+      return value.key === "filter-email";
     }),
     "value"
   );
 
-  if (employeeStatus === "filter-email-active") {
+  if (activationStatus === "filter-email-active") {
     return 1;
-  } else if (employeeStatus === "filter-email-pending") {
+  } else if (activationStatus === "filter-email-pending") {
     return 2;
   }
 
@@ -108,11 +108,12 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => (
       console.log(data);
 
       const newFilter = filter.clone();
+      newFilter.page = 0;
       newFilter.sortBy = data.sortId === "name" ? "firstname" : "lastname";
       newFilter.sortOrder =
         data.sortDirection === "desc" ? "descending" : "ascending";
       newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
-      newFilter.activationStatus = getEmailStatus(data.filterValue);
+      newFilter.activationStatus = getActivationStatus(data.filterValue);
       newFilter.role = getRole(data.filterValue);
       newFilter.search = data.inputValue || null;
 
