@@ -197,14 +197,20 @@ namespace ASC.Core.Data
         private IEnumerable<SubscriptionRecord> GetSubscriptions(ISqlInstruction q, int tenant)
         {
             var subs = ExecList(q)
-                .ConvertAll(r => new SubscriptionRecord
-                {
-                    Tenant = Convert.ToInt32(r[0]),
-                    SourceId = (string)r[1],
-                    ActionId = (string)r[2],
-                    RecipientId = (string)r[3],
-                    ObjectId = string.Empty.Equals(r[4]) ? null : (string)r[4],
-                    Subscribed = !Convert.ToBoolean(r[5]),
+                .ConvertAll(r => {
+                    var result = new SubscriptionRecord
+                    {
+                        Tenant = Convert.ToInt32(r[0]),
+                        SourceId = (string)r[1],
+                        ActionId = (string)r[2],
+                        RecipientId = (string)r[3],
+                        Subscribed = !Convert.ToBoolean(r[5]),
+                    };
+                    if (!string.Empty.Equals(r[4]))
+                    {
+                        result.ObjectId = (string)r[4];
+                    }
+                    return result;
                 });
 
             var result = subs.ToList();

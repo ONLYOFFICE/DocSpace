@@ -40,13 +40,14 @@ namespace ASC.Notify.Model
 
         public NotifyClientImpl(Context context, INotifySource notifySource)
         {
-            if (notifySource == null) throw new ArgumentNullException("notifySource");
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.notifySource = notifySource;
-            ctx = context;
+            this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            ctx = context ?? throw new ArgumentNullException("context");
         }
 
+        public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
+        {
+            SendNoticeToAsync(action, null, recipients, senderNames, false, args);
+        }
 
         public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
         {
@@ -116,7 +117,7 @@ namespace ASC.Notify.Model
         }
 
 
-        private void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
+        public void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args)
         {
             if (recipients == null) throw new ArgumentNullException("recipients");
 

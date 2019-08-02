@@ -49,6 +49,16 @@ namespace ASC.Notify.Model
             Name = name;
         }
 
+        public static implicit operator NotifyActionItem(NotifyAction cache)
+        {
+            return new NotifyActionItem() { ID = cache.ID, Name = cache.Name };
+        }
+
+        public static explicit operator NotifyAction(NotifyActionItem cache)
+        {
+            return new NotifyAction(cache.ID, cache.Name);
+        }
+
         public override bool Equals(object obj)
         {
             var a = obj as INotifyAction;

@@ -24,11 +24,7 @@
 */
 
 
-#region usings
-
 using System;
-
-#endregion
 
 namespace ASC.Notify.Recipients
 {
