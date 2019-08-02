@@ -59,8 +59,8 @@ const TextBody = ({ isDisabled, ...props }) => <Text.Body {...props} />;
 const StyledText = styled(TextBody)`
   color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
-
-const StyledSpan = styled.span`
+const ClearSpan = ({ spacing, ...props }) => <span {...props}></span>;
+const StyledSpan = styled(ClearSpan)`
   &:not(:first-child) {
     margin-left: ${props => props.spacing}px;
   }
