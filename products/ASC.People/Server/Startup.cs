@@ -1,4 +1,5 @@
 using System.Threading;
+
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -12,6 +13,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core.Notify;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -40,16 +42,20 @@ namespace ASC.People
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddControllers()
-                .AddNewtonsoftJson(s => s.UseCamelCasing(true))
+                .AddNewtonsoftJson(s => {
+                    s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
+                    s.UseCamelCasing(true);
+                })
                 .AddXmlSerializerFormatters();
+
 
             services.AddMemoryCache();
 
             services.AddDistributedMemoryCache();
             services.AddSession();
-
-            services.AddHttpContextAccessor();
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 

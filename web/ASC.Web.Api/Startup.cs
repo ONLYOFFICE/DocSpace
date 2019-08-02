@@ -1,5 +1,5 @@
 using System.Threading;
-
+using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
@@ -39,8 +39,11 @@ namespace ASC.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson(s=> s.UseCamelCasing(true))
-                .AddXmlSerializerFormatters();
+                    .AddNewtonsoftJson(s => {
+                        s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
+                        s.UseCamelCasing(true);
+                    })
+                    .AddXmlSerializerFormatters();
 
             services.AddMemoryCache();
 

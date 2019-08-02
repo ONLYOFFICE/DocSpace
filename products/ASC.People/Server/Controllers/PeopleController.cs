@@ -255,7 +255,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-            return users.Select(u => new EmployeeWraperFull(u, ApiContext));
+            return users.Select(u => new EmployeeWraperFull(u, ApiContext)).ToList();
         }
 
         [Read("simple/filter")]
