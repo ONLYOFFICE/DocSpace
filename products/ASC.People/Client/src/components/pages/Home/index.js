@@ -123,7 +123,7 @@ class Home extends React.Component {
               onClose={this.onClose}
             />
           }
-          sectionFilterContent={<SectionFilterContent />}
+          sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
           sectionBodyContent={
             <SectionBodyContent
               selected={selected}
