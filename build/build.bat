@@ -3,11 +3,8 @@ call start\stop.bat
 
 PUSHD %~dp0..
 
-del /s /q web\npm-local
-
 echo "ASC.Web.Components"
 call yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build\ASC.Web.Components.log
-xcopy web\ASC.Web.Components\node_modules web\npm-local\asc-web-components\node_modules\ /E /R /Y >> build\ASC.Web.Components.log
 call yarn link --cwd web/npm-local/asc-web-components
 
 echo "ASC.Web.Storybook"
