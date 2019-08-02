@@ -1,29 +1,16 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Icons } from '../icons';
 import { getCssFromSvg } from '../icons/get-css-from-svg';
 import { Text } from '../text';
 
 const activeColor = '#000000',
   disableColor = '#A3A9AE';
-
-var radiobuttonIcon,
-  radiobuttonHoveredIcon,
-  radiobuttonСheckedIcon,
-  radiobuttonCheckedHoveredIcon,
-  radiobuttonDisabledIcon,
-  radiobuttonDisabledCheckedIcon;
-
-(function () {
-  radiobuttonIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonIcon />));
-  radiobuttonHoveredIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonHoverIcon />));
-  radiobuttonСheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonCheckedIcon />));
-  radiobuttonCheckedHoveredIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonHoverCheckedIcon />));
-  radiobuttonDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonDisabledIcon />));
-  radiobuttonDisabledCheckedIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.RadiobuttonDisabledCheckedIcon />));
-}());
+const hoverColor = disableColor;
+const internalCircleDisabledColor = '#D0D5DA';
+const externalCircleDisabledColor = '#eceef1';
 
 const Span = styled.span`
   display: flex;
@@ -34,37 +21,31 @@ const Span = styled.span`
   cursor: ${props => !props.isDisabled && 'pointer'};
 
   .radiobutton {
-    line-height: 16px;
-    margin-bottom: 2px;
-    display: inline-block;
-    vertical-align: middle;
-    border: 0 none;
-    outline: none;
-    width: 16px;
-    height: 16px;
-    background-repeat: no-repeat;
-    background-image: url("data:image/svg+xml,${radiobuttonIcon}");
-
-    &:hover {
-      background-image: url("data:image/svg+xml,${radiobuttonHoveredIcon}");
-    }
-
-    &.checked {
-      background-image: url("data:image/svg+xml,${radiobuttonСheckedIcon}");
-
-        &:hover {
-          background-image: url("data:image/svg+xml,${radiobuttonCheckedHoveredIcon}");
-                }
-
-        &.disabled {
-          background-image: url("data:image/svg+xml,${radiobuttonDisabledCheckedIcon}");
-                  }
-    }
-
-    &.disabled {
-      background-image: url("data:image/svg+xml,${radiobuttonDisabledIcon}");
-    }
+    margin-right: 4px;  
   }
+
+  ${props =>
+    props.isDisabled
+      ? css`
+          cursor: default;
+          path:first-child {
+            stroke: ${externalCircleDisabledColor};
+              }
+          path:nth-child(even) {
+            fill: ${internalCircleDisabledColor};
+          }
+        `
+      : css`
+          cursor: pointer;
+
+          &:hover {
+            svg {
+              path:first-child {
+                stroke: ${hoverColor};
+              }
+            }
+          }
+        `}
 `;
 
 const Input = styled.input`
@@ -76,7 +57,6 @@ const Input = styled.input`
 const TextBody = ({ isDisabled, ...props }) => <Text.Body {...props} />;
 
 const StyledText = styled(TextBody)`
-  margin-left: 4px;
   color: ${props => props.isDisabled ? disableColor : activeColor};
 `;
 
@@ -85,6 +65,24 @@ const StyledSpan = styled.span`
     margin-left: ${props => props.spacing}px;
   }
 `;
+
+const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
+  const iconName = isChecked
+    ? "RadiobuttonCheckedIcon"
+    : "RadiobuttonIcon";
+
+  let newProps = {
+    size: "medium",
+    className: "radiobutton"
+  };
+
+  if (isDisabled) {
+    newProps.isfill = true;
+    newProps.color = "#F8F9F9";
+  };
+
+  return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
+};
 
 class RadioButton extends React.Component {
 
@@ -105,10 +103,6 @@ class RadioButton extends React.Component {
 
 
   render() {
-    const rbtnClassName = 'radiobutton' +
-      (this.state.isChecked ? ' checked' : '') +
-      (this.props.isDisabled ? ' disabled' : '');
-
     return (
       <StyledSpan spacing={this.props.spacing}>
         <label>
@@ -122,8 +116,7 @@ class RadioButton extends React.Component {
                 this.props.onClick && this.props.onClick(e);
               }}
               disabled={this.props.isDisabled} />
-
-            <span className={rbtnClassName} />
+            <RadiobuttonIcon {...this.props} />
             <StyledText tag='span' isDisabled={this.props.isDisabled}>{this.props.label || this.props.value}</StyledText>
           </Span>
         </label>
