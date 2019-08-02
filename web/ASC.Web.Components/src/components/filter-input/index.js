@@ -50,7 +50,6 @@ class FilterInput extends React.Component {
         let d = this.props.getSortData();
         d.map(function (item) {
             item.key = item.id;
-            item.onClick = _this.onClickSortItem.bind(_this, item);
             return item;
         });
         return d;
@@ -118,6 +117,7 @@ class FilterInput extends React.Component {
                 <StyledComboBox
                     options={this.getSortData()}
                     isDisabled={this.props.isDisabled}
+                    onSelect={this.onClickSortItem}
                 >
                     <StyledIconButton {...this.state}>
                         <IconButton
