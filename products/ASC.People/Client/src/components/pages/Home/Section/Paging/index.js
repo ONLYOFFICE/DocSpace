@@ -2,7 +2,6 @@ import React, {useCallback, useMemo} from "react";
 import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
-import Filter from '../../../../../helpers/filter';
 
 /*const pageItems = [
   {
@@ -32,7 +31,7 @@ import Filter from '../../../../../helpers/filter';
   }
 ];*/
 
-const SectionPagingContent = ({ fetchPeople, filter }) => {
+const SectionPagingContent = ({ fetchPeople, filter, onLoading }) => {
   const onNextClick = useCallback(e => {
     if(!filter.hasNext()) {
       e.preventDefault();
@@ -42,9 +41,12 @@ const SectionPagingContent = ({ fetchPeople, filter }) => {
 
     const newFilter = filter.clone();
     newFilter.page++;
-    fetchPeople(newFilter);
+    
+    onLoading(true);
+    fetchPeople(newFilter)
+      .finally(() => onLoading(false));
 
-  }, [filter, fetchPeople]);
+  }, [filter, fetchPeople, onLoading]);
 
   const onPrevClick = useCallback(e => {
     if(!filter.hasPrev()) {
@@ -56,9 +58,12 @@ const SectionPagingContent = ({ fetchPeople, filter }) => {
 
     const newFilter = filter.clone();
     newFilter.page--;
-    fetchPeople(newFilter);
 
-  }, [filter, fetchPeople]);
+    onLoading(true);
+    fetchPeople(newFilter)
+      .finally(() => onLoading(false));
+
+  }, [filter, fetchPeople, onLoading]);
 
   const onChangePageSize = useCallback(pageItem => {
     console.log("Paging onChangePageSize", pageItem);
@@ -66,9 +71,12 @@ const SectionPagingContent = ({ fetchPeople, filter }) => {
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.pageCount = pageItem.key;
-    fetchPeople(newFilter);
 
-  }, [filter, fetchPeople]);
+    onLoading(true);
+    fetchPeople(newFilter)
+      .finally(() => onLoading(false));
+
+  }, [filter, fetchPeople, onLoading]);
 
   /*const onChangePage = useCallback(pageItem => {
     console.log("Paging onChangePage", pageItem);

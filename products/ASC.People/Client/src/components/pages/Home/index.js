@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Backdrop, NewPageLayout as NPL } from "asc-web-components";
+import { Backdrop, NewPageLayout as NPL, RequestLoader } from "asc-web-components";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -26,7 +26,8 @@ class Home extends React.Component {
       isHeaderChecked: false,
       isBackdropVisible: false,
       isArticleVisible: false,
-      isArticlePinned: false
+      isArticlePinned: false,
+      isLoading: false
     };
   }
 
@@ -118,6 +119,10 @@ class Home extends React.Component {
     }
   }
 
+  onLoading = (status) => {
+    this.setState({isLoading: status});
+  }
+
   render() {
     
     const {
@@ -131,6 +136,15 @@ class Home extends React.Component {
     } = this.state;
     return (
       <>
+        <RequestLoader
+          visible={this.state.isLoading}
+          zIndex={256}
+          loaderSize={16}
+          loaderColor={'#999'}
+          label={'Loading... Please wait...'}
+          fontSize={12}
+          fontColor={'#999'}
+        />
         <Backdrop visible={isBackdropVisible} onClick={this.onBackdropClick} />
         <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
           <NPL.ArticleHeader visible={isArticlePinned}>
@@ -171,7 +185,7 @@ class Home extends React.Component {
             />
           </NPL.SectionBody>
           <NPL.SectionPaging>
-            <SectionPagingContent />
+            <SectionPagingContent onLoading={this.onLoading} />
           </NPL.SectionPaging>
           <NPL.SectionToggler
             visible={!isArticlePinned}
