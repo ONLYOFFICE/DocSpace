@@ -49,7 +49,8 @@ class Filter {
       sortby: sortBy,
       sortorder: sortOrder,
       employeestatus: employeeStatus,
-      activationstatus: activationStatus
+      activationstatus: activationStatus,
+      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,listAdminModules,birthday,title,location,isLDAP,isSSO"
     };
   };
 
