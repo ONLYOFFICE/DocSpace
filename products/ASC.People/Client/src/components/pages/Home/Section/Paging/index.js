@@ -31,7 +31,7 @@ import { Paging } from "asc-web-components";
   }
 ];*/
 
-const SectionPagingContent = ({ fetchPeople, filter, onLoading }) => {
+const SectionPagingContent = ({ fetchPeople, filter, onLoading, selectedCount }) => {
   const onNextClick = useCallback(e => {
     if(!filter.hasNext()) {
       e.preventDefault();
@@ -113,14 +113,15 @@ const SectionPagingContent = ({ fetchPeople, filter, onLoading }) => {
       nextAction={onNextClick}
       openDirection="top"
       //selectedPage={} //FILTER CURRENT PAGE
-      //selectedCount={} //FILTER PAGE COUNT
+      selectedCount={selectedCount} //FILTER PAGE COUNT
     />
   );
 };
 
 function mapStateToProps(state) {
   return {
-    filter: state.people.filter
+    filter: state.people.filter,
+    selectedCount: state.people.filter.pageCount
   };
 }
 

@@ -34,9 +34,12 @@ class ComboBox extends React.PureComponent {
 
     this.ref = React.createRef();
 
+    const selectedItem = this.props.options.find(x => (x.key === this.props.selectedOption || x.id === this.props.selectedOption)) || this.props.options[0];
+    console.log("combobox constructor label", selectedItem.label);
+
     this.state = {
       isOpen: props.opened,
-      boxLabel: props.options.find(x => x.key || x.id === props.selectedOption).label,
+      boxLabel: selectedItem.label,
       options: props.options
     };
 
@@ -84,6 +87,12 @@ class ComboBox extends React.PureComponent {
 
     if(this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
+    }
+
+    if(this.props.selectedOption !== prevProps.selectedOption) {
+      const label = this.props.options.find(x => x.key === this.props.selectedOption || x.id === this.props.selectedOption).label;
+      console.log("combobox componentDidUpdate label", label, this.props.selectedOption);
+      this.setState({boxLabel: label } );
     }
   }
 

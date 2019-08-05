@@ -38,6 +38,7 @@ const UserContent = ({user, history,settings }) => {
     <Container fluid={true}>
       <Row className="justify-content-start no-gutters">
         <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
+          {displayName && 
           <Link
             isSemitransparent={status === "pending"}
             type="action"
@@ -47,7 +48,7 @@ const UserContent = ({user, history,settings }) => {
             onClick={onUserNameClick}
           >
             {displayName}
-          </Link>
+          </Link>}
           {status === "pending" && (
             <Icons.SendClockIcon
               style={{ marginLeft: "8px", marginTop: "-4px" }}
@@ -70,6 +71,7 @@ const UserContent = ({user, history,settings }) => {
             headDepartment ? "col-3" : "col-auto"
           } col-sm-auto col-lg-2 text-truncate`}
         >
+          {headDepartment &&
           <Link
             isSemitransparent={status === "pending"}
             type="action"
@@ -79,6 +81,7 @@ const UserContent = ({user, history,settings }) => {
           >
             {headDepartment ? "Head of department" : ""}
           </Link>
+          }
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {headDepartment && (
@@ -86,6 +89,7 @@ const UserContent = ({user, history,settings }) => {
               {department ? "|" : ""}
             </span>
           )}
+          {department &&
           <Link
             isSemitransparent={status === "pending"}
             type="action"
@@ -95,6 +99,7 @@ const UserContent = ({user, history,settings }) => {
           >
             {department}
           </Link>
+          }
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {department && (
@@ -102,6 +107,7 @@ const UserContent = ({user, history,settings }) => {
               {mobilePhone ? "|" : ""}
             </span>
           )}
+          {mobilePhone && 
           <Link
             isSemitransparent={status === "pending"}
             type="action"
@@ -110,6 +116,7 @@ const UserContent = ({user, history,settings }) => {
           >
             {mobilePhone}
           </Link>
+          }
         </Col>
         <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
           {mobilePhone && (

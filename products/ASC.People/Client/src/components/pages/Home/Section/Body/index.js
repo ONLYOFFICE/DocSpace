@@ -96,7 +96,7 @@ class SectionBodyContent extends React.PureComponent {
               data={user}
               avatarRole={getUserRole(user)}
               avatarSource={user.avatar}
-              avatarName={user.userName}
+              avatarName={user.displayName}
               contextOptions={contextOptions}
               checked={isSelected(selection, user.id)}
               onSelect={this.onContentRowSelect}

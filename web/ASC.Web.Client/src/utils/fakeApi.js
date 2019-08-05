@@ -31,7 +31,7 @@ export function getModulesList() {
         {
             title: "People",
             link: "/products/people/",
-            imageUrl: "images/people_logolarge.png",
+            imageUrl: "images/people.svg",
             isPrimary: false
         }
     ];
