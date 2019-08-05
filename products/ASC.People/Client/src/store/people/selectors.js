@@ -1,13 +1,13 @@
-import _ from "lodash";
+import { find, filter } from "lodash";
 
 export function getSelectedUser(selection, userId) {
-    return _.find(selection, function (obj) {
+    return find(selection, function (obj) {
         return obj.id === userId;
     });
 };
 
 export function getUserByUserName(users, userName) {
-    return _.find(users, function (obj) {
+    return find(users, function (obj) {
         return obj.userName === userName;
     });
 };
@@ -17,7 +17,7 @@ export function isSelected(selection, userId) {
 };
 
 export function skipUser(selection, userId) {
-    return _.filter(selection, function (obj) {
+    return filter(selection, function (obj) {
         return obj.id !== userId;
     });
 };
