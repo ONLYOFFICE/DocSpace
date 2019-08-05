@@ -40,14 +40,14 @@ const nextAction = () => {
 
 const Paging = props => {
   //console.log("Paging render");
-  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, perPageItems, openDirection, disablePrevious, disableNext } = props;
+  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, openDirection, disablePrevious, disableNext, selectedPage, selectedCount } = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
   }
 
-  const onSelectPerPageAction = (option) => {
-    props.onSelectPerPage(option)
+  const onSelectCountAction = (option) => {
+    props.onSelectCount(option)
   }
 
   return (
@@ -55,13 +55,13 @@ const Paging = props => {
       <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} />
+          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} selectedOption={selectedPage} />
         </StyledPage>
       }
       <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
-      {perPageItems && 
+      {countItems && 
       <StyledOnPage>
-        <ComboBox directionY={openDirection} options={perPageItems} onSelect={onSelectPerPageAction} />
+        <ComboBox directionY={openDirection} options={countItems} onSelect={onSelectCountAction} selectedOption={selectedCount} />
       </StyledOnPage>
       }
     </StyledPaging>
@@ -69,14 +69,19 @@ const Paging = props => {
 };
 
 Paging.propTypes = {
-  previousAction: PropTypes.func,
-  nextAction: PropTypes.func,
   previousLabel: PropTypes.string,
-  nextLabel: PropTypes.string,
+  previousAction: PropTypes.func,
   disablePrevious: PropTypes.bool,
+
+  nextLabel: PropTypes.string,
+  nextAction: PropTypes.func,
   disableNext: PropTypes.bool,
+
+  selectedPage: PropTypes.any,
+  selectedCount: PropTypes.any,
+
   onSelectPage: PropTypes.func,
-  onSelectPerPage: PropTypes.func
+  onSelectCount: PropTypes.func
 }
 
 Paging.defaultProps = {

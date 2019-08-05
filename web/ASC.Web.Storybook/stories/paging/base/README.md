@@ -9,7 +9,19 @@ Paging is used to navigate med content pages.
 ```js
 import { Paging } from 'asc-web-components';
 
-<ComboBox previousLabel='Previous' nextLabel='Next' pageItems={pageItems} perPageItems={perPageItems}/>
+<ComboBox 
+    previousLabel='Previous' 
+    nextLabel='Next'
+    pageItems={pageItems} 
+    countItems={countItems} 
+    previousAction={previousAction} 
+    nextAction={nextAction} 
+    openDirection='bottom'
+    disablePrevious={false}
+    disableNext={false}
+    selectedPage={1}
+    selectedCount={25}
+/>
 ```
 
 #### Properties
@@ -17,7 +29,7 @@ import { Paging } from 'asc-web-components';
 | Props                  | Type              | Required | Values                       | Default | Description                                  |
 | ---------------------- | ----------------- | :------: | ---------------------------- | ------- | -------------------------------------------- |
 | `pageItems`            | `array`           |    -     | -                            | -       | Paging combo box items                       |
-| `perPageItems`         | `array`           |    -     | -                            | -       | Items per page combo box items               |
+| `countItems`           | `array`           |    -     | -                            | -       | Items per page combo box items               |
 | `previousLabel`        | `string`          |    -     | -                            | `Previous`| Label for previous button                  |
 | `nextLabel`            | `string`          |    -     | -                            | `Next`  | Label for next button                        |
 | `previousAction`       | `function`        |    -     | -                            | -       | Action for previous button                   |
@@ -25,3 +37,5 @@ import { Paging } from 'asc-web-components';
 | `openDirection`        | `string`          |    -     | `top`, `bottom`              | `bottom`| Indicates opening direction of combo box     |
 | `disablePrevious`      | `bool`            |    -     | -                            | `false` | Set previous button disabled                 |
 | `disableNext`          | `bool`            |    -     | -                            | `false` | Set next button disabled                     |
+| `selectedPage`         | `any`             |    -     | -                            | -       | Initial value for pageItems                  |
+| `selectedCount`        | `any`             |    -     | -                            | -       | Initial value for countItems                 |
