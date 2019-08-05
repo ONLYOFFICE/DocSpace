@@ -1,5 +1,5 @@
-import * as api from "../../utils/api";
-import Filter from "../../helpers/filter";
+import * as api from "../services/api";
+import Filter from "./filter";
 
 export const SET_GROUPS = 'SET_GROUPS';
 export const SET_USERS = 'SET_USERS';

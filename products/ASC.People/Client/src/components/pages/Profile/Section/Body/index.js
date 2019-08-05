@@ -125,7 +125,15 @@ const createContacts = (contacts) => {
 
 const SectionBodyContent = (props) => {
   const { profile, history, isSelf, settings } = props;
+  //console.log(profile, settings);
   const contacts = profile.contacts && getContacts(profile.contacts);
+  const role = getUserRole(profile);
+  const workFrom = getFormattedDate(profile.workFrom);
+  const birthDay = getFormattedDate(profile.birthday);
+  const formatedSex = capitalizeFirstLetter(profile.sex);
+  const formatedDepartments = getFormattedDepartments(profile.department);
+  const socialContacts = contacts && createContacts(contacts.social);
+  const infoContacts = contacts && createContacts(contacts.contact);
 
   const onEmailClick = useCallback(
     () => window.open('mailto:' + profile.email),
@@ -147,17 +155,10 @@ const SectionBodyContent = (props) => {
     [history, settings.homepage, profile.userName]
   );
 
-  console.log(profile);
-
   return (
     <div style={profileWrapper}>
       <div style={avatarWrapper}>
-        <Avatar
-          size="max"
-          role={getUserRole(profile)}
-          source={profile.avatarMax}
-          userName={profile.displayName}
-        />
+        <Avatar size="max" role={role} source={profile.avatarMax} userName={profile.displayName} />
         <Button style={editButtonWrapper} size="big" label="Edit profile" onClick={onEditProfileClick} />
       </div>
       <div style={infoWrapper}>
@@ -176,15 +177,20 @@ const SectionBodyContent = (props) => {
         </div>
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
-          <Text.Body style={restMargins}><Link type="page" fontSize={13} isHovered={true} onClick={onEmailClick} >{profile.email}</Link>{profile.activationStatus === 2 && ' (Pending)'}</Text.Body>
-          <Text.Body style={restMargins}>{getFormattedDepartments(profile.department)}</Text.Body>
+          <Text.Body style={restMargins}>
+            <Link type="page" fontSize={13} isHovered={true} onClick={onEmailClick} >
+              {profile.email}
+            </Link>
+            {profile.activationStatus === 2 && ' (Pending)'}
+          </Text.Body>
+          <Text.Body style={restMargins}>{formatedDepartments}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
-          <Text.Body style={restMargins}>{capitalizeFirstLetter(profile.sex)}</Text.Body>
-          <Text.Body style={restMargins}>{getFormattedDate(profile.workFrom)}</Text.Body>
-          <Text.Body style={restMargins}>{getFormattedDate(profile.birthday)}</Text.Body>
+          <Text.Body style={restMargins}>{formatedSex}</Text.Body>
+          <Text.Body style={restMargins}>{workFrom}</Text.Body>
+          <Text.Body style={restMargins}>{birthDay}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
-          {isSelf && <Text.Body style={restMargins}>{profile.cultureName}</Text.Body>}
+          {isSelf && <Text.Body style={restMargins}>{profile.cultureName || settings.currentCulture}</Text.Body>}
           {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}
         </div>
       </div>
@@ -223,7 +229,7 @@ const SectionBodyContent = (props) => {
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              {createContacts(contacts.contact)}
+              {infoContacts}
             </Text.Body>
           </ToggleContent>
         </div>
@@ -232,7 +238,7 @@ const SectionBodyContent = (props) => {
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
-              {createContacts(contacts.social)}
+              {socialContacts}
             </Text.Body>
           </ToggleContent>
         </div>

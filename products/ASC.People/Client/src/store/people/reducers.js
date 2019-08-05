@@ -8,7 +8,7 @@ import {
     SET_FILTER
 } from "./actions";
 import { isSelected, skipUser, getUsersBySelected } from './selectors';
-import Filter from "../../helpers/filter";
+import Filter from "./filter";
 
 const initialState = {
     users: [],

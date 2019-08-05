@@ -1,4 +1,4 @@
-import { toUrlParams } from "../utils/converter";
+import { toUrlParams } from "../services/converter";
 
 class Filter {
   static getDefault(total = 0) {

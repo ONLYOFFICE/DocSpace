@@ -35,7 +35,7 @@ const getSizeStyle = size => {
   }
 };
 
-export default function createStyledIcon(Component, displayName, fillPath="*", strokePath="rect") {
+export default function createStyledIcon(Component, displayName, fillPath="*", strokePath="*") {
 
   const Icon = ({ isfill, isStroke, color, stroke, fillPath, strokePath, ...props }) => <Component {...props}></Component>;
   const StyledIcon = styled(Icon)(

@@ -1,6 +1,6 @@
-import * as api from '../../utils/api';
-import { setGroups, setUsers } from '../people/actions';
-import setAuthorizationToken from '../../utils/setAuthorizationToken';
+import * as api from '../services/api';
+import { setGroups } from '../people/actions';
+import setAuthorizationToken from '../../store/services/setAuthorizationToken';
 import { fetchPeople } from '../people/actions';
 
 export const LOGIN_POST = 'LOGIN_POST';
