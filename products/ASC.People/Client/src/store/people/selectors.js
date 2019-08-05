@@ -40,10 +40,18 @@ export function getTreeGroups(groups) {
 };
 
 export const getUserStatus = user => {
-    if (user.status === 1 && user.activationStatus === 1) return "normal";
-    else if (user.status === 1 && user.activationStatus === 2) return "pending";
-    else if (user.status === 2) return "disabled";
-    else return "normal";
+    if (user.status === 1 && user.activationStatus === 1) {
+        return "normal";
+    }
+    else if (user.status === 1 && (user.activationStatus === 0 || user.activationStatus === 2)) {
+        return "pending";
+    }
+    else if (user.status === 2) {
+        return "disabled";
+    }
+    else { 
+        return "unknown";
+    }
 };
 
 export const getUserRole = user => {
