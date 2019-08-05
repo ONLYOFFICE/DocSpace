@@ -1,10 +1,12 @@
 using System.Threading;
+
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
@@ -113,6 +115,13 @@ namespace ASC.Web.Api
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                 }
                 await next.Invoke();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.RegisterForDispose(new DisposableHttpContext(context));
+
+                await next();
             });
 
             app.UseEndpoints(endpoints =>
