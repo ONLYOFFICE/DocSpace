@@ -34,6 +34,18 @@ namespace ASC.Core
     {
         IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
 
+        IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin,
+            EmployeeStatus? employeeStatus,
+            List<Guid> includeGroups,
+            List<Guid> excludeGroups,
+            EmployeeActivationStatus? activationStatus,
+            string text,
+            string sortBy,
+            bool sortOrderAsc,
+            long limit,
+            long offset,
+            out int total);
+
         UserInfo GetUser(int tenant, Guid id);
 
         UserInfo GetUser(int tenant, string login, string passwordHash);

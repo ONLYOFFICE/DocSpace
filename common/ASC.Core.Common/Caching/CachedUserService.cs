@@ -91,6 +91,11 @@ namespace ASC.Core.Caching
             }
         }
 
+        public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<Guid> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        {
+            return service.GetUsers(tenant, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total);
+        }
+
         public UserInfo GetUser(int tenant, Guid id)
         {
             if (CoreContext.Configuration.Personal)
@@ -410,7 +415,6 @@ namespace ASC.Core.Caching
         {
             return tenant.ToString() + USERS + userId;
         }
-
 
         [Serializable]
         class UserPhoto
