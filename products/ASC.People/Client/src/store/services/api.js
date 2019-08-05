@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import * as fakeApi from './fakeApi';
-import Filter from '../helpers/filter';
+import Filter from '../people/filter';
 
 const PREFIX = 'api';
 const VERSION = '2.0';

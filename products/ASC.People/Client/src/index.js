@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import Cookies from "universal-cookie";
-import setAuthorizationToken from "./utils/setAuthorizationToken";
+import setAuthorizationToken from "./store/services/setAuthorizationToken";
 import { AUTH_KEY } from "./helpers/constants";
 import store from "./store/store";
 import "./custom.scss";

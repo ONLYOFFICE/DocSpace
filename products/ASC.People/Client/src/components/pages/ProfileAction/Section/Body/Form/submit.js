@@ -1,5 +1,5 @@
 import { SubmissionError } from 'redux-form'
-import { createUser, updateUser } from '../../../../../../utils/api'
+import { createUser, updateUser } from '../../../../../../store/services/api'
 
 function submit (values) {
     function successCallback (res) {
