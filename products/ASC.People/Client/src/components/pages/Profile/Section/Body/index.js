@@ -125,14 +125,15 @@ const createContacts = (contacts) => {
 
 const SectionBodyContent = (props) => {
   const { profile, history, isSelf, settings } = props;
+  //console.log(profile, settings);
   const contacts = profile.contacts && getContacts(profile.contacts);
   const role = getUserRole(profile);
   const workFrom = getFormattedDate(profile.workFrom);
   const birthDay = getFormattedDate(profile.birthday);
   const formatedSex = capitalizeFirstLetter(profile.sex);
   const formatedDepartments = getFormattedDepartments(profile.department);
-  const socialContacts = createContacts(contacts.social);
-  const infoContacts = createContacts(contacts.contact);
+  const socialContacts = contacts && createContacts(contacts.social);
+  const infoContacts = contacts && createContacts(contacts.contact);
 
   const onEmailClick = useCallback(
     () => window.open('mailto:' + profile.email),
@@ -189,7 +190,7 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{workFrom}</Text.Body>
           <Text.Body style={restMargins}>{birthDay}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
-          {isSelf && <Text.Body style={restMargins}>{profile.cultureName}</Text.Body>}
+          {isSelf && <Text.Body style={restMargins}>{profile.cultureName || settings.currentCulture}</Text.Body>}
           {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}
         </div>
       </div>
