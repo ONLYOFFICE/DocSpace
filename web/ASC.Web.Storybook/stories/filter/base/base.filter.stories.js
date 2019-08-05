@@ -7,9 +7,18 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from '../README.md';
 import { FilterInput } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
-import { directive } from '@babel/types';
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
+
+const defaultFilterData = {
+  filterValue: [
+    {key: "filter-status", value: "filter-status-disabled"}
+  ],
+  sortDirection: "desc",
+  sortId: "name",
+  inputValue: "text"
+};
+
 function getData() {
     return [
       { key: 'filter-status', group: 'filter-status', label: 'Status', isHeader: true },
@@ -55,6 +64,7 @@ storiesOf('Components|Filter', module)
                         placeholder={text('placeholder', 'Search')}
                         onFilter={(result) => {console.log(result)}}
                         value={value}
+                        defaultFilterData={defaultFilterData}
                         onChange={e => { 
                             set(e.target.value);
                         }}
