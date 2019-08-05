@@ -73,7 +73,7 @@ class SearchInput extends React.Component  {
     this.minWidth = 190;
     this.isUpdateFilter = true;
     this.state = {
-      filterItems: [],
+      filterItems: props.defaultFilterData ? props.defaultFilterData : [],
       openFilterItems: [],
       hideFilterItems: []
     };
@@ -248,6 +248,7 @@ class SearchInput extends React.Component  {
   
   componentDidMount() {
     window.addEventListener('resize', _.throttle(this.resize), 100);
+    this.isUpdateFilter = false; this.updateFilter();
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize());

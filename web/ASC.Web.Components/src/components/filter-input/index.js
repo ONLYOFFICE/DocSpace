@@ -28,11 +28,29 @@ class FilterInput extends React.Component {
     constructor(props) {
         super(props);
 
+        function getDefaultFilterData(){
+            let filterData = props.getFilterData();
+            let defaultFilterItems = [];
+            props.defaultFilterData.filterValue.forEach(defaultfilterValue => {
+                let filterValue = filterData.find(x => (x.key === defaultfilterValue.value && x.group === defaultfilterValue.key));
+                if(filterValue != undefined){
+                    defaultfilterValue.label = filterValue.label; 
+                    defaultfilterValue.groupLabel = filterData.find(x => (x.key === defaultfilterValue.key)).label;
+                    defaultFilterItems.push(defaultfilterValue);
+                }
+            });
+            return defaultFilterItems;
+        }
         this.state = {
-            sortDirection: false,
-            sortId: this.props.getSortData().length > 0 ? this.props.getSortData()[0].id : "",
-            filterValue: [],
-            searchText: this.props.value
+            sortDirection: props.defaultFilterData ? props.defaultFilterData.sortDirection == "asc" ? true : false : false,
+            sortId: props.defaultFilterData ? 
+                        this.props.getSortData().findIndex(x => x.id === props.defaultFilterData.sortId) != -1 ? props.defaultFilterData.sortId : "" : 
+                        this.props.getSortData().length > 0 ? this.props.getSortData()[0].id : "",
+
+            filterValue: props.defaultFilterData ? 
+                            getDefaultFilterData() : 
+                            [],
+            searchText: props.defaultFilterData ? props.defaultFilterData.inputValue : this.props.value
         };
 
         this.timerId = null;
@@ -43,7 +61,17 @@ class FilterInput extends React.Component {
         this.onSearch = this.onSearch.bind(this);
         this.setFilterTimer = this.setFilterTimer.bind(this);
         this.onSearchChanged = this.onSearchChanged.bind(this);
+        
+        this.getDefaultSelectedIndex = this.getDefaultSelectedIndex.bind(this);
 
+    }
+    getDefaultSelectedIndex(){
+        const sortData = this.getSortData();
+        if(sortData.length > 0){
+            let defaultIndex = sortData.findIndex(x => x.id === this.state.sortId);
+            return defaultIndex != -1 ? defaultIndex : 0;
+        }
+        return 0;
     }
     getSortData() {
         let _this = this;
@@ -110,6 +138,7 @@ class FilterInput extends React.Component {
                         onSearchClick={this.onSearch}
                         onChangeFilter={this.onSearch}
                         value={this.state.searchText}
+                        defaultFilterData={this.state.filterValue}
                         onChange={this.onSearchChanged}
                     />
                 </StyledSearchInput>
@@ -118,6 +147,7 @@ class FilterInput extends React.Component {
                     options={this.getSortData()}
                     isDisabled={this.props.isDisabled}
                     onSelect={this.onClickSortItem}
+                    selectedIndex={this.getDefaultSelectedIndex()}
                 >
                     <StyledIconButton {...this.state}>
                         <IconButton
