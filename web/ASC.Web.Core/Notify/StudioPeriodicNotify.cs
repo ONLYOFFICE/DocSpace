@@ -462,7 +462,6 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            null,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
@@ -846,7 +845,6 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            null,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
@@ -1026,7 +1024,6 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            null,
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.DisplayUserName()),

@@ -22,7 +22,6 @@ namespace ASC.Api.Core.Core
         {
             var settings = new JsonSerializerSettings
             {
-                DefaultValueHandling = DefaultValueHandling.Include,
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 DateParseHandling = DateParseHandling.None
             };

@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { GroupButtonsMenu, DropDownItem, Text } from 'asc-web-components';
+import React from 'react';
+import { GroupButtonsMenu, DropDownItem, Text, toastr } from 'asc-web-components';
 
 const getPeopleItems = (onSelect) => [
     {
@@ -17,31 +17,31 @@ const getPeopleItems = (onSelect) => [
     },
     {
       label: "Make employee",
-      onClick: () => console.log("Make employee action")
+      onClick: toastr.success.bind(this, "Make employee action")
     },
     {
       label: "Make guest",
-      onClick: () => console.log("Make guest action")
+      onClick: toastr.success.bind(this, "Make guest action")
     },
     {
       label: "Set active",
-      onClick: () => console.log("Set active action")
+      onClick: toastr.success.bind(this, "Set active action")
     },
     {
       label: "Set disabled",
-      onClick: () => console.log("Set disabled action")
+      onClick: toastr.success.bind(this, "Set disabled action")
     },
     {
       label: "Invite again",
-      onClick: () => console.log("Invite again action")
+      onClick: toastr.success.bind(this, "Invite again action")
     },
     {
       label: "Send e-mail",
-      onClick: () => console.log("Send e-mail action")
+      onClick: toastr.success.bind(this, "Send e-mail action")
     },
     {
       label: "Delete",
-      onClick: () => console.log("Delete action")
+      onClick: toastr.success.bind(this, "Delete action")
     }
   ];
 

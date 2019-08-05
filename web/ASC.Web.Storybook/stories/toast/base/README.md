@@ -4,6 +4,7 @@
 
 ```js
 import { Toast, toastr } from 'asc-web-components';
+import 'react-toastify/dist/ReactToastify.min.css'; // You can place it here, but recommended place this file in main file, which contains all css`s
 ```
 
 #### Description

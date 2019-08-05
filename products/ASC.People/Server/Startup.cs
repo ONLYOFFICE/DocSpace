@@ -1,10 +1,12 @@
 using System.Threading;
+
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
@@ -12,6 +14,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core.Notify;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -40,16 +43,19 @@ namespace ASC.People
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddControllers()
-                .AddNewtonsoftJson(s => s.UseCamelCasing(true))
+                .AddNewtonsoftJson(s => {
+                    s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
+                })
                 .AddXmlSerializerFormatters();
+
 
             services.AddMemoryCache();
 
             services.AddDistributedMemoryCache();
             services.AddSession();
-
-            services.AddHttpContextAccessor();
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -115,7 +121,15 @@ namespace ASC.People
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                 }
+
                 await next.Invoke();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.RegisterForDispose(new DisposableHttpContext(context));
+
+                await next();
             });
 
             app.UseEndpoints(endpoints =>
@@ -127,7 +141,6 @@ namespace ASC.People
             app.UseCSP();
             app.UseCm();
             app.UseWebItemManager();
-
             app.UseStaticFiles();
         }
     }

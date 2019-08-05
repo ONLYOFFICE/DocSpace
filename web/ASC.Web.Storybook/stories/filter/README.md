@@ -33,5 +33,6 @@ FilterInput description
 | `placeholder`          | `string` |    -     | -                              | -       | Placeholder text for the input                                                                         |
 | `size`                 | `string` |          | `base`, `middle`, `big`, `huge`| `base`  | Supported size of the input fields.                                                                    |
 | `scale`                | `bool`   |    -     | -                              | -       | Indicates the input field has scale                                                                    |
+| `defaultFilterData`    | `object` |    -     | -                              | -       | Default filter data                                                                                    |
 
 

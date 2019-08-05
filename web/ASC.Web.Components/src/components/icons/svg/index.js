@@ -313,8 +313,8 @@ export const CheckIcon = createStyledIcon(
 );
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
-  "*",
-  'CheckboxIcon'
+  'CheckboxIcon',
+  "rect"
 );
 export const CheckboxCheckedIcon = createStyledIcon(
   OrigCheckboxCheckedIcon,

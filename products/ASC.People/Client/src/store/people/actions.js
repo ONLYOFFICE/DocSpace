@@ -1,5 +1,5 @@
-import * as api from "../../utils/api";
-import Filter from "../../helpers/filter";
+import * as api from "../services/api";
+import Filter from "./filter";
 
 export const SET_GROUPS = 'SET_GROUPS';
 export const SET_USERS = 'SET_USERS';
@@ -60,9 +60,11 @@ export function setFilter(filter) {
 
 export function fetchPeople(filter) {
     return dispatch => {
-        return api.getUserList(filter).then(res => {
-            console.log("api.getUserList", res);
-            dispatch(setFilter(filter || Filter.getDefault(res.data.total)));
+
+        let filterData = (filter && filter.clone()) || Filter.getDefault();
+        return api.getUserList(filterData).then(res => {
+            filterData.total = res.data.total;
+            dispatch(setFilter(filterData));
             return dispatch(setUsers(res.data.response));
         });
     };

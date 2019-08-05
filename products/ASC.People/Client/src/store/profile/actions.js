@@ -1,4 +1,4 @@
-import * as api from "../../utils/api";
+import * as api from "../../store/services/api";
 import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
 

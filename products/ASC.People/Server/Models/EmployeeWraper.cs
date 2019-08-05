@@ -59,7 +59,7 @@ namespace ASC.Web.Api.Models
 
             if (httpContext.Check("avatarSmall"))
             {
-                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
+                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
         }
 

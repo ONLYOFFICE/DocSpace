@@ -41,7 +41,7 @@ namespace ASC.Studio.Notify
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddWebItemManager();
-                    services.AddSingleton<StudioNotifyService>();
+                    services.AddSingleton<StudioNotifyServiceSender>();
                     services.AddHostedService<ServiceLauncher>();
                     services.AddHttpContextAccessor()
                             .AddStorage()

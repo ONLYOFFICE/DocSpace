@@ -14,7 +14,7 @@ import SectionBody from './sub-comoponents/section-body'
 import SectionPaging from './sub-comoponents/section-paging'
 import SectionToggler from './sub-comoponents/section-toggler'
 
-class PageLayout extends React.Component {
+class PageLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = this.mapPropsToState(props);

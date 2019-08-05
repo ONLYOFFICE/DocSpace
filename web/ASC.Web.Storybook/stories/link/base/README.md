@@ -18,7 +18,7 @@ It is a link with 2 types:
 <Link type = "page" color = "black" href="https://github.com" isBold = {true}>Bold page link</Link>
 ```
 
-#### Properties (common)
+#### Properties
 
 | Props              | Type     | Required | Values                      | Default        | Description                                                       |
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
@@ -31,13 +31,5 @@ It is a link with 2 types:
 | `target`           | `oneOf`   |    -     | _blank, _self, _parent, _top   | -    | The *target* attribute specifies where the linked document will open when the link is clicked.                          |                      |
 | `isTextOverflow`   | `bool`   |    -     | -                           | `true`        |Activate or deactivate *text-overflow* CSS property with ellipsis (' … ') value                           |
 | `isHovered`           | `bool`   |    -     | -                           | `false`        | Set hovered state and effects of link.
-| `isSemitransparent`           | `bool`   |    -     | -                           | `false`        | Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status        |
-
-
-#### Properties (only for \'action\' type of link)
-
-| Props              | Type     | Required | Values                      | Default        | Description                                                       |
-| ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
-| `dropdownType`       | `oneOf`  |    -     | alwaysDotted, appearDottedAfterHover, none                   | `none`        | Type of dropdown: *none* is neither, *alwaysDotted* is always show dotted style and icon of dropdown, *appearDottedAfterHover* is show dotted style and icon of dropdown only after hover       |
-| `onClick`           | `func`   |    -     | -                           | -        | What the link will trigger when clicked
-| `data`           | `array`   |    -     | -                           | -        | Array of objects, each can contain `<DropDownItem />` props 
+| `isSemitransparent`           | `bool`   |    -     | -                           | `false`        | Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status        |    |
+| `onClick`           | `func`   |    -     | -                           | -        | What the link will trigger when clicked. Only for \'action\' type of link

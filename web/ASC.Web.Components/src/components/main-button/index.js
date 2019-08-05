@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import DropDown from "../drop-down";
 import { Icons } from "../icons";
+import { handleAnyClick } from "../../utils/event";
 
 const backgroundColor = "#ED7309",
   disableBackgroundColor = "#FFCCA6",
@@ -112,27 +113,28 @@ class MainButton extends React.PureComponent {
     this.state = {
       isOpen: props.opened
     };
+
+    if(props.opened)
+      handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = e => !this.ref.current.contains(e.target) && this.toggle(false);
+  handleClick = e => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
   stopAction = e => e.preventDefault();
   toggle = isOpen => this.setState({ isOpen: isOpen });
 
-  componentDidMount() {
-    if (this.ref.current) {
-      document.addEventListener("click", this.handleClick);
-    }
-  }
-
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleClick);
+    handleAnyClick(false, this.handleClick);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // Store prevId in state so we can compare when props change.
     // Clear out previously-loaded data (so we don't render stale stuff).
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
+    }
+
+    if(this.state.isOpen !== prevState.isOpen) {
+      handleAnyClick(this.state.isOpen, this.handleClick);
     }
   }
 

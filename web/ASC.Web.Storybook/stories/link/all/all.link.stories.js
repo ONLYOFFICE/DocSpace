@@ -15,12 +15,6 @@ const headerStyle = {
   fontSize: 16,
 };
 
-const data = [
-  { key: 'key1', label: 'Base button1', onClick: () => console.log('Base button1 clicked') },
-  { key: 'key2', label: 'Base button2', onClick: () => console.log('Base button2 clicked') },
-  { key: 'key3', isSeparator: true },
-  { key: 'key4', label: 'Base button3', onClick: () => console.log('Base button3 clicked') }
-];
 
 storiesOf('Components|Link', module)
   .addParameters({ viewport: { defaultViewport: 'responsive' } })
@@ -31,7 +25,6 @@ storiesOf('Components|Link', module)
         <Row style={headerStyle}>
           <Col>Page links:</Col>
           <Col>Action links:</Col>
-          <Col>Another using of action links:</Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -39,9 +32,6 @@ storiesOf('Components|Link', module)
           </Col>
           <Col>
             <Link type="action" color="black" isBold={true}>Bold black action link</Link>
-          </Col>
-          <Col>
-            <Link type="action" color="black" dropdownType='alwaysDotted' data={data}>Simple dropdown</Link>
           </Col>
         </Row>
         <Row style={rowStyle}>
@@ -51,8 +41,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="black">Black action link</Link>
           </Col>
-          <Col>
-            <Link type="action" color="gray" dropdownType='appearDottedAfterHover' text='Gray dropdown and dotted appear after hover' data={data}>Black action link</Link> </Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -61,7 +49,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="black" isHovered={true}>Black hovered action link</Link>
           </Col>
-          <Col></Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -70,7 +57,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="gray">Gray action link</Link>
           </Col>
-          <Col></Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -79,7 +65,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="gray" isHovered={true}>Gray hovered action link</Link>
           </Col>
-          <Col></Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -88,7 +73,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="blue">Blue action link</Link>
           </Col>
-          <Col></Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -97,7 +81,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="blue" isHovered={true}>Blue hovered action link</Link>
           </Col>
-          <Col></Col>
         </Row>
         <Row style={rowStyle}>
           <Col>
@@ -106,7 +89,6 @@ storiesOf('Components|Link', module)
           <Col>
             <Link type="action" color="black" isSemitransparent={true}>Semitransparent black action link</Link>
           </Col>
-          <Col></Col>
         </Row>
       </Container>
     </>

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import InputBlock from '../input-block'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
+import { handleAnyClick } from '../../utils/event';
 
 const StyledComboBox = styled.div`
     & > div {
@@ -35,7 +36,7 @@ class ComboBox extends React.PureComponent {
 
     this.state = {
       isOpen: props.opened,
-      boxLabel: props.options[props.selectedIndex].label,
+      boxLabel: props.options.find(x => x.key || x.id === props.selectedOption).label,
       options: props.options
     };
 
@@ -44,17 +45,26 @@ class ComboBox extends React.PureComponent {
     this.toggle = this.toggle.bind(this);
     this.comboBoxClick = this.comboBoxClick.bind(this);
     this.optionClick = this.optionClick.bind(this);
+
+    if(props.opened)
+      handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) => !this.ref.current.contains(e.target) && this.toggle(false);
+  handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
+
   stopAction = (e) => e.preventDefault();
+
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
-  comboBoxClick = () => {
+
+  comboBoxClick = (e) => {
+    if (!!e.target.closest('.input-group-prepend')) return;
+    
     this.setState({ 
       option: this.props.option,
       isOpen: !this.state.isOpen
     });
   };
+
   optionClick = (option) => {
     this.setState({ 
       boxLabel: option.label,
@@ -63,24 +73,22 @@ class ComboBox extends React.PureComponent {
     this.props.onSelect && this.props.onSelect(option);
   };
 
-  componentDidMount() {
-    if (this.ref.current) {
-      document.addEventListener("click", this.handleClick);
-    }
-  }
-
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleClick)
+    handleAnyClick(false, this.handleClick);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
+    }
+
+    if(this.state.isOpen !== prevState.isOpen) {
+      handleAnyClick(this.state.isOpen, this.handleClick);
     }
   }
 
   render() {
-    //console.log("ComboBox render");
+    console.log("ComboBox render");
     return (
       <StyledComboBox ref={this.ref} {...this.props} data={this.state.boxLabel} onClick={this.comboBoxClick} onSelect={this.stopAction} >
         <InputBlock placeholder={this.state.boxLabel}
@@ -116,15 +124,14 @@ class ComboBox extends React.PureComponent {
 ComboBox.propTypes = {
   isDisabled: PropTypes.bool,
   withBorder: PropTypes.bool,
-  selectedIndex: PropTypes.number,
+  selectedOption: PropTypes.any,
   options: PropTypes.array,
   onSelect: PropTypes.func
 }
 
 ComboBox.defaultProps = {
   isDisabled: false,
-  withBorder: true,
-  selectedIndex: 0
+  withBorder: true
 }
 
 export default ComboBox;

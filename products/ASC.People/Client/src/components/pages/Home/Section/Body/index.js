@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { ContentRow } from "asc-web-components";
+import { ContentRow, toastr } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
@@ -10,44 +10,69 @@ import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
 
-  getUserContextOptions = (user, isAdmin, history, settings) => {
+  onEmailSentClick = () => {
+    toastr.success("Context action: Send e-mail");
+  }
+
+  onSendMessageClick = () => {
+    toastr.success("Context action: Send message");
+  }
+
+  onEditClick = (user) => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/edit/${user.userName}`);
+  }
+
+  onChangePasswordClick = () => {
+    toastr.success("Context action: Change password");
+  }
+
+  onChangeEmailClick = () => {
+    toastr.success("Context action: Change e-mail");
+  }
+
+  onDisableClick = () => {
+    toastr.success("Context action: Disable");
+  }
+
+  getUserContextOptions = (user) => {
     return [
         {
             key: "key1",
             label: "Send e-mail",
-            onClick: () => console.log("Context action: Send e-mail")
+            onClick: this.onEmailSentClick
         },
         {
             key: "key2",
             label: "Send message",
-            onClick: () => console.log("Context action: Send message")
+            onClick: this.onSendMessageClick
         },
         { key: "key3", isSeparator: true },
         {
             key: "key4",
             label: "Edit",
-            onClick: () => history.push(`${settings.homepage}/edit/${user.userName}`)
+            onClick: this.onEditClick.bind(this, user)
         },
         {
             key: "key5",
             label: "Change password",
-            onClick: () => console.log("Context action: Change password")
+            onClick: this.onChangePasswordClick
         },
         {
             key: "key6",
             label: "Change e-mail",
-            onClick: () => console.log("Context action: Change e-mail")
+            onClick: this.onChangeEmailClick
         },
         {
             key: "key7",
             label: "Disable",
-            onClick: () => console.log("Context action: Disable")
+            onClick: this.onDisableClick
         }
     ];
   };
 
-  onContentRowSelect = (checked, data, user) => {
-    console.log("ContentRow onSelect", checked, data);
+  onContentRowSelect = (checked, user) => {
+    console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     }
@@ -63,7 +88,7 @@ class SectionBodyContent extends React.PureComponent {
     return (
       <>
         {users.map(user => {
-          const contextOptions = this.getUserContextOptions(user, isAdmin, history, settings);
+          const contextOptions = this.getUserContextOptions(user);
           return isAdmin ? (
             <ContentRow
               key={user.id}
@@ -74,7 +99,7 @@ class SectionBodyContent extends React.PureComponent {
               avatarName={user.userName}
               contextOptions={contextOptions}
               checked={isSelected(selection, user.id)}
-              onSelect={this.onContentRowSelect.bind(this, user)}
+              onSelect={this.onContentRowSelect}
             >
               <UserContent
                 user={user}

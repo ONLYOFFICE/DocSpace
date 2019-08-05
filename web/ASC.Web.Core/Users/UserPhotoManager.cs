@@ -309,7 +309,7 @@ namespace ASC.Web.Core.Users
         
         public static string GetPhotoAbsoluteWebPath(Guid userID)
         {
-            var path = SearchInCache(userID, Size.Empty);
+            var path = SearchInCache(userID, Size.Empty, out _);
             if (!string.IsNullOrEmpty(path)) return path;
 
             try
@@ -361,12 +361,8 @@ namespace ASC.Web.Core.Users
 
         private static string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size, out bool isdef)
         {
-            var res = SearchInCache(userID, size);
-            if (!string.IsNullOrEmpty(res))
-            {
-                isdef = res == "default";
-                return res;
-            }
+            var res = SearchInCache(userID, size, out isdef);
+            if (!string.IsNullOrEmpty(res)) return res;
 
             try
             {
@@ -421,10 +417,12 @@ namespace ASC.Web.Core.Users
         }
 
 
-        private static string SearchInCache(Guid userId, Size size)
+        private static string SearchInCache(Guid userId, Size size, out bool isDef)
         {
             if (!IsCacheLoadedForTenant())
                 LoadDiskCache();
+
+            isDef = false;
 
             string fileName;
             lock (Photofiles)
@@ -439,7 +437,11 @@ namespace ASC.Web.Core.Users
                                 .Select(x => x.Value)
                                 .FirstOrDefault(x => !String.IsNullOrEmpty(x) && x.Contains("_orig_"));
             }
-            if (fileName != null && fileName.StartsWith("default")) return GetDefaultPhotoAbsoluteWebPath(size);
+            if (fileName != null && fileName.StartsWith("default"))
+            {
+                isDef = true;
+                return GetDefaultPhotoAbsoluteWebPath(size);
+            }
 
             if (!string.IsNullOrEmpty(fileName))
             {

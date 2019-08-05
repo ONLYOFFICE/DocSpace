@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import Scrollbar from '../scrollbar/index';
-import { Text } from '../text';
 import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';

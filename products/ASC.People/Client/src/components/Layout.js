@@ -2,38 +2,58 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
-import { Layout } from 'asc-web-components';
+import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
 import { getAvailableModules } from '../store/auth/selectors';
 
-const PeopleLayout = props => {
-    const { auth, logout, children, history, settings } = props;
-    const currentUserActions = [
-        {
-            key: 'ProfileBtn', label: 'Profile', onClick: () => {
-                console.log('ProfileBtn')
-                history.push(`${settings.homepage}/view/@self`);
-            }
-        },
-        {
-            key: 'AboutBtn', label: 'About', onClick: () => {
-                console.log('AboutBtn');
-            }
-        },
-        {
-            key: 'LogoutBtn', label: 'Log out', onClick: () => {
-                logout();
-            }
-        },
-    ];
+class PeopleLayout extends React.PureComponent {
+    onProfileClick = () => {
+        console.log('ProfileBtn');
+        const { history, settings } = this.props;
+        history.push(`${settings.homepage}/view/@self`);
+    }
 
-    const newProps = auth.isAuthenticated && auth.isLoaded 
-        ? { currentUserActions: currentUserActions, 
-            onLogoClick: () => window.open("/", '_self'), 
-            ...props } 
-        : {};
+    onAboutClick = () => {
+        console.log('About clicked');
+    }
 
-    return (<Layout key="1" {...newProps}>{children}</Layout>);
+    onLogoutClick = () => {
+        this.props.logout();
+    }
+
+    onLogoClick = () => window.open("/", '_self');
+
+    render() {
+        const { auth, children } = this.props;
+
+        const currentUserActions = [
+            {
+                key: 'ProfileBtn', label: 'Profile', onClick: this.onProfileClick
+            },
+            {
+                key: 'AboutBtn', label: 'About', onClick: this.onAboutClick
+            },
+            {
+                key: 'LogoutBtn', label: 'Log out', onClick: this.onLogoutClick
+            },
+        ];
+
+        const newProps = auth.isAuthenticated && auth.isLoaded
+            ? {
+                currentUserActions: currentUserActions,
+                onLogoClick: this.onLogoClick,
+                ...this.props
+            }
+            : {};
+
+        console.log("PeopleLayout render");
+        return (
+            <>
+                <Toast />
+                <Layout key="1" {...newProps}>{children}</Layout>
+            </>
+        );
+    }
 };
 
 PeopleLayout.propTypes = {

@@ -5,6 +5,7 @@ import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
+import { handleAnyClick } from '../../utils/event';
 
 const textColor = "#333333",
   disabledTextColor = "#A3A9AE";
@@ -108,10 +109,13 @@ class GroupButton extends React.PureComponent {
     this.toggle = this.toggle.bind(this);
     this.checkboxChange = this.checkboxChange.bind(this);
     this.dropDownItemClick = this.dropDownItemClick.bind(this);
+
+    if(props.opened)
+       handleAnyClick(true, this.handleClick);
   }
 
   handleClick = e =>
-    !this.ref.current.contains(e.target) && this.toggle(false);
+    this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
 
   stopAction = e => e.preventDefault();
 
@@ -122,7 +126,7 @@ class GroupButton extends React.PureComponent {
     this.setState({ selected: this.props.selected });
   };
 
-  dropDownItemClick = child => {
+    dropDownItemClick = child => {
     child.props.onClick && child.props.onClick();
     this.props.onSelect && this.props.onSelect(child);
     this.setState({ selected: child.props.label });
@@ -133,26 +137,24 @@ class GroupButton extends React.PureComponent {
     this.props.disabled ? this.stopAction(e) : this.toggle(!this.state.isOpen);
   };
 
-  componentDidMount() {
-    if (this.ref.current) {
-      document.addEventListener("click", this.handleClick);
-    }
-  }
-
   componentWillUnmount() {
-    document.removeEventListener("click", this.handleClick);
+    handleAnyClick(false, this.handleClick);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     // Store prevId in state so we can compare when props change.
     // Clear out previously-loaded data (so we don't render stale stuff).
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
+
+    if(this.state.isOpen !== prevState.isOpen) {
+      handleAnyClick(this.state.isOpen, this.handleClick);
+    }
   }
 
   render() {
-    //console.log("GroupButton render");
+    console.log("GroupButton render");
     const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked } = this.props;
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
