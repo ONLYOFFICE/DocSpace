@@ -57,6 +57,8 @@ class ComboBox extends React.PureComponent {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
+    if (!!e.target.closest('.input-group-prepend')) return;
+    
     this.setState({ 
       option: this.props.option,
       isOpen: !this.state.isOpen

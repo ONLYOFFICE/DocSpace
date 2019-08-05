@@ -147,7 +147,7 @@ class FilterInput extends React.Component {
                     options={this.getSortData()}
                     isDisabled={this.props.isDisabled}
                     onSelect={this.onClickSortItem}
-                    selectedIndex={this.getDefaultSelectedIndex()}
+                    selectedOption={this.getDefaultSelectedIndex()}
                 >
                     <StyledIconButton {...this.state}>
                         <IconButton
