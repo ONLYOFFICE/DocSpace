@@ -31,7 +31,7 @@ const HiddenInput = styled.input`
     z-index: -1;
 `;
 
-const CheckboxIcon = ({ isChecked }) => {
+const ToggleIcon = ({ isChecked }) => {
     const iconName = isChecked ? "ToggleButtonCheckedIcon" : "ToggleButtonIcon";
     return <>{React.createElement(Icons[iconName])}</>;
 };
@@ -65,7 +65,7 @@ class ToggleButton extends Component {
                     onChange={this.onInputChange}
                     {...this.props}
                 />
-                <CheckboxIcon {...this.props} />
+                <ToggleIcon {...this.props} />
                 {this.props.label && (
                     <Text.Body
                         tag="span"

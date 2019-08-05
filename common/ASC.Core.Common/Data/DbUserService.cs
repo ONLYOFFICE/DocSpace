@@ -24,16 +24,16 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace ASC.Core.Data
 {
@@ -48,6 +48,112 @@ namespace ASC.Core.Data
         {
             var q = GetUserQuery(tenant, from);
             return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
+        }
+
+        public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin, 
+            EmployeeStatus? employeeStatus,
+            List<Guid> includeGroups,
+            List<Guid> excludeGroups,
+            EmployeeActivationStatus? activationStatus,
+            string text,
+            string sortBy,
+            bool sortOrderAsc,
+            long limit,
+            long offset, 
+            out int total)
+        {
+            var totalQuery = new SqlQuery("core_user u").Where("u.tenant", tenant).SelectCount();
+            GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+            total = ExecScalar<int>(totalQuery);
+
+            var q = GetUserQuery(tenant, default);
+
+            q = GetUserQueryForFilter(q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                q.OrderBy(sortBy, sortOrderAsc);
+            }
+
+            if(limit != 0)
+            {
+                q.SetMaxResults((int)limit);
+            }
+
+            if(offset != 0)
+            {
+                q.SetFirstResult((int)offset);
+            }
+
+            return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
+        }
+
+        private SqlQuery GetUserQueryForFilter(SqlQuery q,bool isAdmin,
+            EmployeeStatus? employeeStatus,
+            List<Guid> includeGroups,
+            List<Guid> excludeGroups,
+            EmployeeActivationStatus? activationStatus,
+            string text)
+        {
+            q.Where("u.removed", false);
+
+            if (includeGroups != null && includeGroups.Any())
+            {
+                foreach (var g in includeGroups)
+                {
+                    var groupQuery = new SqlQuery("core_usergroup cug")
+                        .Where(Exp.EqColumns("cug.tenant", "cu.tenant"))
+                        .Where(Exp.EqColumns("cu.id", "cug.userid"))
+                        .Where(Exp.Eq("cug.groupid", g));
+                    q.Where(Exp.Exists(groupQuery));
+                }
+            }
+
+            if (excludeGroups != null && excludeGroups.Any())
+            {
+                foreach (var g in excludeGroups)
+                {
+                    var groupQuery = new SqlQuery("core_usergroup cug")
+                        .Where(Exp.EqColumns("cug.tenant", "cu.tenant"))
+                        .Where(Exp.EqColumns("cu.id", "cug.userid"))
+                        .Where(Exp.Eq("cug.groupid", g));
+                    q.Where(!Exp.Exists(groupQuery));
+                }
+            }
+
+            if (employeeStatus != null)
+            {
+                switch (employeeStatus)
+                {
+                    case EmployeeStatus.LeaveOfAbsence:
+                    case EmployeeStatus.Terminated:
+                        if (!isAdmin) q.Where("u.status", EmployeeStatus.Terminated);
+                        break;
+                    case EmployeeStatus.All:
+                        if (!isAdmin) q.Where("u.status", EmployeeStatus.Active);
+                        break;
+                    case EmployeeStatus.Default:
+                    case EmployeeStatus.Active:
+                        q.Where("u.status", EmployeeStatus.Active);
+                        break;
+                }
+            }
+
+            if (activationStatus != null)
+            {
+                q.Where("u.activation_status", activationStatus.Value);
+            }
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                q.Where(Exp.Like("u.firstname", text, SqlLike.AnyWhere) |
+                    Exp.Like("u.lastname", text, SqlLike.AnyWhere) |
+                    Exp.Like("u.title", text, SqlLike.AnyWhere) |
+                    Exp.Like("u.location", text, SqlLike.AnyWhere) |
+                    Exp.Like("u.email", text, SqlLike.AnyWhere));
+            }
+
+            return q;
         }
 
         public UserInfo GetUser(int tenant, Guid id)
@@ -329,11 +435,11 @@ namespace ASC.Core.Data
             var where = Exp.Empty;
             if (tenant != Tenant.DEFAULT_TENANT)
             {
-                where &= Exp.Eq("tenant", tenant);
+                where &= Exp.Eq("u.tenant", tenant);
             }
             if (from != default(DateTime))
             {
-                where &= Exp.Ge("last_modified", from);
+                where &= Exp.Ge("u.last_modified", from);
             }
             if (where != Exp.Empty)
             {
