@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Icons } from '../icons';
-
 import { getCssFromSvg } from '../icons/get-css-from-svg';
 import ReactDOMServer from 'react-dom/server';
-
-
 
 var tabsIcon/*, tabsIcon2*/;
 (function () { tabsIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.TabsIcon />)); }());
@@ -40,7 +37,7 @@ const Label = styled.label`
   label {margin:0}
 
   ${props => props.selected ?
-    `background-image: url("data:image/svg+xml,${tabsIcon}"); cursor: default;` :
+    `background-image: url("data:image/svg+xml,${tabsIcon}"); cursor: default; p {color: #fff}` :
     `background-image: none;
     &:hover{
       cursor: pointer;
@@ -70,7 +67,6 @@ class Tabs extends Component {
 
   render() {
     //console.log(this.props.selected);
-
     return (
       <TabsContainer>
         <NavItem>
@@ -81,11 +77,11 @@ class Tabs extends Component {
               onClick={() => {
                 this.labelClick(item);
               }}>
-              {item.something_title}
+              {item.title}
             </Label>
           )}
         </NavItem>
-        <BodyContainer> {this.props.children[this.state.activeTab].something_body} </BodyContainer>
+        <BodyContainer> {this.props.children[this.state.activeTab].body} </BodyContainer>
       </TabsContainer>
     );
   }
@@ -94,6 +90,6 @@ class Tabs extends Component {
 export default Tabs;
 
 Tabs.propTypes = {
-  children: PropTypes.object.isRequired
+  children: PropTypes.object
 };
 Tabs.defaultProps = {/*isChecked: false*/ };

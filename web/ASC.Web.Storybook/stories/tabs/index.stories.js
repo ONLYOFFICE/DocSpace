@@ -14,8 +14,8 @@ import { BooleanValue } from 'react-values';
 const something_items = [
     {
         id: "0",
-        something_title: <Text.Body>{text("Title text", "Title1")} </Text.Body>,
-        something_body:
+        title: <Text.Body> Title1 </Text.Body>,
+        body:
             <div >
                 <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
                 <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
@@ -24,8 +24,8 @@ const something_items = [
     },
     {
         id: "1",
-        something_title: <Text.Body>{text("Title text2", "Title2")} </Text.Body>,
-        something_body:
+        title: <Text.Body> Title2 </Text.Body>,
+        body:
             <div >
                 <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
                 <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
@@ -34,8 +34,8 @@ const something_items = [
     },
     {
         id: "2",
-        something_title: <Text.Body>{text("Title text3", "Title3")} </Text.Body>,
-        something_body:
+        title: <Text.Body> Title3 </Text.Body>,
+        body:
             <div>
                 <div> <input></input> <input></input> <input></input> </div>
                 <div> <input></input> <input></input> <input></input> </div>
@@ -44,22 +44,22 @@ const something_items = [
     },
     {
         id: "3",
-        something_title: <Text.Body>{text("Title text3", "Title3")} </Text.Body>,
-        something_body:
+        title: <Text.Body> Title4 </Text.Body>,
+        body:
             <div>
-                <div> <input></input> <input></input> <input></input> </div>
-                <div> <input></input> <input></input> <input></input> </div>
-                <div> <input></input> <input></input> <input></input> </div>
+                <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
+                <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
+                <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
             </div>
     },
     {
         id: "4",
-        something_title: <Text.Body>{text("Title text3", "Title3")} </Text.Body>,
-        something_body:
+        title: <Text.Body> Title5 </Text.Body>,
+        body:
             <div>
-                <div> <input></input> <input></input> <input></input> </div>
-                <div> <input></input> <input></input> <input></input> </div>
-                <div> <input></input> <input></input> <input></input> </div>
+                <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
+                <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
+                <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
             </div>
     }
 ];
@@ -82,9 +82,9 @@ storiesOf('Components|Tabs', module)
     .add('base', () => {
         return (
             <BooleanValue>
-                    <Tabs>
-                        {something_items}
-                    </Tabs>
+                <Tabs>
+                    {something_items}
+                </Tabs>
             </BooleanValue>
         );
     });
