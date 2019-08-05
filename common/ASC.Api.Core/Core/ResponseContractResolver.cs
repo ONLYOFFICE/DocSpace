@@ -114,6 +114,7 @@ namespace ASC.Api.Core
                 jsonSerializer.DateParseHandling = DateParseHandling.None;
                 jsonSerializer.ContractResolver = new ResponseDataContractResolver(props);
                 jsonSerializer.Serialize(writer, value);
+                return;
             }
 
             serializer.Serialize(writer, value);
