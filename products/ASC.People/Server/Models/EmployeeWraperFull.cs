@@ -191,17 +191,17 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("avatarMax"))
             {
-                AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
+                AvatarMax = UserPhotoManager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "": $"?_={userInfoLM}");
             }
 
             if (context.Check("avatarMedium"))
             {
-                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
+                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatar"))
             {
-                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? $"?_={userInfoLM}" : "");
+                Avatar = UserPhotoManager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             IsAdmin = userInfo.IsAdmin();
