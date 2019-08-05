@@ -6,6 +6,7 @@ using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
@@ -120,7 +121,15 @@ namespace ASC.People
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                 }
+
                 await next.Invoke();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.RegisterForDispose(new DisposableHttpContext(context));
+
+                await next();
             });
 
             app.UseEndpoints(endpoints =>
@@ -132,7 +141,6 @@ namespace ASC.People
             app.UseCSP();
             app.UseCm();
             app.UseWebItemManager();
-
             app.UseStaticFiles();
         }
     }
