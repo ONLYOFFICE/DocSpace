@@ -36,7 +36,7 @@ class ComboBox extends React.PureComponent {
 
     this.state = {
       isOpen: props.opened,
-      boxLabel: props.options[props.selectedIndex].label,
+      boxLabel: props.options.find(x => x.key || x.id === props.selectedOption).label,
       options: props.options
     };
 
@@ -51,14 +51,18 @@ class ComboBox extends React.PureComponent {
   }
 
   handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
+
   stopAction = (e) => e.preventDefault();
+
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
-  comboBoxClick = () => {
+
+  comboBoxClick = (e) => {
     this.setState({ 
       option: this.props.option,
       isOpen: !this.state.isOpen
     });
   };
+
   optionClick = (option) => {
     this.setState({ 
       boxLabel: option.label,
@@ -66,7 +70,6 @@ class ComboBox extends React.PureComponent {
     });
     this.props.onSelect && this.props.onSelect(option);
   };
-
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
@@ -119,15 +122,14 @@ class ComboBox extends React.PureComponent {
 ComboBox.propTypes = {
   isDisabled: PropTypes.bool,
   withBorder: PropTypes.bool,
-  selectedIndex: PropTypes.number,
+  selectedOption: PropTypes.any,
   options: PropTypes.array,
   onSelect: PropTypes.func
 }
 
 ComboBox.defaultProps = {
   isDisabled: false,
-  withBorder: true,
-  selectedIndex: 0
+  withBorder: true
 }
 
 export default ComboBox;
