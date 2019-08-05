@@ -82,7 +82,7 @@ const SectionPagingContent = ({ fetchPeople, filter, onLoading }) => {
     console.log("Paging onChangePage", pageItem);
   }, []);*/
 
-  const perPageItems = useMemo(() => [
+  const countItems = useMemo(() => [
     {
       key: 25,
       label: "25 per page"
@@ -104,14 +104,16 @@ const SectionPagingContent = ({ fetchPeople, filter, onLoading }) => {
       nextLabel="Next"
       //pageItems={pageItems}
       //onSelectPage={onChangePage}
-      perPageItems={perPageItems}
-      onSelectPerPage={onChangePageSize}
+      countItems={countItems}
+      onSelectCount={onChangePageSize}
       displayItems={false}
       disablePrevious={!filter.hasPrev()}
       disableNext={!filter.hasNext()}
       previousAction={onPrevClick}
       nextAction={onNextClick}
       openDirection="top"
+      //selectedPage={} //FILTER CURRENT PAGE
+      //selectedCount={} //FILTER PAGE COUNT
     />
   );
 };
