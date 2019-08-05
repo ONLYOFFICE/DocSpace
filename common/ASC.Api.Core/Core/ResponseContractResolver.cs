@@ -45,6 +45,10 @@ namespace ASC.Api.Core
         public ResponseContractResolver(ServiceProvider services)
         {
             Services = services;
+            NamingStrategy = new CamelCaseNamingStrategy
+            {
+                ProcessDictionaryKeys = true
+            };
         }
 
         protected override JsonProperty CreateProperty(System.Reflection.MemberInfo member, Newtonsoft.Json.MemberSerialization memberSerialization)
@@ -101,16 +105,18 @@ namespace ASC.Api.Core
         {
             var httpContext = new ApiContext(Services.GetService<IHttpContextAccessor>().HttpContext);
             var fields = httpContext.Fields;
-            var jsonSerializer = JsonSerializer.CreateDefault();
-            jsonSerializer.DateParseHandling = DateParseHandling.None;
 
             if (fields != null)
             {
                 var props = fields.Select(r => r.ToLower()).ToList();
+
+                var jsonSerializer = JsonSerializer.CreateDefault();
+                jsonSerializer.DateParseHandling = DateParseHandling.None;
                 jsonSerializer.ContractResolver = new ResponseDataContractResolver(props);
+                jsonSerializer.Serialize(writer, value);
             }
 
-            jsonSerializer.Serialize(writer, value);
+            serializer.Serialize(writer, value);
         }
     }
 }

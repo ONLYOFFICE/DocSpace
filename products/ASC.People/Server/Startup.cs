@@ -47,7 +47,6 @@ namespace ASC.People
             services.AddControllers()
                 .AddNewtonsoftJson(s => {
                     s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
-                    s.UseCamelCasing(true);
                 })
                 .AddXmlSerializerFormatters();
 
