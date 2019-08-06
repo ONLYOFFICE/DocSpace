@@ -5,7 +5,7 @@ import { ContentRow, toastr } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
-import { isSelected, getUserStatus, getUserRole } from '../../../../../store/people/selectors';
+import { isUserSelected, getUserStatus, getUserRole, isUserDisabled } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
@@ -36,38 +36,42 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   getUserContextOptions = (user) => {
-    return [
-        {
-            key: "key1",
-            label: "Send e-mail",
-            onClick: this.onEmailSentClick
-        },
-        {
-            key: "key2",
-            label: "Send message",
-            onClick: this.onSendMessageClick
-        },
-        { key: "key3", isSeparator: true },
-        {
-            key: "key4",
-            label: "Edit",
-            onClick: this.onEditClick.bind(this, user)
-        },
-        {
-            key: "key5",
-            label: "Change password",
-            onClick: this.onChangePasswordClick
-        },
-        {
-            key: "key6",
-            label: "Change e-mail",
-            onClick: this.onChangeEmailClick
-        },
-        {
+
+    const options = [{
+          key: "key1",
+          label: "Send e-mail",
+          onClick: this.onEmailSentClick
+      },
+      {
+          key: "key2",
+          label: "Send message",
+          onClick: this.onSendMessageClick
+      },
+      { key: "key3", isSeparator: true },
+      {
+          key: "key4",
+          label: "Edit",
+          onClick: this.onEditClick.bind(this, user)
+      },
+      {
+          key: "key5",
+          label: "Change password",
+          onClick: this.onChangePasswordClick
+      },
+      {
+          key: "key6",
+          label: "Change e-mail",
+          onClick: this.onChangeEmailClick
+      }];
+
+    return [...options,
+         !isUserDisabled(user)
+        ? {
             key: "key7",
             label: "Disable",
             onClick: this.onDisableClick
         }
+        : {}
     ];
   };
 
@@ -98,7 +102,7 @@ class SectionBodyContent extends React.PureComponent {
               avatarSource={user.avatar}
               avatarName={user.displayName}
               contextOptions={contextOptions}
-              checked={isSelected(selection, user.id)}
+              checked={isUserSelected(selection, user.id)}
               onSelect={this.onContentRowSelect}
             >
               <UserContent

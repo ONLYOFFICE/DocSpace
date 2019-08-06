@@ -1,4 +1,5 @@
 import { find, filter } from "lodash";
+import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
 
 export function getSelectedUser(selection, userId) {
     return find(selection, function (obj) {
@@ -12,7 +13,7 @@ export function getUserByUserName(users, userName) {
     });
 };
 
-export function isSelected(selection, userId) {
+export function isUserSelected(selection, userId) {
     return getSelectedUser(selection, userId) !== undefined;
 };
 
@@ -40,13 +41,13 @@ export function getTreeGroups(groups) {
 };
 
 export const getUserStatus = user => {
-    if (user.status === 1 && user.activationStatus === 1) {
+    if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Activated) {
         return "normal";
     }
-    else if (user.status === 1 && (user.activationStatus === 0 || user.activationStatus === 2)) {
+    else if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Pending) {
         return "pending";
     }
-    else if (user.status === 2) {
+    else if (user.status === EmployeeStatus.Disabled) {
         return "disabled";
     }
     else { 
@@ -64,34 +65,35 @@ export const getUserRole = user => {
 export const getContacts = (contacts) => {
     const pattern = {
         contact: [
-            { type: "mail", value: "", icon: "MailIcon" },
-            { type: "phone", value: "", icon: "PhoneIcon" },
-            { type: "mobphone", value: "", icon: "MobileIcon" },
-            { type: "gmail", value: "", icon: "GmailIcon" },
-            { type: "skype", value: "", icon: "SkypeIcon" },
-            { type: "msn", value: "", icon: "WindowsMsnIcon" },
-            { type: "icq", value: "", icon: "IcqIcon" },
-            { type: "jabber", value: "", icon: "JabberIcon" },
-            { type: "aim", value: "", icon: "AimIcon" }
+            { type: "mail", icon: "MailIcon" },
+            { type: "phone", icon: "PhoneIcon" },
+            { type: "mobphone", icon: "MobileIcon" },
+            { type: "gmail", icon: "GmailIcon" },
+            { type: "skype", icon: "SkypeIcon" },
+            { type: "msn", icon: "WindowsMsnIcon" },
+            { type: "icq", icon: "IcqIcon" },
+            { type: "jabber", icon: "JabberIcon" },
+            { type: "aim", icon: "AimIcon" }
         ],
         social: [
-            { type: "facebook", value: "", icon: "ShareFacebookIcon" },
-            { type: "livejournal", value: "", icon: "LivejournalIcon" },
-            { type: "myspace", value: "", icon: "MyspaceIcon" },
-            { type: "twitter", value: "", icon: "ShareTwitterIcon" },
-            { type: "blogger", value: "", icon: "BloggerIcon" },
-            { type: "yahoo", value: "", icon: "YahooIcon" }
+            { type: "facebook", icon: "ShareFacebookIcon" },
+            { type: "livejournal", icon: "LivejournalIcon" },
+            { type: "myspace", icon: "MyspaceIcon" },
+            { type: "twitter", icon: "ShareTwitterIcon" },
+            { type: "blogger", icon: "BloggerIcon" },
+            { type: "yahoo", icon: "YahooIcon" }
         ]
     };
 
     const mapContacts = (a, b) => {
-        return a.map(a => ({ ...a, ...b.find(({ type }) => type === a.type) })).filter(c => c.value !== "");
+        return a.map(a => ({ ...a, ...b.find(({ type }) => type === a.type) }))
+                .filter(c => (c.value !== "" && c.icon));
     }
 
     let info = {};
 
-    info.contact = mapContacts(pattern.contact, contacts);
-    info.social = mapContacts(pattern.social, contacts);
+    info.contact = mapContacts(contacts, pattern.contact);
+    info.social = mapContacts(contacts, pattern.social);
 
     return info;
 };
@@ -122,4 +124,8 @@ export function getUsersBySelected(users, selected) {
     });
 
     return newSelection;
-}
+};
+
+export function isUserDisabled(user) {
+    return getUserStatus(user) === "disabled";
+};
