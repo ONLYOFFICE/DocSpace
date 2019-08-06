@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { TextArea } from 'asc-web-components';
+import { Textarea } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import { StringValue } from 'react-values';
 import { action } from '@storybook/addon-actions';
@@ -13,7 +13,7 @@ const textLorem = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aen
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('text area', () => (
+  .add('textarea', () => (
     <div>
       <StringValue
         onChange={e => {
@@ -24,7 +24,7 @@ storiesOf('Components|Input', module)
       >
         {({ value, set }) => (
           <Section>
-            <TextArea
+            <Textarea
               placeholder={text('placeholder', 'Add comment')}
               isDisabled={boolean('isDisabled', false)}
               isReadOnly={boolean('isReadOnly', false)}

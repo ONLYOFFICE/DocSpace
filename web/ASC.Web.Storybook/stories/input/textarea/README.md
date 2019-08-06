@@ -1,27 +1,27 @@
-# Input: TextArea
+# Input: Textarea
 
 ## Usage
 
 ```js
-import { TextArea } from 'asc-web-components';
+import { Textarea } from 'asc-web-components';
 ```
 
 #### Description
 
-TextArea is used for displaying custom textarea
+Textarea is used for displaying custom textarea
 
 #### Usage
 
 ```js
-<TextArea placeholder="Add comment" onChange={event => alert(event.target.value) value='value' />
+<Textarea placeholder="Add comment" onChange={event => alert(event.target.value) value='value' />
 ```
 
 #### Properties
 
 | Props                  | Type     | Required | Values                       | Default | Description                                                                                            |
 | ---------------------- | -------- | :------: | ---------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
-| `value`                   | `string` |    -     | -                            | -       | Value for TextArea                                                                             |
-| `placeholder`                   | `string` |    -     | -                            | -       | Placeholder for TextArea                                                                             |
+| `value`                   | `string` |    -     | -                            | -       | Value for Textarea                                                                             |
+| `placeholder`                   | `string` |    -     | -                            | -       | Placeholder for Textarea                                                                             |
 | `onChange`                 | `func` |    -     | -                            | -       | Allow you to handle changing events of component
 | `id`                   | `string` |    -     | -                              | -       | Used as HTML `id` property                                                                             |
 | `name`                 | `string` |    -     | -                              | -       | Used as HTML `name` property                                                                                                                                                         |                                                              |
