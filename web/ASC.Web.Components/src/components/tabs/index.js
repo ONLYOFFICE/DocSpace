@@ -53,27 +53,30 @@ class TabContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: '0'
+      activeTab: 0
     };
   }
 
-  titleClick = (tab) => {
-    if (this.state.activeTab !== tab.id) {
-      this.setState({ activeTab: tab.id });
+  titleClick = (index) => {
+    if (this.state.activeTab !== index) {
+      this.setState({ activeTab: index});
     }
+    console.log(this.state.activeTab);
+    
   };
 
-  render() {
+  render() {    
+   
     return (
       <TabsContainer>
         <NavItem>
-          {this.props.children.map((item) =>
+          {this.props.children.map((item, index) =>
             <Label
-              selected={item.id === this.state.activeTab}
+              selected={this.state.activeTab === index}
               isDisabled={this.props.isDisabled}
               key={item.id}
               onClick={() => {
-                this.titleClick(item);
+                this.titleClick(index);
               }}>
               {item.title}
             </Label>
