@@ -1,4 +1,5 @@
 import { find, filter } from "lodash";
+import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
 
 export function getSelectedUser(selection, userId) {
     return find(selection, function (obj) {
@@ -40,13 +41,13 @@ export function getTreeGroups(groups) {
 };
 
 export const getUserStatus = user => {
-    if (user.status === 1 && user.activationStatus === 1) {
+    if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Activated) {
         return "normal";
     }
-    else if (user.status === 1 && (user.activationStatus === 0 || user.activationStatus === 2)) {
+    else if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Pending) {
         return "pending";
     }
-    else if (user.status === 2) {
+    else if (user.status === EmployeeStatus.Disabled) {
         return "disabled";
     }
     else { 
