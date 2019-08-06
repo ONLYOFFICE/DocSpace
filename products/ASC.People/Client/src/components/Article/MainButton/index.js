@@ -25,27 +25,33 @@ class ArticleMainButtonContent extends React.Component {
                     text={"Actions"}
                 >
                     <DropDownItem
+                        icon="CatalogEmployeeIcon"
                         label="New employee"
                         onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/user`)}
                     />
                     <DropDownItem
+                        icon="CatalogGuestIcon"
                         label="New guest"
                         onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/guest`)}
                     />
                     <DropDownItem
+                        icon="CatalogDepartmentsIcon"
                         label="New department"
                         onClick={this.onDropDownItemClick}
                     />
                     <DropDownItem isSeparator />
                     <DropDownItem
+                        icon="InvitationLinkIcon"
                         label="Invitation link"
                         onClick={this.onDropDownItemClick}
                     />
                     <DropDownItem
+                        icon="PlaneIcon"
                         label="Invite again"
                         onClick={this.onDropDownItemClick}
                     />
                     <DropDownItem
+                        icon="ImportIcon"
                         label="Import people"
                         onClick={this.onDropDownItemClick}
                     />
