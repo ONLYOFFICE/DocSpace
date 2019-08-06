@@ -49,6 +49,7 @@ const notesWrapper = {
   width: "100%"
 };
 
+/*
 const marginTop24 = {
   marginTop: "24px"
 };
@@ -64,6 +65,7 @@ const marginTop10 = {
 const marginLeft18 = {
   marginLeft: "18px"
 };
+*/
 
 const selfToggleWrapper = {
   width: "100%",
@@ -145,10 +147,12 @@ const SectionBodyContent = (props) => {
     []
   );
 
+  /*
   const onBecomeAffiliateClick = useCallback(
     () => console.log('Become our Affiliate onClick()'),
     []
   );
+  */
 
   const onEditProfileClick = useCallback(
     () => history.push(`${settings.homepage}/edit/${profile.userName}`),
@@ -173,8 +177,8 @@ const SectionBodyContent = (props) => {
           {profile.birthday && <Text.Body style={restMargins} color='lightGray' title='Date of birth'>Date of birth:</Text.Body>}
           {profile.location && <Text.Body style={restMargins} color='lightGray' title='Location'>Location:</Text.Body>}
           {isSelf && <Text.Body style={restMargins} color='lightGray' title='Language'>Language:</Text.Body>}
-          {isSelf && <Text.Body style={marginTop24} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}
-        </div>
+          {/*{isSelf && <Text.Body style={marginTop24} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
+        </div> 
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
           <Text.Body style={restMargins}>
@@ -191,10 +195,10 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{birthDay}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
           {isSelf && <Text.Body style={restMargins}>{profile.cultureName || settings.currentCulture}</Text.Body>}
-          {isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}
+          {/*{isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}*/}
         </div>
       </div>
-      {isSelf &&
+      {/*{isSelf &&
         <div style={selfToggleWrapper}>
           <ToggleContent label="Login settings" style={notesWrapper} isOpen={true}>
             <Text.Body tag="span">
@@ -206,7 +210,7 @@ const SectionBodyContent = (props) => {
             </Text.Body>
           </ToggleContent>
         </div>
-      }
+      }*/}
       {isSelf &&
         <div style={selfToggleWrapper}>
           <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
