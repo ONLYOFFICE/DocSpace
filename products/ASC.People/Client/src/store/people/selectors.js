@@ -122,4 +122,8 @@ export function getUsersBySelected(users, selected) {
     });
 
     return newSelection;
-}
+};
+
+export function isUserDisabled(user) {
+    return getUserStatus(user) === "disabled";
+};
