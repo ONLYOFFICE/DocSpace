@@ -47,26 +47,27 @@ const Label = styled.label`
 
 const BodyContainer = styled.div`
   margin: 24px 16px 0px 16px;
+
+  ${props => props.isDisabled ? `pointer-events: none;` : ``}
 `;
 
 class TabContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: 0
+      activeTab: 0,
+      selected: props.onSelect
     };
   }
 
-  titleClick = (index) => {
-    if (this.state.activeTab !== index) {
-      this.setState({ activeTab: index});
+  titleClick = (item, index) => {
+    if (this.state.selected !== item.key) {
+      this.setState({ activeTab: index, selected: item.key });
+      this.props.onSelect && this.props.onSelect(item.key);
     }
-    console.log(this.state.activeTab);
-    
   };
 
-  render() {    
-   
+  render() {
     return (
       <TabsContainer>
         <NavItem>
@@ -74,10 +75,8 @@ class TabContainer extends Component {
             <Label
               selected={this.state.activeTab === index}
               isDisabled={this.props.isDisabled}
-              key={item.id}
-              onClick={() => {
-                this.titleClick(index);
-              }}>
+              key={item.key}
+              onClick={this.titleClick.bind(this, item, index)}>
               {item.title}
             </Label>
           )}
@@ -88,10 +87,15 @@ class TabContainer extends Component {
   }
 }
 
-export default TabContainer;
-
 TabContainer.propTypes = {
-  children: PropTypes.object,
-  isDisabled: PropTypes.boolean
+  children: PropTypes.PropTypes.arrayOf(
+    PropTypes.object.isRequired
+  ).isRequired,
+  isDisabled: PropTypes.bool,
+  onSelect: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string
+  ])
 };
 
+export default TabContainer;

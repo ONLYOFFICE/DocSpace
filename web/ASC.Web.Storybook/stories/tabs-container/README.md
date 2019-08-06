@@ -45,6 +45,13 @@ const array_items = [
 <TabContainer>{array_items}</TabContainer>
 ```
 
+#### TabContainer Properties
+
+| Props      | Type        | Required | Values                                    | Default      | Description           |
+| ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
+| `isDisabled`                | `boolean` |    -    | -                            | -       | Disable the TabContainer
+| `onSelect`             | `func`            |    -     | -                            | -       | Triggered when a title is selected  |
+
 #### Array Items Properties
 
 | Props      | Type        | Required | Values                                    | Default      | Description           |
@@ -52,12 +59,3 @@ const array_items = [
 | `id`                | `string` |    true    | -                            | -       | Index of object array 
 | `title`                | `string` |    true    | -                            | -       | Tabs title         
 | `content`                | `object` |    true   | -                            | -       | Content in Tab
-
-
-#### TabContainer Properties
-
-| Props      | Type        | Required | Values                                    | Default      | Description           |
-| ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
-| `isDisabled`                | `boolean` |    -    | -                            | -       | Disable the TabContainer
-
-

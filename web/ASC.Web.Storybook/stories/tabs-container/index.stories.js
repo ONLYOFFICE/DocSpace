@@ -5,11 +5,11 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { TabContainer, Text } from 'asc-web-components';
 import Section from '../../.storybook/decorators/section';
-import { BooleanValue } from 'react-values';
+import { action } from '@storybook/addon-actions';
 
 const array_items = [
     {
-        id: "0",
+        key: "tab0",
         title: <Text.Body> Title1 </Text.Body>,
         content:
             <div >
@@ -19,7 +19,7 @@ const array_items = [
             </div>
     },
     {
-        id: "1",
+        key: "tab1",
         title: <Text.Body> Title2 </Text.Body>,
         content:
             <div >
@@ -29,7 +29,7 @@ const array_items = [
             </div>
     },
     {
-        id: "2",
+        key: "tab2",
         title: <Text.Body> Title3 </Text.Body>,
         content:
             <div>
@@ -39,7 +39,7 @@ const array_items = [
             </div>
     },
     {
-        id: "3",
+        key: "tab3",
         title: <Text.Body> Title4 </Text.Body>,
         content:
             <div>
@@ -49,7 +49,7 @@ const array_items = [
             </div>
     },
     {
-        id: "4",
+        key: "tab4",
         title: <Text.Body> Title5 </Text.Body>,
         content:
             <div>
@@ -66,11 +66,12 @@ storiesOf('Components|TabContainer', module)
     .add('base', () => {
         return (
             <Section>
-                <BooleanValue>
-                    <TabContainer isDisabled={boolean('isDisabled', false)}>
-                        {array_items}
-                    </TabContainer>
-                </BooleanValue>
+                <TabContainer
+                    onSelect={index => action("Selected item")(index)}
+                    isDisabled={boolean('isDisabled', false)}
+                >
+                    {array_items}
+                </TabContainer>
             </Section>
         );
     });
