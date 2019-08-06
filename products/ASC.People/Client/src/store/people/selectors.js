@@ -13,7 +13,7 @@ export function getUserByUserName(users, userName) {
     });
 };
 
-export function isSelected(selection, userId) {
+export function isUserSelected(selection, userId) {
     return getSelectedUser(selection, userId) !== undefined;
 };
 

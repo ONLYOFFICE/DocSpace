@@ -7,7 +7,7 @@ import {
     SET_SELECTED,
     SET_FILTER
 } from "./actions";
-import { isSelected, skipUser, getUsersBySelected } from './selectors';
+import { isUserSelected, skipUser, getUsersBySelected } from './selectors';
 import Filter from "./filter";
 
 const initialState = {
@@ -33,13 +33,13 @@ const peopleReducer = (state = initialState, action) => {
                 selection: action.selection
             });
         case SELECT_USER:
-            if (!isSelected(state.selection, action.user.id)) {
+            if (!isUserSelected(state.selection, action.user.id)) {
                 return Object.assign({}, state, {
                     selection: [...state.selection, action.user]
                 });
             } else return state;
         case DESELECT_USER:
-            if (isSelected(state.selection, action.user.id)) {
+            if (isUserSelected(state.selection, action.user.id)) {
                 return Object.assign({}, state, {
                     selection: skipUser(state.selection, action.user.id)
                 });

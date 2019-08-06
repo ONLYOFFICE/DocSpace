@@ -5,7 +5,7 @@ import { ContentRow, toastr } from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import { selectUser, deselectUser, setSelection } from "../../../../../store/people/actions";
-import { isSelected, getUserStatus, getUserRole, isUserDisabled } from '../../../../../store/people/selectors';
+import { isUserSelected, getUserStatus, getUserRole, isUserDisabled } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
 
 class SectionBodyContent extends React.PureComponent {
@@ -102,7 +102,7 @@ class SectionBodyContent extends React.PureComponent {
               avatarSource={user.avatar}
               avatarName={user.displayName}
               contextOptions={contextOptions}
-              checked={isSelected(selection, user.id)}
+              checked={isUserSelected(selection, user.id)}
               onSelect={this.onContentRowSelect}
             >
               <UserContent
