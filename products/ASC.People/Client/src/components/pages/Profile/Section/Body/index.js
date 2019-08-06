@@ -201,7 +201,7 @@ const SectionBodyContent = (props) => {
       {/*{isSelf &&
         <div style={selfToggleWrapper}>
           <ToggleContent label="Login settings" style={notesWrapper} isOpen={true}>
-            <Text.Body tag="span">
+            <Text.Body as="span">
               Two-factor authentication via code generating application was enabled for all users by cloud service administrator.
               <div style={marginTop10}>
                 <Link type="action" isBold={true} isHovered={true} fontSize={13} >{'Reset application'}</Link>
@@ -214,7 +214,7 @@ const SectionBodyContent = (props) => {
       {isSelf &&
         <div style={selfToggleWrapper}>
           <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
-            <Text.Body tag="span">
+            <Text.Body as="span">
               <Button size="big" label="Edit subscriptions" primary={true} onClick={onEditSubscriptionsClick} />
             </Text.Body>
           </ToggleContent>
@@ -223,7 +223,7 @@ const SectionBodyContent = (props) => {
       {profile.notes &&
         <div style={notesToggleWrapper}>
           <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
-            <Text.Body tag="span">
+            <Text.Body as="span">
               {profile.notes}
             </Text.Body>
           </ToggleContent>
@@ -232,7 +232,7 @@ const SectionBodyContent = (props) => {
       {profile.contacts &&
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
-            <Text.Body tag="span">
+            <Text.Body as="span">
               {infoContacts}
             </Text.Body>
           </ToggleContent>
@@ -241,7 +241,7 @@ const SectionBodyContent = (props) => {
       {profile.contacts &&
         <div style={contactsToggleWrapper}>
           <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
-            <Text.Body tag="span">
+            <Text.Body as="span">
               {socialContacts}
             </Text.Body>
           </ToggleContent>

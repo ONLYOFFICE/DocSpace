@@ -8,14 +8,30 @@ import { Text } from 'asc-web-components';
 
 ### <Text.Headline>
 
-Wraps the given text in the given HTML header size.
+A component that renders headline
 
 #### Usage
 
 ```js
-    <Text.Headline tag='h1' title='Some title'>
+    <Text.Headline as='h1' title='Some title'>
         Some text
     </Text.Headline>
+```
+
+#####   If you need to override styles
+
+```js
+
+    const StyledText = styled(Text.Headline)`
+        &:hover{
+            border-bottom: 1px dotted;
+        }
+    `;
+
+    <StyledHeadline forwardedAs='h1' title='Some title'>
+        Some text
+    </StyledHeadline>
+
 ```
 
 #### Properties
@@ -23,8 +39,9 @@ Wraps the given text in the given HTML header size.
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                                  |
-| `tag`              | `oneOf`  |    -     | `h1`,`h2`,`h3`        | `h1`      | Sets the text type with its own font size               |
+| `as `              | `string` |    -     | -                     | `h1`      | Sets the tag through which to render the component      |
 | `title`            | `bool`   |    -     | -                     | -         | Title                                                   |
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                                  |
 | `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property               |
+| `size`             | `oneOF`  |    -     | `big`, `medium`, `small` | `big`  | Sets the size of headline                               |
 

@@ -95,7 +95,7 @@ const StyledSpan = styled.span`
     }
 `;
 
-const SimpleText = ({ color, fontSize, isTextOverflow, ...props }) => <Text.Body {...props} />
+const SimpleText = ({ color, fontSize, isTextOverflow, ...props }) => <Text.Body as="span" {...props} />
 const StyledText = styled(SimpleText)`
     ${colorCss};
     font-size: ${props => props.fontSize}px;
@@ -181,7 +181,6 @@ class LinkWithDropdown extends React.PureComponent {
                             color={this.props.color}
                             isBold={this.props.isBold}
                             title={this.props.title}
-                            tag='span'
                         >
                             {this.props.children}
                         </StyledText>

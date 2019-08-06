@@ -43,12 +43,12 @@ const StyledTextarea = styled(TextareaAutosize)`
 
 `;
 
-class TextArea extends React.PureComponent {
+class Textarea extends React.PureComponent {
 
   onChange = (e) => this.props.onChange && this.props.onChange(e);
 
   render() {
-    // console.log('TextArea render');
+    // console.log('Textarea render');
     return (
       <StyledScrollbar
         stype='preMediumBlack'
@@ -64,15 +64,14 @@ class TextArea extends React.PureComponent {
           isDisabled={this.props.isDisabled}
           disabled={this.props.isDisabled}
           readOnly={this.props.isReadOnly}
-        >
-          {this.props.value}
-        </StyledTextarea>
+          value={this.props.value}
+        />
       </StyledScrollbar>
     )
   }
 }
 
-TextArea.propTypes = {
+Textarea.propTypes = {
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
@@ -84,7 +83,7 @@ TextArea.propTypes = {
   value: PropTypes.string
 }
 
-TextArea.defaultProps = {
+Textarea.defaultProps = {
   isDisabled: false,
   isReadOnly: false,
   placeholder: '',
@@ -92,4 +91,4 @@ TextArea.defaultProps = {
   tabIndex: -1,
 }
 
-export default TextArea;
+export default Textarea;

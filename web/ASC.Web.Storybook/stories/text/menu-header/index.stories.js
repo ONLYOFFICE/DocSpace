@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { text, boolean, withKnobs, select } from '@storybook/addon-knobs/react';
+import { text, boolean, withKnobs } from '@storybook/addon-knobs/react';
 import { Text } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
