@@ -5,8 +5,14 @@ import styled, { css } from 'styled-components';
 const TabsContainer = styled.div``;
 
 const NavItem = styled.div`
-    position: relative;
-    white-space: nowrap;
+  position: relative;
+  white-space: nowrap;
+`;
+
+const TitleStyle = css`
+  width: 80px;
+  height: 32px;
+  border-radius: 16px;
 `;
 
 const Label = styled.label`
@@ -18,21 +24,24 @@ const Label = styled.label`
   margin-right: 5px;
   label {margin:0}
 
+  ${props => props.isDisabled ? `pointer-events: none;` : ``}
+
   ${props => props.selected ?
-    `width: 80px;
-    height: 32px;
+    `${TitleStyle}
     background-color: #265A8F;
-    border-radius: 16px;
     cursor: default;
     p {color: #fff}` :
-    `background-image: none;
+    `
     &:hover{
+      ${TitleStyle}
       cursor: pointer;
-      width: 80px;
-      height: 32px;
       background-color: #F8F9F9;
-      border-radius: 16px;
     }`
+  }
+
+  ${props => props.isDisabled && props.selected ?
+    `${TitleStyle} background-color: #A3A9AE;
+    p {color: #fff} ` : ``
   }
 `;
 
@@ -40,7 +49,7 @@ const BodyContainer = styled.div`
   margin: 24px 16px 0px 16px;
 `;
 
-class Tabs extends Component {
+class TabContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +57,7 @@ class Tabs extends Component {
     };
   }
 
-  labelClick = (tab) => {
+  titleClick = (tab) => {
     if (this.state.activeTab !== tab.id) {
       this.setState({ activeTab: tab.id });
     }
@@ -61,9 +70,10 @@ class Tabs extends Component {
           {this.props.children.map((item) =>
             <Label
               selected={item.id === this.state.activeTab}
+              isDisabled={this.props.isDisabled}
               key={item.id}
               onClick={() => {
-                this.labelClick(item);
+                this.titleClick(item);
               }}>
               {item.title}
             </Label>
@@ -75,9 +85,10 @@ class Tabs extends Component {
   }
 }
 
-export default Tabs;
+export default TabContainer;
 
-Tabs.propTypes = {
-  children: PropTypes.object
+TabContainer.propTypes = {
+  children: PropTypes.object,
+  isDisabled: PropTypes.boolean
 };
 

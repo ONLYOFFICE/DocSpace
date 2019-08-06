@@ -1,13 +1,13 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Tabs, Text } from 'asc-web-components';
+import { TabContainer, Text } from 'asc-web-components';
 import Section from '../../.storybook/decorators/section';
 import { BooleanValue } from 'react-values';
 
-const something_items = [
+const array_items = [
     {
         id: "0",
         title: <Text.Body> Title1 </Text.Body>,
@@ -60,16 +60,16 @@ const something_items = [
     }
 ];
 
-storiesOf('Components|Tabs', module)
+storiesOf('Components|TabContainer', module)
     .addDecorator(withKnobs)
     .addDecorator(withReadme(Readme))
     .add('base', () => {
         return (
             <Section>
                 <BooleanValue>
-                    <Tabs>
-                        {something_items}
-                    </Tabs>
+                    <TabContainer isDisabled={boolean('isDisabled', false)}>
+                        {array_items}
+                    </TabContainer>
                 </BooleanValue>
             </Section>
         );
