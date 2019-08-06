@@ -22,29 +22,18 @@ export default function createStyledHeadline() {
       ${props => props.isInline == true && 'display: inline-block;'}
    `
 
-   const StyledH1 = styled.h1`
-      ${styles}
-   `;
-
-   const StyledH2 = styled.h2`
-      ${styles}
-   `;
-
-   const StyledH3 = styled.h3`
+   const StyledHeadline = styled.h1`
       ${styles}
    `;
 
    const Text = props => {
-      //console.log("Text.Headerline render");
       return (
-         (props.tag === 'h1' && <StyledH1 {...props} title={props.title}></StyledH1>) ||
-         (props.tag === 'h2' && <StyledH2 {...props} title={props.title}></StyledH2>) ||
-         (props.tag === 'h3' && <StyledH3 {...props} title={props.title}></StyledH3>)
+         <StyledHeadline as={props.tag} {...props} title={props.title}></StyledHeadline>
       );
    };
 
    Text.propTypes = {
-      tag: PropTypes.oneOf(['h1', 'h2', 'h3']),
+      tag: PropTypes.string,
       title: PropTypes.string,
       truncate: PropTypes.bool,
       isDisabled: PropTypes.bool,

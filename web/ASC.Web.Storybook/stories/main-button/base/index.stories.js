@@ -37,13 +37,13 @@ storiesOf('Components|MainButton', module)
         clickActionSecondary={ClickSecondaryButton}
         {...icon}
       >
-        <DropDownItem label="New employee" onClick={() => action('New employee clicked')} />
-        <DropDownItem label="New quest" onClick={() => action('New quest clicked')} />
-        <DropDownItem label="New department" onClick={() => action('New department clicked')} />
+        <DropDownItem icon="CatalogEmployeeIcon" label="New employee" onClick={() => action('New employee clicked')} />
+        <DropDownItem icon="CatalogGuestIcon" label="New quest" onClick={() => action('New quest clicked')} />
+        <DropDownItem icon="CatalogDepartmentsIcon" label="New department" onClick={() => action('New department clicked')} />
         <DropDownItem isSeparator />
-        <DropDownItem label="Invitation link" onClick={() => action('Invitation link clicked')} />
-        <DropDownItem label="Invite again" onClick={() => action('Invite again clicked')} />
-        <DropDownItem label="Import people" onClick={() => action('Import people clicked')} />
+        <DropDownItem icon="InvitationLinkIcon" label="Invitation link" onClick={() => action('Invitation link clicked')} />
+        <DropDownItem icon="PlaneIcon" label="Invite again" onClick={() => action('Invite again clicked')} />
+        <DropDownItem icon="ImportIcon" label="Import people" onClick={() => action('Import people clicked')} />
       </MainButton>
     </Section>
   )});

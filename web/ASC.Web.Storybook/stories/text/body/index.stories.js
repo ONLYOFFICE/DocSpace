@@ -6,7 +6,6 @@ import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-const tag = ['p', 'span'];
 const color = ['black', 'gray', 'lightGray'];
 
 storiesOf('Components|Text', module)
@@ -18,7 +17,7 @@ storiesOf('Components|Text', module)
       <div style={{ width: "100%" }}>
         <Text.Body
           title={text('title', '')}
-          tag={select('tag', tag, 'p')}
+          tag={text('tag', 'p')}
           truncate={boolean('truncate', false)}
           isDisabled={boolean('isDisabled', false)}
           color={select('color', color, 'black')}

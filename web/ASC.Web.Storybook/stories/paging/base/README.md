@@ -37,5 +37,5 @@ import { Paging } from 'asc-web-components';
 | `openDirection`        | `string`          |    -     | `top`, `bottom`              | `bottom`| Indicates opening direction of combo box     |
 | `disablePrevious`      | `bool`            |    -     | -                            | `false` | Set previous button disabled                 |
 | `disableNext`          | `bool`            |    -     | -                            | `false` | Set next button disabled                     |
-| `selectedPage`         | `any`             |    -     | -                            | -       | Initial value for pageItems                  |
-| `selectedCount`        | `any`             |    -     | -                            | -       | Initial value for countItems                 |
+| `selectedPage`         | `string`,`number` |    -     | -                            | -       | Initial value for pageItems                  |
+| `selectedCount`        | `string`,`number` |    -     | -                            | -       | Initial value for countItems                 |

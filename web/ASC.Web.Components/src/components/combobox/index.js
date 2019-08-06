@@ -34,8 +34,7 @@ class ComboBox extends React.PureComponent {
 
     this.ref = React.createRef();
 
-    const selectedItem = this.props.options.find(x => (x.key === this.props.selectedOption || x.id === this.props.selectedOption)) || this.props.options[0];
-    console.log("combobox constructor label", selectedItem.label);
+    const selectedItem = this.props.options.find(x => x.key === this.props.selectedOption) || this.props.options[0];
 
     this.state = {
       isOpen: props.opened,
@@ -49,7 +48,7 @@ class ComboBox extends React.PureComponent {
     this.comboBoxClick = this.comboBoxClick.bind(this);
     this.optionClick = this.optionClick.bind(this);
 
-    if(props.opened)
+    if (props.opened)
       handleAnyClick(true, this.handleClick);
   }
 
@@ -61,15 +60,15 @@ class ComboBox extends React.PureComponent {
 
   comboBoxClick = (e) => {
     if (!!e.target.closest('.input-group-prepend')) return;
-    
-    this.setState({ 
+
+    this.setState({
       option: this.props.option,
       isOpen: !this.state.isOpen
     });
   };
 
   optionClick = (option) => {
-    this.setState({ 
+    this.setState({
       boxLabel: option.label,
       isOpen: !this.state.isOpen
     });
@@ -85,14 +84,13 @@ class ComboBox extends React.PureComponent {
       this.toggle(this.props.opened);
     }
 
-    if(this.state.isOpen !== prevState.isOpen) {
+    if (this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
     }
 
-    if(this.props.selectedOption !== prevProps.selectedOption) {
-      const label = this.props.options.find(x => x.key === this.props.selectedOption || x.id === this.props.selectedOption).label;
-      console.log("combobox componentDidUpdate label", label, this.props.selectedOption);
-      this.setState({boxLabel: label } );
+    if (this.props.selectedOption !== prevProps.selectedOption) {
+      const label = this.props.options.find(x => x.key === this.props.selectedOption).label;
+      this.setState({ boxLabel: label });
     }
   }
 
@@ -133,7 +131,10 @@ class ComboBox extends React.PureComponent {
 ComboBox.propTypes = {
   isDisabled: PropTypes.bool,
   withBorder: PropTypes.bool,
-  selectedOption: PropTypes.any,
+  selectedOption: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   options: PropTypes.array,
   onSelect: PropTypes.func
 }
