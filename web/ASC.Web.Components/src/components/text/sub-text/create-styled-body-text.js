@@ -25,31 +25,26 @@ const style = css`
 
 `
 
-  const StyledP = styled.p`
+const TextBody = styled.p`
    ${style}
-  `;
-
-  const StyledSpan = styled.span`
-   ${style}
-  `;
+`;
 
   const Text = props => {
      //console.log("Text render");
-     return (props.tag === 'p' && <StyledP {...props} title={props.title}></StyledP>) ||
-      (props.tag === 'span' && <StyledSpan {...props} title={props.title}></StyledSpan>); 
+     return (<TextBody as={props.tag} {...props} title={props.title}></TextBody>);
   };
 
    Text.propTypes = {
-     tag: PropTypes.oneOf(['p','span']),
-     title: PropTypes.string,
-     color: PropTypes.oneOf(['black', 'gray', 'lightGray']),
-     disableColor: PropTypes.string,
-     backgroundColor: PropTypes.bool,
-     truncate: PropTypes.bool,
-     isDisabled: PropTypes.bool,
-     isBold: PropTypes.bool,
-     isInline: PropTypes.bool,
-     isItalic: PropTypes.bool
+      tag: PropTypes.string,
+      title: PropTypes.string,
+      color: PropTypes.oneOf(['black', 'gray', 'lightGray']),
+      disableColor: PropTypes.string,
+      backgroundColor: PropTypes.bool,
+      truncate: PropTypes.bool,
+      isDisabled: PropTypes.bool,
+      isBold: PropTypes.bool,
+      isInline: PropTypes.bool,
+      isItalic: PropTypes.bool
   };
 
    Text.defaultProps = {
