@@ -59,10 +59,10 @@ const Paging = props => {
         </StyledPage>
       }
       <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
-      {countItems && 
-      <StyledOnPage>
-        <ComboBox directionY={openDirection} options={countItems} onSelect={onSelectCountAction} selectedOption={selectedCount} />
-      </StyledOnPage>
+      {countItems &&
+        <StyledOnPage>
+          <ComboBox directionY={openDirection} options={countItems} onSelect={onSelectCountAction} selectedOption={selectedCount} />
+        </StyledOnPage>
       }
     </StyledPaging>
   );
@@ -72,14 +72,17 @@ Paging.propTypes = {
   previousLabel: PropTypes.string,
   previousAction: PropTypes.func,
   disablePrevious: PropTypes.bool,
-
   nextLabel: PropTypes.string,
   nextAction: PropTypes.func,
   disableNext: PropTypes.bool,
-
-  selectedPage: PropTypes.any,
-  selectedCount: PropTypes.any,
-
+  selectedPage: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  selectedCount: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   onSelectPage: PropTypes.func,
   onSelectCount: PropTypes.func
 }
