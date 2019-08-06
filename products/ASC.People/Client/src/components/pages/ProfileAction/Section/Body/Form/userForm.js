@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { withRouter } from 'react-router'
 import { Field, reduxForm, SubmissionError } from 'redux-form'
 import { Avatar, Button } from 'asc-web-components'
 import submit from './submit'
@@ -25,7 +26,12 @@ const renderField = ({ input, label, type, meta: { touched, error } }) => (
 )
 
 const UserForm = props => {
-  const { error, handleSubmit, submitting, initialValues, userType } = props
+  const { error, handleSubmit, submitting, initialValues, userType, history } = props;
+
+  const onCancel = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
   return (
     <form onSubmit={handleSubmit(submit)}>
       <div style={{display: "flex"}}>
@@ -87,8 +93,8 @@ const UserForm = props => {
         {error && <strong>{error}</strong>}
       </div>
       <div style={{marginTop: "60px"}}>
-        <Button label="Save" primary type="submit" isDisabled={submitting} onClick={()=>{}}/>
-        <Button label="Cancel" style={{ marginLeft: '8px' }} isDisabled={submitting} onClick={()=>{}}/>
+        <Button label="Save" primary type="submit" isDisabled={submitting}/>
+        <Button label="Cancel" style={{ marginLeft: '8px' }} isDisabled={submitting} onClick={onCancel}/>
       </div>
     </form>
   )
@@ -98,4 +104,4 @@ export default reduxForm({
   validate,
   form: 'userForm',
   enableReinitialize: true
-})(UserForm)
+})(withRouter(UserForm))
