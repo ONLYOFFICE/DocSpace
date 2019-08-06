@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, IconButton, ContextMenuButton } from 'asc-web-components';
+import { Text, IconButton, ContextMenuButton, toastr } from 'asc-web-components';
 import { withRouter } from "react-router";
 
 const wrapperStyle = {
@@ -13,38 +13,60 @@ const textStyle = {
   marginRight: "16px"
 };
 
-const getUserContextOptions = user => {
-  return [
-    {
-      key: "key1",
-      label: "Edit profile",
-      onClick: () => console.log("Context action: Edit profile")
-    },
-    {
-      key: "key2",
-      label: "Change e-mail",
-      onClick: () => console.log("Context action: Change e-mail")
-    },
-    {
-      key: "key3",
-      label: "Change phone",
-      onClick: () => console.log("Context action: Change phone")
-    },
-    {
-      key: "key4",
-      label: "Change password",
-      onClick: () => console.log("Context action: Change password")
-    },
-    {
-      key: "key5",
-      label: "Disable",
-      onClick: () => console.log("Context action: Disable")
-    }
-  ];
-};
-
 const SectionHeaderContent = (props) => {
   const { profile, history, settings } = props;
+
+  const onEditClick = (user) => {
+    history.push(`${settings.homepage}/edit/${user.userName}`);
+  }
+  
+  const onChangePasswordClick = () => {
+    toastr.success("Context action: Change password");
+  }
+  
+  const onChangePhoneClick = () => {
+    toastr.success("Context action: Change phone");
+  }
+  
+  const onChangeEmailClick = () => {
+    toastr.success("Context action: Change e-mail");
+  }
+  
+  const onDisableClick = () => {
+    toastr.success("Context action: Disable");
+  }
+  
+  const getUserContextOptions = user => {
+    return [
+      {
+        key: "key1",
+        label: "Edit profile",
+        onClick: onEditClick.bind(this, user)
+      },
+      {
+        key: "key2",
+        label: "Change e-mail",
+        onClick: onChangeEmailClick
+      },
+      {
+        key: "key3",
+        label: "Change phone",
+        onClick: onChangePhoneClick
+      },
+      {
+        key: "key4",
+        label: "Change password",
+        onClick: onChangePasswordClick
+      },
+      {
+        key: "key5",
+        label: "Disable",
+        onClick: onDisableClick
+      }
+    ];
+  };
+
+  const contextOptions = () => getUserContextOptions(profile);
 
   return (
     <div style={wrapperStyle}>
@@ -58,7 +80,7 @@ const SectionHeaderContent = (props) => {
         iconName='VerticalDotsIcon' 
         size={16} 
         color='#A3A9AE' 
-        getData={getUserContextOptions} 
+        getData={contextOptions}
         isDisabled={false}/>
     </div>
   );
