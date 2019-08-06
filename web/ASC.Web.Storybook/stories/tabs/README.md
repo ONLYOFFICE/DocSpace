@@ -1,19 +1,24 @@
-# Scrollbar
+# Tabs
 
 #### Description
 
-Scrollbar is used for displaying custom scroollbar
+Custom Tabs menu
 
 #### Usage
 
 ```js
-import { Scrollbar } from 'asc-web-components';
+import { Tabs } from 'asc-web-components';
 
-<Scrollbar>Some content</Scrollbar>
+<Tabs>array objects</Tabs>
 ```
 
 #### Properties
 
 | Props      | Type        | Required | Values                                    | Default      | Description           |
 | ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
-| `stype`    | `string`    |          | `smallWhite`, `smallBlack`, `preMediumBlack`, `mediumBlack` | `smallBlack` | Scroollbar style type |
+| `id`                | `string` |    true    | -                            | -       | Index of object array 
+| `title`                | `string` |    true    | -                            | -       | Tabs title         
+| `content`                | `object` |    true   | -                            | -       | Content in Tab
+
+
+

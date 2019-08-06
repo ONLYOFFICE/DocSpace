@@ -1,32 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { Icons } from '../icons';
-import { getCssFromSvg } from '../icons/get-css-from-svg';
-import ReactDOMServer from 'react-dom/server';
 
-var tabsIcon/*, tabsIcon2*/;
-(function () { tabsIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.TabsIcon />)); }());
-//tabsIcon2 = getCssFromSvg(ReactDOMServer.renderToString(<Icons.TabsIcon />)); 
-
-// Основной контейнер
 const TabsContainer = styled.div``;
 
-// Шапка
 const NavItem = styled.div`
     position: relative;
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.13);
+    white-space: nowrap;
 `;
 
-//Исправить!!!
-const hoverCss = css`
-  width: 80px;
-  height: 32px;
-  background-color: #F8F9F9;
-  border-radius: 16px;
-`;
-
-// Заголовки шапки
 const Label = styled.label`
   margin:0;
   min-width: 80px;
@@ -37,18 +19,26 @@ const Label = styled.label`
   label {margin:0}
 
   ${props => props.selected ?
-    `background-image: url("data:image/svg+xml,${tabsIcon}"); cursor: default; p {color: #fff}` :
+    `width: 80px;
+    height: 32px;
+    background-color: #265A8F;
+    border-radius: 16px;
+    cursor: default;
+    p {color: #fff}` :
     `background-image: none;
     &:hover{
       cursor: pointer;
-      ${hoverCss}
+      width: 80px;
+      height: 32px;
+      background-color: #F8F9F9;
+      border-radius: 16px;
     }`
   }
 `;
 
-// Контенn в зависимости от шапки
-const BodyContainer = styled.div``;
-
+const BodyContainer = styled.div`
+  margin: 24px 16px 0px 16px;
+`;
 
 class Tabs extends Component {
   constructor(props) {
@@ -61,12 +51,10 @@ class Tabs extends Component {
   labelClick = (tab) => {
     if (this.state.activeTab !== tab.id) {
       this.setState({ activeTab: tab.id });
-      console.log('My update setState()');
     }
   };
 
   render() {
-    //console.log(this.props.selected);
     return (
       <TabsContainer>
         <NavItem>
@@ -81,7 +69,7 @@ class Tabs extends Component {
             </Label>
           )}
         </NavItem>
-        <BodyContainer> {this.props.children[this.state.activeTab].body} </BodyContainer>
+        <BodyContainer> {this.props.children[this.state.activeTab].content} </BodyContainer>
       </TabsContainer>
     );
   }
@@ -92,4 +80,4 @@ export default Tabs;
 Tabs.propTypes = {
   children: PropTypes.object
 };
-Tabs.defaultProps = {/*isChecked: false*/ };
+
