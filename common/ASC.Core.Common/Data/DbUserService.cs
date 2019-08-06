@@ -127,7 +127,14 @@ namespace ASC.Core.Data
                 {
                     case EmployeeStatus.LeaveOfAbsence:
                     case EmployeeStatus.Terminated:
-                        if (!isAdmin) q.Where("u.status", EmployeeStatus.Terminated);
+                        if (isAdmin)
+                        {
+                            q.Where("u.status", EmployeeStatus.Terminated);
+                        }
+                        else
+                        {
+                            q.Where("u.status", EmployeeStatus.Active);
+                        }
                         break;
                     case EmployeeStatus.All:
                         if (!isAdmin) q.Where("u.status", EmployeeStatus.Active);
