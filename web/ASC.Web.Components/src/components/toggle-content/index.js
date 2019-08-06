@@ -62,7 +62,7 @@ class ToggleContent extends React.Component {
           this.props.onChange && this.props.onChange(!this.state.isOpen);
         }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
-          <StyledText tag='h2' isInline={true}>{this.props.label}</StyledText>
+          <StyledText forwardedAs='h2' size='medium' isInline={true}>{this.props.label}</StyledText>
         </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
       </div>

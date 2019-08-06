@@ -117,7 +117,7 @@ class Checkbox extends React.Component {
         <CheckboxIcon {...this.props} />
         {this.props.label && (
           <Text.Body
-            tag="span"
+            as="span"
             isDisabled={this.props.isDisabled}
             disableColor={disableColor}
           >

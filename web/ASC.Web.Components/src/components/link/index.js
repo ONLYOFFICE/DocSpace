@@ -73,7 +73,7 @@ ${props => (props.isTextOverflow && css`
 
 `;
 
-const SimpleText = ({ color, fontSize, ...props }) => <Text.Body {...props} />
+const SimpleText = ({ color, fontSize, ...props }) => <Text.Body as="span" {...props} />
 const StyledText = styled(SimpleText)`
     ${colorCss};
     font-size: ${props => props.fontSize}px;
@@ -95,7 +95,6 @@ const Link = props => {
                 color={props.color}
                 isBold={props.isBold}
                 title={props.title}
-                tag='span'
             >
                 {props.children}
             </StyledText>

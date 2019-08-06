@@ -6,9 +6,9 @@ export default function createStyledHeadline() {
 
    const fontSize = css`
       ${props =>
-         (props.tag === 'h1' && 23) ||
-         (props.tag === 'h2' && 19) ||
-         (props.tag === 'h3' && 15)
+         (props.size === 'big' && 23) ||
+         (props.size === 'medium' && 19) ||
+         (props.size === 'small' && 15)
       }
    `;
 
@@ -28,24 +28,24 @@ export default function createStyledHeadline() {
 
    const Text = props => {
       return (
-         <StyledHeadline as={props.tag} {...props} title={props.title}></StyledHeadline>
+         <StyledHeadline {...props} title={props.title}></StyledHeadline>
       );
    };
 
    Text.propTypes = {
-      tag: PropTypes.string,
       title: PropTypes.string,
       truncate: PropTypes.bool,
       isDisabled: PropTypes.bool,
-      isInline: PropTypes.bool
+      isInline: PropTypes.bool,
+      size: PropTypes.oneOf(['big', 'medium', 'small']),
    };
 
    Text.defaultProps = {
-      tag: 'h1',
       title: '',
       truncate: false,
       isDisabled: false,
-      isInline: false
+      isInline: false,
+      size: 'big'
    };
 
    return Text;

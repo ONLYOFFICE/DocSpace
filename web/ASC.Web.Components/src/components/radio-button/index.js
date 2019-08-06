@@ -108,7 +108,7 @@ class RadioButton extends React.Component {
           disabled={this.props.isDisabled} />
         <RadiobuttonIcon {...this.props} />
         <Text.Body
-          tag='span'
+          as='span'
           isDisabled={this.props.isDisabled}
           disableColor={disableColor}
         >

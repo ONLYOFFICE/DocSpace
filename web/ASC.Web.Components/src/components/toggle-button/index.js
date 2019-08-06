@@ -68,7 +68,7 @@ class ToggleButton extends Component {
                 <ToggleIcon {...this.props} />
                 {this.props.label && (
                     <Text.Body
-                        tag="span"
+                        as="span"
                         isDisabled={this.props.isDisabled}
                         disableColor={'#A3A9AE'}
                     >

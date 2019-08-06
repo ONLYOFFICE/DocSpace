@@ -17,7 +17,7 @@ storiesOf('Components|Text', module)
       <div style={{ width: "100%" }}>
         <Text.Body
           title={text('title', '')}
-          tag={text('tag', 'p')}
+          as={text('as', 'p')}
           truncate={boolean('truncate', false)}
           isDisabled={boolean('isDisabled', false)}
           color={select('color', color, 'black')}
