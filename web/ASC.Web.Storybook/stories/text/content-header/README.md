@@ -22,6 +22,7 @@ Wraps the given text in the specified size of the content header.
 
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`            | `string` |    -     | -                     | '#333333' | Specifies the contentHeader color                   |
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                              |
 | `title`            | `bool`   |    -     | -                     | -         | Title                                               |
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |

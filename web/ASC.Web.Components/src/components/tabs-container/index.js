@@ -54,16 +54,18 @@ const BodyContainer = styled.div`
 class TabContainer extends Component {
   constructor(props) {
     super(props);
+
+    const selectedItem = (props.children.indexOf(props.onSelect) !== -1) || 0;
+
     this.state = {
-      activeTab: 0,
-      selected: props.onSelect
+      activeTab: selectedItem
     };
   }
 
-  titleClick = (item, index) => {
-    if (this.state.selected !== item.key) {
-      this.setState({ activeTab: index, selected: item.key });
-      this.props.onSelect && this.props.onSelect(item.key);
+  titleClick = (index) => {
+    if (this.state.activeTab !== index) {
+      this.setState({ activeTab: index });
+      this.props.onSelect && this.props.onSelect(index);
     }
   };
 
@@ -76,7 +78,7 @@ class TabContainer extends Component {
               selected={this.state.activeTab === index}
               isDisabled={this.props.isDisabled}
               key={item.key}
-              onClick={this.titleClick.bind(this, item, index)}>
+              onClick={this.titleClick.bind(this, index)}>
               {item.title}
             </Label>
           )}

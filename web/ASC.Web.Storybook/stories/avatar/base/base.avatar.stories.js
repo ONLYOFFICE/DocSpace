@@ -19,8 +19,6 @@ storiesOf('Components|Avatar', module)
     const editing =  size === 'max' ? boolean('editing', false) : false;
     const editLabel = editing ? text('editLabel', 'Edit photo') : '';
 
-    
-
     return (
     <Section>
         <Avatar

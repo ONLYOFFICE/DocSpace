@@ -1,10 +1,9 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
-import DropDownItem from '../drop-down-item'
 
 const StyledDropdown = styled.div`
-    font-family: Open Sans;
+    font-family: 'Open Sans',sans-serif,Arial;
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
@@ -43,9 +42,7 @@ const DropDown = React.memo(props => {
   return (
     <StyledDropdown {...props}>
       {props.withArrow && <Arrow directionX={props.directionX} />}
-      {React.Children.map(props.children, (child) =>
-        <DropDownItem {...child.props} />
-      )}
+      {props.children}
     </StyledDropdown>
   );
 });

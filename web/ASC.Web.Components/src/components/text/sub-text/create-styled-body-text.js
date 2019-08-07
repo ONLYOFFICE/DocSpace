@@ -4,20 +4,12 @@ import styled, { css } from 'styled-components';
 
 export default function createStyledBodyText() {
 
-const fontColor = css`
-   ${props =>
-      (props.color === 'black' && '#333333') ||
-      (props.color === 'gray' && '#657077') ||
-      (props.color === 'lightGray' && '#A3A9AE') 
-   }
-`
-
 const style = css`
    font-family: 'Open Sans',sans-serif,Arial;
-   font-size: 13px;
+   font-size: ${props => props.fontSize}px;
    font-weight: ${props => props.isBold == true ? 700 : 500};
    ${props => props.isItalic == true && 'font-style: italic'};
-   color: ${props => props.isDisabled == true ? props.disableColor : fontColor};
+   color: ${props => props.isDisabled == true ? props.disableColor : props.color};
    ${props => props.backgroundColor == true && 'background-color: #F8F9F9;'}
    ${props => props.isInline == true && 'display: inline-block;'}
    text-align: left;
@@ -31,13 +23,13 @@ const TextBody = styled.p`
 
   const Text = props => {
      //console.log("Text render");
-     return (<TextBody as={props.tag} {...props} title={props.title}></TextBody>);
+     return (<TextBody {...props} title={props.title}></TextBody>);
   };
 
    Text.propTypes = {
-      tag: PropTypes.string,
       title: PropTypes.string,
-      color: PropTypes.oneOf(['black', 'gray', 'lightGray']),
+      color: PropTypes.string,
+      fontSize: PropTypes.number,
       disableColor: PropTypes.string,
       backgroundColor: PropTypes.bool,
       truncate: PropTypes.bool,
@@ -48,9 +40,9 @@ const TextBody = styled.p`
   };
 
    Text.defaultProps = {
-      tag: 'p',
       title: '',
-      color: 'black',
+      color: '#333333',
+      fontSize: 13,
       disableColor: '#ECEEF1',
       backgroundColor: false,
       truncate: false,
