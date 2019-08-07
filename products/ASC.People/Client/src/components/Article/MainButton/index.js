@@ -5,13 +5,17 @@ import { withRouter } from 'react-router';
 import {
     MainButton,
     DropDownItem,
+    toastr
 } from "asc-web-components";
 import { isAdmin } from '../../../store/auth/selectors';
 
 class ArticleMainButtonContent extends React.Component {
     onDropDownItemClick = (link) => {
-        console.log("onDropDownItemClick", this, link);
-        link && this.props.history.push(link);
+        this.props.history.push(link);
+    };
+
+    onNotImplementedClick = (text) => {
+        toastr.success(text);
     };
 
     render() {
@@ -43,17 +47,17 @@ class ArticleMainButtonContent extends React.Component {
                     <DropDownItem
                         icon="InvitationLinkIcon"
                         label="Invitation link"
-                        onClick={this.onDropDownItemClick}
+                        onClick={this.onNotImplementedClick.bind(this, "Invitation link action")}
                     />
                     <DropDownItem
                         icon="PlaneIcon"
                         label="Invite again"
-                        onClick={this.onDropDownItemClick}
+                        onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
                     />
                     <DropDownItem
                         icon="ImportIcon"
                         label="Import people"
-                        onClick={this.onDropDownItemClick}
+                        onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                     />
                 </MainButton>
                 :
