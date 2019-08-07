@@ -37,7 +37,7 @@ class ArticleMainButtonContent extends React.Component {
                     <DropDownItem
                         icon="CatalogDepartmentsIcon"
                         label="New department"
-                        onClick={this.onDropDownItemClick}
+                        onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/group/create`)}
                     />
                     <DropDownItem isSeparator />
                     <DropDownItem
