@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { withRouter } from 'react-router';
 import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { getUserRole, getContacts } from '../../../../../store/people/selectors';
+import { getUserRole, getUserContacts } from '../../../../../store/people/selectors';
 
 const profileWrapper = {
   display: "flex",
@@ -128,7 +128,7 @@ const createContacts = (contacts) => {
 const SectionBodyContent = (props) => {
   const { profile, history, isSelf, settings } = props;
   //console.log(profile, settings);
-  const contacts = profile.contacts && getContacts(profile.contacts);
+  const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
   const workFrom = getFormattedDate(profile.workFrom);
   const birthDay = getFormattedDate(profile.birthday);

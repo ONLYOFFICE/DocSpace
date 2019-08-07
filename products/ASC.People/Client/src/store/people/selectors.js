@@ -62,7 +62,7 @@ export const getUserRole = user => {
     else return "user";
 };
 
-export const getContacts = (contacts) => {
+export const getUserContacts = (contacts) => {
     const pattern = {
         contact: [
             { type: "mail", icon: "MailIcon" },
