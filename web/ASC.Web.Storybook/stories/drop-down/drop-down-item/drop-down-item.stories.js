@@ -3,15 +3,13 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
-import { DropDown, DropDownItem, DropDownProfileItem } from 'asc-web-components'
+import { DropDown, DropDownItem } from 'asc-web-components'
 import Section from '../../../.storybook/decorators/section';
 
-storiesOf('Components | DropDown | DropDownItem', module)
+storiesOf('Components | DropDown', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base item', () => {
-
-    const isUserPreview = boolean('Show user preview', true);
     const isHeader = boolean('Show category`s', true);
     const isSeparator = boolean('Show separator', true);
     const useIcon = boolean('Show icons', true);
@@ -20,18 +18,9 @@ storiesOf('Components | DropDown | DropDownItem', module)
     return (
       <Section>
         <DropDown
-          isUserPreview={isUserPreview}
-          withArrow={isUserPreview}
           directionX={direction}
           manualY='1%'
           opened={true}>
-          {isUserPreview &&
-            <DropDownProfileItem
-              avatarRole='admin'
-              avatarSource='https://static-www.onlyoffice.com/images/team/developers_photos/personal_44_2x.jpg'
-              displayName='Jane Doe'
-              email='janedoe@gmail.com' />
-          }
           <DropDownItem
             isHeader={isHeader}
             label={isHeader ? 'Category' : ''}
