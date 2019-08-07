@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
-import Avatar from '../../components/avatar'
 import IconButton from '../icon-button';
 
 const itemTruncate = css`
@@ -11,7 +10,7 @@ const itemTruncate = css`
 `;
 
 const fontStyle = css`
-    font-family: Open Sans;
+    font-family: 'Open Sans',sans-serif,Arial;
     font-style: normal;
 `;
 
@@ -21,12 +20,12 @@ const StyledDropdownItem = styled.button`
     line-height: ${props => (props.isSeparator ? '1px' : '36px')};
 
     margin: ${props => (props.isSeparator ? '0 16px' : '0')};
-    padding: ${props => (props.isUserPreview ? '0px' : '0 16px')};
+    padding: 0 16px;
 
     border: ${props => (props.isSeparator ? '0.5px solid #ECEEF1' : '0')};
-    cursor: ${props => ((!props.isSeparator || !props.isUserPreview) ? 'pointer' : 'default')};
+    cursor: ${props => (!props.isSeparator ? 'pointer' : 'default')};
 
-    display: ${props => props.isUserPreview ? 'inline-block' : 'block'};
+    display: block;
     
     color: ${props => props.disabled || props.isHeader ? '#A3A9AE' : '#333333'};
     text-transform: ${props => props.isHeader ? 'uppercase' : 'none'};
@@ -72,47 +71,6 @@ const StyledDropdownItem = styled.button`
     }
 `;
 
-const UserPreview = styled.div`
-    position: relative;
-    height: 76px;
-    background: linear-gradient(200.71deg, #2274AA 0%, #0F4071 100%);
-    border-radius: 6px 6px 0px 0px;
-    padding: 15px;
-    cursor: default;
-`;
-
-const AvatarWrapper = styled.div`
-    & > div > div {
-        bottom: 14px;
-    }
-
-    display: inline-block;
-    float: left;
-`;
-
-const UserNameWrapper = styled.div`
-    ${fontStyle}
-
-    font-size: 16px;
-    line-height: 28px;
-    color: #FFFFFF;
-    margin-left: 60px;
-    max-width:300px;
-    ${itemTruncate}
-`;
-
-const UserEmailWrapper = styled.div`
-    ${fontStyle}
-
-    font-weight: normal;
-    font-size: 11px;
-    line-height: 16px;
-    color: #FFFFFF;
-    margin-left: 60px;
-    max-width:300px;
-    ${itemTruncate}
-`;
-
 const IconWrapper = styled.span`
     display: inline-block;
     margin-right: 8px;
@@ -120,7 +78,7 @@ const IconWrapper = styled.span`
 
 const DropDownItem = React.memo(props => {
   //console.log("DropDownItem render");
-  const { isSeparator, isUserPreview, label, icon } = props;
+  const { isSeparator, label, icon } = props;
   const color = props.disabled || props.isHeader ? '#A3A9AE' : '#333333';
   
   return (
@@ -130,27 +88,13 @@ const DropDownItem = React.memo(props => {
           <IconButton size={16} iconName={icon} color={color} />
         </IconWrapper>
       }
-      {isSeparator ? '\u00A0' : !isUserPreview && label}
-      {isUserPreview &&
-        <UserPreview {...props}>
-          <AvatarWrapper>
-            <Avatar size='medium'
-              role={props.role}
-              source={props.source}
-              userName={props.userName}
-            />
-          </AvatarWrapper>
-          <UserNameWrapper>{props.userName}</UserNameWrapper>
-          <UserEmailWrapper>{label}</UserEmailWrapper>
-        </UserPreview>
-      }
+      {isSeparator ? '\u00A0' : label}
     </StyledDropdownItem>
   );
 });
 
 DropDownItem.propTypes = {
   isSeparator: PropTypes.bool,
-  isUserPreview: PropTypes.bool,
   isHeader: PropTypes.bool,
   tabIndex: PropTypes.number,
   label: PropTypes.string,
@@ -160,7 +104,6 @@ DropDownItem.propTypes = {
 
 DropDownItem.defaultProps = {
   isSeparator: false,
-  isUserPreview: false,
   isHeader: false,
   tabIndex: -1,
   label: '',
