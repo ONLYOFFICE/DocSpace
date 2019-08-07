@@ -31,14 +31,14 @@ const RoleWrapper = styled.div`
     position: absolute;
     left: ${props =>
       (props.size === 'max' && '0px') ||
-      (props.size === 'big' && '-2px') ||
-      (props.size === 'medium' && '0px') ||
+      (props.size === 'big' && '0px') ||
+      (props.size === 'medium' && '-2px') ||
       (props.size === 'small' && '-2px')
   };
     bottom: ${props =>
       (props.size === 'max' && '0px') ||
-      (props.size === 'big' && '4px') ||
-      (props.size === 'medium' && '0px') ||
+      (props.size === 'big' && '5px') ||
+      (props.size === 'medium' && '3px') ||
       (props.size === 'small' && '3px')
   };
     width: ${props =>
