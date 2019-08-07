@@ -6,7 +6,7 @@ export default function createStyledBodyText() {
 
 const style = css`
    font-family: 'Open Sans',sans-serif,Arial;
-   font-size: 13px;
+   font-size: ${props => props.fontSize}px;
    font-weight: ${props => props.isBold == true ? 700 : 500};
    ${props => props.isItalic == true && 'font-style: italic'};
    color: ${props => props.isDisabled == true ? props.disableColor : props.color};
@@ -29,6 +29,7 @@ const TextBody = styled.p`
    Text.propTypes = {
       title: PropTypes.string,
       color: PropTypes.string,
+      fontSize: PropTypes.number,
       disableColor: PropTypes.string,
       backgroundColor: PropTypes.bool,
       truncate: PropTypes.bool,
@@ -41,6 +42,7 @@ const TextBody = styled.p`
    Text.defaultProps = {
       title: '',
       color: '#333333',
+      fontSize: 13,
       disableColor: '#ECEEF1',
       backgroundColor: false,
       truncate: false,

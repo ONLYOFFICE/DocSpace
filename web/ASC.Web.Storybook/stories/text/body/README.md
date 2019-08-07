@@ -41,12 +41,13 @@ Component that displays plain text
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                              |
+| `fontSize`         | `number` |    -     | -                     | `13`      | Sets the font size                                  |
 | `as`               | `string` |    -     | -                     | `p`       | Sets the tag through which to render the component  |
 | `title`            | `bool`   |    -     | -                     | -         | Title                                               |
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |
 | `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property           |
-| `color`            | `string` |    -     | -                     | '#333333' | Specifies the text color                            |
-| `disableColor`     | `string` |    -     |                       | `lightGray`  | Sets the text disabled color                     |
+| `color`            | `string` |    -     | -                     | `#333333` | Specifies the text color                            |
+| `disableColor`     | `string` |    -     |                       | `#ECEEF1` | Sets the text disabled color                        |
 | `isBold`           | `bool`   |    -     | -                     | false     | Sets the font weight                                |
 | `isItalic`         | `bool`   |    -     | -                     | false     | Sets the font style                                 |
 | `backgroundColor`  | `bool`   |    -     | -                     | false     | Sets background color                               |
