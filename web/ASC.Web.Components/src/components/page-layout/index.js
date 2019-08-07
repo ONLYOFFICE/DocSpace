@@ -149,7 +149,7 @@ class PageLayout extends React.PureComponent {
             }
             {
               this.state.isSectionBodyAvailable &&
-              <SectionBody>{this.state.sectionBodyContent}</SectionBody>
+              <SectionBody withScroll={this.props.withBodyScroll}>{this.state.sectionBodyContent}</SectionBody>
             }
             {
               this.state.isSectionPagingAvailable &&
@@ -177,13 +177,16 @@ PageLayout.propTypes = {
   sectionHeaderContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   sectionFilterContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   sectionBodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  sectionPagingContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
+  sectionPagingContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+
+  withBodyScroll:  PropTypes.bool
 }
 
 PageLayout.defaultProps = {
   isBackdropVisible: false,
   isArticleVisible: false,
-  isArticlePinned: false
+  isArticlePinned: false,
+  withBodyScroll: true
 }
 
 export default PageLayout
