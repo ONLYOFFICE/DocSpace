@@ -39,7 +39,6 @@ Component that displays plain text
 
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                              |
 | `fontSize`         | `number` |    -     | -                     | `13`      | Sets the font size                                  |
 | `as`               | `string` |    -     | -                     | `p`       | Sets the tag through which to render the component  |
