@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import { Text } from "../text";
 
 const TabsContainer = styled.div``;
 
@@ -28,8 +29,8 @@ const Label = styled.label`
 
   ${props => props.selected ?
     `${TitleStyle}
-    background-color: #265A8F;
     cursor: default;
+    background-color: #265A8F;
     p {color: #fff}` :
     `
     &:hover{
@@ -55,31 +56,33 @@ class TabContainer extends Component {
   constructor(props) {
     super(props);
 
-    const selectedItem = (props.children.indexOf(props.onSelect) !== -1) || 0;
-
     this.state = {
-      activeTab: selectedItem
+      activeTab: this.props.selectedItem
     };
   }
 
-  titleClick = (index) => {
+  titleClick = (index, item) => {
     if (this.state.activeTab !== index) {
       this.setState({ activeTab: index });
-      this.props.onSelect && this.props.onSelect(index);
+      let newItem = Object.assign({}, item);
+      delete newItem.content;
+      this.props.onSelect && this.props.onSelect(newItem);
     }
   };
 
   render() {
+    //console.log('Tab container render');
     return (
       <TabsContainer>
         <NavItem>
           {this.props.children.map((item, index) =>
             <Label
+              onClick={this.titleClick.bind(this, index, item)}
+              key={item.key}
               selected={this.state.activeTab === index}
               isDisabled={this.props.isDisabled}
-              key={item.key}
-              onClick={this.titleClick.bind(this, index)}>
-              {item.title}
+            >
+              <Text.Body> {item.title} </Text.Body>
             </Label>
           )}
         </NavItem>
@@ -94,10 +97,12 @@ TabContainer.propTypes = {
     PropTypes.object.isRequired
   ).isRequired,
   isDisabled: PropTypes.bool,
-  onSelect: PropTypes.oneOfType([
-    PropTypes.number,
-    PropTypes.string
-  ])
+  onSelect: PropTypes.func,
+  selectedItem: PropTypes.number
 };
+
+TabContainer.defaultProps = {
+  selectedItem: 0
+}
 
 export default TabContainer;

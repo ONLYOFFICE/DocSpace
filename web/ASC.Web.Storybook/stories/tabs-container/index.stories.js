@@ -1,16 +1,16 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { TabContainer, Text } from 'asc-web-components';
+import { TabContainer } from 'asc-web-components';
 import Section from '../../.storybook/decorators/section';
 import { action } from '@storybook/addon-actions';
 
 const array_items = [
     {
         key: "tab0",
-        title: <Text.Body> Title1 </Text.Body>,
+        title: "Title1",
         content:
             <div >
                 <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
@@ -20,7 +20,7 @@ const array_items = [
     },
     {
         key: "tab1",
-        title: <Text.Body> Title2 </Text.Body>,
+        title: "Title2",
         content:
             <div >
                 <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
@@ -30,7 +30,7 @@ const array_items = [
     },
     {
         key: "tab2",
-        title: <Text.Body> Title3 </Text.Body>,
+        title: "Title3",
         content:
             <div>
                 <div> <input></input> <input></input> <input></input> </div>
@@ -40,7 +40,7 @@ const array_items = [
     },
     {
         key: "tab3",
-        title: <Text.Body> Title4 </Text.Body>,
+        title: "Title4",
         content:
             <div>
                 <div> <button>BUTTON</button> <button>BUTTON</button> <button>BUTTON</button> </div>
@@ -50,7 +50,7 @@ const array_items = [
     },
     {
         key: "tab4",
-        title: <Text.Body> Title5 </Text.Body>,
+        title: "Title5",
         content:
             <div>
                 <div> <label>LABEL</label> <label>LABEL</label> <label>LABEL</label> </div>
@@ -69,6 +69,7 @@ storiesOf('Components|TabContainer', module)
                 <TabContainer
                     onSelect={index => action("Selected item")(index)}
                     isDisabled={boolean('isDisabled', false)}
+                    selectedItem={array_items.indexOf(array_items[0])}
                 >
                     {array_items}
                 </TabContainer>

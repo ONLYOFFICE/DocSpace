@@ -11,8 +11,8 @@ import { TabContainer } from 'asc-web-components';
 
 const array_items = [
     {
-        id: "0",
-        title: <label> Title1 </label>,
+        key: "0",
+        title: "Title1",
         content:
             <div >
                 <div> <button>BUTTON</button> </div>
@@ -21,8 +21,8 @@ const array_items = [
             </div>
     },
     {
-        id: "1",
-        title: <label> Title2 </label>,
+        key: "1",
+        title: "Title2",
         content:
             <div >
                 <div> <label>LABEL</label> </div>
@@ -31,8 +31,8 @@ const array_items = [
             </div>
     },
     {
-        id: "2",
-        title: <label> Title3 </label>,
+        key: "2",
+        title: "Title3",
         content:
             <div>
                 <div> <input></input> </div>
@@ -50,6 +50,7 @@ const array_items = [
 | Props      | Type        | Required | Values                                    | Default      | Description           |
 | ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
 | `isDisabled`                | `boolean` |    -    | -                            | -       | Disable the TabContainer
+| `selectedItem`             | `number`            |    -     | -                            | 0       | Selected title of tabs container   |
 | `onSelect`             | `func`            |    -     | -                            | -       | Triggered when a title is selected  |
 
 #### Array Items Properties
