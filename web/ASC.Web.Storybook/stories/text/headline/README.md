@@ -38,6 +38,7 @@ A component that renders headline
 
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`            | `string` |    -     | -                     | '#333333' | Specifies the headline color                            |
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                                  |
 | `as `              | `string` |    -     | -                     | `h1`      | Sets the tag through which to render the component      |
 | `title`            | `bool`   |    -     | -                     | -         | Title                                                   |

@@ -16,7 +16,7 @@ export default function createStyledHeadline() {
       font-family: 'Open Sans',sans-serif,Arial;
       font-size: ${fontSize}px;
       font-weight: 600;
-      color: ${props => props.isDisabled == true ? '#ECEEF1' : '#333333'};
+      color: ${props => props.isDisabled == true ? '#ECEEF1' : props.color};
       text-align: left;
       ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;')}
       ${props => props.isInline == true && 'display: inline-block;'}
@@ -33,6 +33,7 @@ export default function createStyledHeadline() {
    };
 
    Text.propTypes = {
+      color: PropTypes.string,
       title: PropTypes.string,
       truncate: PropTypes.bool,
       isDisabled: PropTypes.bool,
@@ -41,6 +42,7 @@ export default function createStyledHeadline() {
    };
 
    Text.defaultProps = {
+      color: '#333333',
       title: '',
       truncate: false,
       isDisabled: false,

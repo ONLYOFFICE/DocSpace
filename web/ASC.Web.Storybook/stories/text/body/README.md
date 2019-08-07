@@ -39,12 +39,13 @@ Component that displays plain text
 
 | Props              | Type     | Required | Values                      | Default   | Description                                                                                                                                      |
 | ------------------ | -------- | :------: | --------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+
 | `isDisabled`       | `bool`   |    -     | -                     | false     | Marks text as disabled                              |
 | `as`               | `string` |    -     | -                     | `p`       | Sets the tag through which to render the component  |
 | `title`            | `bool`   |    -     | -                     | -         | Title                                               |
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |
 | `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property           |
-| `color`            | `oneOf`  |    -     | `black`, `gray`, `lightGray`      | `black`     | Sets the text color                   |
+| `color`            | `string` |    -     | -                     | '#333333' | Specifies the text color                            |
 | `disableColor`     | `string` |    -     |                       | `lightGray`  | Sets the text disabled color                     |
 | `isBold`           | `bool`   |    -     | -                     | false     | Sets the font weight                                |
 | `isItalic`         | `bool`   |    -     | -                     | false     | Sets the font style                                 |

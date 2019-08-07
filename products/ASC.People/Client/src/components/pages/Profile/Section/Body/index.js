@@ -167,17 +167,17 @@ const SectionBodyContent = (props) => {
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
-          <Text.Body style={restMargins} color='lightGray' title='Type'>Type:</Text.Body>
-          {profile.email && <Text.Body style={restMargins} color='lightGray' title='E-mail'>E-mail:</Text.Body>}
-          {profile.department && <Text.Body style={restMargins} color='lightGray' title='Department'>Department:</Text.Body>}
-          {profile.title && <Text.Body style={restMargins} color='lightGray' title='Position'>Position:</Text.Body>}
-          {profile.mobilePhone && <Text.Body style={restMargins} color='lightGray' title='Phone'>Phone:</Text.Body>}
-          {profile.sex && <Text.Body style={restMargins} color='lightGray' title='Sex'>Sex:</Text.Body>}
-          {profile.workFrom && <Text.Body style={restMargins} color='lightGray' title='Employed since'>Employed since:</Text.Body>}
-          {profile.birthday && <Text.Body style={restMargins} color='lightGray' title='Date of birth'>Date of birth:</Text.Body>}
-          {profile.location && <Text.Body style={restMargins} color='lightGray' title='Location'>Location:</Text.Body>}
-          {isSelf && <Text.Body style={restMargins} color='lightGray' title='Language'>Language:</Text.Body>}
-          {/*{isSelf && <Text.Body style={marginTop24} color='lightGray' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
+          <Text.Body style={restMargins} color='#A3A9AE' title='Type'>Type:</Text.Body>
+          {profile.email && <Text.Body style={restMargins} color='#A3A9AE' title='E-mail'>E-mail:</Text.Body>}
+          {profile.department && <Text.Body style={restMargins} color='#A3A9AE' title='Department'>Department:</Text.Body>}
+          {profile.title && <Text.Body style={restMargins} color='#A3A9AE' title='Position'>Position:</Text.Body>}
+          {profile.mobilePhone && <Text.Body style={restMargins} color='#A3A9AE' title='Phone'>Phone:</Text.Body>}
+          {profile.sex && <Text.Body style={restMargins} color='#A3A9AE' title='Sex'>Sex:</Text.Body>}
+          {profile.workFrom && <Text.Body style={restMargins} color='#A3A9AE' title='Employed since'>Employed since:</Text.Body>}
+          {profile.birthday && <Text.Body style={restMargins} color='#A3A9AE' title='Date of birth'>Date of birth:</Text.Body>}
+          {profile.location && <Text.Body style={restMargins} color='#A3A9AE' title='Location'>Location:</Text.Body>}
+          {isSelf && <Text.Body style={restMargins} color='#A3A9AE' title='Language'>Language:</Text.Body>}
+          {/*{isSelf && <Text.Body style={marginTop24} color='#A3A9AE' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
         </div> 
         <div>
           <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>

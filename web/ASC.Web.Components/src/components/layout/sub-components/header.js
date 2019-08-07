@@ -19,10 +19,6 @@ const StyledHeader = styled.header`
   }
 `;
 
-const HeaderText = styled(Text.MenuHeader)`
-  color: #FFFFFF;
-`;
-
 const Header = React.memo(props => {
   console.log("Header render");
   return (
@@ -32,7 +28,7 @@ const Header = React.memo(props => {
       badgeNumber={props.badgeNumber}
       onClick={props.onClick}
     />
-    <HeaderText>{props.currentModule && props.currentModule.title}</HeaderText>
+    <Text.MenuHeader color='#FFFFFF'>{props.currentModule && props.currentModule.title}</Text.MenuHeader>
   </StyledHeader>);
 });
 
