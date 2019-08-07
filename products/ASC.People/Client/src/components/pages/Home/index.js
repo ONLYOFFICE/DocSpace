@@ -110,6 +110,7 @@ class Home extends React.Component {
           fontColor={"#999"}
         />
         <PageLayout
+          withBodyScroll={false}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}

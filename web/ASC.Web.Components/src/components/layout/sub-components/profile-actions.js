@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Avatar from '../../avatar'
 import DropDown from '../../drop-down'
 import DropDownItem from '../../drop-down-item'
+import DropDownProfileItem from '../../drop-down-profile-item'
 import { handleAnyClick } from '../../../utils/event';
 
 class ProfileActions extends React.PureComponent {
@@ -74,7 +75,7 @@ class ProfileActions extends React.PureComponent {
           size="small"
           role={this.getUserRole(this.state.user)}
           source={this.state.user.avatarSmall}
-          userName={this.state.user.userName}
+          userName={this.state.user.displayName}
           onClick={this.onAvatarClick}
         />
         <DropDown
@@ -83,12 +84,11 @@ class ProfileActions extends React.PureComponent {
           directionX='right'
           isOpen={this.state.opened}
         >
-          <DropDownItem
-            isUserPreview
-            role={this.getUserRole(this.state.user)}
-            source={this.state.user.avatarMedium}
-            userName={this.state.user.userName}
-            label={this.state.user.email}
+          <DropDownProfileItem
+            avatarRole={this.getUserRole(this.state.user)}
+            avatarSource={this.state.user.avatarMedium}
+            displayName={this.state.user.displayName}
+            email={this.state.user.email}
           />
           {
             this.state.userActions.map(action => 

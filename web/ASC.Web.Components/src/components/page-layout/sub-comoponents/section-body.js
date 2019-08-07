@@ -1,6 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import Scrollbar from '../../scrollbar'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Scrollbar from "../../scrollbar";
 
 const StyledSectionBody = styled.div`
   margin: 16px 0;
@@ -8,17 +9,26 @@ const StyledSectionBody = styled.div`
   flex-grow: 1;
 `;
 
-const SectionBody = React.memo(props => { 
+const SectionBody = React.memo(props => {
   console.log("PageLayout SectionBody render");
-  const { children } = props;
+  const { children, withScroll } = props;
 
   return (
     <StyledSectionBody>
-      <Scrollbar stype="mediumBlack">
-        {children}
-      </Scrollbar>
+      {withScroll 
+        ? <Scrollbar stype="mediumBlack">{children}</Scrollbar> 
+        : <>{children}</>
+      }
     </StyledSectionBody>
   );
 });
+
+SectionBody.propTypes = {
+  withScroll: PropTypes.bool
+};
+
+SectionBody.defaultProps = {
+  withScroll: true
+};
 
 export default SectionBody;

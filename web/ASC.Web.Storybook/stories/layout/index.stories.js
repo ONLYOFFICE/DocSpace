@@ -6,7 +6,7 @@ import { Layout, PageLayout, Text, IconButton, ContextMenuButton, MainButton, Se
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
-  userName: 'Jane Doe',
+  displayName: 'Jane Doe',
   email: 'janedoe@gmail.com',
   isOwner: false,
   isAdmin: false,

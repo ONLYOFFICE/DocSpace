@@ -2,7 +2,7 @@ import React from 'react'
 import { Scrollbars } from 'react-custom-scrollbars';
 
 
-const Scrollbar = (props) => {
+const Scrollbar = React.forwardRef((props, ref) => {
   //console.log("Scrollbar render");
   const scrollbarType = {
     smallWhite: {
@@ -37,9 +37,9 @@ const Scrollbar = (props) => {
   );
 
   return (
-    <Scrollbars renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} />
+    <Scrollbars renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} ref={ref} />
   );
-}
+});
 
 Scrollbar.defaultProps = {
   stype: "smallBlack"
