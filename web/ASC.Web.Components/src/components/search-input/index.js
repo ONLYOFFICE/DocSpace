@@ -12,11 +12,10 @@ const StyledSearchInput = styled.div`
   font-family: Open Sans;
   font-style: normal;
 `;
-
 const StyledFilterBlock = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'block' : 'inline-block'};
   margin-bottom: ${props => props.block ? '3px' : '0'};
@@ -37,7 +36,6 @@ const StyledFilterItem = styled.div`
     margin-bottom: 0;
   }
 `;
-
 const StyledCloseButtonBlock = styled.div`
   display: flex;
   align-items: center;
@@ -48,7 +46,6 @@ const StyledCloseButtonBlock = styled.div`
   right: 0;
   top: 0;
 `;
-
 
 const FilterItem = props => {
   //console.log("FilterItem render");
@@ -66,18 +63,51 @@ const FilterItem = props => {
   );
 };
 
+const cloneProperty = function(props){
+  var newProps = [];
+  props.forEach(item=> {
+    let cloneItem = {};
+    for (var key in item) {
+      cloneItem[key] = item[key];
+    }
+    newProps.push(cloneItem);
+  });
+  return newProps;
+}
+
 class SearchInput extends React.Component  {
   constructor(props) {
     super(props);
 
+    function getDefaultFilterData(){
+      let filterData = props.getFilterData();
+      let filterItems = [];
+      let selectedFilterData = cloneProperty(props.selectedFilterData);
+      selectedFilterData.forEach(defaultfilterValue => {
+          let filterValue = filterData.find(x => ((x.key === defaultfilterValue.key.replace(defaultfilterValue.group + "_",'')) && x.group === defaultfilterValue.group));
+          if(filterValue != undefined){
+              defaultfilterValue.key = defaultfilterValue.group + "_" + defaultfilterValue.key;
+              defaultfilterValue.label = filterValue.label; 
+              defaultfilterValue.groupLabel = filterData.find(x => (x.key === defaultfilterValue.group)).label;
+              filterItems.push(defaultfilterValue);
+          }
+      });
+      return filterItems;
+    }
+
     this.minWidth = 190;
     this.isUpdateFilter = true;
+    this.isResizeUpdate = false;
+    this.isNewProps = false;
+    this.isUpdatedHiddenItems = false;
+
+    this.isNew = true;
+
     this.state = {
-      filterItems: props.defaultFilterData ? props.defaultFilterData : [],
+      filterItems: props.selectedFilterData ? getDefaultFilterData() : [],
       openFilterItems: [],
       hideFilterItems: []
     };
-
     this.searchWrapper = React.createRef();
     this.filterWrapper = React.createRef();
 
@@ -88,30 +118,37 @@ class SearchInput extends React.Component  {
     this.getFilterItems = this.getFilterItems.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resize = this.resize.bind(this);
-  }
+}
 
   onClickDropDownItem(event, filterItem){
-    
-    let curentFilterItems =  this.state.filterItems.slice();
-    let filterItems = this.getData()
-    let indexFilterItem = curentFilterItems.findIndex(x => x.key === filterItem.group);
+    let curentFilterItems =  cloneProperty(this.state.filterItems);
+    let filterItems = this.getData();
+
+    let indexFilterItem = curentFilterItems.findIndex(x => x.group === filterItem.group);
     if(indexFilterItem != -1){
       curentFilterItems.splice(indexFilterItem, 1);
     }
-   
+
     let selectFilterItem = {
-      key: filterItem.group,
-      value:  filterItem.key,
+      key:  filterItem.key,
+      group: filterItem.group,
       label:  filterItem.label,
       groupLabel: filterItems.find(x => x.key === filterItem.group).label
     };
     curentFilterItems.push(selectFilterItem);
+    this.setState({ filterItems: curentFilterItems}); 
 
-    this.setState({ filterItems: curentFilterItems});   
+    let clone = cloneProperty(curentFilterItems);
+    clone.map(function(item){
+      item.key = item.key.replace(item.group + "_" ,'');
+      return item;
+    })
     if(typeof this.props.onChangeFilter === "function")
       this.props.onChangeFilter({
         inputValue: this.props.value,
-        filterValue: this.props.isNeedFilter ? curentFilterItems : null
+        filterValue: this.props.isNeedFilter ? 
+                      clone : 
+                      null
       });
     this.isUpdateFilter = false;
   }
@@ -121,6 +158,7 @@ class SearchInput extends React.Component  {
     let d = this.props.getFilterData();
     d.map(function(item){
       item.onClick = !item.isSeparator && !item.isHeader && !item.disabled ? ((e) => _this.onClickDropDownItem(e, item)) : undefined;
+      item.key = item.group != item.key ? item.group +"_"+ item.key : item.key;
       return item;
     });
     return d;
@@ -129,7 +167,10 @@ class SearchInput extends React.Component  {
   onSearchClick(e, value){
     let searchResult = {
       inputValue: value,
-      filterValue: this.props.isNeedFilter ? this.state.filterItems : null
+      filterValue: this.props.isNeedFilter ? this.state.filterItems.map(function(item){
+                      item.key = item.key.replace(item.group + "_",'');
+                      return item;
+                    }) : null
     };
     if(typeof this.props.onSearchClick === "function")
       this.props.onSearchClick(searchResult);
@@ -147,7 +188,11 @@ class SearchInput extends React.Component  {
     if(typeof this.props.onChangeFilter === "function")
       this.props.onChangeFilter({
         inputValue: this.props.value,
-        filterValue: this.props.isNeedFilter ? curentFilterItems : null
+        filterValue: this.props.isNeedFilter ? 
+                    curentFilterItems.map(function(item){
+                      item.key = item.key.replace(item.group + "_",'');
+                      return item;
+                    }) : null
       });
     this.isUpdateFilter = false;
   }
@@ -162,7 +207,7 @@ class SearchInput extends React.Component  {
             return <FilterItem 
               isDisabled={_this.props.isDisabled} 
               key={item.key}
-              id={item.value} 
+              id={item.key} 
               groupLabel={item.groupLabel} 
               label={item.label} 
               onClose={_this.onDeleteFilterItem}>
@@ -171,7 +216,7 @@ class SearchInput extends React.Component  {
     }
     if(this.state.hideFilterItems.length > 0 && this.isUpdateFilter){
       hideItems.push(
-        <HideFilter key="hide-filter" count={this.state.hideFilterItems.length}>
+        <HideFilter key="hide-filter" count={this.state.hideFilterItems.length} isDisabled={this.props.isDisabled}>
           {
             this.state.hideFilterItems.map(function(item) {
               return <FilterItem 
@@ -208,7 +253,6 @@ class SearchInput extends React.Component  {
   updateFilter(){
     let fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
     let filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
-
     if(fullWidth <= this.minWidth){
       this.setState({ openFilterItems: []});
       this.setState({ hideFilterItems: this.state.filterItems.slice()});
@@ -220,32 +264,53 @@ class SearchInput extends React.Component  {
       let sortArr = Array.from(this.filterWrapper.current.children).sort(function(a,b) {
         return a.getBoundingClientRect().width - b.getBoundingClientRect().width;
       });
-      
       sortArr.forEach(element => {
         openFilterWidth = openFilterWidth + element.getBoundingClientRect().width;
         if(openFilterWidth < fullWidth/3){
-          newOpenFilterItems.push(this.state.filterItems.find(x => x.value === element.getAttribute('id')));
+          newOpenFilterItems.push(this.state.filterItems.find(x => x.key === element.getAttribute('id')));
         }else{
-          newHideFilterItems.push(this.state.filterItems.find(x => x.value === element.getAttribute('id')));
+          newHideFilterItems.push(this.state.filterItems.find(x => x.key === element.getAttribute('id')));
         }
       });
       this.setState({ openFilterItems: newOpenFilterItems});
       this.setState({ hideFilterItems: newHideFilterItems});
-
     }else{
       this.setState({ openFilterItems: this.state.filterItems.slice()});
       this.setState({ hideFilterItems: []});
+
     }
+    this.isUpdatedHiddenItems = true;
     this.isUpdateFilter = true;
   }
+
   resize(){
+    this.isResizeUpdate = true;
     this.isUpdateFilter = false;
     this.forceUpdate();
   }
   componentDidUpdate(){
-    if(!this.isUpdateFilter) this.updateFilter();
+    if(!this.isUpdateFilter){
+      this.updateFilter();
+    }else if(this.isNewProps && this.props.isNeedFilter){
+      let filterData = this.props.getFilterData();
+      let filterItems = [];
+
+      let curentFilterItems = cloneProperty(this.props.selectedFilterData);
+
+      for(let i=0; i < curentFilterItems.length; i++){
+        let filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group));
+          if(filterValue != undefined){
+            curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
+            curentFilterItems[i].label = filterValue.label; 
+            curentFilterItems[i].groupLabel = filterData.find(x => (x.group === curentFilterItems[i].group)).label;
+            filterItems.push(curentFilterItems[i]);
+          }
+      }
+      this.isNewProps= false;
+      this.isUpdateFilter = false;
+      this.setState({ filterItems: filterItems});
+    }
   }
-  
   componentDidMount() {
     window.addEventListener('resize', _.throttle(this.resize), 100);
     this.isUpdateFilter = false; this.updateFilter();
@@ -253,8 +318,66 @@ class SearchInput extends React.Component  {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize());
   }
+  shouldComponentUpdate(nextProps, nextState){
+    if(!this.isNew){
+      let isNeedUpdate = false;
+
+      if(nextProps.selectedFilterData && this.props.selectedFilterData && this.props.isNeedFilter){
+        if(this.props.selectedFilterData.length != nextProps.selectedFilterData.length){
+          this.isNewProps = true;
+          isNeedUpdate = true;
+        }else{
+          let newFilterItems = nextProps.selectedFilterData;
+          let oldFilterItems = this.props.selectedFilterData;
+  
+          for(let i = 0; i < newFilterItems.length; i++){
+            if(oldFilterItems.find(x => (x.key === newFilterItems[i].key && x.group === newFilterItems[i].group)) == undefined){
+              this.isNewProps = true;
+              isNeedUpdate = true;
+              break;
+            }
+          }
+        }
+      }
+      if(!isNeedUpdate){
+        for (let propsKey in this.props) {
+          if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
+            isNeedUpdate = true;
+            break;
+          }
+        }
+      }
+      if(!isNeedUpdate){
+        for (let key in this.state) {
+          if(this.state[key].length != nextState[key].length){
+            isNeedUpdate = true;
+          }else{
+            for(let i = 0; i < this.state[key].length; i++){
+              if(nextState[key].find(x => (x.key === this.state[key][i].key && x.group === this.state[key][i].group)) == undefined){
+                isNeedUpdate = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if(!isNeedUpdate && !this.isResizeUpdate){
+        if(nextProps.value == this.props.value){
+          if(!this.isUpdatedHiddenItems){
+            this.isUpdatedHiddenItems = false;
+            return false;
+          } 
+        }
+      }else if(this.isResizeUpdate){
+        this.isResizeUpdate = false
+      }
+    }
+    this.isNew = false;
+    return true;
+  }
 
   render() {
+    //console.log("Search input render");
     let _this = this;
     let iconSize = 32;
     switch (this.props.size) {
@@ -309,7 +432,8 @@ SearchInput.propTypes = {
     onChange: PropTypes.func,
     getFilterData:PropTypes.func,
     isNeedFilter: PropTypes.bool,
-    isDisabled: PropTypes.bool
+    isDisabled: PropTypes.bool,
+    selectedFilterData: PropTypes.array
 };
 
 SearchInput.defaultProps = {
@@ -317,7 +441,8 @@ SearchInput.defaultProps = {
     value: '',
     scale: false,
     isNeedFilter: false,
-    isDisabled: false
+    isDisabled: false,
+    selectedFilterData: []
 };
 
 export default SearchInput;
