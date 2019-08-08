@@ -195,6 +195,10 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
+SectionBodyContent.defaultProps = {
+  users: []
+};
+
 const mapStateToProps = state => {
   return {
     selection: state.people.selection,
