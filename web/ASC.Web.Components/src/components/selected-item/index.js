@@ -45,7 +45,7 @@ const SelectedItem = (props) => {
  
       console.log("SelectedItem render");
       return (
-        <StyledSelectedItem>
+        <StyledSelectedItem {...props}>
             <StyledSelectedTextBox>
                 <Text.Body as='span' truncate color={isDisabled ? "#cecece" : "#333333"} >
                     {text}
