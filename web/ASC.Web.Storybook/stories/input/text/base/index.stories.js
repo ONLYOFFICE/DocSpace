@@ -38,6 +38,7 @@ storiesOf('Components|Input', module)
             scale={boolean('scale', false)}
             autoComplete={text('autoComplete', 'off')}
             tabIndex={number('tabIndex', 1)}
+            withBorder={boolean('withBorder', true)}
             value={value}
             onChange={e => { 
               set(e.target.value);

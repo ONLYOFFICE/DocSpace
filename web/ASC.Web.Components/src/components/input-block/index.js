@@ -9,11 +9,6 @@ import commonInputStyle from '../text-input/common-input-styles';
 
 const iconNames = Object.keys(Icons);
 
-const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, iconName, scale, ...props }) => <input {...props} />;
-const StyledTextInput = styled(Input)`
-  border: none;
-`;
-
 const StyledIconBlock = styled.div`
   display: flex;
   align-items: center;
@@ -86,7 +81,7 @@ const InputBlock = React.forwardRef((props, ref) => {
           {children}
         </StyledChildrenBlock>
       </InputGroupAddon>
-      <StyledTextInput
+      <TextInput
         value={value}
         isDisabled={props.isDisabled}
         hasError={props.hasError}
@@ -97,14 +92,13 @@ const InputBlock = React.forwardRef((props, ref) => {
         maxLength={props.maxLength}
         onBlur={props.onBlur}
         onFocus={props.onFocus}
-        readOnly={props.isReadOnly}
+        isReadOnly={props.isReadOnly}
         autoFocus={props.autoFocus}
         autoComplete={props.autoComplete}
         size={props.size}
         scale={props.scale}
         onChange={onChange}
-
-        as={TextInput}
+        withBorder={false}
       />
       {
         iconNames.includes(props.iconName)
