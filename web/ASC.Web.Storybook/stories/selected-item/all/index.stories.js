@@ -22,6 +22,8 @@ const StyledContainerInline = styled.div`
 `;
 
 storiesOf('Components|SelectedItem', module)
+  .addParameters({ viewport: { defaultViewport: 'responsive' } })
+  .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => {
 
     return (

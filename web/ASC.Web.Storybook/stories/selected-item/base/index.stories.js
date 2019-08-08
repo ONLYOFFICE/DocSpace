@@ -6,21 +6,21 @@ import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-function onCloseButtonClick() {
-  console.log("onCloseButtonClick");
+function onClose(e) {
+  console.log("onClose", e);
 }
 
 storiesOf('Components|SelectedItem', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('selected item', () => {
+  .add('base', () => {
 
     return (
       <Section>
         <SelectedItem  
           text={text('text', 'Selected item')}
           isInline={boolean('isInline', true)}
-          clickAction={onCloseButtonClick}
+          onClick={onClose}
           isDisabled={boolean('isDisabled', false)}
         />
       </Section>

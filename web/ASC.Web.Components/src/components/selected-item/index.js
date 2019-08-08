@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Text } from '../text';
 import IconButton from '../icon-button';
 
@@ -23,7 +23,7 @@ const StyledSelectedTextBox = styled.div`
     cursor: default;
 `;
 
-const IconButtonBox = styled.div`
+const StyledCloseButton = styled.div`
     display: flex;
     align-items: center;
     padding: 0 8px;
@@ -40,48 +40,34 @@ const IconButtonBox = styled.div`
     }
 `;
 
-class SelectedItem extends React.PureComponent {
-    constructor(props) {
-      super(props);
-    }
-
-    stopAction = e => e.preventDefault();
-
-    onCloseButtonClick = (e) => {
-        if (!this.props.isDisabled) {
-            this.props.clickAction && this.props.clickAction();
-          } else {
-            this.stopAction(e);
-        }
-    };
-  
-    render() {
+const SelectedItem = (props) => {
+    const {isDisabled, text, onClose } = props;
+ 
       console.log("SelectedItem render");
       return (
-        <StyledSelectedItem {...this.props} >
+        <StyledSelectedItem>
             <StyledSelectedTextBox>
-                <Text.Body as='span' truncate color={this.props.isDisabled ? "#cecece" : "#333333"} >
-                    {this.props.text}
+                <Text.Body as='span' truncate color={isDisabled ? "#cecece" : "#333333"} >
+                    {text}
                 </Text.Body>
             </StyledSelectedTextBox>
-            <IconButtonBox {...this.props} onClick={this.onCloseButtonClick}>
+            <StyledCloseButton onClick={onClose}>
                 <IconButton
-                    color={"#D8D8D8"}
+                    color="#D8D8D8"
                     size={10}
-                    iconName={'CrossIcon'}
+                    iconName='CrossIcon'
                     isFill={true}
-                    isDisabled={this.props.isDisabled}
+                    isDisabled={isDisabled}
                 />
-            </IconButtonBox>
+            </StyledCloseButton>
         </StyledSelectedItem>
       );
-    }
   }
   
   SelectedItem.propTypes = {
     text: PropTypes.string,
     isInline: PropTypes.bool,
-    clickAction: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool
   };
   
