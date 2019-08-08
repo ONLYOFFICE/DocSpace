@@ -31,6 +31,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Patterns;
+using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Notify.Channels;
 using ASC.Notify.Cron;
 using ASC.Notify.Messages;
@@ -217,7 +219,7 @@ namespace ASC.Notify.Engine
                         }
                         try
                         {
-                            SendNotify(request);
+                            SendNotify(CoreContext.TenantManager.GetCurrentTenant(), request);
                         }
                         catch (Exception e)
                         {
@@ -241,7 +243,7 @@ namespace ASC.Notify.Engine
         }
 
 
-        private NotifyResult SendNotify(NotifyRequest request)
+        private NotifyResult SendNotify(Tenant tenant, NotifyRequest request)
         {
             var sendResponces = new List<SendResponse>();
 
@@ -252,7 +254,7 @@ namespace ASC.Notify.Engine
             }
             else
             {
-                sendResponces.AddRange(SendGroupNotify(request));
+                sendResponces.AddRange(SendGroupNotify(tenant, request));
             }
 
             NotifyResult result = null;
@@ -273,14 +275,14 @@ namespace ASC.Notify.Engine
             return request.Intercept(place) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
         }
 
-        private List<SendResponse> SendGroupNotify(NotifyRequest request)
+        private List<SendResponse> SendGroupNotify(Tenant tenant, NotifyRequest request)
         {
             var responces = new List<SendResponse>();
-            SendGroupNotify(request, responces);
+            SendGroupNotify(tenant, request, responces);
             return responces;
         }
 
-        private void SendGroupNotify(NotifyRequest request, List<SendResponse> responces)
+        private void SendGroupNotify(Tenant tenant, NotifyRequest request, List<SendResponse> responces)
         {
             if (request.Recipient is IDirectRecipient)
             {
@@ -290,7 +292,7 @@ namespace ASC.Notify.Engine
                     var directresponses = new List<SendResponse>(1);
                     try
                     {
-                        directresponses = SendDirectNotify(request);
+                        directresponses = SendDirectNotify(tenant, request);
                     }
                     catch (Exception exc)
                     {
@@ -314,13 +316,13 @@ namespace ASC.Notify.Engine
 
                         try
                         {
-                            var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
+                            var recipients = recipientProvider.GetGroupEntries(tenant, request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
                             foreach (var recipient in recipients)
                             {
                                 try
                                 {
                                     var newRequest = request.Split(recipient);
-                                    SendGroupNotify(newRequest, responces);
+                                    SendGroupNotify(tenant, newRequest, responces);
                                 }
                                 catch (Exception exc)
                                 {
@@ -345,7 +347,7 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private List<SendResponse> SendDirectNotify(NotifyRequest request)
+        private List<SendResponse> SendDirectNotify(Tenant tenant, NotifyRequest request)
         {
             if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
@@ -359,7 +361,7 @@ namespace ASC.Notify.Engine
 
             try
             {
-                PrepareRequestFillSenders(request);
+                PrepareRequestFillSenders(tenant, request);
                 PrepareRequestFillPatterns(request);
                 PrepareRequestFillTags(request);
             }
@@ -377,7 +379,7 @@ namespace ASC.Notify.Engine
                     {
                         try
                         {
-                            response = SendDirectNotify(request, channel);
+                            response = SendDirectNotify(tenant.TenantId, request, channel);
                         }
                         catch (Exception exc)
                         {
@@ -399,7 +401,7 @@ namespace ASC.Notify.Engine
             return responses;
         }
 
-        private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel)
+        private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel)
         {
             var recipient = request.Recipient as IDirectRecipient;
             if (recipient == null) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
@@ -407,7 +409,7 @@ namespace ASC.Notify.Engine
             request.CurrentSender = channel.SenderName;
 
             NoticeMessage noticeMessage;
-            var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, out noticeMessage);
+            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out noticeMessage);
             if (oops != null) return oops;
 
             request.CurrentMessage = noticeMessage;
@@ -419,7 +421,7 @@ namespace ASC.Notify.Engine
             return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
         }
 
-        private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, out NoticeMessage noticeMessage)
+        private SendResponse CreateNoticeMessageFromNotifyRequest(int tenantId, NotifyRequest request, string sender, out NoticeMessage noticeMessage)
         {
             if (request == null) throw new ArgumentNullException("request");
 
@@ -433,7 +435,7 @@ namespace ASC.Notify.Engine
                 recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
             }
 
-            recipient = recipientProvider.FilterRecipientAddresses(recipient);
+            recipient = recipientProvider.FilterRecipientAddresses(tenantId, recipient);
             noticeMessage = request.CreateMessage(recipient);
 
             addresses = recipient.Addresses;
@@ -503,14 +505,14 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillSenders(NotifyRequest request)
+        private void PrepareRequestFillSenders(Tenant tenant, NotifyRequest request)
         {
             if (request.SenderNames == null)
             {
                 var subscriptionProvider = request.NotifySource.GetSubscriptionProvider();
 
                 var senderNames = new List<string>();
-                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
+                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(tenant, request.NotifyAction, request.Recipient) ?? new string[0]);
                 senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string) tag.Value));
 
                 request.SenderNames = senderNames.ToArray();

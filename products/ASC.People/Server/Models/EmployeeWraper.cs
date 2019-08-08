@@ -41,11 +41,6 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraper(UserInfo userInfo)
-    : this(userInfo, null)
-        {
-        }
-
         public EmployeeWraper(UserInfo userInfo, ApiContext httpContext)
         {
             Id = userInfo.ID;
@@ -59,7 +54,13 @@ namespace ASC.Web.Api.Models
 
             if (httpContext.Check("avatarSmall"))
             {
-                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarSmall = UserPhotoManager.GetSmallPhotoURL(httpContext.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            }
+
+            if (Id != Guid.Empty)
+            {
+                var profileUrl = CommonLinkUtility.GetUserProfile(Id, userInfo.Tenant, false);
+                ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(httpContext.HttpContext, profileUrl);
             }
         }
 
@@ -76,31 +77,23 @@ namespace ASC.Web.Api.Models
         public string AvatarSmall { get; set; }
 
         [DataMember(Order = 30)]
-        public string ProfileUrl
-        {
-            get
-            {
-                if (Id == Guid.Empty) return string.Empty;
-                var profileUrl = CommonLinkUtility.GetUserProfile(Id.ToString(), false);
-                return CommonLinkUtility.GetFullAbsolutePath(profileUrl);
-            }
-        }
+        public string ProfileUrl { get; set; }
 
-        public static EmployeeWraper Get(Guid userId)
+        public static EmployeeWraper Get(Guid userId, ApiContext context)
         {
             try
             {
-                return Get(CoreContext.UserManager.GetUsers(userId));
+                return Get(CoreContext.UserManager.GetUsers(userId), context);
             }
             catch (Exception)
             {
-                return Get(Constants.LostUser);
+                return Get(Constants.LostUser, context);
             }
         }
 
-        public static EmployeeWraper Get(UserInfo userInfo)
+        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context)
         {
-            return new EmployeeWraper(userInfo);
+            return new EmployeeWraper(userInfo, context);
         }
 
         public static EmployeeWraper GetSample()

@@ -24,18 +24,20 @@
 */
 
 
-using ASC.Common.Security.Authorizing;
+using ASC.Core.Tenants;
 
-namespace ASC.Common.Security
+namespace ASC.Notify.Recipients
 {
-    public interface IPermissionResolver
+    public interface IRecipientProvider
     {
-        bool Check(ISubject subject, params IAction[] actions);
+        IRecipient GetRecipient(int tenantId, string id);
 
-        bool Check(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
+        IRecipient[] GetGroupEntries(Tenant tenant, IRecipientsGroup group);
 
-        void Demand(ISubject subject, params IAction[] actions);
+        IRecipientsGroup[] GetGroups(Tenant tenant, IRecipient recipient);
 
-        void Demand(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
+        string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
+
+        IDirectRecipient FilterRecipientAddresses(int tenantId, IDirectRecipient recipient);
     }
 }

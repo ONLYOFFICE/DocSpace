@@ -31,6 +31,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
@@ -109,14 +110,18 @@ namespace ASC.Web.Studio.Utility
             get { return BaseCommonLinkUtility.VirtualRoot; }
         }
 
-        public static string ServerRootPath
+        public static string ServerRootPath(HttpContext context)
         {
-            get { return BaseCommonLinkUtility.ServerRootPath; }
+            return BaseCommonLinkUtility.ServerRootPath(context);
         }
 
         public static string GetFullAbsolutePath(string virtualPath)
         {
-            return BaseCommonLinkUtility.GetFullAbsolutePath(virtualPath);
+            return GetFullAbsolutePath(ASC.Common.HttpContext.Current,virtualPath);
+        }
+        public static string GetFullAbsolutePath(HttpContext context, string virtualPath)
+        {
+            return BaseCommonLinkUtility.GetFullAbsolutePath(context, virtualPath);
         }
 
         public static string ToAbsolute(string virtualPath)
@@ -159,23 +164,27 @@ namespace ASC.Web.Studio.Utility
 
         public static string GetUserProfile()
         {
-            return GetUserProfile(null);
+            return GetUserProfile(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+        }
+        public static string GetUserProfile(int tenantId)
+        {
+            return GetUserProfile(null, tenantId);
         }
 
         public static string GetUserProfile(Guid userID)
         {
-            if (!CoreContext.UserManager.UserExists(userID))
+            return GetUserProfile(userID, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+        }
+
+        public static string GetUserProfile(Guid userID, int tenantId)
+        {
+            if (!CoreContext.UserManager.UserExists(userID, tenantId))
                 return GetEmployees();
 
-            return GetUserProfile(userID.ToString());
+            return GetUserProfile(userID.ToString(), tenantId);
         }
 
-        public static string GetUserProfile(string user)
-        {
-            return GetUserProfile(user, true);
-        }
-
-        public static string GetUserProfile(string user, bool absolute)
+        public static string GetUserProfile(string user, int tenantId, bool absolute = true)
         {
             var queryParams = "";
 
@@ -193,8 +202,18 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid, tenantId) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
+
+            var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+            url += "profile.aspx?";
+            url += queryParams;
+
+            return url;
+        }
+        public static string GetUserProfile(Guid user, int tenantId, bool absolute = true)
+        {
+            var queryParams = GetUserParamsPair(user, tenantId);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -205,20 +224,20 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID(HttpContext context)
+        public static Guid GetProductID(Tenant tenant, HttpContext context)
         {
             var productID = Guid.Empty;
 
             if (context != null)
             {
-                GetLocationByRequest(out var product, out var module, context);
+                GetLocationByRequest(tenant, out var product, out var module, context);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule, HttpContext context)
+        public static void GetLocationByRequest(Tenant tenant, out IProduct currentProduct, out IModule currentModule, HttpContext context)
         {
             var currentURL = string.Empty;
             if (context != null && context.Request != null)
@@ -233,7 +252,7 @@ namespace ASC.Web.Studio.Utility
                 //}
             }
 
-            GetLocationByUrl(currentURL, out currentProduct, out currentModule);
+            GetLocationByUrl(tenant, currentURL, out currentProduct, out currentModule);
         }
 
         public static IWebItem GetWebItemByUrl(string currentURL)
@@ -277,7 +296,7 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        public static void GetLocationByUrl(string currentURL, out IProduct currentProduct, out IModule currentModule)
+        public static void GetLocationByUrl(Tenant tenant, string currentURL, out IProduct currentProduct, out IModule currentModule)
         {
             currentProduct = null;
             currentModule = null;
@@ -316,7 +335,7 @@ namespace ASC.Web.Studio.Utility
 
                             if (!String.IsNullOrEmpty(moduleName))
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
@@ -331,7 +350,7 @@ namespace ASC.Web.Studio.Utility
                             }
                             else
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID).OfType<IModule>())
                                 {
                                     if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
                                     {
@@ -433,11 +452,11 @@ namespace ASC.Web.Studio.Utility
             return result;
         }
 
-        public static string GetUserParamsPair(Guid userID)
+        public static string GetUserParamsPair(Guid userID, int tenantId)
         {
             return
-                CoreContext.UserManager.UserExists(userID)
-                    ? GetUserParamsPair(CoreContext.UserManager.GetUsers(userID))
+                CoreContext.UserManager.UserExists(userID, tenantId)
+                    ? GetUserParamsPair(CoreContext.UserManager.GetUsers(userID, tenantId))
                     : "";
         }
 

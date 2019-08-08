@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import commonInputStyle from '../text-input/common-input-styles';
 
-const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale,  ...props }) => <input {...props}/>;
+const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder,  ...props }) => <input {...props}/>;
 
 const StyledInput = styled(Input).attrs((props) => ({
     id: props.id,
@@ -70,6 +70,7 @@ const StyledInput = styled(Input).attrs((props) => ({
         font-family: 'Open Sans',sans-serif
     }
 
+    ${props => !props.withBorder && `border: none;`}
 `;
 
 const TextInput = props => { 
@@ -110,7 +111,8 @@ TextInput.defaultProps = {
     tabIndex: -1,
     hasError: false,
     hasWarning: false,
-    autoComplete: 'off'
+    autoComplete: 'off',
+    withBorder: true
 }
 
 export default TextInput

@@ -37,6 +37,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Studio.Utility;
@@ -178,60 +179,60 @@ namespace ASC.Web.Core.Users
             return WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
 
-        public static string GetRetinaPhotoURL(Guid userID)
+        public static string GetRetinaPhotoURL(int tenantId, Guid userID)
         {
-            return GetRetinaPhotoURL(userID, out _);
+            return GetRetinaPhotoURL(tenantId, userID, out _);
         }
 
-        public static string GetRetinaPhotoURL(Guid userID, out bool isdef)
+        public static string GetRetinaPhotoURL(int tenantId, Guid userID, out bool isdef)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, RetinaFotoSize, out isdef);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, RetinaFotoSize, out isdef);
         }
 
-        public static string GetMaxPhotoURL(Guid userID)
+        public static string GetMaxPhotoURL(int tenantId, Guid userID)
         {
-            return GetMaxPhotoURL(userID, out _);
+            return GetMaxPhotoURL(tenantId, userID, out _);
         }
 
-        public static string GetMaxPhotoURL(Guid userID, out bool isdef)
+        public static string GetMaxPhotoURL(int tenantId, Guid userID, out bool isdef)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, MaxFotoSize, out isdef);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, MaxFotoSize, out isdef);
         }
 
-        public static string GetBigPhotoURL(Guid userID)
+        public static string GetBigPhotoURL(int tenantId, Guid userID)
         {
-            return GetBigPhotoURL(userID, out _);
+            return GetBigPhotoURL(tenantId, userID, out _);
         }
 
-        public static string GetBigPhotoURL(Guid userID, out bool isdef)
+        public static string GetBigPhotoURL(int tenantId, Guid userID, out bool isdef)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, BigFotoSize, out isdef);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, BigFotoSize, out isdef);
         }
 
-        public static string GetMediumPhotoURL(Guid userID)
+        public static string GetMediumPhotoURL(int tenantId, Guid userID)
         {
-            return GetMediumPhotoURL(userID, out _);
+            return GetMediumPhotoURL(tenantId, userID, out _);
         }
 
-        public static string GetMediumPhotoURL(Guid userID, out bool isdef)
+        public static string GetMediumPhotoURL(int tenantId, Guid userID, out bool isdef)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, MediumFotoSize, out isdef);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, MediumFotoSize, out isdef);
         }
 
-        public static string GetSmallPhotoURL(Guid userID)
+        public static string GetSmallPhotoURL(int tenantId, Guid userID)
         {
-            return GetSmallPhotoURL(userID, out _);
+            return GetSmallPhotoURL(tenantId, userID, out _);
         }
 
-        public static string GetSmallPhotoURL(Guid userID, out bool isdef)
+        public static string GetSmallPhotoURL(int tenantId, Guid userID, out bool isdef)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, SmallFotoSize, out isdef);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, SmallFotoSize, out isdef);
         }
 
 
-        public static string GetSizedPhotoUrl(Guid userId, int width, int height)
+        public static string GetSizedPhotoUrl(int tenantId, Guid userId, int width, int height)
         {
-            return GetSizedPhotoAbsoluteWebPath(userId, new Size(width, height));
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userId, new Size(width, height));
         }
 
 
@@ -300,21 +301,21 @@ namespace ASC.Web.Core.Users
         private static string _tempDomainName = "temp";
 
 
-        public static bool UserHasAvatar(Guid userID)
+        public static bool UserHasAvatar(Tenant tenant, Guid userID)
         {
-            var path = GetPhotoAbsoluteWebPath(userID);
+            var path = GetPhotoAbsoluteWebPath(tenant, userID);
             var fileName = Path.GetFileName(path);
             return fileName != _defaultAvatar;
         }
         
-        public static string GetPhotoAbsoluteWebPath(Guid userID)
+        public static string GetPhotoAbsoluteWebPath(Tenant tenant, Guid userID)
         {
             var path = SearchInCache(userID, Size.Empty, out _);
             if (!string.IsNullOrEmpty(path)) return path;
 
             try
             {
-                var data = CoreContext.UserManager.GetUserPhoto(userID);
+                var data = CoreContext.UserManager.GetUserPhoto(tenant.TenantId, userID);
                 string photoUrl;
                 string fileName;
                 if (data == null || data.Length == 0)
@@ -324,7 +325,7 @@ namespace ASC.Web.Core.Users
                 }
                 else
                 {
-                    photoUrl = SaveOrUpdatePhoto(userID, data, -1, new Size(-1, -1), false, out fileName);
+                    photoUrl = SaveOrUpdatePhoto(tenant, userID, data, -1, new Size(-1, -1), false, out fileName);
                 }
                 AddToCache(userID, Size.Empty, fileName);
 
@@ -336,9 +337,9 @@ namespace ASC.Web.Core.Users
             return GetDefaultPhotoAbsoluteWebPath();
         }
 
-        internal static Size GetPhotoSize(Guid userID)
+        internal static Size GetPhotoSize(Tenant tenant, Guid userID)
         {
-            var virtualPath = GetPhotoAbsoluteWebPath(userID);
+            var virtualPath = GetPhotoAbsoluteWebPath(tenant, userID);
             if (virtualPath == null) return Size.Empty;
 
             try
@@ -354,19 +355,19 @@ namespace ASC.Web.Core.Users
             }
         }
 
-        private static string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size)
+        private static string GetSizedPhotoAbsoluteWebPath(int tenantId, Guid userID, Size size)
         {
-            return GetSizedPhotoAbsoluteWebPath(userID, size, out _);
+            return GetSizedPhotoAbsoluteWebPath(tenantId, userID, size, out _);
         }
 
-        private static string GetSizedPhotoAbsoluteWebPath(Guid userID, Size size, out bool isdef)
+        private static string GetSizedPhotoAbsoluteWebPath(int tenantId, Guid userID, Size size, out bool isdef)
         {
             var res = SearchInCache(userID, size, out isdef);
             if (!string.IsNullOrEmpty(res)) return res;
 
             try
             {
-                var data = CoreContext.UserManager.GetUserPhoto(userID);
+                var data = CoreContext.UserManager.GetUserPhoto(tenantId, userID);
 
                 if (data == null || data.Length == 0)
                 {
@@ -379,7 +380,7 @@ namespace ASC.Web.Core.Users
                 }
 
                 //Enqueue for sizing
-                SizePhoto(userID, data, -1, size);
+                SizePhoto(tenantId, userID, data, -1, size);
             }
             catch { }
 
@@ -513,19 +514,19 @@ namespace ASC.Web.Core.Users
             thumbSettings.SaveForUser(userId);
         }
 
-        public static string SaveOrUpdatePhoto(Guid userID, byte[] data)
+        public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
             string fileName;
-            return SaveOrUpdatePhoto(userID, data, -1, OriginalFotoSize, true, out fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out fileName);
         }
 
-        public static void RemovePhoto(Guid idUser)
+        public static void RemovePhoto(Tenant tenant, Guid idUser)
         {
-            CoreContext.UserManager.SaveUserPhoto(idUser, null);
+            CoreContext.UserManager.SaveUserPhoto(tenant, idUser, null);
             ClearCache(idUser);
         }
 
-        private static string SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
+        private static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {
             ImageFormat imgFormat;
             int width;
@@ -537,7 +538,7 @@ namespace ASC.Web.Core.Users
 
             if (saveInCoreContext)
             {
-                CoreContext.UserManager.SaveUserPhoto(userID, data);
+                CoreContext.UserManager.SaveUserPhoto(tenant, userID, data);
                 SetUserPhotoThumbnailSettings(userID, width, height);
                 ClearCache(userID);
             }
@@ -552,11 +553,11 @@ namespace ASC.Web.Core.Users
                     photoUrl = store.Save(fileName, stream).ToString();
                 }
                 //Queue resizing
-                SizePhoto(userID, data, -1, SmallFotoSize, true);
-                SizePhoto(userID, data, -1, MediumFotoSize, true);
-                SizePhoto(userID, data, -1, BigFotoSize, true);
-                SizePhoto(userID, data, -1, MaxFotoSize, true);
-                SizePhoto(userID, data, -1, RetinaFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, SmallFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MediumFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, BigFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MaxFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, RetinaFotoSize, true);
             }
             return photoUrl;
         }
@@ -657,12 +658,12 @@ namespace ASC.Web.Core.Users
         //note: using auto stop queue
         private static readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>(2, TimeSpan.FromSeconds(30), 1, true);//TODO: configure
 
-        private static string SizePhoto(Guid userID, byte[] data, long maxFileSize, Size size)
+        private static string SizePhoto(int tenantId, Guid userID, byte[] data, long maxFileSize, Size size)
         {
-            return SizePhoto(userID, data, maxFileSize, size, false);
+            return SizePhoto(tenantId, userID, data, maxFileSize, size, false);
         }
 
-        private static string SizePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool now)
+        private static string SizePhoto(int tenantId, Guid userID, byte[] data, long maxFileSize, Size size, bool now)
         {
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
@@ -673,7 +674,7 @@ namespace ASC.Web.Core.Users
             {
                 //Resize synchronously
                 ResizeImage(resizeTask);
-                return GetSizedPhotoAbsoluteWebPath(userID, size);
+                return GetSizedPhotoAbsoluteWebPath(tenantId, userID, size);
             }
             else
             {
@@ -817,11 +818,11 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public static Bitmap GetPhotoBitmap(Guid userID)
+        public static Bitmap GetPhotoBitmap(int tenantId, Guid userID)
         {
             try
             {
-                var data = CoreContext.UserManager.GetUserPhoto(userID);
+                var data = CoreContext.UserManager.GetUserPhoto(tenantId, userID);
                 if (data != null)
                 {
                     using (var s = new MemoryStream(data))

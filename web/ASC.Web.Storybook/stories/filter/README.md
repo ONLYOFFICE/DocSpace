@@ -15,10 +15,10 @@ FilterInput description
 ```js
 <FilterInput 
     getFilterData={() => [  { key: 'filter-example', group: 'filter-example', label: 'example group', isHeader: true },
-                            { key: 'filter-example-test', group: 'filter-example', label: 'Test' }]
+                            { key: '0', group: 'filter-example', label: 'Test' }]
                     }
-    getSortData={() => [  { id: 'name', label: 'Name' },
-                          { id: 'surname', label: 'Surname']
+    getSortData={() => [  { key: 'name', label: 'Name' },
+                          { key: 'surname', label: 'Surname']
     onFilter={(result) => {console.log(result)}}
 />
 ```
@@ -33,6 +33,6 @@ FilterInput description
 | `placeholder`          | `string` |    -     | -                              | -       | Placeholder text for the input                                                                         |
 | `size`                 | `string` |          | `base`, `middle`, `big`, `huge`| `base`  | Supported size of the input fields.                                                                    |
 | `scale`                | `bool`   |    -     | -                              | -       | Indicates the input field has scale                                                                    |
-| `defaultFilterData`    | `object` |    -     | -                              | -       | Default filter data                                                                                    |
+| `selectedFilterData`   | `object` |    -     | -                              | -       | Selected filter data                                                                                   |
 
 

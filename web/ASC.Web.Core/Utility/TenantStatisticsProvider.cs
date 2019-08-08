@@ -45,9 +45,9 @@ namespace ASC.Web.Studio.UserControls.Statistics
                        || TenantExtra.Enterprise && !TenantExtra.EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
         }
 
-        public static int GetUsersCount()
+        public static int GetUsersCount(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
+            return CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID).Length;
         }
 
         public static long GetUsedSize()
