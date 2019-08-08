@@ -24,6 +24,12 @@ const StyledComboBox = styled.div`
             ${props => !props.isDisabled && `color: #333333;`}
             ${props => (!props.withBorder & !props.isDisabled) && `border-bottom: 1px dotted #333333;`}
             opacity: 1;
+
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
     }
 `;
@@ -59,7 +65,7 @@ class ComboBox extends React.PureComponent {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
-    if (!!e.target.closest('.input-group-prepend')) return;
+    if (this.props.isDisabled || !!e.target.closest('.input-group-prepend')) return;
 
     this.setState({
       option: this.props.option,

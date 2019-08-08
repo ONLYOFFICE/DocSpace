@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using ASC.Core.Tenants;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
@@ -54,52 +55,52 @@ namespace ASC.Core.Users
             return users;
         }
 
-        public static bool HasAvatar(this UserInfo userInfo)
+        public static bool HasAvatar(this UserInfo userInfo, Tenant tenant)
         {
-            return UserPhotoManager.UserHasAvatar(userInfo.ID);
+            return UserPhotoManager.UserHasAvatar(tenant, userInfo.ID);
         }
 
-        public static Size GetPhotoSize(this UserInfo userInfo)
+        public static Size GetPhotoSize(this UserInfo userInfo, Tenant tenant)
         {
-            return UserPhotoManager.GetPhotoSize(userInfo.ID);
+            return UserPhotoManager.GetPhotoSize(tenant, userInfo.ID);
         }
 
-        public static string GetPhotoURL(this UserInfo userInfo)
+        public static string GetPhotoURL(this UserInfo userInfo, Tenant tenant)
         {
-            return UserPhotoManager.GetPhotoAbsoluteWebPath(userInfo.ID);
+            return UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, userInfo.ID);
         }
 
-        public static string GetRetinaPhotoURL(this UserInfo userInfo)
+        public static string GetRetinaPhotoURL(this UserInfo userInfo, int tenantId)
         {
-            return UserPhotoManager.GetRetinaPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetRetinaPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetMaxPhotoURL(this UserInfo userInfo)
+        public static string GetMaxPhotoURL(this UserInfo userInfo, int tenantId)
         {
-            return UserPhotoManager.GetMaxPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetMaxPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetBigPhotoURL(this UserInfo userInfo)
+        public static string GetBigPhotoURL(this UserInfo userInfo, int tenantId)
         {
-            return UserPhotoManager.GetBigPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetBigPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetMediumPhotoURL(this UserInfo userInfo)
+        public static string GetMediumPhotoURL(this UserInfo userInfo, int tenantId)
         {
-            return UserPhotoManager.GetMediumPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetMediumPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetSmallPhotoURL(this UserInfo userInfo)
+        public static string GetSmallPhotoURL(this UserInfo userInfo, int tenantId)
         {
-            return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
+            return UserPhotoManager.GetSmallPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string RenderProfileLinkBase(this UserInfo userInfo)
+        public static string RenderProfileLinkBase(this UserInfo userInfo, Tenant tenant)
         {
             var sb = new StringBuilder();
 
             //check for removed users
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenant.TenantId))
             {
                 sb.Append("<span class='userLink text-medium-describe' style='white-space:nowrap;'>profile removed</span>");
             }

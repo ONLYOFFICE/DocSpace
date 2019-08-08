@@ -34,6 +34,7 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 //using ASC.Mail.Core.Engine;
@@ -104,11 +105,11 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                CoreContext.TenantManager.SetCurrentTenant(_tenantId);
+                var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_currentUserId);
 
                 long docsSpace, crmSpace, mailSpace, talkSpace;
-                GetUsageSpace(out docsSpace, out mailSpace, out talkSpace);
+                GetUsageSpace(tenant, out docsSpace, out mailSpace, out talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", _userId);
 
@@ -168,11 +169,11 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void GetUsageSpace(out long docsSpace, out long mailSpace, out long talkSpace)
+        private void GetUsageSpace(Tenant tenant, out long docsSpace, out long mailSpace, out long talkSpace)
         {
             docsSpace = mailSpace = talkSpace = 0;
 
-            var webItems = WebItemManager.Instance.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
+            var webItems = WebItemManager.Instance.GetItems(tenant, Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var item in webItems)
             {
@@ -225,7 +226,7 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, _userId, _userName,
+                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, _userId, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
@@ -238,8 +239,7 @@ namespace ASC.Data.Reassigns
         {
             if (!_notify) return;
 
-            StudioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, _userId, _userName,
-                                                                     errorMessage);
+            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, _userId, _userName, errorMessage);
         }
     }
 }

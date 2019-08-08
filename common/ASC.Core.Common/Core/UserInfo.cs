@@ -31,6 +31,7 @@ using System.Text;
 using System.Linq;
 using ASC.Collections;
 using ASC.Notify.Recipients;
+using ASC.Core.Tenants;
 
 namespace ASC.Core.Users
 {
@@ -150,9 +151,9 @@ namespace ASC.Core.Users
             return MemberwiseClone();
         }
 
-        internal GroupInfo[] GetGroups(IncludeType includeType, Guid? categoryId)
+        internal GroupInfo[] GetGroups(Tenant tenant, IncludeType includeType, Guid? categoryId)
         {
-            var groups = groupCache.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroups(ID, IncludeType.Distinct, null));
+            var groups = groupCache.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroups(tenant, ID, IncludeType.Distinct, null));
 
             if (categoryId.HasValue)
             {
@@ -162,9 +163,9 @@ namespace ASC.Core.Users
             return groups;
         }
 
-        internal IEnumerable<Guid> GetUserGroupsId()
+        internal IEnumerable<Guid> GetUserGroupsId(int tenantId)
         {
-            return groupCacheId.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroupsGuids(ID));
+            return groupCacheId.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroupsGuids(tenantId, ID));
         }
 
         internal void ResetGroupCache()

@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using ASC.Core.Tenants;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
 
@@ -50,7 +51,7 @@ namespace ASC.Core.Notify
         }
 
 
-        public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+        public object GetSubscriptionRecord(Tenant tenant, INotifyAction action, IRecipient recipient, string objectID)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
@@ -58,7 +59,7 @@ namespace ASC.Core.Notify
             return subscriptionManager.GetSubscriptionRecord(sourceID, action.ID, recipient.ID, objectID);
         }
 
-        public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
+        public string[] GetSubscriptions(Tenant tenant, INotifyAction action, IRecipient recipient, bool checkSubscribe = true)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
@@ -66,17 +67,17 @@ namespace ASC.Core.Notify
             return subscriptionManager.GetSubscriptions(sourceID, action.ID, recipient.ID, checkSubscribe);
         }
 
-        public IRecipient[] GetRecipients(INotifyAction action, string objectID)
+        public IRecipient[] GetRecipients(int tenantId, INotifyAction action, string objectID)
         {
             if (action == null) throw new ArgumentNullException("action");
 
             return subscriptionManager.GetRecipients(sourceID, action.ID, objectID)
-                .Select(r => recipientProvider.GetRecipient(r))
+                .Select(r => recipientProvider.GetRecipient(tenantId, r))
                 .Where(r => r != null)
                 .ToArray();
         }
 
-        public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+        public string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
@@ -130,7 +131,7 @@ namespace ASC.Core.Notify
         }
 
         [Obsolete("Use UnSubscribe(INotifyAction, string, IRecipient)", true)]
-        public void UnSubscribe(INotifyAction action, IRecipient recipient)
+        public void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             throw new NotSupportedException("use UnSubscribe(INotifyAction, string, IRecipient )");
         }

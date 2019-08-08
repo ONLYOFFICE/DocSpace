@@ -75,7 +75,10 @@ namespace ASC.Web.Studio.Utility
 
         public static bool EnableControlPanel
         {
-            get { return Enterprise && GetTenantQuota().ControlPanel && GetCurrentTariff().State < TariffState.NotPaid && CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(); }
+            get { return Enterprise && 
+                    GetTenantQuota().ControlPanel && 
+                    GetCurrentTariff().State < TariffState.NotPaid && 
+                    CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(CoreContext.TenantManager.GetCurrentTenant()); }
         }
 
         public static bool EnableDocbuilder
@@ -133,16 +136,16 @@ namespace ASC.Web.Studio.Utility
             return prevQuota.ActiveUsers + 1;
         }
 
-        public static int GetRightQuotaId()
+        public static int GetRightQuotaId(Tenant tenant)
         {
-            var q = GetRightQuota();
+            var q = GetRightQuota(tenant);
             return q != null ? q.Id : 0;
         }
 
-        public static TenantQuota GetRightQuota()
+        public static TenantQuota GetRightQuota(Tenant tenant)
         {
             var usedSpace = TenantStatisticsProvider.GetUsedSize();
-            var needUsersCount = TenantStatisticsProvider.GetUsersCount();
+            var needUsersCount = TenantStatisticsProvider.GetUsersCount(tenant);
             var quotas = GetTenantQuotas();
 
             return quotas.OrderBy(q => q.ActiveUsers)
@@ -161,9 +164,9 @@ namespace ASC.Web.Studio.Utility
                 CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
         }
 
-        public static int GetRemainingCountUsers()
+        public static int GetRemainingCountUsers(Tenant tenant)
         {
-            return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount();
+            return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount(tenant);
         }
 
         public static bool UpdatedWithoutLicense

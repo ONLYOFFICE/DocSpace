@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Text } from '../text';
 
 const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow,
-    isHovered, isSemitransparent, type, color, title,
+    isHovered, isSemitransparent, type, color, title, onClick,
     ...props }) => <a {...props}></a>;
 
 const opacityCss = css`

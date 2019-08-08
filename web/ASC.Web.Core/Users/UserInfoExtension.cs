@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ASC.Core.Tenants;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
@@ -41,11 +42,11 @@ namespace ASC.Core.Users
             return userInfo == null ? "" : CommonLinkUtility.GetUserProfile(userInfo.ID);
         }
 
-        public static string RenderProfileLink(this UserInfo userInfo, Guid productID)
+        public static string RenderProfileLink(this UserInfo userInfo, Guid productID, int tenantId)
         {
             var sb = new StringBuilder();
 
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenantId))
             {
                 sb.Append("<span class='userLink text-medium-describe'>");
                 sb.Append(Resource.ProfileRemoved);
@@ -66,13 +67,13 @@ namespace ASC.Core.Users
             return sb.ToString();
         }
 
-        public static string RenderCustomProfileLink(this UserInfo userInfo, String containerCssClass, String linkCssClass)
+        public static string RenderCustomProfileLink(this UserInfo userInfo, String containerCssClass, String linkCssClass, int tenantId)
         {
             var containerCss = string.IsNullOrEmpty(containerCssClass) ? "userLink" : "userLink " + containerCssClass;
             var linkCss = string.IsNullOrEmpty(linkCssClass) ? "" : linkCssClass;
             var sb = new StringBuilder();
 
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenantId))
             {
                 sb.AppendFormat("<span class='{0}'>", containerCss);
                 sb.Append(Resource.ProfileRemoved);
@@ -93,11 +94,11 @@ namespace ASC.Core.Users
             return sb.ToString();
         }
 
-        public static List<string> GetListAdminModules(this UserInfo ui)
+        public static List<string> GetListAdminModules(this UserInfo ui, Tenant tenant)
         {
             var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
 
-            return (from product in products where WebItemSecurity.IsProductAdministrator(product.ID, ui.ID) select product.ProductClassName).ToList();
+            return (from product in products where WebItemSecurity.IsProductAdministrator(tenant, product.ID, ui.ID) select product.ProductClassName).ToList();
         }
     }
 }

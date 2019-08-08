@@ -61,4 +61,9 @@
     <Protobuf Include="protos\DistributedTaskCache.proto" />
     <Protobuf Include="protos\DistributedTaskCancelation.proto" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Notify\" />
+    <Folder Include="Tests\Notify\" />
+    <Folder Include="Tests\Security\Authorizing\" />
+  </ItemGroup>
 </Project>
