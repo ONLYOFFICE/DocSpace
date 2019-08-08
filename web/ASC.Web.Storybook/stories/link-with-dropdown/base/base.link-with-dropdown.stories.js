@@ -41,7 +41,7 @@ storiesOf('Components|LinkWithDropdown', module)
         <LinkWithDropdown
           dropdownType={select('dropdownType', dropdownType, 'alwaysDotted')}
           color={select('color', colors, 'black')}
-          fontSize={number('fontSize', 12)}
+          fontSize={number('fontSize', 13)}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
           isTextOverflow={boolean('isTextOverflow', false)}

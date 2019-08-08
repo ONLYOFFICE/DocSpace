@@ -117,7 +117,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
     color: 'black',
-    fontSize: 12,
+    fontSize: 13,
     href: undefined,
     isBold: false,
     isHovered: false,

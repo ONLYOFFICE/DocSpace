@@ -25,7 +25,7 @@ storiesOf('Components|Link', module)
         <Link
           type={select('type', type, 'page')}
           color={select('color', colors, 'black')}
-          fontSize={number('fontSize', 12)}
+          fontSize={number('fontSize', 13)}
           href={text('href', undefined)}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
