@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Tenants;
 
 namespace ASC.Common.Tests.Security.Authorizing
 {
@@ -159,7 +160,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
 		#region IRoleProvider Members
 
-		public List<IRole> GetRoles(ISubject account)
+		public List<IRole> GetRoles(Tenant tenant, ISubject account)
 		{
 			List<IRole> roles = null;
 			if (!AccountRoles.TryGetValue(account, out roles)) roles = new List<IRole>();
@@ -173,9 +174,9 @@ namespace ASC.Common.Tests.Security.Authorizing
 			return accounts;
 		}
 
-		public bool IsSubjectInRole(ISubject account, IRole role)
+		public bool IsSubjectInRole(Tenant tenant, ISubject account, IRole role)
 		{
-			List<IRole> roles = GetRoles(account);
+			var roles = GetRoles(tenant, account);
 			return roles.Contains(role);
 		}
 

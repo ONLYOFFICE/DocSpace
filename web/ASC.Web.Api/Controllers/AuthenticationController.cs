@@ -18,13 +18,13 @@ namespace ASC.Web.Api.Controllers
         [Create(false)]
         public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
         {
-            var user = GetUser(auth.UserName, auth.Password);
+            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
 
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
-                var tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                var expires = TenantCookieSettings.GetExpiresTime(tenant);
+                var expires = TenantCookieSettings.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData
                 {
@@ -38,14 +38,14 @@ namespace ASC.Web.Api.Controllers
             }
         }
 
-        private static UserInfo GetUser(string userName, string password)
+        private static UserInfo GetUser(int tenantId, string userName, string password)
         {
             var user = CoreContext.UserManager.GetUsers(
-                        CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                        tenantId,
                         userName,
                         Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            if (user == null || !CoreContext.UserManager.UserExists(user.ID))
+            if (user == null || !CoreContext.UserManager.UserExists(user.ID, tenantId))
             {
                 throw new Exception("user not found");
             }

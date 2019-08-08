@@ -44,7 +44,7 @@ namespace ASC.Notify
 
         void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args);
 
-        void SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args);
+        void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args);
 
         void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args);
 

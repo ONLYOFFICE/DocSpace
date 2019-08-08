@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
 
@@ -34,11 +35,11 @@ namespace ASC.Web.Api.Models
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperSummary
     {
-        public GroupWrapperSummary(GroupInfo group)
+        public GroupWrapperSummary(GroupInfo group, ApiContext context)
         {
             Id = group.ID;
             Name = group.Name;
-            Manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(group.ID)).UserName;
+            Manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)).UserName;
         }
 
         protected GroupWrapperSummary()

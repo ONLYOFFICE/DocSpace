@@ -69,10 +69,10 @@ namespace ASC.Notify.Model
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
         }
 
-        public void SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
+        public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
         {
             var subscriptionSource = notifySource.GetSubscriptionProvider();
-            var recipients = subscriptionSource.GetRecipients(action, objectID);
+            var recipients = subscriptionSource.GetRecipients(tenantId, action, objectID);
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Web.Core.Utility.Skins;
 
 namespace ASC.Web.Core
@@ -111,14 +112,14 @@ namespace ASC.Web.Core
         }
 
 
-        public static bool IsDisabled(this IWebItem item)
+        public static bool IsDisabled(this IWebItem item, Tenant tenant)
         {
-            return IsDisabled(item, SecurityContext.CurrentAccount.ID);
+            return item.IsDisabled(tenant, SecurityContext.CurrentAccount.ID);
         }
 
-        public static bool IsDisabled(this IWebItem item, Guid userID)
+        public static bool IsDisabled(this IWebItem item, Tenant tenant, Guid userID)
         {
-            return item != null && (!WebItemSecurity.IsAvailableForUser(item.ID, userID) || !item.Visible);
+            return item != null && (!WebItemSecurity.IsAvailableForUser(tenant, item.ID, userID) || !item.Visible);
         }
 
         public static bool IsSubItem(this IWebItem item)

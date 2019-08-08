@@ -22,15 +22,15 @@ const StyledHideFilterButton = styled.div`
   background-color: #F8F9F9;
   padding: 0 20px 0 9px;
   margin-right: 2px;
-  cursor: pointer;
+  cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
   font-family: Open Sans;
   font-style: normal;
 
   :hover{
-    border-color: #A3A9AE;
+    border-color: ${props => props.isDisabled ? '#ECEEF1' : '#A3A9AE'};
   }
   :active{
-    background-color: #ECEEF1;
+    background-color: ${props => props.isDisabled ? '#F8F9F9' : '#ECEEF1'};
   }
 `;
 const StyledHideFilter = styled.div`
@@ -52,16 +52,18 @@ class HideFilter extends React.Component {
   }
 
   toggle() {
-    this.setState({
-      popoverOpen: !this.state.popoverOpen
-    });
+    if(!this.props.isDisabled){
+      this.setState({
+        popoverOpen: !this.state.popoverOpen
+      });
+    }
   }
 
   render() {
     //console.log("HideFilter render");
     return (
       <StyledHideFilter>
-        <StyledHideFilterButton id="PopoverLegacy" >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
+        <StyledHideFilterButton id="PopoverLegacy" isDisabled={this.props.isDisabled} >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
         
         <Popover 
           isOpen={this.state.popoverOpen} 

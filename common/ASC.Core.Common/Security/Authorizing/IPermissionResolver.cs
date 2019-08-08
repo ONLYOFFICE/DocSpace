@@ -24,18 +24,19 @@
 */
 
 
-namespace ASC.Notify.Recipients
+using ASC.Common.Security.Authorizing;
+using ASC.Core.Tenants;
+
+namespace ASC.Common.Security
 {
-    public interface IRecipientProvider
+    public interface IPermissionResolver
     {
-        IRecipient GetRecipient(string id);
+        bool Check(Tenant tenant, ISubject subject, params IAction[] actions);
 
-        IRecipient[] GetGroupEntries(IRecipientsGroup group);
+        bool Check(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
 
-        IRecipientsGroup[] GetGroups(IRecipient recipient);
+        void Demand(Tenant tenant, ISubject subject, params IAction[] actions);
 
-        string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
-
-        IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
+        void Demand(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
     }
 }

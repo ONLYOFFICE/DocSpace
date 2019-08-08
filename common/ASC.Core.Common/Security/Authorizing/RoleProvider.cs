@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 using AuthConst = ASC.Common.Security.Authorizing.Constants;
 using ConfConst = ASC.Core.Configuration.Constants;
@@ -38,19 +39,19 @@ namespace ASC.Core.Security.Authorizing
 {
     class RoleProvider : IRoleProvider
     {
-        public List<IRole> GetRoles(ISubject account)
+        public List<IRole> GetRoles(Tenant tenant, ISubject account)
         {
             var roles = new List<IRole>();
             if (!(account is ISystemAccount))
             {
                 if (account is IRole)
                 {
-                    roles = GetParentRoles(account.ID).ToList();
+                    roles = GetParentRoles(tenant.TenantId, account.ID).ToList();
                 }
                 else if (account is IUserAccount)
                 {
                     roles = CoreContext.UserManager
-                                       .GetUserGroups(account.ID, IncludeType.Distinct | IncludeType.InParent)
+                                       .GetUserGroups(tenant, account.ID, IncludeType.Distinct | IncludeType.InParent)
                                        .Select(g => (IRole) g)
                                        .ToList();
                 }
@@ -58,15 +59,15 @@ namespace ASC.Core.Security.Authorizing
             return roles;
         }
 
-        public bool IsSubjectInRole(ISubject account, IRole role)
+        public bool IsSubjectInRole(Tenant tenant, ISubject account, IRole role)
         {
-            return CoreContext.UserManager.IsUserInGroup(account.ID, role.ID);
+            return CoreContext.UserManager.IsUserInGroup(tenant, account.ID, role.ID);
         }
 
-        private static List<IRole> GetParentRoles(Guid roleID)
+        private static List<IRole> GetParentRoles(int tenantId, Guid roleID)
         {
             var roles = new List<IRole>();
-            var gi = CoreContext.UserManager.GetGroupInfo(roleID);
+            var gi = CoreContext.UserManager.GetGroupInfo(tenantId, roleID);
             if (gi != null)
             {
                 var parent = gi.Parent;

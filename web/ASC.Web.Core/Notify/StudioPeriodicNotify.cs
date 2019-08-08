@@ -151,7 +151,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 3 days after registration to admins SAAS TRIAL + only 1 user
 
-                        if (tenant.CreatedDateTime.Date.AddDays(3) == now && CoreContext.UserManager.GetUsers().Count() == 1)
+                        if (tenant.CreatedDateTime.Date.AddDays(3) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.SaasAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -327,7 +327,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 30 days after SAAS TRIAL expired + only 1 user
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(30) == now && CoreContext.UserManager.GetUsers().Count() == 1)
+                        else if (duedate != DateTime.MaxValue && duedate.AddDays(30) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.SaasAdminTrialWarningAfter30V10;
                             toadmins = true;
@@ -447,26 +447,26 @@ namespace ASC.Web.Studio.Core.Notify
                     if (action == null) continue;
 
                     var users = toowner
-                                    ? new List<UserInfo> { CoreContext.UserManager.GetUsers(tenant.OwnerId) }
-                                    : StudioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                                    ? new List<UserInfo> { CoreContext.UserManager.GetUsers(tenant.OwnerId, tenant.TenantId) }
+                                    : StudioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
 
 
                     var analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, action, toowner, toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
-                        var rquota = TenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                        var rquota = TenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers(tenant).Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, duedate.ToLongDateString()),
@@ -482,7 +482,7 @@ namespace ASC.Web.Studio.Core.Notify
                             TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
                             TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                             TagValues.TableBottom(),
-                            new TagValue(CommonTags.Footer, u.IsAdmin() ? "common" : "social"),
+                            new TagValue(CommonTags.Footer, u.IsAdmin(tenant) ? "common" : "social"),
                             new TagValue(CommonTags.Analytics, analytics),
                             new TagValue(Tags.Coupon, coupon));
                     }
@@ -625,7 +625,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(4) == now && CoreContext.UserManager.GetUsers().Count() == 1)
+                        else if (tenant.CreatedDateTime.Date.AddDays(4) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -833,23 +833,23 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = StudioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                    var users = StudioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var rquota = TenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                        var rquota = TenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers().Count()),
+                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers(tenant).Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, duedate.ToLongDateString()),
@@ -1014,9 +1014,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = StudioNotifyHelper.GetRecipients(true, false, false);
+                    var users = StudioNotifyHelper.GetRecipients(tenant, true, false, false);
 
-                    foreach (var u in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
@@ -1024,7 +1024,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.DisplayUserName()),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
@@ -1068,9 +1068,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                     log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 
-                    var users = CoreContext.UserManager.GetUsers(EmployeeStatus.Active);
+                    var users = CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active);
 
-                    foreach (var user in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    foreach (var user in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         INotifyAction action;
 
@@ -1159,11 +1159,11 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendLettersPersonal.");
         }
 
-        public static bool ChangeSubscription(Guid userId)
+        public static bool ChangeSubscription(Tenant tenant, Guid userId)
         {
-            var recipient = StudioNotifyHelper.ToRecipient(userId);
+            var recipient = StudioNotifyHelper.ToRecipient(tenant.TenantId, userId);
 
-            var isSubscribe = StudioNotifyHelper.IsSubscribedToNotify(recipient, Actions.PeriodicNotify);
+            var isSubscribe = StudioNotifyHelper.IsSubscribedToNotify(tenant, recipient, Actions.PeriodicNotify);
 
             StudioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
 
