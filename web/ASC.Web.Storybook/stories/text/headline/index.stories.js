@@ -21,7 +21,6 @@ storiesOf('Components|Text', module)
           as={select ('as', textTags, 'h2')}
           title={text('title', '')}
           truncate={boolean('truncate', false)}
-          isDisabled={boolean('isDisabled', false)}
           isInline={boolean('isInline', false)}
           size={select('size', size, 'big')}
         >

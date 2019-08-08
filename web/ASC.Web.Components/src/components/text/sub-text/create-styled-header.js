@@ -16,7 +16,7 @@ export default function createStyledHeader(headlineType) {
       line-height: 56px;
       font-size: ${fontSize}px;
       font-weight: 700;
-      color: ${props => props.isDisabled == true ? '#ECEEF1' : props.color};
+      color: ${props => props.color};
       text-align: left;
       ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
       ${props => props.isInline == true && 'display: inline-block;'}
@@ -31,7 +31,6 @@ export default function createStyledHeader(headlineType) {
       color: PropTypes.string,
       title: PropTypes.string,
       truncate: PropTypes.bool,
-      isDisabled: PropTypes.bool,
       isInline: PropTypes.bool
    };
 
@@ -39,7 +38,6 @@ export default function createStyledHeader(headlineType) {
       color: '#333333',
       title: '',
       truncate: false,
-      isDisabled: false,
       isInline: false
    };
 

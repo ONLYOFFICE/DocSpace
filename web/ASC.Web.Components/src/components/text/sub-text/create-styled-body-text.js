@@ -9,8 +9,8 @@ const style = css`
    font-size: ${props => props.fontSize}px;
    font-weight: ${props => props.isBold == true ? 700 : 500};
    ${props => props.isItalic == true && 'font-style: italic'};
-   color: ${props => props.isDisabled == true ? props.disableColor : props.color};
-   ${props => props.backgroundColor == true && 'background-color: #F8F9F9;'}
+   color: ${props => props.color};
+   ${props => props.backgroundColor && 'background-color: ' + props.backgroundColor + ";"}
    ${props => props.isInline == true && 'display: inline-block;'}
    text-align: left;
    ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;' )}
@@ -30,10 +30,8 @@ const TextBody = styled.p`
       title: PropTypes.string,
       color: PropTypes.string,
       fontSize: PropTypes.number,
-      disableColor: PropTypes.string,
-      backgroundColor: PropTypes.bool,
+      backgroundColor: PropTypes.string,
       truncate: PropTypes.bool,
-      isDisabled: PropTypes.bool,
       isBold: PropTypes.bool,
       isInline: PropTypes.bool,
       isItalic: PropTypes.bool
@@ -43,10 +41,7 @@ const TextBody = styled.p`
       title: '',
       color: '#333333',
       fontSize: 13,
-      disableColor: '#ECEEF1',
-      backgroundColor: false,
       truncate: false,
-      isDisabled: false,
       isBold: false,
       isInline: false,
       isItalic: false,

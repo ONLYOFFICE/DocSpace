@@ -56,6 +56,9 @@ class ToggleButton extends Component {
     }
 
     render() {
+
+        const colorProps = this.props.isDisabled ? {color: "#A3A9AE"} : {};
+
         return (
             <ToggleContainer isDisabled={this.props.isDisabled}>
                 <HiddenInput
@@ -69,8 +72,7 @@ class ToggleButton extends Component {
                 {this.props.label && (
                     <Text.Body
                         as="span"
-                        isDisabled={this.props.isDisabled}
-                        disableColor={'#A3A9AE'}
+                        {...colorProps}
                     >
                         {this.props.label}
                     </Text.Body>

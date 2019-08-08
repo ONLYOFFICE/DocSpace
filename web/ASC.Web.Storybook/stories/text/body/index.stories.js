@@ -20,9 +20,8 @@ storiesOf('Components|Text', module)
           as={select('as', textTags , 'p')}
           fontSize={number('fontSize', 13)}
           truncate={boolean('truncate', false)}
-          isDisabled={boolean('isDisabled', false)}
           color={color('color', '#333333')}
-          backgroundColor={boolean('backgroundColor', false)}
+          backgroundColor={color('backgroundColor', '')}
           isBold={boolean('isBold', false)}
           isItalic={boolean('isItalic', false)}
           isInline={boolean('isInline', false)}

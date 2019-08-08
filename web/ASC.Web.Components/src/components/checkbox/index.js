@@ -104,6 +104,9 @@ class Checkbox extends React.Component {
 
   render() {
     //console.log("Checkbox render");
+
+    const colorProps = this.props.isDisabled ? {color: disableColor} : {};
+
     return (
       <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled}>
         <HiddenInput
@@ -118,8 +121,7 @@ class Checkbox extends React.Component {
         {this.props.label && (
           <Text.Body
             as="span"
-            isDisabled={this.props.isDisabled}
-            disableColor={disableColor}
+            {...colorProps}
           >
             {this.props.label}
           </Text.Body>
