@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 import Link from '../link'
@@ -7,6 +7,14 @@ import Link from '../link'
 const whiteColor = '#FFFFFF';
 const avatarBackground = '#ECEEF1';
 const namedAvatarBackground = '#2DA7DB';
+
+const noneUserSelect = css`
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+`;
 
 const StyledAvatar = styled.div`
     position: relative;
@@ -51,6 +59,8 @@ const ImageStyled = styled.img`
     max-width: 100%; 
     height: auto;
     border-radius: 50%;
+
+    ${noneUserSelect}
 `;
 
 const AvatarWrapper = styled.div`
@@ -84,11 +94,7 @@ const NamedAvatar = styled.div`
   };
     color: ${whiteColor};
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    ${noneUserSelect}
 `;
 
 const EditContainer = styled.div`
