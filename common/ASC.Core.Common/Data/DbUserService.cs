@@ -52,7 +52,7 @@ namespace ASC.Core.Data
 
         public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin, 
             EmployeeStatus? employeeStatus,
-            List<Guid> includeGroups,
+            List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
             EmployeeActivationStatus? activationStatus,
             string text,
@@ -90,7 +90,7 @@ namespace ASC.Core.Data
 
         private SqlQuery GetUserQueryForFilter(SqlQuery q,bool isAdmin,
             EmployeeStatus? employeeStatus,
-            List<Guid> includeGroups,
+            List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
             EmployeeActivationStatus? activationStatus,
             string text)
@@ -99,14 +99,24 @@ namespace ASC.Core.Data
 
             if (includeGroups != null && includeGroups.Any())
             {
-                foreach (var g in includeGroups)
+                var groupQuery = new SqlQuery("core_usergroup cug")
+                    .Select("cug.userid")
+                    .Where(Exp.EqColumns("cug.tenant", "u.tenant"))
+                    .Where(Exp.EqColumns("u.id", "cug.userid"));
+
+                foreach (var groups in includeGroups)
                 {
-                    var groupQuery = new SqlQuery("core_usergroup cug")
-                        .Where(Exp.EqColumns("cug.tenant", "cu.tenant"))
-                        .Where(Exp.EqColumns("cu.id", "cug.userid"))
-                        .Where(Exp.Eq("cug.groupid", g));
-                    q.Where(Exp.Exists(groupQuery));
+                    var subQuery = Exp.Empty;
+
+                    foreach(var g in groups)
+                    {
+                        subQuery |= Exp.Eq("cug.groupid", g);
+                    }
+
+                    groupQuery.Where(subQuery);
                 }
+
+                q.Where(Exp.Exists(groupQuery));
             }
 
             if (excludeGroups != null && excludeGroups.Any())
@@ -114,8 +124,9 @@ namespace ASC.Core.Data
                 foreach (var g in excludeGroups)
                 {
                     var groupQuery = new SqlQuery("core_usergroup cug")
-                        .Where(Exp.EqColumns("cug.tenant", "cu.tenant"))
-                        .Where(Exp.EqColumns("cu.id", "cug.userid"))
+                        .Select("cug.userid")
+                        .Where(Exp.EqColumns("cug.tenant", "u.tenant"))
+                        .Where(Exp.EqColumns("u.id", "cug.userid"))
                         .Where(Exp.Eq("cug.groupid", g));
                     q.Where(!Exp.Exists(groupQuery));
                 }

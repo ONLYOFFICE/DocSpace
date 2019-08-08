@@ -272,10 +272,10 @@ namespace ASC.Employee.Core.Controllers
             var isAdmin = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(ApiContext.Tenant) ||
                           WebItemSecurity.IsProductAdministrator(ApiContext.Tenant, WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
 
-            var includeGroups = new List<Guid>();
+            var includeGroups = new List<List<Guid>>();
             if (groupId.HasValue)
             {
-                includeGroups.Add(groupId.Value);
+                includeGroups.Add(new List<Guid> { groupId.Value });
             }
 
             var excludeGroups = new List<Guid>();
@@ -288,18 +288,22 @@ namespace ASC.Employee.Core.Controllers
                         excludeGroups.Add(Constants.GroupVisitor.ID);
                         break;
                     case EmployeeType.Visitor:
-                        includeGroups.Add(Constants.GroupVisitor.ID);
+                        includeGroups.Add(new List<Guid> { Constants.GroupVisitor.ID });
                         break;
                 }
             }
 
             if (isAdministrator.HasValue && isAdministrator.Value)
             {
-                includeGroups.Add(Constants.GroupAdmin.ID);
+                var adminGroups = new List<Guid>
+                {
+                    Constants.GroupAdmin.ID
+                };
 
                 var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
+                adminGroups.AddRange(products.Select(r=> r.ID));
 
-                includeGroups.AddRange(products.Select(r=> r.ID));
+                includeGroups.Add(adminGroups);
             }
 
             var users = CoreContext.UserManager.GetUsers(ApiContext.Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out int total);
