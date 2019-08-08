@@ -4,34 +4,47 @@ import styled from 'styled-components';
 import InputBlock from '../input-block'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
+import { Icons } from '../icons'
 import { handleAnyClick } from '../../utils/event';
 
 const StyledComboBox = styled.div`
-    & > div {
-        ${props => !props.withBorder && `border-color: transparent;`} 
-    }
-     
-    & > div > input {
-        ${props => !props.isDisabled && `cursor: pointer !important;`}
-        ${props => !props.withBorder && `border-color: transparent !important;`}
-        
-        &::placeholder {
-            font-family: Open Sans;
-            font-style: normal;
-            font-weight: 600;
-            font-size: 13px;
-            line-height: 20px;
-            ${props => !props.isDisabled && `color: #333333;`}
-            ${props => (!props.withBorder & !props.isDisabled) && `border-bottom: 1px dotted #333333;`}
-            opacity: 1;
+  * {
+    ${props => !props.withBorder && `border-color: transparent !important;`}
+  }
 
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+  ${state => state.isOpen && `
+    .input-group-append > div {
+      -moz-transform: scaleY(-1);
+      -o-transform: scaleY(-1);
+      -webkit-transform: scaleY(-1);
+      transform: scaleY(-1);
     }
+  `}
+    
+  & > div > input {    
+    &::placeholder {
+      font-family: Open Sans;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 13px;
+      line-height: 20px;
+      ${props => !props.isDisabled && `color: #333333;`}
+      ${props => (!props.withBorder & !props.isDisabled) && `border-bottom: 1px dotted #333333;`}
+      opacity: 1;
+
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+  }
+`;
+
+const StyledIcon = styled.span`
+  width: 16px;
+  margin-left: 8px;
+  line-height:  14px;
 `;
 
 class ComboBox extends React.PureComponent {
@@ -40,11 +53,13 @@ class ComboBox extends React.PureComponent {
 
     this.ref = React.createRef();
 
-    const selectedItem = this.props.options.find(x => x.key === this.props.selectedOption) || this.props.options[0];
+    const selectedItem = this.props.options.find(x => x.key === this.props.selectedOption)
+      || this.props.options[0];
 
     this.state = {
       isOpen: props.opened,
       boxLabel: selectedItem.label,
+      boxIcon: selectedItem.icon,
       options: props.options
     };
 
@@ -76,6 +91,7 @@ class ComboBox extends React.PureComponent {
   optionClick = (option) => {
     this.setState({
       boxLabel: option.label,
+      boxIcon: option.icon,
       isOpen: !this.state.isOpen
     });
     this.props.onSelect && this.props.onSelect(option);
@@ -103,7 +119,13 @@ class ComboBox extends React.PureComponent {
   render() {
     console.log("ComboBox render");
     return (
-      <StyledComboBox ref={this.ref} {...this.props} data={this.state.boxLabel} onClick={this.comboBoxClick} onSelect={this.stopAction} >
+      <StyledComboBox ref={this.ref}
+        {...this.props}
+        {...this.state}
+        data={this.state.boxLabel}
+        onClick={this.comboBoxClick}
+        onSelect={this.stopAction}
+      >
         <InputBlock placeholder={this.state.boxLabel}
           iconName='ExpanderDownIcon'
           iconSize={8}
@@ -113,6 +135,16 @@ class ComboBox extends React.PureComponent {
           isDisabled={this.props.isDisabled}
           isReadOnly={true}
         >
+          {this.state.boxIcon &&
+            <StyledIcon>
+              {React.createElement(Icons[this.state.boxIcon],
+                {
+                  size: "scale",
+                  color: this.props.isDisabled ? '#D0D5DA' : '#333333',
+                  isfill: true
+                })
+              }
+            </StyledIcon>}
           {this.props.children}
           <DropDown
             directionX={this.props.directionX}

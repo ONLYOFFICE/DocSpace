@@ -9,16 +9,27 @@ import { action } from '@storybook/addon-actions';
 
 const options = [
     {
-        key: '0',
-        label: '25 per page'
+        key: 1,
+        icon: 'CatalogEmployeeIcon',
+        label: 'Option 1'
     },
     {
-        key: '1',
-        label: '50 per page',
+        key: 2,
+        icon: 'CatalogGuestIcon',
+        label: 'Option 2',
     },
     {
-        key: '2',
-        label: '100 per page'
+        key: 3,
+        label: 'Option 3'
+    },
+    {
+        key: 4,
+        label: 'Option 4'
+    },
+    {
+        key: 5,
+        icon: 'CopyIcon',
+        label: 'Option 5'
     }
 ];
 
