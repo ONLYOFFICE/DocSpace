@@ -51,9 +51,9 @@ const SelectedItem = (props) => {
                     {text}
                 </Text.Body>
             </StyledSelectedTextBox>
-            <StyledCloseButton onClick={onClose}>
+            <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
                 <IconButton
-                    color="#D8D8D8"
+                    color="#979797"
                     size={10}
                     iconName='CrossIcon'
                     isFill={true}
