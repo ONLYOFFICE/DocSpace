@@ -115,7 +115,7 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => {
 
       const newFilter = filter.clone();
       newFilter.page = 0;
-      newFilter.sortBy = data.sortId === "name" ? "firstname" : "lastname";
+      newFilter.sortBy = data.sortId;
       newFilter.sortOrder =
         data.sortDirection === "desc" ? "descending" : "ascending";
       newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
