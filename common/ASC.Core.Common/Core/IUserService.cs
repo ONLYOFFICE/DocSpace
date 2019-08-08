@@ -36,7 +36,7 @@ namespace ASC.Core
 
         IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
-            List<Guid> includeGroups,
+            List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
             EmployeeActivationStatus? activationStatus,
             string text,
