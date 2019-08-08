@@ -40,6 +40,7 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using ASC.Common.Logging;
+using ASC.Core.Tenants;
 
 namespace ASC.Data.Reassigns
 {
@@ -102,7 +103,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                CoreContext.TenantManager.SetCurrentTenant(_tenantId);
+                var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", _fromUserId, _toUserId);
@@ -139,7 +140,7 @@ namespace ASC.Data.Reassigns
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile();
+                    DeleteUserProfile(tenant);
                 }
             }
             catch (Exception ex)
@@ -166,7 +167,7 @@ namespace ASC.Data.Reassigns
             var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
             var toUser = CoreContext.UserManager.GetUsers(_toUserId);
 
-            StudioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
+            StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
 
             var fromUserName = fromUser.DisplayUserName(false);
             var toUserName = toUser.DisplayUserName(false);
@@ -182,16 +183,16 @@ namespace ASC.Data.Reassigns
             var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
             var toUser = CoreContext.UserManager.GetUsers(_toUserId);
 
-            StudioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
+            StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
         }
 
-        private void DeleteUserProfile()
+        private void DeleteUserProfile(Tenant tenant)
         {
             var user = CoreContext.UserManager.GetUsers(_fromUserId);
             var userName = user.DisplayUserName(false);
 
-            UserPhotoManager.RemovePhoto(user.ID);
-            CoreContext.UserManager.DeleteUser(user.ID);
+            UserPhotoManager.RemovePhoto(tenant, user.ID);
+            CoreContext.UserManager.DeleteUser(tenant, user.ID);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)

@@ -199,15 +199,16 @@ namespace ASC.Core
                 {
                     throw new SecurityException("Account disabled.");
                 }
+                var tenant = CoreContext.TenantManager.GetCurrentTenant();
                 // for LDAP users only
                 if (u.Sid != null)
                 {
-                    if (!CoreContext.TenantManager.GetTenantQuota(CoreContext.TenantManager.GetCurrentTenant().TenantId).Ldap)
+                    if (!CoreContext.TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
                     {
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
                 }
-                if (CoreContext.UserManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
+                if (CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Users.Constants.GroupAdmin.ID))
                 {
                     roles.Add(Role.Administrators);
                 }
@@ -238,34 +239,34 @@ namespace ASC.Core
         }
 
 
-        public static bool CheckPermissions(params IAction[] actions)
+        public static bool CheckPermissions(Tenant tenant, params IAction[] actions)
         {
-            return PermissionResolver.Check(CurrentAccount, actions);
+            return PermissionResolver.Check(tenant, CurrentAccount, actions);
         }
 
-        public static bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
+        public static bool CheckPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
         {
-            return CheckPermissions(securityObject, null, actions);
+            return CheckPermissions(tenant, securityObject, null, actions);
         }
 
-        public static bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public static bool CheckPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            return PermissionResolver.Check(CurrentAccount, objectId, securityObjProvider, actions);
+            return PermissionResolver.Check(tenant, CurrentAccount, objectId, securityObjProvider, actions);
         }
 
-        public static void DemandPermissions(params IAction[] actions)
+        public static void DemandPermissions(Tenant tenant, params IAction[] actions)
         {
-            PermissionResolver.Demand(CurrentAccount, actions);
+            PermissionResolver.Demand(tenant, CurrentAccount, actions);
         }
 
-        public static void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)
+        public static void DemandPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
         {
-            DemandPermissions(securityObject, null, actions);
+            DemandPermissions(tenant, securityObject, null, actions);
         }
 
-        public static void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public static void DemandPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            PermissionResolver.Demand(CurrentAccount, objectId, securityObjProvider, actions);
+            PermissionResolver.Demand(tenant, CurrentAccount, objectId, securityObjProvider, actions);
         }
 
 

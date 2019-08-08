@@ -146,13 +146,14 @@ namespace ASC.Core
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
             Tenant tenant = null;
-            if (HttpContext.Current != null)
+            var context = HttpContext.Current;
+            if (context != null)
             {
-                tenant = HttpContext.Current.Items[CURRENT_TENANT] as Tenant;
-                if (tenant == null && HttpContext.Current.Request != null)
+                tenant = context.Items[CURRENT_TENANT] as Tenant;
+                if (tenant == null && context.Request != null)
                 {
-                    tenant = GetTenant(HttpContext.Current.Request.GetUrlRewriter().Host);
-                    HttpContext.Current.Items[CURRENT_TENANT] = tenant;
+                    tenant = GetTenant(context.Request.GetUrlRewriter().Host);
+                    context.Items[CURRENT_TENANT] = tenant;
                 }
             }
             if (tenant == null)
@@ -180,14 +181,18 @@ namespace ASC.Core
             }
         }
 
-        public void SetCurrentTenant(int tenantId)
+        public Tenant SetCurrentTenant(int tenantId)
         {
-            SetCurrentTenant(GetTenant(tenantId));
+            var result = GetTenant(tenantId);
+            SetCurrentTenant(result);
+            return result;
         }
 
-        public void SetCurrentTenant(string domain)
+        public Tenant SetCurrentTenant(string domain)
         {
-            SetCurrentTenant(GetTenant(domain));
+            var result = GetTenant(domain);
+            SetCurrentTenant(result);
+            return result;
         }
 
         public void CheckTenantAddress(string address)

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
 
@@ -36,17 +37,17 @@ namespace ASC.Web.Api.Models
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperFull
     {
-        public GroupWrapperFull(GroupInfo group, bool includeMembers)
+        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context)
         {
             Id = group.ID;
             Category = group.CategoryID;
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
             Name = group.Name;
-            Manager = EmployeeWraper.Get(CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(group.ID)));
+            Manager = EmployeeWraper.Get(CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)), context);
 
             if (includeMembers)
             {
-                Members = new List<EmployeeWraper>(CoreContext.UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraper.Get));
+                Members = new List<EmployeeWraper>(CoreContext.UserManager.GetUsersByGroup(context.Tenant, group.ID).Select(r=> EmployeeWraper.Get(r, context)));
             }
         }
 

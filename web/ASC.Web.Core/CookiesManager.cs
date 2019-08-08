@@ -150,13 +150,13 @@ namespace ASC.Web.Core
 
         public static void SetLifeTime(this HttpContext httpContext, int lifeTime)
         {
-            if (!CoreContext.UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            if (!CoreContext.UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
             }
 
-            var tenant = TenantProvider.CurrentTenantID;
-            var settings = TenantCookieSettings.GetForTenant(tenant);
+            var settings = TenantCookieSettings.GetForTenant(tenant.TenantId);
 
             if (lifeTime > 0)
             {
@@ -168,7 +168,7 @@ namespace ASC.Web.Core
                 settings.LifeTime = 0;
             }
 
-            TenantCookieSettings.SetForTenant(tenant, settings);
+            TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
 
@@ -196,15 +196,16 @@ namespace ASC.Web.Core
 
         public static void ResetTenantCookie(this HttpContext httpContext)
         {
-            if (!CoreContext.UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+
+            if (!CoreContext.UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
             }
 
-            var tenant = TenantProvider.CurrentTenantID;
-            var settings = TenantCookieSettings.GetForTenant(tenant);
+            var settings = TenantCookieSettings.GetForTenant(tenant.TenantId);
             settings.Index = settings.Index + 1;
-            TenantCookieSettings.SetForTenant(tenant, settings);
+            TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
             httpContext.SetCookies(CookiesType.AuthKey, cookie);

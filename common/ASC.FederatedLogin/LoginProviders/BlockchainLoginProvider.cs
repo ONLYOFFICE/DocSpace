@@ -39,8 +39,9 @@ namespace ASC.Web.Studio.Core
     {
         public static void UpdateData(string account)
         {
-            var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            if (!SecurityContext.IsAuthenticated || user.IsVisitor()) throw new SecurityException();
+            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID, tenant.TenantId);
+            if (!SecurityContext.IsAuthenticated || user.IsVisitor(tenant)) throw new SecurityException();
 
             var loginProfile = new LoginProfile
                 {

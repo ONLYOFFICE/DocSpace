@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Tenants;
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
@@ -46,25 +47,25 @@ namespace ASC.Core.Security.Authorizing
         }
 
 
-        public bool Check(ISubject subject, params IAction[] actions)
+        public bool Check(Tenant tenant, ISubject subject, params IAction[] actions)
         {
-            return Check(subject, null, null, actions);
+            return Check(tenant, subject, null, null, actions);
         }
 
-        public bool Check(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public bool Check(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            var denyActions = GetDenyActions(subject, actions, objectId, securityObjProvider);
+            var denyActions = GetDenyActions(tenant, subject, actions, objectId, securityObjProvider);
             return denyActions.Length == 0;
         }
 
-        public void Demand(ISubject subject, params IAction[] actions)
+        public void Demand(Tenant tenant, ISubject subject, params IAction[] actions)
         {
-            Demand(subject, null, null, actions);
+            Demand(tenant, subject, null, null, actions);
         }
 
-        public void Demand(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public void Demand(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            var denyActions = GetDenyActions(subject, actions, objectId, securityObjProvider);
+            var denyActions = GetDenyActions(tenant, subject, actions, objectId, securityObjProvider);
             if (0 < denyActions.Length)
             {
                 throw new AuthorizingException(
@@ -76,7 +77,7 @@ namespace ASC.Core.Security.Authorizing
         }
 
 
-        private DenyResult[] GetDenyActions(ISubject subject, IAction[] actions, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
+        private DenyResult[] GetDenyActions(Tenant tenant, ISubject subject, IAction[] actions, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
             var denyActions = new List<DenyResult>();
             if (actions == null) actions = new IAction[0];
@@ -95,7 +96,7 @@ namespace ASC.Core.Security.Authorizing
                 IAction denyAction = null;
                 foreach (var action in actions)
                 {
-                    var allow = azManager.CheckPermission(subject, action, objectId, securityObjProvider, out denySubject, out denyAction);
+                    var allow = azManager.CheckPermission(tenant, subject, action, objectId, securityObjProvider, out denySubject, out denyAction);
                     if (!allow)
                     {
                         denyActions.Add(new DenyResult(action, denySubject, denyAction));

@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 using System.Web;
+using ASC.Common;
 using ASC.Core.Common;
 using Uri = System.Uri;
 
@@ -69,7 +70,7 @@ namespace ASC.VoipService.Twilio
 
         private string GetEcho(string method, bool user = true)
         {
-            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath("")).GetEcho(method, user);
+            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current,"")).GetEcho(method, user);
         }
     }
 }

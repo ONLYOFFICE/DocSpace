@@ -25,6 +25,7 @@
 
 
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -40,7 +41,7 @@ namespace System.Web
 
         public static Uri GetUrlRewriter(this HttpRequest request)
         {
-            return request != null ? GetUrlRewriter(request.Headers, request.Url()) : null;
+            return request != null ? GetUrlRewriter(request.Headers, request) : null;
         }
         public static Uri Url(this HttpRequest request)
         {
@@ -52,20 +53,14 @@ namespace System.Web
             return request != null ? GetUrlRewriter(request.Headers, request.Url) : null;
         }*/
 
-        public static Uri GetUrlRewriter(IHeaderDictionary headers, Uri requestUri)
+        public static Uri GetUrlRewriter(IHeaderDictionary headers, HttpRequest request)
         {
-            if (requestUri == null)
+            if (request.Query != null && request.Query.Any())
             {
-                return null;
-            }
-
-            if (!string.IsNullOrEmpty(requestUri.Query))
-            {
-                var urlRewriterQuery = HttpUtility.ParseQueryString(requestUri.Query);
-                var rewriterUri = ParseRewriterUrl(urlRewriterQuery[UrlRewriterHeader]);
+                var rewriterUri = ParseRewriterUrl(request.Query[UrlRewriterHeader]);
                 if (rewriterUri != null)
                 {
-                    var result = new UriBuilder(requestUri)
+                    var result = new UriBuilder(request.Url())
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
@@ -80,7 +75,7 @@ namespace System.Web
                 var rewriterUri = ParseRewriterUrl(headers[UrlRewriterHeader]);
                 if (rewriterUri != null)
                 {
-                    var result = new UriBuilder(requestUri)
+                    var result = new UriBuilder(request.Url())
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
@@ -90,7 +85,7 @@ namespace System.Web
                 }
             }
 
-            return requestUri;
+            return request.Url();
         }
 
         public static Uri PushRewritenUri(this HttpContext context)
