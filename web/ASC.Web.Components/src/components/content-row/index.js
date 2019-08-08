@@ -62,6 +62,12 @@ const StyledCheckbox = styled.div`
 const StyledAvatar = styled.div`
     flex: 0 0 32px;
     display: flex;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 `;
 
 const StyledOptionButton = styled.div`
