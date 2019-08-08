@@ -100,7 +100,7 @@ namespace ASC.Core.Common
             if (result.Uri.IsLoopback)
             {
                 // take values from db if localhost or no http context thread
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = CoreContext.TenantManager.GetCurrentTenant(context);
                 result.Host = tenant.TenantDomain;
 
 #if DEBUG
