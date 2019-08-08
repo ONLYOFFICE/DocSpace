@@ -73,13 +73,10 @@ ${props => (props.isTextOverflow && css`
 
 `;
 
-const SimpleText = ({ color, fontSize, ...props }) => <Text.Body as="span" {...props} />
-const StyledText = styled(SimpleText)`
-    ${colorCss};
-    font-size: ${props => props.fontSize}px;
-`;
-
 const Link = props => {
+
+    const { isBold, title, fontSize } = props;
+
     const onClick = (e) => {
         !props.href && e.preventDefault();
         props.onClick && props.onClick(e);
@@ -89,15 +86,16 @@ const Link = props => {
 
     return (
         <StyledLink {...props}>
-            <StyledText
+            <Text.Body
+                as="span"
+                color={colorCss}
+                fontSize={fontSize}
                 onClick={onClick}
-                fontSize={props.fontSize}
-                color={props.color}
-                isBold={props.isBold}
-                title={props.title}
+                isBold={isBold}
+                title={title}
             >
                 {props.children}
-            </StyledText>
+            </Text.Body>
         </StyledLink>
     );
 }
@@ -119,7 +117,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
     color: 'black',
-    fontSize: 12,
+    fontSize: 13,
     href: undefined,
     isBold: false,
     isHovered: false,

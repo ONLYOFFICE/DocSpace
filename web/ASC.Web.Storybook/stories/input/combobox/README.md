@@ -4,6 +4,11 @@
 
 Custom combo box input
 
+Options have options: 
+key - Item key, may be a string or a number,
+label - Display text,
+icon - Optional name of icon that will be displayed before label
+
 #### Usage
 
 ```js
@@ -11,16 +16,27 @@ import { ComboBox } from 'asc-web-components';
 
 const options = [
     {
-        key: 25,
-        label: '25 per page'
+        key: 1,
+        icon: 'CatalogEmployeeIcon',
+        label: 'Option 1'
     },
     {
-        key: 50,
-        label: '50 per page',
+        key: 2,
+        icon: 'CatalogGuestIcon',
+        label: 'Option 2',
     },
     {
-        key: 100,
-        label: '100 per page'
+        key: 3,
+        label: 'Option 3'
+    },
+    {
+        key: 4,
+        label: 'Option 4'
+    },
+    {
+        key: 5,
+        icon: 'CopyIcon',
+        label: 'Option 5'
     }
 ];
 
