@@ -50,23 +50,14 @@ namespace ASC.Api.Core
                 Query = HttpContext.Request.Query;
             }
 
-            //TODO
-            uint ItemsPerPage = 1000;
             Count = 0;
             //Try parse values
-            string count = GetRequestValue("count");
-            ulong countParsed;
-            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count,out countParsed))
+            var count = GetRequestValue("count");
+            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
-                SpecifiedCount = (long)Math.Max(0, Math.Min(ItemsPerPage, countParsed));
+                Count = (long)countParsed;
             }
-            else
-            {
-                SpecifiedCount = Math.Max(0,ItemsPerPage);
-            }
-            Count = SpecifiedCount + 1;//NOTE: +1 added to see if it's last page
-
 
             var startIndex = GetRequestValue("startIndex");
             if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
