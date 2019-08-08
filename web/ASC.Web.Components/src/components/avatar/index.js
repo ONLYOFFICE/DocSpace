@@ -11,16 +11,16 @@ const namedAvatarBackground = '#2DA7DB';
 const StyledAvatar = styled.div`
     position: relative;
     width: ${props =>
-      (props.size === 'max' && '160px') ||
-      (props.size === 'big' && '82px') ||
-      (props.size === 'medium' && '48px') ||
-      (props.size === 'small' && '32px')
+    (props.size === 'max' && '160px') ||
+    (props.size === 'big' && '82px') ||
+    (props.size === 'medium' && '48px') ||
+    (props.size === 'small' && '32px')
   };
     height: ${props =>
-      (props.size === 'max' && '160px') ||
-      (props.size === 'big' && '82px') ||
-      (props.size === 'medium' && '48px') ||
-      (props.size === 'small' && '32px')
+    (props.size === 'max' && '160px') ||
+    (props.size === 'big' && '82px') ||
+    (props.size === 'medium' && '48px') ||
+    (props.size === 'small' && '32px')
   };
 
     font-family: 'Open Sans',sans-serif,Arial;
@@ -30,21 +30,21 @@ const StyledAvatar = styled.div`
 const RoleWrapper = styled.div`
     position: absolute;
     left: ${props =>
-      (props.size === 'max' && '0px') ||
-      (props.size === 'big' && '0px') ||
-      (props.size === 'medium' && '-2px') ||
-      (props.size === 'small' && '-2px')
+    (props.size === 'max' && '0px') ||
+    (props.size === 'big' && '0px') ||
+    (props.size === 'medium' && '-2px') ||
+    (props.size === 'small' && '-2px')
   };
     bottom: ${props =>
-      (props.size === 'max' && '0px') ||
-      (props.size === 'big' && '5px') ||
-      (props.size === 'medium' && '3px') ||
-      (props.size === 'small' && '3px')
+    (props.size === 'max' && '0px') ||
+    (props.size === 'big' && '5px') ||
+    (props.size === 'medium' && '3px') ||
+    (props.size === 'small' && '3px')
   };
     width: ${props =>
-      (props.size === 'max' && '24px') || '12px' };
+    (props.size === 'max' && '24px') || '12px'};
     height: ${props =>
-      (props.size === 'max' && '24px') || '12px' };
+    (props.size === 'max' && '24px') || '12px'};
 `;
 
 const ImageStyled = styled.img`
@@ -57,10 +57,10 @@ const AvatarWrapper = styled.div`
     border-radius: 50%;
     height: 100%;
     background-color: ${props =>
-      (props.source === ''
-        && props.userName !== ''
-        && namedAvatarBackground)
-      || avatarBackground};
+    (props.source === ''
+      && props.userName !== ''
+      && namedAvatarBackground)
+    || avatarBackground};
 
     & > svg {
         display: block;
@@ -81,8 +81,14 @@ const NamedAvatar = styled.div`
       (props.size === 'big' && '34px') ||
       (props.size === 'medium' && '20px') ||
       (props.size === 'small' && '12px')
-    };
+  };
     color: ${whiteColor};
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 `;
 
 const EditContainer = styled.div`
