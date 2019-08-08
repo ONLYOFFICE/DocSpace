@@ -7,6 +7,7 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
 const size = ['big', 'medium', 'small'];
+const textTags = ['h1', 'h2', 'h3', 'h4', 'h5'];
 
 storiesOf('Components|Text', module)
   .addDecorator(withKnobs)
@@ -17,7 +18,7 @@ storiesOf('Components|Text', module)
       <div style={{ width: "100%" }}>
         <Text.Headline
           color={color('color', '#333333')}
-          as={text ('as', 'h2')}
+          as={select ('as', textTags, 'h2')}
           title={text('title', '')}
           truncate={boolean('truncate', false)}
           isDisabled={boolean('isDisabled', false)}

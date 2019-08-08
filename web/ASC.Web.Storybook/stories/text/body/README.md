@@ -19,7 +19,7 @@ Component that displays plain text
 
 ```
 
-#####  If you need to override styles
+#####  If you need to override styles add forwardedAs instead of as
 
 ```js
 
@@ -29,7 +29,7 @@ Component that displays plain text
         }
     `;
 
-    <StyledText forwardedAs='p' title='Some title'>
+    <StyledText forwardedAs='span' title='Some title'>
         Some text
     </StyledText>
 

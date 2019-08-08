@@ -4,6 +4,10 @@ import { SelectedItem } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import styled from '@emotion/styled';
 
+function onClose(e) {
+  console.log("onClose", e);
+}
+
 const StyledContainer = styled.div`
   padding:0;
   display: grid;
@@ -32,18 +36,22 @@ storiesOf('Components|SelectedItem', module)
           <SelectedItem
             text='Selected item'
             isInline={true}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={true}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={true}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={true}
+            onClose={onClose}
           />
         </StyledContainerInline>
 
@@ -51,18 +59,22 @@ storiesOf('Components|SelectedItem', module)
           <SelectedItem
             text='Selected item'
             isInline={false}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={false}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={false}
+            onClose={onClose}
           />
           <SelectedItem
             text='Selected item'
             isInline={false}
+            onClose={onClose}
           />
         </StyledContainer>
       </Section>

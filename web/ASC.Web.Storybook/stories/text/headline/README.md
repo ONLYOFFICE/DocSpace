@@ -18,17 +18,17 @@ A component that renders headline
     </Text.Headline>
 ```
 
-#####   If you need to override styles
+#####   If you need to override styles add forwardedAs instead of as
 
 ```js
 
-    const StyledText = styled(Text.Headline)`
+    const StyledHeadline = styled(Text.Headline)`
         &:hover{
             border-bottom: 1px dotted;
         }
     `;
 
-    <StyledHeadline forwardedAs='h1' title='Some title'>
+    <StyledHeadline forwardedAs='h4' title='Some title'>
         Some text
     </StyledHeadline>
 

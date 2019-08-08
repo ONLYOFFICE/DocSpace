@@ -20,7 +20,7 @@ storiesOf('Components|SelectedItem', module)
         <SelectedItem  
           text={text('text', 'Selected item')}
           isInline={boolean('isInline', true)}
-          onClick={onClose}
+          onClose={onClose}
           isDisabled={boolean('isDisabled', false)}
         />
       </Section>
