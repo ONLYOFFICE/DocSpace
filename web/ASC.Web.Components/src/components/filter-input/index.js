@@ -132,20 +132,25 @@ class FilterInput extends React.Component {
                 }
             }
             if(nextProps.selectedFilterData && this.props.selectedFilterData){
-                if(this.props.selectedFilterData.filterValue.length != nextProps.selectedFilterData.filterValue.length){
+                if(!this.props.selectedFilterData.filterValue || !nextProps.selectedFilterData.filterValue){
                     this.updatedProps.filterValue = true;
                     this.isNeedUpdate = true;
                 }else{
-                  let newFilterItems = nextProps.selectedFilterData.filterValue;
-                  let oldFilterItems = this.props.selectedFilterData.filterValue;
-          
-                  for(let i = 0; i < newFilterItems.length; i++){
-                    if(oldFilterItems.find(x => (x.key === newFilterItems[i].key && x.group === newFilterItems[i].group)) == undefined){
+                    if(this.props.selectedFilterData.filterValue.length != nextProps.selectedFilterData.filterValue.length){
                         this.updatedProps.filterValue = true;
                         this.isNeedUpdate = true;
-                        break;
+                    }else{
+                      let newFilterItems = nextProps.selectedFilterData.filterValue;
+                      let oldFilterItems = this.props.selectedFilterData.filterValue;
+              
+                      for(let i = 0; i < newFilterItems.length; i++){
+                        if(oldFilterItems.find(x => (x.key === newFilterItems[i].key && x.group === newFilterItems[i].group)) == undefined){
+                            this.updatedProps.filterValue = true;
+                            this.isNeedUpdate = true;
+                            break;
+                        }
+                      }
                     }
-                  }
                 }
               }
             if(nextProps.selectedFilterData.inputValue != this.props.selectedFilterData.inputValue){

@@ -32,12 +32,6 @@ class FilterStory extends React.Component  {
     super(props);
     this.state = {
       selectedFilterData: {
-        filterValue: [
-          {key: "1", group: "filter-status"}
-        ],
-        sortDirection: "desc",
-        sortId: "name",
-        inputValue: "text"
       }
     };
     this.buttonClick = this.buttonClick.bind(this);
