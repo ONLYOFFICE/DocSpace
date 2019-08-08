@@ -72,7 +72,7 @@ const GroupForm = props => {
           scale={false}
           isReadOnly={true}
         >
-          <Icons.CatalogEmployeeIcon size="medium" />
+          <Icons.CatalogGuestIcon size="medium" />
         </InputBlock>
       </div>
       <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
