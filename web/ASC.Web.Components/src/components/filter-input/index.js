@@ -16,6 +16,7 @@ const StyledSearchInput = styled.div`
   float: left;
   width: calc(80% - 8px);
 `;
+
 const StyledComboBox = styled(ComboBox)`
   display: inline-block;
   float left;
@@ -23,15 +24,68 @@ const StyledComboBox = styled(ComboBox)`
   margin-left: 8px;
 `;
 
+class PureComboBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onSelect = this.onSelect.bind(this);
+    }
+    onSelect(item){
+        this.props.onSelect(item); 
+    }
+    shouldComponentUpdate(nextProps, nextState) { 
+        let isNeedUpdate = false;
+        for (let propsKey in this.props) {
+            if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
+                isNeedUpdate = true;
+                break;
+            }else if(typeof this.props[propsKey] == "object" && propsKey == 'options'){
+                if(this.props[propsKey].length != nextProps[propsKey].length){
+                    isNeedUpdate = true;
+                    break;
+                }else{
+                    for(let i=0; i < this.props[propsKey].length; i++){
+                        if(nextProps[propsKey].findIndex(x => x.key === this.props[propsKey][i].key) == -1){
+                            isNeedUpdate = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if(isNeedUpdate) return true;
+        else return false;
+    }
+    render() {
+        return(
+            <StyledComboBox
+                    options={this.props.options}
+                    isDisabled={this.props.isDisabled}
+                    onSelect={this.onSelect}
+                    selectedOption={this.props.selectedOption}
+            >
+                <StyledIconButton sortDirection={this.props.sortDirection}>
+                    <IconButton
+                        color={"#D8D8D8"}
+                        hoverColor={"#333"}
+                        clickColor={"#333"}
+                        size={10}
+                        iconName={'ZASortingIcon'}
+                        isFill={true}
+                        isDisabled={this.props.isDisabled}
+                        onClick={this.props.onButtonClick}
+                    />
+                </StyledIconButton>
+            </StyledComboBox>
+        );
+    }
+}
+
 class FilterInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             sortDirection: props.selectedFilterData ? props.selectedFilterData.sortDirection == "asc" ? true : false : false,
-            sortId: props.selectedFilterData ? 
-                        this.props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : "" : 
-                        this.props.getSortData().length > 0 ? this.props.getSortData()[0].key : "",
-
+            sortId: props.selectedFilterData && this.props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : this.props.getSortData().length > 0 ? this.props.getSortData()[0].key : "",
             filterValue: props.selectedFilterData ? props.selectedFilterData.filterValue :  [],
             searchText: props.selectedFilterData ? props.selectedFilterData.inputValue : this.props.value
         };
@@ -197,26 +251,14 @@ class FilterInput extends React.Component {
                     />
                 </StyledSearchInput>
 
-                <StyledComboBox
+                <PureComboBox
                     options={this.props.getSortData()}
                     isDisabled={this.props.isDisabled}
                     onSelect={this.onClickSortItem}
                     selectedOption={this.state.sortId}
-                >
-                    <StyledIconButton {...this.state}>
-                        <IconButton
-                            color={"#D8D8D8"}
-                            hoverColor={"#333"}
-                            clickColor={"#333"}
-                            size={10}
-                            iconName={'ZASortingIcon'}
-                            isFill={true}
-                            isDisabled={this.props.isDisabled}
-                            onClick={this.onSortDirectionClick}
-                        />
-                    </StyledIconButton>
-
-                </StyledComboBox>
+                    onButtonClick={this.onSortDirectionClick}
+                    sortDirection={this.state.sortDirection}
+                />
             </StyledFilterInput>
 
         );
