@@ -121,7 +121,7 @@ namespace ASC.People
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                     Thread.CurrentThread.CurrentCulture = user.GetCulture();
                 }
-
+                //
                 await next.Invoke();
             });
 

@@ -431,7 +431,7 @@ namespace ASC.Notify.Engine
             var addresses = recipient.Addresses;
             if (addresses == null || !addresses.Any())
             {
-                addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
+                addresses = recipientProvider.GetRecipientAddresses(tenantId, request.Recipient as IDirectRecipient, sender);
                 recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
             }
 

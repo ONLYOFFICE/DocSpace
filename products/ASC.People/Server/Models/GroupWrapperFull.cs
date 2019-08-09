@@ -43,7 +43,7 @@ namespace ASC.Web.Api.Models
             Category = group.CategoryID;
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
             Name = group.Name;
-            Manager = EmployeeWraper.Get(CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)), context);
+            Manager = EmployeeWraper.Get(CoreContext.UserManager.GetUsers(context.Tenant.TenantId, CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)), context);
 
             if (includeMembers)
             {

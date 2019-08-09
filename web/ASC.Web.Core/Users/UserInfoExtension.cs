@@ -37,16 +37,16 @@ namespace ASC.Core.Users
 {
     public static class StudioUserInfoExtension
     {
-        public static string GetUserProfilePageURL(this UserInfo userInfo)
+        public static string GetUserProfilePageURL(this UserInfo userInfo, int tenantId)
         {
-            return userInfo == null ? "" : CommonLinkUtility.GetUserProfile(userInfo.ID);
+            return userInfo == null ? "" : CommonLinkUtility.GetUserProfile(tenantId, userInfo.ID);
         }
 
         public static string RenderProfileLink(this UserInfo userInfo, Guid productID, int tenantId)
         {
             var sb = new StringBuilder();
 
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenantId))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(tenantId, userInfo.ID))
             {
                 sb.Append("<span class='userLink text-medium-describe'>");
                 sb.Append(Resource.ProfileRemoved);
@@ -61,7 +61,7 @@ namespace ASC.Core.Users
             else
             {
                 sb.AppendFormat("<span class=\"userLink\" id=\"{0}\" data-uid=\"{1}\" data-pid=\"{2}\">", Guid.NewGuid(), userInfo.ID, productID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURL(), userInfo.DisplayUserName());
+                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURL(tenantId), userInfo.DisplayUserName());
                 sb.Append("</span>");
             }
             return sb.ToString();
@@ -73,7 +73,7 @@ namespace ASC.Core.Users
             var linkCss = string.IsNullOrEmpty(linkCssClass) ? "" : linkCssClass;
             var sb = new StringBuilder();
 
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenantId))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(tenantId, userInfo.ID))
             {
                 sb.AppendFormat("<span class='{0}'>", containerCss);
                 sb.Append(Resource.ProfileRemoved);
@@ -88,7 +88,7 @@ namespace ASC.Core.Users
             else
             {
                 sb.AppendFormat("<span class=\"{0}\" id=\"{1}\" data-uid=\"{2}\" >", containerCss, Guid.NewGuid(), userInfo.ID);
-                sb.AppendFormat("<a class='{0}' href=\"{1}\">{2}</a>", linkCss, userInfo.GetUserProfilePageURL(), userInfo.DisplayUserName());
+                sb.AppendFormat("<a class='{0}' href=\"{1}\">{2}</a>", linkCss, userInfo.GetUserProfilePageURL(tenantId), userInfo.DisplayUserName());
                 sb.Append("</span>");
             }
             return sb.ToString();

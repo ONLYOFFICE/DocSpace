@@ -100,7 +100,7 @@ namespace ASC.Core.Users
             var sb = new StringBuilder();
 
             //check for removed users
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo.ID, tenant.TenantId))
+            if (userInfo == null || !CoreContext.UserManager.UserExists(tenant.TenantId, userInfo.ID))
             {
                 sb.Append("<span class='userLink text-medium-describe' style='white-space:nowrap;'>profile removed</span>");
             }
@@ -108,7 +108,7 @@ namespace ASC.Core.Users
             {
                 var popupID = Guid.NewGuid();
                 sb.AppendFormat("<span class=\"userLink\" style='white-space:nowrap;' id='{0}' data-uid='{1}'>", popupID, userInfo.ID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(), userInfo.DisplayUserName());
+                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(tenant.TenantId), userInfo.DisplayUserName());
                 sb.Append("</span>");
 
                 sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);
@@ -121,9 +121,9 @@ namespace ASC.Core.Users
         /// </summary>
         /// <param name="userInfo"></param>        
         /// <returns></returns>
-        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo)
+        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo, int tenantId)
         {
-            return CommonLinkUtility.GetUserProfile(userInfo.ID);
+            return CommonLinkUtility.GetUserProfile(tenantId, userInfo.ID);
         }
     }
 }

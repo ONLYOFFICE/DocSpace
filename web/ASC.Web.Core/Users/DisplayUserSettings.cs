@@ -53,9 +53,9 @@ namespace ASC.Web.Core.Users
                 };
         }
 
-        public static string GetFullUserName(Guid userID, bool withHtmlEncode = true)
+        public static string GetFullUserName(int tenantId, Guid userID, bool withHtmlEncode = true)
         {
-            return GetFullUserName(CoreContext.UserManager.GetUsers(userID), withHtmlEncode);
+            return GetFullUserName(CoreContext.UserManager.GetUsers(tenantId, userID), withHtmlEncode);
         }
 
         public static string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
@@ -69,7 +69,7 @@ namespace ASC.Web.Core.Users
             {
                 return string.Empty;
             }
-            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo.ID, userInfo.Tenant))
+            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo.Tenant, userInfo.ID))
             {
                 return "profile removed";
             }

@@ -22,7 +22,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = CoreContext.TenantManager.GetCurrentTenant(context.HttpContext);
             var settings = IPRestrictionsSettings.LoadForTenant(tenant.TenantId);
             if (settings.Enable && SecurityContext.IsAuthenticated && !IPSecurity.IPSecurity.Verify(context.HttpContext, tenant))
             {
