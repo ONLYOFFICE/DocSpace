@@ -50,6 +50,7 @@ class FilterInput extends React.Component {
         this.onClickSortItem = this.onClickSortItem.bind(this);
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
         this.onSearch = this.onSearch.bind(this);
+        this.onChangeFilter = this.onChangeFilter.bind(this);
         this.setFilterTimer = this.setFilterTimer.bind(this);
         this.onSearchChanged = this.onSearchChanged.bind(this);
         
@@ -73,8 +74,11 @@ class FilterInput extends React.Component {
         this.onFilter(this.state.filterValue, this.state.sortId, !this.state.sortDirection ? "asc" : "desc");
         this.setState({ sortDirection: !this.state.sortDirection });
     }
-    onSearch(result) {
+    onChangeFilter(result) {
         this.setState({ filterValue: result.filterValue });
+        this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+    }
+    onSearch(result) {
         this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
     }
 
@@ -115,12 +119,12 @@ class FilterInput extends React.Component {
                     searchText: this.updatedProps.searchText ? this.props.selectedFilterData.inputValue ? this.props.selectedFilterData.inputValue : this.props.value : this.state.searchText
                 }
             );
-            this.updatedProps={
+            this.updatedProps = {
                 sortDirection: false,
                 sortId:  false,
                 filterValue: false,
                 searchText: false
-            }
+            };
         }
     }
     shouldComponentUpdate(nextProps, nextState){
@@ -142,7 +146,7 @@ class FilterInput extends React.Component {
                     }else{
                       let newFilterItems = nextProps.selectedFilterData.filterValue;
                       let oldFilterItems = this.props.selectedFilterData.filterValue;
-              
+
                       for(let i = 0; i < newFilterItems.length; i++){
                         if(oldFilterItems.find(x => (x.key === newFilterItems[i].key && x.group === newFilterItems[i].group)) == undefined){
                             this.updatedProps.filterValue = true;
@@ -152,7 +156,7 @@ class FilterInput extends React.Component {
                       }
                     }
                 }
-              }
+            }
             if(nextProps.selectedFilterData.inputValue != this.props.selectedFilterData.inputValue){
                 this.updatedProps.searchText = true;
                 this.isNeedUpdate = true;
@@ -186,7 +190,7 @@ class FilterInput extends React.Component {
                         getFilterData={this.props.getFilterData}
                         placeholder={this.props.placeholder}
                         onSearchClick={this.onSearch}
-                        onChangeFilter={this.onSearch}
+                        onChangeFilter={this.onChangeFilter}
                         value={this.state.searchText}
                         selectedFilterData={this.state.filterValue}
                         onChange={this.onSearchChanged}
