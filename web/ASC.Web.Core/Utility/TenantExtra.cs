@@ -75,10 +75,13 @@ namespace ASC.Web.Studio.Utility
 
         public static bool EnableControlPanel
         {
-            get { return Enterprise && 
+            get {
+                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                return Enterprise && 
                     GetTenantQuota().ControlPanel && 
                     GetCurrentTariff().State < TariffState.NotPaid && 
-                    CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(CoreContext.TenantManager.GetCurrentTenant()); }
+                    CoreContext.UserManager.GetUsers(tenant.TenantId, SecurityContext.CurrentAccount.ID).IsAdmin(tenant);
+            }
         }
 
         public static bool EnableDocbuilder
@@ -161,7 +164,7 @@ namespace ASC.Web.Studio.Utility
         {
             CoreContext.PaymentManager.SendTrialRequest(
                 TenantProvider.CurrentTenantID,
-                CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
+                CoreContext.UserManager.GetUsers(TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID));
         }
 
         public static int GetRemainingCountUsers(Tenant tenant)

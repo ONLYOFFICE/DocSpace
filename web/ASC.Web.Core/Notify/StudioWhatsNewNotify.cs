@@ -84,7 +84,7 @@ namespace ASC.Web.Studio.Core.Notify
                             continue;
                         }
 
-                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(user.ID));
+                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
@@ -118,7 +118,7 @@ namespace ASC.Web.Studio.Core.Notify
                             {
                                 Date = f.CreatedDate,
                                 UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName() : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(tenant.TenantId)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = CommonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
@@ -141,7 +141,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         {
                                             Date = prawbc.CreatedDate,
                                             UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName() : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(tenant.TenantId)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = CommonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
@@ -161,7 +161,7 @@ namespace ASC.Web.Studio.Core.Notify
                                     {
                                         Date = ls.CreatedDate,
                                         UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName() : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(tenant.TenantId)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1]{gr.Key} : new string[0],

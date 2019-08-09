@@ -107,11 +107,11 @@ namespace ASC.Web.Core.Users
             }
 
             var newUserInfo = CoreContext.UserManager.SaveUserInfo(tenant, userInfo, isVisitor);
-            SecurityContext.SetUserPassword(newUserInfo.ID, password);
+            SecurityContext.SetUserPassword(tenant.TenantId, newUserInfo.ID, password);
 
             if (CoreContext.Configuration.Personal)
             {
-                StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
+                StudioNotifyService.SendUserWelcomePersonal(tenant.TenantId, newUserInfo);
                 return newUserInfo;
             }
 
@@ -139,11 +139,11 @@ namespace ASC.Web.Core.Users
                     //Send user invite
                     if (isVisitor)
                     {
-                        StudioNotifyService.GuestInfoActivation(newUserInfo);
+                        StudioNotifyService.GuestInfoActivation(tenant.TenantId, newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoActivation(newUserInfo);
+                        StudioNotifyService.UserInfoActivation(tenant.TenantId, newUserInfo);
                     }
 
                 }
@@ -183,7 +183,7 @@ namespace ASC.Web.Core.Users
             }
 
             var userInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
-            if (!CoreContext.UserManager.UserExists(userInfo.ID, tenantId) || string.IsNullOrEmpty(userInfo.Email))
+            if (!CoreContext.UserManager.UserExists(tenantId, userInfo.ID) || string.IsNullOrEmpty(userInfo.Email))
             {
                 throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
             }
@@ -200,7 +200,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(Resource.CouldNotRecoverPasswordForSsoUser);
             }
 
-            StudioNotifyService.UserPasswordChange(userInfo);
+            StudioNotifyService.UserPasswordChange(tenantId, userInfo);
 
             var displayUserName = userInfo.DisplayUserName(false);
             messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);

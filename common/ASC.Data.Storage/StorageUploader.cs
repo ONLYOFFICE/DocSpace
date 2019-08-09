@@ -135,7 +135,7 @@ namespace ASC.Data.Storage
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 var tenant = CoreContext.TenantManager.GetTenant(tenantId);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
+                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {

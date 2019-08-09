@@ -168,23 +168,18 @@ namespace ASC.Web.Studio.Utility
         }
         public static string GetUserProfile(int tenantId)
         {
-            return GetUserProfile(null, tenantId);
+            return GetUserProfile(tenantId, null);
         }
 
-        public static string GetUserProfile(Guid userID)
+        public static string GetUserProfile(int tenantId, Guid userID)
         {
-            return GetUserProfile(userID, CoreContext.TenantManager.GetCurrentTenant().TenantId);
-        }
-
-        public static string GetUserProfile(Guid userID, int tenantId)
-        {
-            if (!CoreContext.UserManager.UserExists(userID, tenantId))
+            if (!CoreContext.UserManager.UserExists(tenantId, userID))
                 return GetEmployees();
 
-            return GetUserProfile(userID.ToString(), tenantId);
+            return GetUserProfile(tenantId, userID.ToString());
         }
 
-        public static string GetUserProfile(string user, int tenantId, bool absolute = true)
+        public static string GetUserProfile(int tenantId, string user, bool absolute = true)
         {
             var queryParams = "";
 
@@ -202,7 +197,7 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid, tenantId) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(tenantId, guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
@@ -211,9 +206,9 @@ namespace ASC.Web.Studio.Utility
 
             return url;
         }
-        public static string GetUserProfile(Guid user, int tenantId, bool absolute = true)
+        public static string GetUserProfile(int tenantId, Guid user, bool absolute = true)
         {
-            var queryParams = GetUserParamsPair(user, tenantId);
+            var queryParams = GetUserParamsPair(tenantId, user);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -452,11 +447,11 @@ namespace ASC.Web.Studio.Utility
             return result;
         }
 
-        public static string GetUserParamsPair(Guid userID, int tenantId)
+        public static string GetUserParamsPair(int tenantId, Guid userID)
         {
             return
-                CoreContext.UserManager.UserExists(userID, tenantId)
-                    ? GetUserParamsPair(CoreContext.UserManager.GetUsers(userID, tenantId))
+                CoreContext.UserManager.UserExists(tenantId, userID)
+                    ? GetUserParamsPair(CoreContext.UserManager.GetUsers(tenantId, userID))
                     : "";
         }
 

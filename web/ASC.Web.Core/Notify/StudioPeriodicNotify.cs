@@ -280,7 +280,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 {
                                     log.InfoFormat("start CreateCoupon to {0}", tenant.TenantAlias);
 
-                                    coupon = SetupInfo.IsSecretEmail(CoreContext.UserManager.GetUsers(tenant.OwnerId).Email)
+                                    coupon = SetupInfo.IsSecretEmail(CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
                                                 : CouponManager.CreateCoupon();
 
@@ -346,7 +346,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = CoreContext.UserManager.GetUsers(tenant.OwnerId);
+                            var owner = CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
                             greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -420,7 +420,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = CoreContext.UserManager.GetUsers(tenant.OwnerId);
+                            var owner = CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
                             greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -447,7 +447,7 @@ namespace ASC.Web.Studio.Core.Notify
                     if (action == null) continue;
 
                     var users = toowner
-                                    ? new List<UserInfo> { CoreContext.UserManager.GetUsers(tenant.OwnerId, tenant.TenantId) }
+                                    ? new List<UserInfo> { CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId) }
                                     : StudioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
 
 
@@ -1074,7 +1074,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(user.ID));
+                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))

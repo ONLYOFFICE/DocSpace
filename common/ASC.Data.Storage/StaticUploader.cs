@@ -185,7 +185,7 @@ namespace ASC.Data.Storage
             {
                 var tenant = CoreContext.TenantManager.GetTenant(tenantId);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
+                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
 
                 var dataStore = CdnStorageSettings.Load().DataStore;
 

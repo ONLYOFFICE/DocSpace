@@ -106,7 +106,7 @@ namespace ASC.Data.Reassigns
                 Status = ProgressStatus.Started;
 
                 var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_currentUserId);
+                SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
                 long docsSpace, crmSpace, mailSpace, talkSpace;
                 GetUsageSpace(tenant, out docsSpace, out mailSpace, out talkSpace);

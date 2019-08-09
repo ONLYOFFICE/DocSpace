@@ -46,32 +46,32 @@ namespace ASC.Core
 
         public IUserAccount[] GetUserAccounts(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(u)).ToArray();
+            return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
         }
 
-        public void SetUserPassword(Guid userID, string password)
+        public void SetUserPassword(int tenantId, Guid userID, string password)
         {
-            userService.SetUserPassword(CoreContext.TenantManager.GetCurrentTenant().TenantId, userID, password);
+            userService.SetUserPassword(tenantId, userID, password);
         }
 
-        public string GetUserPasswordHash(Guid userID)
+        public string GetUserPasswordHash(int tenantId, Guid userID)
         {
-            return userService.GetUserPassword(CoreContext.TenantManager.GetCurrentTenant().TenantId, userID);
+            return userService.GetUserPassword(tenantId, userID);
         }
 
-        public IAccount GetAccountByID(Guid id)
+        public IAccount GetAccountByID(int tenantId, Guid id)
         {
             var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
             if (s != null) return s;
  
-            var u = CoreContext.UserManager.GetUsers(id);
-            return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(u) : ASC.Core.Configuration.Constants.Guest;
+            var u = CoreContext.UserManager.GetUsers(tenantId, id);
+            return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }
 
 
-        private IUserAccount ToAccount(UserInfo u)
+        private IUserAccount ToAccount(int tenantId, UserInfo u)
         {
-            return new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            return new UserAccount(u, tenantId);
         }
     }
 }

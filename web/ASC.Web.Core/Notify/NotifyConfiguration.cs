@@ -138,7 +138,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                              if (guid != default)
                              {
-                                 u = CoreContext.UserManager.GetUsers(guid, tenant.TenantId);
+                                 u = CoreContext.UserManager.GetUsers(tenant.TenantId, guid);
                              }
                          }
 
@@ -236,9 +236,9 @@ namespace ASC.Web.Studio.Core.Notify
             if (SecurityContext.IsAuthenticated)
             {
                 aid = SecurityContext.CurrentAccount.ID;
-                if (CoreContext.UserManager.UserExists(aid, tenant.TenantId))
+                if (CoreContext.UserManager.UserExists(tenant.TenantId, aid))
                 {
-                    aname = CoreContext.UserManager.GetUsers(aid).DisplayUserName(false)
+                    aname = CoreContext.UserManager.GetUsers(tenant.TenantId, aid).DisplayUserName(false)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }
@@ -261,7 +261,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(aid))));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenant.TenantId, aid))));
             request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
@@ -275,7 +275,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (!request.Arguments.Any(x => CommonTags.SendFrom.Equals(x.Tag)))
             {
-                request.Arguments.Add(new TagValue(CommonTags.SendFrom, CoreContext.TenantManager.GetCurrentTenant().Name));
+                request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
             }
 
             AddLetterLogo(request);
