@@ -5,19 +5,12 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import ComboBox from '../combobox';
 import "react-datepicker/dist/react-datepicker.css";
 import enGB from 'date-fns/locale/en-GB';
-import calendar, { isDate, isSameDay, isSameMonth, getDateISO, getNextMonth, getPreviousMonth, WEEK_DAYS, CALENDAR_MONTHS } from "./helper-calendar";
 
+registerLocale('en-GB', enGB);
 
-
-const DataSelector = styled.div`
-    position: relative;
-    display: inline-block;
-
-`;
 
 const CalendarContainer = styled.div`
-    width:500px;
-    height:500px;
+    width:325px
 `;
 
 const DaysStyle = css`
@@ -26,7 +19,6 @@ const DaysStyle = css`
     border-radius: 16px;
     text-align: center;
 `;
-
 
 const CalendarStyle = styled.div`
 
@@ -60,6 +52,14 @@ const CalendarStyle = styled.div`
     font-size: 13px;
 }
 
+.react-datepicker__day--weekend {
+    color: #A3A9AE !important;
+}
+
+.react-datepicker__day--outside-month {
+    color: #ECEEF1 !important;
+}
+
 .react-datepicker__day {
     line-height: 2.5em;
     color: #333;
@@ -68,9 +68,8 @@ const CalendarStyle = styled.div`
     
     &:hover {
         border-radius: 16px;
-
         background-color:  #ED7309;
-        color: #fff;
+        color: #fff !important;
     }
 }
 
@@ -84,7 +83,13 @@ react-datepicker__time-name {
 }
 `;
 
-registerLocale('en-GB', enGB);
+
+const DataSelector = styled.div`
+    position: relative;
+    display: flex;
+    margin-bottom: 16px;
+
+`;
 
 class Calendar extends Component {
 
@@ -93,32 +98,65 @@ class Calendar extends Component {
         this.state = {
             startDate: props.startDate
         };
+
+        const date = new Date();
+        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     }
 
-    options = [
-        { key: 0, label: '25 per page' },
-        { key: 1, label: '50 per page', },
-        { key: 2, label: '100 per page' }];
+    arrayDates = function () {
+        var date1 = "JUN 2015";
+        var date2 = "JUN 2025";
+        var year1 = Number(date1.substr(4));
+        var year2 = Number(date2.substr(4));
+        var yearList = [];
+        for (var i = year1; i <= year2; i++) {
+            yearList.push({ key: `${i}`, label: `${i}` });
+        }
+        return yearList;
+    }
+
+    getCurrentDate = function () {
+        var a = this.arrayDates();
+        a = a.find(x => x.label == new Date().getFullYear());
+        return (a.key);
+    }
 
     handleChange(date) {
         this.setState({ startDate: date });
         this.props.onChange && this.props.onChange(date);
     }
 
-
+    month = [
+        { key: "Jan", label: "January" },
+        { key: "Feb", label: "February" },
+        { key: "Mar", label: "March" },
+        { key: "Apr", label: "April" },
+        { key: "May", label: "May" },
+        { key: "Jun", label: "June" },
+        { key: "Jul", label: "July" },
+        { key: "Aug", label: "August" },
+        { key: "Sep", label: "September" },
+        { key: "Oct", label: "October" },
+        { key: "Nov", label: "November" },
+        { key: "Dec", label: "December" }];
 
     render() {
         //console.log('RENDER');
-        
+
         return (
             <CalendarContainer>
                 <DataSelector>
-                    <ComboBox isDisabled={this.props.disabled} options={this.options} />
-                    <ComboBox isDisabled={this.props.disabled} options={this.options} />
+                    <div>
+                        <ComboBox isDisabled={this.props.disabled} options={this.month} />
+                    </div>
+                    <div>
+                        <ComboBox isDisabled={this.props.disabled} options={this.arrayDates()} selectedOption={this.getCurrentDate()} />
+                    </div>
+
                 </DataSelector>
 
                 <CalendarStyle>
-
                     <DatePicker
                         inline
                         selected={this.state.startDate}
@@ -126,7 +164,10 @@ class Calendar extends Component {
                         dateFormat={this.props.dateFormat}
                         disabled={this.props.disabled}
                         locale="en-GB"
-                        renderCustomHeader={() => { }}
+                        minDate={this.firstDay}
+                        maxDate={this.lastDay}
+                        openToDate={this.props.openToDate}
+                    //renderCustomHeader={({ }) => { }}
                     />
 
                 </CalendarStyle>
@@ -136,13 +177,12 @@ class Calendar extends Component {
     }
 }
 
-
-
 Calendar.propTypes = {
     disabled: PropTypes.bool,
     startDate: PropTypes.instanceOf(Date),
     dateFormat: PropTypes.string,
-    themeColor: PropTypes.color
+    themeColor: PropTypes.color,
+    openToDate: PropTypes.instanceOf(Date)
 }
 
 Calendar.defaultProps = {
@@ -152,17 +192,3 @@ Calendar.defaultProps = {
 }
 
 export default Calendar;
-
-/*
-const DataSelector2 = styled.div`
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 10px;
-    float: left;
-    width: 23.5%;
-    margin-right: 2%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-`;
-*/
