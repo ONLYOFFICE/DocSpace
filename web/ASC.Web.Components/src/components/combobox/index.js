@@ -53,12 +53,12 @@ class ComboBox extends React.PureComponent {
 
     this.ref = React.createRef();
 
-    const selectedItem = this.findSelected();
+    const selectedItem = this.getSelected();
 
     this.state = {
       isOpen: props.opened,
-      boxLabel: selectedItem.label,
-      boxIcon: selectedItem.icon,
+      boxLabel: selectedItem && selectedItem.label,
+      boxIcon: selectedItem && selectedItem.icon,
       options: props.options
     };
 
@@ -100,11 +100,17 @@ class ComboBox extends React.PureComponent {
     handleAnyClick(false, this.handleClick);
   }
 
-  findSelected = () => {
+  getSelected = () => {
     const selectedItem = this.props.options.find(x => x.key === this.props.selectedOption)
       || this.props.options[0];
 
     return selectedItem;
+  }
+
+  getSelectedLabel = () => {
+    const selectedItem = this.getSelected();
+
+    return selectedItem ? selectedItem.label : "1-1";
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -117,7 +123,7 @@ class ComboBox extends React.PureComponent {
     }
 
     if (this.props.options.length !== prevProps.options.length) { //TODO: Move options from state
-      const label = this.findSelected().label;
+      const label = this.getSelectedLabel();
       this.setState({ 
         options: this.props.options,
         boxLabel: label 
@@ -125,7 +131,7 @@ class ComboBox extends React.PureComponent {
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
-      const label = this.findSelected().label;
+      const label = this.getSelectedLabel();
       this.setState({ boxLabel: label });
     }
   }
