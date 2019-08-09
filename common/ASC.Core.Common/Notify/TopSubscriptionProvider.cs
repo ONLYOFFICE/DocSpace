@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Core.Tenants;
 using ASC.Notify.Recipients;
 
 
@@ -54,18 +55,18 @@ namespace ASC.Notify.Model
         }
 
 
-        public virtual string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
+        public virtual string[] GetSubscriptionMethod(Tenant tenant,INotifyAction action, IRecipient recipient)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
 
-            var senders = subscriptionProvider.GetSubscriptionMethod(action, recipient);
+            var senders = subscriptionProvider.GetSubscriptionMethod(tenant, action, recipient);
             if (senders == null || senders.Length == 0)
             {
-                var parents = WalkUp(recipient);
+                var parents = WalkUp(tenant, recipient);
                 foreach (var parent in parents)
                 {
-                    senders = subscriptionProvider.GetSubscriptionMethod(action, parent);
+                    senders = subscriptionProvider.GetSubscriptionMethod(tenant, action, parent);
                     if (senders != null && senders.Length != 0) break;
                 }
             }
@@ -73,12 +74,12 @@ namespace ASC.Notify.Model
             return senders != null && 0 < senders.Length ? senders : defaultSenderMethods;
         }
 
-        public virtual IRecipient[] GetRecipients(INotifyAction action, string objectID)
+        public virtual IRecipient[] GetRecipients(int tenantId, INotifyAction action, string objectID)
         {
             if (action == null) throw new ArgumentNullException("action");
 
             var recipents = new List<IRecipient>(5);
-            var directRecipients = subscriptionProvider.GetRecipients(action, objectID) ?? new IRecipient[0];
+            var directRecipients = subscriptionProvider.GetRecipients(tenantId, action, objectID) ?? new IRecipient[0];
             recipents.AddRange(directRecipients);
             return recipents.ToArray();
         }
@@ -122,9 +123,9 @@ namespace ASC.Notify.Model
             subscriptionProvider.UnSubscribe(action);
         }
 
-        public virtual void UnSubscribe(INotifyAction action, IRecipient recipient)
+        public virtual void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
-            var objects = GetSubscriptions(action, recipient);
+            var objects = GetSubscriptions(tenant, action, recipient);
             foreach (string objectID in objects)
             {
                 subscriptionProvider.UnSubscribe(action, objectID, recipient);
@@ -140,20 +141,20 @@ namespace ASC.Notify.Model
             subscriptionProvider.UpdateSubscriptionMethod(action, recipient, senderNames);
         }
 
-        public virtual object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
+        public virtual object GetSubscriptionRecord(Tenant tenant, INotifyAction action, IRecipient recipient, string objectID)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
             if (action == null) throw new ArgumentNullException("action");
 
-            var subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(action, recipient, objectID);
+            var subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(tenant, action, recipient, objectID);
 
             if (subscriptionRecord != null) return subscriptionRecord;
 
-            var parents = WalkUp(recipient);
+            var parents = WalkUp(tenant, recipient);
 
             foreach (var parent in parents)
             {
-                subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(action, parent, objectID);
+                subscriptionRecord = subscriptionProvider.GetSubscriptionRecord(tenant, action, parent, objectID);
 
                 if (subscriptionRecord != null) break;
             }
@@ -161,18 +162,18 @@ namespace ASC.Notify.Model
             return subscriptionRecord;
         }
 
-        public virtual string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
+        public virtual string[] GetSubscriptions(Tenant tenant, INotifyAction action, IRecipient recipient, bool checkSubscription = true)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
             if (action == null) throw new ArgumentNullException("action");
 
             var objects = new List<string>();
-            var direct = subscriptionProvider.GetSubscriptions(action, recipient, checkSubscription) ?? new string[0];
+            var direct = subscriptionProvider.GetSubscriptions(tenant, action, recipient, checkSubscription) ?? new string[0];
             MergeObjects(objects, direct);
-            var parents = WalkUp(recipient);
+            var parents = WalkUp(tenant, recipient);
             foreach (var parent in parents)
             {
-                direct = subscriptionProvider.GetSubscriptions(action, parent, checkSubscription) ?? new string[0];
+                direct = subscriptionProvider.GetSubscriptions(tenant, action, parent, checkSubscription) ?? new string[0];
                 if (recipient is IDirectRecipient)
                 {
                     foreach (var groupsubscr in direct)
@@ -192,14 +193,14 @@ namespace ASC.Notify.Model
         }
 
 
-        private List<IRecipient> WalkUp(IRecipient recipient)
+        private List<IRecipient> WalkUp(Tenant tenant,IRecipient recipient)
         {
             var parents = new List<IRecipient>();
-            var groups = recipientProvider.GetGroups(recipient) ?? new IRecipientsGroup[0];
+            var groups = recipientProvider.GetGroups(tenant, recipient) ?? new IRecipientsGroup[0];
             foreach (var group in groups)
             {
                 parents.Add(group);
-                parents.AddRange(WalkUp(group));
+                parents.AddRange(WalkUp(tenant, group));
             }
             return parents;
         }

@@ -8,6 +8,7 @@ import PrivateRoute from "./helpers/privateRoute";
 
 const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
+const GroupAction = lazy(() => import("./components/pages/GroupAction"));
 
 const App = ({ settings }) => {
   const { homepage } = settings;
@@ -30,6 +31,14 @@ const App = ({ settings }) => {
             <PrivateRoute
               path={`${homepage}/create/:type`}
               component={ProfileAction}
+            />
+            <PrivateRoute
+              path={`${homepage}/group/edit/:groupId`}
+              component={GroupAction}
+            />
+            <PrivateRoute
+              path={`${homepage}/group/create`}
+              component={GroupAction}
             />
             <PrivateRoute
               component={() => (

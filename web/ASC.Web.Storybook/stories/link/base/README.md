@@ -24,7 +24,7 @@ It is a link with 2 types:
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
 | `type`             | `oneOf`  |    -     | action, page                | `page`        | Type of link                         |
 | `color`            | `oneOf`  |    -     | gray, black, blue| `black`  | Color of link in all states - hover, active, visited              |
-| `fontSize`           | `number`   |    -     | -                       | `12`        | Font size of link (in px)                        |
+| `fontSize`           | `number`   |    -     | -                       | `13`        | Font size of link (in px)                        |
 | `href`           | `string`   |    -     | -                           | `undefined`        | Hyperlink, usually used in *page* type             |
 | `isBold`           | `bool`   |    -     | -                         | `false`        | Set font weight                          |
 | `title`           | `string`   |    -     | -                           | -        | Title of link                          |

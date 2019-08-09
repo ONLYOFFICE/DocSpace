@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core.Tenants;
 using ASC.Web.Core.WebZones;
 
 using Autofac;
@@ -191,17 +192,17 @@ namespace ASC.Web.Core
             }
         }
 
-        public List<IWebItem> GetItems(WebZoneType webZone)
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone)
         {
-            return GetItems(webZone, ItemAvailableState.Normal);
+            return GetItems(tenant, webZone, ItemAvailableState.Normal);
         }
 
-        public List<IWebItem> GetItems(WebZoneType webZone, ItemAvailableState avaliableState)
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState)
         {
             var copy = items.Values.ToList();
             var list = copy.Where(item =>
                 {
-                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled())
+                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant))
                     {
                         return false;
                     }
@@ -213,14 +214,14 @@ namespace ASC.Web.Core
             return list;
         }
 
-        public List<IWebItem> GetSubItems(Guid parentItemID)
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID)
         {
-            return GetSubItems(parentItemID, ItemAvailableState.Normal);
+            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal);
         }
 
-        public List<IWebItem> GetSubItems(Guid parentItemID, ItemAvailableState avaliableState)
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState)
         {
-            return GetItems(WebZoneType.All, avaliableState).OfType<IModule>()
+            return GetItems(tenant, WebZoneType.All, avaliableState).OfType<IModule>()
                                                             .Where(p => p.ProjectId == parentItemID)
                                                             .Cast<IWebItem>()
                                                             .ToList();

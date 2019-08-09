@@ -34,4 +34,5 @@ SearchInput description
 | `size`                 | `string` |          | `base`, `middle`, `big`, `huge`| `base`  | Supported size of the input fields.                                                                    |
 | `scale`                | `bool`   |    -     | -                              | -       | Indicates the input field has scale                                                                    |
 | `isNeedFilter`         | `bool`   |          |                                | `false` | Determines if filter is needed                                                                         |
+| `selectedFilterData`   | `array`  |    -     |                                |         | Selected filter data                                                                                   |
 

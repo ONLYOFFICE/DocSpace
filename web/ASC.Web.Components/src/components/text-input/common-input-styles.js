@@ -25,6 +25,8 @@ const commonInputStyle = css`
     :focus{
         border-color: #2DA7DB;
     }
+
+    cursor: ${props => props.isReadOnly || props.isDisabled ? "default" : "text"};
 `;
 
 export default commonInputStyle;

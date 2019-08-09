@@ -17,7 +17,6 @@ storiesOf('Components|Text', module)
           color={color('color', '#333333')}
           title={text('title', '')}
           truncate={boolean('truncate', false)}
-          isDisabled={boolean('isDisabled', false)}
           isInline={boolean('isInline', false)}
         >
           {text('Text', 'Sample text Headline')}

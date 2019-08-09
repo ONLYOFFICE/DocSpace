@@ -53,14 +53,14 @@ namespace ASC.Web.Core.Users
             StudioNotifyService = studioNotifyService;
         }
 
-        private static bool TestUniqueUserName(string uniqueName)
+        private static bool TestUniqueUserName(string uniqueName, int tenantId)
         {
             if (String.IsNullOrEmpty(uniqueName))
                 return false;
-            return Equals(CoreContext.UserManager.GetUserByUserName(uniqueName), Constants.LostUser);
+            return Equals(CoreContext.UserManager.GetUserByUserName(tenantId, uniqueName), Constants.LostUser);
         }
 
-        private static string MakeUniqueName(UserInfo userInfo)
+        private static string MakeUniqueName(int tenantId, UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
                 throw new ArgumentException(Resource.ErrorEmailEmpty, "userInfo");
@@ -68,20 +68,20 @@ namespace ASC.Web.Core.Users
             var uniqueName = new MailAddress(userInfo.Email).User;
             var startUniqueName = uniqueName;
             var i = 0;
-            while (!TestUniqueUserName(uniqueName))
+            while (!TestUniqueUserName(uniqueName, tenantId))
             {
                 uniqueName = string.Format("{0}{1}", startUniqueName, (++i).ToString(CultureInfo.InvariantCulture));
             }
             return uniqueName;
         }
 
-        public static bool CheckUniqueEmail(Guid userId, string email)
+        public static bool CheckUniqueEmail(int tenantId, Guid userId, string email)
         {
-            var foundUser = CoreContext.UserManager.GetUserByEmail(email);
+            var foundUser = CoreContext.UserManager.GetUserByEmail(tenantId, email);
             return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
         }
 
-        public UserInfo AddUser(UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+        public UserInfo AddUser(Tenant tenant, UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
             if (userInfo == null) throw new ArgumentNullException("userInfo");
 
@@ -90,11 +90,11 @@ namespace ASC.Web.Core.Users
 
             CheckPasswordPolicy(password);
 
-            if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
+            if (!CheckUniqueEmail(tenant.TenantId, userInfo.ID, userInfo.Email))
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             if (makeUniqueName)
             {
-                userInfo.UserName = MakeUniqueName(userInfo);
+                userInfo.UserName = MakeUniqueName(tenant.TenantId, userInfo);
             }
             if (!userInfo.WorkFromDate.HasValue)
             {
@@ -106,7 +106,7 @@ namespace ASC.Web.Core.Users
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
 
-            var newUserInfo = CoreContext.UserManager.SaveUserInfo(userInfo, isVisitor);
+            var newUserInfo = CoreContext.UserManager.SaveUserInfo(tenant, userInfo, isVisitor);
             SecurityContext.SetUserPassword(newUserInfo.ID, password);
 
             if (CoreContext.Configuration.Personal)
@@ -122,11 +122,11 @@ namespace ASC.Web.Core.Users
                 {
                     if (isVisitor)
                     {
-                        StudioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
+                        StudioNotifyService.GuestInfoAddedAfterInvite(tenant.TenantId, newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
+                        StudioNotifyService.UserInfoAddedAfterInvite(tenant.TenantId, newUserInfo);
                     }
 
                     if (fromInviteLink)
@@ -151,7 +151,7 @@ namespace ASC.Web.Core.Users
 
             if (isVisitor)
             {
-                CoreContext.UserManager.AddUserIntoGroup(newUserInfo.ID, Constants.GroupVisitor.ID);
+                CoreContext.UserManager.AddUserIntoGroup(tenant, newUserInfo.ID, Constants.GroupVisitor.ID);
             }
 
             return newUserInfo;
@@ -170,7 +170,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 
-        public UserInfo SendUserPassword(string email, MessageService messageService, HttpContext context)
+        public UserInfo SendUserPassword(int tenantId, string email, MessageService messageService, HttpContext context)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
@@ -182,8 +182,8 @@ namespace ASC.Web.Core.Users
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
 
-            var userInfo = CoreContext.UserManager.GetUserByEmail(email);
-            if (!CoreContext.UserManager.UserExists(userInfo.ID) || string.IsNullOrEmpty(userInfo.Email))
+            var userInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
+            if (!CoreContext.UserManager.UserExists(userInfo.ID, tenantId) || string.IsNullOrEmpty(userInfo.Email))
             {
                 throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
             }

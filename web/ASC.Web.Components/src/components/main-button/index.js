@@ -138,7 +138,7 @@ class MainButton extends React.PureComponent {
     }
   }
 
-  onMainButtonClick = () => {
+  onMainButtonClick = (e) => {
     if (!this.props.isDisabled) {
       if (!this.props.isDropdown) {
         this.props.clickAction && this.props.clickAction();
@@ -146,7 +146,7 @@ class MainButton extends React.PureComponent {
         this.toggle(!this.state.isOpen);
       }
     } else {
-      this.stopAction();
+      this.stopAction(e);
     }
   };
 
@@ -155,11 +155,11 @@ class MainButton extends React.PureComponent {
     this.toggle(!this.state.isOpen);
   };
 
-  onSecondaryButtonClick = () => {
+  onSecondaryButtonClick = (e) => {
     if (!this.props.isDisabled) {
       this.props.clickActionSecondary && this.props.clickActionSecondary();
     } else {
-      this.stopAction();
+      this.stopAction(e);
     }
   };
 

@@ -27,22 +27,23 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using ASC.Core.Tenants;
 
 namespace ASC.Web.Core.Users
 {
     public class UserPhotoThumbnailManager
     {
-        public static List<ThumbnailItem> SaveThumbnails(int x, int y, int width, int height, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(int tenantId, int x, int y, int width, int height, Guid userId)
         {
-            return SaveThumbnails(new UserPhotoThumbnailSettings(x, y, width, height), userId);
+            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(x, y, width, height), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(Point point, Size size, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(int tenantId, Point point, Size size, Guid userId)
         {
-            return SaveThumbnails(new UserPhotoThumbnailSettings(point, size), userId);
+            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(point, size), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(int tenantId, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
         {
             if (thumbnailSettings.Size.IsEmpty) return null;
 
@@ -50,22 +51,22 @@ namespace ASC.Web.Core.Users
 
             var resultBitmaps = new List<ThumbnailItem>();
 
-            var img = thumbnailsData.MainImgBitmap;
+            var img = thumbnailsData.MainImgBitmap(tenantId);
 
             if (img == null) return null;
 
-            foreach (var thumbnail in thumbnailsData.ThumbnailList)
+            foreach (var thumbnail in thumbnailsData.ThumbnailList(tenantId))
             {
                 thumbnail.Bitmap = GetBitmap(img, thumbnail.Size, thumbnailSettings);
 
                 resultBitmaps.Add(thumbnail);
             }
 
-            thumbnailsData.Save(resultBitmaps);
+            thumbnailsData.Save(tenantId, resultBitmaps);
 
             thumbnailSettings.SaveForUser(userId);
 
-            return thumbnailsData.ThumbnailList;
+            return thumbnailsData.ThumbnailList(tenantId);
         }
 
         public static Bitmap GetBitmap(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
@@ -114,55 +115,52 @@ namespace ASC.Web.Core.Users
             UserId = userId;
         }
 
-        public Bitmap MainImgBitmap
+        public Bitmap MainImgBitmap(int tenantId)
         {
-            get { return UserPhotoManager.GetPhotoBitmap(UserId); }
+            return UserPhotoManager.GetPhotoBitmap(tenantId, UserId);
         }
 
-        public string MainImgUrl
+        public string MainImgUrl(Tenant tenant)
         {
-            get { return UserPhotoManager.GetPhotoAbsoluteWebPath(UserId); }
+            return UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, UserId);
         }
 
-        public List<ThumbnailItem> ThumbnailList
+        public List<ThumbnailItem> ThumbnailList(int tenantId)
         {
-            get
-            {
-                return new List<ThumbnailItem>
-                    {
-                        new ThumbnailItem
-                            {
-                                Size = UserPhotoManager.RetinaFotoSize,
-                                ImgUrl = UserPhotoManager.GetRetinaPhotoURL(UserId)
-                            },
-                        new ThumbnailItem
-                            {
-                                Size = UserPhotoManager.MaxFotoSize,
-                                ImgUrl = UserPhotoManager.GetMaxPhotoURL(UserId)
-                            },
-                        new ThumbnailItem
-                            {
-                                Size = UserPhotoManager.BigFotoSize,
-                                ImgUrl = UserPhotoManager.GetBigPhotoURL(UserId)
-                            },
-                        new ThumbnailItem
-                            {
-                                Size = UserPhotoManager.MediumFotoSize,
-                                ImgUrl = UserPhotoManager.GetMediumPhotoURL(UserId)
-                            },
-                        new ThumbnailItem
-                            {
-                                Size = UserPhotoManager.SmallFotoSize,
-                                ImgUrl = UserPhotoManager.GetSmallPhotoURL(UserId)
-                            }
-                    };
-            }
+            return new List<ThumbnailItem>
+                {
+                    new ThumbnailItem
+                        {
+                            Size = UserPhotoManager.RetinaFotoSize,
+                            ImgUrl = UserPhotoManager.GetRetinaPhotoURL(tenantId, UserId)
+                        },
+                    new ThumbnailItem
+                        {
+                            Size = UserPhotoManager.MaxFotoSize,
+                            ImgUrl = UserPhotoManager.GetMaxPhotoURL(tenantId, UserId)
+                        },
+                    new ThumbnailItem
+                        {
+                            Size = UserPhotoManager.BigFotoSize,
+                            ImgUrl = UserPhotoManager.GetBigPhotoURL(tenantId, UserId)
+                        },
+                    new ThumbnailItem
+                        {
+                            Size = UserPhotoManager.MediumFotoSize,
+                            ImgUrl = UserPhotoManager.GetMediumPhotoURL(tenantId, UserId)
+                        },
+                    new ThumbnailItem
+                        {
+                            Size = UserPhotoManager.SmallFotoSize,
+                            ImgUrl = UserPhotoManager.GetSmallPhotoURL(tenantId, UserId)
+                        }
+            };
         }
 
-        public void Save(List<ThumbnailItem> bitmaps)
+        public void Save(int tenantId, List<ThumbnailItem> bitmaps)
         {
             foreach (var item in bitmaps)
-                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, MainImgBitmap.RawFormat);
+                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, MainImgBitmap(tenantId).RawFormat);
         }
     }
 }

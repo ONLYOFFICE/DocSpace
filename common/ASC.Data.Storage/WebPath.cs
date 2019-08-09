@@ -72,7 +72,7 @@ namespace ASC.Data.Storage
 
         public static string GetPath(string relativePath)
         {
-            if (relativePath.StartsWith("~"))
+            if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
                 throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
             }
@@ -112,7 +112,7 @@ namespace ASC.Data.Storage
                     appender = Appenders.First();
                 }
 
-                if (appender.Append.StartsWith("~"))
+                if (appender.Append.IndexOf('~') == 0)
                 {
                     var query = string.Empty;
                     //Rel path

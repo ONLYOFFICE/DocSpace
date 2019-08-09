@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
-import IconButton from '../icon-button';
+import { Icons } from '../icons'
 
 const itemTruncate = css`
     white-space: nowrap;
@@ -73,25 +73,27 @@ const StyledDropdownItem = styled.button`
 
 const IconWrapper = styled.span`
     display: inline-block;
+    width: 16px;
     margin-right: 8px;
+    line-height: 14px;
 `;
 
-const DropDownItem = React.memo(props => {
+const DropDownItem = props => {
   //console.log("DropDownItem render");
   const { isSeparator, label, icon } = props;
-  const color = props.disabled || props.isHeader ? '#A3A9AE' : '#333333';
+  const color = props.disabled ? '#A3A9AE' : '#333333';
   
   return (
     <StyledDropdownItem {...props} >
       {icon &&
         <IconWrapper>
-          <IconButton size={16} iconName={icon} color={color} />
+          {React.createElement(Icons[icon], {size: "scale", color: color, isfill: true})}
         </IconWrapper>
       }
       {isSeparator ? '\u00A0' : label}
     </StyledDropdownItem>
   );
-});
+};
 
 DropDownItem.propTypes = {
   isSeparator: PropTypes.bool,

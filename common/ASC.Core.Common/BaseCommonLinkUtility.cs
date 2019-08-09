@@ -31,7 +31,7 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using HttpContext = ASC.Common.HttpContext;
+using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common
 {
@@ -77,58 +77,58 @@ namespace ASC.Core.Common
             get { return ToAbsolute("~"); }
         }
 
-        public static string ServerRootPath
+        public static string ServerRootPath(HttpContext context)
         {
-            get
+            UriBuilder result;
+            // first, take from current request
+            if (context != null && context.Request != null)
             {
-                var result = new UriBuilder(_serverRoot.Uri);
+                var u = context.Request.GetUrlRewriter();
+                result = new UriBuilder(u.Scheme, u.Host, u.Port);
 
-                // first, take from current request
-                if (HttpContext.Current != null && ASC.Common.HttpContext.Current.Request != null)
+                if (CoreContext.Configuration.Standalone && !result.Uri.IsLoopback)
                 {
-                    var u = ASC.Common.HttpContext.Current.Request.GetUrlRewriter();
-                    result = new UriBuilder(u.Scheme, u.Host, u.Port);
-
-                    if (CoreContext.Configuration.Standalone && !result.Uri.IsLoopback)
-                    {
-                        // save for stanalone
-                        _serverRoot.Host = result.Host;
-                    }
+                    // save for stanalone
+                    _serverRoot.Host = result.Host;
                 }
+            }
+            else
+            {
+                result = new UriBuilder(_serverRoot.Uri);
+            }
 
-                if (result.Uri.IsLoopback)
-                {
-                    // take values from db if localhost or no http context thread
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant();
-                    result.Host = tenant.TenantDomain;
+            if (result.Uri.IsLoopback)
+            {
+                // take values from db if localhost or no http context thread
+                var tenant = CoreContext.TenantManager.GetCurrentTenant(context);
+                result.Host = tenant.TenantDomain;
 
 #if DEBUG
-                    // for Visual Studio debug
-                    if (tenant.TenantAlias == LOCALHOST)
-                    {
-                        result.Host = LOCALHOST;
-                    }
+                // for Visual Studio debug
+                if (tenant.TenantAlias == LOCALHOST)
+                {
+                    result.Host = LOCALHOST;
+                }
 #endif
 
-                    if (!string.IsNullOrEmpty(tenant.MappedDomain))
+                if (!string.IsNullOrEmpty(tenant.MappedDomain))
+                {
+                    var mapped = tenant.MappedDomain.ToLowerInvariant();
+                    if (!mapped.Contains(Uri.SchemeDelimiter))
                     {
-                        var mapped = tenant.MappedDomain.ToLowerInvariant();
-                        if (!mapped.Contains(Uri.SchemeDelimiter))
-                        {
-                            mapped = Uri.UriSchemeHttp + Uri.SchemeDelimiter + mapped;
-                        }
-                        result = new UriBuilder(mapped);
+                        mapped = Uri.UriSchemeHttp + Uri.SchemeDelimiter + mapped;
                     }
+                    result = new UriBuilder(mapped);
                 }
-
-                return result.Uri.ToString().TrimEnd('/');
             }
+
+            return result.Uri.ToString().TrimEnd('/');
         }
 
-        public static string GetFullAbsolutePath(string virtualPath)
+        public static string GetFullAbsolutePath(HttpContext context, string virtualPath)
         {
-            if (String.IsNullOrEmpty(virtualPath))
-                return ServerRootPath;
+            if (string.IsNullOrEmpty(virtualPath))
+                return ServerRootPath(context);
 
             if (virtualPath.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
                 virtualPath.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase) ||
@@ -138,9 +138,9 @@ namespace ASC.Core.Common
 
             if (string.IsNullOrEmpty(virtualPath) || virtualPath.StartsWith("/"))
             {
-                return ServerRootPath + virtualPath;
+                return ServerRootPath(context) + virtualPath;
             }
-            return ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
+            return ServerRootPath(context) + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
         }
 
         public static string ToAbsolute(string virtualPath)

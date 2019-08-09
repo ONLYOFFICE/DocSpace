@@ -20,47 +20,77 @@ class IconButton extends React.Component{
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+
+        this.isNeedUpdate = false;
     }
 
    
     onMouseEnter(e){
-        this.setState({
-            currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
-            currentIconColor: this.props.hoverColor ? this.props.hoverColor : this.props.color
-        });
-        this.props.onMouseEnter && this.props.onMouseEnter(e);
+        if(!this.props.isDisabled){
+            this.setState({
+                currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
+                currentIconColor: this.props.hoverColor ? this.props.hoverColor : this.props.color
+            });
+            this.props.onMouseEnter && this.props.onMouseEnter(e);
+        }
     }
     onMouseLeave(e){
-        this.setState({
-            currentIconName: this.props.iconName,
-            currentIconColor: this.props.color
-        });
-        this.props.onMouseDown && this.props.onMouseDown(e);
+        if(!this.props.isDisabled){
+            this.setState({
+                currentIconName: this.props.iconName,
+                currentIconColor: this.props.color
+            });
+            this.props.onMouseDown && this.props.onMouseDown(e);
+        }
     }
     onMouseDown(e){
-        this.setState({
-            currentIconName: this.props.iconClickName ? this.props.iconClickName : this.props.iconName,
-            currentIconColor: this.props.clickColor ? this.props.clickColor :  this.props.color
-        });
-        this.props.onMouseDown && this.props.onMouseDown(e);
+        if(!this.props.isDisabled){
+            this.setState({
+                currentIconName: this.props.iconClickName ? this.props.iconClickName : this.props.iconName,
+                currentIconColor: this.props.clickColor ? this.props.clickColor :  this.props.color
+            });
+            this.props.onMouseDown && this.props.onMouseDown(e);
+        }
     }
     onMouseUp(e){
-        switch (e.nativeEvent.which) {
-            case 1: //Left click
-                this.setState({
-                    currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
-                    currentIconColor: this.props.iconHoverName ? this.props.iconHoverName :  this.props.color
-                });
-                this.props.onClick && this.props.onClick(e);
-                this.props.onMouseUp && this.props.onMouseUp(e);
-                break;
-            case 3://Right click
-                this.props.onMouseUp && this.props.onMouseUp(e);
-                break;
-        
-            default:
-                break;
+        if(!this.props.isDisabled){
+            switch (e.nativeEvent.which) {
+                case 1: //Left click
+                    this.setState({
+                        currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
+                        currentIconColor: this.props.iconHoverName ? this.props.iconHoverName :  this.props.color
+                    });
+                    this.props.onClick && this.props.onClick(e);
+                    this.props.onMouseUp && this.props.onMouseUp(e);
+                    break;
+                case 3://Right click
+                    this.props.onMouseUp && this.props.onMouseUp(e);
+                    break;
+            
+                default:
+                    break;
+                }
         }
+    }
+    shouldComponentUpdate(nextProps, nextState){
+        if(!this.isNeedUpdate){
+            for (let propsKey in this.props) {
+                if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
+                  this.isNeedUpdate = true;
+                  break;
+                }
+            }
+            for (let stateKey in this.state) {
+                if(typeof this.state[stateKey] != "function" && typeof this.state[stateKey] != "object" && this.state[stateKey] != nextState[stateKey]){
+                  this.isNeedUpdate = true;
+                  break;
+                }
+            }
+            if(!this.isNeedUpdate) return false;
+            else return true;
+        }
+        this.isNeedUpdate = false;
+        return true;
     }
     render(){
         //console.log("IconButton render");

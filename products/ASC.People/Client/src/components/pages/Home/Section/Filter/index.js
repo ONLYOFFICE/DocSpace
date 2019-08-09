@@ -13,16 +13,16 @@ const getData = () => {
       label: "Status",
       isHeader: true
     },
-    { key: "filter-status-active", group: "filter-status", label: "Active" },
-    { key: "filter-status-disabled",  group: "filter-status", label: "Disabled" },
+    { key: "1", group: "filter-status", label: "Active" },
+    { key: "2",  group: "filter-status", label: "Disabled" },
     {
       key: "filter-email",
       group: "filter-email",
       label: "Email",
       isHeader: true
     },
-    { key: "filter-email-active", group: "filter-email", label: "Active" },
-    { key: "filter-email-pending", group: "filter-email", label: "Pending" },
+    { key: "1", group: "filter-email", label: "Active" },
+    { key: "2", group: "filter-email", label: "Pending" },
     { 
       key: "filter-type", 
       group: "filter-type", 
@@ -30,9 +30,9 @@ const getData = () => {
       isHeader: true 
     },
     {
-      key: "filter-type-admin",  group: "filter-type", label: "Administrator" },
-    { key: "filter-type-user", group: "filter-type", label: "User" },
-    { key: "filter-type-guest", group: "filter-type", label: "Guest" },
+      key: "admin",  group: "filter-type", label: "Administrator" },
+    { key: "user", group: "filter-type", label: "User" },
+    { key: "guest", group: "filter-type", label: "Guest" },
     {
       key: "filter-group",
       group: "filter-group",
@@ -44,72 +44,78 @@ const getData = () => {
 };
 
 const getSortData = () => {
-  return [{ id: "name", label: "Name" }, { id: "surname", label: "Surname" }];
+  return [{ key: "firstname", label: "Name" }, { key: "lastname", label: "Surname" }];
 };
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(
     find(filterValues, value => {
-      return value.key === "filter-status";
+      return value.group === "filter-status";
     }),
-    "value"
+    "key"
   );
 
-  if (employeeStatus === "filter-status-active") {
-    return 1;
-  } else if (employeeStatus === "filter-status-disabled") {
-    return 2;
-  }
-
-  return null;
+  return employeeStatus ? +employeeStatus : null;
 };
 
 const getActivationStatus = filterValues => {
   const activationStatus = result(
     find(filterValues, value => {
-      return value.key === "filter-email";
+      return value.group === "filter-email";
     }),
-    "value"
+    "key"
   );
 
-  if (activationStatus === "filter-email-active") {
-    return 1;
-  } else if (activationStatus === "filter-email-pending") {
-    return 2;
-  }
-
-  return null;
+  return activationStatus ? +activationStatus : null;
 };
 
 const getRole = filterValues => {
   const employeeStatus = result(
     find(filterValues, value => {
-      return value.key === "filter-type";
+      return value.group === "filter-type";
     }),
-    "value"
+    "key"
   );
 
-  if (employeeStatus === "filter-type-admin") {
-    return "admin";
-  } if (employeeStatus === "filter-type-user") {
-    return "user";
-  } else if (employeeStatus === "filter-type-guest") {
-    return "guest";
-  }
-
-  return null;
+  return employeeStatus || null;
 };
 
-const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => (
+const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => { 
+  const selectedFilterData = {
+    filterValue: [],
+    sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
+    sortId: filter.sortBy,
+  };
+
+  if(filter.search) {
+    selectedFilterData.inputValue = filter.search;
+  }
+
+  if(filter.employeeStatus) {
+    selectedFilterData.filterValue.push({ key: `${filter.employeeStatus}`, group: "filter-status" });
+  }
+
+  if(filter.activationStatus) {
+    selectedFilterData.filterValue.push({ key: `${filter.activationStatus}`, group: "filter-email" });
+  }
+
+  if(filter.role) {
+    selectedFilterData.filterValue.push({ key: filter.role, group: "filter-type" });
+  }
+
+  
+
+  return (
   <FilterInput
     getFilterData={getData}
     getSortData={getSortData}
+    selectedFilterData={selectedFilterData}
     onFilter={data => {
       console.log(data);
 
       const newFilter = filter.clone();
       newFilter.page = 0;
-      newFilter.sortBy = data.sortId === "name" ? "firstname" : "lastname";
+      newFilter.sortBy = data.sortId;
       newFilter.sortOrder =
         data.sortDirection === "desc" ? "descending" : "ascending";
       newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
@@ -121,7 +127,7 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => (
       fetchPeople(newFilter).finally(() => onLoading(false));
     }}
   />
-);
+)};
 
 function mapStateToProps(state) {
   return {

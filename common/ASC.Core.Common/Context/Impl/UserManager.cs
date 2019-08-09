@@ -62,81 +62,84 @@ namespace ASC.Core
 
         #region Users
 
-        public UserInfo[] GetUsers()
+        public UserInfo[] GetUsers(Tenant tenant)
         {
-            return GetUsers(EmployeeStatus.Default);
+            return GetUsers(tenant, EmployeeStatus.Default);
         }
 
-        public UserInfo[] GetUsers(EmployeeStatus status)
+        public UserInfo[] GetUsers(Tenant tenant, EmployeeStatus status)
         {
-            return GetUsers(status, EmployeeType.All);
+            return GetUsers(tenant, status, EmployeeType.All);
         }
 
-        public UserInfo[] GetUsers(EmployeeStatus status, EmployeeType type)
+        public UserInfo[] GetUsers(Tenant tenant, EmployeeStatus status, EmployeeType type)
         {
-            var users = GetUsersInternal().Where(u => (u.Status & status) == u.Status);
+            var users = GetUsersInternal(tenant.TenantId).Where(u => (u.Status & status) == u.Status);
             switch (type)
             {
                 case EmployeeType.User:
-                    users = users.Where(u => !u.IsVisitor());
+                    users = users.Where(u => !u.IsVisitor(tenant));
                     break;
                 case EmployeeType.Visitor:
-                    users = users.Where(u => u.IsVisitor());
+                    users = users.Where(u => u.IsVisitor(tenant));
                     break;
             }
             return users.ToArray();
         }
 
-        public IEnumerable<UserInfo> GetUsers(bool isAdmin, EmployeeStatus? employeeStatus, List<Guid> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        public IEnumerable<UserInfo> GetUsers(int tenantId, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
         {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
             return userService.GetUsers(tenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total).Values;
         }
 
-        public DateTime GetMaxUsersLastModified()
+        public DateTime GetMaxUsersLastModified(int tenantId)
         {
-            return userService.GetUsers(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime))
+            return userService.GetUsers(tenantId, default)
                 .Values
                 .Select(g => g.LastModified)
                 .DefaultIfEmpty()
                 .Max();
         }
 
-        public string[] GetUserNames(EmployeeStatus status)
+        public string[] GetUserNames(Tenant tenant, EmployeeStatus status)
         {
-            return GetUsers(status)
+            return GetUsers(tenant, status)
                 .Select(u => u.UserName)
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToArray();
         }
 
-        public UserInfo GetUserByUserName(string username)
+        public UserInfo GetUserByUserName(int tenantId, string username)
         {
-            return GetUsersInternal()
+            return GetUsersInternal(tenantId)
                 .FirstOrDefault(u => string.Compare(u.UserName, username, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
 
-        public UserInfo GetUserBySid(string sid)
+        public UserInfo GetUserBySid(int tenantId, string sid)
         {
-            return GetUsersInternal()
+            return GetUsersInternal(tenantId)
                 .FirstOrDefault(u => u.Sid != null && string.Compare(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
 
-        public UserInfo GetSsoUserByNameId(string nameId)
+        public UserInfo GetSsoUserByNameId(int tenantId, string nameId)
         {
-            return GetUsersInternal()
+            return GetUsersInternal(tenantId)
                 .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && string.Compare(u.SsoNameId, nameId, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
-        public bool IsUserNameExists(string username)
+        public bool IsUserNameExists(Tenant tenant, string username)
         {
-            return GetUserNames(EmployeeStatus.All)
+            return GetUserNames(tenant, EmployeeStatus.All)
                 .Contains(username, StringComparer.CurrentCultureIgnoreCase);
         }
 
         public UserInfo GetUsers(Guid id)
         {
+            return GetUsers(id, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+        }
+        public UserInfo GetUsers(Guid id, int tenantId)
+        {
             if (IsSystemUser(id)) return systemUsers[id];
-            var u = userService.GetUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+            var u = userService.GetUser(tenantId, id);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
@@ -146,9 +149,9 @@ namespace ASC.Core
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public bool UserExists(Guid id)
+        public bool UserExists(Guid id, int tenantId)
         {
-            return !GetUsers(id).Equals(Constants.LostUser);
+            return !GetUsers(id, tenantId).Equals(Constants.LostUser);
         }
 
         public bool IsSystemUser(Guid id)
@@ -156,20 +159,20 @@ namespace ASC.Core
             return systemUsers.ContainsKey(id);
         }
 
-        public UserInfo GetUserByEmail(string email)
+        public UserInfo GetUserByEmail(int tenantId, string email)
         {
             if (string.IsNullOrEmpty(email)) return Constants.LostUser;
 
-            return GetUsersInternal()
+            return GetUsersInternal(tenantId)
                 .FirstOrDefault(u => string.Compare(u.Email, email, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
         }
 
-        public UserInfo[] Search(string text, EmployeeStatus status)
+        public UserInfo[] Search(Tenant tenant, string text, EmployeeStatus status)
         {
-            return Search(text, status, Guid.Empty);
+            return Search(tenant, text, status, Guid.Empty);
         }
 
-        public UserInfo[] Search(string text, EmployeeStatus status, Guid groupId)
+        public UserInfo[] Search(Tenant tenant, string text, EmployeeStatus status, Guid groupId)
         {
             if (text == null || text.Trim() == string.Empty) return new UserInfo[0];
 
@@ -177,8 +180,8 @@ namespace ASC.Core
             if (words.Length == 0) return new UserInfo[0];
 
             var users = groupId == Guid.Empty ?
-                GetUsers(status) :
-                GetUsersByGroup(groupId).Where(u => (u.Status & status) == status);
+                GetUsers(tenant, status) :
+                GetUsersByGroup(tenant, groupId).Where(u => (u.Status & status) == status);
 
             var findUsers = new List<UserInfo>();
             foreach (var user in users)
@@ -199,83 +202,83 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(Tenant tenant, UserInfo u, bool isVisitor = false)
         {
             if (IsSystemUser(u.ID)) return systemUsers[u.ID];
-            if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            else SecurityContext.DemandPermissions(new UserSecurityProvider(u.ID), Constants.Action_EditUser);
+            if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
+            else SecurityContext.DemandPermissions(tenant, new UserSecurityProvider(u.ID), Constants.Action_EditUser);
 
-            if (Constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
+            if (Constants.MaxEveryoneCount <= GetUsersByGroup(tenant, Constants.GroupEveryone.ID).Length)
             {
                 throw new TenantQuotaException("Maximum number of users exceeded");
             }
 
             if (u.Status == EmployeeStatus.Active)
             {
-                var q = CoreContext.TenantManager.GetTenantQuota(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-                if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
+                var q = CoreContext.TenantManager.GetTenantQuota(tenant.TenantId);
+                if (q.ActiveUsers < GetUsersByGroup(tenant, Constants.GroupUser.ID).Length)
                 {
                     throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
                 }
             }
 
-            var newUser = userService.SaveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, u);
+            var newUser = userService.SaveUser(tenant.TenantId, u);
 
             return newUser;
         }
 
-        public void DeleteUser(Guid id)
+        public void DeleteUser(Tenant tenant, Guid id)
         {
             if (IsSystemUser(id)) return;
-            SecurityContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            if (id == CoreContext.TenantManager.GetCurrentTenant().OwnerId)
+            SecurityContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
+            if (id == tenant.OwnerId)
             {
                 throw new InvalidOperationException("Can not remove tenant owner.");
             }
 
-            userService.RemoveUser(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+            userService.RemoveUser(tenant.TenantId, id);
         }
 
-        public void SaveUserPhoto(Guid id, byte[] photo)
+        public void SaveUserPhoto(Tenant tenant, Guid id, byte[] photo)
         {
             if (IsSystemUser(id)) return;
-            SecurityContext.DemandPermissions(new UserSecurityProvider(id), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(tenant, new UserSecurityProvider(id), Constants.Action_EditUser);
 
-            userService.SetUserPhoto(CoreContext.TenantManager.GetCurrentTenant().TenantId, id, photo);
+            userService.SetUserPhoto(tenant.TenantId, id, photo);
         }
 
-        public byte[] GetUserPhoto(Guid id)
+        public byte[] GetUserPhoto(int tenantId, Guid id)
         {
             if (IsSystemUser(id)) return null;
-            return userService.GetUserPhoto(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+            return userService.GetUserPhoto(tenantId, id);
         }
 
-        public IEnumerable<Guid> GetUserGroupsId(Guid id)
+        public IEnumerable<Guid> GetUserGroupsId(int tenantId, Guid id)
         {
-            return GetUsers(id).GetUserGroupsId();
+            return GetUsers(id, tenantId).GetUserGroupsId(tenantId);
         }
 
-        public GroupInfo[] GetUserGroups(Guid id)
+        public GroupInfo[] GetUserGroups(Tenant tenant, Guid id)
         {
-            return GetUsers(id).GetGroups(IncludeType.Distinct, Guid.Empty);
+            return GetUsers(id, tenant.TenantId).GetGroups(tenant, IncludeType.Distinct, Guid.Empty);
         }
 
-        public GroupInfo[] GetUserGroups(Guid id, Guid categoryID)
+        public GroupInfo[] GetUserGroups(Tenant tenant, Guid id, Guid categoryID)
         {
-            return GetUsers(id).GetGroups(IncludeType.Distinct, categoryID);
+            return GetUsers(id, tenant.TenantId).GetGroups(tenant, IncludeType.Distinct, categoryID);
         }
 
-        public GroupInfo[] GetUserGroups(Guid userID, IncludeType includeType)
+        public GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType)
         {
-            return GetUsers(userID).GetGroups(includeType, null);
+            return GetUsers(userID, tenant.TenantId).GetGroups(tenant, includeType, null);
         }
 
-        internal GroupInfo[] GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
+        internal GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType, Guid? categoryId)
         {
             var result = new List<GroupInfo>();
             var distinctUserGroups = new List<GroupInfo>();
 
-            var refs = GetRefsInternal();
+            var refs = GetRefsInternal(tenant.TenantId);
             IEnumerable<UserGroupRef> userRefs = null;
             var store = refs as UserGroupRefStore;
             if (store != null)
@@ -285,9 +288,9 @@ namespace ASC.Core
 
             var userRefsContainsNotRemoved = userRefs != null ? userRefs.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList() : null;
 
-            foreach (var g in GetGroupsInternal().Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
+            foreach (var g in GetGroupsInternal(tenant.TenantId).Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
             {
-                if (((g.CategoryID == Constants.SysGroupCategoryId || userRefs == null) && IsUserInGroupInternal(userID, g.ID, refs)) ||
+                if (((g.CategoryID == Constants.SysGroupCategoryId || userRefs == null) && IsUserInGroupInternal(tenant, userID, g.ID, refs)) ||
                     (userRefsContainsNotRemoved != null && userRefsContainsNotRemoved.Any(r => r.GroupId == g.ID)))
                 {
                     distinctUserGroups.Add(g);
@@ -304,11 +307,11 @@ namespace ASC.Core
             return result.ToArray();
         }
 
-        internal IEnumerable<Guid> GetUserGroupsGuids(Guid userID)
+        internal IEnumerable<Guid> GetUserGroupsGuids(int tenantId, Guid userID)
         {
             var result = new List<Guid>();
 
-            var refs = GetRefsInternal();
+            var refs = GetRefsInternal(tenantId);
 
             var store = refs as UserGroupRefStore;
             if (store != null)
@@ -328,38 +331,36 @@ namespace ASC.Core
             return result;
         }
 
-        public bool IsUserInGroup(Guid userId, Guid groupId)
+        public bool IsUserInGroup(Tenant tenant, Guid userId, Guid groupId)
         {
-            return IsUserInGroupInternal(userId, groupId, GetRefsInternal());
+            return IsUserInGroupInternal(tenant, userId, groupId, GetRefsInternal(tenant.TenantId));
         }
 
-        public UserInfo[] GetUsersByGroup(Guid groupId, EmployeeStatus employeeStatus = EmployeeStatus.Default)
+        public UserInfo[] GetUsersByGroup(Tenant tenant, Guid groupId, EmployeeStatus employeeStatus = EmployeeStatus.Default)
         {
-            var refs = GetRefsInternal();
-            return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.ID, groupId, refs)).ToArray();
+            var refs = GetRefsInternal(tenant.TenantId);
+            return GetUsers(tenant, employeeStatus).Where(u => IsUserInGroupInternal(tenant, u.ID, groupId, refs)).ToArray();
         }
 
-        public void AddUserIntoGroup(Guid userId, Guid groupId)
+        public void AddUserIntoGroup(Tenant tenant, Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId)
             {
                 return;
             }
-            SecurityContext.DemandPermissions(Constants.Action_EditGroups);
+            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
-            userService.SaveUserGroupRef(
-                CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
+            userService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
             GetUsers(userId).ResetGroupCache();
         }
 
-        public void RemoveUserFromGroup(Guid userId, Guid groupId)
+        public void RemoveUserFromGroup(Tenant tenant, Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
-            SecurityContext.DemandPermissions(Constants.Action_EditGroups);
+            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
-            userService.RemoveUserGroupRef(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId, groupId, UserGroupRefType.Contains);
+            userService.RemoveUserGroupRef(tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
 
             GetUsers(userId).ResetGroupCache();
         }
@@ -369,46 +370,46 @@ namespace ASC.Core
 
         #region Company
 
-        public GroupInfo[] GetDepartments()
+        public GroupInfo[] GetDepartments(int tenantId)
         {
-            return CoreContext.UserManager.GetGroups();
+            return GetGroups(tenantId);
         }
 
-        public Guid GetDepartmentManager(Guid deparmentID)
+        public Guid GetDepartmentManager(int tenantId, Guid deparmentID)
         {
-            return GetRefsInternal()
+            return GetRefsInternal(tenantId)
                 .Values
                 .Where(r => r.RefType == UserGroupRefType.Manager && r.GroupId == deparmentID && !r.Removed)
                 .Select(r => r.UserId)
                 .SingleOrDefault();
         }
 
-        public void SetDepartmentManager(Guid deparmentID, Guid userID)
+        public void SetDepartmentManager(int tenantId, Guid deparmentID, Guid userID)
         {
-            var managerId = GetDepartmentManager(deparmentID);
+            var managerId = GetDepartmentManager(tenantId, deparmentID);
             if (managerId != Guid.Empty)
             {
                 userService.RemoveUserGroupRef(
-                    CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    tenantId,
                     managerId, deparmentID, UserGroupRefType.Manager);
             }
             if (userID != Guid.Empty)
             {
                 userService.SaveUserGroupRef(
-                    CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    tenantId,
                     new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
             }
         }
 
-        public UserInfo GetCompanyCEO()
+        public UserInfo GetCompanyCEO(int tenantId)
         {
-            var id = GetDepartmentManager(Guid.Empty);
+            var id = GetDepartmentManager(tenantId, Guid.Empty);
             return id != Guid.Empty ? GetUsers(id) : null;
         }
 
-        public void SetCompanyCEO(Guid userId)
+        public void SetCompanyCEO(int tenantId, Guid userId)
         {
-            SetDepartmentManager(Guid.Empty, userId);
+            SetDepartmentManager(tenantId, Guid.Empty, userId);
         }
 
         #endregion Company
@@ -416,56 +417,56 @@ namespace ASC.Core
 
         #region Groups
 
-        public GroupInfo[] GetGroups()
+        public GroupInfo[] GetGroups(int tenantId)
         {
-            return GetGroups(Guid.Empty);
+            return GetGroups(tenantId, Guid.Empty);
         }
 
-        public GroupInfo[] GetGroups(Guid categoryID)
+        public GroupInfo[] GetGroups(int tenantId, Guid categoryID)
         {
-            return GetGroupsInternal()
+            return GetGroupsInternal(tenantId)
                 .Where(g => g.CategoryID == categoryID)
                 .ToArray();
         }
 
-        public GroupInfo GetGroupInfo(Guid groupID)
+        public GroupInfo GetGroupInfo(int tenantId, Guid groupID)
         {
-            return GetGroupsInternal()
+            return GetGroupsInternal(tenantId)
                 .SingleOrDefault(g => g.ID == groupID) ?? Constants.LostGroupInfo;
         }
 
-        public GroupInfo GetGroupInfoBySid(string sid)
+        public GroupInfo GetGroupInfoBySid(int tenantId, string sid)
         {
-            return GetGroupsInternal()
+            return GetGroupsInternal(tenantId)
                 .SingleOrDefault(g => g.Sid == sid) ?? Constants.LostGroupInfo;
         }
 
-        public DateTime GetMaxGroupsLastModified()
+        public DateTime GetMaxGroupsLastModified(int tenantId)
         {
-            return userService.GetGroups(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime))
+            return userService.GetGroups(tenantId, default)
                 .Values
                 .Select(g => g.LastModified)
                 .DefaultIfEmpty()
                 .Max();
         }
 
-        public GroupInfo SaveGroupInfo(GroupInfo g)
+        public GroupInfo SaveGroupInfo(Tenant tenant, GroupInfo g)
         {
             if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
             if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
-            SecurityContext.DemandPermissions(Constants.Action_EditGroups);
+            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
-            var newGroup = userService.SaveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, ToGroup(g));
+            var newGroup = userService.SaveGroup(tenant.TenantId, ToGroup(g));
             return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
         }
 
-        public void DeleteGroup(Guid id)
+        public void DeleteGroup(Tenant tenant, Guid id)
         {
             if (Constants.LostGroupInfo.Equals(id)) return;
             if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
-            SecurityContext.DemandPermissions(Constants.Action_EditGroups);
+            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
-            userService.RemoveGroup(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
+            userService.RemoveGroup(tenant.TenantId, id);
         }
 
         #endregion Groups
@@ -487,31 +488,29 @@ namespace ASC.Core
         }
 
 
-        private IEnumerable<UserInfo> GetUsersInternal()
+        private IEnumerable<UserInfo> GetUsersInternal(int tenantId)
         {
-            return userService.GetUsers(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime))
+            return userService.GetUsers(tenantId, default)
                 .Values
                 .Where(u => !u.Removed);
         }
 
-        private IEnumerable<GroupInfo> GetGroupsInternal()
+        private IEnumerable<GroupInfo> GetGroupsInternal(int tenantId)
         {
-            return userService.GetGroups(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime))
+            return userService.GetGroups(tenantId, default)
                 .Values
                 .Where(g => !g.Removed)
                 .Select(g => new GroupInfo(g.CategoryId) { ID = g.Id, Name = g.Name, Sid = g.Sid })
                 .Concat(Constants.BuildinGroups);
         }
 
-        private IDictionary<string, UserGroupRef> GetRefsInternal()
+        private IDictionary<string, UserGroupRef> GetRefsInternal(int tenantId)
         {
-            return userService.GetUserGroupRefs(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+            return userService.GetUserGroupRefs(tenantId, default);
         }
 
-        private bool IsUserInGroupInternal(Guid userId, Guid groupId, IDictionary<string, UserGroupRef> refs)
+        private bool IsUserInGroupInternal(Tenant tenant, Guid userId, Guid groupId, IDictionary<string, UserGroupRef> refs)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
-
             if (groupId == Constants.GroupEveryone.ID)
             {
                 return true;

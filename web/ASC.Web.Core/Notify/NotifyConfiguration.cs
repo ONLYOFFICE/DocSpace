@@ -124,6 +124,7 @@ namespace ASC.Web.Studio.Core.Notify
                      {
                          // culture
                          var u = Constants.LostUser;
+                         var tenant = CoreContext.TenantManager.GetCurrentTenant();
 
                          if (32 <= r.Recipient.ID.Length)
                          {
@@ -135,25 +136,25 @@ namespace ASC.Web.Studio.Core.Notify
                              catch (FormatException) { }
                              catch (OverflowException) { }
 
-                             if (guid != default(Guid))
+                             if (guid != default)
                              {
-                                 u = CoreContext.UserManager.GetUsers(guid);
+                                 u = CoreContext.UserManager.GetUsers(guid, tenant.TenantId);
                              }
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByEmail(r.Recipient.ID);
+                             u = CoreContext.UserManager.GetUserByEmail(tenant.TenantId, r.Recipient.ID);
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByUserName(r.Recipient.ID);
+                             u = CoreContext.UserManager.GetUserByUserName(tenant.TenantId, r.Recipient.ID);
                          }
 
                          if (!Constants.LostUser.Equals(u))
                          {
-                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : CoreContext.TenantManager.GetCurrentTenant().GetCulture();
+                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
                              Thread.CurrentThread.CurrentCulture = culture;
                              Thread.CurrentThread.CurrentUICulture = culture;
 
@@ -171,7 +172,7 @@ namespace ASC.Web.Studio.Core.Notify
                              }
                              if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                              {
-                                 return !WebItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 return !WebItemSecurity.IsAvailableForUser(tenant, productId, u.ID);
                              }
                          }
 
@@ -230,10 +231,12 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
+            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+
             if (SecurityContext.IsAuthenticated)
             {
                 aid = SecurityContext.CurrentAccount.ID;
-                if (CoreContext.UserManager.UserExists(aid))
+                if (CoreContext.UserManager.UserExists(aid, tenant.TenantId))
                 {
                     aname = CoreContext.UserManager.GetUsers(aid).DisplayUserName(false)
                         .Replace(">", "&#62")
@@ -244,7 +247,7 @@ namespace ASC.Web.Studio.Core.Notify
             IProduct product;
             IModule module;
             //TODOL httpContext
-            CommonLinkUtility.GetLocationByRequest(out product, out module, null);
+            CommonLinkUtility.GetLocationByRequest(tenant, out product, out module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;

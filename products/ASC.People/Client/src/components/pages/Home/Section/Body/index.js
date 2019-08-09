@@ -173,7 +173,6 @@ class SectionBodyContent extends React.PureComponent {
             itemSize={46} // ContentRow height
             itemCount={users.length}
             itemData={users}
-            ref={this.refList}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {({ data, index, style }) => (
@@ -194,6 +193,10 @@ class SectionBodyContent extends React.PureComponent {
     );
   }
 }
+
+SectionBodyContent.defaultProps = {
+  users: []
+};
 
 const mapStateToProps = state => {
   return {

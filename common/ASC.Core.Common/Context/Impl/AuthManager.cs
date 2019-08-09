@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using ASC.Common.Security.Authentication;
 using ASC.Core.Security.Authentication;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 namespace ASC.Core
@@ -43,9 +44,9 @@ namespace ASC.Core
         }
 
 
-        public IUserAccount[] GetUserAccounts()
+        public IUserAccount[] GetUserAccounts(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(u)).ToArray();
+            return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(u)).ToArray();
         }
 
         public void SetUserPassword(Guid userID, string password)

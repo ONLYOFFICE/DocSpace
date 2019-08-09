@@ -23,11 +23,6 @@
  *
 */
 
-
-using Microsoft.AspNetCore.Http.Extensions;
-using System;
-using System.Diagnostics;
-
 namespace ASC.Collections
 {
     public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
@@ -87,17 +82,10 @@ namespace ASC.Collections
 
         protected override void OnHit(string fullKey)
         {
-            Debug.Print("{0} http cache hit:{1}", Common.HttpContext.Current.Request.GetDisplayUrl(), fullKey);
         }
 
         protected override void OnMiss(string fullKey)
         {
-            Uri uri = null;
-            if (Common.HttpContext.Current != null)
-            {
-                uri = new Uri(Common.HttpContext.Current.Request.GetDisplayUrl());
-            }
-            Debug.Print("{0} http cache miss:{1}", uri == null ? "no-context" : uri.AbsolutePath, fullKey);
         }
 
     }

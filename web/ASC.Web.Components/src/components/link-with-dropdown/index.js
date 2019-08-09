@@ -95,10 +95,8 @@ const StyledSpan = styled.span`
     }
 `;
 
-const SimpleText = ({ color, fontSize, isTextOverflow, ...props }) => <Text.Body as="span" {...props} />
+const SimpleText = ({ color, fontSize, isTextOverflow, ...props }) => <Text.Body as="span" fontSize={fontSize} color={getColor(color)} {...props} />
 const StyledText = styled(SimpleText)`
-    ${colorCss};
-    font-size: ${props => props.fontSize}px;
 
     ${props => (props.isTextOverflow && css`
         white-space: nowrap;
@@ -222,7 +220,7 @@ LinkWithDropdown.defaultProps = {
     color: 'black',
     data: [],
     dropdownType: 'alwaysDotted',
-    fontSize: 12,
+    fontSize: 13,
     isBold: false,
     isSemitransparent: false,
     isTextOverflow: true,

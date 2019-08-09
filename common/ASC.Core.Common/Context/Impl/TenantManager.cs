@@ -24,11 +24,6 @@
 */
 
 
-using ASC.Common;
-using ASC.Common.Notify.Engine;
-using ASC.Common.Threading;
-using ASC.Core.Billing;
-using ASC.Core.Tenants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +31,11 @@ using System.Net;
 using System.Threading;
 using System.Web;
 
+
+using ASC.Common.Notify.Engine;
+using ASC.Core.Billing;
+using ASC.Core.Tenants;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
@@ -138,21 +138,21 @@ namespace ASC.Core
             tenantService.RemoveTenant(tenantId, auto);
         }
 
-        public Tenant GetCurrentTenant()
+        public Tenant GetCurrentTenant(HttpContext context)
         {
-            return GetCurrentTenant(true);
+            return GetCurrentTenant(true, context);
         }
 
-        public Tenant GetCurrentTenant(bool throwIfNotFound)
+        public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
             Tenant tenant = null;
-            if (HttpContext.Current != null)
+            if (context != null)
             {
-                tenant = HttpContext.Current.Items[CURRENT_TENANT] as Tenant;
-                if (tenant == null && HttpContext.Current.Request != null)
+                tenant = context.Items[CURRENT_TENANT] as Tenant;
+                if (tenant == null && context.Request != null)
                 {
-                    tenant = GetTenant(HttpContext.Current.Request.GetUrlRewriter().Host);
-                    HttpContext.Current.Items[CURRENT_TENANT] = tenant;
+                    tenant = GetTenant(context.Request.GetUrlRewriter().Host);
+                    context.Items[CURRENT_TENANT] = tenant;
                 }
             }
             if (tenant == null)
@@ -166,28 +166,42 @@ namespace ASC.Core
             return tenant;
         }
 
+        public Tenant GetCurrentTenant()
+        {
+            return GetCurrentTenant(true);
+        }
+
+        public Tenant GetCurrentTenant(bool throwIfNotFound)
+        {
+            return GetCurrentTenant(throwIfNotFound, ASC.Common.HttpContext.Current);
+        }
+
         public void SetCurrentTenant(Tenant tenant)
         {
             if (tenant != null)
             {
                 CallContext.SetData(CURRENT_TENANT, tenant);
-                if (HttpContext.Current != null)
+                if (ASC.Common.HttpContext.Current != null)
                 {
-                    HttpContext.Current.Items[CURRENT_TENANT] = tenant;
+                    ASC.Common.HttpContext.Current.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
             }
         }
 
-        public void SetCurrentTenant(int tenantId)
+        public Tenant SetCurrentTenant(int tenantId)
         {
-            SetCurrentTenant(GetTenant(tenantId));
+            var result = GetTenant(tenantId);
+            SetCurrentTenant(result);
+            return result;
         }
 
-        public void SetCurrentTenant(string domain)
+        public Tenant SetCurrentTenant(string domain)
         {
-            SetCurrentTenant(GetTenant(domain));
+            var result = GetTenant(domain);
+            SetCurrentTenant(result);
+            return result;
         }
 
         public void CheckTenantAddress(string address)

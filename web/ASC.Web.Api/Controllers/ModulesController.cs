@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ASC.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -15,7 +16,7 @@ namespace ASC.Web.Api.Controllers
         {
             var result = new List<string>();
 
-            foreach (var a in WebItemManager.Instance.GetItems(WebZoneType.StartProductList))
+            foreach (var a in WebItemManager.Instance.GetItems(CoreContext.TenantManager.GetCurrentTenant(), WebZoneType.StartProductList))
             {
                 result.Add(a.ApiURL);
             }

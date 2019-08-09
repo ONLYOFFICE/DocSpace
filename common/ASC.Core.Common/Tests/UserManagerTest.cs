@@ -39,98 +39,95 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void SearchUsers()
         {
-            CoreContext.TenantManager.SetCurrentTenant(0);
-
-            var users = CoreContext.UserManager.Search(null, EmployeeStatus.Active);
+            var tenant = CoreContext.TenantManager.SetCurrentTenant(0);
+            var users = CoreContext.UserManager.Search(tenant, null, EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("  ", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "  ", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("АбРаМсКй", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "АбРаМсКй", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("АбРаМсКий", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "АбРаМсКий", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);//Абрамский уволился
 
-            users = CoreContext.UserManager.Search("АбРаМсКий", EmployeeStatus.All);
+            users = CoreContext.UserManager.Search(tenant, "АбРаМсКий", EmployeeStatus.All);
             Assert.AreNotEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("иванов николай", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "иванов николай", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("ведущий програм", EmployeeStatus.Active);
+            users = CoreContext.UserManager.Search(tenant, "ведущий програм", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = CoreContext.UserManager.Search(tenant, "баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreNotEqual(0, users.Length);
 
-            users = CoreContext.UserManager.Search("иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = CoreContext.UserManager.Search(tenant, "иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreEqual(0, users);
         }
 
         [Test]
         public void DepartmentManagers()
         {
-            CoreContext.TenantManager.SetCurrentTenant(1024);
+            var tenant = CoreContext.TenantManager.SetCurrentTenant(1024);
 
-            var deps = CoreContext.UserManager.GetDepartments();
-            var users = CoreContext.UserManager.GetUsers();
+            var deps = CoreContext.UserManager.GetDepartments(tenant.TenantId);
+            var users = CoreContext.UserManager.GetUsers(tenant);
 
             var g1 = deps[0];
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
 
-            //проверка кэша ceo
-            var ceoTemp = CoreContext.UserManager.GetCompanyCEO();
-            CoreContext.UserManager.SetCompanyCEO(ceo.ID);
-            ceoTemp = CoreContext.UserManager.GetCompanyCEO();
+            var ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
+            CoreContext.UserManager.SetCompanyCEO(tenant.TenantId, ceo.ID);
+            ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
             Assert.AreEqual(ceo, ceoTemp);
 
             Thread.Sleep(TimeSpan.FromSeconds(6));
-            ceoTemp = CoreContext.UserManager.GetCompanyCEO();
+            ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
             Assert.AreEqual(ceo, ceoTemp);
 
-            //установка манагеров
-            CoreContext.UserManager.SetDepartmentManager(g1.ID, u1.ID);
+            CoreContext.UserManager.SetDepartmentManager(tenant.TenantId, g1.ID, u1.ID);
 
-            CoreContext.UserManager.SetDepartmentManager(g1.ID, u2.ID);
+            CoreContext.UserManager.SetDepartmentManager(tenant.TenantId, g1.ID, u2.ID);
         }
 
         [Test]
         public void UserGroupsPerformanceTest()
         {
-            CoreContext.TenantManager.SetCurrentTenant(0);
+            var tenant = CoreContext.TenantManager.SetCurrentTenant(0);
 
-            foreach (var u in CoreContext.UserManager.GetUsers())
+            foreach (var u in CoreContext.UserManager.GetUsers(tenant))
             {
-                var groups = CoreContext.UserManager.GetGroups(Guid.Empty);
+                var groups = CoreContext.UserManager.GetGroups(tenant.TenantId, Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in CoreContext.UserManager.GetUserGroups(u.ID))
+                foreach (var g in CoreContext.UserManager.GetUserGroups(tenant, u.ID))
                 {
-                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(g.ID)).UserName;
+                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID), tenant.TenantId).UserName;
                 }
             }
             var stopwatch = Stopwatch.StartNew();
-            foreach (var u in CoreContext.UserManager.GetUsers())
+            foreach (var u in CoreContext.UserManager.GetUsers(tenant))
             {
-                var groups = CoreContext.UserManager.GetGroups(Guid.Empty);
+                var groups = CoreContext.UserManager.GetGroups(tenant.TenantId, Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in CoreContext.UserManager.GetUserGroups(u.ID))
+                foreach (var g in CoreContext.UserManager.GetUserGroups(tenant, u.ID))
                 {
-                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(g.ID)).UserName;
+                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID), tenant.TenantId).UserName;
                 }
             }
             stopwatch.Stop();
 
             stopwatch.Restart();
-            var users = CoreContext.UserManager.GetUsersByGroup(Constants.GroupUser.ID);
-            var visitors = CoreContext.UserManager.GetUsersByGroup(Constants.GroupVisitor.ID);
-            var all = CoreContext.UserManager.GetUsers();
+            var users = CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID);
+            var visitors = CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupVisitor.ID);
+            var all = CoreContext.UserManager.GetUsers(tenant);
             Assert.IsNotNull(users);
             Assert.IsNotNull(visitors);
             Assert.IsNotNull(all);

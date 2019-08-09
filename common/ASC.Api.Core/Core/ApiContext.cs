@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Core;
+using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Api.Core
@@ -34,29 +36,28 @@ namespace ASC.Api.Core
     public class ApiContext : ICloneable
     {
         public HttpContext HttpContext { get; set; }
+        private IQueryCollection Query { get; set; }
+        private Tenant tenant;
+        public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant()); } }
 
         public ApiContext(HttpContext httpContext)
         {
             if (httpContext == null) return;
             HttpContext = httpContext;
 
-            //TODO
-            uint ItemsPerPage = 1000;
+            if (HttpContext.Request.QueryString != null)
+            {
+                Query = HttpContext.Request.Query;
+            }
+
             Count = 0;
             //Try parse values
-            string count = GetRequestValue("count");
-            ulong countParsed;
-            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count,out countParsed))
+            var count = GetRequestValue("count");
+            if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
-                SpecifiedCount = (long)Math.Max(0, Math.Min(ItemsPerPage, countParsed));
+                Count = (long)countParsed;
             }
-            else
-            {
-                SpecifiedCount = Math.Max(0,ItemsPerPage);
-            }
-            Count = SpecifiedCount + 1;//NOTE: +1 added to see if it's last page
-
 
             var startIndex = GetRequestValue("startIndex");
             if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
@@ -90,14 +91,14 @@ namespace ASC.Api.Core
 
         private string[] GetRequestArray(string key)
         {
-            if (HttpContext.Request.QueryString != null)
+            if (Query != null)
             {
-                var values = HttpContext.Request.Query[key + "[]"];
-                if (values.Any())
+                var values = Query[key + "[]"];
+                if (values.Count > 0)
                     return values;
                 
-                values = HttpContext.Request.Query[key];
-                if (values.Any())
+                values = Query[key];
+                if (values.Count > 0)
                 {
                     if (values.Count == 1) //If it's only one element
                     {
