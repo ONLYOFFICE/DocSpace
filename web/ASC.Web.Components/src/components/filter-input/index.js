@@ -115,7 +115,7 @@ class FilterInput extends React.Component {
                 {
                     sortDirection: this.updatedProps.sortDirection ? this.props.selectedFilterData.sortDirection == "asc" ? true : false : this.state.sortDirection,
                     sortId: this.updatedProps.sortId ? this.props.getSortData().findIndex(x => x.key === this.props.selectedFilterData.sortId) != -1 ? this.props.selectedFilterData.sortId : "" : this.state.sortId,
-                    filterValue: this.updatedProps.filterValue ? this.props.selectedFilterData.filterValue ? this.props.selectedFilterData.filterValue : [] : this.state.filterValue,
+                    filterValue: this.updatedProps.filterValue && this.props.selectedFilterData.filterValue ? this.props.selectedFilterData.filterValue : this.state.filterValue,
                     searchText: this.updatedProps.searchText ? this.props.selectedFilterData.inputValue ? this.props.selectedFilterData.inputValue : this.props.value : this.state.searchText
                 }
             );
