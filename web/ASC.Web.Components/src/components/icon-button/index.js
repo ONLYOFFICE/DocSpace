@@ -20,6 +20,8 @@ class IconButton extends React.Component{
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+
+        this.isNeedUpdate = false;
     }
 
    
@@ -69,6 +71,26 @@ class IconButton extends React.Component{
                     break;
                 }
         }
+    }
+    shouldComponentUpdate(nextProps, nextState){
+        if(!this.isNeedUpdate){
+            for (let propsKey in this.props) {
+                if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
+                  this.isNeedUpdate = true;
+                  break;
+                }
+            }
+            for (let stateKey in this.state) {
+                if(typeof this.state[stateKey] != "function" && typeof this.state[stateKey] != "object" && this.state[stateKey] != nextState[stateKey]){
+                  this.isNeedUpdate = true;
+                  break;
+                }
+            }
+            if(!this.isNeedUpdate) return false;
+            else return true;
+        }
+        this.isNeedUpdate = false;
+        return true;
     }
     render(){
         //console.log("IconButton render");
