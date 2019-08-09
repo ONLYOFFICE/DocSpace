@@ -38,7 +38,7 @@ namespace ASC.Api.Core
         public HttpContext HttpContext { get; set; }
         private IQueryCollection Query { get; set; }
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant()); } }
+        public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
 
         public ApiContext(HttpContext httpContext)
         {

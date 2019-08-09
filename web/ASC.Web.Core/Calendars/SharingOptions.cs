@@ -59,7 +59,7 @@ namespace ASC.Web.Core.Calendars
             if(PublicItems.Exists(i=> i.Id.Equals(itemId)))
                 return true;
 
-            var u = CoreContext.UserManager.GetUsers(itemId);
+            var u = CoreContext.UserManager.GetUsers(tenant.TenantId, itemId);
             if(u!=null && u.ID!= ASC.Core.Users.Constants.LostUser.ID)
             {
                 var userGroups = new List<GroupInfo>(CoreContext.UserManager.GetUserGroups(tenant, itemId));

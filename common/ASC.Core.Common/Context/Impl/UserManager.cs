@@ -134,9 +134,9 @@ namespace ASC.Core
 
         public UserInfo GetUsers(Guid id)
         {
-            return GetUsers(id, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            return GetUsers(CoreContext.TenantManager.GetCurrentTenant().TenantId, id);
         }
-        public UserInfo GetUsers(Guid id, int tenantId)
+        public UserInfo GetUsers(int tenantId, Guid id)
         {
             if (IsSystemUser(id)) return systemUsers[id];
             var u = userService.GetUser(tenantId, id);
@@ -149,9 +149,9 @@ namespace ASC.Core
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public bool UserExists(Guid id, int tenantId)
+        public bool UserExists(int tenantId, Guid id)
         {
-            return !GetUsers(id, tenantId).Equals(Constants.LostUser);
+            return !GetUsers(tenantId, id).Equals(Constants.LostUser);
         }
 
         public bool IsSystemUser(Guid id)
@@ -255,22 +255,22 @@ namespace ASC.Core
 
         public IEnumerable<Guid> GetUserGroupsId(int tenantId, Guid id)
         {
-            return GetUsers(id, tenantId).GetUserGroupsId(tenantId);
+            return GetUsers(tenantId, id).GetUserGroupsId(tenantId);
         }
 
         public GroupInfo[] GetUserGroups(Tenant tenant, Guid id)
         {
-            return GetUsers(id, tenant.TenantId).GetGroups(tenant, IncludeType.Distinct, Guid.Empty);
+            return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, Guid.Empty);
         }
 
         public GroupInfo[] GetUserGroups(Tenant tenant, Guid id, Guid categoryID)
         {
-            return GetUsers(id, tenant.TenantId).GetGroups(tenant, IncludeType.Distinct, categoryID);
+            return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, categoryID);
         }
 
         public GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType)
         {
-            return GetUsers(userID, tenant.TenantId).GetGroups(tenant, includeType, null);
+            return GetUsers(tenant.TenantId, userID).GetGroups(tenant, includeType, null);
         }
 
         internal GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType, Guid? categoryId)
@@ -352,7 +352,7 @@ namespace ASC.Core
 
             userService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
-            GetUsers(userId).ResetGroupCache();
+            GetUsers(tenant.TenantId, userId).ResetGroupCache();
         }
 
         public void RemoveUserFromGroup(Tenant tenant, Guid userId, Guid groupId)
@@ -362,7 +362,7 @@ namespace ASC.Core
 
             userService.RemoveUserGroupRef(tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
 
-            GetUsers(userId).ResetGroupCache();
+            GetUsers(tenant.TenantId, userId).ResetGroupCache();
         }
 
         #endregion Users
@@ -404,7 +404,7 @@ namespace ASC.Core
         public UserInfo GetCompanyCEO(int tenantId)
         {
             var id = GetDepartmentManager(tenantId, Guid.Empty);
-            return id != Guid.Empty ? GetUsers(id) : null;
+            return id != Guid.Empty ? GetUsers(tenantId, id) : null;
         }
 
         public void SetCompanyCEO(int tenantId, Guid userId)

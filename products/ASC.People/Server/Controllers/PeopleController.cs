@@ -43,6 +43,7 @@ namespace ASC.Employee.Core.Controllers
     public class PeopleController : ControllerBase
     {
         public Common.Logging.LogManager LogManager { get; }
+        public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
@@ -86,12 +87,12 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraper> GetByStatus(EmployeeStatus status)
         {
             if (CoreContext.Configuration.Personal) throw new Exception("Method not available");
-            var query = CoreContext.UserManager.GetUsers(ApiContext.Tenant, status).AsEnumerable();
+            var query = CoreContext.UserManager.GetUsers(Tenant, status).AsEnumerable();
             if ("group".Equals(ApiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(ApiContext.FilterValue))
             {
                 var groupId = new Guid(ApiContext.FilterValue);
                 //Filter by group
-                query = query.Where(x => CoreContext.UserManager.IsUserInGroup(ApiContext.Tenant, x.ID, groupId));
+                query = query.Where(x => CoreContext.UserManager.IsUserInGroup(Tenant, x.ID, groupId));
                 ApiContext.SetDataFiltered();
             }
             return query.Select(x => new EmployeeWraperFull(x, ApiContext));
@@ -100,15 +101,15 @@ namespace ASC.Employee.Core.Controllers
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext);
+            return new EmployeeWraperFull(CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID), ApiContext);
         }
 
         [Read("email")]
         public EmployeeWraperFull GetByEmail([FromQuery]string email)
         {
-            if (CoreContext.Configuration.Personal && !CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(ApiContext.Tenant))
+            if (CoreContext.Configuration.Personal && !CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
-            var user = CoreContext.UserManager.GetUserByEmail(ApiContext.Tenant.TenantId, email);
+            var user = CoreContext.UserManager.GetUserByEmail(Tenant.TenantId, email);
             if (user.ID == Constants.LostUser.ID)
             {
                 throw new ItemNotFoundException("User not found");
@@ -121,12 +122,12 @@ namespace ASC.Employee.Core.Controllers
         public EmployeeWraperFull GetById(string username)
         {
             if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
-            var user = CoreContext.UserManager.GetUserByUserName(ApiContext.Tenant.TenantId, username);
+            var user = CoreContext.UserManager.GetUserByUserName(Tenant.TenantId, username);
             if (user.ID == Constants.LostUser.ID)
             {
                 if (Guid.TryParse(username, out var userId))
                 {
-                    user = CoreContext.UserManager.GetUsers(userId);
+                    user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userId);
                 }
                 else
                 {
@@ -154,7 +155,7 @@ namespace ASC.Employee.Core.Controllers
                     groupId = new Guid(ApiContext.FilterValue);
                 }
 
-                return CoreContext.UserManager.Search(ApiContext.Tenant, query, EmployeeStatus.Active, groupId).Select(x => new EmployeeWraperFull(x, ApiContext));
+                return CoreContext.UserManager.Search(Tenant, query, EmployeeStatus.Active, groupId).Select(x => new EmployeeWraperFull(x, ApiContext));
             }
             catch (Exception error)
             {
@@ -175,13 +176,13 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
             try
             {
-                var list = CoreContext.UserManager.GetUsers(ApiContext.Tenant, status).AsEnumerable();
+                var list = CoreContext.UserManager.GetUsers(Tenant, status).AsEnumerable();
 
                 if ("group".Equals(ApiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(ApiContext.FilterValue))
                 {
                     var groupId = new Guid(ApiContext.FilterValue);
                     //Filter by group
-                    list = list.Where(x => CoreContext.UserManager.IsUserInGroup(ApiContext.Tenant, x.ID, groupId));
+                    list = list.Where(x => CoreContext.UserManager.IsUserInGroup(Tenant, x.ID, groupId));
                     ApiContext.SetDataFiltered();
                 }
 
@@ -269,8 +270,8 @@ namespace ASC.Employee.Core.Controllers
         private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
-            var isAdmin = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(ApiContext.Tenant) ||
-                          WebItemSecurity.IsProductAdministrator(ApiContext.Tenant, WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
+            var isAdmin = CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID).IsAdmin(Tenant) ||
+                          WebItemSecurity.IsProductAdministrator(Tenant, WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
 
             var includeGroups = new List<List<Guid>>();
             if (groupId.HasValue)
@@ -306,7 +307,7 @@ namespace ASC.Employee.Core.Controllers
                 includeGroups.Add(adminGroups);
             }
 
-            var users = CoreContext.UserManager.GetUsers(ApiContext.Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out int total);
+            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out int total);
 
             ApiContext.SetTotalCount(total);
 
@@ -316,7 +317,7 @@ namespace ASC.Employee.Core.Controllers
         [Create]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_AddRemoveUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             if (string.IsNullOrEmpty(memberModel.Password))
                 memberModel.Password = UserManagerWrapper.GeneratePassword();
@@ -343,7 +344,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(ApiContext.Tenant, user, memberModel.Password, false, true, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(Tenant, user, memberModel.Password, false, true, memberModel.IsVisitor);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
             MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false));
@@ -361,7 +362,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("active")]
         public EmployeeWraperFull AddMemberAsActivated(MemberModel memberModel)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_AddRemoveUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             var user = new UserInfo();
 
@@ -386,7 +387,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(ApiContext.Tenant, user, memberModel.Password, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(Tenant, user, memberModel.Password, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -408,7 +409,7 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             var self = SecurityContext.CurrentAccount.ID.Equals(user.ID);
             var resetDate = new DateTime(1900, 01, 01);
@@ -417,7 +418,7 @@ namespace ASC.Employee.Core.Controllers
 
             var isLdap = user.IsLDAP();
             var isSso = user.IsSSO();
-            var isAdmin = WebItemSecurity.IsProductAdministrator(ApiContext.Tenant, WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
+            var isAdmin = WebItemSecurity.IsProductAdministrator(Tenant, WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
 
             if (!isLdap && !isSso)
             {
@@ -459,7 +460,7 @@ namespace ASC.Employee.Core.Controllers
             UpdateContacts(memberModel.Contacts, user);
             UpdateDepartments(memberModel.Department, user);
 
-            if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(ApiContext.Tenant, user.ID))
+            if (memberModel.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(Tenant, user.ID))
             {
                 UpdatePhotoUrl(memberModel.Files, user);
             }
@@ -471,24 +472,24 @@ namespace ASC.Employee.Core.Controllers
 
             if (self && !isAdmin)
             {
-                StudioNotifyService.SendMsgToAdminAboutProfileUpdated(ApiContext.Tenant.TenantId);
+                StudioNotifyService.SendMsgToAdminAboutProfileUpdated(Tenant.TenantId);
             }
 
             // change user type
-            var canBeGuestFlag = !user.IsOwner(ApiContext.Tenant) && !user.IsAdmin(ApiContext.Tenant) && !user.GetListAdminModules(ApiContext.Tenant).Any() && !user.IsMe();
+            var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(Tenant) && !user.GetListAdminModules(Tenant).Any() && !user.IsMe();
 
-            if (memberModel.IsVisitor && !user.IsVisitor(ApiContext.Tenant) && canBeGuestFlag)
+            if (memberModel.IsVisitor && !user.IsVisitor(Tenant) && canBeGuestFlag)
             {
-                CoreContext.UserManager.AddUserIntoGroup(ApiContext.Tenant, user.ID, Constants.GroupVisitor.ID);
+                CoreContext.UserManager.AddUserIntoGroup(Tenant, user.ID, Constants.GroupVisitor.ID);
                 WebItemSecurity.ClearCache();
             }
 
-            if (!self && !memberModel.IsVisitor && user.IsVisitor(ApiContext.Tenant))
+            if (!self && !memberModel.IsVisitor && user.IsVisitor(Tenant))
             {
                 var usersQuota = TenantExtra.GetTenantQuota().ActiveUsers;
-                if (TenantStatisticsProvider.GetUsersCount(ApiContext.Tenant) < usersQuota)
+                if (TenantStatisticsProvider.GetUsersCount(Tenant) < usersQuota)
                 {
-                    CoreContext.UserManager.RemoveUserFromGroup(ApiContext.Tenant, user.ID, Constants.GroupVisitor.ID);
+                    CoreContext.UserManager.RemoveUserFromGroup(Tenant, user.ID, Constants.GroupVisitor.ID);
                     WebItemSecurity.ClearCache();
                 }
                 else
@@ -497,12 +498,12 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user, memberModel.IsVisitor);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user, memberModel.IsVisitor);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
-                HttpContext.ResetUserCookie(user.ID);
+                HttpContext.ResetUserCookie(Tenant.TenantId, user.ID);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -512,7 +513,7 @@ namespace ASC.Employee.Core.Controllers
         [Delete("{userid}")]
         public EmployeeWraperFull DeleteMember(string userid)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_AddRemoveUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             var user = GetUserInfo(userid);
 
@@ -526,8 +527,8 @@ namespace ASC.Employee.Core.Controllers
 
             var userName = user.DisplayUserName(false);
 
-            UserPhotoManager.RemovePhoto(ApiContext.Tenant, user.ID);
-            CoreContext.UserManager.DeleteUser(ApiContext.Tenant, user.ID);
+            UserPhotoManager.RemovePhoto(Tenant, user.ID);
+            CoreContext.UserManager.DeleteUser(Tenant, user.ID);
             QueueWorkerRemove.Start(TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
@@ -544,7 +545,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             UpdateContacts(memberModel.Contacts, user);
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             return new EmployeeWraperFull(user, ApiContext);
         }
 
@@ -558,7 +559,7 @@ namespace ASC.Employee.Core.Controllers
 
             user.Contacts.Clear();
             UpdateContacts(memberModel.Contacts, user);
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             return new EmployeeWraperFull(user, ApiContext);
         }
 
@@ -571,7 +572,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             DeleteContacts(memberModel.Contacts, user);
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             return new EmployeeWraperFull(user, ApiContext);
         }
 
@@ -583,7 +584,7 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            return new ThumbnailsDataWrapper(ApiContext.Tenant, user.ID);
+            return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
 
         [Create("{userid}/photo")]
@@ -604,7 +605,7 @@ namespace ASC.Employee.Core.Controllers
                         userId = SecurityContext.CurrentAccount.ID;
                     }
 
-                    SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
+                    SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
 
                     var userPhoto = model.Files[0];
 
@@ -629,17 +630,17 @@ namespace ASC.Employee.Core.Controllers
                         if (data.Length > SetupInfo.MaxImageUploadSize)
                             throw new ImageSizeLimitException();
 
-                        var mainPhoto = UserPhotoManager.SaveOrUpdatePhoto(ApiContext.Tenant, userId, data);
+                        var mainPhoto = UserPhotoManager.SaveOrUpdatePhoto(Tenant, userId, data);
 
                         result.Data =
                             new
                             {
                                 main = mainPhoto,
-                                retina = UserPhotoManager.GetRetinaPhotoURL(ApiContext.Tenant.TenantId, userId),
-                                max = UserPhotoManager.GetMaxPhotoURL(ApiContext.Tenant.TenantId, userId),
-                                big = UserPhotoManager.GetBigPhotoURL(ApiContext.Tenant.TenantId, userId),
-                                medium = UserPhotoManager.GetMediumPhotoURL(ApiContext.Tenant.TenantId, userId),
-                                small = UserPhotoManager.GetSmallPhotoURL(ApiContext.Tenant.TenantId, userId),
+                                retina = UserPhotoManager.GetRetinaPhotoURL(Tenant.TenantId, userId),
+                                max = UserPhotoManager.GetMaxPhotoURL(Tenant.TenantId, userId),
+                                big = UserPhotoManager.GetBigPhotoURL(Tenant.TenantId, userId),
+                                medium = UserPhotoManager.GetMediumPhotoURL(Tenant.TenantId, userId),
+                                small = UserPhotoManager.GetSmallPhotoURL(Tenant.TenantId, userId),
                             };
                     }
                     else
@@ -688,15 +689,15 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            if (model.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(ApiContext.Tenant, user.ID))
+            if (model.Files != UserPhotoManager.GetPhotoAbsoluteWebPath(Tenant, user.ID))
             {
                 UpdatePhotoUrl(model.Files, user);
             }
 
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
-            return new ThumbnailsDataWrapper(ApiContext.Tenant, user.ID);
+            return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
 
         [Delete("{userid}/photo")]
@@ -707,14 +708,14 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
-            UserPhotoManager.RemovePhoto(ApiContext.Tenant, user.ID);
+            UserPhotoManager.RemovePhoto(Tenant, user.ID);
 
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
-            return new ThumbnailsDataWrapper(ApiContext.Tenant, user.ID);
+            return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
 
 
@@ -726,7 +727,7 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
             {
@@ -736,18 +737,18 @@ namespace ASC.Employee.Core.Controllers
                 var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
                 settings.SaveForUser(user.ID);
 
-                UserPhotoManager.SaveOrUpdatePhoto(ApiContext.Tenant, user.ID, data);
+                UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, data);
                 UserPhotoManager.RemoveTempPhoto(fileName);
             }
             else
             {
-                UserPhotoThumbnailManager.SaveThumbnails(ApiContext.Tenant.TenantId, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
+                UserPhotoThumbnailManager.SaveThumbnails(Tenant.TenantId, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
             }
 
-            CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
             MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false));
 
-            return new ThumbnailsDataWrapper(ApiContext.Tenant, user.ID);
+            return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
 
 
@@ -755,7 +756,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("password", false)]
         public string SendUserPassword(string email)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(ApiContext.Tenant.TenantId, email, MessageService, HttpContext);
+            var userInfo = UserManagerWrapper.SendUserPassword(Tenant.TenantId, email, MessageService, HttpContext);
 
             return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
         }
@@ -763,11 +764,11 @@ namespace ASC.Employee.Core.Controllers
         [Update("{userid}/password")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(userid), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userid), Constants.Action_EditUser);
 
-            if (!CoreContext.UserManager.UserExists(userid, ApiContext.Tenant.TenantId)) return null;
+            if (!CoreContext.UserManager.UserExists(Tenant.TenantId, userid)) return null;
 
-            var user = CoreContext.UserManager.GetUsers(userid, ApiContext.Tenant.TenantId);
+            var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userid);
 
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
@@ -779,16 +780,16 @@ namespace ASC.Employee.Core.Controllers
                 {
                     user.Email = address.Address.ToLowerInvariant();
                     user.ActivationStatus = EmployeeActivationStatus.Activated;
-                    CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+                    CoreContext.UserManager.SaveUserInfo(Tenant, user);
                 }
             }
 
             if (!string.IsNullOrEmpty(memberModel.Password))
             {
-                SecurityContext.SetUserPassword(userid, memberModel.Password);
+                SecurityContext.SetUserPassword(Tenant.TenantId, userid, memberModel.Password);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
-                HttpContext.ResetUserCookie(userid);
+                HttpContext.ResetUserCookie(Tenant.TenantId, userid);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -801,11 +802,11 @@ namespace ASC.Employee.Core.Controllers
             try
             {
                 var userId = new Guid(userNameOrId);
-                user = CoreContext.UserManager.GetUsers(userId, ApiContext.Tenant.TenantId);
+                user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userId);
             }
             catch (FormatException)
             {
-                user = CoreContext.UserManager.GetUserByUserName(ApiContext.Tenant.TenantId, userNameOrId);
+                user = CoreContext.UserManager.GetUserByUserName(Tenant.TenantId, userNameOrId);
             }
             if (user == null || user.ID == Constants.LostUser.ID)
                 throw new ItemNotFoundException("user not found");
@@ -818,12 +819,12 @@ namespace ASC.Employee.Core.Controllers
             var retuls = new List<EmployeeWraperFull>();
             foreach (var id in model.UserIds.Where(userId => !CoreContext.UserManager.IsSystemUser(userId)))
             {
-                SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(id), Constants.Action_EditUser);
-                var u = CoreContext.UserManager.GetUsers(id);
+                SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(id), Constants.Action_EditUser);
+                var u = CoreContext.UserManager.GetUsers(Tenant.TenantId, id);
                 if (u.ID == Constants.LostUser.ID || u.IsLDAP()) continue;
 
                 u.ActivationStatus = activationstatus;
-                CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, u);
+                CoreContext.UserManager.SaveUserInfo(Tenant, u);
                 retuls.Add(new EmployeeWraperFull(u, ApiContext));
             }
 
@@ -836,28 +837,28 @@ namespace ASC.Employee.Core.Controllers
         {
             var users = model.UserIds
                 .Where(userId => !CoreContext.UserManager.IsSystemUser(userId))
-                .Select(userId => CoreContext.UserManager.GetUsers(userId))
+                .Select(userId => CoreContext.UserManager.GetUsers(Tenant.TenantId, userId))
                 .ToList();
 
             foreach (var user in users)
             {
-                if (user.IsOwner(ApiContext.Tenant) || user.IsAdmin(ApiContext.Tenant) || user.IsMe() || user.GetListAdminModules(ApiContext.Tenant).Any())
+                if (user.IsOwner(Tenant) || user.IsAdmin(Tenant) || user.IsMe() || user.GetListAdminModules(Tenant).Any())
                     continue;
 
                 switch (type)
                 {
                     case EmployeeType.User:
-                        if (user.IsVisitor(ApiContext.Tenant))
+                        if (user.IsVisitor(Tenant))
                         {
-                            if (TenantStatisticsProvider.GetUsersCount(ApiContext.Tenant) < TenantExtra.GetTenantQuota().ActiveUsers)
+                            if (TenantStatisticsProvider.GetUsersCount(Tenant) < TenantExtra.GetTenantQuota().ActiveUsers)
                             {
-                                CoreContext.UserManager.RemoveUserFromGroup(ApiContext.Tenant, user.ID, Constants.GroupVisitor.ID);
+                                CoreContext.UserManager.RemoveUserFromGroup(Tenant, user.ID, Constants.GroupVisitor.ID);
                                 WebItemSecurity.ClearCache();
                             }
                         }
                         break;
                     case EmployeeType.Visitor:
-                        CoreContext.UserManager.AddUserIntoGroup(ApiContext.Tenant, user.ID, Constants.GroupVisitor.ID);
+                        CoreContext.UserManager.AddUserIntoGroup(Tenant, user.ID, Constants.GroupVisitor.ID);
                         WebItemSecurity.ClearCache();
                         break;
                 }
@@ -871,15 +872,15 @@ namespace ASC.Employee.Core.Controllers
         [Update("status/{status}")]
         public IEnumerable<EmployeeWraperFull> UpdateUserStatus(EmployeeStatus status, UpdateMembersModel model)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
-            var users = model.UserIds.Select(userId => CoreContext.UserManager.GetUsers(userId))
+            var users = model.UserIds.Select(userId => CoreContext.UserManager.GetUsers(Tenant.TenantId, userId))
                 .Where(u => !CoreContext.UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
                 .ToList();
 
             foreach (var user in users)
             {
-                if (user.IsOwner(ApiContext.Tenant) || user.IsMe())
+                if (user.IsOwner(Tenant) || user.IsMe())
                     continue;
 
                 switch (status)
@@ -887,18 +888,18 @@ namespace ASC.Employee.Core.Controllers
                     case EmployeeStatus.Active:
                         if (user.Status == EmployeeStatus.Terminated)
                         {
-                            if (TenantStatisticsProvider.GetUsersCount(ApiContext.Tenant) < TenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(ApiContext.Tenant))
+                            if (TenantStatisticsProvider.GetUsersCount(Tenant) < TenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(Tenant))
                             {
                                 user.Status = EmployeeStatus.Active;
-                                CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+                                CoreContext.UserManager.SaveUserInfo(Tenant, user);
                             }
                         }
                         break;
                     case EmployeeStatus.Terminated:
                         user.Status = EmployeeStatus.Terminated;
-                        CoreContext.UserManager.SaveUserInfo(ApiContext.Tenant, user);
+                        CoreContext.UserManager.SaveUserInfo(Tenant, user);
 
-                        HttpContext.ResetUserCookie(user.ID);
+                        HttpContext.ResetUserCookie(Tenant.TenantId, user.ID);
                         MessageService.Send(MessageAction.CookieSettingsUpdated);
                         break;
                 }
@@ -915,7 +916,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var users = model.UserIds
                 .Where(userId => !CoreContext.UserManager.IsSystemUser(userId))
-                .Select(userId => CoreContext.UserManager.GetUsers(userId))
+                .Select(userId => CoreContext.UserManager.GetUsers(Tenant.TenantId, userId))
                 .ToList();
 
             foreach (var user in users)
@@ -924,13 +925,13 @@ namespace ASC.Employee.Core.Controllers
 
                 if (user.ActivationStatus == EmployeeActivationStatus.Pending)
                 {
-                    if (user.IsVisitor(ApiContext.Tenant))
+                    if (user.IsVisitor(Tenant))
                     {
-                        StudioNotifyService.GuestInfoActivation(user);
+                        StudioNotifyService.GuestInfoActivation(Tenant.TenantId, user);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoActivation(user);
+                        StudioNotifyService.UserInfoActivation(Tenant.TenantId, user);
                     }
                 }
                 else
@@ -947,11 +948,11 @@ namespace ASC.Employee.Core.Controllers
         [Update("delete")]
         public IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_AddRemoveUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             CheckReassignProccess(model.UserIds);
 
-            var users = model.UserIds.Select(userId => CoreContext.UserManager.GetUsers(userId))
+            var users = model.UserIds.Select(userId => CoreContext.UserManager.GetUsers(Tenant.TenantId, userId))
                 .Where(u => !CoreContext.UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
                 .ToList();
 
@@ -961,8 +962,8 @@ namespace ASC.Employee.Core.Controllers
             {
                 if (user.Status != EmployeeStatus.Terminated) continue;
 
-                UserPhotoManager.RemovePhoto(ApiContext.Tenant, user.ID);
-                CoreContext.UserManager.DeleteUser(ApiContext.Tenant,user.ID);
+                UserPhotoManager.RemovePhoto(Tenant, user.ID);
+                CoreContext.UserManager.DeleteUser(Tenant,user.ID);
                 QueueWorkerRemove.Start(TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, false);
             }
 
@@ -975,7 +976,7 @@ namespace ASC.Employee.Core.Controllers
         [Update("self/delete")]
         public string SendInstructionsToDelete()
         {
-            var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID);
 
             if (user.IsLDAP())
                 throw new SecurityException();
@@ -1041,7 +1042,7 @@ namespace ASC.Employee.Core.Controllers
         [Read(@"reassign/progress")]
         public ReassignProgressItem GetReassignProgress(Guid userId)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
             return QueueWorkerReassign.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId);
         }
@@ -1049,7 +1050,7 @@ namespace ASC.Employee.Core.Controllers
         [Update(@"reassign/terminate")]
         public void TerminateReassign(Guid userId)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
             QueueWorkerReassign.Terminate(TenantProvider.CurrentTenantID, userId);
         }
@@ -1057,22 +1058,22 @@ namespace ASC.Employee.Core.Controllers
         [Create(@"reassign/start")]
         public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
-            var fromUser = CoreContext.UserManager.GetUsers(fromUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(Tenant.TenantId, fromUserId);
 
             if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
                 throw new ArgumentException("User with id = " + fromUserId + " not found");
 
-            if (fromUser.IsOwner(ApiContext.Tenant) || fromUser.IsMe() || fromUser.Status != EmployeeStatus.Terminated)
+            if (fromUser.IsOwner(Tenant) || fromUser.IsMe() || fromUser.Status != EmployeeStatus.Terminated)
                 throw new ArgumentException("Can not delete user with id = " + fromUserId);
 
-            var toUser = CoreContext.UserManager.GetUsers(toUserId);
+            var toUser = CoreContext.UserManager.GetUsers(Tenant.TenantId, toUserId);
 
             if (toUser == null || toUser.ID == Constants.LostUser.ID)
                 throw new ArgumentException("User with id = " + toUserId + " not found");
 
-            if (toUser.IsVisitor(ApiContext.Tenant) || toUser.Status == EmployeeStatus.Terminated)
+            if (toUser.IsVisitor(Tenant) || toUser.Status == EmployeeStatus.Terminated)
                 throw new ArgumentException("Can not reassign data to user with id = " + toUserId);
 
             return QueueWorkerReassign.Start(TenantProvider.CurrentTenantID, fromUserId, toUserId, SecurityContext.CurrentAccount.ID, deleteProfile);
@@ -1086,7 +1087,7 @@ namespace ASC.Employee.Core.Controllers
                 if (reassignStatus == null || reassignStatus.IsCompleted)
                     continue;
 
-                var userName = CoreContext.UserManager.GetUsers(userId).DisplayUserName();
+                var userName = CoreContext.UserManager.GetUsers(Tenant.TenantId, userId).DisplayUserName();
                 throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
             }
         }
@@ -1100,7 +1101,7 @@ namespace ASC.Employee.Core.Controllers
         [Read(@"remove/progress")]
         public RemoveProgressItem GetRemoveProgress(Guid userId)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
             return QueueWorkerRemove.GetProgressItemStatus(TenantProvider.CurrentTenantID, userId);
         }
@@ -1108,7 +1109,7 @@ namespace ASC.Employee.Core.Controllers
         [Update(@"remove/terminate")]
         public void TerminateRemove(Guid userId)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
             QueueWorkerRemove.Terminate(TenantProvider.CurrentTenantID, userId);
         }
@@ -1116,14 +1117,14 @@ namespace ASC.Employee.Core.Controllers
         [Create(@"remove/start")]
         public RemoveProgressItem StartRemove(Guid userId)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, Constants.Action_EditUser);
 
-            var user = CoreContext.UserManager.GetUsers(userId);
+            var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userId);
 
             if (user == null || user.ID == Constants.LostUser.ID)
                 throw new ArgumentException("User with id = " + userId + " not found");
 
-            if (user.IsOwner(ApiContext.Tenant) || user.IsMe() || user.Status != EmployeeStatus.Terminated)
+            if (user.IsOwner(Tenant) || user.IsMe() || user.Status != EmployeeStatus.Terminated)
                 throw new ArgumentException("Can not delete user with id = " + userId);
 
             return QueueWorkerRemove.Start(TenantProvider.CurrentTenantID, user, SecurityContext.CurrentAccount.ID, true);
@@ -1133,30 +1134,30 @@ namespace ASC.Employee.Core.Controllers
 
         private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
         {
-            if (!SecurityContext.CheckPermissions(ApiContext.Tenant, Constants.Action_EditGroups)) return;
+            if (!SecurityContext.CheckPermissions(Tenant, Constants.Action_EditGroups)) return;
             if (department == null) return;
 
-            var groups = CoreContext.UserManager.GetUserGroups(ApiContext.Tenant, user.ID);
+            var groups = CoreContext.UserManager.GetUserGroups(Tenant, user.ID);
             var managerGroups = new List<Guid>();
             foreach (var groupInfo in groups)
             {
-                CoreContext.UserManager.RemoveUserFromGroup(ApiContext.Tenant, user.ID, groupInfo.ID);
-                var managerId = CoreContext.UserManager.GetDepartmentManager(ApiContext.Tenant.TenantId, groupInfo.ID);
+                CoreContext.UserManager.RemoveUserFromGroup(Tenant, user.ID, groupInfo.ID);
+                var managerId = CoreContext.UserManager.GetDepartmentManager(Tenant.TenantId, groupInfo.ID);
                 if (managerId == user.ID)
                 {
                     managerGroups.Add(groupInfo.ID);
-                    CoreContext.UserManager.SetDepartmentManager(ApiContext.Tenant.TenantId, groupInfo.ID, Guid.Empty);
+                    CoreContext.UserManager.SetDepartmentManager(Tenant.TenantId, groupInfo.ID, Guid.Empty);
                 }
             }
             foreach (var guid in department)
             {
-                var userDepartment = CoreContext.UserManager.GetGroupInfo(ApiContext.Tenant.TenantId, guid);
+                var userDepartment = CoreContext.UserManager.GetGroupInfo(Tenant.TenantId, guid);
                 if (userDepartment != Constants.LostGroupInfo)
                 {
-                    CoreContext.UserManager.AddUserIntoGroup(ApiContext.Tenant, user.ID, guid);
+                    CoreContext.UserManager.AddUserIntoGroup(Tenant, user.ID, guid);
                     if (managerGroups.Contains(guid))
                     {
-                        CoreContext.UserManager.SetDepartmentManager(ApiContext.Tenant.TenantId, guid, user.ID);
+                        CoreContext.UserManager.SetDepartmentManager(Tenant.TenantId, guid, user.ID);
                     }
                 }
             }
@@ -1164,7 +1165,7 @@ namespace ASC.Employee.Core.Controllers
 
         private void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             user.Contacts.Clear();
             if (contacts == null) return;
 
@@ -1177,7 +1178,7 @@ namespace ASC.Employee.Core.Controllers
 
         private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             if (contacts == null) return;
 
             foreach (var contact in contacts)
@@ -1198,7 +1199,7 @@ namespace ASC.Employee.Core.Controllers
                 return;
             }
 
-            SecurityContext.DemandPermissions(ApiContext.Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             if (!files.StartsWith("http://") && !files.StartsWith("https://"))
             {
@@ -1209,7 +1210,7 @@ namespace ASC.Employee.Core.Controllers
             using var inputStream = response.GetResponseStream();
             using var br = new BinaryReader(inputStream);
             var imageByteArray = br.ReadBytes((int)response.ContentLength);
-            UserPhotoManager.SaveOrUpdatePhoto(ApiContext.Tenant, user.ID, imageByteArray);
+            UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, imageByteArray);
         }
 
         private static void CheckImgFormat(byte[] data)

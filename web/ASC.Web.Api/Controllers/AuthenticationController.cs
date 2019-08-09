@@ -23,7 +23,7 @@ namespace ASC.Web.Api.Controllers
 
             try
             {
-                var token = SecurityContext.AuthenticateMe(user.ID);
+                var token = SecurityContext.AuthenticateMe(tenant.TenantId, user.ID);
                 var expires = TenantCookieSettings.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData
@@ -45,7 +45,7 @@ namespace ASC.Web.Api.Controllers
                         userName,
                         Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            if (user == null || !CoreContext.UserManager.UserExists(user.ID, tenantId))
+            if (user == null || !CoreContext.UserManager.UserExists(tenantId, user.ID))
             {
                 throw new Exception("user not found");
             }

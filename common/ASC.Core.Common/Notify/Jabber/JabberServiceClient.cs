@@ -217,7 +217,7 @@ namespace ASC.Core.Notify.Jabber
 
         private static string GetCurrentUserName()
         {
-            return CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).UserName;
+            return CoreContext.UserManager.GetUsers(GetCurrentTenantId(), SecurityContext.CurrentAccount.ID).UserName;
         }
 
         private static void ProcessError(Exception error)

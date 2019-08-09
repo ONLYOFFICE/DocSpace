@@ -236,7 +236,7 @@ namespace ASC.Web.Api.Models
         {
             try
             {
-                return GetFull(CoreContext.UserManager.GetUsers(userId), context);
+                return GetFull(CoreContext.UserManager.GetUsers(context.Tenant.TenantId, userId), context);
 
             }
             catch (Exception)

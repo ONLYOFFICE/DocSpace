@@ -150,7 +150,7 @@ namespace ASC.Web.Core
 
         public static void SetLifeTime(this HttpContext httpContext, int lifeTime)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = CoreContext.TenantManager.GetCurrentTenant(httpContext);
             if (!CoreContext.UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
@@ -170,7 +170,7 @@ namespace ASC.Web.Core
 
             TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
 
-            var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+            var cookie = SecurityContext.AuthenticateMe(tenant.TenantId, SecurityContext.CurrentAccount.ID);
 
             httpContext.SetCookies(CookiesType.AuthKey, cookie);
         }
@@ -180,7 +180,7 @@ namespace ASC.Web.Core
             return TenantCookieSettings.GetForTenant(TenantProvider.CurrentTenantID).LifeTime;
         }
 
-        public static void ResetUserCookie(this HttpContext httpContext, Guid? userId = null)
+        public static void ResetUserCookie(this HttpContext httpContext, int tenantId, Guid? userId = null)
         {
             var settings = TenantCookieSettings.GetForUser(userId ?? SecurityContext.CurrentAccount.ID);
             settings.Index = settings.Index + 1;
@@ -188,7 +188,7 @@ namespace ASC.Web.Core
 
             if (!userId.HasValue)
             {
-                var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+                var cookie = SecurityContext.AuthenticateMe(tenantId, SecurityContext.CurrentAccount.ID);
 
                 httpContext.SetCookies(CookiesType.AuthKey, cookie);
             }
@@ -196,7 +196,7 @@ namespace ASC.Web.Core
 
         public static void ResetTenantCookie(this HttpContext httpContext)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = CoreContext.TenantManager.GetCurrentTenant(httpContext);
 
             if (!CoreContext.UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
@@ -207,7 +207,7 @@ namespace ASC.Web.Core
             settings.Index = settings.Index + 1;
             TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
 
-            var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
+            var cookie = SecurityContext.AuthenticateMe(tenant.TenantId, SecurityContext.CurrentAccount.ID);
             httpContext.SetCookies(CookiesType.AuthKey, cookie);
         }
     }

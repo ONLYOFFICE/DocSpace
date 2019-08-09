@@ -104,7 +104,7 @@ namespace ASC.Data.Reassigns
                 Status = ProgressStatus.Started;
 
                 var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_currentUserId);
+                SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", _fromUserId, _toUserId);
 
@@ -164,8 +164,8 @@ namespace ASC.Data.Reassigns
 
         private void SendSuccessNotify()
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
-            var toUser = CoreContext.UserManager.GetUsers(_toUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
+            var toUser = CoreContext.UserManager.GetUsers(_tenantId, _toUserId);
 
             StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
 
@@ -180,15 +180,15 @@ namespace ASC.Data.Reassigns
 
         private void SendErrorNotify(string errorMessage)
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_fromUserId);
-            var toUser = CoreContext.UserManager.GetUsers(_toUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
+            var toUser = CoreContext.UserManager.GetUsers(_tenantId, _toUserId);
 
             StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
         }
 
         private void DeleteUserProfile(Tenant tenant)
         {
-            var user = CoreContext.UserManager.GetUsers(_fromUserId);
+            var user = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
             var userName = user.DisplayUserName(false);
 
             UserPhotoManager.RemovePhoto(tenant, user.ID);

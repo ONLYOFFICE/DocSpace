@@ -45,7 +45,8 @@ Component that displays plain text
 | `truncate`         | `bool`   |    -     | -                     | false     | Disables word wrapping                              |
 | `isInline`         | `bool`   |    -     | -                     | false     | Sets the 'display: inline-block' property           |
 | `color`            | `string` |    -     | -                     | `#333333` | Specifies the text color                            |
-| `isBold`           | `bool`   |    -     | -                     | false     | Sets the font weight                                |
+| `isBold`           | `bool`   |    -     | -                     | false     | Sets font weight value ​​to bold                     |
 | `isItalic`         | `bool`   |    -     | -                     | false     | Sets the font style                                 |
 | `backgroundColor`  | `string` |    -     | -                     | -         | Sets background color                               |
+| `fontWeight`       | `number` |    -     | -                     | -         | Sets the font weight                                |
 
