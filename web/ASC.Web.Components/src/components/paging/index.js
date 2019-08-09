@@ -27,7 +27,7 @@ const StyledOnPage = styled.div`
 `;
 
 const StyledPage = styled.div`
-    width: 80px;
+
 `;
 
 const previousAction = () => {
@@ -55,7 +55,7 @@ const Paging = props => {
       <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} selectedOption={selectedPage} />
+          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} selectedOption={selectedPage} dropDownMaxHeight="200px" />
         </StyledPage>
       }
       <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />

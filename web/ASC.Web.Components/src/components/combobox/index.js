@@ -118,6 +118,9 @@ class ComboBox extends React.PureComponent {
 
   render() {
     console.log("ComboBox render");
+
+    const dropDownMaxHeightProp = this.props.dropDownMaxHeight ? { maxHeight: this.props.dropDownMaxHeight } : {}
+
     return (
       <StyledComboBox ref={this.ref}
         {...this.props}
@@ -152,6 +155,7 @@ class ComboBox extends React.PureComponent {
             manualWidth='100%'
             manualY='102%'
             isOpen={this.state.isOpen}
+            {...dropDownMaxHeightProp}
           >
             {this.state.options.map((option) =>
               <DropDownItem {...option}
@@ -174,12 +178,14 @@ ComboBox.propTypes = {
     PropTypes.number
   ]),
   options: PropTypes.array,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  dropDownMaxHeight: PropTypes.string
 }
 
 ComboBox.defaultProps = {
   isDisabled: false,
-  withBorder: true
+  withBorder: true,
+  dropDownMaxHeight: null
 }
 
 export default ComboBox;
