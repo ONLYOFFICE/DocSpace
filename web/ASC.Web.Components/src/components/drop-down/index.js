@@ -8,6 +8,11 @@ const StyledDropdown = styled.div`
     font-weight: 600;
     font-size: 13px;
 
+    ${props => props.maxHeight && `
+      max-height: ${props.maxHeight};
+      overflow-y: auto;
+    `}
+
     position: absolute;
     ${props => props.manualWidth && `width: ${props.manualWidth};`}
     ${props => (props.directionY === 'top' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
@@ -52,13 +57,15 @@ DropDown.propTypes = {
   directionY: PropTypes.oneOf(['bottom', 'top']),
   withArrow: PropTypes.bool,
   manualWidth: PropTypes.string,
-  manualY: PropTypes.string
+  manualY: PropTypes.string,
+  maxHeight: PropTypes.string
 };
 
 DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
-  withArrow: false
+  withArrow: false,
+  maxHeight: null
 };
 
 export default DropDown

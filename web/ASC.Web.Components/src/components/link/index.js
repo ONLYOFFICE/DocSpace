@@ -12,12 +12,19 @@ const opacityCss = css`
         (props.isSemitransparent && '0.5')};
 `;
 
+const getColor = color => {
+    switch (color) {
+        case 'gray':
+            return '#A3A9AE';
+        case 'blue':
+            return '#316DAA';
+        default:
+            return '#333333';
+    }
+}
+
 const colorCss = css`
-    color: ${props =>
-        (props.color === 'black' && '#333333') ||
-        (props.color === 'gray' && '#A3A9AE') ||
-        (props.color === 'blue' && '#316DAA')
-    };
+    color: ${props => getColor(props.color)};
 `;
 
 const hoveredCss = css`
@@ -75,7 +82,7 @@ ${props => (props.isTextOverflow && css`
 
 const Link = props => {
 
-    const { isBold, title, fontSize } = props;
+    const { isBold, title, fontSize, color } = props;
 
     const onClick = (e) => {
         !props.href && e.preventDefault();
@@ -88,7 +95,7 @@ const Link = props => {
         <StyledLink {...props}>
             <Text.Body
                 as="span"
-                color={colorCss}
+                color={getColor(color)}
                 fontSize={fontSize}
                 onClick={onClick}
                 isBold={isBold}

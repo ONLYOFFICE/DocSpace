@@ -42,18 +42,19 @@ const StyledCloseButton = styled.div`
 
 const SelectedItem = (props) => {
     const {isDisabled, text, onClose } = props;
+    const colorProps = isDisabled ? {color: "#D0D5DA"} : {};
  
       console.log("SelectedItem render");
       return (
         <StyledSelectedItem {...props}>
             <StyledSelectedTextBox>
-                <Text.Body as='span' truncate color={isDisabled ? "#cecece" : "#333333"} >
+                <Text.Body as='span' truncate {...colorProps} >
                     {text}
                 </Text.Body>
             </StyledSelectedTextBox>
-            <StyledCloseButton onClick={onClose}>
+            <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
                 <IconButton
-                    color="#D8D8D8"
+                    color="#979797"
                     size={10}
                     iconName='CrossIcon'
                     isFill={true}

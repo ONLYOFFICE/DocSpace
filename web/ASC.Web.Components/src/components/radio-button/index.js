@@ -91,8 +91,10 @@ class RadioButton extends React.Component {
     }
   };
 
-
   render() {
+
+    const colorProps = this.props.isDisabled ? {color: disableColor} : {};
+    
     return (
       <Label
         spacing={this.props.spacing}
@@ -109,8 +111,7 @@ class RadioButton extends React.Component {
         <RadiobuttonIcon {...this.props} />
         <Text.Body
           as='span'
-          isDisabled={this.props.isDisabled}
-          disableColor={disableColor}
+          {...colorProps}
         >
           {this.props.label || this.props.value}
         </Text.Body>

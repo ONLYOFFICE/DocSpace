@@ -96,7 +96,7 @@ namespace ASC.Collections
 
         public T Get(Func<T> @default)
         {
-            string key = string.Format("func {0} {2}.{1}({3})", @default.Method.ReturnType, @default.Method.Name,
+            var key = string.Format("func {0} {2}.{1}({3})", @default.Method.ReturnType, @default.Method.Name,
                                        @default.Method.DeclaringType.FullName,
                                        string.Join(",",
                                                    @default.Method.GetGenericArguments().Select(x => x.FullName).ToArray
@@ -111,8 +111,8 @@ namespace ASC.Collections
 
         public virtual T Get(string rootkey, string key, Func<T> defaults)
         {
-            string fullKey = BuildKey(key, rootkey);
-            object objectCache = GetObjectFromCache(fullKey);
+            var fullKey = BuildKey(key, rootkey);
+            var objectCache = GetObjectFromCache(fullKey);
             if (FitsCondition(objectCache))
             {
                 OnHit(fullKey);
@@ -121,14 +121,14 @@ namespace ASC.Collections
             if (defaults != null)
             {
                 OnMiss(fullKey);
-                T newValue = defaults();
+                var newValue = defaults();
                 if (condition == null || condition(newValue))
                 {
                     Add(rootkey, key, newValue);
                 }
                 return newValue;
             }
-            return default(T);
+            return default;
         }
 
         protected virtual T ReturnCached(object objectCache)

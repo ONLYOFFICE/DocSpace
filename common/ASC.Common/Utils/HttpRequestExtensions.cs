@@ -55,12 +55,12 @@ namespace System.Web
 
         public static Uri GetUrlRewriter(IHeaderDictionary headers, HttpRequest request)
         {
-            if (request.Query != null && request.Query.Any())
+            if (request.Query != null && request.Query.Count > 0)
             {
                 var rewriterUri = ParseRewriterUrl(request.Query[UrlRewriterHeader]);
                 if (rewriterUri != null)
                 {
-                    var result = new UriBuilder(request.Url())
+                    var result = new UriBuilder(request.GetDisplayUrl())
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
@@ -75,7 +75,7 @@ namespace System.Web
                 var rewriterUri = ParseRewriterUrl(headers[UrlRewriterHeader]);
                 if (rewriterUri != null)
                 {
-                    var result = new UriBuilder(request.Url())
+                    var result = new UriBuilder(request.GetDisplayUrl())
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
