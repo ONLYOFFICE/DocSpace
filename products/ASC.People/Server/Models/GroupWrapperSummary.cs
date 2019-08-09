@@ -39,7 +39,7 @@ namespace ASC.Web.Api.Models
         {
             Id = group.ID;
             Name = group.Name;
-            Manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)).UserName;
+            Manager = CoreContext.UserManager.GetUsers(context.Tenant.TenantId, CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)).UserName;
         }
 
         protected GroupWrapperSummary()

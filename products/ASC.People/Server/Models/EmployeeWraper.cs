@@ -59,7 +59,7 @@ namespace ASC.Web.Api.Models
 
             if (Id != Guid.Empty)
             {
-                var profileUrl = CommonLinkUtility.GetUserProfile(Id, userInfo.Tenant, false);
+                var profileUrl = CommonLinkUtility.GetUserProfile(userInfo.Tenant, Id, false);
                 ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(httpContext.HttpContext, profileUrl);
             }
         }
@@ -83,7 +83,7 @@ namespace ASC.Web.Api.Models
         {
             try
             {
-                return Get(CoreContext.UserManager.GetUsers(userId), context);
+                return Get(CoreContext.UserManager.GetUsers(context.Tenant.TenantId, userId), context);
             }
             catch (Exception)
             {

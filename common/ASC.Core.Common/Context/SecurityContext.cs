@@ -189,7 +189,9 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                var u = CoreContext.UserManager.GetUsers(account.ID);
+                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+
+                var u = CoreContext.UserManager.GetUsers(tenant.TenantId, account.ID);
 
                 if (u.ID == Users.Constants.LostUser.ID)
                 {
@@ -199,7 +201,7 @@ namespace ASC.Core
                 {
                     throw new SecurityException("Account disabled.");
                 }
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+
                 // for LDAP users only
                 if (u.Sid != null)
                 {
@@ -223,9 +225,9 @@ namespace ASC.Core
             return cookie;
         }
 
-        public static string AuthenticateMe(Guid userId)
+        public static string AuthenticateMe(int tenantId, Guid userId)
         {
-            return AuthenticateMe(CoreContext.Authentication.GetAccountByID(userId));
+            return AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenantId, userId));
         }
 
         public static void Logout()
@@ -233,9 +235,9 @@ namespace ASC.Core
             Principal = null;
         }
 
-        public static void SetUserPassword(Guid userID, string password)
+        public static void SetUserPassword(int tenantId, Guid userID, string password)
         {
-            CoreContext.Authentication.SetUserPassword(userID, password);
+            CoreContext.Authentication.SetUserPassword(tenantId, userID, password);
         }
 
 

@@ -56,7 +56,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             CoreContext.TenantManager.SetCurrentTenant(item.TenantId);
-            SecurityContext.AuthenticateMe(Guid.Parse(item.UserId));
+            SecurityContext.AuthenticateMe(item.TenantId, Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.Core.Notify
                 culture = tenant.GetCulture();
             }
 
-            var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var user = CoreContext.UserManager.GetUsers(item.TenantId, SecurityContext.CurrentAccount.ID);
             if (!string.IsNullOrEmpty(user.CultureName))
             {
                 culture = CultureInfo.GetCultureInfo(user.CultureName);

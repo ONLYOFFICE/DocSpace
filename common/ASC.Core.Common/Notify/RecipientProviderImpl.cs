@@ -41,7 +41,7 @@ namespace ASC.Core.Notify
             var recID = Guid.Empty;
             if (TryParseGuid(id, out recID))
             {
-                var user = CoreContext.UserManager.GetUsers(recID);
+                var user = CoreContext.UserManager.GetUsers(tenantId, recID);
                 if (user.ID != Constants.LostUser.ID) return new DirectRecipient(user.ID.ToString(), user.ToString());
 
                 var group = CoreContext.UserManager.GetGroupInfo(tenantId, recID);
@@ -96,14 +96,14 @@ namespace ASC.Core.Notify
             return result.ToArray();
         }
 
-        public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
+        public virtual string[] GetRecipientAddresses(int tenantId, IDirectRecipient recipient, string senderName)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
 
             Guid userID;
             if (TryParseGuid(recipient.ID, out userID))
             {
-                var user = CoreContext.UserManager.GetUsers(userID);
+                var user = CoreContext.UserManager.GetUsers(tenantId, userID);
                 if (user.ID != Constants.LostUser.ID)
                 {
                     if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] {user.Email};

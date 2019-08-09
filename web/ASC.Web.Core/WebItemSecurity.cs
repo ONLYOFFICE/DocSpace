@@ -109,27 +109,27 @@ namespace ASC.Web.Core
                         webitem.ID == WebItemManager.PeopleProductID ||
                         webitem.ID == WebItemManager.BirthdaysProductID ||
                         webitem.ID == WebItemManager.MailProductID) &&
-                        CoreContext.UserManager.GetUsers(@for).IsVisitor(tenant))
+                        CoreContext.UserManager.GetUsers(tenant.TenantId, @for).IsVisitor(tenant))
                     {
                         // hack: crm, people, birtthday and mail products not visible for collaborators
                         result = false;
                     }
                     else if ((webitem.ID == WebItemManager.CalendarProductID ||
                               webitem.ID == WebItemManager.TalkProductID) &&
-                             CoreContext.UserManager.GetUsers(@for).IsOutsider(tenant))
+                             CoreContext.UserManager.GetUsers(tenant.TenantId, @for).IsOutsider(tenant))
                     {
                         // hack: calendar and talk products not visible for outsider
                         result = false;
                     }
                     else if (webitem is IModule)
                     {
-                        result = SecurityContext.PermissionResolver.Check(tenant, CoreContext.Authentication.GetAccountByID(@for), securityObj, null, Read) &&
+                        result = SecurityContext.PermissionResolver.Check(tenant, CoreContext.Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
                             IsAvailableForUser(tenant, WebItemManager.Instance.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
                         var hasUsers = CoreContext.AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
-                        result = SecurityContext.PermissionResolver.Check(tenant, CoreContext.Authentication.GetAccountByID(@for), securityObj, null, Read) ||
+                        result = SecurityContext.PermissionResolver.Check(tenant, CoreContext.Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
                                  (hasUsers && IsProductAdministrator(tenant, securityObj.WebItemId, @for));
                     }
                 }
@@ -192,7 +192,7 @@ namespace ASC.Web.Core
                            Enabled = !info.Any() || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
 
                            Users = info
-                               .Select(i => CoreContext.UserManager.GetUsers(i.Item1))
+                               .Select(i => CoreContext.UserManager.GetUsers(tenantId, i.Item1))
                                .Where(u => u.ID != ASC.Core.Users.Constants.LostUser.ID),
 
                            Groups = info

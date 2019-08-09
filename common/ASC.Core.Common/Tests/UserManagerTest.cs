@@ -109,7 +109,7 @@ namespace ASC.Core.Common.Tests
                 Assert.IsNotNull(groups);
                 foreach (var g in CoreContext.UserManager.GetUserGroups(tenant, u.ID))
                 {
-                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID), tenant.TenantId).UserName;
+                    var manager = CoreContext.UserManager.GetUsers(tenant.TenantId, CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID)).UserName;
                 }
             }
             var stopwatch = Stopwatch.StartNew();
@@ -119,7 +119,7 @@ namespace ASC.Core.Common.Tests
                 Assert.IsNotNull(groups);
                 foreach (var g in CoreContext.UserManager.GetUserGroups(tenant, u.ID))
                 {
-                    var manager = CoreContext.UserManager.GetUsers(CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID), tenant.TenantId).UserName;
+                    var manager = CoreContext.UserManager.GetUsers(tenant.TenantId, CoreContext.UserManager.GetDepartmentManager(tenant.TenantId, g.ID)).UserName;
                 }
             }
             stopwatch.Stop();

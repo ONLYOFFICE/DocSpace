@@ -151,7 +151,7 @@ namespace ASC.VoipService.Twilio
 
             if (Guid.TryParse(to, out newCallerId))
             {
-                SecurityContext.AuthenticateMe(newCallerId);
+                SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
             }
 
             return new VoiceResponse().Enqueue(settings.Queue.Name, GetEcho("enqueue"), "POST",

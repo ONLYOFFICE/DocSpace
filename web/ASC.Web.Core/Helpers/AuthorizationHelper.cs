@@ -57,7 +57,7 @@ namespace ASC.Web.Core.Helpers
                     var arr = Encoding.ASCII.GetString(Convert.FromBase64String(authorization.Substring(6))).Split(new[] { ':' });
                     var username = arr[0];
                     var password = arr[1];
-                    var u = CoreContext.UserManager.GetUserByEmail(CoreContext.TenantManager.GetCurrentTenant().TenantId, username);
+                    var u = CoreContext.UserManager.GetUserByEmail(CoreContext.TenantManager.GetCurrentTenant(context).TenantId, username);
                     if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
                     {
                         authCookie = SecurityContext.AuthenticateMe(u.Email, password);
