@@ -41,7 +41,9 @@ const nextAction = () => {
 
 const Paging = props => {
   //console.log("Paging render");
-  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, openDirection, disablePrevious, disableNext, selectedPage, selectedCount } = props;
+  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, 
+    openDirection, disablePrevious, disableNext, selectedPage, selectedCount, emptyPagePlaceholder, 
+    emptyCountPlaceholder } = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
@@ -53,16 +55,37 @@ const Paging = props => {
 
   return (
     <StyledPaging>
-      <Button size='medium' scale={true} label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
+      <Button 
+        size='medium' 
+        scale={true} 
+        label={previousLabel} 
+        onClick={previousAction} 
+        isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} selectedOption={selectedPage} dropDownMaxHeight="200px" />
+          <ComboBox 
+            directionY={openDirection} 
+            options={pageItems} 
+            onSelect={onSelectPageAction} 
+            selectedOption={selectedPage} 
+            dropDownMaxHeight="200px"
+            emptyOptionsPlaceholder={emptyPagePlaceholder} />
         </StyledPage>
       }
-      <Button size='medium' scale={true} label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
+      <Button 
+        size='medium' 
+        scale={true} 
+        label={nextLabel} 
+        onClick={nextAction} 
+        isDisabled={disableNext} />
       {countItems &&
         <StyledOnPage>
-          <ComboBox directionY={openDirection} options={countItems} onSelect={onSelectCountAction} selectedOption={selectedCount} />
+          <ComboBox 
+            directionY={openDirection} 
+            options={countItems} 
+            onSelect={onSelectCountAction} 
+            selectedOption={selectedCount}
+            emptyOptionsPlaceholder={emptyCountPlaceholder} />
         </StyledOnPage>
       }
     </StyledPaging>
@@ -85,14 +108,18 @@ Paging.propTypes = {
     PropTypes.number
   ]),
   onSelectPage: PropTypes.func,
-  onSelectCount: PropTypes.func
+  onSelectCount: PropTypes.func,
+  emptyPagePlaceholder: PropTypes.string,
+  emptyCountPlaceholder: PropTypes.string
 }
 
 Paging.defaultProps = {
   previousAction: previousAction,
   nextAction: nextAction,
   disablePrevious: false,
-  disableNext: false
+  disableNext: false,
+  emptyPagePlaceholder: '1 of 1',
+  emptyCountPlaceholder: '25 per page'
 }
 
 export default Paging;

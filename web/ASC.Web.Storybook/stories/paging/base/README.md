@@ -21,6 +21,8 @@ import { Paging } from 'asc-web-components';
     disableNext={false}
     selectedPage={1}
     selectedCount={25}
+    emptyPagePlaceholder='1 of 1'
+    emptyCountPlaceholder='25 per page'
 />
 ```
 
@@ -39,3 +41,5 @@ import { Paging } from 'asc-web-components';
 | `disableNext`          | `bool`            |    -     | -                            | `false` | Set next button disabled                     |
 | `selectedPage`         | `string`,`number` |    -     | -                            | -       | Initial value for pageItems                  |
 | `selectedCount`        | `string`,`number` |    -     | -                            | -       | Initial value for countItems                 |
+| `emptyPagePlaceholder` | `string`          |    -     | -                            | -       | Value that will be displayed in page selection when collection is empty|
+| `emptyCountPlaceholder`| `string`          |    -     | -                            | -       | Value that will be displayed in count selection when collection is empty|
