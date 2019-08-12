@@ -5,7 +5,7 @@ import { Icons } from '../icons';
 
 const StyledOuter = styled.div`
     width: ${props => props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
-    cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+    cursor: ${props => props.isDisabled || typeof props.onClick != 'function' ? 'default' : 'pointer'};
     line-height: 0;
 `;
 class IconButton extends React.Component{
@@ -99,6 +99,8 @@ class IconButton extends React.Component{
                 size={this.props.size} 
                 isDisabled={this.props.isDisabled} 
     
+                onClick={this.props.onClick}
+
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
                 onMouseDown={this.onMouseDown}
