@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Threading;
 
 using ASC.Api.Core;
@@ -113,24 +114,9 @@ namespace ASC.People
 
             app.UseAuthentication();
 
-            app.Use(async (context, next) => {
-                if (SecurityContext.IsAuthenticated)
-                {
-                    var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-                    var culture = user.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
-                }
-                //
-                await next.Invoke();
-            });
+            app.UseCultureMiddleware();
 
-            app.Use(async (context, next) =>
-            {
-                context.Response.RegisterForDispose(new DisposableHttpContext(context));
-
-                await next();
-            });
+            app.UseDisposeMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
