@@ -39,6 +39,20 @@ export function getModulesList() {
     return fakeResponse(data);
 };
 
+export function getSettings() {
+    const data = {
+        "timezone": "Russian Standard Time;180;(UTC+03:00) Moscow, St. Petersburg;Russia TZ 2 Standard Time;Russia TZ 2 Daylight Time;[01:01:0001;12:31:2010;60;[0;02:00:00;3;5;0;];[0;03:00:00;10;5;0;];][01:01:2011;12:31:2011;60;[0;02:00:00;3;5;0;];[0;00:00:00;1;1;6;];][01:01:2012;12:31:2012;0;[1;00:00:00;1;1;];[1;00:00:00.001;1;1;];60;][01:01:2013;12:31:2013;0;[1;00:00:00;1;1;];[1;00:00:00.001;1;1;];60;][01:01:2014;12:31:2014;60;[0;00:00:00;1;1;3;];[0;02:00:00;10;5;0;];];",
+        "trustedDomains": [],
+        "trustedDomainsType": 1,
+        "culture": "ru-RU",
+        "utcOffset": "03:00:00",
+        "utcHoursOffset": 3
+        };
+
+    return fakeResponse(data);
+};
+
+
 export function getUser() {
     const data = {
         "index": "a",

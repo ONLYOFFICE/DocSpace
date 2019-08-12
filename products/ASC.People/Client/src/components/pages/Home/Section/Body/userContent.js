@@ -141,7 +141,7 @@ const UserContent = ({user, history,settings }) => {
 
 function mapStateToProps(state) {
   return {
-    settings: state.settings
+    settings: state.auth.settings
   };
 }
 

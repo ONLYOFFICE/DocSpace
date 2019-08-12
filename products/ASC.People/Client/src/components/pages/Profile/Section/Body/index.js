@@ -253,7 +253,7 @@ const SectionBodyContent = (props) => {
 
 function mapStateToProps(state) {
   return {
-    settings: state.settings
+    settings: state.auth.settings
   };
 }
 
