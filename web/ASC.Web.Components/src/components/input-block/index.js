@@ -71,7 +71,7 @@ const InputBlock = React.forwardRef((props, ref) => {
   }
 
   const onIconClick = (e) => {
-    props.onIconClick && props.onIconClick(e, value);
+    props.onIconClick(e, value);
   }
 
   return (
@@ -111,7 +111,7 @@ const InputBlock = React.forwardRef((props, ref) => {
               iconName={props.iconName} 
               isFill={props.isIconFill} 
               isDisabled={props.isDisabled} 
-              onClick={onIconClick} />
+              onClick={typeof props.onIconClick == 'function' ? onIconClick : undefined } />
           </StyledIconBlock>
         </InputGroupAddon>
       }
