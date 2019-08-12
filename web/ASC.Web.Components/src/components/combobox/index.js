@@ -117,8 +117,8 @@ class ComboBox extends React.PureComponent {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
-    if (this.props.isDisabled) return;
-
+    if (this.props.isDisabled || e.target.closest('.optionalBlock')) return;
+    
     this.setState({
       option: this.props.option,
       isOpen: !this.state.isOpen
@@ -194,7 +194,7 @@ class ComboBox extends React.PureComponent {
         onSelect={this.stopAction}
       >
         <StyledComboButton>
-          <StyledOptionalItem>
+          <StyledOptionalItem className='optionalBlock'>
             {children}
           </StyledOptionalItem>
           {boxIcon &&
