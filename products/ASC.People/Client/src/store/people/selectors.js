@@ -23,23 +23,6 @@ export function skipUser(selection, userId) {
     });
 };
 
-export function getTreeGroups(groups) {
-    const treeData = [
-        {
-            key: "root",
-            title: "Departments",
-            root: true,
-            children: groups.map(g => {
-                return {
-                    key: g.id, title: g.name, root: false
-                };
-            }) || []
-        }
-    ];
-
-    return treeData;
-};
-
 export const getUserStatus = user => {
     if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Activated) {
         return "normal";
