@@ -23,7 +23,8 @@ const colorCss = css`
 
 const hoveredCss = css`
   ${colorCss};
-  text-decoration: ${props => (props.type === "page" ? "underline" : "underline dashed")};
+  border-bottom: ${props => (props.type === "page" ? "1px solid" : "1px dashed")};
+  text-decoration: none;
 `;
 
 const StyledLink = styled(SimpleLink)`

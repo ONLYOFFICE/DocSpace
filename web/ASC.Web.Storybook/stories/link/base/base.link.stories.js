@@ -2,13 +2,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Link } from 'asc-web-components';
 import Readme from './README.md';
-import { text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/react';
+import { text, boolean, withKnobs, select, number, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Section from '../../../.storybook/decorators/section';
 import { action } from '@storybook/addon-actions';
 
 const type = ['action', 'page'];
-const colors = ['black', 'gray', 'blue'];
 const target = ['_blank', '_self', '_parent', '_top'];
 
 function clickActionLink(e) {
@@ -32,7 +31,7 @@ storiesOf('Components|Link', module)
    <Section>
         <Link
           type={select('type', type, 'page')}
-          color={select('color', colors, 'black')}
+          color={color('color', '#333333')}
           fontSize={number('fontSize', 13)}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
