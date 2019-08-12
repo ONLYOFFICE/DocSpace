@@ -26,7 +26,7 @@ export function skipUser(selection, userId) {
 export function getTreeGroups(groups) {
     const treeData = [
         {
-            key: "0-0",
+            key: "root",
             title: "Departments",
             root: true,
             children: groups.map(g => {
@@ -129,3 +129,7 @@ export function getUsersBySelected(users, selected) {
 export function isUserDisabled(user) {
     return getUserStatus(user) === "disabled";
 };
+
+export function getSelectedGroup(groups, selectedGroupId) {
+    return find(groups, (group) => group.id === selectedGroupId);
+}

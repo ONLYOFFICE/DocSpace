@@ -41,7 +41,7 @@ const UserContent = ({user, history,settings }) => {
           {displayName && 
           <Link
             isSemitransparent={status === "pending"}
-            type="action"
+            type="page"
             title={displayName}
             isBold={true}
             fontSize={15}
