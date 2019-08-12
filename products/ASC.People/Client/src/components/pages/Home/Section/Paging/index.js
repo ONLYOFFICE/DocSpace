@@ -115,6 +115,7 @@ const SectionPagingContent = ({
       openDirection="top"
       selectedPage={filter.page} //FILTER CURRENT PAGE
       selectedCount={filter.pageCount} //FILTER PAGE COUNT
+      emptyPagePlaceholder="1 of 1"
     />
   );
 };
