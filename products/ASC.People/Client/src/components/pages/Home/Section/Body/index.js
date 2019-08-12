@@ -1,7 +1,14 @@
 import React, { memo, useCallback } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { ContentRow, toastr, Scrollbar } from "asc-web-components";
+import {
+  ContentRow,
+  toastr,
+  Scrollbar,
+  EmptyScreenContainer,
+  Icons,
+  Link
+} from "asc-web-components";
 import UserContent from "./userContent";
 //import config from "../../../../../../package.json";
 import {
@@ -19,15 +26,17 @@ import { isAdmin } from "../../../../../store/auth/selectors";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
-
 const CustomScrollbars = ({ onScroll, forwardedRef, style, children }) => {
-  const refSetter = useCallback(scrollbarsRef => {
-    if (scrollbarsRef) {
-      forwardedRef(scrollbarsRef.view);
-    } else {
-      forwardedRef(null);
-    }
-  }, [forwardedRef]);
+  const refSetter = useCallback(
+    scrollbarsRef => {
+      if (scrollbarsRef) {
+        forwardedRef(scrollbarsRef.view);
+      } else {
+        forwardedRef(null);
+      }
+    },
+    [forwardedRef]
+  );
 
   return (
     <Scrollbar
@@ -163,7 +172,7 @@ class SectionBodyContent extends React.PureComponent {
     console.log("Home SectionBodyContent render()");
     const { users, isAdmin, selection, history, settings } = this.props;
 
-    return (
+    return users.length > 0 ? (
       <AutoSizer>
         {({ height, width }) => (
           <List
@@ -190,6 +199,25 @@ class SectionBodyContent extends React.PureComponent {
           </List>
         )}
       </AutoSizer>
+    ) : (
+      <EmptyScreenContainer
+        imageSrc="images/empty_screen_filter.png"
+        imageAlt="Empty Screen Filter image"
+        headerText="No results matching your search could be found"
+        descriptionText="No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section."
+        buttons={
+          <>
+            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+            <Link
+              type="action"
+              isHovered={true}
+              onClick={e => console.log("Reset filter clicked", e)}
+            >
+              Reset filter
+            </Link>
+          </>
+        }
+      />
     );
   }
 }
