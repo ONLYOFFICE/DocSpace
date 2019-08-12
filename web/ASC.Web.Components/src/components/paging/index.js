@@ -8,26 +8,27 @@ import device from '../device'
 
 
 const StyledPaging = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 
-    & > button, div:not(:last-of-type) {
-        margin-right: 8px;
-    }
+  & > button {
+    margin-right: 8px;
+    width: 110px;
+  }
 `;
 
 const StyledOnPage = styled.div`
-    width: 120px;
-    margin-left: auto;
+  margin-left: auto;
+  margin-right: 0px;
 
-    @media ${device.mobile} {
-        display: none;
-    }
+  @media ${device.mobile} {
+    display: none;
+  }
 `;
 
 const StyledPage = styled.div`
-
+  margin-right: 8px;
 `;
 
 const previousAction = () => {
@@ -52,13 +53,13 @@ const Paging = props => {
 
   return (
     <StyledPaging>
-      <Button size='medium' label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
+      <Button size='medium' scale={true} label={previousLabel} onClick={previousAction} isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
           <ComboBox directionY={openDirection} options={pageItems} onSelect={onSelectPageAction} selectedOption={selectedPage} dropDownMaxHeight="200px" />
         </StyledPage>
       }
-      <Button size='medium' label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
+      <Button size='medium' scale={true} label={nextLabel} onClick={nextAction} isDisabled={disableNext} />
       {countItems &&
         <StyledOnPage>
           <ComboBox directionY={openDirection} options={countItems} onSelect={onSelectCountAction} selectedOption={selectedCount} />
