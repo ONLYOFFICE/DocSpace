@@ -5,7 +5,8 @@ import {
     SELECT_USER,
     DESELECT_USER,
     SET_SELECTED,
-    SET_FILTER
+    SET_FILTER,
+    SELECT_GROUP
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from './selectors';
 import Filter from "./filter";
@@ -15,6 +16,7 @@ const initialState = {
     groups: [],
     selection: [],
     selected: "none",
+    selectedGroup: null,
     filter: Filter.getDefault()
 };
 
@@ -52,6 +54,10 @@ const peopleReducer = (state = initialState, action) => {
         case SET_FILTER:
             return Object.assign({}, state, {
                 filter: action.filter
+            });
+        case SELECT_GROUP:
+            return Object.assign({}, state, {
+                selectedGroup: action.groupId
             });
         default:
             return state;

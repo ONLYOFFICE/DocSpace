@@ -111,21 +111,6 @@ const EditContainer = styled.div`
     background: linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%);
 `;
 
-const EditLink = styled.div`
-    & > a {
-      color: ${whiteColor} !important;
-      
-      span {
-        color: ${whiteColor};
-      }
-    }
-    
-    &:hover{
-        color: ${whiteColor} !important;
-        cursor: pointer;
-    }
-`;
-
 const EmptyIcon = styled(Icons.CameraIcon)`
     border-radius: 50%;
 `;
@@ -155,17 +140,17 @@ const Avatar = React.memo(props => {
       </AvatarWrapper>
       {editing && (size === 'max') &&
         <EditContainer {...props}>
-          <EditLink onClick={editAction}>
-            <Link
-              type='action'
-              title={editLabel}
-              isTextOverflow={true}
-              fontSize={14}
-              isHovered={true}
-            >
-              {editLabel}
-            </Link>
-          </EditLink>
+          <Link
+            type='action'
+            title={editLabel}
+            isTextOverflow={true}
+            fontSize={14}
+            isHovered={true}
+            color={whiteColor}
+            onClick={editAction}
+          >
+            {editLabel}
+          </Link>
         </EditContainer>}
       <RoleWrapper {...props}>
         {role === 'guest' && <Icons.GuestIcon size='scale' />}

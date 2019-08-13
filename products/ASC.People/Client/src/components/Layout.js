@@ -66,8 +66,8 @@ function mapStateToProps(state) {
         auth: state.auth,
         availableModules: getAvailableModules(state.auth.modules),
         currentUser: state.auth.user,
-        currentModuleId: state.settings.currentProductId,
-        settings: state.settings
+        currentModuleId: state.auth.settings.currentProductId,
+        settings: state.auth.settings
     };
 }
 

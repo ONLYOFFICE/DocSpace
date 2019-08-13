@@ -23,23 +23,6 @@ export function skipUser(selection, userId) {
     });
 };
 
-export function getTreeGroups(groups) {
-    const treeData = [
-        {
-            key: "0-0",
-            title: "Departments",
-            root: true,
-            children: groups.map(g => {
-                return {
-                    key: g.id, title: g.name, root: false
-                };
-            }) || []
-        }
-    ];
-
-    return treeData;
-};
-
 export const getUserStatus = user => {
     if (user.status === EmployeeStatus.Active && user.activationStatus === EmployeeActivationStatus.Activated) {
         return "normal";
@@ -129,3 +112,7 @@ export function getUsersBySelected(users, selected) {
 export function isUserDisabled(user) {
     return getUserStatus(user) === "disabled";
 };
+
+export function getSelectedGroup(groups, selectedGroupId) {
+    return find(groups, (group) => group.id === selectedGroupId);
+}

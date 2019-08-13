@@ -232,7 +232,7 @@ const mapStateToProps = state => {
     selected: state.people.selected,
     users: state.people.users,
     isAdmin: isAdmin(state.auth),
-    settings: state.settings
+    settings: state.auth.settings
   };
 };
 

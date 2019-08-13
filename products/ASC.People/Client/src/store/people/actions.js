@@ -8,6 +8,7 @@ export const SELECT_USER = 'SELECT_USER';
 export const DESELECT_USER = 'DESELECT_USER';
 export const SET_SELECTED = 'SET_SELECTED';
 export const SET_FILTER = 'SET_FILTER';
+export const SELECT_GROUP = 'SELECT_GROUP';
 
 export function setUsers(users) {
     return {
@@ -34,6 +35,13 @@ export function setSelected(selected) {
     return {
         type: SET_SELECTED,
         selected
+    };
+};
+
+export function selectGroup(groupId) {
+    return {
+        type: SELECT_GROUP,
+        groupId
     };
 };
 

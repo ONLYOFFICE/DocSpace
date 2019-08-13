@@ -52,11 +52,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.17" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.103.14" />
-    <PackageReference Include="AWSSDK.S3" Version="3.3.104.2" />
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.20" />
-    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+    <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.27" />
+    <PackageReference Include="AWSSDK.Core" Version="3.3.103.24" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.104.12" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.30" />
+    <PackageReference Include="Grpc.Tools" Version="2.23.0-pre1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

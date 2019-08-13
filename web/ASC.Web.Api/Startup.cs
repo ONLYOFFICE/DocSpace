@@ -12,11 +12,12 @@ using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
-
+using ASC.Web.Studio.Core.Notify;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -77,6 +78,8 @@ namespace ASC.Web.Api
             services.AddLogManager()
                     .AddStorage()
                     .AddWebItemManager()
+                    .AddScoped(r => new ApiContext(r.GetService<IHttpContextAccessor>().HttpContext))
+                    .AddSingleton<StudioNotifyService>()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
                     .AddScoped<QueueWorkerRemove>();
@@ -106,23 +109,9 @@ namespace ASC.Web.Api
 
             app.UseAuthentication();
 
-            app.Use(async (context, next) => {
-                if (SecurityContext.IsAuthenticated)
-                {
-                    var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-                    var culture = user.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = user.GetCulture();
-                }
-                await next.Invoke();
-            });
+            app.UseCultureMiddleware();
 
-            app.Use(async (context, next) =>
-            {
-                context.Response.RegisterForDispose(new DisposableHttpContext(context));
-
-                await next();
-            });
+            app.UseDisposeMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
