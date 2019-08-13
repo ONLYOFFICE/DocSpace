@@ -77,6 +77,11 @@ class IconButton extends React.Component{
             for (let propsKey in this.props) {
                 if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
                   this.isNeedUpdate = true;
+                  if(propsKey == "iconName"){
+                    this.setState({
+                        currentIconName:  nextProps[propsKey]
+                    });
+                  }
                   break;
                 }
             }
