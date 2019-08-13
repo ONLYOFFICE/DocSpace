@@ -54,10 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="PublicResources\Resource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\ResourceJS.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourceJS.Designer.cs</LastGenOutput>
@@ -103,6 +99,36 @@
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.it.resx" >
       <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="PublicResources\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\Resource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.ru.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.de.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.es.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.fr.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.it.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   
