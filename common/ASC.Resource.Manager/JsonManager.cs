@@ -31,13 +31,14 @@ using System.Linq;
 using System.Xml;
 using ASC.Common.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Resource.Manager
 {
     public static class JsonManager
     {
-        public static void UploadJson(string fileName, Stream fileStream, string projectName, string moduleName)
+        public static void Upload(string fileName, Stream fileStream, string projectName, string moduleName)
         {
             var culture = GetCultureFromFileName(fileName);
 
@@ -99,7 +100,7 @@ namespace ASC.Resource.Manager
             }
         }
 
-        public static void ExportJson(string project, string module, string language, string exportPath, bool toJson = true, bool withDefaultValue = true)
+        public static void Export(string project, string module, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -119,10 +120,43 @@ namespace ASC.Resource.Manager
             foreach (var fileWords in words)
             {
                 var wordsDictionary = new Dictionary<string, object>();
+                var firstWord = fileWords.FirstOrDefault();
+                var fileName = firstWord == null
+                    ? module
+                    : Path.GetFileNameWithoutExtension(firstWord.ResFile.FileName);
+                var zipFileName = Path.Combine(exportPath, language == "Neutral" ? "en" : language, $"{fileName}.json");
 
-                foreach (var word in fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)))
+                var dirName = Path.GetDirectoryName(zipFileName);
+                if (!Directory.Exists(dirName))
                 {
-                    if (string.IsNullOrEmpty(word.ValueTo) && !withDefaultValue) continue;
+                    Directory.CreateDirectory(dirName);
+                }
+
+                var toAdd = new List<ResWord>();
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (File.Exists(zipFileName))
+                    {
+                        var jObject = JObject.Parse(File.ReadAllText(zipFileName));
+                        foreach(var j in jObject)
+                        {
+                            toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value.ToString() });
+                        }
+                    }
+
+                    if (!toAdd.Any(r => r.Title == key))
+                    {
+                        toAdd.Add(fileWords.FirstOrDefault(r => r.Title == key));
+                    }
+                }
+                else
+                {
+                    toAdd.AddRange(fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)));
+                }
+
+                foreach (var word in toAdd)
+                {
+                    if (string.IsNullOrEmpty(word.ValueTo)) continue;
 
                     var newVal = word.ValueTo ?? word.ValueFrom;
 
@@ -135,66 +169,11 @@ namespace ASC.Resource.Manager
                     wordsDictionary.Add(newKey.Keys.First(), newKey.Values.First());
                 }
 
-                var firstWord = fileWords.FirstOrDefault();
-                var fileName = firstWord == null
-                    ? module
-                    : Path.GetFileNameWithoutExtension(firstWord.ResFile.FileName);
-                string zipFileName = null;
-
-                if (toJson)
-                {
-                    zipFileName = Path.Combine(exportPath, language == "Neutral" ? "en" : language, $"{fileName}.json");
-                }
-                else
-                {
-                    zipFileName = Path.Combine(exportPath, project, module, $"{fileName}{(language == "Neutral" ? string.Empty : "." + language)}.resx");
-                }
-                var dirName = Path.GetDirectoryName(zipFileName);
-                if (!Directory.Exists(dirName))
-                {
-                    Directory.CreateDirectory(dirName);
-                }
-
                 using TextWriter writer = new StreamWriter(zipFileName);
 
-                if (toJson)
-                {
-                    var obj = JsonConvert.SerializeObject(wordsDictionary, Formatting.Indented);
-                    writer.Write(obj);
-                }
-                else
-                {
-                    var data = new XmlDocument();
-                    var resources = data.CreateElement("resources");
-
-                    foreach (var ind in wordsDictionary)
-                    {
-                        var stringAttr = data.CreateAttribute("name");
-                        stringAttr.Value = ind.Key;
-
-                        var child = data.CreateElement("string");
-                        child.Attributes.Append(stringAttr);
-                        child.InnerText = ind.Value.ToString();
-
-                        resources.AppendChild(child);
-                    }
-
-                    data.AppendChild(resources);
-
-                    var settings = new XmlWriterSettings
-                    {
-                        Indent = true,
-                        IndentChars = "  ",
-                        NewLineChars = Environment.NewLine,
-                        NewLineHandling = NewLineHandling.Replace,
-                        OmitXmlDeclaration = false,
-                        ConformanceLevel = ConformanceLevel.Fragment
-                    };
-
-                    using var xmlTextWriter = XmlWriter.Create(writer, settings);
-                    data.WriteTo(xmlTextWriter);
-                    xmlTextWriter.Flush();
-                }
+                var obj = JsonConvert.SerializeObject(wordsDictionary, Formatting.Indented);
+                writer.Write(obj);
+                
             }
         }
 
