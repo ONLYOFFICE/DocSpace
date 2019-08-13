@@ -1,10 +1,10 @@
-import React, { memo, useCallback } from "react";
+import React, { memo } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import {
   ContentRow,
   toastr,
-  Scrollbar,
+  CustomScrollbarsVirtualList,
   EmptyScreenContainer,
   Icons,
   Link
@@ -25,34 +25,6 @@ import {
 import { isAdmin } from "../../../../../store/auth/selectors";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-
-const CustomScrollbars = ({ onScroll, forwardedRef, style, children }) => {
-  const refSetter = useCallback(
-    scrollbarsRef => {
-      if (scrollbarsRef) {
-        forwardedRef(scrollbarsRef.view);
-      } else {
-        forwardedRef(null);
-      }
-    },
-    [forwardedRef]
-  );
-
-  return (
-    <Scrollbar
-      ref={refSetter}
-      style={{ ...style, overflow: "hidden" }}
-      onScroll={onScroll}
-      stype="mediumBlack"
-    >
-      {children}
-    </Scrollbar>
-  );
-};
-
-const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
-  <CustomScrollbars {...props} forwardedRef={ref} />
-));
 
 const Row = memo(
   ({

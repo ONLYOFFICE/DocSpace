@@ -132,6 +132,7 @@ const EditLink = styled.div`
 
   span {
     display: inline-block;
+    max-width: 100%;
   }
 `;
 
