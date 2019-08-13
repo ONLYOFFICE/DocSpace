@@ -25,11 +25,11 @@ storiesOf('Components|Input', module)
         //dateFormat={text('dateFormat', 'dd.MM.yyyy')}
         disabled={boolean('disabled', false)}
         themeColor={color('themeColor', '#ED7309')}
-        startDate={myDateKnob('startDate', new Date())}
+        selectedDate={myDateKnob('selectedDate', new Date())}
         openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("2018/02/01"))}
         maxDate={myDateKnob('maxDate', new Date("2019/09/01"))}
-        location={select('location', moment.locales(), 'ru')}
+        location={select('location', moment.locales(), 'en')}
       />
     </Section>
   ));

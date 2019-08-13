@@ -111,7 +111,7 @@ class Calendar extends Component {
         moment.locale(props.location);
 
         this.state = {
-            startDate: props.startDate,
+            selectedDate: props.selectedDate,
             openToDate: props.openToDate,
             months: moment.months()
         };
@@ -130,11 +130,11 @@ class Calendar extends Component {
 
     getCurrentDate = function () {
         let year = this.getArrayDates();
-        year = year.find(x => x.key == this.state.startDate.getFullYear());
+        year = year.find(x => x.key == this.state.selectedDate.getFullYear());
         return (year.key);
     }
 
-    getListMonth = function (date1, date2) {        
+    getListMonth = function (date1, date2) {
         //const monthList = [];
         let monthList = new Array();
         for (let i = date1; i <= date2; i++) {
@@ -152,19 +152,25 @@ class Calendar extends Component {
         if (this.props.minDate.getFullYear() !== this.props.maxDate.getFullYear()) {
             monthList = this.getListMonth(0, 11);
         } else { monthList = this.getListMonth(date1, date2); }
-        console.log(monthList);
+        //console.log(monthList);
         return monthList;
     }
 
     getCurrentMonth = function () {
         let month = this.getArrayMonth();
-        let selectedmonth = month.find(x => x.key == this.state.startDate.getMonth());
+        let selectedmonth = month.find(x => x.key == this.state.selectedDate.getMonth());
         return (selectedmonth.key);
     }
 
+    fomateDate = function (date) {
+        return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+    }
+
     handleChange(date) {
-        this.setState({ startDate: date });
-        this.props.onChange && this.props.onChange(date);
+        if (this.fomateDate(this.props.selectedDate) !== this.fomateDate(date)) {
+            this.setState({ selectedDate: date });
+            this.props.onChange && this.props.onChange(date);
+        }
     }
 
     selectedDate = (value) => {
@@ -180,19 +186,16 @@ class Calendar extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.location !== prevProps.location) {
             moment.locale(this.props.location);
-            this.state.months = moment.months();
             this.setState(this.state.months = moment.months());
-            //console.log(this.state.months);
         }
     }
 
     render() {
-        //console.log(this.state.months);
         return (
             <CalendarContainer>
                 <DataSelector>
                     <div>
-                        <ComboBox onSelect={this.selectedMonth} isDisabled={this.props.disabled} options={this.getArrayMonth()} selectedOption={this.getCurrentMonth()} />
+                        <ComboBox scaled={false} onSelect={this.selectedMonth} isDisabled={this.props.disabled} options={this.getArrayMonth()} selectedOption={this.getCurrentMonth()} />
                     </div>
                     <ComboboxStyled>
                         <ComboBox onSelect={this.selectedDate} isDisabled={this.props.disabled} options={this.getArrayDates()} selectedOption={this.getCurrentDate()} />
@@ -211,19 +214,19 @@ class Calendar extends Component {
                 <CalendarStyle color={this.props.themeColor}>
                     <DatePicker
                         inline
-                        selected={this.state.startDate}
+                        selected={this.state.selectedDate}
                         onChange={this.handleChange.bind(this)}
                         minDate={new Date(this.props.minDate.getFullYear(), this.props.minDate.getMonth(), 1)}
-                        maxDate={new Date(this.props.maxDate.getFullYear(), this.props.maxDate.getMonth() + 1, 0)}                        
+                        maxDate={new Date(this.props.maxDate.getFullYear(), this.props.maxDate.getMonth() + 1, 0)}
                         openToDate={this.state.openToDate}
                         showDisabledMonthNavigation
-                        renderCustomHeader={({ }) => { }} // пока для навигации
-                        
-                        //locale={this.props.location} 
-                        //disabled={this.props.disabled}
-                        //dateFormat={this.props.dateFormat}
-                        //locale={this.props.location} 
-                        //locale='language'
+                        renderCustomHeader={({ }) => { }}
+
+                    //locale={this.props.location} 
+                    //disabled={this.props.disabled}
+                    //dateFormat={this.props.dateFormat}
+                    //locale={this.props.location} 
+                    //locale='language'
                     />
                 </CalendarStyle>
             </CalendarContainer>
@@ -236,7 +239,7 @@ Calendar.propTypes = {
     disabled: PropTypes.bool,
     dateFormat: PropTypes.string,
     themeColor: PropTypes.string,
-    startDate: PropTypes.instanceOf(Date),
+    selectedDate: PropTypes.instanceOf(Date),
     openToDate: PropTypes.instanceOf(Date),
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
@@ -244,7 +247,7 @@ Calendar.propTypes = {
 }
 
 Calendar.defaultProps = {
-    startDate: new Date(),
+    selectedDate: new Date(),
     openToDate: new Date(),
     minDate: new Date("1970/01/01"),
     maxDate: new Date("3000/01/01"),
