@@ -35,13 +35,14 @@ namespace ASC.Resource.Manager
 {
     public class ResxManager
     {
-        public static void Export(string project, string module, string language, string exportPath, string key = null)
+        public static void Export(string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
                 Project = new ResProject { Name = project },
                 Module = new ResModule { Name = module },
-                Language = new ResCulture { Title = language }
+                Language = new ResCulture { Title = language },
+                Word = new ResWord() {  ResFile = new ResFile() {  FileName = fName } }
             };
 
             var words = ResourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
@@ -78,7 +79,7 @@ namespace ASC.Resource.Manager
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
                         foreach (var v in resXResourceReader.Cast<DictionaryEntry>())
                         {
-                            toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueFrom = v.Value?.ToString() });
+                            toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
                         }
                     }
 

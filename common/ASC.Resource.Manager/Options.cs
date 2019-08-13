@@ -10,6 +10,9 @@ namespace ASC.Resource.Manager
         [Option('m', "module", Required = false, HelpText = "Module")]
         public string Module { get; set; }
 
+        [Option("fp", Required = false, HelpText = "File Path")]
+        public string FilePath { get; set; }
+
         [Option('e', "exportpath", Required = false, HelpText = "Export Path", Default = "..\\..\\..\\..\\ASC.Common\\")]
         public string ExportPath { get; set; }
 
@@ -22,7 +25,7 @@ namespace ASC.Resource.Manager
         [Option('k', "key", Required = false, HelpText = "Key", Default = "")]
         public string Key { get; set; }
 
-        public void Deconstruct(out string project, out string module, out string exportPath, out string culture, out string format, out string key) 
-            => (project, module, exportPath, culture, format, key) = (Project, Module, ExportPath, Culture, Format, Key);
+        public void Deconstruct(out string project, out string module, out string filePath, out string exportPath, out string culture, out string format, out string key) 
+            => (project, module, filePath, exportPath, culture, format, key) = (Project, Module, FilePath, ExportPath, Culture, Format, Key);
     }
 }

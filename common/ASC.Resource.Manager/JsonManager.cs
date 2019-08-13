@@ -100,13 +100,14 @@ namespace ASC.Resource.Manager
             }
         }
 
-        public static void Export(string project, string module, string language, string exportPath, string key = null)
+        public static void Export(string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
                 Project = new ResProject { Name = project },
                 Module = new ResModule { Name = module },
-                Language = new ResCulture { Title = language }
+                Language = new ResCulture { Title = language },
+                Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
             var words = ResourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
