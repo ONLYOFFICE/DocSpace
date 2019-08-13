@@ -96,7 +96,7 @@ storiesOf('Components|Input', module)
           options={appendOptions(comboOptions, optionsCount)}
           onSelect={option => action("Selected option")(option)}
           isDisabled={boolean('isDisabled', false)}
-          dropDownMaxHeight={dropDownMaxHeight + 'px'}
+          dropDownMaxHeight={dropDownMaxHeight}
           scaled={boolean('scaled', false)}
           size={select('size', sizeOptions, 'content')}
         >

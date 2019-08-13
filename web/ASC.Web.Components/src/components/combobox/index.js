@@ -180,7 +180,7 @@ class ComboBox extends React.PureComponent {
     const { dropDownMaxHeight, isDisabled, directionX, directionY, scaled, children } = this.props;
     const { boxLabel, boxIcon, isOpen, options } = this.state;
 
-    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
+    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight} : {};
     const dropDownManualWidthProp = scaled ? { manualWidth: '100%' } : {};
     const boxIconColor = isDisabled ? '#D0D5DA' : '#333333';
     const arrowIconColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
@@ -250,7 +250,7 @@ ComboBox.propTypes = {
   ]),
   options: PropTypes.array,
   onSelect: PropTypes.func,
-  dropDownMaxHeight: PropTypes.string,
+  dropDownMaxHeight: PropTypes.number,
   emptyOptionsPlaceholder: PropTypes.string,
 
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
@@ -260,7 +260,6 @@ ComboBox.propTypes = {
 ComboBox.defaultProps = {
   isDisabled: false,
   withBorder: true,
-  dropDownMaxHeight: null,
   emptyOptionsPlaceholder: 'Select',
   size: 'base',
   scaled: true
