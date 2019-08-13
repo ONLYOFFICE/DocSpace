@@ -4,22 +4,24 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout } from 'asc-web-components';
 import { logout } from '../../actions/authActions';
+import { withTranslation } from 'react-i18next';
 
 const StudioLayout = props => {
-    const { auth, logout, children, history } = props;
+    const { auth, logout, children, history, t } = props;
+    console.log("StudioLayout", props);
     const currentUserActions = [
         {
-            key: 'ProfileBtn', label: 'Profile', onClick: () => {
+            key: 'ProfileBtn', label: t('Profile'), onClick: () => {
                 window.location.href = '/products/people/view/@self';
             }
         },
         {
-            key: 'AboutBtn', label: 'About', onClick: () => {
+            key: 'AboutBtn', label: t('AboutCompanyTitle'), onClick: () => {
                 history.push('/about');
             }
         },
         {
-            key: 'LogoutBtn', label: 'Log out', onClick: () => {
+            key: 'LogoutBtn', label: t('LogoutButton'), onClick: () => {
                 logout();
                 history.push('/');
             }
@@ -82,4 +84,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(StudioLayout)));
