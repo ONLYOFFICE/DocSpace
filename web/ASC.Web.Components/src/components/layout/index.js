@@ -12,6 +12,7 @@ import NavItem from './sub-components/nav-item'
 class Layout extends React.Component {
   constructor(props) {
     super(props);
+    this.timeout = null;
     this.state = this.mapPropsToState(props);
   };
 
@@ -119,12 +120,29 @@ class Layout extends React.Component {
     });
   };
 
-  handleNavHover = () => {
-    if(!this.state.isNavHoverEnabled) return;
-    
+  handleNavMouseEnter = () => {
+    if (!this.state.isNavHoverEnabled) return;
+
+    this.timeout = setTimeout(() => {
+      this.setState({
+        isBackdropVisible: false,
+        isNavOpened: true,
+        isAsideVisible: false
+      });
+    }, 300);
+  }
+
+  handleNavMouseLeave = () => {
+    if (!this.state.isNavHoverEnabled) return;
+
+    if (this.timeout != null) { 
+      clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+
     this.setState({
       isBackdropVisible: false,
-      isNavOpened: !this.state.isNavOpened,
+      isNavOpened: false,
       isAsideVisible: false
     });
   }
@@ -167,8 +185,8 @@ class Layout extends React.Component {
           this.state.isNavAvailable &&
           <Nav
             opened={this.state.isNavOpened}
-            onMouseEnter={this.handleNavHover}
-            onMouseLeave={this.handleNavHover}
+            onMouseEnter={this.handleNavMouseEnter}
+            onMouseLeave={this.handleNavMouseLeave}
           >
             <NavLogoItem
               opened={this.state.isNavOpened}
