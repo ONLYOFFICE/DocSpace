@@ -26,31 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="PublicResources\AuditResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AuditResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\ChatResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ChatResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\CustomModeResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>CustomModeResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\FeedResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>FeedResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\MonitoringResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MonitoringResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="PublicResources\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -60,11 +35,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ResourceJS.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\StudioCountriesResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StudioCountriesResource.resx</DependentUpon>
     </Compile>
     <Compile Update="PublicResources\UserControlsCommonResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -76,16 +46,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="PublicResources\WhiteLabelResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>WhiteLabelResource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="PublicResources\NamingPeopleResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="PublicResources\WebPatternResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -94,45 +54,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="PublicResources\AuditResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AuditResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\ChatResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ChatResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\CustomModeResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CustomModeResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\FeedResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>FeedResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\Resource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\ResourceJS.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourceJS.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\StudioCountriesResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>StudioCountriesResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\UserControlsCommonResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UserControlsCommonResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\WhiteLabelResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>WhiteLabelResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>NamingPeopleResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebPatternResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -143,7 +71,67 @@
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="PublicResources\NamingPeopleResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NamingPeopleResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ru.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.de.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.es.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.fr.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.it.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="PublicResources\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\Resource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.ru.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.de.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.es.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.fr.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\Resource.it.resx" >
+      <DependentUpon>Resource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
   <ItemGroup>
     <Protobuf Include="protos\SmsKeyCacheKey.proto" />
     <Protobuf Include="protos\TenantLogoCacheItem.proto" />

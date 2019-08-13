@@ -29,22 +29,36 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="Resources\Resources.tt">
-      <LastGenOutput>Resources.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-  </ItemGroup>
-  
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   
   <ItemGroup>
-    <Compile Update="Resources\Resources.cs">
+    <Compile Update="Resources\PeopleResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.tt</DependentUpon>
+      <DependentUpon>PeopleResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\PeopleResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PeopleResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.ru.resx" >
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.de.resx" >
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.es.resx" >
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.fr.resx" >
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\PeopleResource.it.resx" >
+      <DependentUpon>PeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

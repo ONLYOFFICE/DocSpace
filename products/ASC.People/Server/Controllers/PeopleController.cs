@@ -19,6 +19,7 @@ using ASC.FederatedLogin.Profile;
 using ASC.MessagingSystem;
 using ASC.People;
 using ASC.People.Models;
+using ASC.People.Resources;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
