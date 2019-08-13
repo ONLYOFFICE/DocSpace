@@ -125,6 +125,16 @@ const getInitials = userName => {
   return initials;
 };
 
+const EditLink = styled.div`
+
+  padding-left: 10px;
+  padding-right: 10px;
+
+  span {
+    display: inline-block;
+  }
+`;
+
 const Avatar = React.memo(props => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editLabel, editAction } = props;
@@ -140,17 +150,19 @@ const Avatar = React.memo(props => {
       </AvatarWrapper>
       {editing && (size === 'max') &&
         <EditContainer {...props}>
-          <Link
-            type='action'
-            title={editLabel}
-            isTextOverflow={true}
-            fontSize={14}
-            isHovered={true}
-            color={whiteColor}
-            onClick={editAction}
-          >
-            {editLabel}
-          </Link>
+          <EditLink>
+            <Link
+              type='action'
+              title={editLabel}
+              isTextOverflow={true}
+              fontSize={14}
+              isHovered={true}
+              color={whiteColor}
+              onClick={editAction}
+            >
+              {editLabel}
+            </Link>
+          </EditLink>
         </EditContainer>}
       <RoleWrapper {...props}>
         {role === 'guest' && <Icons.GuestIcon size='scale' />}
