@@ -81,8 +81,8 @@ class IconButton extends React.Component{
                     this.setState({
                         currentIconName:  nextProps[propsKey]
                     });
+                    break;
                   }
-                  break;
                 }
             }
             for (let stateKey in this.state) {
