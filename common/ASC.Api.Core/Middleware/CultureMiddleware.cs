@@ -36,7 +36,7 @@ namespace ASC.Api.Core.Middleware
             }
 
             Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
 
             await next.Invoke(context);
         }
