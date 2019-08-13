@@ -13,7 +13,7 @@ storiesOf('Components|Paging', module)
 
     const createPageItems = (count) => {
       let pageItems = [];
-      for (let i = 0; i < count; i++){
+      for (let i = 1; i <= count; i++){
         pageItems.push({
           key: i,
           label: i + ' of ' + count
@@ -40,7 +40,7 @@ storiesOf('Components|Paging', module)
     const displayItems = boolean('Display pageItems', true);
     const displayCount = boolean('Display countItems', true);
     const selectedCount = select('selectedCount', [25, 50, 100], 100);
-    const pageCount = number('Count of pages', 5);
+    const pageCount = number('Count of pages', 10);
 
     return (
       <Section>

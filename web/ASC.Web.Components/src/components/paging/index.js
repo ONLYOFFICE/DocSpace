@@ -53,6 +53,8 @@ const Paging = props => {
     props.onSelectCount(option)
   }
 
+  const setDropDownMaxHeight = pageItems && pageItems.length > 6 ? { dropDownMaxHeight: 200 } : {};
+
   return (
     <StyledPaging>
       <Button 
@@ -68,7 +70,7 @@ const Paging = props => {
             options={pageItems} 
             onSelect={onSelectPageAction} 
             selectedOption={selectedPage} 
-            dropDownMaxHeight="200px"
+            {...setDropDownMaxHeight}
             emptyOptionsPlaceholder={emptyPagePlaceholder} />
         </StyledPage>
       }
