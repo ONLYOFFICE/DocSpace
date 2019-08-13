@@ -68,7 +68,7 @@ const TreeMenu = props => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon, 
             onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-            defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, filterTreeNode, checkedKeys, autoExpandParent } = props;
+            defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys} = props;
     return (
         <StyledTreeMenu
           checkable = {!!checkable}
@@ -84,10 +84,6 @@ const TreeMenu = props => {
           defaultSelectedKeys={defaultSelectedKeys}
           defaultExpandedKeys={defaultExpandedKeys}
           defaultCheckedKeys={defaultCheckedKeys}
-          selectedKeys={selectedKeys}
-          filterTreeNode={filterTreeNode}
-          checkedKeys={checkedKeys}
-          autoExpandParent={autoExpandParent}
 
           onDragStart={onDragStart}
           onDrop={onDrop}
