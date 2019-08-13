@@ -1,0 +1,967 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActiveUserDescr" xml:space="preserve">
+    <value>Активные пользователи - это все участники портала, кроме гостей и пользователей со статусом "Заблокирован"</value>
+  </data>
+  <data name="AddAnswerVariantButton" xml:space="preserve">
+    <value>Добавить вариант</value>
+  </data>
+  <data name="AddEmployees" xml:space="preserve">
+    <value>Новый {!user}</value>
+  </data>
+  <data name="AddNewSocialProfile" xml:space="preserve">
+    <value>Добавить новый социальный профиль</value>
+  </data>
+  <data name="AddShareMessage" xml:space="preserve">
+    <value>Добавить сообщение</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Администратор</value>
+  </data>
+  <data name="AdvertCreatedText" xml:space="preserve">
+    <value>создал(а) новое объявление в Сообществе</value>
+  </data>
+  <data name="AllDepartments" xml:space="preserve">
+    <value>Все отделы</value>
+  </data>
+  <data name="AllVoting" xml:space="preserve">
+    <value>Всего проголосовало</value>
+  </data>
+  <data name="AnalyticsOpenSource" xml:space="preserve">
+    <value>Я согласен отправлять анонимные данные об использовании, чтобы улучшить ONLYOFFICE</value>
+  </data>
+  <data name="AnswerVariants" xml:space="preserve">
+    <value>Варианты ответов</value>
+  </data>
+  <data name="AttachFiles" xml:space="preserve">
+    <value>Прикрепить файлы</value>
+  </data>
+  <data name="AttachFromDocuments" xml:space="preserve">
+    <value>Прикрепить файл из Документов</value>
+  </data>
+  <data name="AttachOfProjectDocuments" xml:space="preserve">
+    <value>Прикрепить файл из Документов проектa</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="BackupSpaceExceed" xml:space="preserve">
+    <value>Функция резервного копирования недоступна, так как дисковое пространство превышает {0}. Перейдите в {1}раздел "Статистика"{2}, чтобы проверить занятое дисковое пространство.</value>
+  </data>
+  <data name="BannerBitly" xml:space="preserve">
+    <value>Сокращайте пригласительные ссылки и ссылки для доступа к документам с помощью Bitly</value>
+  </data>
+  <data name="BannerDocuSign" xml:space="preserve">
+    <value>Подписывайте документы электронной подписью, используя технологию DocuSign</value>
+  </data>
+  <data name="BannerSocial" xml:space="preserve">
+    <value>Входите на портал через аккаунты социальных сетей и находите контакты</value>
+  </data>
+  <data name="BannerStorage" xml:space="preserve">
+    <value>Подключите облачные хранилища и храните все свои файлы в едином пространстве</value>
+  </data>
+  <data name="BannerTwilio" xml:space="preserve">
+    <value>Звоните контактам CRM прямо с портала с помощью API Twilio</value>
+  </data>
+  <data name="BannerTwilio2" xml:space="preserve">
+    <value>Звоните клиентам прямо из модуля CRM благодаря интеграции {0}ONLYOFFICE{1} с сервисом Twilio.</value>
+  </data>
+  <data name="Bookmark" xml:space="preserve">
+    <value>Закладка</value>
+  </data>
+  <data name="BookmarkCreatedText" xml:space="preserve">
+    <value>создал(а) новую закладку в Сообществе</value>
+  </data>
+  <data name="BtnHiddenFilter" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="ButtonCreatePresentation" xml:space="preserve">
+    <value>Создать презентацию</value>
+  </data>
+  <data name="ButtonCreateSpreadsheet" xml:space="preserve">
+    <value>Создать таблицу</value>
+  </data>
+  <data name="ButtonCreateText" xml:space="preserve">
+    <value>Создать документ</value>
+  </data>
+  <data name="ButtonLearnMore" xml:space="preserve">
+    <value>Подробнее...</value>
+  </data>
+  <data name="ByDate" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="ByUser" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Case" xml:space="preserve">
+    <value>Мероприятие</value>
+  </data>
+  <data name="CaseCreatedText" xml:space="preserve">
+    <value>создал(а) новое событие в CRM</value>
+  </data>
+  <data name="ChangeAliasHelper" xml:space="preserve">
+    <value>Доменное имя можно будет позже изменить в разделе 'Настройки' портала.</value>
+  </data>
+  <data name="CheckAll" xml:space="preserve">
+    <value>Выбрать все</value>
+  </data>
+  <data name="ClearFilter" xml:space="preserve">
+    <value>Очистить фильтр</value>
+  </data>
+  <data name="CommunityProduct" xml:space="preserve">
+    <value>Сообщество</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Компания</value>
+  </data>
+  <data name="CompanyCreatedText" xml:space="preserve">
+    <value>создал(а) новую компанию в CRM</value>
+  </data>
+  <data name="CompanySizeTitle" xml:space="preserve">
+    <value>Размер компании</value>
+  </data>
+  <data name="CompanyTitle" xml:space="preserve">
+    <value>Компания</value>
+  </data>
+  <data name="ConfirmStoreOriginalUploadCbxLabelTextAC" xml:space="preserve">
+    <value>Сохранять также копию файла в исходном формате</value>
+  </data>
+  <data name="ConfirmStoreOriginalUploadTitleAC" xml:space="preserve">
+    <value>Все документы, которые Вы загружаете, будут сконвертированы в формат Office Open XML для быстрого редактирования.</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Контакт</value>
+  </data>
+  <data name="Contacts" xml:space="preserve">
+    <value>Контакты</value>
+  </data>
+  <data name="ContactSupportBtn" xml:space="preserve">
+    <value>Обратиться в поддержку</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Постановщик</value>
+  </data>
+  <data name="CrmProduct" xml:space="preserve">
+    <value>CRM</value>
+  </data>
+  <data name="CrmTaskCreatedText" xml:space="preserve">
+    <value>создал(а) новую задачу в CRM</value>
+  </data>
+  <data name="CurrentMonth" xml:space="preserve">
+    <value>Текущий месяц</value>
+  </data>
+  <data name="CurrentWeek" xml:space="preserve">
+    <value>Текущая неделя</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Пользовательский период</value>
+  </data>
+  <data name="Deal" xml:space="preserve">
+    <value>Возможная сделка</value>
+  </data>
+  <data name="DealCreatedText" xml:space="preserve">
+    <value>создал(а) новую сделку в CRM</value>
+  </data>
+  <data name="DeleteFile" xml:space="preserve">
+    <value>Удалить файл</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="Discussion" xml:space="preserve">
+    <value>Обсуждение</value>
+  </data>
+  <data name="DiscussionCreatedText" xml:space="preserve">
+    <value>создал(а) новое обсуждение в Проектах</value>
+  </data>
+  <data name="DocumentsProduct" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="DownloadFile" xml:space="preserve">
+    <value>Скачать файл</value>
+  </data>
+  <data name="EditFile" xml:space="preserve">
+    <value>Редактировать файл</value>
+  </data>
+  <data name="EmptyCommentErrorMessage" xml:space="preserve">
+    <value>Комментарий не может быть пустым</value>
+  </data>
+  <data name="EmptyDocsDescription" xml:space="preserve">
+    <value>В этом разделе хранятся документы и графические файлы, которые вы создаете или загружаете для вашего проекта. Эти документы доступны для всех участников проекта сразу же после их создания. Прикрепите к задаче файлы со своего компьютера, и они появятся в этом списке.</value>
+  </data>
+  <data name="EmptyDocsHeaderDescription" xml:space="preserve">
+    <value>В этом разделе нет файлов для отображения</value>
+  </data>
+  <data name="EmptyList" xml:space="preserve">
+    <value>Пусто</value>
+  </data>
+  <data name="EmptyListDocumentsDescr" xml:space="preserve">
+    <value>{0}Создавайте{1} файлы прямо на своем портале или {2}загружайте{3} их сюда, чтобы вы могли {4}открывать{5} и {6}редактировать{7} их с помощью редактора ONLYOFFICE™.</value>
+  </data>
+  <data name="EmptyListDocumentsDescrPoor" xml:space="preserve">
+    <value>{2}Загружайте{3} файлы на свой портал.</value>
+  </data>
+  <data name="EmptyListDocumentsHead" xml:space="preserve">
+    <value>Список документов пуст</value>
+  </data>
+  <data name="EmptyQuestion" xml:space="preserve">
+    <value>Введите вопрос для голосования</value>
+  </data>
+  <data name="EmptySelect" xml:space="preserve">
+    <value>Выберите вариант ответа</value>
+  </data>
+  <data name="ErrorMassage_SpecCharacter" xml:space="preserve">
+    <value>Название не должно содержать следующих символов:</value>
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value>Событие</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="FeedBlogsModuleLink" xml:space="preserve">
+    <value>Добавить запись</value>
+  </data>
+  <data name="FeedBookmarkModuleLink" xml:space="preserve">
+    <value>Добавить закладку</value>
+  </data>
+  <data name="FeedButtonGotoDocuments" xml:space="preserve">
+    <value>Перейти к Документам</value>
+  </data>
+  <data name="FeedCorporateFiles" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="FeedCreateFirstCompany" xml:space="preserve">
+    <value>Создать новую компанию</value>
+  </data>
+  <data name="FeedCreateFirstPerson" xml:space="preserve">
+    <value>Создать новую персону</value>
+  </data>
+  <data name="FeedCreateFirstProject" xml:space="preserve">
+    <value>Создать новый проект</value>
+  </data>
+  <data name="FeedEmptyCommunityDescription" xml:space="preserve">
+    <value>Здесь будут показаны все материалы, добавленные в модуле "Сообщество". Пользователи могут делиться интересной информацией, идеями и опытом, высказывать свое мнение и получать комментарии.</value>
+  </data>
+  <data name="FeedEmptyCommunityHeader" xml:space="preserve">
+    <value>События еще не были добавлены</value>
+  </data>
+  <data name="FeedEmptyContactListDescription" xml:space="preserve">
+    <value>Здесь будут показаны доступные для вас события в модуле CRM. Новые добавленные компании и персоны или отредактированные существующие, новые созданные мероприятия, возможные сделки и задачи - все, что касается CRM, будет в этой вкладке.</value>
+  </data>
+  <data name="FeedEmptyContactListHeader" xml:space="preserve">
+    <value>События CRM еще не добавлены</value>
+  </data>
+  <data name="FeedEmptyListProjDescribe" xml:space="preserve">
+    <value>Здесь будут показаны доступные для вас изменения в модуле "Проекты". Проекты, в которых вы участвуете или которые отслеживаете, ваши новые задачи или изменения в существующих - это поможет вам ничего не упустить.</value>
+  </data>
+  <data name="FeedEmptyListProjHeader" xml:space="preserve">
+    <value>Проекты еще не были добавлены</value>
+  </data>
+  <data name="FeedEmptyScreenDescrCorporate" xml:space="preserve">
+    <value>Здесь будут показаны доступные для вас изменения в документах портала. Здесь отображаются все новые документы, к которым вам предоставили доступ, изменения в существующих документах, к которым у вас есть доступ, и документы, общие для всех пользователей портала.</value>
+  </data>
+  <data name="FeedEventsModuleLink" xml:space="preserve">
+    <value>Добавить событие</value>
+  </data>
+  <data name="FeedTitle" xml:space="preserve">
+    <value>Лента</value>
+  </data>
+  <data name="FewAnswerVariant" xml:space="preserve">
+    <value>Вопрос подразумевает несколько вариантов ответа</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="FileCreatedText" xml:space="preserve">
+    <value>создал(а) новый файл в Документах</value>
+  </data>
+  <data name="FilterNoNews" xml:space="preserve">
+    <value>Нет новостей, соответствующих фильтру</value>
+  </data>
+  <data name="FilterNoNewsDescription" xml:space="preserve">
+    <value>Нет новостей, соответствующих фильтру в этом разделе.</value>
+  </data>
+  <data name="FilterNoVoipCalls" xml:space="preserve">
+    <value>Нет вызовов, соответствующих данному фильтру</value>
+  </data>
+  <data name="FilterNoVoipCallsDescription" xml:space="preserve">
+    <value>В этом разделе нет вызовов, соответствующих фильтру.</value>
+  </data>
+  <data name="Folder" xml:space="preserve">
+    <value>Папка</value>
+  </data>
+  <data name="FolderCreatedText" xml:space="preserve">
+    <value>создал(а) новую папку в Документах</value>
+  </data>
+  <data name="Forum" xml:space="preserve">
+    <value>Форум</value>
+  </data>
+  <data name="ForumPollCreatedText" xml:space="preserve">
+    <value>создал(а) новый опрос в форуме в Сообществе</value>
+  </data>
+  <data name="ForumPostCreatedText" xml:space="preserve">
+    <value>создал(а) новое сообщение в форуме в Сообществе</value>
+  </data>
+  <data name="ForumTopicCreatedText" xml:space="preserve">
+    <value>создал(а) новую тему в форуме в Сообществе</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>с</value>
+  </data>
+  <data name="GetPortalLink" xml:space="preserve">
+    <value>Ссылка для пользователей портала</value>
+  </data>
+  <data name="HostedBuyDescr" xml:space="preserve">
+    <value>Если вы хотите оплатить портал ONLYOFFICE, нажмите кнопку "Купить сейчас".</value>
+  </data>
+  <data name="HostedBuyLabel" xml:space="preserve">
+    <value>Оплата портала</value>
+  </data>
+  <data name="HostedPayAndGet" xml:space="preserve">
+    <value>Пожалуйста, оплатите ONLYOFFICE и получите:</value>
+  </data>
+  <data name="LabelFor" xml:space="preserve">
+    <value>на</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>За месяц</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>За неделю</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>За год</value>
+  </data>
+  <data name="LblFilter" xml:space="preserve">
+    <value>Фильтр</value>
+  </data>
+  <data name="LblFilterPlaceholder" xml:space="preserve">
+    <value>введите запрос</value>
+  </data>
+  <data name="LblFrom" xml:space="preserve">
+    <value>С</value>
+  </data>
+  <data name="LblSelect" xml:space="preserve">
+    <value>Выбрать</value>
+  </data>
+  <data name="LblSort" xml:space="preserve">
+    <value>Сортировать по</value>
+  </data>
+  <data name="LblTo" xml:space="preserve">
+    <value>по</value>
+  </data>
+  <data name="LicenseActivateAndGet" xml:space="preserve">
+    <value>Активируйте ONLYOFFICE и получите:</value>
+  </data>
+  <data name="LicenseActivateButton" xml:space="preserve">
+    <value>Активировать его</value>
+  </data>
+  <data name="LicenseActivateDescr" xml:space="preserve">
+    <value>Для активации ONLYOFFICE Enterprise Edition необходимо купить лицензионный ключ.</value>
+  </data>
+  <data name="LicenseActivateHeader" xml:space="preserve">
+    <value>Выберите одну из следующих опций для активации:</value>
+  </data>
+  <data name="LicenseAgreements" xml:space="preserve">
+    <value>Установив этот флажок, вы принимаете условия нашего {0}Лицензионного соглашения{1}</value>
+  </data>
+  <data name="LicensedUnder" xml:space="preserve">
+    <value>Программа распространяется под лицензией {0}GNU GPL v.3{1}</value>
+  </data>
+  <data name="LicenseException" xml:space="preserve">
+    <value>Истек срок действия лицензии или количество пользователей не соответствует лицензии</value>
+  </data>
+  <data name="LicenseKeyBuyDescr" xml:space="preserve">
+    <value>Если вы хотите продлить или купить лицензию ONLYOFFICE, нажмите кнопку 'Купить'. Вы будете перенаправлены на страницу покупки ONLYOFFICE  на сайте Avangate.</value>
+  </data>
+  <data name="LicenseKeyBuyLabel" xml:space="preserve">
+    <value>Купите лицензию</value>
+  </data>
+  <data name="LicenseKeyHeader" xml:space="preserve">
+    <value>Файл активации лицензии</value>
+  </data>
+  <data name="LicenseKeyLabel" xml:space="preserve">
+    <value>Загрузите файл лицензии</value>
+  </data>
+  <data name="LicenseKeyNotCorrect" xml:space="preserve">
+    <value>Некорректный лицензионный ключ</value>
+  </data>
+  <data name="LicenseKeyNotFound" xml:space="preserve">
+    <value>Необходимо ввести лицензионный ключ</value>
+  </data>
+  <data name="LicenseModules" xml:space="preserve">
+    <value>Модули и инструменты ONLYOFFICE:</value>
+  </data>
+  <data name="LicenseModulesControlPanel" xml:space="preserve">
+    <value>Панель управления</value>
+  </data>
+  <data name="LicenseModulesList" xml:space="preserve">
+    <value>{0}Онлайн-редакторы документов{1}{0}Управление документами{1}{0}Почта{1}{0}Проекты{1}{0}CRM{1}{0}Календарь{1}{0}Сообщество{1}</value>
+  </data>
+  <data name="LicenseModulesMultitenancy" xml:space="preserve">
+    <value>Мультитенантность</value>
+  </data>
+  <data name="LicenseModulesSupport" xml:space="preserve">
+    <value>Поддержка в течение года</value>
+  </data>
+  <data name="LicenseModulesUpdates" xml:space="preserve">
+    <value>Обновления ONLYOFFICE</value>
+  </data>
+  <data name="LicenseModulesWhiteLabel" xml:space="preserve">
+    <value>Ребрендинг</value>
+  </data>
+  <data name="LicenseRequestDescr" xml:space="preserve">
+    <value>Пожалуйста, свяжитесь с нами. Мы будем рады предложить Вам специальный тарифный план.</value>
+  </data>
+  <data name="LicenseRequestHeader" xml:space="preserve">
+    <value>Узнайте о нашем специальном предложении</value>
+  </data>
+  <data name="LicenseRequestQuota" xml:space="preserve">
+    <value>{0} - {1} активных пользователей</value>
+  </data>
+  <data name="LicenseRequestQuotaMore" xml:space="preserve">
+    <value>Более {0} активных пользователей</value>
+  </data>
+  <data name="LinkText" xml:space="preserve">
+    <value>Добавить пользователей</value>
+  </data>
+  <data name="LoginWith" xml:space="preserve">
+    <value>Пожалуйста, войдите, используя свой аккаунт</value>
+  </data>
+  <data name="LogoutButton" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="Me" xml:space="preserve">
+    <value>Я</value>
+  </data>
+  <data name="MediaViewerActualSize" xml:space="preserve">
+    <value>Реальный размер</value>
+  </data>
+  <data name="MediaViewerClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="MediaViewerFullscreen" xml:space="preserve">
+    <value>Во весь экран</value>
+  </data>
+  <data name="MediaViewerMute" xml:space="preserve">
+    <value>Без звука</value>
+  </data>
+  <data name="MediaViewerNext" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="MediaViewerPlay" xml:space="preserve">
+    <value>Воспроизведение</value>
+  </data>
+  <data name="MediaViewerPrevious" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="MediaViewerRotateLeft" xml:space="preserve">
+    <value>Повернуть влево</value>
+  </data>
+  <data name="MediaViewerRotateRight" xml:space="preserve">
+    <value>Повернуть вправо</value>
+  </data>
+  <data name="MediaViewerZoomIn" xml:space="preserve">
+    <value>Увеличить</value>
+  </data>
+  <data name="MediaViewerZoomOut" xml:space="preserve">
+    <value>Уменьшить</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Участники</value>
+  </data>
+  <data name="Milestone" xml:space="preserve">
+    <value>Веха</value>
+  </data>
+  <data name="MilestoneCreatedText" xml:space="preserve">
+    <value>создал(а) новую веху в Проектах</value>
+  </data>
+  <data name="MobileChangeButton" xml:space="preserve">
+    <value>Ввести номер</value>
+  </data>
+  <data name="MobileCodeDescription" xml:space="preserve">
+    <value>На Ваш мобильный телефон {0}{1}{2} выслано SMS-сообщение с кодом доступа к порталу .{5}Пожалуйста, введите этот код и нажмите кнопку "{3}". Если сообщение не приходит более 3 минут, нажмите кнопку "{4}".</value>
+  </data>
+  <data name="MobileCurrentNumber" xml:space="preserve">
+    <value>Текущий номер мобильного телефона: {0}</value>
+  </data>
+  <data name="MobilePhoneCaption" xml:space="preserve">
+    <value>Введите номер мобильного телефона</value>
+  </data>
+  <data name="MobilePhoneDescription" xml:space="preserve">
+    <value>Для обеспечения повышенной безопасности на портале включена двухфакторная аутентификация. Для продолжения работы на портале введите ваш номер мобильного телефона. Номер мобильного телефона необходимо ввести в международном формате с кодом страны.</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Ещё</value>
+  </data>
+  <data name="NewDocument" xml:space="preserve">
+    <value>Новый документ</value>
+  </data>
+  <data name="NewFeedIndicator" xml:space="preserve">
+    <value>новое</value>
+  </data>
+  <data name="NewFile" xml:space="preserve">
+    <value>Новый файл</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Новости</value>
+  </data>
+  <data name="NewsCreatedText" xml:space="preserve">
+    <value>создал(а) новость в Сообществе</value>
+  </data>
+  <data name="NewsNotFound" xml:space="preserve">
+    <value>Нет данных для отображения</value>
+  </data>
+  <data name="NewsNotFoundDescription" xml:space="preserve">
+    <value>В этом разделе отображается вся деятельность на портале. В настоящее время нет событий для отображения. Начните использовать портал, наполните его содержимым, и все новости будут отображаться на этой странице.</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="NoComments" xml:space="preserve">
+    <value>Комментариев нет</value>
+  </data>
+  <data name="NotBeUndone" xml:space="preserve">
+    <value>Внимание: это действие необратимо.</value>
+  </data>
+  <data name="NotSupportedBrowser" xml:space="preserve">
+    <value>Для воспроизведения файлов мультимедиа необходимо обновить браузер до последней версии.</value>
+  </data>
+  <data name="OneAnswerVariant" xml:space="preserve">
+    <value>Вопрос подразумевает один вариант ответа</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Приказ</value>
+  </data>
+  <data name="OrderCreatedText" xml:space="preserve">
+    <value>создал(а) новый приказ в Сообществе</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Другое</value>
+  </data>
+  <data name="OtherUsers" xml:space="preserve">
+    <value>Другие пользователи</value>
+  </data>
+  <data name="PeopleProduct" xml:space="preserve">
+    <value>Люди</value>
+  </data>
+  <data name="Person" xml:space="preserve">
+    <value>Персона</value>
+  </data>
+  <data name="PersonalStorageLimitExceededBody" xml:space="preserve">
+    <value>Нельзя добавить файл, так как превышено ограничение на размер дискового пространства. Пожалуйста, удалите устаревшие файлы или обратитесь в нашу службу поддержки за дополнительной информацией.</value>
+  </data>
+  <data name="PersonalStorageLimitExceededHeader" xml:space="preserve">
+    <value>Превышена квота</value>
+  </data>
+  <data name="PersonalStorageLimitExceededSubHeader" xml:space="preserve">
+    <value>Превышена квота на размер дискового пространства</value>
+  </data>
+  <data name="PersonCreatedText" xml:space="preserve">
+    <value>создал(а) новую персону в CRM</value>
+  </data>
+  <data name="Poll" xml:space="preserve">
+    <value>Опрос</value>
+  </data>
+  <data name="PollCreatedText" xml:space="preserve">
+    <value>создал(а) новый опрос в Сообществе</value>
+  </data>
+  <data name="PollQuestion" xml:space="preserve">
+    <value>Вопрос</value>
+  </data>
+  <data name="PollType" xml:space="preserve">
+    <value>Тип опроса</value>
+  </data>
+  <data name="PreviewError" xml:space="preserve">
+    <value>Не удалось загрузить файл {0} для отображения</value>
+  </data>
+  <data name="PreviousPage" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Модуль</value>
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value>Проект</value>
+  </data>
+  <data name="ProjectCreatedText" xml:space="preserve">
+    <value>создал(а) новый проект в Проектах</value>
+  </data>
+  <data name="ProjectDocuments" xml:space="preserve">
+    <value>Документы проекта</value>
+  </data>
+  <data name="ProjectManager" xml:space="preserve">
+    <value>Менеджер</value>
+  </data>
+  <data name="ProjectsProduct" xml:space="preserve">
+    <value>Проекты</value>
+  </data>
+  <data name="QuestionDeleteFile" xml:space="preserve">
+    <value>Вы действительно хотите удалить этот файл?</value>
+  </data>
+  <data name="QuickLinksDeleteLink" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ReadAboutNonProfitUsage" xml:space="preserve">
+    <value>Прочитайте о некоммерческом использовании</value>
+  </data>
+  <data name="RemoveFromList" xml:space="preserve">
+    <value>Удалить из этого списка</value>
+  </data>
+  <data name="RemoveShareMessage" xml:space="preserve">
+    <value>Убрать сообщение</value>
+  </data>
+  <data name="ResetFilter" xml:space="preserve">
+    <value>Сбросить фильтр</value>
+  </data>
+  <data name="Responsible" xml:space="preserve">
+    <value>Ответственный</value>
+  </data>
+  <data name="Responsibles" xml:space="preserve">
+    <value>Ответственные</value>
+  </data>
+  <data name="SalesQuestions" xml:space="preserve">
+    <value>Есть вопросы? Обратитесь в наш отдел продаж по адресу {0}</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="SearchHld" xml:space="preserve">
+    <value>поиск</value>
+  </data>
+  <data name="SeeInModulesHdr" xml:space="preserve">
+    <value>Искать в модуле</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Выбрать все</value>
+  </data>
+  <data name="SelectPricingPlanBtn" xml:space="preserve">
+    <value>Выбрать тарифный план</value>
+  </data>
+  <data name="SendShareNotify" xml:space="preserve">
+    <value>Отправить оповещение</value>
+  </data>
+  <data name="SharedFileCreatedText" xml:space="preserve">
+    <value>предоставил(а) Вам доступ к файлу в Документах</value>
+  </data>
+  <data name="SharedFolderCreatedText" xml:space="preserve">
+    <value>предоставил(а) Вам доступ к папке в Документах</value>
+  </data>
+  <data name="SharingSettingsEmpty" xml:space="preserve">
+    <value>Добавьте пользователей или группы и предоставьте им права.</value>
+  </data>
+  <data name="SharingSettingsItemsTitle" xml:space="preserve">
+    <value>Настроить права доступа для пользователей и групп</value>
+  </data>
+  <data name="SharingSettingsTitle" xml:space="preserve">
+    <value>Настройки совместного доступа</value>
+  </data>
+  <data name="ShowAll" xml:space="preserve">
+    <value>Показать все</value>
+  </data>
+  <data name="ShowNextNews" xml:space="preserve">
+    <value>Показать следующие новости</value>
+  </data>
+  <data name="SiteTitle" xml:space="preserve">
+    <value>Сайт</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Исходный код доступен на {0}GitHub{1}</value>
+  </data>
+  <data name="Subtask" xml:space="preserve">
+    <value>Подзадача</value>
+  </data>
+  <data name="TariffBasicPrice" xml:space="preserve">
+    <value>Базовая цена</value>
+  </data>
+  <data name="TariffCurrencyHelp" xml:space="preserve">
+    <value>Полный список валют можно посмотреть на Avangate</value>
+  </data>
+  <data name="TariffFileSizeLimitReason" xml:space="preserve">
+    <value>На вашем тарифном плане строгие ограничения по размеру файла.</value>
+  </data>
+  <data name="TariffFileSizeLimitTitle" xml:space="preserve">
+    <value>Большой размер файла</value>
+  </data>
+  <data name="TariffFree" xml:space="preserve">
+    <value>Бесплатно</value>
+  </data>
+  <data name="TariffFullPrice" xml:space="preserve">
+    <value>Открыть полный прайс-лист</value>
+  </data>
+  <data name="TariffLimitDecision" xml:space="preserve">
+    <value>Вы хотите выбрать новый тарифный план?</value>
+  </data>
+  <data name="TariffLimitedPrice" xml:space="preserve">
+    <value>Предложение ограничено</value>
+  </data>
+  <data name="TariffLimitOkButton" xml:space="preserve">
+    <value>Да, улучшить план</value>
+  </data>
+  <data name="TariffNameSMonth" xml:space="preserve">
+    <value>Подписка {0}1 месяц{2}{1}</value>
+  </data>
+  <data name="TariffNameSYear" xml:space="preserve">
+    <value>Подписка {0}1 год{2}{1}</value>
+  </data>
+  <data name="TariffNameSYear3" xml:space="preserve">
+    <value>Подписка {0}3 года{1}</value>
+  </data>
+  <data name="TariffNonProfit" xml:space="preserve">
+    <value>Вы используете тарифный план для некоммерческой организации.</value>
+  </data>
+  <data name="TariffOverdueHosted" xml:space="preserve">
+    <value>Оплата портала просрочена.</value>
+  </data>
+  <data name="TariffOverduePlan" xml:space="preserve">
+    <value>Вы используете план {0} - {1} активных пользователей. {2}Платёж просрочен.{3}{4} Чтобы продолжить использование ONLYOFFICE, продлите текущий план или смените его, используя таблицу ниже.</value>
+  </data>
+  <data name="TariffOverdueStandalone" xml:space="preserve">
+    <value>Вы используете ONLYOFFICE™ Enterprise Edition. {0}Техническая поддержка и обновления больше не доступны.{1}</value>
+  </data>
+  <data name="TariffOverdueStandalone2" xml:space="preserve">
+    <value>Вы используете ONLYOFFICE™ Enterprise Edition. {0}Поддержка и обновления больше недоступны для вашей лицензии с {2}{1}.</value>
+  </data>
+  <data name="TariffPaidPlan" xml:space="preserve">
+    <value>Вы используете план {0} - {1} активных пользователей.</value>
+  </data>
+  <data name="TariffPaidStandalone" xml:space="preserve">
+    <value>Вы используете ONLYOFFICE™ Enterprise Edition.</value>
+  </data>
+  <data name="TariffPerMonth" xml:space="preserve">
+    <value>месяц</value>
+  </data>
+  <data name="TariffPerYear" xml:space="preserve">
+    <value>год</value>
+  </data>
+  <data name="TariffPerYear3" xml:space="preserve">
+    <value>Трехгодовая</value>
+  </data>
+  <data name="TariffPerYearOnly" xml:space="preserve">
+    <value>Предложение доступно только для годовых подписчиков.</value>
+  </data>
+  <data name="TariffPop" xml:space="preserve">
+    <value>Самая популярная подписка</value>
+  </data>
+  <data name="TariffPortalLimitHeaer" xml:space="preserve">
+    <value>Добавление нового портала превысит максимальное количество порталов, допустимое согласно текущему тарифному плану.</value>
+  </data>
+  <data name="TariffPriceOffer" xml:space="preserve">
+    <value>Сэкономьте {0}</value>
+  </data>
+  <data name="TariffPricePer" xml:space="preserve">
+    <value>{0} за пользователя/мес.</value>
+  </data>
+  <data name="TariffRequestBtn" xml:space="preserve">
+    <value>Отправить запрос</value>
+  </data>
+  <data name="TariffRequestContent" xml:space="preserve">
+    <value>Содержание запроса</value>
+  </data>
+  <data name="TariffRequestContentHolder" xml:space="preserve">
+    <value>Пожалуйста, опишите здесь детали своего запроса</value>
+  </data>
+  <data name="TariffRequestHeader" xml:space="preserve">
+    <value>Пожалуйста, введите здесь свое сообщение</value>
+  </data>
+  <data name="TariffStorageLimitHeader" xml:space="preserve">
+    <value>Дисковое пространство портала превышено</value>
+  </data>
+  <data name="TariffStorageLimitReason" xml:space="preserve">
+    <value>Пожалуйста, удалите с портала весь устаревший контент или смените текущий тарифный план на план с большим дисковым пространством.</value>
+  </data>
+  <data name="TariffStorageLimitTitle" xml:space="preserve">
+    <value>Недостаточно свободного дискового пространства</value>
+  </data>
+  <data name="TariffUpdateWithoutLicense" xml:space="preserve">
+    <value>Вы используете ONLYOFFICE™ Enterprise Edition. {0}Текущая инсталляция была обновлена без предоставления соответствующей лицензии.{1}{2} Загрузите обновленную лицензию, чтобы продолжить использование ONLYOFFICE Enterprise Edition.</value>
+  </data>
+  <data name="TariffUserChoose" xml:space="preserve">
+    <value>Выберите количество участников вашей команды</value>
+  </data>
+  <data name="TariffUserChooseQuestion" xml:space="preserve">
+    <value>Сколько пользователей вам нужно?</value>
+  </data>
+  <data name="TariffUserDescr" xml:space="preserve">
+    <value>Вашей команде подходит план {0}{2} - {3} активных пользователей{7} + {4}{1} дискового пространства</value>
+  </data>
+  <data name="TariffUserLimitHeader" xml:space="preserve">
+    <value>Нельзя добавить новых пользователей</value>
+  </data>
+  <data name="TariffUserLimitReason" xml:space="preserve">
+    <value>Добавление новых пользователей превысит максимальное количество участников портала, допустимое согласно текущему тарифному плану.</value>
+  </data>
+  <data name="TariffUserLimitTitle" xml:space="preserve">
+    <value>Добавление новых пользователей</value>
+  </data>
+  <data name="TariffUserRequestDescr" xml:space="preserve">
+    <value>Тарифные планы с количеством активных пользователей{1} более чем {0} доступны только по запросу.</value>
+  </data>
+  <data name="TariffUserWarnDescr" xml:space="preserve">
+    <value>Нельзя перейти на меньший тарифный план.</value>
+  </data>
+  <data name="TariffUserWarnRead" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="Task" xml:space="preserve">
+    <value>Задача</value>
+  </data>
+  <data name="TaskCreatedText" xml:space="preserve">
+    <value>создал(а) новую задачу в Проектах</value>
+  </data>
+  <data name="TfaAppAuthDescription" xml:space="preserve">
+    <value>Введите 6-значный код, сгенерированный приложением. Если у вас нет доступа к телефону, вы можете использовать резервные коды.</value>
+  </data>
+  <data name="TfaAppCaption" xml:space="preserve">
+    <value>Настройте приложение для аутентификации</value>
+  </data>
+  <data name="TfaAppConnctButton" xml:space="preserve">
+    <value>Подключить приложение</value>
+  </data>
+  <data name="TfaAppDescription" xml:space="preserve">
+    <value>Для повышения безопасности на портале включена двухфакторная аутентификация. Чтобы продолжить работу на портале, настройте приложение для аутентификации. Например, вы можете использовать {0} для {1} и {2} или {3} для {4}.</value>
+  </data>
+  <data name="TfaAppHowTo" xml:space="preserve">
+    <value>Для подключения приложения отсканируйте QR-код или вручную введите секретный ключ {0}, затем введите 6-значный код из приложения в поле ниже.</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="TimeDistance" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="TimePeriod" xml:space="preserve">
+    <value>Выбрать временной интервал</value>
+  </data>
+  <data name="TitleEditingFile" xml:space="preserve">
+    <value>В данный момент редактируется</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>по</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Сегодня</value>
+  </data>
+  <data name="TodayAt" xml:space="preserve">
+    <value>Сегодня в</value>
+  </data>
+  <data name="TooltipCreate" xml:space="preserve">
+    <value>Вы можете создавать документы ({0}), электронные таблицы ({1}), презентации ({2}) и скачивать их в самых распространенных форматах.</value>
+  </data>
+  <data name="TooltipEdit" xml:space="preserve">
+    <value>Вы можете редактировать следующие файлы: {0}.</value>
+  </data>
+  <data name="TooltipOpen" xml:space="preserve">
+    <value>Вы можете открыть файлы со следующими расширениями: {0}.</value>
+  </data>
+  <data name="TooltipUpload" xml:space="preserve">
+    <value>Вы можете загрузить в Документы любые файлы.</value>
+  </data>
+  <data name="Topic" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="UpgradeButton" xml:space="preserve">
+    <value>Повысить план</value>
+  </data>
+  <data name="UploadFile" xml:space="preserve">
+    <value>Загрузить файл</value>
+  </data>
+  <data name="Variant" xml:space="preserve">
+    <value>Вариант</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>вер.</value>
+  </data>
+  <data name="VoipCallsNotFound" xml:space="preserve">
+    <value>Нет данных для отображения</value>
+  </data>
+  <data name="VoipCallsNotFoundDescription" xml:space="preserve">
+    <value>Нет данных для отображения</value>
+  </data>
+  <data name="VoteButton" xml:space="preserve">
+    <value>Голосовать</value>
+  </data>
+  <data name="WhatsNew" xml:space="preserve">
+    <value>Новенькое</value>
+  </data>
+  <data name="WriteComment" xml:space="preserve">
+    <value>Добавить комментарий</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Вчера</value>
+  </data>
+  <data name="YesterdayAt" xml:space="preserve">
+    <value>Вчера в</value>
+  </data>
+</root>

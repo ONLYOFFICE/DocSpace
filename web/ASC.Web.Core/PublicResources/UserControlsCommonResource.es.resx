@@ -59,924 +59,911 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActiveUserDescr" xml:space="preserve">
-    <value>The active users are the portal members with the exception of guests and users with the "disabled" status</value>
+    <value>Los usuarios activos son los miembros del portal con la excepción de los clientes y usuarios con el estado "desactivado"</value>
   </data>
   <data name="AddAnswerVariantButton" xml:space="preserve">
-    <value>Add poll choice</value>
+    <value>Añadir variante de respuesta</value>
   </data>
   <data name="AddEmployees" xml:space="preserve">
-    <value>Add {!Users}</value>
+    <value>Añadir {!Users}</value>
   </data>
   <data name="AddNewSocialProfile" xml:space="preserve">
-    <value>Add New Social Profile</value>
+    <value>Añadir nuevo perfil social</value>
   </data>
   <data name="AddShareMessage" xml:space="preserve">
-    <value>Add message</value>
+    <value>Añadir mensaje</value>
   </data>
   <data name="Admin" xml:space="preserve">
-    <value>Admin</value>
+    <value>Administrador</value>
   </data>
   <data name="AdvertCreatedText" xml:space="preserve">
-    <value>created new announcement in Community</value>
+    <value>un anuncio nuevo ha sido creado</value>
   </data>
   <data name="AllDepartments" xml:space="preserve">
-    <value>All Departments</value>
+    <value>Todos los departamentos</value>
   </data>
   <data name="AllVoting" xml:space="preserve">
-    <value>Total number of votes</value>
+    <value>Número total de votos</value>
   </data>
   <data name="AnalyticsOpenSource" xml:space="preserve">
-    <value>I agree to send anonymous usage data to improve ONLYOFFICE</value>
+    <value>Acepto enviar datos de uso de manera anónima para mejorar ONLYOFFICE</value>
   </data>
   <data name="AnswerVariants" xml:space="preserve">
-    <value>Poll Choices</value>
+    <value>Variantes de respuesta</value>
   </data>
   <data name="AttachFiles" xml:space="preserve">
-    <value>Attach Files</value>
+    <value>Adjuntar archivos</value>
   </data>
   <data name="AttachFromDocuments" xml:space="preserve">
-    <value>Attach file from Documents</value>
+    <value>Adjuntar archivo de Documentos</value>
   </data>
   <data name="AttachOfProjectDocuments" xml:space="preserve">
-    <value>Attach file from project documents</value>
+    <value>Adjuntar archivo de Documentos de proyecto</value>
   </data>
   <data name="Author" xml:space="preserve">
-    <value>Author</value>
+    <value>Autor</value>
   </data>
   <data name="BackupSpaceExceed" xml:space="preserve">
-    <value>The Backup function is not available as the storage space exceeds {0}. Go to the {1}Statistics section{2} to check the storage space used.</value>
+    <value>La función de Backup no está disponible porque el espacio de almacenamiento excede {0}. Pase a la sección {1}Estadística{2} para obtener información sobre espacio usado.</value>
   </data>
   <data name="BannerBitly" xml:space="preserve">
-    <value>Shorten portal invitation links and links for shared documents using Bitly</value>
+    <value>Acorte los enlaces de invitación al portal y los enlaces a documentos compartidos usando el servicio Bitly</value>
   </data>
   <data name="BannerDocuSign" xml:space="preserve">
-    <value>Sign the documents electronically using DocuSign technology</value>
+    <value>Firme los documentos electrónicamente usando la tecnología DocuSign</value>
   </data>
   <data name="BannerSocial" xml:space="preserve">
-    <value>Log in to the portal using your social accounts and search for contacts</value>
+    <value>Se registre en el portal usando sus cuentas sociales y busque los contactos</value>
   </data>
   <data name="BannerStorage" xml:space="preserve">
-    <value>Connect your favorite cloud storage services and store all your files in one place</value>
+    <value>Conecte sus servicios de almacenamiento en la nube favoritos y almacene todos sus archivos en un solo lugar</value>
   </data>
   <data name="BannerTwilio" xml:space="preserve">
-    <value>Call the CRM contacts right from the portal with Twilio API</value>
+    <value>Llame a los contactos CRM directamente desde el portal con API Twilio</value>
   </data>
   <data name="BannerTwilio2" xml:space="preserve">
-    <value>Call your customers directly from the CRM thanks to {0}ONLYOFFICE Twilio{1} integration</value>
+    <value>Llame a sus clientes directamente del CRM gracias a la integración de {0}ONLYOFFICE Twilio{1}.</value>
   </data>
   <data name="Bookmark" xml:space="preserve">
-    <value>Bookmark</value>
+    <value>Marcador</value>
   </data>
   <data name="BookmarkCreatedText" xml:space="preserve">
-    <value>created new bookmark in Community</value>
+    <value>un marcador nuevo ha sido creado en Comunidad</value>
   </data>
   <data name="BtnHiddenFilter" xml:space="preserve">
     <value>...</value>
   </data>
   <data name="ButtonCreatePresentation" xml:space="preserve">
-    <value>Create Presentation</value>
+    <value>Crear presentación</value>
   </data>
   <data name="ButtonCreateSpreadsheet" xml:space="preserve">
-    <value>Create Spreadsheet</value>
+    <value>Crear tabla</value>
   </data>
   <data name="ButtonCreateText" xml:space="preserve">
-    <value>Create Document</value>
+    <value>Crear documento</value>
   </data>
   <data name="ButtonLearnMore" xml:space="preserve">
-    <value>Learn more...</value>
+    <value>Más información...</value>
   </data>
   <data name="ByDate" xml:space="preserve">
-    <value>Date</value>
+    <value>Fecha</value>
   </data>
   <data name="ByUser" xml:space="preserve">
-    <value>User</value>
+    <value>Usuario</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Cancelar</value>
   </data>
   <data name="Case" xml:space="preserve">
-    <value>Case</value>
+    <value>Caso</value>
   </data>
   <data name="CaseCreatedText" xml:space="preserve">
-    <value>created new case in CRM</value>
+    <value>un caso nuevo ha sido creado en CRM</value>
   </data>
   <data name="ChangeAliasHelper" xml:space="preserve">
-    <value>You can change the domain name later using the portal 'Settings' section.</value>
+    <value>Usted puede cambiar el nombre de dominio más tarde usando la sección 'Ajustes'de portal.</value>
   </data>
   <data name="CheckAll" xml:space="preserve">
-    <value>Check All</value>
+    <value>Marcar todo</value>
   </data>
   <data name="ClearFilter" xml:space="preserve">
-    <value>Clear Filter</value>
+    <value>Limpiar filtro</value>
   </data>
   <data name="CommunityProduct" xml:space="preserve">
-    <value>Community</value>
+    <value>Comunidad</value>
   </data>
   <data name="Company" xml:space="preserve">
-    <value>Company</value>
+    <value>Empresa</value>
   </data>
   <data name="CompanyCreatedText" xml:space="preserve">
-    <value>created new company in CRM</value>
+    <value>una empresa nueva ha sido creada en CRM</value>
   </data>
   <data name="CompanySizeTitle" xml:space="preserve">
-    <value>Company Size</value>
+    <value>Tamaño de Empresa</value>
   </data>
   <data name="CompanyTitle" xml:space="preserve">
-    <value>Company</value>
+    <value>Empresa</value>
   </data>
   <data name="ConfirmStoreOriginalUploadCbxLabelTextAC" xml:space="preserve">
-    <value>Save the file copy in the original format as well</value>
+    <value>Guardar también la copia del archivo en el formato original</value>
   </data>
   <data name="ConfirmStoreOriginalUploadTitleAC" xml:space="preserve">
-    <value>All the documents you upload will be converted to the Office Open XML format for faster editing.</value>
+    <value>Todos los documentos, que usted ha subido, serán convertidos al formato Office Open XML para edición más rápida.</value>
   </data>
   <data name="Contact" xml:space="preserve">
-    <value>Contact</value>
+    <value>Contacto</value>
   </data>
   <data name="Contacts" xml:space="preserve">
-    <value>Contacts</value>
+    <value>Contactos</value>
   </data>
   <data name="ContactSupportBtn" xml:space="preserve">
-    <value>Contact support</value>
+    <value>Contactar con el equipo de soporte</value>
   </data>
   <data name="CreatedBy" xml:space="preserve">
-    <value>Created by</value>
+    <value>Creado por</value>
   </data>
   <data name="CrmProduct" xml:space="preserve">
     <value>CRM</value>
   </data>
   <data name="CrmTaskCreatedText" xml:space="preserve">
-    <value>created new task in CRM</value>
+    <value>una tarea nueva ha sido creada en CRM</value>
   </data>
   <data name="CurrentMonth" xml:space="preserve">
-    <value>Current month</value>
+    <value>Mes corriente</value>
   </data>
   <data name="CurrentWeek" xml:space="preserve">
-    <value>Current week</value>
+    <value>Semana corriente</value>
   </data>
   <data name="CustomPeriod" xml:space="preserve">
-    <value>Custom period</value>
+    <value>Periodo personalizado</value>
   </data>
   <data name="Deal" xml:space="preserve">
-    <value>Opportunity</value>
+    <value>Oportunidad</value>
   </data>
   <data name="DealCreatedText" xml:space="preserve">
-    <value>created new opportunity in CRM</value>
+    <value>una oportunidad nueva ha sido creada en CRM</value>
   </data>
   <data name="DeleteFile" xml:space="preserve">
-    <value>Delete File</value>
+    <value>Borrar archivo</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Description</value>
+    <value>Descripción</value>
   </data>
   <data name="Discussion" xml:space="preserve">
-    <value>Discussion</value>
+    <value>Discusión</value>
   </data>
   <data name="DiscussionCreatedText" xml:space="preserve">
-    <value>created new discussion in Projects</value>
+    <value>una discusión nueva ha sido creada en Proyectos</value>
   </data>
   <data name="DocumentsProduct" xml:space="preserve">
-    <value>Documents</value>
+    <value>Documentos</value>
   </data>
   <data name="DownloadFile" xml:space="preserve">
-    <value>Download File</value>
+    <value>Descargar archivo</value>
   </data>
   <data name="EditFile" xml:space="preserve">
-    <value>Edit File</value>
+    <value>Editar archivo</value>
   </data>
   <data name="EmptyCommentErrorMessage" xml:space="preserve">
-    <value>Comment cannot be empty</value>
+    <value>El campo Comentario no puede ser vacío</value>
   </data>
   <data name="EmptyDocsDescription" xml:space="preserve">
-    <value>The documents and image files you create or upload for your project are kept in this section. These documents are available to all project participants immediately after they are created. Attach files from your computer to the task and they will appear in this list.</value>
+    <value>En esta sección se guardan los documentos у imágenes que usted crea o sube para su proyecto. Estos documentos están disponibles a todos los participantes del proyecto inmediatamente después de su creación. Adjunte archivos de su equipo a la tarea y aparecerán en esta lista.</value>
   </data>
   <data name="EmptyDocsHeaderDescription" xml:space="preserve">
-    <value>No files to be displayed in this section.</value>
+    <value>Hay archivos para mostrar en esta sección.</value>
   </data>
   <data name="EmptyList" xml:space="preserve">
-    <value>Empty</value>
+    <value>Vacío</value>
   </data>
   <data name="EmptyListDocumentsDescr" xml:space="preserve">
-    <value>{0}Create{1} files right on your portal or {2}upload{3} them here to be able to {4}open{5} and {6}edit{7} them using the ONLYOFFICE™ portal editor.</value>
+    <value>{0}Cree{1} archivos directo en el portal o {2}súbalos{3} aquí para poder {4}abrir{5} y {6}editarlos{7} usando el editor en ONLYOFFICE™ portal.
+</value>
   </data>
   <data name="EmptyListDocumentsDescrPoor" xml:space="preserve">
-    <value>{2}Upload{3} files right on your portal.</value>
+    <value>{2}Subir{3}archivos directamente a su portal.</value>
   </data>
   <data name="EmptyListDocumentsHead" xml:space="preserve">
-    <value>The list of documents is empty</value>
+    <value>La lista de documentos está vacía</value>
   </data>
   <data name="EmptyQuestion" xml:space="preserve">
-    <value>Enter your poll question</value>
+    <value>Introducir su pregunta de encuesta</value>
   </data>
   <data name="EmptySelect" xml:space="preserve">
-    <value>Select poll choice</value>
+    <value>Elija una respuesta</value>
   </data>
   <data name="ErrorMassage_SpecCharacter" xml:space="preserve">
-    <value>Title cannot contain any of the following characters:</value>
+    <value>El titulo no puede contener alguno de los siguientes símbolos:</value>
   </data>
   <data name="Event" xml:space="preserve">
-    <value>Event</value>
+    <value>Evento</value>
   </data>
   <data name="Everyone" xml:space="preserve">
-    <value>Everyone</value>
+    <value>Todos</value>
   </data>
   <data name="FeedBlogsModuleLink" xml:space="preserve">
-    <value>Add post</value>
+    <value>Añadir post</value>
   </data>
   <data name="FeedBookmarkModuleLink" xml:space="preserve">
-    <value>Add bookmark</value>
+    <value>Añadir marcador</value>
   </data>
   <data name="FeedButtonGotoDocuments" xml:space="preserve">
-    <value>Go to Documents</value>
+    <value>Ir a Documentos</value>
   </data>
   <data name="FeedCorporateFiles" xml:space="preserve">
-    <value>Documents</value>
+    <value>Documentos</value>
   </data>
   <data name="FeedCreateFirstCompany" xml:space="preserve">
-    <value>Create a new company</value>
+    <value>Crear una empresa nueva</value>
   </data>
   <data name="FeedCreateFirstPerson" xml:space="preserve">
-    <value>Create a new person</value>
+    <value>Crear una persona nueva</value>
   </data>
   <data name="FeedCreateFirstProject" xml:space="preserve">
-    <value>Create a new project</value>
+    <value>Crear un proyecto nuevo</value>
   </data>
   <data name="FeedEmptyCommunityDescription" xml:space="preserve">
-    <value>Anything added to the Community module will be shown here. Users can share interesting information, thoughts and experiences with others, express their opinions, get feedback from the others' comments.</value>
+    <value>Cualquier cosa añadida al módulo Comunidad se mostrará aquí. Usuarios pueden compartir información interesante, sus pensamientos y experiencias con otros, expresar sus opiniones, recibir comentarios de otros usuarios.</value>
   </data>
   <data name="FeedEmptyCommunityHeader" xml:space="preserve">
-    <value>No events have been added yet</value>
+    <value>No hay eventos añadidos</value>
   </data>
   <data name="FeedEmptyContactListDescription" xml:space="preserve">
-    <value>The events for the CRM module available to you will be shown here. New companies and persons added or the existing edited, new cases, opportunities and tasks created - everything concerning CRM will go to this tab.</value>
+    <value>Los eventos del módulo CRM disponibles para usted se mostrarán aquí. Nuevas empresas y personas añadidas o editadas, nuevos casos, oportunidades y tareas creadas - todo lo que se refiere a CRM se mostrará en esta pestaña.</value>
   </data>
   <data name="FeedEmptyContactListHeader" xml:space="preserve">
-    <value>No CRM events have added yet</value>
+    <value>No hay eventos CRM añadidos</value>
   </data>
   <data name="FeedEmptyListProjDescribe" xml:space="preserve">
-    <value>The changes in the Projects module available to you will be shown here. The projects which you are a member or a follower of, your new tasks or changes to the existing ones will help you not to miss anything.</value>
+    <value>Los cambios del módulo Proyectos disponibles para usted se mostrarán aquí. Los proyectos en los que usted participa o que usted siga, sus tareas nuevas o cambios en las existentes - usted no perderá nada. </value>
   </data>
   <data name="FeedEmptyListProjHeader" xml:space="preserve">
-    <value>No projects have been added yet</value>
+    <value>No hay proyectos añadidos</value>
   </data>
   <data name="FeedEmptyScreenDescrCorporate" xml:space="preserve">
-    <value>The changes to the portal documents available to you will be shown here. New documents shared with you, changes to the existing documents that you have access to, documents common for all portal users are all displayed here.</value>
+    <value>Los cambios en documentos del portal disponibles para usted se mostrarán aquí. Nuevos documentos compartidos con usted, cambios en los existentes a los que usted tiene el acceso, documentos comunes para todos los usuarios del portal también estarán disponibles aquí.</value>
   </data>
   <data name="FeedEventsModuleLink" xml:space="preserve">
-    <value>Add event</value>
+    <value>Añadir evento</value>
   </data>
   <data name="FeedTitle" xml:space="preserve">
-    <value>Feed</value>
+    <value>Fuente</value>
   </data>
   <data name="FewAnswerVariant" xml:space="preserve">
-    <value>Allow multiple choices for this poll question</value>
+    <value>Permitir múltiples variantes de respuesta a esta pregunta</value>
   </data>
   <data name="File" xml:space="preserve">
-    <value>File</value>
+    <value>Archivo</value>
   </data>
   <data name="FileCreatedText" xml:space="preserve">
-    <value>created new file in Documents</value>
+    <value>un archivo nuevo ha sido creado en Documentos</value>
   </data>
   <data name="FilterNoNews" xml:space="preserve">
-    <value>There are no news matching this filter</value>
+    <value>No hay ningunas noticias correspondientas a este filtro</value>
   </data>
   <data name="FilterNoNewsDescription" xml:space="preserve">
-    <value>No news matching your filter can be displayed in this section.</value>
+    <value>No hay ningunas noticias correspondientas a su filtro en esta sección.</value>
   </data>
   <data name="FilterNoVoipCalls" xml:space="preserve">
-    <value>There are no calls matching this filter</value>
+    <value>Ningunas llamadas correspondientes a este filtro</value>
   </data>
   <data name="FilterNoVoipCallsDescription" xml:space="preserve">
-    <value>No calls matching your filter can be displayed in this section.</value>
+    <value>Ningunas llamadas correspondientes a su filtro en esta sección.</value>
   </data>
   <data name="Folder" xml:space="preserve">
-    <value>Folder</value>
+    <value>Carpeta</value>
   </data>
   <data name="FolderCreatedText" xml:space="preserve">
-    <value>created new folder in Documents</value>
+    <value>una carpeta nueva ha sido creada en Documentos</value>
   </data>
   <data name="Forum" xml:space="preserve">
-    <value>Forum</value>
+    <value>Foro</value>
   </data>
   <data name="ForumPollCreatedText" xml:space="preserve">
-    <value>created new forum poll in Community</value>
+    <value>una encuesta nueva de foro ha sido creada en Comunidad</value>
   </data>
   <data name="ForumPostCreatedText" xml:space="preserve">
-    <value>created new forum post in Community</value>
+    <value>un mensaje nuevo de foro ha sido creado en Comunidad</value>
   </data>
   <data name="ForumTopicCreatedText" xml:space="preserve">
-    <value>created new forum topic in Community</value>
+    <value>un tema nuevo de foro ha sido creado en Comunidad</value>
   </data>
   <data name="From" xml:space="preserve">
-    <value>from</value>
+    <value>de</value>
   </data>
   <data name="GetPortalLink" xml:space="preserve">
-    <value>Link for Portal Users</value>
+    <value>Enlace para usuarios de portal</value>
   </data>
   <data name="HostedBuyDescr" xml:space="preserve">
-    <value>If you want to pay for your ONLYOFFICE portal, click the Buy Now button.</value>
+    <value>Si Usted quiere pagar por su portal ONLYOFFICE, pulse el botón "Comprar ahora".</value>
   </data>
   <data name="HostedBuyLabel" xml:space="preserve">
-    <value>Portal payment</value>
+    <value>Pago por portal </value>
   </data>
   <data name="HostedPayAndGet" xml:space="preserve">
-    <value>Please pay for your ONLYOFFICE and get:</value>
+    <value>Por favor, pague por ONLYOFFICE y obtenga:</value>
   </data>
   <data name="LabelFor" xml:space="preserve">
-    <value>for</value>
+    <value>para</value>
   </data>
   <data name="LastMonth" xml:space="preserve">
-    <value>This month</value>
+    <value>Este mes</value>
   </data>
   <data name="LastWeek" xml:space="preserve">
-    <value>This week</value>
+    <value>Esta semana</value>
   </data>
   <data name="LastYear" xml:space="preserve">
-    <value>This year</value>
+    <value>Este año</value>
   </data>
   <data name="LblFilter" xml:space="preserve">
-    <value>Filter:</value>
+    <value>Filtro:</value>
   </data>
   <data name="LblFilterPlaceholder" xml:space="preserve">
-    <value>enter your query</value>
+    <value>Introduzca su solicitud </value>
   </data>
   <data name="LblFrom" xml:space="preserve">
-    <value>From</value>
+    <value>De</value>
   </data>
   <data name="LblSelect" xml:space="preserve">
-    <value>Select</value>
+    <value>Seleccionar</value>
   </data>
   <data name="LblSort" xml:space="preserve">
-    <value>Sort by</value>
+    <value>Ordenar por</value>
   </data>
   <data name="LblTo" xml:space="preserve">
-    <value>To</value>
+    <value>a</value>
   </data>
   <data name="LicenseActivateAndGet" xml:space="preserve">
-    <value>Please activate ONLYOFFICE and get:</value>
+    <value>Por favor, active ONLYOFFICE y obtenga:</value>
   </data>
   <data name="LicenseActivateButton" xml:space="preserve">
-    <value>Activate it</value>
+    <value>Activar</value>
   </data>
   <data name="LicenseActivateDescr" xml:space="preserve">
-    <value>If you have already purchased an ONLYOFFICE license, please upload the file into the field below.</value>
-  </data>
-  <data name="LicenseActivateDescrR7" xml:space="preserve">
-    <value>Для активации "Р7-Офис. Сервер. Профессиональный." необходимо купить лицензионный ключ.</value>
+    <value>Para activar ONLYOFFICE Edición Empresa necesita comprar una clave de licencia.</value>
   </data>
   <data name="LicenseActivateHeader" xml:space="preserve">
-    <value>Activate ONLYOFFICE Enterprise Edition</value>
-  </data>
-  <data name="LicenseActivateHeaderR7" xml:space="preserve">
-    <value>Выберите одну из следующих опций для активации:</value>
+    <value>Activar ONLYOFFICE Enterprise Edition</value>
   </data>
   <data name="LicenseAgreements" xml:space="preserve">
-    <value>By checking this box you accept the terms of the {0}License Agreements{1}</value>
+    <value>Al marcar esta casilla usted acepta los términos de los {0}Acuerdos de Licencia{1}</value>
   </data>
   <data name="LicensedUnder" xml:space="preserve">
-    <value>This software is licensed under {0}GNU GPL v.3{1}</value>
+    <value>Este programa es licenciado bajo {0}GNU GPL v.3{1}</value>
   </data>
   <data name="LicenseException" xml:space="preserve">
-    <value>License expired or user quota does not match the license</value>
+    <value>Licencia ha caducado o cuota de los usuarios no coincide con la licencia</value>
   </data>
   <data name="LicenseKeyBuyDescr" xml:space="preserve">
-    <value>If you want to review or buy an ONLYOFFICE license, click the Buy Now button. You will be redirected to the ONLYOFFICE order page on the Avangate website.</value>
+    <value>Si Usted quiere prolongar o comprar la licencia de ONLYOFFICE, pulse el botón 'Comprar'. Usted será redireccionado a la página de compra de ONLYOFFICE en el sitio web de Avangate.</value>
   </data>
   <data name="LicenseKeyBuyLabel" xml:space="preserve">
-    <value>Buy a License</value>
+    <value>Compre licencia</value>
   </data>
   <data name="LicenseKeyHeader" xml:space="preserve">
-    <value>License Activation File</value>
+    <value>Archivo de activación de licencia</value>
   </data>
   <data name="LicenseKeyLabel" xml:space="preserve">
-    <value>Upload Your License File</value>
+    <value>Subir archivo de licencia</value>
   </data>
   <data name="LicenseKeyNotCorrect" xml:space="preserve">
-    <value>License key is not correct</value>
+    <value>La clave de la licencia no es correcta</value>
   </data>
   <data name="LicenseKeyNotFound" xml:space="preserve">
-    <value>You must enter a license key</value>
+    <value>Tiene que meter la clave de la licencia</value>
   </data>
   <data name="LicenseModules" xml:space="preserve">
-    <value>ONLYOFFICE Modules and Tools:</value>
+    <value>Módulos y herramientas de ONLYOFFICE:</value>
   </data>
   <data name="LicenseModulesControlPanel" xml:space="preserve">
-    <value>Control Panel</value>
+    <value>Panel de control</value>
   </data>
   <data name="LicenseModulesList" xml:space="preserve">
-    <value>{0}Online Documents Editors{1}{0}Document Management{1}{0}Mail{1}{0}Projects{1}{0}CRM{1}{0}Calendar{1}{0}Community{1}</value>
-  </data>
-  <data name="LicenseModulesListR7" xml:space="preserve">
-    <value>{0}Онлайн-редакторы документов{1}{0}Управление документами{1}{0}Проекты{1}{0}Почта{1}{0}Календарь{1}{0}Чат{1}{0}Сообщество{1}</value>
+    <value>{0}Editores de documentos en línea{1}{0}Gestión de documentos{1}{0}Correo{1}{0}Proyectos{1}{0}CRM{1}{0}Calendario{1}{0}Comunidad{1}</value>
   </data>
   <data name="LicenseModulesMultitenancy" xml:space="preserve">
-    <value>Multitenancy</value>
+    <value>Multitenencia</value>
   </data>
   <data name="LicenseModulesSupport" xml:space="preserve">
-    <value>One Year Support</value>
+    <value>Soporte durante un año</value>
   </data>
   <data name="LicenseModulesUpdates" xml:space="preserve">
-    <value>ONLYOFFICE Updates</value>
+    <value>Actualizaciones de ONLYOFFICE</value>
   </data>
   <data name="LicenseModulesWhiteLabel" xml:space="preserve">
-    <value>White Label</value>
+    <value>Marca Blanca</value>
   </data>
   <data name="LicenseRequestDescr" xml:space="preserve">
-    <value>Please contact us, we will be glad to offer you a special pricing plan.</value>
+    <value>Por favor póngase en contacto con nosotros, estaremos encantados de ofrecerle un plan de precios especial.</value>
   </data>
   <data name="LicenseRequestHeader" xml:space="preserve">
-    <value>Discover your special offer</value>
+    <value>Descubra su oferta especial</value>
   </data>
   <data name="LicenseRequestQuota" xml:space="preserve">
-    <value>{0} - {1} active users</value>
+    <value>{0} - {1} usuarios activos</value>
   </data>
   <data name="LicenseRequestQuotaMore" xml:space="preserve">
-    <value>{0}+ active users</value>
+    <value>{0}+ usuarios activos</value>
   </data>
   <data name="LinkText" xml:space="preserve">
-    <value>Add users</value>
+    <value>Añadir usuarios</value>
   </data>
   <data name="LoginWith" xml:space="preserve">
-    <value>Please, log in with your account</value>
+    <value>Por favor, acceda desde su cuenta</value>
   </data>
   <data name="LogoutButton" xml:space="preserve">
-    <value>Sign Out</value>
+    <value>Salir</value>
   </data>
   <data name="Me" xml:space="preserve">
-    <value>Me</value>
+    <value>Yo</value>
   </data>
   <data name="MediaViewerActualSize" xml:space="preserve">
-    <value>Actual Size</value>
+    <value>Tamaño actual</value>
   </data>
   <data name="MediaViewerClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Cerrar</value>
   </data>
   <data name="MediaViewerFullscreen" xml:space="preserve">
-    <value>Fullscreen</value>
+    <value>Pantalla Completa</value>
   </data>
   <data name="MediaViewerMute" xml:space="preserve">
-    <value>Mute</value>
+    <value>Silenciar el sonido</value>
   </data>
   <data name="MediaViewerNext" xml:space="preserve">
-    <value>Next</value>
+    <value>Siguiente</value>
   </data>
   <data name="MediaViewerPlay" xml:space="preserve">
-    <value>Play</value>
+    <value>Reproducir</value>
   </data>
   <data name="MediaViewerPrevious" xml:space="preserve">
-    <value>Previous</value>
+    <value>Anterior</value>
   </data>
   <data name="MediaViewerRotateLeft" xml:space="preserve">
-    <value>Rotate Left</value>
+    <value>Girar a la izquierda</value>
   </data>
   <data name="MediaViewerRotateRight" xml:space="preserve">
-    <value>Rotate Right</value>
+    <value>Girar a la derecha</value>
   </data>
   <data name="MediaViewerZoomIn" xml:space="preserve">
-    <value>Zoom In</value>
+    <value>Acercar</value>
   </data>
   <data name="MediaViewerZoomOut" xml:space="preserve">
-    <value>Zoom Out</value>
+    <value>Alejar</value>
   </data>
   <data name="Members" xml:space="preserve">
-    <value>Members</value>
+    <value>Miembros</value>
   </data>
   <data name="Milestone" xml:space="preserve">
-    <value>Milestone</value>
+    <value>Hito</value>
   </data>
   <data name="MilestoneCreatedText" xml:space="preserve">
-    <value>created new milestone in Projects</value>
+    <value>un hito nuevo ha sido creado en Proyectos</value>
   </data>
   <data name="MobileChangeButton" xml:space="preserve">
-    <value>Enter number</value>
+    <value>Introducir número</value>
   </data>
   <data name="MobileCodeDescription" xml:space="preserve">
-    <value>An SMS with the portal access code has been sent to your {0}{1}{2} mobile phone number.{5}Please enter the code and click the "{3}" button. If no message is received for more than 3 minutes, click the "{4}" button.</value>
+    <value>Uno SMS con el código de acceso al portal ha sido enviado a su {0}{1}{2} número de móvil.{5}Por favor, introduzca el código y pulse el botón"{3}". Si no recibe ningún mensaje por más de 3 minutos, pulse el botón "{4}".</value>
   </data>
   <data name="MobileCurrentNumber" xml:space="preserve">
-    <value>Your current mobile phone number: {0}</value>
+    <value>Su número de móvil corriente: {0}</value>
   </data>
   <data name="MobilePhoneCaption" xml:space="preserve">
-    <value>Enter mobile phone number</value>
+    <value>Introduzca el número de teléfono móvil</value>
   </data>
   <data name="MobilePhoneDescription" xml:space="preserve">
-    <value>The two-factor authentication is enabled to provide additional portal security. Enter your mobile phone number to continue work on the portal. Mobile phone number must be entered using an international format with country code.</value>
+    <value>La autenticación de dos factores está activada para asegurar la seguridad de portal adicional. Introduzca su número de teléfono móvil para continuar trabajando en el portal. Es preciso que introduzca el número de teléfono en el formato internacional con un código de país.</value>
   </data>
   <data name="More" xml:space="preserve">
-    <value>More</value>
+    <value>Más</value>
   </data>
   <data name="NewDocument" xml:space="preserve">
-    <value>New Document</value>
+    <value>Nuevo documento</value>
   </data>
   <data name="NewFeedIndicator" xml:space="preserve">
-    <value>new</value>
+    <value>nuevo</value>
   </data>
   <data name="NewFile" xml:space="preserve">
-    <value>New file</value>
+    <value>Nuevo archivo</value>
   </data>
   <data name="News" xml:space="preserve">
-    <value>News</value>
+    <value>Noticias</value>
   </data>
   <data name="NewsCreatedText" xml:space="preserve">
-    <value>created news in Community</value>
+    <value>una noticia ha sido creada en Comunidad</value>
   </data>
   <data name="NewsNotFound" xml:space="preserve">
-    <value>There is nothing to be displayed here</value>
+    <value>No hay nada que mostrar aquí</value>
   </data>
   <data name="NewsNotFoundDescription" xml:space="preserve">
-    <value>All the portal activities are displayed here in this section. Right now there are no events on the portal to be displayed. Start using your portal, fill it with the content and all the news will be shown at this page.</value>
+    <value>Todas las actividades del portal son mostradas aquí en esta sección. Ahora no hay ningunos eventos en el portal que pueden ser mostrados. Empieze a usar su portal, llene lo de contenido y todas las noticias serán mostradas en esta página.</value>
   </data>
   <data name="NextPage" xml:space="preserve">
-    <value>Next</value>
+    <value>Siguiente</value>
   </data>
   <data name="NoComments" xml:space="preserve">
-    <value>No comments</value>
+    <value>Ningunos comentarios</value>
   </data>
   <data name="NotBeUndone" xml:space="preserve">
-    <value>Note: this action cannot be undone.</value>
+    <value>Nota: no se puede deshacer esta acción.</value>
   </data>
   <data name="NotSupportedBrowser" xml:space="preserve">
-    <value>To play the media you will need to update your browser to a recent version.</value>
+    <value>Para reproducir el contenido multimedia necesitará actualizar su navegador a la versión última</value>
   </data>
   <data name="OneAnswerVariant" xml:space="preserve">
-    <value>Allow only one choice for this poll question</value>
+    <value>Permitir sólo una variante de respuesta a esta pregunta</value>
   </data>
   <data name="Order" xml:space="preserve">
-    <value>Order</value>
+    <value>Orden</value>
   </data>
   <data name="OrderCreatedText" xml:space="preserve">
-    <value>created new order in Community</value>
+    <value>una orden nueva ha sido creada en Comunidad</value>
   </data>
   <data name="Other" xml:space="preserve">
-    <value>Other</value>
+    <value>Otro</value>
   </data>
   <data name="OtherUsers" xml:space="preserve">
-    <value>Other users</value>
+    <value>Otros usuarios</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
-    <value>People</value>
+    <value>Personas</value>
   </data>
   <data name="Person" xml:space="preserve">
-    <value>Person</value>
+    <value>Persona</value>
   </data>
   <data name="PersonalStorageLimitExceededBody" xml:space="preserve">
-    <value>The file could not be added as you have exceeded your storage space quota. Please delete the outdated files or contact our support team for more information.</value>
+    <value>No se puede añadir el archivo porque se ha superado la cuota de espacio de almacenamiento. Por favor, elimine los archivos anticuados o póngase en contacto con nuestro equipo de soporte para obtener más información.</value>
   </data>
   <data name="PersonalStorageLimitExceededHeader" xml:space="preserve">
-    <value>Quota exceeded</value>
+    <value>Cuota excedida </value>
   </data>
   <data name="PersonalStorageLimitExceededSubHeader" xml:space="preserve">
-    <value>Storage space quota exceeded</value>
+    <value>Se ha superado la cuota de espacio de almacenamiento </value>
   </data>
   <data name="PersonCreatedText" xml:space="preserve">
-    <value>created new person in CRM</value>
+    <value>una persona nueva ha sido creada en CRM</value>
   </data>
   <data name="Poll" xml:space="preserve">
-    <value>Poll</value>
+    <value>Sondeo</value>
   </data>
   <data name="PollCreatedText" xml:space="preserve">
-    <value>created new poll in Community</value>
+    <value>una encuesta nueva ha sido creada en Comunidad</value>
   </data>
   <data name="PollQuestion" xml:space="preserve">
-    <value>Poll Question</value>
+    <value>Pregunta</value>
   </data>
   <data name="PollType" xml:space="preserve">
-    <value>Poll Type</value>
+    <value>Tipo de encuesta</value>
   </data>
   <data name="PreviewError" xml:space="preserve">
-    <value>Failed to upload file {0} to display</value>
+    <value>Imposible cargar archivo {0} para mostrar</value>
   </data>
   <data name="PreviousPage" xml:space="preserve">
-    <value>Previous</value>
+    <value>Anterior</value>
   </data>
   <data name="Product" xml:space="preserve">
-    <value>Module</value>
+    <value>Módulo</value>
   </data>
   <data name="Project" xml:space="preserve">
-    <value>Project</value>
+    <value>Proyecto</value>
   </data>
   <data name="ProjectCreatedText" xml:space="preserve">
-    <value>created new project in Projects</value>
+    <value>un proyecto nuevo ha sido creado en Proyectos</value>
   </data>
   <data name="ProjectDocuments" xml:space="preserve">
-    <value>Project Documents</value>
+    <value>Documentos del proyecto</value>
   </data>
   <data name="ProjectManager" xml:space="preserve">
-    <value>Manager</value>
+    <value>Gerente</value>
   </data>
   <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projects</value>
+    <value>Proyectos</value>
   </data>
   <data name="QuestionDeleteFile" xml:space="preserve">
-    <value>Are you sure you want to delete this file?</value>
+    <value>¿Está seguro(a) de que desea borrar este archivo?</value>
   </data>
   <data name="QuickLinksDeleteLink" xml:space="preserve">
-    <value>Delete</value>
+    <value>Eliminar</value>
   </data>
   <data name="ReadAboutNonProfitUsage" xml:space="preserve">
-    <value>Read about non-profit usage</value>
+    <value>Lea sobre uso no lucrativo</value>
   </data>
   <data name="RemoveFromList" xml:space="preserve">
-    <value>Remove from this list</value>
+    <value>Eliminar de la lista</value>
   </data>
   <data name="RemoveShareMessage" xml:space="preserve">
-    <value>Remove message</value>
+    <value>Eliminar un mensaje</value>
   </data>
   <data name="ResetFilter" xml:space="preserve">
-    <value>Reset filter</value>
+    <value>Restablecer el filtro</value>
   </data>
   <data name="Responsible" xml:space="preserve">
-    <value>Responsible</value>
+    <value>Responsable</value>
   </data>
   <data name="Responsibles" xml:space="preserve">
-    <value>Responsible users</value>
+    <value>Usuarios responsables</value>
   </data>
   <data name="SalesQuestions" xml:space="preserve">
-    <value>Have questions? Please, contact our sales department at {0}</value>
+    <value>¿Tiene Usted unas preguntas? Contacte con nuestro departamento de ventas por correo {0}</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
-    <value>Save</value>
+    <value>Guardar</value>
   </data>
   <data name="SearchHld" xml:space="preserve">
-    <value>search</value>
+    <value>búsqueda</value>
   </data>
   <data name="SeeInModulesHdr" xml:space="preserve">
-    <value>Search in module</value>
+    <value>Buscar en módulo</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
-    <value>Select all</value>
+    <value>Seleccionar todo</value>
   </data>
   <data name="SelectPricingPlanBtn" xml:space="preserve">
-    <value>Select pricing plan</value>
+    <value>Seleccionar plan de precios</value>
   </data>
   <data name="SendShareNotify" xml:space="preserve">
-    <value>Send notification</value>
+    <value>Enviar notificación</value>
   </data>
   <data name="SharedFileCreatedText" xml:space="preserve">
-    <value>shared file for you in Documents</value>
+    <value>un archivo compartido para usted en Documentos</value>
   </data>
   <data name="SharedFolderCreatedText" xml:space="preserve">
-    <value>shared folder for you in Documents</value>
+    <value>una carpeta compartida para usted en Documentos</value>
   </data>
   <data name="SharingSettingsEmpty" xml:space="preserve">
-    <value>Add users or groups and give them the right.</value>
+    <value>Añadir usuarios o grupos y prestarles derechos</value>
   </data>
   <data name="SharingSettingsItemsTitle" xml:space="preserve">
-    <value>Set up the access rights for users or groups</value>
+    <value>Establecer los derechos de acceso para usuarios o grupos</value>
   </data>
   <data name="SharingSettingsTitle" xml:space="preserve">
-    <value>Sharing Settings</value>
+    <value>Configuración del uso compartido</value>
   </data>
   <data name="ShowAll" xml:space="preserve">
-    <value>Show all</value>
+    <value>Mostrar todo</value>
   </data>
   <data name="ShowNextNews" xml:space="preserve">
-    <value>Show next news</value>
+    <value>Mostrar las noticias siguientes</value>
   </data>
   <data name="SiteTitle" xml:space="preserve">
-    <value>Website</value>
+    <value>Sitio web</value>
   </data>
   <data name="Size" xml:space="preserve">
-    <value>Size</value>
+    <value>Tamaño</value>
   </data>
   <data name="SourceCode" xml:space="preserve">
-    <value>Source code is availible on {0}GitHub{1}</value>
+    <value>El código fuente está disponible en {0}GitHub{1}</value>
   </data>
   <data name="Subtask" xml:space="preserve">
-    <value>Subtask</value>
+    <value>Subtarea</value>
   </data>
   <data name="TariffBasicPrice" xml:space="preserve">
-    <value>Basic price</value>
+    <value>precio básico</value>
   </data>
   <data name="TariffCurrencyHelp" xml:space="preserve">
-    <value>See Avangate for the full list of currencies</value>
+    <value>Consultar Avangate para la lista completa de las monedas</value>
   </data>
   <data name="TariffFileSizeLimitReason" xml:space="preserve">
-    <value>Your pricing plan has major restrictions for the file size.</value>
+    <value>Su plan de precios tiene restricciones del tamaño de archivo.</value>
   </data>
   <data name="TariffFileSizeLimitTitle" xml:space="preserve">
-    <value>Large file size</value>
+    <value>Gran tamaño de archivo</value>
   </data>
   <data name="TariffFree" xml:space="preserve">
-    <value>Free</value>
+    <value>Gratis</value>
   </data>
   <data name="TariffFullPrice" xml:space="preserve">
-    <value>Open full price list</value>
+    <value>Abrir la lista completa de precios</value>
   </data>
   <data name="TariffLimitDecision" xml:space="preserve">
-    <value>Would you like to choose a new pricing plan?</value>
+    <value>¿Usted quiere elegir el plan de precios nuevo?</value>
   </data>
   <data name="TariffLimitedPrice" xml:space="preserve">
-    <value>Time limited offer</value>
+    <value>Oferta por tiempo limitado</value>
   </data>
   <data name="TariffLimitOkButton" xml:space="preserve">
-    <value>Yes, upgrade plan</value>
+    <value>Si, actualizar el plan</value>
   </data>
   <data name="TariffNameSMonth" xml:space="preserve">
-    <value>{0}1 Month{2}{1} Subscription</value>
+    <value>{0}1 Mes{2}{1}Suscripción</value>
   </data>
   <data name="TariffNameSYear" xml:space="preserve">
-    <value>{0}1 Year{2}{1} Subscription</value>
+    <value>{0}1 Año{2}{1} Suscripción</value>
   </data>
   <data name="TariffNameSYear3" xml:space="preserve">
-    <value>{0}3 Year{1} Subscription</value>
+    <value>{0}3 Año{1} Suscripción</value>
   </data>
   <data name="TariffNonProfit" xml:space="preserve">
-    <value>You are using a plan for nonprofit organization.</value>
+    <value>Usted está usando el plan de precios para organizaciones sin fines de lucro.</value>
   </data>
   <data name="TariffOverdueHosted" xml:space="preserve">
-    <value>Your portal payment has expired.</value>
+    <value>Su pago por el portal expiró.</value>
   </data>
   <data name="TariffOverduePlan" xml:space="preserve">
-    <value>You are using {0} - {1} active users plan. {2}The payment is overdue.{3}{4} To continue using ONLYOFFICE, prolong the existing plan or change it using the table below.</value>
+    <value>Usted usa el plan de precios {0} - {1} usuarios activos. {2}El pago expiró.{3}{4} Para continuar el uso de ONLYOFFICE, prolongue el plan de precios actual o cámbielo usando la tabla abajo.</value>
   </data>
   <data name="TariffOverdueStandalone" xml:space="preserve">
-    <value>You are using ONLYOFFICE™ Enterprise Edition. {0}Support and updates are no longer available.{1}</value>
+    <value>Está utilizando ONLYOFFICE™ Enterprise Edition. {0}Soporte y actualizaciones ya no están disponibles.</value>
   </data>
   <data name="TariffOverdueStandalone2" xml:space="preserve">
-    <value>You are using ONLYOFFICE™ Enterprise Edition. {0}Support and updates are no longer available for your license since {2}{1}.</value>
-  </data>
-  <data name="TariffOverdueStandaloneR7" xml:space="preserve">
-    <value>Вы используете "Р7-Офис. Сервер. Профессиональный.". {0}Техническая поддержка и обновления больше не доступны для Вашей лицензии с {2}.{1}</value>
+    <value>Está usando ONLYOFFICE™ Enterprise Edition. {0}Soporte y actualizaciones ya no están disponibles para su licencia desde {2}{1}.</value>
   </data>
   <data name="TariffPaidPlan" xml:space="preserve">
-    <value>You are using {0} - {1} active users plan.</value>
+    <value>Usted usa el plan de precios {0} - {1} usuarios activos.</value>
   </data>
   <data name="TariffPaidStandalone" xml:space="preserve">
-    <value>You are using ONLYOFFICE™ Enterprise Edition.</value>
-  </data>
-  <data name="TariffPaidStandaloneR7" xml:space="preserve">
-    <value>Вы используете "Р7-Офис. Сервер. Профессиональный."</value>
+    <value>Está usando ONLYOFFICE™ Edición Empresa.</value>
   </data>
   <data name="TariffPerMonth" xml:space="preserve">
-    <value>month</value>
+    <value>mes</value>
   </data>
   <data name="TariffPerYear" xml:space="preserve">
-    <value>year</value>
+    <value>año</value>
   </data>
   <data name="TariffPerYear3" xml:space="preserve">
-    <value>3 year</value>
+    <value>de 3 años</value>
   </data>
   <data name="TariffPerYearOnly" xml:space="preserve">
-    <value>The offer is available for annual subscribers only. </value>
+    <value>La oferta está disponible solo para suscriptores anuales.</value>
   </data>
   <data name="TariffPop" xml:space="preserve">
-    <value>Most Popular Subscription</value>
+    <value>Suscripción Más Popular</value>
   </data>
   <data name="TariffPortalLimitHeaer" xml:space="preserve">
-    <value>Adding a new portal will exceed the maximum number of portals allowed by your current pricing plan.</value>
+    <value>La adición de un portal nuevo excederá un número de portales máximo permitido por el plan de precios actual.</value>
   </data>
   <data name="TariffPriceOffer" xml:space="preserve">
-    <value>Save {0}</value>
+    <value>Guardar {0}</value>
   </data>
   <data name="TariffPricePer" xml:space="preserve">
-    <value>{0} per user/mo</value>
+    <value>{0} por usuario/mes</value>
   </data>
   <data name="TariffRequestBtn" xml:space="preserve">
-    <value>Send your request</value>
+    <value>Enviar su solicitud</value>
   </data>
   <data name="TariffRequestContent" xml:space="preserve">
-    <value>Request contents</value>
+    <value>Solicitar contenidos</value>
   </data>
   <data name="TariffRequestContentHolder" xml:space="preserve">
-    <value>Please describe your request details here</value>
+    <value>Por favor describa los detalles de su solicitud aquí</value>
   </data>
   <data name="TariffRequestHeader" xml:space="preserve">
-    <value>Please type your message here</value>
+    <value>Por favor escriba su mensaje aquí</value>
   </data>
   <data name="TariffStorageLimitHeader" xml:space="preserve">
-    <value>The portal storage space is exceeded</value>
+    <value>El espacio de almacenamiento de portal está superado</value>
   </data>
   <data name="TariffStorageLimitReason" xml:space="preserve">
-    <value>Please delete all the outdated content from the portal or change the current pricing plan to one with larger storage space.</value>
+    <value>Por favor, borre todo el contenido obsoleto del portal o cambie el plan de precios actual a uno con espacio de almacenamiento más grande.</value>
   </data>
   <data name="TariffStorageLimitTitle" xml:space="preserve">
-    <value>Not enough free storage space</value>
+    <value>No hay bastante espacio de almacenamiento libre</value>
   </data>
   <data name="TariffUpdateWithoutLicense" xml:space="preserve">
-    <value>You are using ONLYOFFICE™ Enterprise Edition. {0}The current installation has been updated without a proper license provided.{1}{2} Please upload the updated license to continue using ONLYOFFICE Enterprise Edition.</value>
+    <value>Usted está usando ONLYOFFICE™ Enterprise Edition. {0}La instalación actual ha sido actualizada sin una licencia adecuada proporcionada.{1}{2}Por favor, cargue la licencia actualizada para seguir usando  ONLYOFFICE Enterprise Edition.</value>
   </data>
   <data name="TariffUserChoose" xml:space="preserve">
-    <value>Choose the number of your teammates</value>
+    <value>Elija el número de sus compañeros de equipo</value>
   </data>
   <data name="TariffUserChooseQuestion" xml:space="preserve">
-    <value>How many users do you need?</value>
+    <value>¿Cuántos usuarios necesita?</value>
   </data>
   <data name="TariffUserDescr" xml:space="preserve">
-    <value>The plan that fits your team is {0}{2} - {3} active users{7} + {4}{1} Disk Storage</value>
+    <value>El plan que se adapta a su equipo es {0}{2} - {3} usuarios activos{7} + {4}{1} de almacenamiento en disco</value>
   </data>
   <data name="TariffUserLimitHeader" xml:space="preserve">
-    <value>Cannot add new users</value>
+    <value>Es imposible añadir usuarios nuevos</value>
   </data>
   <data name="TariffUserLimitReason" xml:space="preserve">
-    <value>Adding new users will exceed the maximum number of portal members allowed by your current pricing plan.</value>
+    <value>Adición de usuarios nuevos superará el número máximo de usuarios del portal permitido según su plan de precios. </value>
   </data>
   <data name="TariffUserLimitTitle" xml:space="preserve">
-    <value>Adding new users</value>
+    <value>Adición de usuarios nuevos</value>
   </data>
   <data name="TariffUserRequestDescr" xml:space="preserve">
-    <value>The pricing plans with more than {0} active users{1} are available upon request only.</value>
+    <value>Los planes de precios con más de {0} usuarios activos{1} están disponibles solo bajo solicitud.</value>
   </data>
   <data name="TariffUserWarnDescr" xml:space="preserve">
-    <value>You cannot downgrade a pricing plan.</value>
+    <value>No se puede rebajar un plan de precios.</value>
   </data>
   <data name="TariffUserWarnRead" xml:space="preserve">
-    <value>read more</value>
+    <value>Más información</value>
   </data>
   <data name="Task" xml:space="preserve">
-    <value>Task</value>
+    <value>Tarea</value>
   </data>
   <data name="TaskCreatedText" xml:space="preserve">
-    <value>created new task in Projects</value>
+    <value>una tarea nueva ha sido creada en Proyectos</value>
   </data>
   <data name="TfaAppAuthDescription" xml:space="preserve">
-    <value>Enter 6-digit generated code from your application. If you don't have access to your phone you can use your backup codes.</value>
+    <value>Introduzca el código de seis dígitos generado por su aplicación. Si no tiene acceso a su teléfono, Usted puede usar sus códigos de respaldo.</value>
   </data>
   <data name="TfaAppCaption" xml:space="preserve">
-    <value>Configure your authenticator application</value>
+    <value>Configure su aplicación de autenticación</value>
   </data>
   <data name="TfaAppConnctButton" xml:space="preserve">
-    <value>Connect app</value>
+    <value>Conectar aplicación</value>
   </data>
   <data name="TfaAppDescription" xml:space="preserve">
-    <value>The two-factor authentication is enabled to provide additional portal security. Configure your authenticator application to continue work on the portal. For example you could use {0} for {1} and {2} or {3} for {4}.</value>
+    <value>Autenticación de dos factores es activada para proporcionar la seguridad de portal adicional. Para seguir trabajando en el portal configure su aplicación de autenticación. Por ejemplo, Usted puede usar {0} para {1} y {2} o {3} para {4}.</value>
   </data>
   <data name="TfaAppHowTo" xml:space="preserve">
-    <value>To connect your apllication scan the QR code or manually enter your secret key {0} then enter 6-digit code from your application in the field below.</value>
+    <value>Para conectar su aplicación escanee el código QR o introduzca su clave secreta {0} manualmente, después introduzca el código de seis dígitos de su aplicación en el campo de abajo.</value>
   </data>
   <data name="Time" xml:space="preserve">
-    <value>Time</value>
+    <value>Tiempo</value>
   </data>
   <data name="TimeDistance" xml:space="preserve">
-    <value>Period</value>
+    <value>Periodo</value>
   </data>
   <data name="TimePeriod" xml:space="preserve">
-    <value>Select time period</value>
+    <value>Seleccionar intervalo de tiempo</value>
   </data>
   <data name="TitleEditingFile" xml:space="preserve">
-    <value>It is currently being edited</value>
+    <value>Actualmente en proceso de edición</value>
   </data>
   <data name="To" xml:space="preserve">
-    <value>to</value>
+    <value>a</value>
   </data>
   <data name="Today" xml:space="preserve">
-    <value>Today</value>
+    <value>Hoy</value>
   </data>
   <data name="TodayAt" xml:space="preserve">
-    <value>Today at</value>
+    <value>Hoy a</value>
   </data>
   <data name="TooltipCreate" xml:space="preserve">
-    <value>You can create documents ({0}), spreadsheets ({1}), presentations ({2}) and download them to most popular formats.</value>
+    <value>Usted puede crear documentos ({0}), tablas ({1}), presentaciones ({2}) y descargarlos en formatos más populares. 
+</value>
   </data>
   <data name="TooltipEdit" xml:space="preserve">
-    <value>You can edit the following files: {0}.</value>
+    <value>Usted puede editar los archivos siguientes: {0}.</value>
   </data>
   <data name="TooltipOpen" xml:space="preserve">
-    <value>You can open the files with the following extentions: {0}.</value>
+    <value>Usted puede abrir los archivos con las extensiones siguientes: {0}.</value>
   </data>
   <data name="TooltipUpload" xml:space="preserve">
-    <value>You can upload any files you want to the Documents.</value>
+    <value>Usted puede subir todos los archivos que desea a los Documentos.</value>
   </data>
   <data name="Topic" xml:space="preserve">
-    <value>Topic</value>
+    <value>Tema</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>First Name</value>
+    <value>Nombre </value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
-    <value>Last Name</value>
+    <value>Apellido</value>
   </data>
   <data name="UpgradeButton" xml:space="preserve">
-    <value>Upgrade pricing plan</value>
+    <value>Cambiar su plan</value>
   </data>
   <data name="UploadFile" xml:space="preserve">
-    <value>Upload file</value>
+    <value>Subir archivo</value>
   </data>
   <data name="Variant" xml:space="preserve">
-    <value>Choice</value>
+    <value>Variante</value>
   </data>
   <data name="Version" xml:space="preserve">
     <value>ver.</value>
   </data>
   <data name="VoipCallsNotFound" xml:space="preserve">
-    <value>There is nothing to be displayed here</value>
+    <value>No hay nada que mostrar aquí</value>
   </data>
   <data name="VoipCallsNotFoundDescription" xml:space="preserve">
-    <value>There is nothing to be displayed here</value>
+    <value>No hay nada que mostrar aquí</value>
   </data>
   <data name="VoteButton" xml:space="preserve">
-    <value>Vote</value>
+    <value>Votar</value>
   </data>
   <data name="WhatsNew" xml:space="preserve">
-    <value>What's New</value>
+    <value>Qué hay de nuevo</value>
   </data>
   <data name="WriteComment" xml:space="preserve">
-    <value>Add comment</value>
+    <value>Añadir comentario</value>
   </data>
   <data name="Yesterday" xml:space="preserve">
-    <value>Yesterday</value>
+    <value>Ayer</value>
   </data>
   <data name="YesterdayAt" xml:space="preserve">
-    <value>Yesterday at</value>
+    <value>Ayer a</value>
   </data>
 </root>
