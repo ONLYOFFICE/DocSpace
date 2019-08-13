@@ -46,11 +46,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="PublicResources\NamingPeopleResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="PublicResources\WebPatternResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -71,10 +66,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UserControlsCommonResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="PublicResources\NamingPeopleResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>NamingPeopleResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebPatternResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>WebPatternResource.Designer.cs</LastGenOutput>
@@ -84,7 +75,37 @@
       <LastGenOutput>WebstudioNotifyPatternResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="PublicResources\NamingPeopleResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NamingPeopleResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.ru.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.de.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.es.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.fr.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\NamingPeopleResource.it.resx" >
+      <DependentUpon>NamingPeopleResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
   <ItemGroup>
     <Protobuf Include="protos\SmsKeyCacheKey.proto" />
     <Protobuf Include="protos\TenantLogoCacheItem.proto" />
