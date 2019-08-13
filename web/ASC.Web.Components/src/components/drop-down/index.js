@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react'
+import React, { memo } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import Scrollbar from '../scrollbar'
@@ -45,18 +45,21 @@ const Arrow = styled.div`
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
 `;
 
-const CustomScrollbars = ({ onScroll, forwardedRef, style, children }) => {
-  const refSetter = useCallback(scrollbarsRef => {
+class CustomScrollbars extends React.Component { 
+
+  refSetter = (scrollbarsRef, forwardedRef) => {
     if (scrollbarsRef) {
       forwardedRef(scrollbarsRef.view);
     } else {
       forwardedRef(null);
     }
-  }, [forwardedRef]);
+  };
 
+  render() {
+    const { onScroll, forwardedRef, style, children } = this.props;
   return (
     <Scrollbar
-      ref={refSetter}
+      ref={scrollbarsRef => this.refSetter.bind(this, scrollbarsRef, forwardedRef)}
       style={{ ...style, overflow: "hidden" }}
       onScroll={onScroll}
       stype="mediumBlack"
@@ -64,6 +67,7 @@ const CustomScrollbars = ({ onScroll, forwardedRef, style, children }) => {
       {children}
     </Scrollbar>
   );
+  };
 };
 
 const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
