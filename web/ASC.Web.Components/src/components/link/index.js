@@ -23,7 +23,7 @@ const colorCss = css`
 
 const hoveredCss = css`
   ${colorCss};
-  border-bottom: ${props => (props.type === 'action' ? '1px dotted;' : 'none')};
+  border-bottom: ${props => (props.type === 'action' ? '1px dashed;' : 'none')};
   text-decoration: ${props => (props.type === 'page' ? 'underline' : 'none')};
 `;
 
@@ -80,12 +80,11 @@ Link.propTypes = {
   isSemitransparent: PropTypes.bool,
   isTextOverflow: PropTypes.bool,
   onClick: PropTypes.func,
+  rel: PropTypes.string,
+  tabIndex: PropTypes.number,
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
-  text: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
-  tabIndex: PropTypes.number,
-  rel: PropTypes.string,
 };
 
 Link.defaultProps = {
@@ -96,9 +95,9 @@ Link.defaultProps = {
   isHovered: false,
   isSemitransparent: false,
   isTextOverflow: true,
-  type: "page",
+  rel: "noopener noreferrer",
   tabIndex: -1,
-  rel: "noopener noreferrer"
+  type: "page",
 };
 
 export default Link;
