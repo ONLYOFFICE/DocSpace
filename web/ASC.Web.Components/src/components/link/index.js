@@ -54,7 +54,7 @@ const Link = props => {
     isTextOverflow
   } = props;
 
-  console.log("Link render", props);
+  //console.log("Link render", props);
 
   return (
     <StyledLink {...props}>

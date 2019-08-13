@@ -154,7 +154,7 @@ class GroupButton extends React.PureComponent {
   }
 
   render() {
-    console.log("GroupButton render");
+    //console.log("GroupButton render");
     const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked } = this.props;
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;

@@ -10,7 +10,7 @@ const StyledSectionBody = styled.div`
 `;
 
 const SectionBody = React.memo(props => {
-  console.log("PageLayout SectionBody render");
+  //console.log("PageLayout SectionBody render");
   const { children, withScroll } = props;
 
   return (

@@ -6,7 +6,7 @@ const StyledSectionFilter = styled.div`
 `;
 
 const SectionFilter = React.memo(props => { 
-  console.log("PageLayout SectionFilter render");
+  //console.log("PageLayout SectionFilter render");
   return (<StyledSectionFilter {...props}/>); 
 });
 

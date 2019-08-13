@@ -43,7 +43,7 @@ class Article extends React.Component {
   }
 
   render() {
-    console.log("PageLayout Article render");
+    //console.log("PageLayout Article render");
     return (
       <StyledArticle {...this.props} />
     );

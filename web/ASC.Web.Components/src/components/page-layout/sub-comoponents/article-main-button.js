@@ -6,7 +6,7 @@ const StyledArticleMainButton = styled.div`
 `;
 
 const ArticleMainButton = React.memo(props => {
-  console.log("PageLayout ArticleMainButton render");
+  //console.log("PageLayout ArticleMainButton render");
   return (<StyledArticleMainButton {...props} />);
 });
 

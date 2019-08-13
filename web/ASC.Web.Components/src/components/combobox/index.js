@@ -175,7 +175,7 @@ class ComboBox extends React.PureComponent {
   }
 
   render() {
-    console.log("ComboBox render");
+    //console.log("ComboBox render");
 
     const { dropDownMaxHeight, isDisabled, directionX, directionY, scaled, children } = this.props;
     const { boxLabel, boxIcon, isOpen, options } = this.state;

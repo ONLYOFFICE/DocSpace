@@ -20,7 +20,7 @@ const StyledHeader = styled.header`
 `;
 
 const Header = React.memo(props => {
-  console.log("Header render");
+  //console.log("Header render");
   return (
   <StyledHeader>
     <NavItem
