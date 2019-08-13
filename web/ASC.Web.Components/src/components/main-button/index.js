@@ -164,7 +164,7 @@ class MainButton extends React.PureComponent {
   };
 
   render() {
-    console.log("MainButton render");
+    //console.log("MainButton render");
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>

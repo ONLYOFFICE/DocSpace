@@ -30,7 +30,7 @@ const StyledArticlePinPanel = styled.div`
 `;
 
 const ArticlePinPanel = React.memo(props => { 
-  console.log("PageLayout ArticlePinPanel render");
+  //console.log("PageLayout ArticlePinPanel render");
   const { pinned, pinText, onPin, unpinText, onUnpin } = props;
 
   return (

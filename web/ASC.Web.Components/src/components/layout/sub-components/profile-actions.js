@@ -68,7 +68,7 @@ class ProfileActions extends React.PureComponent {
   }
 
   render() {
-    console.log("Layout sub-component ProfileActions render");
+    //console.log("Layout sub-component ProfileActions render");
     return (
       <div ref={this.ref}>
         <Avatar

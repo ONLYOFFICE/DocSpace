@@ -16,7 +16,7 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo(props => { 
-  console.log("Main render");
+  //console.log("Main render");
   return (<StyledMain {...props}/>); 
 });
 

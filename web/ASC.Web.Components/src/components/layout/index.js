@@ -139,7 +139,7 @@ class Layout extends React.Component {
   };
 
   render() {
-    console.log("Layout render");
+    //console.log("Layout render");
     
     return (
       <>

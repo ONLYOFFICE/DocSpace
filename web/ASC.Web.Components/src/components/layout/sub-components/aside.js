@@ -17,7 +17,7 @@ const StyledAside = styled.aside`
 `;
 
 const Aside = React.memo(props => { 
-  console.log("Aside render");
+  //console.log("Aside render");
   const { visible, children } = props;
 
   return (
