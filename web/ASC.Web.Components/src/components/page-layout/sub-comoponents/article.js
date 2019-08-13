@@ -38,9 +38,9 @@ const StyledArticle = styled.article`
 `;
 
 class Article extends React.Component {
-  shouldComponentUpdate() {
+  /*shouldComponentUpdate() {
     return false;
-  }
+  }*/
 
   render() {
     //console.log("PageLayout Article render");

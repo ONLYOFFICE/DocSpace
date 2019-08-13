@@ -23,8 +23,8 @@ const colorCss = css`
 
 const hoveredCss = css`
   ${colorCss};
-  border-bottom: ${props => (props.type === "page" ? "1px solid" : "1px dashed")};
-  text-decoration: none;
+  border-bottom: ${props => (props.type === 'action' ? '1px dotted;' : 'none')};
+  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'none')};
 `;
 
 const StyledLink = styled(SimpleLink)`
@@ -33,6 +33,7 @@ const StyledLink = styled(SimpleLink)`
   cursor: pointer;
   opacity: ${props => props.isSemitransparent && "0.5"};
 
+  line-height: calc(100% + 6px);
   ${colorCss};
 
   &:hover {
@@ -49,8 +50,6 @@ const Link = props => {
     title,
     fontSize,
     color,
-    href,
-    onClick,
     isTextOverflow
   } = props;
 
@@ -85,7 +84,7 @@ Link.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
-  tabindex: PropTypes.number,
+  tabIndex: PropTypes.number,
   rel: PropTypes.string,
 };
 
@@ -98,7 +97,7 @@ Link.defaultProps = {
   isSemitransparent: false,
   isTextOverflow: true,
   type: "page",
-  tabindex: -1,
+  tabIndex: -1,
   rel: "noopener noreferrer"
 };
 
