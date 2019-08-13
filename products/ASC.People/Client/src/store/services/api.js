@@ -26,6 +26,12 @@ export function getModulesList() {
         });
 };
 
+export function getSettings() {
+    return IS_FAKE 
+        ? fakeApi.getSettings() 
+        : axios.get(`${API_URL}/settings.json`);
+};
+
 export function getUser(userId) {
     return IS_FAKE ? fakeApi.getUser() :  axios.get(`${API_URL}/people/${userId || "@self"}.json`);
 };

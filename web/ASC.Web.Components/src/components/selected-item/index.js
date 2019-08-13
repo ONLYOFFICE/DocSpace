@@ -44,7 +44,7 @@ const SelectedItem = (props) => {
     const {isDisabled, text, onClose } = props;
     const colorProps = isDisabled ? {color: "#D0D5DA"} : {};
  
-      console.log("SelectedItem render");
+      //console.log("SelectedItem render");
       return (
         <StyledSelectedItem {...props}>
             <StyledSelectedTextBox>

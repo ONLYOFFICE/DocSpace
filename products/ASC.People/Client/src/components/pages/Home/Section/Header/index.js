@@ -1,5 +1,7 @@
 import React from 'react';
-import { GroupButtonsMenu, DropDownItem, Text, toastr } from 'asc-web-components';
+import { GroupButtonsMenu, DropDownItem, Text, toastr, ContextMenuButton } from 'asc-web-components';
+import { connect } from 'react-redux';
+import { getSelectedGroup } from '../../../../../store/people/selectors';
 
 const getPeopleItems = (onSelect) => [
     {
@@ -45,13 +47,34 @@ const getPeopleItems = (onSelect) => [
     }
   ];
 
+  const contextOptions = () => {
+    return [
+      {
+        key: "edit-group",
+        label: "Edit",
+        onClick: toastr.success.bind(this, "Edit group action")
+      },
+      {
+        key: "delete-group",
+        label: "Delete",
+        onClick: toastr.success.bind(this, "Delete group action")
+      }
+    ];
+  };
+
+  const wrapperStyle = {
+    display: "flex",
+    alignItems: "center"
+  };
+
 const SectionHeaderContent = React.memo(({
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
     onCheck,
     onSelect,
-    onClose
+    onClose,
+    group
   }) => {
     console.log("SectionHeaderContent render");
     const menuItems = getPeopleItems(onSelect);
@@ -71,9 +94,27 @@ const SectionHeaderContent = React.memo(({
         />
       </div>
     ) : (
-      <Text.ContentHeader>People</Text.ContentHeader>
+      group 
+      ? <div style={wrapperStyle}>
+      <Text.ContentHeader>{group.name}</Text.ContentHeader>
+      <ContextMenuButton 
+        directionX='right' 
+        title='Actions' 
+        iconName='VerticalDotsIcon' 
+        size={16} 
+        color='#A3A9AE' 
+        getData={contextOptions}
+        isDisabled={false}/>
+      </div>
+      : <Text.ContentHeader>People</Text.ContentHeader>
     )
     );
   });
 
-export default SectionHeaderContent;
+  const mapStateToProps = (state) => {
+    return {
+      group: getSelectedGroup(state.people.groups, state.people.selectedGroup)
+    }
+  }
+
+export default connect(mapStateToProps)(SectionHeaderContent);

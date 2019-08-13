@@ -5,7 +5,7 @@ import { Icons } from '../icons';
 
 const StyledOuter = styled.div`
     width: ${props => props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
-    cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+    cursor: ${props => props.isDisabled || !props.isClickable ? 'default' : 'pointer'};
     line-height: 0;
 `;
 class IconButton extends React.Component{
@@ -77,7 +77,12 @@ class IconButton extends React.Component{
             for (let propsKey in this.props) {
                 if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
                   this.isNeedUpdate = true;
-                  break;
+                  if(propsKey == "iconName"){
+                    this.setState({
+                        currentIconName: nextProps[propsKey]
+                    });
+                    break;
+                  }
                 }
             }
             for (let stateKey in this.state) {
@@ -98,11 +103,13 @@ class IconButton extends React.Component{
             <StyledOuter 
                 size={this.props.size} 
                 isDisabled={this.props.isDisabled} 
-    
+
                 onMouseEnter={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
+
+                isClickable={typeof this.props.onClick === 'function'}
             >
                 {React.createElement(Icons[this.state.currentIconName], {size: "scale", color: this.state.currentIconColor, isfill: this.props.isFill})}
             </StyledOuter>

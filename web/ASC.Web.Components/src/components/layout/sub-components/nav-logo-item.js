@@ -12,7 +12,7 @@ const LogoItem = styled.div`
 `;
 
 const NavLogoItem = React.memo(props => {
-  console.log("NavLogoItem render");
+  //console.log("NavLogoItem render");
   const navLogoIconStyle = {
     display: props.opened ? 'none' : 'block'
   };

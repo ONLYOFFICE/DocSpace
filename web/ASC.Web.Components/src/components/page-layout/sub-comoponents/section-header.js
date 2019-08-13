@@ -7,7 +7,7 @@ const StyledSectionHeader = styled.div`
 `;
 
 const SectionHeader = React.memo(props => {
-  console.log("PageLayout SectionHeader render");
+  //console.log("PageLayout SectionHeader render");
   return (<StyledSectionHeader {...props} />);
 });
 

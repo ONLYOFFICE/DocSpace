@@ -9,7 +9,7 @@ const StyledArticleBody = styled.div`
 `;
 
 const ArticleBody = React.memo(props => { 
-  console.log("PageLayout ArticleBody render");
+  //console.log("PageLayout ArticleBody render");
   const { children } = props;
 
   return (

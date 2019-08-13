@@ -27,11 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
+using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -186,7 +185,8 @@ namespace ASC.Web.Studio.Core
 
         public static string WebApiBaseUrl
         {
-            get {
+            get
+            {
                 return VirtualPathUtility.ToAbsolute(GetAppSettings("api.url", "~/api/2.0/"));
             }
         }
@@ -335,6 +335,30 @@ namespace ASC.Web.Studio.Core
             private set;
         }
 
+        public static string RecaptchaPublicKey
+        {
+            get;
+            private set;
+        }
+
+        public static string RecaptchaPrivateKey
+        {
+            get;
+            private set;
+        }
+
+        public static string RecaptchaVerifyUrl
+        {
+            get;
+            private set;
+        }
+
+        public static int LoginThreshold
+        {
+            get;
+            private set;
+        }
+
         static SetupInfo()
         {
             Refresh();
@@ -382,6 +406,13 @@ namespace ASC.Web.Studio.Core
 
             SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
             web_autotest_secret_email = (ConfigurationManager.AppSettings["web.autotest.secret-email"] ?? "").Trim();
+
+            RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
+            RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
+            RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.google.com/recaptcha/api/siteverify");
+            LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
+            if (LoginThreshold < 1) LoginThreshold = 5;
+
             web_display_mobapps_banner = (ConfigurationManager.AppSettings["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             DisplayPersonalBanners = GetAppSettings("web.display.personal.banners", false);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
@@ -393,7 +424,7 @@ namespace ASC.Web.Studio.Core
             SsoSamlLoginUrl = GetAppSettings("web.sso.saml.login.url", "");
             SsoSamlLogoutUrl = GetAppSettings("web.sso.saml.logout.url", "");
 
-            hideSettings = GetAppSettings("web.hide-settings", string.Empty).Split(new[] {',', ';', ' '}, StringSplitOptions.RemoveEmptyEntries);
+            hideSettings = GetAppSettings("web.hide-settings", string.Empty).Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             SmsTrial = GetAppSettings("core.sms.trial", false);
 

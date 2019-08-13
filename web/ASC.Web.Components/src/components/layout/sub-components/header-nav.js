@@ -20,7 +20,7 @@ const StyledNav = styled.nav`
 `;
 
 const HeaderNav = React.memo(props => {
-  console.log("HeaderNav render");
+  //console.log("HeaderNav render");
   return (
   <StyledNav>
     {

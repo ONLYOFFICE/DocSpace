@@ -26,6 +26,7 @@ storiesOf('Components|Text', module)
           isBold={boolean('isBold', false)}
           isItalic={boolean('isItalic', false)}
           isInline={boolean('isInline', false)}
+          display={text('display')}
         >
           {text('Text', 'Sample text Headline')}
         </Text.Body>

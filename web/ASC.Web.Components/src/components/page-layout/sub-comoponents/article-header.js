@@ -12,7 +12,7 @@ const StyledArticleHeader = styled.div`
 `;
 
 const ArticleHeader = React.memo(props => { 
-  console.log("PageLayout ArticleHeader render");
+  //console.log("PageLayout ArticleHeader render");
   return (<StyledArticleHeader {...props}/>) 
 });
 

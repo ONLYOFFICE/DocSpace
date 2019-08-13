@@ -30,17 +30,29 @@ namespace ASC.Resource.Manager
             var cultures = new List<string>();
             var projects = new List<ResFile>();
             var enabledSettings = new EnabledSettings();
+            Action<string, string, string, string, string> export = null;
 
             try
             {
-                var projectName = options.Project;
-                var moduleName = options.Module;
-                var exportPath = options.ExportPath;
-                var culture = options.Culture;
+                var (project, module, exportPath, culture, format, key) = options;
+
+                if(format == "json")
+                {
+                    export = JsonManager.Export;
+                }
+                else
+                {
+                    export = ResxManager.Export;
+                }
 
                 if (string.IsNullOrEmpty(exportPath))
                 {
                     exportPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                }
+
+                if (!Path.IsPathRooted(exportPath))
+                {
+                    exportPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), exportPath));
                 }
 
                 if (!Directory.Exists(exportPath))
@@ -53,7 +65,7 @@ namespace ASC.Resource.Manager
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
 
-                ExportWithProject(projectName, moduleName, culture, exportPath);
+                ExportWithProject(project, module, culture, exportPath, key);
 
                 Console.WriteLine("The data has been successfully exported!");
             }
@@ -62,47 +74,44 @@ namespace ASC.Resource.Manager
                 Console.WriteLine(err);
             }
 
-            void ExportWithProject(string projectName, string moduleName, string culture, string exportPath)
+            void ExportWithProject(string projectName, string moduleName, string culture, string exportPath, string key = null)
             {
                 if (!string.IsNullOrEmpty(projectName))
                 {
-                    ExportWithModule(projectName, moduleName, culture, exportPath);
+                    ExportWithModule(projectName, moduleName, culture, exportPath, key);
                 }
                 else
                 {
                     foreach (var p in projects.Select(r => r.ProjectName).Intersect(enabledSettings.Projects))
                     {
-                        ExportWithModule(p, moduleName, culture, exportPath);
+                        ExportWithModule(p, moduleName, culture, exportPath, key);
                     }
                 }
             }
 
-            void ExportWithModule(string projectName, string moduleName, string culture, string exportPath)
+            void ExportWithModule(string projectName, string moduleName, string culture, string exportPath, string key = null)
             {
                 if (!string.IsNullOrEmpty(moduleName))
                 {
-                    ExportWithCulture(projectName, moduleName, culture, exportPath);
+                    ExportWithCulture(projectName, moduleName, culture, exportPath, key);
                 }
                 else
                 {
                     foreach (var m in projects.Where(r => r.ProjectName == projectName).Select(r => r.ModuleName))
                     {
-                        ExportWithCulture(projectName, m, culture, exportPath);
+                        ExportWithCulture(projectName, m, culture, exportPath, key);
                     }
                 }
             }
-            void ExportWithCulture(string projectName, string moduleName, string culture, string exportPath)
+            void ExportWithCulture(string projectName, string moduleName, string culture, string exportPath, string key = null)
             {
                 if (!string.IsNullOrEmpty(culture))
                 {
-                    JsonManager.ExportJson(projectName, moduleName, culture, exportPath);
+                    export(projectName, moduleName, culture, exportPath, key);
                 }
                 else
                 {
-                    foreach (var c in cultures)
-                    {
-                        JsonManager.ExportJson(projectName, moduleName, c, exportPath);
-                    }
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(projectName, moduleName, c, exportPath, key));
                 }
             }
         }

@@ -6,7 +6,7 @@ const StyledSectionPaging = styled.div`
 `;
 
 const SectionPaging = React.memo(props => {
-  console.log("PageLayout SectionPaging render");
+  //console.log("PageLayout SectionPaging render");
   return (<StyledSectionPaging {...props} />);
 });
 

@@ -23,13 +23,15 @@ It is a link with 2 types:
 | Props              | Type     | Required | Values                      | Default        | Description                                                       |
 | ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |
 | `type`             | `oneOf`  |    -     | action, page                | `page`        | Type of link                         |
-| `color`            | `oneOf`  |    -     | gray, black, blue| `black`  | Color of link in all states - hover, active, visited              |
+| `color`            | `string`  |    -     | -| `#333333`  | Color of link              |
 | `fontSize`           | `number`   |    -     | -                       | `13`        | Font size of link (in px)                        |
-| `href`           | `string`   |    -     | -                           | `undefined`        | Hyperlink, usually used in *page* type             |
+| `href`           | `string`   |    -     | -                           | `undefined`        | Used as HTML `href` property             |
 | `isBold`           | `bool`   |    -     | -                         | `false`        | Set font weight                          |
-| `title`           | `string`   |    -     | -                           | -        | Title of link                          |
+| `title`           | `string`   |    -     | -                           | -        | Used as HTML `title` property                  |
 | `target`           | `oneOf`   |    -     | _blank, _self, _parent, _top   | -    | The *target* attribute specifies where the linked document will open when the link is clicked.                          |                      |
 | `isTextOverflow`   | `bool`   |    -     | -                           | `true`        |Activate or deactivate *text-overflow* CSS property with ellipsis (' … ') value                           |
 | `isHovered`           | `bool`   |    -     | -                           | `false`        | Set hovered state and effects of link.
 | `isSemitransparent`           | `bool`   |    -     | -                           | `false`        | Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status        |    |
 | `onClick`           | `func`   |    -     | -                           | -        | What the link will trigger when clicked. Only for \'action\' type of link
+| `rel`           | `string`   |    -     | -                           | `noopener noreferrer`      | Used as HTML `rel` property
+| `tabIndex`           | `number`   |    -     | -                           | `-1`      | Used as HTML `tabindex` property

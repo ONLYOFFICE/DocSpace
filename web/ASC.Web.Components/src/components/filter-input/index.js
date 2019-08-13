@@ -129,16 +129,19 @@ class FilterInput extends React.Component {
         this.setState({ sortDirection: !this.state.sortDirection });
     }
     onChangeFilter(result) {
-        this.setState({ filterValue: result.filterValue });
-        this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+        this.setState({ 
+            searchText: result.inputValue,
+            filterValue: result.filterValue,
+        });
+        this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc", result.inputValue);
     }
     onSearch(result) {
         this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
     }
 
-    onFilter(filterValue, sortId, sortDirection) {
+    onFilter(filterValue, sortId, sortDirection, searchText) {
         let result = {
-            inputValue: this.state.searchText,
+            inputValue: searchText != undefined ? searchText : this.state.searchText,
             filterValue: filterValue,
             sortId: sortId,
             sortDirection: sortDirection

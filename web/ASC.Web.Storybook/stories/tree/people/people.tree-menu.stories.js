@@ -127,7 +127,10 @@ const TreeMenuStory = props => {
         onExpand={onExpand} 
         autoExpandParent={autoExpandParent}
         expandedKeys={expandedKeys}
-        
+
+        defaultExpandedKeys={['0-0']}
+        defaultSelectedKeys={['0-0-2']}
+
         onDragStart={(info) => onDragStart(info)}
         onDrop={(info) => onDrop(info)}
         onDragEnter={onDragEnter}

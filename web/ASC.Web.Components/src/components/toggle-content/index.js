@@ -31,7 +31,7 @@ const StyledText = styled(Text.Headline)`
   line-height: 26px;
   font-style: normal;
     &:hover{
-    border-bottom: 1px dotted;
+    border-bottom: 1px dashed;
   }
 `;
 

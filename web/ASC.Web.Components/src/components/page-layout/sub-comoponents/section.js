@@ -14,7 +14,7 @@ class Section extends React.Component {
     return false;
   }*/
   render() {
-    console.log("PageLayout Section render");
+    //console.log("PageLayout Section render");
     return (<StyledSection {...this.props} />);
   };
 };

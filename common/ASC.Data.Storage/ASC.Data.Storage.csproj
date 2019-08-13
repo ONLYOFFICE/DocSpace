@@ -14,14 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Api.Gax" Version="2.9.0" />
-    <PackageReference Include="Google.Api.Gax.Rest" Version="2.9.0" />
-    <PackageReference Include="Google.Apis" Version="1.40.2" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.40.2" />
-    <PackageReference Include="Google.Apis.Core" Version="1.40.2" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.40.2.1635" />
-    <PackageReference Include="Google.Cloud.Storage.V1" Version="2.4.0-beta02" />
-    <PackageReference Include="Grpc.Tools" Version="1.22.0">
+    <PackageReference Include="Google.Api.Gax" Version="2.10.0-beta02" />
+    <PackageReference Include="Google.Api.Gax.Rest" Version="2.10.0-beta02" />
+    <PackageReference Include="Google.Apis" Version="1.40.3" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.40.3" />
+    <PackageReference Include="Google.Apis.Core" Version="1.40.3" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.40.3.1635" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="2.4.0-beta03" />
+    <PackageReference Include="Grpc.Tools" Version="2.23.0-pre1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

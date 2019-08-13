@@ -41,7 +41,7 @@ const UserContent = ({user, history,settings }) => {
           {displayName && 
           <Link
             isSemitransparent={status === "pending"}
-            type="action"
+            type="page"
             title={displayName}
             isBold={true}
             fontSize={15}
@@ -141,7 +141,7 @@ const UserContent = ({user, history,settings }) => {
 
 function mapStateToProps(state) {
   return {
-    settings: state.settings
+    settings: state.auth.settings
   };
 }
 

@@ -79,6 +79,8 @@ class SearchInput extends React.Component  {
   constructor(props) {
     super(props);
 
+    this.input = React.createRef();
+
     function getDefaultFilterData(){
       let filterData = props.getFilterData();
       let filterItems = [];
@@ -113,10 +115,12 @@ class SearchInput extends React.Component  {
 
     this.onClickDropDownItem = this.onClickDropDownItem.bind(this);
     this.getData = this.getData.bind(this);
-    this.onSearchClick = this.onSearchClick.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
     this.onDeleteFilterItem = this.onDeleteFilterItem.bind(this);
     this.getFilterItems = this.getFilterItems.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+
     this.resize = this.resize.bind(this);
 }
 
@@ -145,7 +149,7 @@ class SearchInput extends React.Component  {
     })
     if(typeof this.props.onChangeFilter === "function")
       this.props.onChangeFilter({
-        inputValue: this.props.value,
+        inputValue: this.state.inputValue,
         filterValue: this.props.isNeedFilter ? 
                       clone : 
                       null
@@ -164,16 +168,18 @@ class SearchInput extends React.Component  {
     return d;
   }
   
-  onSearchClick(e, value){
-    let searchResult = {
-      inputValue: value,
-      filterValue: this.props.isNeedFilter ? this.state.filterItems.map(function(item){
-                      item.key = item.key.replace(item.group + "_",'');
-                      return item;
-                    }) : null
-    };
-    if(typeof this.props.onSearchClick === "function")
-      this.props.onSearchClick(searchResult);
+  clearFilter(){
+    if(this.input.current) this.input.current.clearInput();
+    this.setState({
+      inputValue: '',
+      filterItems: [],
+      openFilterItems: [],
+      hideFilterItems: []
+    });
+    this.props.onChangeFilter({
+      inputValue: '',
+      filterValue: []
+    });
   }
 
   onDeleteFilterItem(e , key){
@@ -187,7 +193,7 @@ class SearchInput extends React.Component  {
     
     if(typeof this.props.onChangeFilter === "function")
       this.props.onChangeFilter({
-        inputValue: this.props.value,
+        inputValue: this.state.inputValue,
         filterValue: this.props.isNeedFilter ? 
                     curentFilterItems.map(function(item){
                       item.key = item.key.replace(item.group + "_",'');
@@ -283,6 +289,13 @@ class SearchInput extends React.Component  {
     this.isUpdateFilter = true;
   }
 
+  onInputChange(e){
+    this.setState({
+      inputValue: e.target.value
+    });
+    this.props.onChange(e)
+  }
+
   resize(){
     this.isResizeUpdate = true;
     this.isUpdateFilter = false;
@@ -353,7 +366,7 @@ class SearchInput extends React.Component  {
             isNeedUpdate = true;
           }else{
             for(let i = 0; i < this.state[key].length; i++){
-              if(nextState[key].find(x => (x.key === this.state[key][i].key && x.group === this.state[key][i].group)) == undefined){
+              if(typeof nextState[key] == "object" && nextState[key].find(x => (x.key === this.state[key][i].key && x.group === this.state[key][i].group)) == undefined){
                 isNeedUpdate = true;
                 break;
               }
@@ -380,14 +393,23 @@ class SearchInput extends React.Component  {
     //console.log("Search input render");
     let _this = this;
     let iconSize = 32;
+    let clearButtonSize = 15;
     switch (this.props.size) {
       case 'base':
-        iconSize = 32
+        iconSize = 32;
+        clearButtonSize = !!this.state.inputValue || this.state.filterItems.length > 0 ? 12 : 15;
         break;
       case 'middle':
+        iconSize = 41;
+        clearButtonSize = !!this.state.inputValue || this.state.filterItems.length > 0 ? 16 : 18;
+        break;
       case 'big':
+        iconSize = 41;
+        clearButtonSize = !!this.state.inputValue || this.state.filterItems.length > 0 ? 19 : 21;
+        break;
       case 'huge':
-        iconSize = 41
+        iconSize = 41;
+        clearButtonSize = !!this.state.inputValue || this.state.filterItems.length > 0 ? 22 : 24;
         break;
       default:
         break;
@@ -396,17 +418,19 @@ class SearchInput extends React.Component  {
     return (
       <StyledSearchInput ref={this.searchWrapper}> 
         <InputBlock 
+          ref={this.input}
           id={this.props.id}
           isDisabled={this.props.isDisabled}
-          iconName={"SearchIcon"}
+          iconName={!!this.state.inputValue || this.state.filterItems.length > 0 ? "CrossIcon" : "SearchIcon"}
           isIconFill={true}
+          iconSize={clearButtonSize}
           iconColor={"#A3A9AE"}
-          onIconClick={this.onSearchClick}
+          onIconClick={!!this.state.inputValue || this.state.filterItems.length > 0 ? this.clearFilter : undefined }
           size={this.props.size}
           scale={true}
-          value={this.props.value}
+          value={this.state.inputValue}
           placeholder={this.props.placeholder}
-          onChange={this.props.onChange}
+          onChange={this.onInputChange}
         >
             { this.props.isNeedFilter && 
               <StyledFilterBlock ref={this.filterWrapper}>

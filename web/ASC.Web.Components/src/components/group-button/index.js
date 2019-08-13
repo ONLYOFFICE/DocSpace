@@ -154,10 +154,11 @@ class GroupButton extends React.PureComponent {
   }
 
   render() {
-    console.log("GroupButton render");
-    const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked } = this.props;
+    //console.log("GroupButton render");
+    const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked, dropDownMaxHeight } = this.props;
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
+    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight} : {};
 
     return (
       <StyledGroupButton ref={this.ref}>
@@ -175,7 +176,7 @@ class GroupButton extends React.PureComponent {
               {itemLabel}
               <Caret size="small" color={color} />
             </StyledDropdownToggle>
-            <DropDown isOpen={this.state.isOpen}>
+            <DropDown {...dropDownMaxHeightProp} isOpen={this.state.isOpen}>
               {React.Children.map(children, (child) =>
                 <DropDownItem {...child.props} onClick={this.dropDownItemClick.bind(this, child)} />)}
             </DropDown>
