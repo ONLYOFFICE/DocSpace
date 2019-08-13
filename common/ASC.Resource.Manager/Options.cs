@@ -19,7 +19,10 @@ namespace ASC.Resource.Manager
         [Option('f', "format", Required = false, HelpText = "Format", Default = "xml")]
         public string Format { get; set; }
 
-        public void Deconstruct(out string project, out string module, out string exportPath, out string culture, out string format) 
-            => (project, module, exportPath, culture, format) = (Project, Module, ExportPath, Culture, Format);
+        [Option('k', "key", Required = false, HelpText = "Key", Default = "")]
+        public string Key { get; set; }
+
+        public void Deconstruct(out string project, out string module, out string exportPath, out string culture, out string format, out string key) 
+            => (project, module, exportPath, culture, format, key) = (Project, Module, ExportPath, Culture, Format, Key);
     }
 }

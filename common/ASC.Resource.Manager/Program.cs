@@ -34,7 +34,7 @@ namespace ASC.Resource.Manager
 
             try
             {
-                var (project, module, exportPath, culture, format) = options;
+                var (project, module, exportPath, culture, format, key) = options;
 
                 if(format == "json")
                 {
@@ -65,7 +65,7 @@ namespace ASC.Resource.Manager
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
 
-                ExportWithProject(project, module, culture, exportPath);
+                ExportWithProject(project, module, culture, exportPath, key);
 
                 Console.WriteLine("The data has been successfully exported!");
             }

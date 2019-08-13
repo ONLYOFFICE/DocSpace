@@ -60,7 +60,7 @@ namespace ASC.Resource.Manager
                 var fileName = firstWord == null
                     ? module
                     : Path.GetFileNameWithoutExtension(firstWord.ResFile.FileName);
-                var zipFileName = Path.Combine(exportPath, project, module, $"{fileName}{(language == "Neutral" ? string.Empty : "." + language)}.resx");
+                var zipFileName = Path.Combine(exportPath, $"{fileName}{(language == "Neutral" ? string.Empty : "." + language)}.resx");
                 var dirName = Path.GetDirectoryName(zipFileName);
                 if (!Directory.Exists(dirName))
                 {
@@ -71,6 +71,8 @@ namespace ASC.Resource.Manager
 
                 if (!string.IsNullOrEmpty(key))
                 {
+                    var keys = key.Split(",");
+
                     if (File.Exists(zipFileName))
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
@@ -80,9 +82,16 @@ namespace ASC.Resource.Manager
                         }
                     }
 
-                    if(!toAdd.Any(r=> r.Title == key))
+                    foreach (var k in keys)
                     {
-                        toAdd.Add(fileWords.FirstOrDefault(r => r.Title == key));
+                        if (!toAdd.Any(r => r.Title == k))
+                        {
+                            var exists = fileWords.FirstOrDefault(r => r.Title == k);
+                            if (exists != null)
+                            {
+                                toAdd.Add(exists);
+                            }
+                        }
                     }
                 }
                 else
@@ -92,9 +101,9 @@ namespace ASC.Resource.Manager
 
                 using var resXResourceWriter = new ResXResourceWriter(zipFileName);
 
-                foreach (var word in toAdd.Where(r=> r != null).OrderBy(x => x.Title))
+                foreach (var word in toAdd.Where(r=> r != null && !string.IsNullOrEmpty(r.ValueTo)).OrderBy(x => x.Title))
                 {
-                    resXResourceWriter.AddResource(word.Title, word.ValueFrom);
+                    resXResourceWriter.AddResource(word.Title, word.ValueTo);
                 }
 
                 resXResourceWriter.Generate();
