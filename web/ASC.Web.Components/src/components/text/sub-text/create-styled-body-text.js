@@ -13,7 +13,9 @@ export default function createStyledBodyText() {
    ${props => props.isItalic == true && 'font-style: italic'};
    color: ${props => props.color};
    ${props => props.backgroundColor && 'background-color: ' + props.backgroundColor + ";"}
-   ${props => props.isInline == true && 'display: inline-block;'}
+   ${props => props.isInline == true
+         ? 'display: inline-block;'
+         : props.display && 'display:' + props.display + ';'}
    text-align: left;
    ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;')}
    margin: 0;
@@ -38,7 +40,8 @@ export default function createStyledBodyText() {
       truncate: PropTypes.bool,
       isBold: PropTypes.bool,
       isInline: PropTypes.bool,
-      isItalic: PropTypes.bool
+      isItalic: PropTypes.bool,
+      display: PropTypes.string
    };
 
    Text.defaultProps = {

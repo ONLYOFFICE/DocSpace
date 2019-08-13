@@ -16,13 +16,13 @@ storiesOf('Components|Label', module)
         <Label
           isRequired={boolean('isRequired', false)}
           error={boolean('error', false)}
-          isInline={boolean('isInline', true)}
+          isInline={boolean('isInline', false)}
           title={text('title', 'Fill the first name field')}
           truncate={boolean('truncate', false)}
           htmlFor={text('htmlFor')}
-        >
-          {text('Text', 'First name:')}
-        </Label>
+          text={text('text', 'First name:')}
+          display={text('display')}
+        />
       </Section>
     )
   });

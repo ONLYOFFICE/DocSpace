@@ -51,11 +51,13 @@ const getItems = data => {
 };
 
 const PeopleTreeMenu = props => {
-  const { data, onGroupSelect } = props;
+  const { data, selectGroup, defaultSelectedKeys } = props;
+
+  console.log("PeopleTreeMenu", props);
 
   const onSelect = useCallback(data => {
-    onGroupSelect(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
-  }, [onGroupSelect])
+    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+  }, [selectGroup])
 
   const switcherIcon = obj => {
     if (obj.isLeaf) {
@@ -82,13 +84,14 @@ const PeopleTreeMenu = props => {
       defaultExpandAll={true}
       switcherIcon={switcherIcon}
       onSelect={onSelect}
+      defaultSelectedKeys={defaultSelectedKeys}
     >
       {getItems(data)}
     </TreeMenu>
   );
 };
 
-const ArticleBodyContent = ({ treeData, selectGroup }) => <PeopleTreeMenu data={treeData} onGroupSelect={selectGroup} />;
+const ArticleBodyContent = props => <PeopleTreeMenu {...props} />;
 
 const getTreeGroups = (groups) => {
   const treeData = [
@@ -109,7 +112,8 @@ const getTreeGroups = (groups) => {
 
 function mapStateToProps(state) {
   return {
-    treeData: getTreeGroups(state.people.groups)
+    data: getTreeGroups(state.people.groups),
+    defaultSelectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
   };
 }
 

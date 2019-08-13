@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 import { Text } from '../text';
 
 const Label = (props) => {
-    const { isRequired, error, title, truncate, isInline, htmlFor} = props;
+    const { isRequired, error, title, truncate, isInline, htmlFor, text, display} = props;
     const errorProp = error ? {color: "#c30"} : {}
-    const displayProp = isInline ? {} : {display : 'block'}
 
-    console.log("Label render");
+    //console.log("Label render");
     return (
-        <Text.Body as='label' htmlFor={htmlFor}  style={displayProp} {...errorProp} fontWeight={600} truncate={truncate} title={title}>
-            {props.children} {isRequired && " *"}
+        <Text.Body as='label' htmlFor={htmlFor} isInline={isInline} display={display} {...errorProp} fontWeight={600} truncate={truncate} title={title}>
+            {text} {isRequired && " *"}
         </Text.Body>
     );
 }
@@ -21,13 +20,15 @@ Label.propTypes = {
     isInline: PropTypes.bool,
     title: PropTypes.string,
     truncate: PropTypes.bool,
-    htmlFor: PropTypes.string
+    htmlFor: PropTypes.string,
+    text: PropTypes.string,
+    display: PropTypes.string
 };
 
 Label.defaultProps = {
     isRequired: false,
     error: false,
-    isInline: true,
+    isInline: false,
     truncate: false
 };
 
