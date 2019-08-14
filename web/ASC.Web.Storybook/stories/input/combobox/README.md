@@ -37,13 +37,25 @@ const options = [
         key: 5,
         icon: 'CopyIcon',
         label: 'Option 5'
+    },
+    {
+        key: 6,
+        label: 'Option 6'
+    },
+    {
+        key: 7,
+        label: 'Option 7'
     }
 ];
 
 <ComboBox options={options} 
     isDisabled={false} 
-    selectedOption={25} 
+    selectedOption={{
+            key: 0,
+            label: 'Select'
+          }}
     dropDownMaxHeight='200px' 
+    noBorder={false}
     scale={true} 
     size='content' 
     onSelect={option => console.log('selected', option)}
@@ -56,9 +68,9 @@ const options = [
 | ---------------------- | ----------------- | :------: | ---------------------------- | ------- | -------------------------------------------- |
 | `options`              | `array`           |    ✅    | -                            | -       | Combo box options                            |
 | `isDisabled`           | `bool`            |    -     | -                            | `false` | Indicates that component is disabled         |
-| `selectedOption`       | `string`,`number` |    -     | -                            | `0`     | Index of option selected by default          |
+| `noBorder`             | `bool`            |    -     | -                            | `false` | Indicates that component is displayed without borders |
+| `selectedOption`       | `object`          |    -     | -                            | -       | Selected option                              |
 | `onSelect`             | `func`            |    -     | -                            | -       | Will be triggered whenever an ComboBox is selected option |
 | `dropDownMaxHeight`    | `string`          |    -     | -                            | -       | Height of Dropdown                           |
 | `scaled`               | `bool`            |    -     | -                            | `true`  | Indicates that component is scaled by parent |
 | `size`                 | `oneOf`           |    -     | `base`, `middle`, `big`, `huge`, `content` | `base`  | Select component width, one of default |
-| `emptyOptionsPlaceholder`| `string`        |    -     | - | `Select`| Label displayed in absence of options |

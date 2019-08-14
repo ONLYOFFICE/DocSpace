@@ -26,15 +26,20 @@ const StyledComboBox = styled.div`
   user-select: none;
 
   background: #FFFFFF;
-  border: 1px solid #D0D5DA;
-  border-radius: 3px;
 
-  ${props => props.isDisabled && `
+  ${props => !props.noBorder && `
+    border: 1px solid #D0D5DA;
+    border-radius: 3px;
+  `}
+  
+  ${props => props.isDisabled && !props.noBorder && `
     border-color: #ECEEF1;
     background: #F8F9F9;
   `}
 
-  height: 32px;
+  ${props => !props.noBorder && `
+    height: 32px;
+  `}
 
   :hover{
     border-color: ${state => state.isOpen ? '#2DA7DB' : '#A3A9AE'};
@@ -49,7 +54,9 @@ const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
+
+  height: ${props => props.noBorder ? `18px` : `30px`};
+
   margin-left: 8px;
 `;
 
@@ -72,16 +79,26 @@ font-size: 13px;
 white-space: nowrap;
 
 margin-right: 8px;
+
+${props => props.noBorder && `
+  line-height: none;
+
+  :hover{
+    border-bottom: 1px dashed;
+  }
+`};
 `;
 
 const StyledArrowIcon = styled.div`
+display: flex;
+align-self: start;
   width: 8px;
+  margin-top: ${props => props.noBorder ? `5px` : `12px`};
   margin-right: 8px;
   margin-left: auto;
 
-  ${state => state.isOpen && `
+  ${props => props.isOpen && `
     transform: scale(1, -1);
-    margin-top: 8px;
   `}
 `;
 
@@ -91,26 +108,19 @@ class ComboBox extends React.PureComponent {
 
     this.ref = React.createRef();
 
-    const selectedItem = this.getSelected();
-
     this.state = {
       isOpen: props.opened,
-      boxLabel: selectedItem && selectedItem.label,
-      boxIcon: selectedItem && selectedItem.icon,
-      options: props.options
+      selectedOption: props.selectedOption
     };
-
-    this.handleClick = this.handleClick.bind(this);
-    this.stopAction = this.stopAction.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.comboBoxClick = this.comboBoxClick.bind(this);
-    this.optionClick = this.optionClick.bind(this);
 
     if (props.opened)
       handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
+  handleClick = (e) =>
+    this.state.isOpen
+    && !this.ref.current.contains(e.target)
+    && this.toggle(false);
 
   stopAction = (e) => e.preventDefault();
 
@@ -118,69 +128,43 @@ class ComboBox extends React.PureComponent {
 
   comboBoxClick = (e) => {
     if (this.props.isDisabled || e.target.closest('.optionalBlock')) return;
-    
-    this.setState({
-      option: this.props.option,
-      isOpen: !this.state.isOpen
-    });
+    this.toggle(!this.state.isOpen);
   };
 
   optionClick = (option) => {
-    this.setState({
-      boxLabel: option.label,
-      boxIcon: option.icon,
-      isOpen: !this.state.isOpen
+    this.toggle(!this.state.isOpen);
+    this.setState({ 
+      isOpen: !this.state.isOpen,
+      selectedOption: option
     });
     this.props.onSelect && this.props.onSelect(option);
   };
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
-  }
-
-  getSelected = () => {
-    const selectedItem = this.props.options.find(x => x.key === this.props.selectedOption)
-      || this.props.options[0];
-
-    return selectedItem;
-  }
-
-  getSelectedLabel = () => {
-    const selectedItem = this.getSelected();
-
-    return selectedItem ? selectedItem.label : this.props.emptyOptionsPlaceholder;
-  }
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.opened !== prevProps.opened) {
-      this.toggle(this.props.opened);
+      handleAnyClick(this.props.opened, this.handleClick);
     }
 
     if (this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
     }
 
-    if (this.props.options.length !== prevProps.options.length) { //TODO: Move options from state
-      const label = this.getSelectedLabel();
-      this.setState({
-        options: this.props.options,
-        boxLabel: label
-      });
-    }
-
     if (this.props.selectedOption !== prevProps.selectedOption) {
-      const label = this.getSelectedLabel();
-      this.setState({ boxLabel: label });
+      this.setState({selectedOption: this.props.selectedOption});
     }
-  }
+  };
 
   render() {
-    //console.log("ComboBox render");
+    console.log("ComboBox render");
 
-    const { dropDownMaxHeight, isDisabled, directionX, directionY, scaled, children } = this.props;
-    const { boxLabel, boxIcon, isOpen, options } = this.state;
+    const { dropDownMaxHeight, isDisabled, directionX, directionY, scaled, children, options, noBorder } = this.props;
+    const { isOpen, selectedOption } = this.state;
 
-    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight} : {};
+    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
     const dropDownManualWidthProp = scaled ? { manualWidth: '100%' } : {};
     const boxIconColor = isDisabled ? '#D0D5DA' : '#333333';
     const arrowIconColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
@@ -189,17 +173,17 @@ class ComboBox extends React.PureComponent {
       <StyledComboBox ref={this.ref}
         {...this.props}
         {...this.state}
-        data={boxLabel}
+        data={selectedOption}
         onClick={this.comboBoxClick}
         onSelect={this.stopAction}
       >
-        <StyledComboButton>
+        <StyledComboButton noBorder={noBorder}>
           <StyledOptionalItem className='optionalBlock'>
             {children}
           </StyledOptionalItem>
-          {boxIcon &&
+          {selectedOption && selectedOption.icon &&
             <StyledIcon>
-              {React.createElement(Icons[boxIcon],
+              {React.createElement(Icons[selectedOption.icon],
                 {
                   size: 'scale',
                   color: boxIconColor,
@@ -208,10 +192,10 @@ class ComboBox extends React.PureComponent {
               }
             </StyledIcon>
           }
-          <StyledLabel>
-            {boxLabel}
+          <StyledLabel noBorder={noBorder}>
+            {selectedOption.label}
           </StyledLabel>
-          <StyledArrowIcon {...this.state}>
+          <StyledArrowIcon noBorder={noBorder} isOpen={this.state.isOpen}>
             {React.createElement(Icons['ExpanderDownIcon'],
               {
                 size: 'scale',
@@ -231,7 +215,7 @@ class ComboBox extends React.PureComponent {
         >
           {options.map((option) =>
             <DropDownItem {...option}
-              disabled={option.label === boxLabel}
+              disabled={option.label === selectedOption.label}
               onClick={this.optionClick.bind(this, option)}
             />
           )}
@@ -242,25 +226,20 @@ class ComboBox extends React.PureComponent {
 };
 
 ComboBox.propTypes = {
+  noBorder: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  withBorder: PropTypes.bool,
-  selectedOption: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  selectedOption: PropTypes.object,
   options: PropTypes.array,
   onSelect: PropTypes.func,
   dropDownMaxHeight: PropTypes.number,
-  emptyOptionsPlaceholder: PropTypes.string,
 
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
   scaled: PropTypes.bool,
 }
 
 ComboBox.defaultProps = {
+  noBorder: false,
   isDisabled: false,
-  withBorder: true,
-  emptyOptionsPlaceholder: 'Select',
   size: 'base',
   scaled: true
 }

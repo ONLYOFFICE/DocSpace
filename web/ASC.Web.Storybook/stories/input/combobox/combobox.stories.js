@@ -11,17 +11,6 @@ import Section from '../../../.storybook/decorators/section';
 const iconNames = Object.keys(Icons);
 const sizeOptions = ['base', 'middle', 'big', 'huge', 'content'];
 
-const appendOptions = (comboOptions, optionsCount) => {
-  let newOptions = comboOptions;
-  for (let i = 0; i <= optionsCount; i++) {
-    newOptions.push({
-      key: (i + 6),
-      label: 'Option ' + (i + 6)
-    })
-  }
-  return newOptions;
-};
-
 iconNames.push("NONE");
 
 storiesOf('Components|Input', module)
@@ -52,26 +41,25 @@ storiesOf('Components|Input', module)
         key: 5,
         icon: 'CopyIcon',
         label: 'Option 5'
+      },
+      {
+        key: 6,
+        label: 'Option 6'
+      },
+      {
+        key: 7,
+        label: 'Option 7'
       }
     ];
 
-    const optionsCount = number('Add options', 1,
-      {
-        range: true,
-        min: 1,
-        max: 100,
-        step: 1
-      }
-    );
-
     const needScrollDropDown = boolean('Need scroll dropdown', false);
     const dropDownMaxHeight = needScrollDropDown && number('dropDownMaxHeight', 200);
-    const optionsMultiSelect = options('Children',
+    const optionsMultiSelect = options('children',
       {
         button: 'button',
         icon: 'icon'
       },
-      ['icon'],
+      [],
       {
         display: 'multi-select',
       });
@@ -80,10 +68,10 @@ storiesOf('Components|Input', module)
     optionsMultiSelect.forEach(function (item, i) {
       switch (item) {
         case "button":
-          children.push(<Button label="OK" key={i} />);
+          children.push(<Button label="button" key={i} />);
           break;
         case "icon":
-          children.push(<Icons.SettingsIcon size="medium" key={i} />);
+          children.push(<Icons.NavLogoIcon size="medium" key={i} />);
           break;
         default:
           break;
@@ -93,9 +81,14 @@ storiesOf('Components|Input', module)
     return (
       <Section>
         <ComboBox
-          options={appendOptions(comboOptions, optionsCount)}
+          options={comboOptions}
           onSelect={option => action("Selected option")(option)}
+          selectedOption={{
+            key: 0,
+            label: 'Select'
+          }}
           isDisabled={boolean('isDisabled', false)}
+          noBorder={boolean('noBorder', false)}
           dropDownMaxHeight={dropDownMaxHeight}
           scaled={boolean('scaled', false)}
           size={select('size', sizeOptions, 'content')}
