@@ -1,0 +1,1876 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActionCreateBlog" xml:space="preserve">
+    <value>Создан блог в</value>
+  </data>
+  <data name="ActionCreateBookmark" xml:space="preserve">
+    <value>Создана закладка в</value>
+  </data>
+  <data name="ActionCreateCase" xml:space="preserve">
+    <value>Создано мероприятие CRM в</value>
+  </data>
+  <data name="ActionCreateComment" xml:space="preserve">
+    <value>Добавлен комментарий в</value>
+  </data>
+  <data name="ActionCreateContact" xml:space="preserve">
+    <value>Создан контакт CRM в</value>
+  </data>
+  <data name="ActionCreateDeal" xml:space="preserve">
+    <value>Создана сделка CRM в</value>
+  </data>
+  <data name="ActionCreateDiscussion" xml:space="preserve">
+    <value>Создано обсуждение в</value>
+  </data>
+  <data name="ActionCreateEvent" xml:space="preserve">
+    <value>Создано событие в</value>
+  </data>
+  <data name="ActionCreateFile" xml:space="preserve">
+    <value>Создан/загружен документ в</value>
+  </data>
+  <data name="ActionCreateFolder" xml:space="preserve">
+    <value>Создана папка в</value>
+  </data>
+  <data name="ActionCreateForum" xml:space="preserve">
+    <value>Создан форум в</value>
+  </data>
+  <data name="ActionCreateForumPoll" xml:space="preserve">
+    <value>Создан опрос в</value>
+  </data>
+  <data name="ActionCreateForumPost" xml:space="preserve">
+    <value>Создана запись в</value>
+  </data>
+  <data name="ActionCreateMilestone" xml:space="preserve">
+    <value>Создана веха в</value>
+  </data>
+  <data name="ActionCreateProject" xml:space="preserve">
+    <value>Создан проект в</value>
+  </data>
+  <data name="ActionCreateTask" xml:space="preserve">
+    <value>Создана задача в</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Принять</value>
+  </data>
+  <data name="ButtonAccessControlPanel" xml:space="preserve">
+    <value>Перейти в Панель управления</value>
+  </data>
+  <data name="ButtonAccessYourPortal" xml:space="preserve">
+    <value>Перейти на портал</value>
+  </data>
+  <data name="ButtonAccessYouWebOffice" xml:space="preserve">
+    <value>Перейти в виртуальный офис</value>
+  </data>
+  <data name="ButtonActivateEmail" xml:space="preserve">
+    <value>Нажмите сюда, чтобы активировать адрес электронной почты</value>
+  </data>
+  <data name="ButtonBuyNow" xml:space="preserve">
+    <value>Купить</value>
+  </data>
+  <data name="ButtonChangeEmail" xml:space="preserve">
+    <value>Изменить адрес электронной почты</value>
+  </data>
+  <data name="ButtonChangePassword" xml:space="preserve">
+    <value>Сменить пароль</value>
+  </data>
+  <data name="ButtonChangePhone" xml:space="preserve">
+    <value>Изменить номер мобильного телефона</value>
+  </data>
+  <data name="ButtonChangeTfa" xml:space="preserve">
+    <value>Изменить резервные коды</value>
+  </data>
+  <data name="ButtonConfigureRightNow" xml:space="preserve">
+    <value>Настроить прямо сейчас</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Подтвердить</value>
+  </data>
+  <data name="ButtonConfirmPortalAddressChange" xml:space="preserve">
+    <value>Подтвердить изменение адреса портала</value>
+  </data>
+  <data name="ButtonConfirmPortalOwnerUpdate" xml:space="preserve">
+    <value>Подтвердить смену владельца портала</value>
+  </data>
+  <data name="ButtonConfirmTermination" xml:space="preserve">
+    <value>Подтвердить удаление аккаунта</value>
+  </data>
+  <data name="ButtonDeactivatePortal" xml:space="preserve">
+    <value>Деактивировать портал</value>
+  </data>
+  <data name="ButtonDeletePortal" xml:space="preserve">
+    <value>Удалить портал</value>
+  </data>
+  <data name="ButtonDownloadNow" xml:space="preserve">
+    <value>Скачать сейчас</value>
+  </data>
+  <data name="ButtonGoToAppStore" xml:space="preserve">
+    <value>Перейти в App Store &gt;&gt;</value>
+  </data>
+  <data name="ButtonInviteRightNow" xml:space="preserve">
+    <value>Пригласить прямо сейчас</value>
+  </data>
+  <data name="ButtonJoin" xml:space="preserve">
+    <value>Нажмите сюда, чтобы стать участником портала</value>
+  </data>
+  <data name="ButtonLeaveFeedback" xml:space="preserve">
+    <value>Оставить отзыв</value>
+  </data>
+  <data name="ButtonRemoveProfile" xml:space="preserve">
+    <value>Удалить профиль</value>
+  </data>
+  <data name="ButtonRenewNow" xml:space="preserve">
+    <value>Продлить сейчас</value>
+  </data>
+  <data name="ButtonRequestCallButton" xml:space="preserve">
+    <value>Заказать звонок</value>
+  </data>
+  <data name="ButtonSelectPricingPlans" xml:space="preserve">
+    <value>Выбрать тарифный план</value>
+  </data>
+  <data name="ButtonSendRequest" xml:space="preserve">
+    <value>Отправить запрос</value>
+  </data>
+  <data name="ButtonStartFreeTrial" xml:space="preserve">
+    <value>Попробовать бесплатно</value>
+  </data>
+  <data name="ButtonStartNow" xml:space="preserve">
+    <value>Начните прямо сейчас</value>
+  </data>
+  <data name="ButtonUseDiscount" xml:space="preserve">
+    <value>Использовать скидку</value>
+  </data>
+  <data name="ItemOpensourceDocsTips1" xml:space="preserve">
+    <value>&lt;b&gt;Совет №1.&lt;/b&gt; Используйте возможность &lt;b&gt;совместного редактирования в режиме реального времени&lt;/b&gt;, чтобы ускорить процесс взаимодействия при уточнении деталей или корректировке документа. Выбирайте подходящий режим совместного редактирования - &lt;b&gt;Быстрый&lt;/b&gt;, при котором изменения отображаются по мере ввода текста, или &lt;b&gt;Строгий&lt;/b&gt;, при котором изменения отображаются только после сохранения документа.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips2" xml:space="preserve">
+    <value>&lt;b&gt;Совет №2.&lt;/b&gt; Используйте опцию &lt;b&gt;История версий&lt;/b&gt;, чтобы отследить изменения, внесенные в файл вами или вашими коллегами, или узнать, кто внес те или иные поправки.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips3" xml:space="preserve">
+    <value>&lt;b&gt;Совет №3.&lt;/b&gt; Используйте возможность &lt;b&gt;Рецензирования&lt;/b&gt;, чтобы избежать отслеживания и объединения изменений вручную. Предоставляйте доступ к документу с правами на рецензирование, чтобы другие могли предлагать свои правки, не редактируя при этом сам документ. Легко принимайте или отклоняйте предложенные изменения.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips4" xml:space="preserve">
+    <value>&lt;b&gt;Совет №4.&lt;/b&gt; Предоставляйте доступ к документам для других пользователей. Прикрепляйте документы к письмам в виде ссылок для уменьшения почтового трафика.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips5" xml:space="preserve">
+    <value>&lt;b&gt;Совет №5.&lt;/b&gt; Используйте функцию &lt;b&gt;Слияние&lt;/b&gt; (Mail Merge) для создания множества персонализированных писем или шаблонов, чтобы не писать один и тот же текст несколько раз и сэкономить время.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips6" xml:space="preserve">
+    <value>&lt;b&gt;Совет №6.&lt;/b&gt; Скачайте бесплатные десктопные редакторы ONLYOFFICE для работы с документами без подключения к интернету. Обратите внимание на то, что это приложение можно подключить к порталу ONLYOFFICE и получить доступ к сохраненным на нем документам.</value>
+  </data>
+  <data name="ItemOpensourceDocsTips7" xml:space="preserve">
+    <value>&lt;b&gt;Совет №7.&lt;/b&gt; Скачайте мобильное приложение &lt;b&gt;ONLYOFFICE Документы&lt;/b&gt; и установите на iOS-устройство, чтобы работать с документами в любое время, из любой точки мира, где бы вы ни находились.</value>
+  </data>
+  <data name="LinkLearnMore" xml:space="preserve">
+    <value>Подробнее &gt;&gt;</value>
+  </data>
+  <data name="pattern_activate_email" xml:space="preserve">
+    <value>h1.Активируйте Ваш адрес электронной почты на портале "${__VirtualRootPath}":"$InviteLink".
+
+Здравствуйте!
+
+Для того, чтобы начать работу на портале "${__VirtualRootPath}":"$InviteLink", Вам нужно активировать Ваш адрес электронной почты. Это делается в целях безопасности.
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней. Пожалуйста, выполните активацию в течение этого времени.</value>
+  </data>
+  <data name="pattern_backup_created" xml:space="preserve">
+    <value>h1.Создана резервная копия данных портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Здравствуйте, $OwnerName,
+
+Создан файл резервной копии, содержащий данные с портала "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Чтобы получить дополнительную информацию о процедуре резервного копирования, обратитесь, пожалуйста, к нашей инструкции "Резервное копирование данных":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx".
+
+
+Если у Вас есть какие-то вопросы, Вы всегда можете написать нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_change_email" xml:space="preserve">
+    <value>h1.Запрос на смену адреса электронной почты
+
+Вы запросили смену адреса электронной почты, служащего для доступа к порталу ${LetterLogoText}.
+
+Пожалуйста, перейдите по следующей ссылке для смены Вашего адреса электронной почты:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса электронной почты в течение этого времени.
+
+Старый адрес электронной почты может Вам потребоваться для входа на портал при переходе по ссылке. Если Вы не помните старый адрес электронной почты, обратитесь к администратору портала.
+
+Если Вы не хотите менять адрес электронной почты или получили это письмо по ошибке, пожалуйста, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
+  </data>
+  <data name="pattern_change_password" xml:space="preserve">
+    <value>h1.Запрос на смену пароля на портале "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Был получен запрос на смену пароля, который Вы используете для входа на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Пожалуйста, перейдите по ссылке ниже, чтобы сменить Ваш пароль:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните смену пароля в течение этого времени.
+
+Если Вы не хотите менять Ваш пароль или получили это письмо по ошибке, пожалуйста, проигнорируйте его или обратитесь к администратору вашего портала "${__VirtualRootPath}":"${__VirtualRootPath}" за разъяснениями.</value>
+  </data>
+  <data name="pattern_change_phone" xml:space="preserve">
+    <value>h1.Запрос на изменение номера мобильного телефона
+
+Был сделан запрос на изменение вашего номера мобильного телефона, служащего для доступа к порталу ${LetterLogoText}.
+
+Пожалуйста, перейдите по следующей ссылке для изменения номера мобильного телефона:
+
+$GreenButton
+
+Если Вы не хотите изменять номер мобильного телефона или получили это письмо по ошибке, пожалуйста, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
+  </data>
+  <data name="pattern_change_tfa" xml:space="preserve">
+    <value>h1.Запрос на изменение резервных кодов
+
+Вы запросили изменение резервных кодов, используемых для входа на портал ${LetterLogoText}.
+
+Пожалуйста, перейдите по следующей ссылке для изменения резервных кодов:
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_confirm_owner_change" xml:space="preserve">
+    <value>h1.Смена владельца портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Здравствуйте, $OwnerName,
+
+Был сделан запрос на смену владельца портала "${__VirtualRootPath}":"${__VirtualRootPath}" на пользователя $UserName.
+
+Перейдите по следующей ссылке, чтобы подтвердить операцию:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните смену владельца портала в течение этого времени.</value>
+  </data>
+  <data name="pattern_dns_change" xml:space="preserve">
+    <value>h1.Изменение адреса портала
+
+Здравствуйте, $OwnerName,
+
+Был сделан запрос на изменение адреса портала "${__VirtualRootPath}":"${__VirtualRootPath}" на "$PortalAddress":"$PortalAddress" #if($PortalDns != "") ("$PortalDns":"$PortalDns" )#end.
+
+Для подтверждения данной операции перейдите по ссылке:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса портала в течение этого времени.</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы только что создали портал ONLYOFFICE, облачный офис вашей команды для организации эффективной совместной работы. Его адрес - "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Пожалуйста, подтвердите ваш адрес электронной почты:
+
+$GreenButton
+
+Вы можете изменить свой адрес электронной почты или пароль на "странице вашего личного профиля":"$MyStaffLink".
+
+Для отправки оповещений мы используем SMTP-настройки почтового сервера ONLYOFFICE. Чтобы их изменить, пожалуйста, следуйте этим "инструкциям":"${__HelpLink}/server/windows/community/smtp-settings.aspx".
+
+Дополнительная информация - в "Справочном центре":"${__HelpLink}" ONLYOFFICE.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы можете настроить ONLYOFFICE в соответствии с вашими потребностями, например:
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
+
+$GreenButton
+   
+Готово. Пора приглашать участников команды в ваш виртуальный офис!
+
+Больше информации в нашем "Справочном центре":"${__HelpLink}".</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
+    <value>Предоставьте участникам команды возможность использовать Facebook, Twitter, Google или LinkedIn для входа на портал. Подключите к порталу сервисы Box, Dropbox, OneDrive и Google, чтобы перенести все свои документы. Подключите сервис DocuSign для использования электронной подписи, Twilio - для IP-телефонии, Bitly - для сокращения ссылок и Firebase для получения оповещений в режиме офлайн.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
+    <value>Совет №5: Подключите сторонние сервисы</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand" xml:space="preserve">
+    <value>Загрузите логотипы вашей компании в Панели управления. Чтобы изменить заголовок портала по умолчанию, который должен отображаться на странице приветствия, перейдите в раздел Настройки &gt;&gt; Общие &gt;&gt; Кастомизация &gt;&gt; Настройки страницы приветствия.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand_hdr" xml:space="preserve">
+    <value>Совет №1: Используйте собственный бренд</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize" xml:space="preserve">
+    <value>Определите наименования для групп, их участников и их действий на портале. Для этого перейдите в раздел Настройки &gt;&gt; Общие &gt;&gt; Кастомизация &gt;&gt; Шаблон команды. Выберите цветовую схему, которая соответствует корпоративному стилю вашей компании.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize_hdr" xml:space="preserve">
+    <value>Совет №3: Настройте интерфейс</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
+    <value>Подключите инструменты, которые необходимы вам для работы, в разделе Настройки &gt;&gt; Общие &gt;&gt; Модули и инструменты. Отключенные инструменты будут скрыты.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules_hdr" xml:space="preserve">
+    <value>Совет №4: Выберите нужные инструменты</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
+    <value>Выберите язык и правильный часовой пояс. Это особенно важно для оповещений и корректной работы календаря. Перейдите в Настройки &gt;&gt; Общие &gt;&gt; Кастомизация.</value>
+  </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
+    <value>Совет №2: Измените региональные настройки</value>
+  </data>
+  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ваш облачный офис готов к работе по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Пора приглашать участников команды!
+
+Проще всего это сделать, импортировав нужных пользователей и группы с LDAP-сервера (например, OpenLDAP Server или Microsoft Active Directory). Настройки LDAP доступны в Панели управления. Инструкции можно найти в нашем "Справочном центре":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+
+Вы также можете разослать пригласительную ссылку с помощью опции Пригласить пользователей, или добавить участников команды вручную по одному с помощью кнопки *Создать...* в модуле *Люди*, или экспортировать пользователей из:
+    "вашего аккаунта Yahoo или Google":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
+    "адресной книги почтового клиента":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
+    "файла CSV":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
+  </data>
+  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Пожалуйста, обратите внимание, что срок действия вашей подписки на ONLYOFFICE истечет через неделю. Вам необходимо приобрести продление подписки на ONLYOFFICE.
+
+Нажмите на следующую ссылку, чтобы начать продление:
+"Страница с ценами":"$PricingPage"
+
+По вопросам установки, активации и технической поддержки ONLYOFFICE обращайтесь в нашу службу поддержки "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Пожалуйста, обратите внимание, что сегодня истекает срок действия вашей подписки на ONLYOFFICE. Вам необходимо приобрести продление подписки на ONLYOFFICE.
+
+Нажмите на следующую ссылку, чтобы начать продление:
+"Страница с ценами":"$PricingPage"
+
+По вопросам установки, активации и технической поддержки продукта обращайтесь в нашу службу поддержки "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Благодарим за выбор ONLYOFFICE. Мы просто хотим напомнить, что пробный период для Enterprise Edition завершится через семь дней.
+
+Пожалуйста, ознакомьтесь со всеми доступными тарифными планами для Enterprise Edition и выберите наиболее подходящий.
+
+$GreenButton
+
+$BlueButton
+
+По вопросам покупки свяжитесь с нами по адресу "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Для решения технических проблем пишите на "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
+  </data>
+  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Благодарим за выбор ONLYOFFICE. Сегодня истекает ваш пробный период. Чтобы продолжить использование сервиса, приобретите полную лицензию.
+
+Купить сейчас: "https://www.onlyoffice.com/enterprise-edition.aspx":"https://www.onlyoffice.com/enterprise-edition.aspx"
+
+По вопросам покупки свяжитесь с нами по адресу "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Для решения технических проблем пишите на "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Скачайте бесплатные приложения ONLYOFFICE для работы с документами и проектами с любого устройства.
+
+# Чтобы работать с документами офлайн в ОС Windows, Linux и Mac, скачайте "Десктопные редакторы ONLYOFFICE":"https://www.onlyoffice.com/apps.aspx".
+# Чтобы редактировать документы на мобильных устройствах, используйте приложение ONLYOFFICE Документы для "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+# Чтобы управлять работой команды, где бы вы ни были, скачайте приложение ONLYOFFICE Проекты для "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Мы надеемся, что вам нравится использовать редакторы документов, доступные в вашем виртуальном офисе. Вот несколько полезных советов о том, как сделать работу с ними более эффективной.
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Чтобы сделать ваш виртуальный офис еще более безопасным, можно принять следующие меры:
+
+*Получите SSL-сертификат*, если вы собираетесь предоставлять пользователям не только локальный, но и внешний доступ к порталу. Сгенерируйте новый подписанный сертификат в Панели управления или приобретите сертификат у доверенного поставщика.
+
+*Включите автоматическое резервное копирование* в Панели управления. Мы также рекомендуем использовать сторонние сервисы и время от времени делать полный бэкап сервера, на котором развернуто решение. Инструкции в нашем "Справочном центре":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
+
+*Настройте параметры безопасности портала*: ограничьте доступ, используя списки разрешенных IP-адресов, укажите доверенные почтовые домены, задайте длину пароля и многое другое. "Подробнее &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx" 
+
+*Включите двухфакторную аутентификацию* с помощью SMS или приложения для аутентификации. Инструкции "здесь":"${__HelpLink}/guides/two-factor-authentication.aspx".
+
+*Используйте LDAP для централизации доступа*. Легко импортируйте на портал нужных пользователей и группы с LDAP-сервера (например, OpenLDAP Server или Microsoft Active Directory). Больше информации о LDAP "здесь":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
+
+*Используйте собственный SMPT-сервер*. По умолчанию для рассылок уведомлений пользователям ONLYOFFICE Enterprise Edition (например, о том, что им был предоставлен доступ к документу) используется стандартный SMPT-сервер ONLYOFFICE. Настройте свой собственный SMTP-сервер, чтобы ваши уведомления не проходили через сторонний сервер. "Инструкции &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx"
+
+*Закройте все ненужные порты*. Список всех портов, которые должны быть открыты для ONLYOFFICE, находится "здесь":"${__HelpLink}/server/docker/community/open-ports.aspx".
+
+Повысьте безопасность ONLYOFFICE прямо сейчас.
+
+$GreenButton
+
+Подробная информация в нашем "Справочном центре":"${__HelpLink}".</value>
+  </data>
+  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Мы надеемся, что вам нравится использовать ONLYOFFICE. Как проходит ваш пробный период? Мы будем очень благодарны вам за отзыв!
+
+Вы всегда можете написать нам на "support.onlyoffice.com":"https://support.onlyoffice.com", если у вас будут вопросы или идеи.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+$__AuthorName приглашает вас на "${__VirtualRootPath}":"${__VirtualRootPath}" в качестве гостя. Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней.
+
+Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ваш гостевой профиль успешно добавлен на "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Редактировать свой "профиль":"$MyStaffLink".
+# Просматривать и комментировать контент, доступный в модулях "Сообщество":"${__VirtualRootPath}/products/community/" и "Проекты":"${__VirtualRootPath}/products/projects/".
+# Добавлять и скачивать файлы, доступные для вас в модуле "Документы":"${__VirtualRootPath}/products/files/".
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+$__AuthorName приглашает вас в безопасный виртуальный офис вашей команды для организации эффективной совместной работы. Его адрес - "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней.
+
+Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ваш пользовательский профиль успешно добавлен на портал по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Создавать и редактировать "документы":"${__VirtualRootPath}/products/files/", делиться ими с участниками команды и вести совместную работу в режиме реального времени.
+# Добавить свою учетную запись электронной почты и централизованно управлять всей корреспонденцией в модуле "Почта":"${__VirtualRootPath}/addons/mail/".
+# Управлять рабочим процессом с помощью модуля "Проекты":"${__VirtualRootPath}/products/projects/" и взаимоотношениями с клиентами, используя модуль "CRM":"${__VirtualRootPath}/products/crm/".
+# Использовать "Сообщество":"${__VirtualRootPath}/products/community/", чтобы вести блоги, общаться на форумах, добавлять события, делиться закладками.
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы только что создали ваш корпоративный виртуальный офис, облачный офис вашей команды для организации эффективной совместной работы. Его адрес - "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Пожалуйста, подтвердите ваш адрес электронной почты:
+
+$GreenButton
+
+Вы можете изменить свой адрес электронной почты или пароль на "странице вашего личного профиля":"$MyStaffLink".</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы можете настроить свой виртуальный офис, например:
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
+
+$GreenButton
+
+Готово. Пора приглашать участников команды в ваш виртуальный офис!</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Пожалуйста, обратите внимание, что срок действия вашей подписки на виртуальный офис истечет через неделю. Вам необходимо приобрести продление подписки.
+
+Нажмите на следующую ссылку, чтобы начать продление:
+"Страница с ценами":"$PricingPage"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Пожалуйста, обратите внимание, что сегодня истекает срок действия вашей подписки. Вам необходимо приобрести продление подписки.
+
+Нажмите на следующую ссылку, чтобы начать продление:
+"Страница с ценами":"$PricingPage"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Чтобы сделать ваш виртуальный офис еще более безопасным, можно принять следующие меры:
+
+*Получите SSL-сертификат*, если вы собираетесь предоставлять пользователям не только локальный, но и внешний доступ к порталу. Сгенерируйте новый подписанный сертификат в Панели управления или приобретите сертификат у доверенного поставщика.
+
+*Включите автоматическое резервное копирование* в Панели управления. Мы также рекомендуем использовать сторонние сервисы и время от времени делать полный бэкап сервера.
+
+*Настройте параметры безопасности портала*: ограничьте доступ, используя списки разрешенных IP-адресов, укажите доверенные почтовые домены, задайте длину пароля и многое другое.
+
+*Включите двухфакторную аутентификацию* с помощью SMS или приложения для аутентификации.
+
+*Используйте LDAP для централизации доступа*. Легко импортируйте на портал нужных пользователей и группы с LDAP-сервера (например, OpenLDAP Server или Microsoft Active Directory).
+
+*Используйте собственный SMPT-сервер* и закройте все ненужные порты.
+
+Повысьте безопасность ONLYOFFICE прямо сейчас.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+$__AuthorName приглашает вас на "${__VirtualRootPath}":"${__VirtualRootPath}" в качестве гостя. Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней.
+
+Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ваш гостевой профиль успешно добавлен на "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Редактировать свой "профиль":"$MyStaffLink".
+# Просматривать и комментировать контент, доступный в модулях "Сообщество":"${__VirtualRootPath}/products/community/" и "Проекты":"${__VirtualRootPath}/products/projects/".
+# Добавлять и скачивать файлы, доступные для вас в модуле "Документы":"${__VirtualRootPath}/products/files/".
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+$__AuthorName приглашает вас в безопасный виртуальный офис вашей команды для организации эффективной совместной работы. Его адрес - "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней.
+
+Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ваш пользовательский профиль успешно добавлен на портал по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Создавать и редактировать "документы":"${__VirtualRootPath}/products/files/", делиться ими с участниками команды и вести совместную работу в режиме реального времени.
+# Добавить свою учетную запись электронной почты и централизованно управлять всей корреспонденцией в модуле "Почта":"${__VirtualRootPath}/addons/mail/".
+# Управлять рабочим процессом с помощью модуля "Проекты":"${__VirtualRootPath}/products/projects/" и взаимоотношениями с клиентами, используя модуль "CRM":"${__VirtualRootPath}/products/crm/".
+# Использовать "Сообщество":"${__VirtualRootPath}/products/community/", чтобы вести блоги, общаться на форумах, добавлять события, делиться закладками.
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton</value>
+  </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <value>h1.Сообщение с портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_join" xml:space="preserve">
+    <value>h1.Приглашение на портал "${__VirtualRootPath}":"$InviteLink"
+
+Здравствуйте,
+
+Вы отправили запрос на вступление в участники портала "${__VirtualRootPath}":"$InviteLink". ${LetterLogoText} - это платформа для управления документами и проектами. Станьте участником портала и начинайте совместно работать с коллегами или друзьями прямо сейчас.
+
+Чтобы принять приглашение, необходимо перейти по ссылке и ввести свое имя и пароль:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 48 часов. Пожалуйста, выполните данную операцию в течение этого времени.</value>
+  </data>
+  <data name="pattern_mailbox_created" xml:space="preserve">
+    <value>      Здравствуйте, $UserName,
+
+      Администратор создал для вас новый почтовый ящик &lt;b&gt;$Address&lt;/b&gt; на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Используйте следующие настройки для других почтовых клиентов:
+
+      Логин: &lt;b&gt;$Login&lt;/b&gt;
+      Пароль: "&lt;b&gt;задать пароль&lt;/b&gt;":"$MyStaffLink"
+
+      Входящая почта (IMAP): 
+      Сервер: &lt;b&gt;$Server&lt;/b&gt;
+      Порт: &lt;b&gt;$ImapPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+
+      Исходящая почта (SMTP): 
+      Сервер: &lt;b&gt;$Server&lt;/b&gt;
+      Порт: &lt;b&gt;$SmtpPort&lt;/b&gt;
+      SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
+      Требуется аутентификация: &lt;b&gt;Да&lt;/b&gt;
+
+      Если вы получили это письмо по ошибке, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
+  </data>
+  <data name="pattern_mailbox_password_changed" xml:space="preserve">
+    <value>      Здравствуйте, $UserName,
+
+      Пароль для почтового ящика &lt;b&gt;$Address&lt;/b&gt; был изменен.
+
+      Если вы получили это письмо по ошибке, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
+  </data>
+  <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+      Администратор создал для вас новый почтовый ящик &lt;b&gt;$Address&lt;/b&gt; на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Если вы получили это письмо по ошибке, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
+  </data>
+  <data name="pattern_migration_error" xml:space="preserve">
+    <value>h1.Ошибка при переносе портала в другой регион
+
+При переносе портала в регион $RegionName произошла ошибка. Пожалуйста, повторите попытку позже.
+Сейчас Ваш портал доступен по прежнему адресу "$PortalUrl":"$PortalUrl"
+
+Если у Вас есть какие-либо вопросы, Вы всегда можете обратиться к нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}". Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_server_failure" xml:space="preserve">
+    <value>h1.Ошибка при переносе портала в другой регион
+
+При переносе портала в другой регион произошла ошибка. Пожалуйста, повторите попытку позже.
+Сейчас Ваш портал доступен по прежнему адресу "$PortalUrl":"$PortalUrl"
+
+Если у Вас есть какие-либо вопросы, Вы всегда можете обратиться к нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}". Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_migration_start" xml:space="preserve">
+    <value>h1.Начался перенос портала в другой регион
+
+Начался перенос портала в регион $RegionName. Это может занять некоторое время в зависимости от объема данных.
+
+*Обратите внимание*: в ходе переноса портал будет недоступен. После того, как перенос завершится, URL-адрес портала изменится, и все ссылки на документы, к которым Вы ранее предоставляли доступ, станут недоступны.
+
+Если у Вас есть какие-либо вопросы, Вы всегда можете обратиться к нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_migration_success" xml:space="preserve">
+    <value>h1.Перенос портала в другой регион успешно завершен
+
+Перенос портала в регион $RegionName успешно завершен.
+Теперь Ваш портал доступен по адресу "$PortalUrl":"$PortalUrl"
+
+Если у Вас есть какие-либо вопросы, Вы всегда можете обратиться к нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Вы получили это сообщение, так как зарегистрированы на портале "$PortalUrl":"$PortalUrl".^</value>
+  </data>
+  <data name="pattern_opensource_admin_activation" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Вы только что создали портал ONLYOFFICE, безопасный виртуальный офис. Адрес Вашего портала -   "${__VirtualRootPath}":"${__VirtualRootPath}". Для подтверждения адреса электронной почты перейдите по следующей ссылке:
+
+$GreenButton
+
+Пожалуйста, выполните активацию электронной почты в течение недели, так как ссылка действительна только 7 дней.
+
+Обратите внимание: из соображений безопасности мы не высылаем в электронных письмах конфиденциальную информацию (такую, как ваш пароль). Вы можете изменить свой адрес электронной почты или пароль на "странице вашего профиля":"$MyStaffLink".
+
+Для отправки оповещений мы используем SMTP-настройки нашего стандартного почтового сервера. Чтобы их изменить, пожалуйста, следуйте этим "инструкциям":"http://helpcenter.onlyoffice.com/server/windows/community/smtp-settings.aspx".
+
+Для получения дополнительной информации приглашаем Вас посетить наш "Справочный центр":"https://helpcenter.onlyoffice.com".
+
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Почти в любой сфере деятельности каждый день приходится иметь дело с документами - договорами, отчетами, официальными бумагами, счетами и так далее - и тратить массу времени на их перемещение. Чтобы повысить эффективность работы с документами и сократить затраты времени и сил, воспользуйтесь этими семью простыми советами.
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
+
+Знаете ли Вы, что используете самые мощные онлайн-редакторы в мире? Хотите узнать, почему ONLYOFFICE лучше, чем MS Office Online, Google Docs или Collabora? "Взгляните сюда":"https://www.onlyoffice.com/document-editor-comparison.aspx"
+
+Если Вам требуется помощь по работе с порталом, приглашаем Вас посетить наш "Справочный центр":"https://helpcenter.onlyoffice.com".
+
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_security_tips" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Безопасность данных - насущная проблема для большинства компаний, особенно если речь идет о документах. Чтобы подтвердить прозрачность и надежность ONLYOFFICE, мы открыли исходный код и разместили его на "GitHub":"https://github.com/ONLYOFFICE".
+
+Чтобы сделать портал еще более безопасным:
+
+# Включите HTTPS для обеспечения безопасности данных;
+# Регулярно создавайте резервные копии для предотвращения потери данных;
+# Отслеживайте историю попыток входа в систему.
+
+С помощью Панели управления, доступной в решении ONLYOFFICE Enterprise Edition, эти процессы можно автоматизировать, а кроме того можно изменить стандартные логотипы портала, импортировать пользователей с сервера LDAP и проверить наличие обновлений ONLYOFFICE.
+
+Заинтересовались? Попробуйте ONLYOFFICE Enterprise Edition бесплатно в течение 30 дней:
+
+$GreenButton
+
+Для получения дополнительной информации приглашаем вас посетить наш "Справочный центр":"https://helpcenter.onlyoffice.com".
+
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_activate" xml:space="preserve">
+    <value>Здравствуйте, $UserName
+Вы успешно зарегистрировались в ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Подключите свое облачное хранилище: Dropbox, Google Drive, OneDrive или Box, чтобы создать единое рабочее пространство для Ваших документов, доступное из любой точки мира.
+
+Узнайте больше об ONLYOFFICE Personal в "нашем блоге":"$TagBlogLink".
+
+Мы рады, что Вы используете наш сервис. Оставайтесь с нами!
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration1" xml:space="preserve">
+    <value>h1.Добро пожаловать в ONLYOFFICE Personal
+
+Вы только что создали персональный облачный офис.
+
+h3.Это виртуальное рабочее пространство, в котором вы можете редактировать и хранить документы, работать с ними, где бы вы ни находились, и предоставлять доступ своим друзьям или коллегам.
+
+Редакторы ONLYOFFICE совместимы с форматами Microsoft Office™ и гарантируют отсутствие потерь форматирования или качества документов. Благодаря полному набору профессиональных инструментов для редактирования, вам больше не придется беспокоиться о форматировании.
+
+h3.Чтобы начать работу с сервисом, познакомьтесь с некоторыми возможностями ONLYOFFICE:
+
+- Загружайте файлы с компьютера или создавайте новые;
+
+- Работайте со всеми популярными форматами файлов;
+
+- Редактируйте автофигуры, диаграммы, таблицы, формулы и другие объекты;
+
+- Используйте различные дополнения, чтобы расширить возможности редактирования;
+
+- Легко получайте доступ к вашему персональному облаку с помощью "расширения для Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Вы также можете работать с документами офлайн, используя наши бесплатные "десктопные редакторы":"https://www.onlyoffice.com/download-desktop.aspx", или получить "пакет мобильных приложений для редактирования":"https://www.onlyoffice.com/mobile.aspx" на вашем iOS-устройстве.
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration14" xml:space="preserve">
+    <value>$PersonalHeaderStart Инструменты в помощь фрилансеру $PersonalHeaderEnd
+
+h3.Инструменты ONLYOFFICE будут полезны всем, кто работает на удаленной основе:
+
+- Предоставление доступа для просмотра документов, рецензирования или совместной работы;
+
+- Быстрый режим совместного редактирования и комментирования для работы в режиме реального времени;
+
+- Строгий режим совместного редактирования, позволяющий редактировать части документа приватно;
+
+- История версий;
+
+- Возможность отслеживать и предлагать изменения;
+
+- Встроенный чат.
+
+У вас нет необходимости скачивать файлы и пересылать их по электронной почте. Просто предоставьте ссылку на документ с установленными правами доступа и работайте над ним совместно, где бы вы ни были.  
+
+Еще больше возможностей для удаленной работы  
+
+Мы также предоставляем бизнес-решения ONLYOFFICE. Они бесплатны в течение 30 дней пробного периода и включают целый ряд функций, которые значительно облегчают удаленную работу. Так, например, вы можете выставлять счета своим клиентам, связываться с ними по электронной почте или с помощью IP-телефонии. Чтобы узнать больше о возможностях взаимодействия с клиентами в ONLYOFFICE, перейдите к "обзору нашей системы CRM":"http://www.onlyoffice.com/crm.aspx".
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration21" xml:space="preserve">
+    <value>$PersonalHeaderStart Еще больше возможностей и инструментов автоматизации. Попробуйте ONLYOFFICE для командной работы $PersonalHeaderEnd
+
+h3.Если вы работаете с командой или управляете проектом, предлагаем вам воспользоваться решением ONLYOFFICE для бизнеса. В дополнение к функционалу по онлайн-редактированию и управлению документами, вы сможете:
+
+- Контролировать выполнение задач, в том числе при помощи диаграммы *Ганта*, в модуле управления проектами;
+
+- Управлять продажами, отношениями с клиентами и выставлять счета в *CRM*;
+
+- Работать со всеми аккаунтами электронной почты в одном почтовом *агрегаторе*;
+
+- Организовать процесс коммуникации в команде, используя мессенджер, блог, форумы и wiki.
+
+Создайте единое пространство для совместной работы онлайн.
+
+Начните 30-дневный пробный период "в облаке":"https://www.onlyoffice.com/registration.aspx" или "на собственном сервере":"https://www.onlyoffice.com/enterprise-edition-free.aspx?from=enterprise-edition" без каких-либо функциональных ограничений, и вы сразу же увидите, как повысится эффективность работы! 
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration28" xml:space="preserve">
+    <value>$PersonalHeaderStart Как повысить безопасность вашего виртуального офиса $PersonalHeaderEnd
+
+Надежные способы защиты ваших данных
+
+h3.Обратите внимание на дополнительные инструменты обеспечения безопасности ваших документов, предоставляемые в наших решениях для локального сервера:
+
+- Получите полный контроль над данными, развернув *приватное облако* на собственном сервере;
+
+- Настройте *двухфакторную аутентификацию* и используйте функцию *Единого входа* с помощью сторонних сервисов;
+
+- Применяйте многоуровневые *настройки безопасности входа в систему*;
+
+- Отслеживайте все *действия пользователей* в вашем виртуальном офисе;
+
+- Выполняйте *резервное копирование данных* вручную или автоматически.
+
+$GreenButton
+
+Узнайте больше о том, как ONLYOFFICE обеспечивает сохранность ваших данных, из нашего обзора функций безопасности.
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_after_registration7" xml:space="preserve">
+    <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
+
+Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы рассказать вам о некоторых полезных возможностях, которые вы могли не заметить.
+
+Подключите *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* или *Yandex.Disk* к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами. Вы сможете редактировать сторонние файлы в ONLYOFFICE и сохранять их в том хранилище, где ведете документацию. Инструкции по подключению файловых хранилищ к ONLYOFFICE можно найти "здесь":"http://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx".
+
+Вы также можете интегрировать редакторы ONLYOFFICE в Google Drive с помощью нашего "коннектора":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
+
+Еще больше возможностей для управления документами
+
+h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/server-solutions.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
+
+- Управление проектной документацией;
+
+- Интеграция с CRM и электронной почтой;
+
+- Индивидуальные и групповые права доступа;
+
+- Оптимизация рабочего процесса с помощью инструментов для взаимодействия с командой.
+
+Узнайте больше о возможностях "бизнес-версий ONLYOFFICE":"http://www.onlyoffice.com/document-management.aspx".
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_email" xml:space="preserve">
+    <value>Вы запросили смену адреса электронной почты, служащего для доступа к порталу ${LetterLogoText}.
+
+Пожалуйста, перейдите по ссылке ниже для смены Вашего адреса электронной почты:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса электронной почты в течение этого времени.
+
+Если Вы не хотите менять адрес электронной почты или получили это письмо по ошибке, пожалуйста, проигнорируйте его.
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_password" xml:space="preserve">
+    <value>Был получен запрос на смену пароля, который Вы используете для входа на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Пожалуйста, перейдите по ссылке ниже, чтобы сменить Ваш пароль:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните смену пароля в течение этого времени.
+
+Если Вы не хотите менять Ваш пароль или получили это письмо по ошибке, пожалуйста, проигнорируйте его.
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_confirmation" xml:space="preserve">
+    <value>Здравствуйте,
+
+Вы только что зарегистрировали учетную запись ONLYOFFICE для персонального использования. Нажмите "сюда":"$InviteLink", чтобы подтвердить регистрацию и создать пароль.
+
+Если ссылка не открывается, скопируйте следующую ссылку "$InviteLink":"$InviteLink" и вставьте ее в адресную строку браузера.
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_profile_delete" xml:space="preserve">
+    <value>Вы запросили удаление своего аккаунта на сайте personal.onlyoffice.com. Перейдите по ссылке, чтобы завершить удаление аккаунта (ссылка действительна в течение 7 дней): 
+
+$GreenButton
+
+*Обратите внимание*: После удаления вашего аккаунта все связанные с ним данные будут удалены без возможности восстановления в соответствии с нашим "Положением о конфиденциальности":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+Проигнорируйте это сообщение, если вы не хотите удалять аккаунт. 
+
+Если у вас есть какие-то вопросы, напишите нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+Команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_deactivate" xml:space="preserve">
+    <value>h1.Отключение портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Здравствуйте, $OwnerName,
+
+Вы запросили временно отключить Ваш портал "${__VirtualRootPath}":"${__VirtualRootPath}". Пожалуйста, перейдите по следующей ссылке для подтверждения операции:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните отключение портала в течение этого времени.
+
+Вы можете активировать свой портал в любое время, перейдя по следующей ссылке:
+p=. "Активировать портал повторно":"$ActivateUrl" (время действия этой ссылки не ограничено)
+
+Если у Вас есть какие-то вопросы, Вы всегда можете написать нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete" xml:space="preserve">
+    <value>h1.Удаление портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Здравствуйте, $OwnerName,
+
+Вы запросили окончательное удаление Вашего портала "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Важно! Все данные, сохраненные на Вашем портале, а также сведения о регистрации будут полностью удалены без возможности восстановления.*
+
+#if($AutoRenew == "True")
+Перед тем, как удалить портал, просим Вас убедиться в том, что опция автоматического возобновления используемой подписки отключена. Проверить статус данной опции Вы можете в "личном кабинете на сайте Avangate":"https://secure.avangate.com/myaccount/".
+#end
+
+Если Вы по-прежнему хотите удалить портал "${__VirtualRootPath}":"${__VirtualRootPath}", перейдите по следующей ссылке для подтверждения операции:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните удаление портала в течение этого времени.
+
+Если у Вас есть какие-то вопросы, Вы всегда можете написать нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_success_v10" xml:space="preserve">
+    <value>Ваш ONLYOFFICE успешно деактивирован. Обратите внимание, что все ваши данные будут удалены в соответствии с нашим "Положением о конфиденциальности":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Почему вы решили прекратить использование сервиса? Поделитесь с нами своими впечатлениями.
+
+$GreenButton
+
+Благодарим вас! 
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1.Изменение адреса портала
+
+Здравствуйте, $UserDisplayName,
+
+Адрес Вашего портала был изменен с $PortalUrl на новый адрес - "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+*Обратите внимание*: все ссылки на документы, к которым Вы ранее предоставляли доступ, теперь недоступны, а также настройки DNS и функция единого входа (Single Sign-On) теперь не работают, пока Вы не поменяете их настройки. Ссылки на сторонние календари iCal, которые Вы добавили в Ваш календарь, не будут обновляться, пока Вы их не загрузите заново.</value>
+  </data>
+  <data name="pattern_profile_delete" xml:space="preserve">
+    <value>h1.Удаление профиля с портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Вы запросили окончательное удаление своего профиля с портала "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Если Вы по-прежнему хотите удалить свой профиль, пожалуйста, перейдите по следующей ссылке для подтверждения операции:
+
+$GreenButton
+
+*Обратите внимание*: эта ссылка действительна только в течение 7 дней. Пожалуйста, выполните удаление профиля в течение этого времени.</value>
+  </data>
+  <data name="pattern_profile_updated" xml:space="preserve">
+    <value>h1.Ваш профиль на портале "$__VirtualRootPath":"$__VirtualRootPath" был изменен
+
+Здравствуйте, $UserName,
+
+Ваш профиль на портале "$__VirtualRootPath":"$__VirtualRootPath" изменён пользователем "$__AuthorName":"$__AuthorUrl".
+
+Чтобы посмотреть свой профиль, перейдите по следующей ссылке:
+"$UserName":"$MyStaffLink"
+
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_reassigns_completed" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Процесс передачи данных от пользователя "$FromUserName":"$FromUserLink" пользователю "$ToUserName":"$ToUserLink" успешно завершен.
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_reassigns_failed" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Не удалось выполнить передачу данных от пользователя "$FromUserName":"$FromUserLink" пользователю "$ToUserName":"$ToUserLink".
+
+Сообщение об ошибке: $Message
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_remove_user_data_completed" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Процесс удаления данных пользователя "$FromUserName":"$FromUserLink" успешно завершен.
+
+Удаление персональных данных позволило освободить:
+
+# Документы - $DocsSpace
+# CRM - $CrmSpace
+# Почта - $MailSpace
+# Чат - $TalkSpace
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_remove_user_data_failed" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Не удалось выполнить удаление данных пользователя "$FromUserName":"$FromUserLink".
+
+Сообщение об ошибке: $Message
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+  </data>
+  <data name="pattern_request_license" xml:space="preserve">
+    <value>h1.Запрос лицензии на версию Enterprise
+
+h3.Имя
+$UserName
+
+h3.Фамилия
+$UserLastName
+
+h3.Должность
+$Position
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Телефон
+$Phone
+
+h3.Сайт компании
+$Website
+
+h3.Название компании
+$CompanyTitle
+
+h3.Размер компании
+$CompanySize
+
+h3.Содержание запроса
+$Body
+
+h3.Адрес портала
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
+  </data>
+  <data name="pattern_request_tariff" xml:space="preserve">
+    <value>h1.Запрос тарифа для SAAS-портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+h3.Имя
+$UserName
+
+h3.Email
+"$UserEmail":"mailto:$UserEmail"
+
+h3.Содержание запроса
+$Body</value>
+  </data>
+  <data name="pattern_restore_started" xml:space="preserve">
+    <value>h1.Началось восстановление портала
+
+Началось восстановление портала. Это может занять некоторое время в зависимости от объема данных.
+
+*Обратите внимание*: во время восстановления портал будет недоступен.
+
+Если у Вас есть какие-либо вопросы, Вы всегда можете обратиться к нам по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+
+С уважением,
+команда ONLYOFFICE™
+"www.onlyoffice.com":"http://onlyoffice.com/"
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}". Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы только что создали портал ONLYOFFICE, безопасный виртуальный офис вашей команды для организации эффективной совместной работы. Его адрес - "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+Пожалуйста, подтвердите ваш адрес электронной почты: 
+
+$GreenButton
+
+Эта ссылка будет действительна только 7 дней.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_invite_teammates_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Облачный офис готов к работе по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Пора приглашать участников команды! 
+
+Проще всего сделать это, разослав пригласительную ссылку с помощью опции *Пригласить пользователей*.
+
+$GreenButton
+
+Также можно добавить участников команды вручную по одному с помощью кнопки *Создать...* в модуле *Люди* или экспортировать пользователей из:
+    "вашего аккаунта Yahoo или Google":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx",
+    "адресной книги почтового клиента":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx",
+    "файла CSV":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx". 
+
+Узнайте больше о добавлении пользователей в нашем "Справочном центре":"${__HelpLink}".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_payment_after_monthly_subscriptions_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Ранее вы приобрели подписку сроком на 1 месяц. Если вы планируете продолжить использование ONLYOFFICE, рекомендуем приобретать подписки с более долгим сроком действия. 
+
+Вот наше специальное предложение - используйте этот купон *10%discountyear* для получения скидки 10% при покупке подписки сроком на 1 год или этот *upgradethreeyears20%* для покупки подписки на 3 года со скидкой 20%.
+
+$GreenButton
+
+Если вам нужна помощь, свяжитесь с нами по адресу "support@onlyoffice.com":"mailto:support@onlyoffice.com". Будем рады помочь!
+ 
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_payment_warning_after1_v10" xml:space="preserve">
+    <value>Истек срок действия подписки на ONLYOFFICE. Продлите подписку, чтобы продолжить использование ONLYOFFICE.
+    
+$GreenButton
+
+Включите функцию автоматического продления лицензии, чтобы автоматически продлевать лицензию по окончании срока действия и больше не беспокоиться о сроке оплаты. Вы в любое время можете отключить эту возможность "здесь":"https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx"
+
+По вопросам оплаты, пожалуйста, обращайтесь в Avangate по адресу "support@avangate.com":"mailto:support@avangate.com"
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_payment_warning_before5_v10" xml:space="preserve">
+    <value>Срок действия вашей подписки на ONLYOFFICE истечет через 5 дней. Продлите подписку, чтобы продолжить использование ONLYOFFICE.
+
+$GreenButton
+
+Включите функцию автоматического продления лицензии, чтобы автоматически продлевать лицензию по окончании срока действия и больше не беспокоиться о сроке оплаты. Вы в любое время можете отключить эту возможность "здесь":"https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx":"https://secure.avangate.com/myaccount/?lang=en&amp;e=example@customer-email.com&amp;k=xxxxxxxxxx". 
+
+По вопросам оплаты, пожалуйста, обращайтесь в Avangate по адресу "support@avangate.com":"mailto:support@avangate.com"
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v10" xml:space="preserve">
+    <value>Вы не заходили в ONLYOFFICE "${__VirtualRootPath}":"${__VirtualRootPath}" более полугода. Поскольку вы решили больше не использовать его, ваш виртуальный офис и все его данные будут удалены в соответствии с нашим "Положением о конфиденциальности":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+Мы будем благодарны, если вы расскажете нам, почему вы решили прекратить использование ONLYOFFICE.
+
+$GreenButton
+
+Если вы считаете, что это ошибка, и хотите продолжить использование ONLYOFFICE, пожалуйста, обратитесь в нашу "службу поддержки":"mailto:support@onlyoffice.com".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after30_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Вы еще не добавили участников команды, поэтому, возможно, вам больше подходит ONLYOFFICE Personal? Это бесплатный сервис, который позволит вам:
+
+# Работать с текстовыми документами, таблицами и презентациями.
+# Делиться документами с друзьями и работать над ними совместно в режиме реального времени.
+# Встраивать документы в веб-страницу.
+# Подключать сторонние облачные хранилища, такие как Dropbox или Google Drive, чтобы управлять всеми документами в едином пространстве.
+
+Чтобы быстро приступить к работе, зарегистрируйтесь с помощью вашего аккаунта Facebook или Google.
+
+$GreenButton
+
+Вы также можете установить это " расширение для Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US" для быстрого доступа к ONLYOFFICE Personal или "это приложение":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn" для использования редакторов ONLYOFFICE внутри Google Drive.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after5_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Не получилось детально изучить ONLYOFFICE? Продлите пробный период прямо сейчас! Более того - в случае быстрого принятия положительного решения вы сэкономите!
+
+Получите дополнительные 20 дней пробного периода или скидку 20% при приобретении подписки сроком на 1 или 3 года. Вы сможете воспользоваться скидкой в течение 5 дней после получения этого сообщения.
+
+$GreenButton
+
+Вы также можете развернуть ONLYOFFICE в локальной сети для получения полного контроля над данными. "Узнать больше":"https://www.onlyoffice.com/server-solutions.aspx"
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_before5_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Пробный период для вашего аккаунта на "${__VirtualRootPath}":"${__VirtualRootPath}" завершится через 5 дней.
+
+*Купите подписку сегодня со скидкой 10%!*
+
+Просто используйте этот купон при покупке: *$Coupon*
+
+Он будет действителен в течение следующих 10 дней. В настоящий момент количество активных пользователей на портале составляет $ActiveUsers.
+
+Мы рекомендуем вам тарифный план $$Price/$PricePeriod.
+
+$GreenButton
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Сегодня истекает пробный период для вашего портала на "${__VirtualRootPath}":"${__VirtualRootPath}". Чтобы продолжить его использование, "купите подписку":"$PricingPage".
+
+*Обратите внимание*: вы можете развернуть ONLYOFFICE в локальной сети для получения полного контроля над данными. "Узнать больше":"https://www.onlyoffice.com/server-solutions.aspx"
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Скачайте бесплатные приложения ONLYOFFICE для работы с документами и проектами с любого устройства.
+
+# Чтобы работать с документами офлайн в ОС Windows, Linux и Mac, скачайте "Десктопные редакторы ONLYOFFICE":"https://www.onlyoffice.com/apps.aspx".
+# Чтобы редактировать документы на мобильных устройствах, используйте приложение ONLYOFFICE Документы для "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+# Чтобы управлять работой команды, где бы вы ни были, скачайте приложение ONLYOFFICE Проекты для "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_comfort_tips_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Мы подготовили несколько полезных советов, чтобы ваша работа с ONLYOFFICE была более комфортной.
+
+*#1 Найдите быстрые ответы о функциональности ONLYOFFICE*
+
+Посетите "Справочный центр":"${__HelpLink}", если вы не уверены в том, как выполнить задачу. Здесь легко найти ответы на самые популярные вопросы, например, "как импортировать контакты в CRM":"${__HelpLink}/guides/import-contacts.aspx" или "как экспортировать данные из CRM":"${__HelpLink}/tipstricks/crm-export.aspx", или "как добавить повторяющееся событие":"${__HelpLink}/guides/add-recurring-event.aspx".
+
+*#2 Не забывайте о сторонних расширениях*
+
+Функциональность ONLYOFFICE можно расширить с помощью сторонних дополнений. Например, можно легко публиковать документы на сайте WordPress благодаря интеграции с WordPress или подписывать документы электронной подписью с помощью DocuSign. "Узнать больше &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx"  
+
+*#3 Управляйте подписками*
+
+Вы будете получать оповещения о предоставлении доступа к документам, обновлениях проектов, днях рождения коллег. Включайте и отключайте оповещения на странице своего профиля. Подберите те, которые вам полезны, и выберите способ их получения: по электронной почте, в чате, или и так, и так. На странице профиля вы также можете отписаться от этих писем с полезными советами или, наоборот, включить их заново. "Подробнее &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
+
+*#4 Закажите специальное обучение*
+
+Чтобы действительно быстро начать работу с ONLYOFFICE, обратитесь к нам с запросом на обучение вашей команды по использованию всех модулей и функций. Это платная возможность. "Свяжитесь с нами &gt;&gt;":"https://support.onlyoffice.com" 
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Мы надеемся, что вам нравится использовать редакторы ONLYOFFICE. Вот несколько полезных советов о том, как сделать работу с ними более эффективной.
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
+
+$GreenButton
+
+Кстати, вы заметили, что используете самые мощные редакторы в облаке? Сравните с другими онлайн-редакторами, чтобы "узнать больше":"https://www.onlyoffice.com/document-editor-comparison.aspx".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_3rdparty" xml:space="preserve">
+    <value>Подключите Dropbox, Google Drive или другие сервисы для управления файлами в едином пространстве.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr" xml:space="preserve">
+    <value>Подключите сторонние облачные сервисы</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_apps" xml:space="preserve">
+    <value>Скачайте приложения для работы с документами &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://www.onlyoffice.com/apps.aspx"&gt;офлайн&lt;/a&gt;, а также на устройствах &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://itunes.apple.com/us/app/onlyoffice-documents/id944896972"&gt;iOS&lt;/a&gt; и &lt;a target="_blank" style="color: #0078bd; font-family: Arial; font-size: 14px;" href="https://play.google.com/store/apps/details?id=com.onlyoffice.documents"&gt;Android&lt;/a&gt;.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_apps_hdr" xml:space="preserve">
+    <value>Скачайте приложения</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_attach" xml:space="preserve">
+    <value>Документы интегрированы со всеми остальными модулями ONLYOFFICE, так что вам больше не потребуется скачивать документы и загружать их куда-то еще.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_attach_hdr" xml:space="preserve">
+    <value>Прикрепляйте документы к проектам и письмам</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting" xml:space="preserve">
+    <value>При совместном редактировании документа в режиме реального времени перейдите в Быстрый режим, чтобы видеть изменения по мере ввода текста соавтором, или в Строгий режим, обеспечивающий большую приватность.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr" xml:space="preserve">
+    <value>Выбирайте режим совместного редактирования</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_formatting" xml:space="preserve">
+    <value>ONLYOFFICE предоставляет самый полный набор инструментов форматирования и работы со стилями.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr" xml:space="preserve">
+    <value>Познакомьтесь с возможностями расширенного форматирования</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_review" xml:space="preserve">
+    <value>Используйте функцию рецензирования, чтобы предлагать изменения, не изменяя оригинальный документ, добавляйте комментарии, чтобы поделиться мыслями по поводу определенного фрагмента текста, или обменивайтесь мгновенными сообщениями в чате внутри документа.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_review_hdr" xml:space="preserve">
+    <value>Используйте рецензирование, комментарии и чат</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_share" xml:space="preserve">
+    <value>Предоставляйте доступ к документам для отдельных пользователей или групп. Выбирайте уровень доступа: только чтение, комментирование, заполнение форм, рецензирование или полный доступ.</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_share_hdr" xml:space="preserve">
+    <value>Предоставляйте доступ к документам</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Настройте ONLYOFFICE и управляйте им, чтобы он был еще более удобным и безопасным:
+
+$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItem6 $TableItem7 $TableItemsBtm
+
+И это еще далеко не все, что можно сделать! 
+
+$GreenButton
+   
+Посетите наш "Справочный центр":"${__HelpLink}", чтобы узнать больше о кастомизации вашего офиса. Всегда обращайтесь к нему, если у вас есть вопросы по функциональности, и порекомендуйте пользователям то же самое.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_backup" xml:space="preserve">
+    <value>Выполняйте резервное копирование данных.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_brand" xml:space="preserve">
+    <value>Настройте ONLYOFFICE, используя логотип и название вашей компании, выберите цветовую схему, задайте альтернативный URL-адрес.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_customize" xml:space="preserve">
+    <value>Выберите, какие модули нужны пользователям, добавьте собственные ссылки в меню навигации, задайте стартовую страницу по умолчанию.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_regional" xml:space="preserve">
+    <value>Задайте язык и часовой пояс.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_security" xml:space="preserve">
+    <value>Определите настройки безопасности, такие как надежность пароля и доверенные почтовые домены, и задайте права доступа.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_telephony" xml:space="preserve">
+    <value>Подключите сторонние сервисы - Twilio для IP-телефонии, DocuSign для электронных подписей, и многие другие.</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v10_item_usertrack" xml:space="preserve">
+    <value>Отслеживайте входы в систему и другие действия пользователей.</value>
+  </data>
+  <data name="pattern_saas_admin_without_activity_v10" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+
+Мы надеемся, что вам нравится использовать ONLYOFFICE. Как проходит ваш пробный период? Мы будем очень благодарны вам за отзыв!
+
+Вы всегда можете написать нам на "support@onlyoffice.com":"mailto:support@onlyoffice.com", если у вас будут вопросы или идеи.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_activation_v10" xml:space="preserve">
+    <value>Здравствуйте!
+
+Вы получили приглашение на "${__VirtualRootPath}":"${__VirtualRootPath}" в качестве гостя. Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Периодически мы будем присылать вам сообщения с полезными советами, последними новостями ONLYOFFICE и информацией о специальных предложениях. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте!
+
+Ваш гостевой профиль успешно добавлен в виртуальный офис "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Редактировать свой "профиль":"$MyStaffLink".
+# Просматривать и комментировать контент, доступный в модулях "Сообщество":"${__VirtualRootPath}/products/community/" и "Проекты":"${__VirtualRootPath}/products/projects/".
+# Добавлять и скачивать файлы, доступные для вас в модуле "Документы":"${__VirtualRootPath}/products/files/".
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton
+
+Если вам требуется помощь, посетите наш "Справочный центр":"${__HelpLink}" или обратитесь в нашу "службу поддержки":"https://support.onlyoffice.com".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v10" xml:space="preserve">
+    <value>Здравствуйте!
+
+Вы получили приглашение стать участником ONLYOFFICE на "${__VirtualRootPath}":"${__VirtualRootPath}". Примите приглашение, перейдя по ссылке:
+
+$GreenButton
+
+Периодически мы будем присылать вам сообщения с полезными советами, последними новостями ONLYOFFICE и информацией о специальных предложениях. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v10" xml:space="preserve">
+    <value>Здравствуйте!
+
+Добро пожаловать в ONLYOFFICE! Ваш пользовательский профиль успешно добавлен на портал по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
+
+# Создавать и редактировать "документы":"${__VirtualRootPath}/products/files/", делиться ими с участниками команды и вести совместную работу в режиме реального времени.
+# Добавить свою учетную запись электронной почты и централизованно управлять всей корреспонденцией в модуле "Почта":"${__VirtualRootPath}/addons/mail/".
+# Управлять рабочим процессом с помощью модуля "Проекты":"${__VirtualRootPath}/products/projects/" и взаимоотношениями с клиентами, используя модуль "CRM":"${__VirtualRootPath}/products/crm/".
+# Использовать "Сообщество":"${__VirtualRootPath}/products/community/", чтобы вести блоги, общаться на форумах, добавлять события, делиться закладками.
+# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
+# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
+
+$GreenButton
+
+Если вам требуется помощь, посетите наш "Справочный центр":"${__HelpLink}" или обратитесь в нашу "службу поддержки":"https://support.onlyoffice.com".
+
+С уважением,
+Команда ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_self_profile_updated" xml:space="preserve">
+    <value>h1.Оповещение об изменении профиля на портале "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Пользователь "$__AuthorName":"$__AuthorUrl" изменил свой профиль на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+^Вы получили это сообщение, так как являетесь администратором портала "${__VirtualRootPath}":"${__VirtualRootPath}". Если Вы не хотите получать оповещения об обновлениях профиля, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Новости портала "${__VirtualRootPath}":"${__VirtualRootPath}" за $Date
+
+#foreach($activity in $Activities)
+
+h2.$activity.Key
+
+#foreach($whatsNewActivity in $activity.Value)
+#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Автор*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
+
+
+#end
+
+#end
+
+
+^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}". Если Вы не хотите получать оповещения о новых событиях на портале "${__VirtualRootPath}":"${__VirtualRootPath}", пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_smtp_test" xml:space="preserve">
+    <value>Тестовое письмо для проверки настроек SMTP
+
+Это сообщение было сгенерировано автоматически для проверки настроек SMTP. Если вы его видите, значит, настройки указаны правильно, и их можно использовать на портале.
+
+
+С уважением,
+команда ONLYOFFICE</value>
+  </data>
+  <data name="pattern_user_has_join" xml:space="preserve">
+    <value>h1.Новый пользователь добавлен на портал "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Пользователь "$__AuthorName":"$__AuthorUrl" присоединился к порталу "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+^Вы получили это сообщение, так как являетесь администратором портала "${__VirtualRootPath}":"${__VirtualRootPath}". Если Вы не хотите получать оповещения о новых пользователях, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
+  <data name="pattern_user_ldap_activation" xml:space="preserve">
+    <value>Здравствуйте, $UserName,
+
+Вас пригласили в безопасный виртуальный офис вашей команды для организации эффективной совместной работы. Его адрес -  "${__VirtualRootPath}":"${__VirtualRootPath}". Советуем добавить эту ссылку в закладки: по всей вероятности, вы будете ей часто пользоваться.
+
+Чтобы принять приглашение, перейдите по следующей ссылке и используйте для входа логин и пароль от вашего корпоративного аккаунта. 
+
+$GreenButton
+
+Эта ссылка действительна только 7 дней.</value>
+  </data>
+  <data name="subject_activate_email" xml:space="preserve">
+    <value>${LetterLogoText}. Пожалуйста, активируйте Ваш адрес электронной почты</value>
+  </data>
+  <data name="subject_backup_created" xml:space="preserve">
+    <value>${LetterLogoText}. Создана резервная копия портала ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_change_email" xml:space="preserve">
+    <value>${LetterLogoText}. Запрос на изменение адреса электронной почты</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText}. Помощь с паролем</value>
+  </data>
+  <data name="subject_change_phone" xml:space="preserve">
+    <value>${LetterLogoText}. Запрос на изменение номера мобильного телефона</value>
+  </data>
+  <data name="subject_change_tfa" xml:space="preserve">
+    <value>${LetterLogoText}. Запрос на изменение резервных кодов</value>
+  </data>
+  <data name="subject_dns_change" xml:space="preserve">
+    <value>${LetterLogoText}. Изменение адреса портала</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v10" xml:space="preserve">
+    <value>Подтвердите адрес электронной почты</value>
+  </data>
+  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
+    <value>Настройте ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
+    <value>Пригласите коллег</value>
+  </data>
+  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
+    <value>Уведомление о продлении подписки на ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
+    <value>Уведомление о продлении подписки на ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
+    <value>Как проходит пробный период?</value>
+  </data>
+  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
+    <value>Сегодня истекает пробный период Enterprise Edition</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
+    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
+    <value>7 полезных советов для эффективной работы с документами</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v10" xml:space="preserve">
+    <value>Повысьте безопасность ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
+    <value>Следите за новостями команды ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
+    <value>Подтвердите адрес электронной почты</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
+    <value>Настройте виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
+    <value>Уведомление о продлении подписки на виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
+    <value>Уведомление о продлении подписки на виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v10" xml:space="preserve">
+    <value>Повысьте безопасность онлайн-офиса</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в виртуальный офис</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в виртуальный офис</value>
+  </data>
+  <data name="subject_for_admin_notify" xml:space="preserve">
+    <value>Сообщение пользователя для администраторов</value>
+  </data>
+  <data name="subject_join" xml:space="preserve">
+    <value>Приглашение на портал ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_mailbox_created" xml:space="preserve">
+    <value>${LetterLogoText}. Создание почтового ящика</value>
+  </data>
+  <data name="subject_mailbox_password_changed" xml:space="preserve">
+    <value>${LetterLogoText}. Изменение пароля почтового ящика</value>
+  </data>
+  <data name="subject_migration_error" xml:space="preserve">
+    <value>${LetterLogoText}. Ошибка при переносе портала в другой регион</value>
+  </data>
+  <data name="subject_migration_start" xml:space="preserve">
+    <value>${LetterLogoText}. Начался перенос портала в другой регион</value>
+  </data>
+  <data name="subject_migration_success" xml:space="preserve">
+    <value>${LetterLogoText}. Перенос портала в другой регион успешно завершен</value>
+  </data>
+  <data name="subject_opensource_admin_activation" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE!</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips" xml:space="preserve">
+    <value>7 полезных советов для более эффективной работы в модуле "Документы" ONLYOFFICE</value>
+  </data>
+  <data name="subject_opensource_admin_security_tips" xml:space="preserve">
+    <value>Простой способ повысить безопасность портала</value>
+  </data>
+  <data name="subject_personal_activate" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE для персонального использования!</value>
+  </data>
+  <data name="subject_personal_after_registration1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_after_registration14" xml:space="preserve">
+    <value>Инструменты в помощь фрилансеру</value>
+  </data>
+  <data name="subject_personal_after_registration21" xml:space="preserve">
+    <value>Попробуйте ONLYOFFICE для командной работы</value>
+  </data>
+  <data name="subject_personal_after_registration28" xml:space="preserve">
+    <value>Как повысить безопасность вашего виртуального офиса</value>
+  </data>
+  <data name="subject_personal_after_registration7" xml:space="preserve">
+    <value>Подключите свое облачное хранилище к ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_change_email" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Запрос на изменение адреса электронной почты</value>
+  </data>
+  <data name="subject_personal_change_password" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Помощь с паролем</value>
+  </data>
+  <data name="subject_personal_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Пожалуйста, активируйте Ваш адрес электронной почты</value>
+  </data>
+  <data name="subject_personal_profile_delete" xml:space="preserve">
+    <value>Удаление аккаунта ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_portal_deactivate" xml:space="preserve">
+    <value>Отключение портала ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete" xml:space="preserve">
+    <value>Удаление портала ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_portal_delete_success_v10" xml:space="preserve">
+    <value>ONLYOFFICE деактивирован</value>
+  </data>
+  <data name="subject_portal_rename" xml:space="preserve">
+    <value>${LetterLogoText}. Изменение адреса портала</value>
+  </data>
+  <data name="subject_profile_delete" xml:space="preserve">
+    <value>Удаление Вашего профиля на портале ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_updated" xml:space="preserve">
+    <value>Ваш профиль на портале ${__VirtualRootPath} был изменен</value>
+  </data>
+  <data name="subject_reassigns_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Завершена передача данных пользователя</value>
+  </data>
+  <data name="subject_reassigns_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Не удалось выполнить передачу данных пользователя</value>
+  </data>
+  <data name="subject_remove_user_data_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Завершено удаление данных пользователя</value>
+  </data>
+  <data name="subject_remove_user_data_failed" xml:space="preserve">
+    <value>${LetterLogoText}. Не удалось выполнить удаление данных пользователя</value>
+  </data>
+  <data name="subject_request_license" xml:space="preserve">
+    <value>Запрос лицензии на версию Enterprise</value>
+  </data>
+  <data name="subject_request_tariff" xml:space="preserve">
+    <value>Запрос тарифных планов по SaaS-версии</value>
+  </data>
+  <data name="subject_restore_completed" xml:space="preserve">
+    <value>${LetterLogoText}. Восстановление завершено</value>
+  </data>
+  <data name="subject_restore_started" xml:space="preserve">
+    <value>${LetterLogoText}. Началось восстановление</value>
+  </data>
+  <data name="subject_saas_admin_activation_v10" xml:space="preserve">
+    <value>Добро пожаловать в облако ONLYOFFICE!</value>
+  </data>
+  <data name="subject_saas_admin_invite_teammates_v10" xml:space="preserve">
+    <value>Пригласите людей в облачный офис</value>
+  </data>
+  <data name="subject_saas_admin_payment_after_monthly_subscriptions_v10" xml:space="preserve">
+    <value>Специальное предложение от ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_payment_warning_after1_v10" xml:space="preserve">
+    <value>Уведомление о продлении подписки на ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_payment_warning_before5_v10" xml:space="preserve">
+    <value>Продлите подписку на  ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v10" xml:space="preserve">
+    <value>Ваш ONLYOFFICE будет удален</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after30_v10" xml:space="preserve">
+    <value>Перейдите в бесплатный ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after5_v10" xml:space="preserve">
+    <value>Продлите пробный период ONLYOFFICE и получите скидки</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_before5_v10" xml:space="preserve">
+    <value>Используйте эту скидку до завершения пробного периода</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_v10" xml:space="preserve">
+    <value>Сегодня истекает пробный период ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v10" xml:space="preserve">
+    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_user_comfort_tips_v10" xml:space="preserve">
+    <value>Полезные советы для комфортной работы</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v10" xml:space="preserve">
+    <value>7 полезных советов для эффективной работы с документами</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v10" xml:space="preserve">
+    <value>Настройте ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_admin_without_activity_v10" xml:space="preserve">
+    <value>Следите за новостями команды ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_guest_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE</value>
+  </data>
+  <data name="subject_saas_user_activation_v10" xml:space="preserve">
+    <value>Стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_saas_user_welcome_v10" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE</value>
+  </data>
+  <data name="subject_self_profile_updated" xml:space="preserve">
+    <value>Оповещение об изменении профиля на портале ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Новости Вашего портала за $Date</value>
+  </data>
+  <data name="subject_smtp_test" xml:space="preserve">
+    <value>Тестовое письмо для проверки настроек SMTP</value>
+  </data>
+  <data name="subject_user_has_join" xml:space="preserve">
+    <value>Добавлен новый пользователь на портале ${LetterLogoText}</value>
+  </data>
+  <data name="subject_user_ldap_activation" xml:space="preserve">
+    <value>Вас приглашают стать участником ${__VirtualRootPath}</value>
+  </data>
+</root>
