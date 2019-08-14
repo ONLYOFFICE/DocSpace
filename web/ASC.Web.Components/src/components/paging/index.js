@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
 import Button from '../button'
@@ -42,8 +42,7 @@ const nextAction = () => {
 const Paging = props => {
   //console.log("Paging render");
   const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, 
-    openDirection, disablePrevious, disableNext, selectedPage, selectedCount, emptyPagePlaceholder, 
-    emptyCountPlaceholder } = props;
+    openDirection, disablePrevious, disableNext, defaultPageItem, defaultCountItem} = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
@@ -69,9 +68,8 @@ const Paging = props => {
             directionY={openDirection} 
             options={pageItems} 
             onSelect={onSelectPageAction} 
-            selectedOption={selectedPage} 
-            {...setDropDownMaxHeight}
-            emptyOptionsPlaceholder={emptyPagePlaceholder} />
+            selectedOption={defaultPageItem} 
+            {...setDropDownMaxHeight} />
         </StyledPage>
       }
       <Button 
@@ -86,8 +84,7 @@ const Paging = props => {
             directionY={openDirection} 
             options={countItems} 
             onSelect={onSelectCountAction} 
-            selectedOption={selectedCount}
-            emptyOptionsPlaceholder={emptyCountPlaceholder} />
+            selectedOption={defaultCountItem}/>
         </StyledOnPage>
       }
     </StyledPaging>
@@ -96,32 +93,26 @@ const Paging = props => {
 
 Paging.propTypes = {
   previousLabel: PropTypes.string,
-  previousAction: PropTypes.func,
-  disablePrevious: PropTypes.bool,
   nextLabel: PropTypes.string,
+
+  previousAction: PropTypes.func,
   nextAction: PropTypes.func,
+
+  disablePrevious: PropTypes.bool,
   disableNext: PropTypes.bool,
-  selectedPage: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  selectedCount: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+
+  defaultPageItem: PropTypes.object,
+  defaultCountItem: PropTypes.object,
+
   onSelectPage: PropTypes.func,
-  onSelectCount: PropTypes.func,
-  emptyPagePlaceholder: PropTypes.string,
-  emptyCountPlaceholder: PropTypes.string
+  onSelectCount: PropTypes.func
 }
 
 Paging.defaultProps = {
   previousAction: previousAction,
   nextAction: nextAction,
   disablePrevious: false,
-  disableNext: false,
-  emptyPagePlaceholder: '1 of 1',
-  emptyCountPlaceholder: '25 per page'
+  disableNext: false
 }
 
 export default Paging;
