@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
@@ -115,18 +115,7 @@ const EmptyIcon = styled(Icons.CameraIcon)`
     border-radius: 50%;
 `;
 
-const getInitials = userName => {
-  const initials = userName
-    ? userName
-      .split(/\s/)
-      .reduce((response, word) => response += word.slice(0, 1), '')
-      .substring(0, 2)
-    : "";
-  return initials;
-};
-
 const EditLink = styled.div`
-
   padding-left: 10px;
   padding-right: 10px;
 
@@ -136,21 +125,50 @@ const EditLink = styled.div`
   }
 `;
 
-const Avatar = React.memo(props => {
+const getRoleIcon = role => {
+  switch (role) {
+    case 'guest':
+      return <Icons.GuestIcon size='scale' />;
+    case 'admin':
+      return <Icons.AdministratorIcon size='scale' />;
+    case 'owner':
+      return <Icons.OwnerIcon size='scale' />;
+    default:
+      return null;
+  }
+};
+
+const getInitials = userName =>
+  typeof userName === 'string'
+    ? userName
+      .split(/\s/)
+      .reduce((response, word) => response += word.slice(0, 1), '')
+      .substring(0, 2)
+    : '';
+
+const Initials = props => (
+  <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>
+);
+
+const Avatar = memo(props => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editLabel, editAction } = props;
 
-  const initials = getInitials(userName);
+  const avatarContent = source
+    ? <ImageStyled src={source} />
+    : userName
+      ? <Initials userName={userName} size={size} />
+      : <EmptyIcon size='scale' />;
+
+  const roleIcon = getRoleIcon(role);
 
   return (
     <StyledAvatar {...props}>
-      <AvatarWrapper {...props}>
-        {source !== '' && <ImageStyled src={source} />}
-        {(source === '' && userName !== '') && <NamedAvatar {...props}>{initials}</NamedAvatar>}
-        {(source === '' && userName === '') && <EmptyIcon size='scale' />}
+      <AvatarWrapper source={source} userName={userName}>
+        {avatarContent}
       </AvatarWrapper>
       {editing && (size === 'max') &&
-        <EditContainer {...props}>
+        <EditContainer>
           <EditLink>
             <Link
               type='action'
@@ -165,10 +183,8 @@ const Avatar = React.memo(props => {
             </Link>
           </EditLink>
         </EditContainer>}
-      <RoleWrapper {...props}>
-        {role === 'guest' && <Icons.GuestIcon size='scale' />}
-        {role === 'admin' && <Icons.AdministratorIcon size='scale' />}
-        {role === 'owner' && <Icons.OwnerIcon size='scale' />}
+      <RoleWrapper size={size}>
+        {roleIcon}
       </RoleWrapper>
     </StyledAvatar>
   );
