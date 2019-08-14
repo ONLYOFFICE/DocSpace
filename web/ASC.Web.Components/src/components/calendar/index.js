@@ -117,10 +117,9 @@ class Calendar extends Component {
         };
     }
 
-    getArrayDates = function () {
+    getArrayDates() {
         let date1 = this.props.minDate.getFullYear();
         let date2 = this.props.maxDate.getFullYear();
-
         const yearList = [];
         for (let i = date1; i <= date2; i++) {
             yearList.push({ key: `${i}`, label: `${String(i).toLocaleString(this.props.location)}` });
@@ -128,54 +127,39 @@ class Calendar extends Component {
         return yearList;
     }
 
-    getCurrentDate = function () {
+    getCurrentDate() {
         let year = this.getArrayDates();
         year = year.find(x => x.key == this.state.selectedDate.getFullYear());
         return (year.key);
     }
 
-    getListMonth = function (date1, date2) {
-        //const monthList = [];
+    selectedDate = (value) => {
+        this.setState({ openToDate: new Date(value.key, this.state.openToDate.getMonth()) });
+    }
+
+
+    getListMonth(date1, date2) {
         let monthList = new Array();
         for (let i = date1; i <= date2; i++) {
             monthList.push({ key: `${i}`, label: `${this.state.months[i]}` });
         }
-        //console.log(monthList[0]);
         return monthList;
     }
 
-    getArrayMonth = function () {
+    getArrayMonth() {
         let date1 = this.props.minDate.getMonth();
         let date2 = this.props.maxDate.getMonth();
-        //let monthList = [];
         let monthList = new Array();
         if (this.props.minDate.getFullYear() !== this.props.maxDate.getFullYear()) {
             monthList = this.getListMonth(0, 11);
         } else { monthList = this.getListMonth(date1, date2); }
-        //console.log(monthList);
         return monthList;
     }
 
-    getCurrentMonth = function () {
+    getCurrentMonth() {
         let month = this.getArrayMonth();
         let selectedmonth = month.find(x => x.key == this.state.selectedDate.getMonth());
         return (selectedmonth.key);
-    }
-
-    fomateDate = function (date) {
-        return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-    }
-
-    handleChange(date) {
-        if (this.fomateDate(this.props.selectedDate) !== this.fomateDate(date)) {
-            this.setState({ selectedDate: date });
-            this.props.onChange && this.props.onChange(date);
-        }
-    }
-
-    selectedDate = (value) => {
-        //console.log(value);
-        this.setState({ openToDate: new Date(value.key, this.state.openToDate.getMonth()) });
     }
 
     selectedMonth = (value) => {
@@ -183,32 +167,47 @@ class Calendar extends Component {
         this.setState({ openToDate: new Date(this.state.openToDate.getFullYear(), value.key) });
     }
 
+    fomateDate(date) {
+        return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+    }
+
+    handleChange = (date) => {
+        if (this.fomateDate(this.props.selectedDate) !== this.fomateDate(date)) {
+            this.setState({ selectedDate: date });
+            this.props.onChange && this.props.onChange(date);
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.location !== prevProps.location) {
             moment.locale(this.props.location);
-            this.setState(this.state.months = moment.months());
+            this.state.months = moment.months()
         }
     }
 
     render() {
+        //console.log('render');
+        const weekdays = moment.weekdaysMin();
+        const minDate = new Date(this.props.minDate.getFullYear(), this.props.minDate.getMonth(), 1);
+        const maxDate = new Date(this.props.maxDate.getFullYear(), this.props.maxDate.getMonth() + 1, 0);
         return (
             <CalendarContainer>
                 <DataSelector>
                     <div>
-                        <ComboBox scaled={false} onSelect={this.selectedMonth} isDisabled={this.props.disabled} options={this.getArrayMonth()} selectedOption={this.getCurrentMonth()} />
+                        <ComboBox scaled={false} onSelect={this.selectedMonth.bind(this)} isDisabled={this.props.disabled} options={this.getArrayMonth()} /*selectedOption={this.getCurrentMonth.bind(this)}*/ />
                     </div>
                     <ComboboxStyled>
-                        <ComboBox onSelect={this.selectedDate} isDisabled={this.props.disabled} options={this.getArrayDates()} selectedOption={this.getCurrentDate()} />
+                        <ComboBox onSelect={this.selectedDate.bind(this)} isDisabled={this.props.disabled} options={this.getArrayDates()} selectedOption={this.getCurrentDate()} />
                     </ComboboxStyled>
                 </DataSelector>
                 <DayNames>
-                    <DayName>{moment.weekdaysMin()[0]}</DayName>
-                    <DayName>{moment.weekdaysMin()[1]}</DayName>
-                    <DayName>{moment.weekdaysMin()[2]}</DayName>
-                    <DayName>{moment.weekdaysMin()[3]}</DayName>
-                    <DayName>{moment.weekdaysMin()[4]}</DayName>
-                    <DayName>{moment.weekdaysMin()[5]}</DayName>
-                    <DayName>{moment.weekdaysMin()[6]}</DayName>
+                    <DayName>{weekdays[0]}</DayName>
+                    <DayName>{weekdays[1]}</DayName>
+                    <DayName>{weekdays[2]}</DayName>
+                    <DayName>{weekdays[3]}</DayName>
+                    <DayName>{weekdays[4]}</DayName>
+                    <DayName>{weekdays[5]}</DayName>
+                    <DayName>{weekdays[6]}</DayName>
                 </DayNames>
 
                 <CalendarStyle color={this.props.themeColor}>
@@ -216,8 +215,8 @@ class Calendar extends Component {
                         inline
                         selected={this.state.selectedDate}
                         onChange={this.handleChange.bind(this)}
-                        minDate={new Date(this.props.minDate.getFullYear(), this.props.minDate.getMonth(), 1)}
-                        maxDate={new Date(this.props.maxDate.getFullYear(), this.props.maxDate.getMonth() + 1, 0)}
+                        minDate={minDate}
+                        maxDate={maxDate}
                         openToDate={this.state.openToDate}
                         showDisabledMonthNavigation
                         renderCustomHeader={({ }) => { }}
@@ -225,7 +224,6 @@ class Calendar extends Component {
                     //locale={this.props.location} 
                     //disabled={this.props.disabled}
                     //dateFormat={this.props.dateFormat}
-                    //locale={this.props.location} 
                     //locale='language'
                     />
                 </CalendarStyle>
