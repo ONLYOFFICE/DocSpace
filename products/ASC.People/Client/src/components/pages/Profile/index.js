@@ -5,7 +5,6 @@ import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
-import { isAdmin, isMe } from '../../../store/auth/selectors';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -80,8 +79,7 @@ class Profile extends React.Component {
     console.log("Profile render")
 
     const { isBackdropVisible, isArticleVisible, isArticlePinned } = this.state;
-    const { profile, auth, isAdmin, match } = this.props;
-    const { userId } = match.params;
+    const { profile } = this.props;
     return (
       profile
         ? <>
@@ -103,7 +101,7 @@ class Profile extends React.Component {
               <SectionHeaderContent profile={profile} />
             </NPL.SectionHeader>
             <NPL.SectionBody>
-              <SectionBodyContent profile={profile} isAdmin={isAdmin} isSelf={isMe(auth.user, userId)} />
+              <SectionBodyContent profile={profile} />
             </NPL.SectionBody>
             <NPL.SectionToggler visible={!isArticlePinned} onClick={this.onShowArticle} />
           </NPL.Section>
@@ -129,8 +127,6 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
-    isAdmin: isAdmin(state.auth.user),
     profile: state.profile.targetUser
   };
 }
