@@ -1,20 +1,30 @@
 import { toUrlParams } from "../services/converter";
 
+const DEFAULT_PAGE = 0;
+const DEFAULT_PAGE_COUNT = 25;
+const DEFAULT_TOTAL = 0;
+const DEFAULT_SORT_BY = "firstname";
+const DEFAULT_SORT_ORDER = "ascending";
+const DEFAULT_EMPLOYEE_STATUS = null;
+const DEFAULT_ACTIVATION_STATUS = null;
+const DEFAULT_ROLE = null;
+const DEFAULT_SEARCH = null;
+
 class Filter {
-  static getDefault(total = 0) {
-    return new Filter(0, 25, total);
+  static getDefault(total = DEFAULT_TOTAL) {
+    return new Filter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
   }
 
   constructor(
-    page = 0,
-    pageCount = 25,
-    total = 0,
-    sortBy = "firstname",
-    sortOrder = "ascending",
-    employeeStatus = null,
-    activationStatus = null,
-    role = null,
-    search = null
+    page = DEFAULT_PAGE,
+    pageCount = DEFAULT_PAGE_COUNT,
+    total = DEFAULT_TOTAL,
+    sortBy = DEFAULT_SORT_BY,
+    sortOrder = DEFAULT_SORT_ORDER,
+    employeeStatus = DEFAULT_EMPLOYEE_STATUS,
+    activationStatus = DEFAULT_ACTIVATION_STATUS,
+    role = DEFAULT_ROLE,
+    search = DEFAULT_SEARCH
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -84,19 +94,27 @@ class Filter {
     return str;
   };
 
-  clone() {
-    return new Filter(
-      this.page,
-      this.pageCount,
-      this.total,
-      this.sortBy,
-      this.sortOrder,
-      this.employeeStatus,
-      this.activationStatus,
-      this.role,
-      this.search,
-      this.total
-    );
+  clone(onlySorting) {
+    return onlySorting
+      ? new Filter(
+          DEFAULT_PAGE,
+          DEFAULT_PAGE_COUNT,
+          DEFAULT_TOTAL,
+          this.sortBy,
+          this.sortOrder
+        )
+      : new Filter(
+          this.page,
+          this.pageCount,
+          this.total,
+          this.sortBy,
+          this.sortOrder,
+          this.employeeStatus,
+          this.activationStatus,
+          this.role,
+          this.search,
+          this.total
+        );
   }
 }
 

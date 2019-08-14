@@ -128,6 +128,7 @@ class Home extends React.Component {
           sectionBodyContent={
             <SectionBodyContent
               selected={selected}
+              onLoading={this.onLoading}
               onChange={this.onRowChange}
             />
           }

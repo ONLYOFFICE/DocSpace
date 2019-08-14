@@ -10,17 +10,16 @@ import {
   Link
 } from "asc-web-components";
 import UserContent from "./userContent";
-//import config from "../../../../../../package.json";
 import {
   selectUser,
   deselectUser,
-  setSelection
+  setSelection,
+  fetchPeople
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
   getUserStatus,
-  getUserRole,
-  isUserDisabled
+  getUserRole
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { FixedSizeList as List, areEqual } from "react-window";
@@ -209,6 +208,14 @@ class SectionBodyContent extends React.PureComponent {
     }
   };
 
+  onResetFilter = () => {
+    const {filter, fetchPeople, onLoading} = this.props;
+    const newFilter = filter.clone(true);
+    onLoading(true);
+    fetchPeople(newFilter).finally(() => onLoading(false));
+    //fetchPeople(newFilter).finally(() => onLoading(false));
+  };
+
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings } = this.props;
@@ -253,7 +260,7 @@ class SectionBodyContent extends React.PureComponent {
             <Link
               type="action"
               isHovered={true}
-              onClick={e => console.log("Reset filter clicked", e)}
+              onClick={this.onResetFilter}
             >
               Reset filter
             </Link>
@@ -274,11 +281,12 @@ const mapStateToProps = state => {
     selected: state.people.selected,
     users: state.people.users,
     viewer: state.auth.user,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    filter: state.people.filter
   };
 };
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection }
+  { selectUser, deselectUser, setSelection, fetchPeople }
 )(withRouter(SectionBodyContent));
