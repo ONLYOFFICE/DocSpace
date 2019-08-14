@@ -22,7 +22,7 @@ import {
   getUserRole,
   isUserDisabled
 } from "../../../../../store/people/selectors";
-import { isAdmin } from "../../../../../store/auth/selectors";
+import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
@@ -35,13 +35,13 @@ const Row = memo(
     history,
     settings,
     selection,
+    viewer,
     getUserContextOptions
   }) => {
     // Data passed to List as "itemData" is available as props.data
     const user = data[index];
-
-    // console.log("Row user", user);
-    const contextOptions = getUserContextOptions(user);
+    const contextOptions = getUserContextOptions(user, viewer);
+    const contextOptionsProps = !contextOptions.length ? {} : {contextOptions};
 
     return (
       <ContentRow
@@ -51,10 +51,10 @@ const Row = memo(
         avatarRole={getUserRole(user)}
         avatarSource={user.avatar}
         avatarName={user.displayName}
-        contextOptions={contextOptions}
         checked={isUserSelected(selection, user.id)}
         onSelect={onContentRowSelect}
         style={style}
+        {...contextOptionsProps}
       >
         <UserContent user={user} history={history} settings={settings} />
       </ContentRow>
@@ -89,46 +89,115 @@ class SectionBodyContent extends React.PureComponent {
     toastr.success("Context action: Disable");
   };
 
-  getUserContextOptions = user => {
-    const options = [
-      {
-        key: "key1",
-        label: "Send e-mail",
-        onClick: this.onEmailSentClick
-      },
-      {
-        key: "key2",
-        label: "Send message",
-        onClick: this.onSendMessageClick
-      },
-      { key: "key3", isSeparator: true },
-      {
-        key: "key4",
-        label: "Edit",
-        onClick: this.onEditClick.bind(this, user)
-      },
-      {
-        key: "key5",
-        label: "Change password",
-        onClick: this.onChangePasswordClick
-      },
-      {
-        key: "key6",
-        label: "Change e-mail",
-        onClick: this.onChangeEmailClick
-      }
-    ];
+  onEnableClick = () => {
+    toastr.success("Context action: Enable");
+  };
+  
+  onReassignDataClick = () => {
+    toastr.success("Context action: Reassign data");
+  };
+  
+  onDeletePersonalDataClick = (user) => {
+    toastr.success("Context action: Delete personal data");
+  };
+  
+  onDeleteProfileClick = () => {
+    toastr.success("Context action: Delete profile");
+  };
+  
+  onInviteAgainClick = () => {
+    toastr.success("Context action: Invite again");
+  };
+  getUserContextOptions = (user, viewer) => {
 
-    return [
-      ...options,
-      !isUserDisabled(user)
-        ? {
-            key: "key7",
+    let status = "";
+
+    if(isAdmin(viewer) || (!isAdmin(viewer) && isMe(user, viewer.userName))) {
+      status = getUserStatus(user); 
+    }
+
+    //console.log("getUserContextOptions", user, viewer, status);
+
+    switch (status) {
+      case "normal":
+      case "unknown":
+        return [
+          {
+            key: "send-email",
+            label: "Send e-mail",
+            onClick: this.onEmailSentClick
+          },
+          {
+            key: "send-message",
+            label: "Send message",
+            onClick: this.onSendMessageClick
+          },
+          { key: "key3", isSeparator: true },
+          {
+            key: "edit",
+            label: "Edit",
+            onClick: this.onEditClick.bind(this, user)
+          },
+          {
+            key: "change-password",
+            label: "Change password",
+            onClick: this.onChangePasswordClick
+          },
+          {
+            key: "change-email",
+            label: "Change e-mail",
+            onClick: this.onChangeEmailClick
+          },
+          {
+            key: "disable",
             label: "Disable",
             onClick: this.onDisableClick
           }
-        : {}
-    ];
+        ];
+      case "disabled":
+        return [
+          {
+            key: "enable",
+            label: "Enable",
+            onClick: this.onEnableClick
+          },
+          {
+            key: "reassign-data",
+            label: "Reassign data",
+            onClick: this.onReassignDataClick
+          },
+          {
+            key: "delete-personal-data",
+            label: "Delete personal data",
+            onClick: this.onDeletePersonalDataClick.bind(this, user)
+          },
+          {
+            key: "delete-profile",
+            label: "Delete profile",
+            onClick: this.onDeleteProfileClick
+          }
+        ];
+      case "pending":
+        return [
+          {
+            key: "edit",
+            label: "Edit",
+            onClick: this.onEditClick.bind(this, user)
+          },
+          {
+            key: "invite-again",
+            label: "Invite again",
+            onClick: this.onInviteAgainClick
+          },
+          {
+            key: "delete-profile",
+            label: "Delete profile",
+            onClick: this.onDeleteProfileClick
+          }
+        ];
+      default:
+        return [];
+    }
   };
 
   onContentRowSelect = (checked, user) => {
@@ -142,7 +211,7 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     console.log("Home SectionBodyContent render()");
-    const { users, isAdmin, selection, history, settings } = this.props;
+    const { users, viewer, selection, history, settings } = this.props;
 
     return users.length > 0 ? (
       <AutoSizer>
@@ -165,6 +234,7 @@ class SectionBodyContent extends React.PureComponent {
                 history={history}
                 settings={settings}
                 selection={selection}
+                viewer={viewer}
                 getUserContextOptions={this.getUserContextOptions}
               />
             )}
@@ -203,7 +273,7 @@ const mapStateToProps = state => {
     selection: state.people.selection,
     selected: state.people.selected,
     users: state.people.users,
-    isAdmin: isAdmin(state.auth),
+    viewer: state.auth.user,
     settings: state.auth.settings
   };
 };

@@ -73,7 +73,7 @@ ArticleMainButtonContent.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        isAdmin: isAdmin(state.auth),
+        isAdmin: isAdmin(state.auth.user),
         settings: state.auth.settings
     }
 }

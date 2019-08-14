@@ -18,17 +18,17 @@ export function resetProfile() {
     };
 };
 
-export function fetchProfile(userId) {
+export function fetchProfile(userName) {
     return async (dispatch, getState) => {
         try {
             const { auth, people } = getState();
 
-            if (isMe(auth, userId)) {
+            if (isMe(auth.user, userName)) {
                 dispatch(setProfile(auth.user));
             } else {
-                const user = getUserByUserName(people.users, userId);
+                const user = getUserByUserName(people.users, userName);
                 if (!user) {
-                    const res = await api.getUser(userId);
+                    const res = await api.getUser(userName);
                     dispatch(setProfile(res.data.response))
                 }
                 else

@@ -103,7 +103,7 @@ class Profile extends React.Component {
               <SectionHeaderContent profile={profile} />
             </NPL.SectionHeader>
             <NPL.SectionBody>
-              <SectionBodyContent profile={profile} isAdmin={isAdmin} isSelf={isMe(auth, userId)} />
+              <SectionBodyContent profile={profile} isAdmin={isAdmin} isSelf={isMe(auth.user, userId)} />
             </NPL.SectionBody>
             <NPL.SectionToggler visible={!isArticlePinned} onClick={this.onShowArticle} />
           </NPL.Section>
@@ -130,7 +130,7 @@ Profile.propTypes = {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    isAdmin: isAdmin(state.auth),
+    isAdmin: isAdmin(state.auth.user),
     profile: state.profile.targetUser
   };
 }

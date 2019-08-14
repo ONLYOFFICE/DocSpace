@@ -15,10 +15,10 @@ export function getAvailableModules(modules) {
     return products.length ? [separator, ...products] : products;
 };
 
-export function isAdmin(auth) {
-    return auth.user.isAdmin || auth.user.isOwner;
+export function isAdmin(user) {
+    return user.isAdmin || user.isOwner;
 };
 
-export function isMe(auth, userId) {
-    return userId === "@self" || userId === auth.user.userName;
+export function isMe(user, userName) {
+    return userName === "@self" || userName === user.userName;
 };
