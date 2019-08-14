@@ -132,6 +132,11 @@ namespace ASC.Core.Data
                 }
             }
 
+            if (!isAdmin && employeeStatus == null)
+            {
+                q.Where(!Exp.Eq("u.status", EmployeeStatus.Terminated));
+            }
+
             if (employeeStatus != null)
             {
                 switch (employeeStatus)
@@ -144,11 +149,11 @@ namespace ASC.Core.Data
                         }
                         else
                         {
-                            q.Where("u.status", EmployeeStatus.Active);
+                            q.Where(Exp.False);
                         }
                         break;
                     case EmployeeStatus.All:
-                        if (!isAdmin) q.Where("u.status", EmployeeStatus.Active);
+                        if (!isAdmin) q.Where(!Exp.Eq("u.status", EmployeeStatus.Terminated));
                         break;
                     case EmployeeStatus.Default:
                     case EmployeeStatus.Active:
