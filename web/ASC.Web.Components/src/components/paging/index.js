@@ -42,7 +42,7 @@ const nextAction = () => {
 const Paging = props => {
   //console.log("Paging render");
   const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, 
-    openDirection, disablePrevious, disableNext, defaultPageItem, defaultCountItem} = props;
+    openDirection, disablePrevious, disableNext, selectedPageItem, selectedCountItem} = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
@@ -68,7 +68,7 @@ const Paging = props => {
             directionY={openDirection} 
             options={pageItems} 
             onSelect={onSelectPageAction} 
-            selectedOption={defaultPageItem} 
+            selectedOption={selectedPageItem}
             {...setDropDownMaxHeight} />
         </StyledPage>
       }
@@ -84,7 +84,7 @@ const Paging = props => {
             directionY={openDirection} 
             options={countItems} 
             onSelect={onSelectCountAction} 
-            selectedOption={defaultCountItem}/>
+            selectedOption={selectedCountItem}/>
         </StyledOnPage>
       }
     </StyledPaging>
@@ -101,8 +101,8 @@ Paging.propTypes = {
   disablePrevious: PropTypes.bool,
   disableNext: PropTypes.bool,
 
-  defaultPageItem: PropTypes.object,
-  defaultCountItem: PropTypes.object,
+  selectedPageItem: PropTypes.object,
+  selectedCountItem: PropTypes.object,
 
   onSelectPage: PropTypes.func,
   onSelectCount: PropTypes.func

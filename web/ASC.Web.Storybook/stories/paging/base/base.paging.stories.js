@@ -42,16 +42,16 @@ storiesOf('Components|Paging', module)
     const selectedCount = select('selectedCount', [25, 50, 100], 100);
     const pageCount = number('Count of pages', 10);
     const pageItems = createPageItems(pageCount);
-    const defaultPageItem = pageItems[0];
-    const defaultCountItem = countItems[0];
+    const selectedPageItem = pageItems[0];
+    const selectedCountItem = countItems[0];
 
     return (
       <Section>
         <Paging previousLabel={text('previousLabel', 'Previous')}
           nextLabel={text('nextLabel', 'Next')}
           pageItems={displayItems ? pageItems : undefined}
-          defaultPageItem={defaultPageItem}
-          defaultCountItem={defaultCountItem}
+          selectedPageItem={selectedPageItem}
+          selectedCountItem={selectedCountItem}
           countItems={displayCount ? countItems : undefined}
           disablePrevious={boolean('disablePrevious', false)}
           disableNext={boolean('disableNext', false)}
