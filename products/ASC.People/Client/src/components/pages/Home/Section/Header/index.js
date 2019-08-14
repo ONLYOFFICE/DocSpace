@@ -2,6 +2,7 @@ import React from 'react';
 import { GroupButtonsMenu, DropDownItem, Text, toastr, ContextMenuButton } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { getSelectedGroup } from '../../../../../store/people/selectors';
+import { isAdmin } from '../../../../../store/auth/selectors';
 
 const getPeopleItems = (onSelect) => [
     {
@@ -74,7 +75,8 @@ const SectionHeaderContent = React.memo(({
     onCheck,
     onSelect,
     onClose,
-    group
+    group,
+    isAdmin
   }) => {
     console.log("SectionHeaderContent render");
     const menuItems = getPeopleItems(onSelect);
@@ -97,14 +99,16 @@ const SectionHeaderContent = React.memo(({
       group 
       ? <div style={wrapperStyle}>
       <Text.ContentHeader>{group.name}</Text.ContentHeader>
-      <ContextMenuButton 
-        directionX='right' 
-        title='Actions' 
-        iconName='VerticalDotsIcon' 
-        size={16} 
-        color='#A3A9AE' 
-        getData={contextOptions}
-        isDisabled={false}/>
+      {isAdmin &&
+        <ContextMenuButton 
+          directionX='right' 
+          title='Actions' 
+          iconName='VerticalDotsIcon' 
+          size={16} 
+          color='#A3A9AE' 
+          getData={contextOptions}
+          isDisabled={false}/>
+      }
       </div>
       : <Text.ContentHeader>People</Text.ContentHeader>
     )
@@ -113,7 +117,8 @@ const SectionHeaderContent = React.memo(({
 
   const mapStateToProps = (state) => {
     return {
-      group: getSelectedGroup(state.people.groups, state.people.selectedGroup)
+      group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
+      isAdmin: isAdmin(state.auth.user)
     }
   }
 

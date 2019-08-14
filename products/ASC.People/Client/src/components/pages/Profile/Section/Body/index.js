@@ -1,8 +1,19 @@
-import React, { useCallback } from 'react';
-import { withRouter } from 'react-router';
-import { Text, Avatar, Button, ToggleContent, IconButton, Link } from 'asc-web-components';
-import { connect } from 'react-redux';
-import { getUserRole, getUserContacts } from '../../../../../store/people/selectors';
+import React, { useCallback } from "react";
+import { withRouter } from "react-router";
+import {
+  Text,
+  Avatar,
+  Button,
+  ToggleContent,
+  IconButton,
+  Link
+} from "asc-web-components";
+import { connect } from "react-redux";
+import {
+  getUserRole,
+  getUserContacts
+} from "../../../../../store/people/selectors";
+import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 
 const profileWrapper = {
   display: "flex",
@@ -40,7 +51,7 @@ const titlesWrapper = {
 const restMargins = {
   marginBottom: "0",
   marginBlockStart: "5px",
-  marginBlockEnd: "0px",
+  marginBlockEnd: "0px"
 };
 
 const notesWrapper = {
@@ -70,7 +81,7 @@ const marginLeft18 = {
 const selfToggleWrapper = {
   width: "100%",
   marginBottom: "24px"
-}
+};
 
 const contactsToggleWrapper = {
   width: "100%",
@@ -86,47 +97,52 @@ const contactWrapper = {
   width: "300px"
 };
 
-const getFormattedDate = (date) => {
+const getFormattedDate = date => {
   if (!date) return;
-  let d = date.slice(0, 10).split('-');
-  return d[1] + '.' + d[2] + '.' + d[0];
+  let d = date.slice(0, 10).split("-");
+  return d[1] + "." + d[2] + "." + d[0];
 };
 
-const getFormattedDepartments = (departments) => {
-  const splittedDepartments = departments.split(',');
+const getFormattedDepartments = departments => {
+  const splittedDepartments = departments.split(",");
   const departmentsLength = splittedDepartments.length - 1;
   const formattedDepartments = splittedDepartments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="action" fontSize={13} isHovered={true} >
+        <Link type="action" fontSize={13} isHovered={true}>
           {department.trim()}
         </Link>
-        {(departmentsLength !== index) ? ', ' : ''}
+        {departmentsLength !== index ? ", " : ""}
       </span>
-    )
+    );
   });
 
   return formattedDepartments;
 };
 
-const capitalizeFirstLetter = (string) => {
+const capitalizeFirstLetter = string => {
   if (!string) return;
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const createContacts = (contacts) => {
+const createContacts = contacts => {
   return contacts.map((contact, index) => {
     return (
       <div key={index} style={contactWrapper}>
-        <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} />
+        <IconButton
+          color="#333333"
+          size={16}
+          iconName={contact.icon}
+          isFill={true}
+        />
         <div style={textTruncate}>{contact.value}</div>
       </div>
     );
   });
 };
 
-const SectionBodyContent = (props) => {
-  const { profile, history, isSelf, settings } = props;
+const SectionBodyContent = props => {
+  const { profile, history, isSelf, settings, isAdmin, viewer } = props;
   //console.log(profile, settings);
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
@@ -138,12 +154,12 @@ const SectionBodyContent = (props) => {
   const infoContacts = contacts && createContacts(contacts.contact);
 
   const onEmailClick = useCallback(
-    () => window.open('mailto:' + profile.email),
+    () => window.open("mailto:" + profile.email),
     [profile.email]
   );
 
   const onEditSubscriptionsClick = useCallback(
-    () => console.log('Edit subscriptions onClick()'),
+    () => console.log("Edit subscriptions onClick()"),
     []
   );
 
@@ -162,30 +178,95 @@ const SectionBodyContent = (props) => {
   return (
     <div style={profileWrapper}>
       <div style={avatarWrapper}>
-        <Avatar size="max" role={role} source={profile.avatarMax} userName={profile.displayName} />
-        <Button style={editButtonWrapper} size="big" label="Edit profile" onClick={onEditProfileClick} />
+        <Avatar
+          size="max"
+          role={role}
+          source={profile.avatarMax}
+          userName={profile.displayName}
+        />
+        {(isAdmin || isMe(viewer, profile.userName)) && (
+          <Button
+            style={editButtonWrapper}
+            size="big"
+            label="Edit profile"
+            onClick={onEditProfileClick}
+          />
+        )}
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
-          <Text.Body style={restMargins} color='#A3A9AE' title='Type'>Type:</Text.Body>
-          {profile.email && <Text.Body style={restMargins} color='#A3A9AE' title='E-mail'>E-mail:</Text.Body>}
-          {profile.department && <Text.Body style={restMargins} color='#A3A9AE' title='Department'>Department:</Text.Body>}
-          {profile.title && <Text.Body style={restMargins} color='#A3A9AE' title='Position'>Position:</Text.Body>}
-          {profile.mobilePhone && <Text.Body style={restMargins} color='#A3A9AE' title='Phone'>Phone:</Text.Body>}
-          {profile.sex && <Text.Body style={restMargins} color='#A3A9AE' title='Sex'>Sex:</Text.Body>}
-          {profile.workFrom && <Text.Body style={restMargins} color='#A3A9AE' title='Employed since'>Employed since:</Text.Body>}
-          {profile.birthday && <Text.Body style={restMargins} color='#A3A9AE' title='Date of birth'>Date of birth:</Text.Body>}
-          {profile.location && <Text.Body style={restMargins} color='#A3A9AE' title='Location'>Location:</Text.Body>}
-          {isSelf && <Text.Body style={restMargins} color='#A3A9AE' title='Language'>Language:</Text.Body>}
+          <Text.Body style={restMargins} color="#A3A9AE" title="Type">
+            Type:
+          </Text.Body>
+          {profile.email && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="E-mail">
+              E-mail:
+            </Text.Body>
+          )}
+          {profile.department && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Department">
+              Department:
+            </Text.Body>
+          )}
+          {profile.title && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Position">
+              Position:
+            </Text.Body>
+          )}
+          {profile.mobilePhone && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Phone">
+              Phone:
+            </Text.Body>
+          )}
+          {profile.sex && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Sex">
+              Sex:
+            </Text.Body>
+          )}
+          {profile.workFrom && (
+            <Text.Body
+              style={restMargins}
+              color="#A3A9AE"
+              title="Employed since"
+            >
+              Employed since:
+            </Text.Body>
+          )}
+          {profile.birthday && (
+            <Text.Body
+              style={restMargins}
+              color="#A3A9AE"
+              title="Date of birth"
+            >
+              Date of birth:
+            </Text.Body>
+          )}
+          {profile.location && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Location">
+              Location:
+            </Text.Body>
+          )}
+          {isSelf && (
+            <Text.Body style={restMargins} color="#A3A9AE" title="Language">
+              Language:
+            </Text.Body>
+          )}
           {/*{isSelf && <Text.Body style={marginTop24} color='#A3A9AE' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
-        </div> 
+        </div>
         <div>
-          <Text.Body style={restMargins}>{profile.isVisitor ? "Guest" : "Employee"}</Text.Body>
           <Text.Body style={restMargins}>
-            <Link type="page" fontSize={13} isHovered={true} onClick={onEmailClick} >
+            {profile.isVisitor ? "Guest" : "Employee"}
+          </Text.Body>
+          <Text.Body style={restMargins}>
+            <Link
+              type="page"
+              fontSize={13}
+              isHovered={true}
+              onClick={onEmailClick}
+            >
               {profile.email}
             </Link>
-            {profile.activationStatus === 2 && ' (Pending)'}
+            {profile.activationStatus === 2 && " (Pending)"}
           </Text.Body>
           <Text.Body style={restMargins}>{formatedDepartments}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
@@ -194,7 +275,11 @@ const SectionBodyContent = (props) => {
           <Text.Body style={restMargins}>{workFrom}</Text.Body>
           <Text.Body style={restMargins}>{birthDay}</Text.Body>
           <Text.Body style={restMargins}>{profile.location}</Text.Body>
-          {isSelf && <Text.Body style={restMargins}>{profile.cultureName || settings.currentCulture}</Text.Body>}
+          {isSelf && (
+            <Text.Body style={restMargins}>
+              {profile.cultureName || settings.currentCulture}
+            </Text.Body>
+          )}
           {/*{isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}*/}
         </div>
       </div>
@@ -211,49 +296,62 @@ const SectionBodyContent = (props) => {
           </ToggleContent>
         </div>
       }*/}
-      {isSelf &&
+      {isSelf && (
         <div style={selfToggleWrapper}>
-          <ToggleContent label="Subscriptions" style={notesWrapper} isOpen={true}>
+          <ToggleContent
+            label="Subscriptions"
+            style={notesWrapper}
+            isOpen={true}
+          >
             <Text.Body as="span">
-              <Button size="big" label="Edit subscriptions" primary={true} onClick={onEditSubscriptionsClick} />
+              <Button
+                size="big"
+                label="Edit subscriptions"
+                primary={true}
+                onClick={onEditSubscriptionsClick}
+              />
             </Text.Body>
           </ToggleContent>
         </div>
-      }
-      {profile.notes &&
+      )}
+      {profile.notes && (
         <div style={notesToggleWrapper}>
           <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
-            <Text.Body as="span">
-              {profile.notes}
-            </Text.Body>
+            <Text.Body as="span">{profile.notes}</Text.Body>
           </ToggleContent>
         </div>
-      }
-      {profile.contacts &&
+      )}
+      {profile.contacts && (
         <div style={contactsToggleWrapper}>
-          <ToggleContent label="Contact information" style={notesWrapper} isOpen={true}>
-            <Text.Body as="span">
-              {infoContacts}
-            </Text.Body>
+          <ToggleContent
+            label="Contact information"
+            style={notesWrapper}
+            isOpen={true}
+          >
+            <Text.Body as="span">{infoContacts}</Text.Body>
           </ToggleContent>
         </div>
-      }
-      {profile.contacts &&
+      )}
+      {profile.contacts && (
         <div style={contactsToggleWrapper}>
-          <ToggleContent label="Social profiles" style={notesWrapper} isOpen={true}>
-            <Text.Body as="span">
-              {socialContacts}
-            </Text.Body>
+          <ToggleContent
+            label="Social profiles"
+            style={notesWrapper}
+            isOpen={true}
+          >
+            <Text.Body as="span">{socialContacts}</Text.Body>
           </ToggleContent>
         </div>
-      }
+      )}
     </div>
   );
 };
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    isAdmin: isAdmin(state.auth.user),
+    viewer: state.auth.user
   };
 }
 
