@@ -1,27 +1,6 @@
 {
-  "title": "Welcome to react using react-i18next",
-  "module": {
-    "home": {
-
-    },
-    "documents": {
-      "title": "Documents",
-      "description": "Create, edit and share documents. Collaborate on them in real-time. 100% compatibility with MS Office formats guaranteed."
-    },
-    "projects": {
-      "title": "Projects"
-    },
-    "crm": {
-      "title": "Crm"
-    },
-    "mail": {
-      "title": "Mail"
-    },
-    "People": {
-      "title": "people"
-    },
-    "community": {
-      "title": "Community"
-    }
-  }
+  "Profile": "Profile",
+  "LogoutButton": "Sign Out",
+  "AboutCompanyTitle": "About this program",
+  "ResourceNotFound": "Sorry, the resource cannot be found."
 }

@@ -59,25 +59,25 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
-    <value>Enter mobile phone number</value>
+    <value>Mobiltelefonnummer eingeben</value>
   </data>
   <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
-    <value>Validation code field cannot be empty</value>
+    <value>Das Feld mit dem Validierungscode darf nicht leer sein</value>
   </data>
   <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
-    <value>Administrator Notifications</value>
+    <value>Administratorbenachrichtigungen</value>
   </data>
   <data name="Consumersacesskey" xml:space="preserve">
-    <value>S3 accesskey</value>
+    <value>S3 Zugriffsschlüssel</value>
   </data>
   <data name="ConsumersapiKey" xml:space="preserve">
-    <value>Rackspace apiKey</value>
+    <value>API Schlüssel Rackspace</value>
   </data>
   <data name="ConsumersauthPwd" xml:space="preserve">
-    <value>Selectel authPwd</value>
+    <value>authPwd Selectel</value>
   </data>
   <data name="ConsumersauthUser" xml:space="preserve">
-    <value>Selectel authUser</value>
+    <value>authUser Selectel</value>
   </data>
   <data name="ConsumersBitly" xml:space="preserve">
     <value>Bitly</value>
@@ -89,10 +89,10 @@
     <value>apiKey</value>
   </data>
   <data name="ConsumersBitlyDescription" xml:space="preserve">
-    <value>Connect the Bitly service to shorten portal invitation links and shared links in the Documents module.</value>
+    <value>Verbinden Sie Bitly Service, um Einladungslinks und freigegebene Links zu dem Modul "Dokumente" zu verkürzen.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users.</value>
+    <value>Wenn Sie den Bitly-Dienst hinzufügen, erhalten Sie verkürzte Links, um neue Nutzer zum ONLYOFFICE ™ -Portal einzuladen und verkürzte Links zu dem Modul "Dokumente", der mit externen Benutzern geteilt wurde.</value>
   </data>
   <data name="ConsumersBitlyKey" xml:space="preserve">
     <value>login</value>
@@ -107,19 +107,19 @@
     <value>Box ID</value>
   </data>
   <data name="ConsumersboxClientSecret" xml:space="preserve">
-    <value>Box Key</value>
+    <value>Box Schlüssel</value>
   </data>
   <data name="ConsumersBoxDescription" xml:space="preserve">
-    <value>Connect the application to manage Box files and folders.</value>
+    <value>Verbinden Sie die Anwendung, um Box-Dateien und Ordner zu verwalten.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
+    <value>Wenn man die Anwendung des Box-Dienstes hinzufügt, kann man sein Box-Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Box, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersBoxKey" xml:space="preserve">
     <value>Box ID</value>
   </data>
   <data name="ConsumersBoxSecret" xml:space="preserve">
-    <value>Box Key</value>
+    <value>Box Schlüssel</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
@@ -128,10 +128,10 @@
     <value>apiKey</value>
   </data>
   <data name="ConsumersClickatellDescription" xml:space="preserve">
-    <value>Enable the application for the two-factor authentication via Clickatell.</value>
+    <value>Aktivieren Sie die Anwendung für die Zwei-Faktor-Authentifizierung über Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal.</value>
+    <value>Durch Hinzufügen der Clickatell-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten.</value>
   </data>
   <data name="ConsumersClickatellSecret" xml:space="preserve">
     <value>apiKey</value>
@@ -140,67 +140,68 @@
     <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>DocuSign Key</value>
+    <value>DocuSign Schlüssel</value>
   </data>
   <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
-    <value>DocuSign Secret</value>
+    <value>Der geheime Schlüssel DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
-    <value>Connect the application to add the DocuSign electronic sign to documents.</value>
+    <value>Verbinden Sie die Anwendung, um elektronische Signatur DocuSign den Dokumenten hinzufügen zu können.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
-    <value>DocuSign authentication endpoint</value>
+    <value>DocuSign Authentifizierungsendpunkt </value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module.</value>
+    <value>Wenn man die Anwendung des DocuSign-Dienstes hinzufügt, kann man Dateien aus dem Modul "Dokumente" signieren. Dies ermöglicht Ihnen, Dateien  über DocuSugn für eine elektronische Signatur an die Mitarbeiter des ONLYOFFICE ™ Portals zu schicken. Die signierte Datei wird im ONLYOFFICE Modul gespeichert. 
+</value>
   </data>
   <data name="ConsumersDocuSignKey" xml:space="preserve">
-    <value>DocuSign Key</value>
+    <value>DocuSign Schlüssel</value>
   </data>
   <data name="ConsumersDocuSignKeyDefault" xml:space="preserve">
-    <value>DocuSign authentication endpoint</value>
+    <value>DocuSign Authentifizierungsendpunkt </value>
   </data>
   <data name="ConsumersDocuSignSecret" xml:space="preserve">
-    <value>DocuSign Secret</value>
+    <value>Der geheime Schlüssel DocuSign</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
-    <value>DropBox</value>
+    <value>Dropbox</value>
   </data>
   <data name="ConsumersdropboxClientId" xml:space="preserve">
-    <value>DropBox ID</value>
+    <value>Dropbox ID</value>
   </data>
   <data name="ConsumersdropboxClientSecret" xml:space="preserve">
-    <value>DropBox Key</value>
+    <value>Dropbox-Schlüssel</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
-    <value>Connect the application to manage Dropbox files and folders.</value>
+    <value>Verbinden Sie die Anwendung, um Dropbox-Dateien und Ordner zu verwalten.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
+    <value>Wenn man die Anwendung des Dropbox-Dienstes hinzufügt, kann man sein Dropbox -Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Dropbox, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
-    <value>DropBox ID</value>
+    <value>Dropbox ID</value>
   </data>
   <data name="ConsumersDropBoxSecret" xml:space="preserve">
-    <value>DropBox Key</value>
+    <value>Dropbox-Schlüssel</value>
   </data>
   <data name="ConsumersEasyBib" xml:space="preserve">
     <value>EasyBib</value>
   </data>
   <data name="ConsumerseasyBibappkey" xml:space="preserve">
-    <value>App key</value>
+    <value>App-Schlüssel</value>
   </data>
   <data name="ConsumersEasyBibDescription" xml:space="preserve">
-    <value>Connect the EasyBib application to create bibliographic lists.</value>
+    <value>Verbinden Sie die EasyBib-Anwendung, um bibliographische Listen zu erstellen.</value>
   </data>
   <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>When you add the EasyBib application, you can easily create bibliographic lists in your documents.</value>
+    <value>Wenn Sie die EasyBib-Anwendung hinzufügen, können Sie auf einfache Weise bibliografische Listen in Ihren Dokumenten erstellen.</value>
   </data>
   <data name="ConsumersEasyBibKey" xml:space="preserve">
-    <value>App key</value>
+    <value>App-Schlüssel</value>
   </data>
   <data name="ConsumersEasyBibSecret" xml:space="preserve">
-    <value>App key</value>
+    <value>App-Schlüssel</value>
   </data>
   <data name="ConsumersFacebook" xml:space="preserve">
     <value>Facebook</value>
@@ -212,25 +213,27 @@
     <value>Facebook ID</value>
   </data>
   <data name="ConsumersfacebookClientSecret" xml:space="preserve">
-    <value>Facebook Key</value>
+    <value>Facebook-Schlüssel</value>
   </data>
   <data name="ConsumersFacebookCRM" xml:space="preserve">
-    <value>Facebook in CRM Key</value>
+    <value>Facebook Schlüßel in CRM</value>
   </data>
   <data name="ConsumersFacebookCRMSecret" xml:space="preserve">
     <value>App Token</value>
   </data>
   <data name="ConsumersFacebookDescription" xml:space="preserve">
-    <value>Connect the application to sign in to the portal using a Facebook account and search for contacts.</value>
+    <value>Verbinden Sie die Anwendung, um sich ins Portal via Facebook anzumelden und Kontakte zu suchen.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the 'Edit person/company' page.</value>
+    <value>Wenn man die Anwendung des Facebook -Dienstes hinzufügt, kann man sein Facebook-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Facebook-Login-Daten an. Sie können auch ein Facebook-Konto des Kontakts im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen.
+
+</value>
   </data>
   <data name="ConsumersFacebookKey" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
   <data name="ConsumersFacebookSecret" xml:space="preserve">
-    <value>Facebook Key</value>
+    <value>Facebook-Schlüssel</value>
   </data>
   <data name="ConsumersFacebookSecretDefalt" xml:space="preserve">
     <value>App Token</value>
@@ -239,34 +242,34 @@
     <value>Firebase</value>
   </data>
   <data name="Consumersfirebase_apiKey" xml:space="preserve">
-    <value>Web API key</value>
+    <value>Web API-Schlüssel</value>
   </data>
   <data name="Consumersfirebase_authorization" xml:space="preserve">
-    <value>Server key</value>
+    <value>Server-Schlüssel</value>
   </data>
   <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
     <value>Sender ID</value>
   </data>
   <data name="Consumersfirebase_projectId" xml:space="preserve">
-    <value>Project ID</value>
+    <value>Projekt ID</value>
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
-    <value>Connect Firebase Cloud Messaging service to receive notifications about the messages sent to you.</value>
+    <value>Schließen Sie Firebase Cloud Messaging-Service, um Benachrichtigungen über die gesendeten Nachrichten zu erhalten.</value>
   </data>
   <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline.</value>
+    <value>Wenn Sie Firebase Cloud Messaging anschließen, können Sie Benachrichtigungen über die gesendeten Nachrichten erhalten, auch wenn Sie offline sind.</value>
   </data>
   <data name="ConsumersFirebaseKey" xml:space="preserve">
-    <value>Web API key</value>
+    <value>Web API-Schlüssel</value>
   </data>
   <data name="ConsumersFirebaseKeyDefault" xml:space="preserve">
     <value>Sender ID</value>
   </data>
   <data name="ConsumersFirebaseSecret" xml:space="preserve">
-    <value>Project ID</value>
+    <value>Projekt ID</value>
   </data>
   <data name="ConsumersFirebaseSecretDefault" xml:space="preserve">
-    <value>Server key</value>
+    <value>Server-Schlüssel</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
     <value>Google</value>
@@ -275,7 +278,7 @@
     <value>Google ID</value>
   </data>
   <data name="ConsumersgoogleClientSecret" xml:space="preserve">
-    <value>Google Key</value>
+    <value>Google-Schlüssel</value>
   </data>
   <data name="ConsumersGoogleCloud" xml:space="preserve">
     <value>Google Cloud Storage</value>
@@ -284,91 +287,92 @@
     <value>Bucket</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
-    <value>Connect Google Cloud Storage service to backup and store data from your portal.</value>
+    <value>Stellen Sie eine Verbindung mit dem Google Cloud Storage, um Daten Ihres Portals zu sichern und zu speichern.</value>
   </data>
   <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>When you add Google Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Wenn Sie den Google Cloud Storage-Service Ihrem Portal hinzufügen, können Sie mit ihm Backups Ihres Portals erstellen und sicherstellen, dass keine Daten verloren gehen. Verwenden Sie es auch zum Speichern von Daten und statischen Inhalten aus Ihrem Portal.</value>
   </data>
   <data name="ConsumersGoogleCloudjsonPath" xml:space="preserve">
     <value>Google Cloud Storage jsonPath</value>
   </data>
   <data name="ConsumersGoogleDescription" xml:space="preserve">
-    <value>Connect the project to sign in to the portal using a Google account and manage Google Drive files and folders.</value>
+    <value>Verbinden Sie das Projekt mithilfe eines Google-Kontos und verwalten Sie Google Drive-Dateien und Ordner.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
+    <value>Wenn Sie ein Projekt des Google-Dienstes hinzufügen, können Sie Ihr Google-Konto mit Ihrer Profilseite verbinden, sodass Sie sich im ONLYOFFICE ™ -Portal anmelden und Ihr Google Drive-Konto im Modul Dokumente verbinden können. Dies ermöglicht Ihnen, neue Dateien in Google Drive hochzuladen und zu erstellen, bestehende zu bearbeiten, sie zu kopieren und zu löschen, Dateien und Ordner den ONLYOFFICE ™ Portalbenutzern freizugeben.
+</value>
   </data>
   <data name="ConsumersGoogleKey" xml:space="preserve">
     <value>Google ID</value>
   </data>
   <data name="ConsumersGoogleSecret" xml:space="preserve">
-    <value>Google Key</value>
+    <value>Google-Schlüssel</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
-    <value>Connect the application to sign in to the portal using a LinkedIn account.</value>
+    <value>Verbinden Sie die Anwendung, um sich ins Portal via LinkedIn anzumelden.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it.</value>
+    <value>Wenn man die Anwendung des LinkedIn-Dienstes hinzufügt, kann man sein LinkedIn-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen LinkedIn-Login-Daten an. </value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
   </data>
   <data name="ConsumersLinkedInSecret" xml:space="preserve">
-    <value>Linkedin Key</value>
+    <value>Linkedin-Schlüssel</value>
   </data>
   <data name="ConsumersRackspace" xml:space="preserve">
     <value>Rackspace Cloud Storage</value>
   </data>
   <data name="ConsumersRackspaceDescription" xml:space="preserve">
-    <value>Connect Rackspace Cloud Storage service to backup and store data from your portal.</value>
+    <value>Stellen Sie eine Verbindung mit dem Rackspace Cloud Storage Service, um Daten Ihres Portals zu sichern und zu speichern.</value>
   </data>
   <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>When you add Rackspace Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Wenn Sie Ihrem Portal den Rackspace Cloud Storage-Service hinzufügen, können Sie mit diesem Backup Backups Ihres Portals erstellen und sicherstellen, dass keine Daten verloren gehen. Verwenden Sie es auch zum Speichern von Daten und statischen Inhalten aus Ihrem Portal.</value>
   </data>
   <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
-    <value>Private Container</value>
+    <value>Der private Container</value>
   </data>
   <data name="ConsumersRackspacepublic_container" xml:space="preserve">
-    <value>Public Container</value>
+    <value>Der öffentliche Container</value>
   </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
-    <value>Region</value>
+    <value>Bereich</value>
   </data>
   <data name="ConsumersS3" xml:space="preserve">
     <value>Amazon AWS S3</value>
   </data>
   <data name="ConsumersS3Description" xml:space="preserve">
-    <value>Connect Amazon AWS S3 to backup and store data from your portal.</value>
+    <value>Stellen Sie eine Verbindung mit dem Amazon AWS S3, um Daten Ihres Portals zu sichern und zu speichern.</value>
   </data>
   <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>When you add Amazon AWS S3 to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Wenn Sie Ihrem Portal Amazon AWS S3 hinzufügen, können Sie damit Backups Ihres Portals erstellen, um sicherzustellen, dass keine Daten verloren gehen. Verwenden Sie es auch zum Speichern von Daten und statischen Inhalten aus Ihrem Portal.</value>
   </data>
   <data name="Consumerssecretaccesskey" xml:space="preserve">
-    <value>S3 secret access key</value>
+    <value>S3 geheimer Zugriffsschlüssel</value>
   </data>
   <data name="ConsumersSelectel" xml:space="preserve">
     <value>Selectel Cloud Storage</value>
   </data>
   <data name="ConsumersSelectelauthPwd" xml:space="preserve">
-    <value>Auth Pwd</value>
+    <value>Auth Kennwort</value>
   </data>
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
-    <value>Auth User</value>
+    <value>Auth Benutzer</value>
   </data>
   <data name="ConsumersSelectelCloudInstruction" xml:space="preserve">
-    <value>When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Wenn Sie den Selectel Cloud Storage-Service Ihrem Portal hinzufügen, können Sie mit ihm Backups Ihres Portals erstellen, um sicherzustellen, dass keine Daten verloren gehen. Verwenden Sie es auch zum Speichern von Daten und statischen Inhalten aus Ihrem Portal.</value>
   </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
-    <value>Connect Selectel Cloud Storage service to backup and store data from your portal.</value>
+    <value>Stellen Sie eine Verbindung mit dem Selectel Cloud Storage Service, um Daten Ihres Portals zu sichern und zu speichern.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
-    <value>Private container</value>
+    <value>Der private Container</value>
   </data>
   <data name="ConsumersSelectelpublic_container" xml:space="preserve">
-    <value>Public container</value>
+    <value>Der öffentliche Container</value>
   </data>
   <data name="ConsumersSkyDrive" xml:space="preserve">
     <value>OneDrive</value>
@@ -377,28 +381,28 @@
     <value>OneDrive ID</value>
   </data>
   <data name="Consumersskydriveappsecret" xml:space="preserve">
-    <value>OneDrive Key</value>
+    <value>OneDrive-Schlüssel</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
-    <value>Connect the application to manage OneDrive files and folders.</value>
+    <value>Verbinden Sie die Anwendung, um OneDrive-Dateien und Ordner zu verwalten.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
+    <value>Wenn man die Anwendung des OneDrive-Dienstes hinzufügt, kann man sein OneDrive-Konto mit dem Modul "Dokumente" verknüpfen. Dies ermöglicht das Hochladen und Erstellen neuer Dateien in OneDrive, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersSkyDriveKey" xml:space="preserve">
     <value>OneDrive ID</value>
   </data>
   <data name="ConsumersSkyDriveSecret" xml:space="preserve">
-    <value>OneDrive Key</value>
+    <value>OneDrive-Schlüssel</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
-    <value>SMS Center</value>
+    <value>SMS-Center</value>
   </data>
   <data name="ConsumersSmscDescription" xml:space="preserve">
-    <value>Enable the application for the two-factor authentication via SMS Center.</value>
+    <value>Aktivieren Sie die Anwendung für die Zwei-Faktor-Authentifizierung per SMS-Center.</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries.</value>
+    <value>Durch Hinzufügen der SMS-Center-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten. SMS-Center-Anwendung ist als Anbieter für die GUS-Staaten nützlich.</value>
   </data>
   <data name="ConsumersSmscKey" xml:space="preserve">
     <value>Login</value>
@@ -407,103 +411,97 @@
     <value>Login</value>
   </data>
   <data name="Consumerssmscpsw" xml:space="preserve">
-    <value>Password or password MD5 hash in lowercase</value>
+    <value>Passwort oder Passwort MD5 Hash in Kleinbuchstaben</value>
   </data>
   <data name="ConsumersSmscSecret" xml:space="preserve">
-    <value>Password or password MD5 hash in lowercase</value>
+    <value>Passwort oder Passwort MD5 Hash in Kleinbuchstaben</value>
   </data>
   <data name="ConsumersTwilio" xml:space="preserve">
     <value>Twilio</value>
   </data>
   <data name="ConsumerstwilioAccountSid" xml:space="preserve">
-    <value>Account Sid</value>
+    <value>Konto Sid</value>
   </data>
   <data name="ConsumerstwilioAuthToken" xml:space="preserve">
     <value>Auth Token</value>
   </data>
   <data name="ConsumersTwilioDescription" xml:space="preserve">
-    <value>Add Twilio to be able to call CRM contacts right from the browser.</value>
+    <value>Fügen Sie Twilio hinzu, um CRM-Kontakte direkt aus dem Browser aufrufen zu können.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>After you add Twilio, you will be able to call any CRM contact right from the browser.</value>
+    <value>Nachdem Sie Twilio hinzugefügt haben, können Sie jeden CRM-Kontakt direkt aus dem Browser anrufen.</value>
   </data>
   <data name="ConsumersTwilioKey" xml:space="preserve">
-    <value>Account Sid</value>
+    <value>Konto Sid</value>
   </data>
   <data name="ConsumersTwilioKeyDefault" xml:space="preserve">
-    <value>Phone number from Twilio (required for SMS authorization)</value>
+    <value>Telefonnummer von Twilio (erforderlich für die SMS-Autorisierung)</value>
   </data>
   <data name="ConsumersTwilioSecret" xml:space="preserve">
     <value>Auth Token</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
-    <value>Phone number from Twilio (required for SMS authorization)</value>
+    <value>Telefonnummer von Twilio (erforderlich für die SMS-Autorisierung)</value>
   </data>
   <data name="ConsumersTwitter" xml:space="preserve">
     <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
-    <value>Access Token</value>
+    <value>Zugriffstoken</value>
   </data>
   <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
-    <value>Access Token Secret</value>
+    <value>Geheimer Zugriffstoken</value>
   </data>
   <data name="ConsumersTwitterCrm" xml:space="preserve">
-    <value>Twitter in CRM Key</value>
+    <value>Twitter Schlüßel in CRM</value>
   </data>
   <data name="ConsumersTwitterCrmKey" xml:space="preserve">
     <value>Twitter ID</value>
   </data>
   <data name="ConsumersTwitterCrmSecret" xml:space="preserve">
-    <value>Twitter Key</value>
+    <value>Twitter-Schlüssel</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
-    <value>Connect the application to sign in to the portal using a Twitter account and search for contacts.</value>
-  </data>
-  <data name="ConsumersTwitterDescriptionR7" xml:space="preserve">
-    <value>Подключить приложение для входа на портал по учетной записи Twitter.</value>
+    <value>Verbinden Sie die Anwendung, um sich ins Portal via Twitter anzumelden und Kontakte zu suchen.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the 'Edit person/company' page and then view Twitter news feed.</value>
-  </data>
-  <data name="ConsumersTwitterInstructionR7" xml:space="preserve">
-    <value>Добавив приложение сервиса Twitter, Вы сможете на странице своего профиля подключить вход на портал Р7-Офис с помощью аккаунта Twitter.</value>
+    <value>Wenn man die Anwendung des Twitter-Dienstes hinzufügt, kann man sein Twitter-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Twitter-Login-Daten an. Sie können auch ein Facebook-Konto der Person im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen und Twitter-Newsfeedaktualisierungen durchschauen.</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>Twitter ID</value>
   </data>
   <data name="ConsumersTwitterKeyDefault" xml:space="preserve">
-    <value>Access Token</value>
+    <value>Zugriffstoken</value>
   </data>
   <data name="ConsumersTwitterSecret" xml:space="preserve">
-    <value>Twitter Key</value>
+    <value>Twitter-Schlüssel</value>
   </data>
   <data name="ConsumersTwitterSecretDefault" xml:space="preserve">
-    <value>Access Token Secret</value>
+    <value>Geheimer Zugriffstoken</value>
   </data>
   <data name="Consumersusername" xml:space="preserve">
-    <value>Rackspace username</value>
+    <value>Rackspace-Benutzername</value>
   </data>
   <data name="ConsumersWordpress" xml:space="preserve">
     <value>WordPress</value>
   </data>
   <data name="ConsumersWordpressDescription" xml:space="preserve">
-    <value>Connect the application for publishing documents in WordPress.</value>
+    <value>Verbinden Sie die Anwendung zur Veröffentlichung von Dokumenten in WordPress.</value>
   </data>
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>Adding the WordPress application you can easily publish the documents on your WordPress website, saving their formatting.</value>
+    <value>Beim Hinzufügen von der WordPress-Anwendung kann man die Dokumente einfach auf Ihrer WordPress-Website veröffentlichen und deren Formatierung speichern.</value>
   </data>
   <data name="ConsumersWordpressKey" xml:space="preserve">
-    <value>WordPress Key</value>
+    <value>Schlüssel von WordPress</value>
   </data>
   <data name="ConsumersWordpressSecret" xml:space="preserve">
-    <value>WordPress Secret</value>
+    <value>Geheimer Schlüssel von WordPress</value>
   </data>
   <data name="ConsumerswpClientId" xml:space="preserve">
-    <value>WordPress Key</value>
+    <value>Schlüssel von WordPress</value>
   </data>
   <data name="ConsumerswpClientSecret" xml:space="preserve">
-    <value>WordPress Secret</value>
+    <value>Geheimer Schlüssel von WordPress</value>
   </data>
   <data name="ConsumersYahoo" xml:space="preserve">
     <value>Yahoo</value>
@@ -512,147 +510,147 @@
     <value>Client ID</value>
   </data>
   <data name="ConsumersyahooClientSecret" xml:space="preserve">
-    <value>Client Secret</value>
+    <value>Geheimer Clientschlüssel</value>
   </data>
   <data name="ConsumersYahooDescription" xml:space="preserve">
-    <value>Enable the application for the Yahoo contact import.</value>
+    <value>Aktivieren Sie die Anwendung für den Import von Yahoo-Kontakten.</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list.</value>
+    <value>Durch Hinzufügen der Yahoo-Dienstanwendung können Sie neue Benutzer des ONLYOFFICE-Portals aus der Kontaktliste hinzufügen.</value>
   </data>
   <data name="ConsumersYahooKey" xml:space="preserve">
     <value>Client ID</value>
   </data>
   <data name="ConsumersYahooSecret" xml:space="preserve">
-    <value>Client Secret</value>
+    <value>Geheimer Clientschlüssel</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
-    <value>Password recovery operation is prohibited for an LDAP user</value>
+    <value>Kennwortwiederherstellung für LDAP Benutzer ist verboten</value>
   </data>
   <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
-    <value>Password recovery operation is prohibited for an SSO user</value>
+    <value>Kennwortwiederherstellung ist für den SSO-Benutzer verboten</value>
   </data>
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
-    <value>Custom</value>
+    <value>Einstellbar</value>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>No permissions to perform this action</value>
+    <value>Keine Berechtigung zum Durchführen dieser Aktion</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>The access to the portal is restricted.</value>
+    <value>Der Zugriff auf das Portal ist eingeschränkt.</value>
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
-    <value>Your profile is suspended</value>
+    <value>Ihr Profil ist gesperrt</value>
   </data>
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} with this email is already registered</value>
+    <value>Ein Benutzer mit dieser E-Mail-Adresse ist bereits registriert</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
-    <value>Email field is empty</value>
+    <value>Das Feld für die E-Mail-Adresse ist leer</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
-    <value>Incorrect firstname or lastname</value>
+    <value>Falscher Vor- oder Nachname</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
-    <value>Your pricing plan does not support this option</value>
+    <value>Ihr Zahlungsplan unterstützt diese Option nicht</value>
   </data>
   <data name="ErrorNotCorrectEmail" xml:space="preserve">
-    <value>Incorrect email</value>
+    <value>Ungültige E-Mail-Adresse</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
-    <value>The password is empty.</value>
+    <value>Das Feld "Kennwort" ist leer.</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
-    <value>Password must contain</value>
+    <value>Das Kennwort muss enthalten:</value>
   </data>
   <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>The password must contain</value>
+    <value>Das Kennwort muss enthalten</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
-    <value>digits</value>
+    <value>Zahlen</value>
   </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
-    <value>special characters</value>
+    <value>spezielle Zeichen</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
-    <value>capital letters</value>
+    <value>Großbuchstaben</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>The user could not be found</value>
+    <value>Der Benutzer konnte nicht gefunden werden</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>The user with "{0}" email could not be found</value>
+    <value>Der Benutzer mit der Adresse {0} wurde nicht gefunden</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>EU (Ireland) Region</value>
+    <value>Region EU (Irland)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
-    <value>The maximum file size is exceeded</value>
+    <value>Die maximale Dateigröße ist überschritten</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
-    <value>Note: the file size cannot exceed {1}{0}{2}</value>
+    <value>Hinweis: Die Dateigröße darf {1}{0}{2} nicht überschreiten</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
-    <value>bytes,KB,MB,GB,TB</value>
+    <value>Byte,KB,MB,GB,TB</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>Too many LDAP operations.</value>
+    <value>Zu viele LDAP-Operationen.</value>
   </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
-    <value>The password change instructions have been sent to the {0} email address.</value>
+    <value>Die Hinweise für die Änderung des Kennworts wurden an die folgende E-Mail-Adresse versandt: {0}</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>To change the number, you need to delete your current phone number</value>
+    <value>Um die Nummer zu ändern, müssen Sie Ihre aktuelle Telefonnummer löschen</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Region</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
-    <value>Disk space quota exceeded</value>
+    <value>Der verfügbare Speicherplatz ist überschritten</value>
   </data>
   <data name="ProfileRemoved" xml:space="preserve">
-    <value>Profile has been removed</value>
+    <value>Das Profil wurde gelöscht</value>
   </data>
   <data name="ReassignDataRemoveUserError" xml:space="preserve">
-    <value>Data reassign process for {0} is not complete.</value>
+    <value>Die Neuzuweisung der Daten für {0} ist nicht abgeschlossen.</value>
   </data>
   <data name="SgServerRegion" xml:space="preserve">
-    <value>Asia Pacific (Singapore)</value>
+    <value>Asien-Pazifik (Singapur)</value>
   </data>
   <data name="SmsAuthenticationMessageError" xml:space="preserve">
-    <value>Incorrect code</value>
+    <value>Falscher Code</value>
   </data>
   <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
-    <value>Code: {0}</value>
+    <value>Ihr Code: {0}</value>
   </data>
   <data name="SmsAuthenticationTimeout" xml:space="preserve">
-    <value>Time to use the code has expired. Please request a new text message.</value>
+    <value>Die Zeit für die Nutzung des Codes ist abgelaufen. Bitte fordern Sie eine neue Text-Nachricht an.</value>
   </data>
   <data name="SmsNotAvailable" xml:space="preserve">
-    <value>SMS settings are not available</value>
+    <value>SMS-Einstellungen sind nicht verfügbar</value>
   </data>
   <data name="SmsTooMuchError" xml:space="preserve">
-    <value>You have sent too many text messages. Please try again later.</value>
+    <value>Sie haben zu viele Text-Nachrichten gesendet. Bitte versuchen Sie es später noch einmal.</value>
   </data>
   <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
-    <value>Settings have been successfully updated</value>
+    <value>Die Einstellungen wurden erfolgreich aktualisiert</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Instructions to delete your profile has been sent to {0} email address</value>
+    <value>Die Hinweise zum Löschen Ihres Profils wurden an Ihre E-Mail-Adresse {0} verschickt</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
-    <value>Incorrect code</value>
+    <value>Falscher Code</value>
   </data>
   <data name="TfaAppNotAvailable" xml:space="preserve">
-    <value>TFA application settings are not available</value>
+    <value>TFA-Anwendungseinstellungen sind nicht verfügbar</value>
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
-    <value>You have sent too many text messages. Please try again later.</value>
+    <value>Sie haben zu viele Kurzmitteilungen gesendet. Bitte versuchen Sie es später erneut.</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
-    <value>US West (Oregon) Region</value>
+    <value>Region US West (Oregon) </value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
-    <value>What's New</value>
+    <value>Neues</value>
   </data>
 </root>

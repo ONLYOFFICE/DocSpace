@@ -75,7 +75,6 @@ const UserContent = ({user, history,settings }) => {
           <Link
             isSemitransparent={status === "pending"}
             type="action"
-            isHovered
             title={headDepartment ? "Head of department" : ""}
             onClick={onHeadDepartmentClick}
           >
@@ -93,7 +92,6 @@ const UserContent = ({user, history,settings }) => {
           <Link
             isSemitransparent={status === "pending"}
             type="action"
-            isHovered
             title={department}
             onClick={onDepartmentClick}
           >
@@ -127,7 +125,6 @@ const UserContent = ({user, history,settings }) => {
           <Link
             isSemitransparent={status === "pending"}
             type="action"
-            isHovered
             title={email}
             onClick={onEmailClick}
           >

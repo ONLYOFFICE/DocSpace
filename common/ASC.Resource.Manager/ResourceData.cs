@@ -285,15 +285,28 @@ namespace ASC.Resource.Manager
                     .Select("rd1.title", "rd1.fileid", "rd1.textValue", "rd1.description", "rd1.flag", "rd1.link", "rf.resName", "rd2.id", "rd2.flag", "rd2.textValue")
                     .LeftOuterJoin(ResDataTable + " rd2", Exp.EqColumns("rd1.fileid", "rd2.fileid") & Exp.EqColumns("rd1.title", "rd2.title") & Exp.Eq("rd2.cultureTitle", current.Language.Title))
                     .InnerJoin(ResFilesTable + " rf", Exp.EqColumns("rf.ID", "rd1.fileID"))
-                    .Where("rf.moduleName", current.Module.Name)
-                    .Where("rf.projectName", current.Project.Name)
                     .Where("rd1.cultureTitle", "Neutral")
                     .Where("rd1.flag != 4")
                     .Where("rd1.resourceType", "text")
                     .Where(!Exp.Like("rd1.title", @"del\_", SqlLike.StartWith) & !Exp.Exists(exist))
                     .OrderBy("rd1.id", true);
 
-                if (!String.IsNullOrEmpty(search))
+                if(current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
+                {
+                    sql.Where("rf.moduleName", current.Module.Name);
+                }
+
+                if(current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
+                {
+                    sql.Where("rf.projectName", current.Project.Name);
+                }
+
+                if(current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
+                {
+                    sql.Where("rf.resName", current.Word.ResFile.FileName);
+                }
+
+                if (!string.IsNullOrEmpty(search))
                     sql.Where(Exp.Like("rd1.textvalue", search));
 
                 return dbManager.ExecuteList(sql).ConvertAll(r =>
