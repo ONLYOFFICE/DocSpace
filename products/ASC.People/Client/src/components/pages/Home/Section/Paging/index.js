@@ -90,7 +90,8 @@ const SectionPagingContent = ({
   );
 
   const pageItems = useMemo(() => {
-    const totalPages = Math.round(filter.total / filter.pageCount);
+    const totalPages = Math.ceil(filter.total / filter.pageCount);
+    console.log(totalPages);
     return [...Array(totalPages).keys()].map(
       item => {
         return { key: item, label: `${item+1} of ${totalPages}` };
@@ -98,7 +99,21 @@ const SectionPagingContent = ({
     );
   }, [filter.total, filter.pageCount]);
 
+  const defaultPage = {
+    key: 0,
+    label: '1 of 1'
+  }
+
+  const defaultCount = {
+    key: 25,
+    label: "25 per page"
+  };
+
+  const defaultPageItem = pageItems.find(x => x.key === filter.page) || defaultPage;
+  const defaultCountItem = countItems.find(x => x.key === filter.pageCount) || defaultCount;
+
   console.log("SectionPagingContent render", filter);
+
   return (
     <Paging
       previousLabel="Previous"
@@ -113,9 +128,8 @@ const SectionPagingContent = ({
       previousAction={onPrevClick}
       nextAction={onNextClick}
       openDirection="top"
-      selectedPage={filter.page} //FILTER CURRENT PAGE
-      selectedCount={filter.pageCount} //FILTER PAGE COUNT
-      emptyPagePlaceholder="1 of 1"
+      defaultPageItem={defaultPageItem} //FILTER CURRENT PAGE
+      defaultCountItem={defaultCountItem} //FILTER PAGE COUNT
     />
   );
 };
