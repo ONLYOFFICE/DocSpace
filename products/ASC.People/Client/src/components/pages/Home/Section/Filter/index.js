@@ -1,50 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
-
-const getData = () => {
-  return [
-    {
-      key: "filter-status",
-      group: "filter-status",
-      label: "Status",
-      isHeader: true
-    },
-    { key: "1", group: "filter-status", label: "Active" },
-    { key: "2", group: "filter-status", label: "Disabled" },
-    {
-      key: "filter-email",
-      group: "filter-email",
-      label: "Email",
-      isHeader: true
-    },
-    { key: "1", group: "filter-email", label: "Active" },
-    { key: "2", group: "filter-email", label: "Pending" },
-    {
-      key: "filter-type",
-      group: "filter-type",
-      label: "Type",
-      isHeader: true
-    },
-    {
-      key: "admin",
-      group: "filter-type",
-      label: "Administrator"
-    },
-    { key: "user", group: "filter-type", label: "User" },
-    { key: "guest", group: "filter-type", label: "Guest" },
-    {
-      key: "filter-group",
-      group: "filter-group",
-      label: "Group",
-      isHeader: true
-    },
-    { key: "filter-type-group", group: "filter-group", label: "Group" }
-  ];
-};
+import { isAdmin } from "../../../../../store/auth/selectors";
 
 const getSortData = () => {
   return [
@@ -86,7 +46,7 @@ const getRole = filterValues => {
   return employeeStatus || null;
 };
 
-const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => {
+const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
   const selectedFilterData = {
     filterValue: [],
     sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -116,6 +76,53 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => {
     });
   }
 
+  const getData = useCallback(() => {
+    const options = !isAdmin(user)
+      ? []
+      : [
+          {
+            key: "filter-status",
+            group: "filter-status",
+            label: "Status",
+            isHeader: true
+          },
+          { key: "1", group: "filter-status", label: "Active" },
+          { key: "2", group: "filter-status", label: "Disabled" }
+        ];
+
+    return [
+      ...options,
+      {
+        key: "filter-email",
+        group: "filter-email",
+        label: "Email",
+        isHeader: true
+      },
+      { key: "1", group: "filter-email", label: "Active" },
+      { key: "2", group: "filter-email", label: "Pending" },
+      {
+        key: "filter-type",
+        group: "filter-type",
+        label: "Type",
+        isHeader: true
+      },
+      {
+        key: "admin",
+        group: "filter-type",
+        label: "Administrator"
+      },
+      { key: "user", group: "filter-type", label: "User" },
+      { key: "guest", group: "filter-type", label: "Guest" },
+      {
+        key: "filter-group",
+        group: "filter-group",
+        label: "Group",
+        isHeader: true
+      },
+      { key: "filter-type-group", group: "filter-group", label: "Group" }
+    ];
+  }, [user]);
+
   return (
     <FilterInput
       getFilterData={getData}
@@ -143,6 +150,7 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading }) => {
 
 function mapStateToProps(state) {
   return {
+    user: state.auth.user,
     filter: state.people.filter
   };
 }
