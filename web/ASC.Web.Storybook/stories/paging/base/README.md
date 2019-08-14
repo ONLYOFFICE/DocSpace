@@ -19,10 +19,6 @@ import { Paging } from 'asc-web-components';
     openDirection='bottom'
     disablePrevious={false}
     disableNext={false}
-    selectedPage={1}
-    selectedCount={25}
-    emptyPagePlaceholder='1 of 1'
-    emptyCountPlaceholder='25 per page'
 />
 ```
 
@@ -39,7 +35,5 @@ import { Paging } from 'asc-web-components';
 | `openDirection`        | `string`          |    -     | `top`, `bottom`              | `bottom`| Indicates opening direction of combo box     |
 | `disablePrevious`      | `bool`            |    -     | -                            | `false` | Set previous button disabled                 |
 | `disableNext`          | `bool`            |    -     | -                            | `false` | Set next button disabled                     |
-| `selectedPage`         | `string`,`number` |    -     | -                            | -       | Initial value for pageItems                  |
-| `selectedCount`        | `string`,`number` |    -     | -                            | -       | Initial value for countItems                 |
-| `emptyPagePlaceholder` | `string`          |    -     | -                            | -       | Value that will be displayed in page selection when collection is empty|
-| `emptyCountPlaceholder`| `string`          |    -     | -                            | -       | Value that will be displayed in count selection when collection is empty|
+| `selectedPageItem`     | `object`          |    -     | -                            | -       | Initial value for pageItems                  |
+| `selectedCountItem`    | `object`          |    -     | -                            | -       | Initial value for countItems                 |
