@@ -4,9 +4,11 @@ import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import ExternalRedirect from '../helpers/externalRedirect';
 import { PageLayout, Loader } from "asc-web-components";
+import { isAdmin } from "../store/auth/selectors";
+import { Error404 } from "../components/pages/Error";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const { isAuthenticated, isLoaded } = rest;
+  const { isAuthenticated, isLoaded, isAdmin, restricted } = rest;
   return (
     <Route
       {...rest}
@@ -18,7 +20,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             }
           />
         ) : isAuthenticated ? (
-          <Component {...props} />
+          restricted 
+            ? (isAdmin 
+                ? <Component {...props} /> 
+                : <Error404 />
+              ) 
+            : <Component {...props} />
         ) : (
           <ExternalRedirect to="/login" />
         )
@@ -34,7 +41,8 @@ PrivateRoute.propTypes = {
 function mapStateToProps(state) {
   return {
     isAuthenticated: state.auth.isAuthenticated,
-    isLoaded: state.auth.isLoaded
+    isLoaded: state.auth.isLoaded,
+    isAdmin: isAdmin(state.auth.user)
   };
 }
 

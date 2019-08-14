@@ -8,6 +8,8 @@ import PrivateRoute from "./helpers/privateRoute";
 import Profile from './components/pages/Profile';
 import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
+import { isAdmin } from "./store/auth/selectors";
+import { Error404 } from "./components/pages/Error";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -30,26 +32,24 @@ const App = ({ settings }) => {
             <PrivateRoute
               path={`${homepage}/edit/:userId`}
               component={ProfileAction}
+              restricted
             />
             <PrivateRoute
               path={`${homepage}/create/:type`}
               component={ProfileAction}
+              restricted
             />
             <PrivateRoute
               path={`${homepage}/group/edit/:groupId`}
               component={GroupAction}
+              restricted
             />
             <PrivateRoute
               path={`${homepage}/group/create`}
               component={GroupAction}
+              restricted
             />
-            <PrivateRoute
-              component={() => (
-                <ErrorContainer>
-                  Sorry, the resource cannot be found.
-                </ErrorContainer>
-              )}
-            />
+            <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>
       </PeopleLayout>
