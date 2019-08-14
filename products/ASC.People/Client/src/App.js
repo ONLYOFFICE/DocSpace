@@ -1,14 +1,17 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Switch } from "react-router-dom";
 import { Loader, ErrorContainer } from "asc-web-components";
 import PeopleLayout from "./components/Layout";
 import Home from "./components/pages/Home";
 import PrivateRoute from "./helpers/privateRoute";
+import Profile from './components/pages/Profile';
+import ProfileAction from './components/pages/ProfileAction';
+import GroupAction from './components/pages/GroupAction';
 
-const Profile = lazy(() => import("./components/pages/Profile"));
+/*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
-const GroupAction = lazy(() => import("./components/pages/GroupAction"));
+const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 const App = ({ settings }) => {
   const { homepage } = settings;
