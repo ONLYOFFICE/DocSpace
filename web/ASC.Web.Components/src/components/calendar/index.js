@@ -194,7 +194,7 @@ class Calendar extends Component {
             <CalendarContainer>
                 <DataSelector>
                     <div>
-                        <ComboBox scaled={false} onSelect={this.selectedMonth.bind(this)} isDisabled={this.props.disabled} options={this.getArrayMonth()} /*selectedOption={this.getCurrentMonth.bind(this)}*/ />
+                        <ComboBox scaled={false} onSelect={this.selectedMonth.bind(this)} isDisabled={this.props.disabled} options={this.getArrayMonth()} selectedOption={this.getCurrentMonth.bind(this)} />
                     </div>
                     <ComboboxStyled>
                         <ComboBox onSelect={this.selectedDate.bind(this)} isDisabled={this.props.disabled} options={this.getArrayDates()} selectedOption={this.getCurrentDate()} />
