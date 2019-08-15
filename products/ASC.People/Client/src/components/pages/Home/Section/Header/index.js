@@ -3,8 +3,9 @@ import { GroupButtonsMenu, DropDownItem, Text, toastr, ContextMenuButton } from 
 import { connect } from 'react-redux';
 import { getSelectedGroup } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
+import { withTranslation } from 'react-i18next';
 
-const getPeopleItems = (onSelect) => [
+const getPeopleItems = (onSelect, t) => [
     {
       label: "Select",
       isDropdown: true,
@@ -43,7 +44,7 @@ const getPeopleItems = (onSelect) => [
       onClick: toastr.success.bind(this, "Send e-mail action")
     },
     {
-      label: "Delete",
+      label: t('PeopleResource:DeleteButton'),
       onClick: toastr.success.bind(this, "Delete action")
     }
   ];
@@ -76,10 +77,11 @@ const SectionHeaderContent = React.memo(({
     onSelect,
     onClose,
     group,
-    isAdmin
+    isAdmin,
+    t
   }) => {
     console.log("SectionHeaderContent render");
-    const menuItems = getPeopleItems(onSelect);
+    const menuItems = getPeopleItems(onSelect, t);
     return (
     isHeaderVisible ? (
       <div style={{ margin: "0 -16px" }}>
@@ -92,7 +94,7 @@ const SectionHeaderContent = React.memo(({
           moreLabel="More"
           closeTitle="Close"
           onClose={onClose}
-          selected={getPeopleItems(onSelect)[0].label}
+          selected={getPeopleItems(onSelect, t)[0].label}
         />
       </div>
     ) : (
@@ -122,4 +124,4 @@ const SectionHeaderContent = React.memo(({
     }
   }
 
-export default connect(mapStateToProps)(SectionHeaderContent);
+export default connect(mapStateToProps)(withTranslation()(SectionHeaderContent));
