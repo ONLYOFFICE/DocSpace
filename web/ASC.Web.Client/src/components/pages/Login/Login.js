@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
 import { Button, TextInput, PageLayout } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { login } from '../../../actions/authActions';
+import { login } from '../../../store/auth/actions';
 
 const Form = props => {
     const [identifier, setIdentifier] = useState('');

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import { AUTH_KEY } from '../helpers/constants';
+import { AUTH_KEY } from '../../helpers/constants';
 
 export default function setAuthorizationToken(token) {
     const cookies = new Cookies();

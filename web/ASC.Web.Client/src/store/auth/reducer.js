@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from '../actions/actionTypes';
+import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from './actions';
 import isEmpty from 'lodash/isEmpty';
 
 const initialState = {
@@ -8,7 +8,7 @@ const initialState = {
     modules: []    
 }
 
-const auth = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_CURRENT_USER:
             return Object.assign({}, state, {
@@ -30,4 +30,4 @@ const auth = (state = initialState, action) => {
     }
 }
 
-export default auth;
+export default authReducer;
