@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview7.19365.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview8.19405.7" />
   </ItemGroup>
   
   <ItemGroup>
@@ -45,19 +45,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PeopleResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.ru.resx" >
+    <EmbeddedResource Update="Resources\PeopleResource.ru.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.de.resx" >
+    <EmbeddedResource Update="Resources\PeopleResource.de.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.es.resx" >
+    <EmbeddedResource Update="Resources\PeopleResource.es.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.fr.resx" >
+    <EmbeddedResource Update="Resources\PeopleResource.fr.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\PeopleResource.it.resx" >
+    <EmbeddedResource Update="Resources\PeopleResource.it.resx">
       <DependentUpon>PeopleResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

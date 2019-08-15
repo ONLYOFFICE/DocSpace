@@ -155,7 +155,7 @@ namespace ASC.Resource.Manager
                     toAdd.AddRange(fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)));
                 }
 
-                foreach (var word in toAdd)
+                foreach (var word in toAdd.Where(r=> r != null))
                 {
                     if (string.IsNullOrEmpty(word.ValueTo)) continue;
 
