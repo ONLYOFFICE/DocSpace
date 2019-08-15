@@ -43,11 +43,8 @@ namespace ASC.Common.Security.Authorizing
         public AzManager(IRoleProvider roleProvider, IPermissionProvider permissionProvider)
             : this()
         {
-            if (roleProvider == null) throw new ArgumentNullException("roleProvider");
-            if (permissionProvider == null) throw new ArgumentNullException("permissionProvider");
-
-            this.roleProvider = roleProvider;
-            this.permissionProvider = permissionProvider;
+            this.roleProvider = roleProvider ?? throw new ArgumentNullException("roleProvider");
+            this.permissionProvider = permissionProvider ?? throw new ArgumentNullException("permissionProvider");
         }
 
 

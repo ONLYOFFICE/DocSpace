@@ -77,8 +77,7 @@ namespace ASC.Notify.Recipients
 
         public override bool Equals(object obj)
         {
-            var recD = obj as IDirectRecipient;
-            if (recD == null) return false;
+            if (!(obj is IDirectRecipient recD)) return false;
             return Equals(recD.ID, ID);
         }
 
@@ -89,7 +88,7 @@ namespace ASC.Notify.Recipients
 
         public override string ToString()
         {
-            return String.Format("{0}({1})", Name, String.Join(";", _Addresses.ToArray()));
+            return string.Format("{0}({1})", Name, string.Join(";", _Addresses.ToArray()));
         }
     }
 }

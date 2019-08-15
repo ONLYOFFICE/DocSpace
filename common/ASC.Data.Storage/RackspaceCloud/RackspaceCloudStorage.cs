@@ -41,11 +41,11 @@ namespace ASC.Data.Storage.RackspaceCloud
     {
         private string _region;
         private string _private_container;
-        private String _public_container;
+        private string _public_container;
         private readonly List<string> _domains = new List<string>();
-        private readonly Dictionary<String, ACL> _domainsAcl;
+        private readonly Dictionary<string, ACL> _domainsAcl;
         private readonly ACL _moduleAcl;
-        private String _subDir;
+        private string _subDir;
         private string _username;
         private string _apiKey;
         private bool _lowerCasing = true;
@@ -95,12 +95,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
 
-            if (!String.IsNullOrEmpty(_subDir))
+            if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = String.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
                 result = string.Format("{0}/{1}/{2}/{3}",
@@ -148,7 +148,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             _public_container = props["public_container"];
 
-            if (String.IsNullOrEmpty(_public_container))
+            if (string.IsNullOrEmpty(_public_container))
                 throw new ArgumentException("_public_container");
 
             var client = GetClient();
@@ -182,7 +182,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var accounMetaData = client.GetAccountMetaData(_region);
-            var secretKey = String.Empty;
+            var secretKey = string.Empty;
 
             if (accounMetaData.ContainsKey("Temp-Url-Key"))
             {
@@ -206,7 +206,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private Uri GetUriShared(string domain, string path)
         {
-            return new Uri(String.Format("{0}{1}", SecureHelper.IsSecure() ? _cnameSSL : _cname, MakePath(domain, path)));
+            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure() ? _cnameSSL : _cname, MakePath(domain, path)));
         }
 
         public override Stream GetReadStream(string domain, string path)
@@ -284,11 +284,11 @@ namespace ASC.Data.Storage.RackspaceCloud
                 contentDisposition = "attachment";
             }
 
-            var customHeaders = new Dictionary<String, String>();
+            var customHeaders = new Dictionary<string, string>();
 
             if (cacheDays > 0)
             {
-                customHeaders.Add("Cache-Control", String.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds));
+                customHeaders.Add("Cache-Control", string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds));
                 customHeaders.Add("Expires", DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays)).ToString());
             }
 
@@ -306,7 +306,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             }
 
 
-            if (!String.IsNullOrEmpty(contentEncoding))
+            if (!string.IsNullOrEmpty(contentEncoding))
                 customHeaders.Add("Content-Encoding", contentEncoding);
 
             var cannedACL = acl == ACL.Auto ? GetDomainACL(domain) : ACL.Read;
@@ -319,9 +319,9 @@ namespace ASC.Data.Storage.RackspaceCloud
                     using (var emptyStream = TempStream.Create())
                     {
 
-                        var headers = new Dictionary<String, String>();
+                        var headers = new Dictionary<string, string>();
 
-                        headers.Add("X-Object-Manifest", String.Format("{0}/{1}", _private_container, MakePath(domain, path)));
+                        headers.Add("X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)));
                         // create symlink
                         client.CreateObject(_public_container,
                                    emptyStream,
@@ -408,7 +408,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             if (!paths.Any()) return;
 
-            var keysToDel = new List<String>();
+            var keysToDel = new List<string>();
 
             long quotaUsed = 0;
 
@@ -510,7 +510,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
         {
-            var paths = new List<String>();
+            var paths = new List<string>();
 
             var client = GetClient();
 
@@ -582,7 +582,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var objects = client
-                          .ListObjects(_private_container, null, null, null, MakePath(domain, String.Empty), _region);
+                          .ListObjects(_private_container, null, null, null, MakePath(domain, string.Empty), _region);
 
             if (QuotaController != null)
             {
@@ -606,7 +606,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var objects = client
-                          .ListObjects(_private_container, null, null, null, MakePath(domain, String.Empty), _region);
+                          .ListObjects(_private_container, null, null, null, MakePath(domain, string.Empty), _region);
 
             long result = 0;
 

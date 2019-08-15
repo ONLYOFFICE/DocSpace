@@ -167,9 +167,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var parser = JObject.Parse(token.OriginJson);
 
             return
-                parser == null
-                    ? null
-                    : parser.Value<string>("x_mailru_vid");
+                parser?.Value<string>("x_mailru_vid");
         }
     }
 }

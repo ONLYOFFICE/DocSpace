@@ -68,7 +68,7 @@ namespace ASC.Collections
 
         protected override object GetObjectFromCache(string fullKey)
         {
-            return Common.HttpContext.Current != null ? Common.HttpContext.Current.Items[fullKey] : null;
+            return Common.HttpContext.Current?.Items[fullKey];
         }
 
         protected override bool FitsCondition(object cached)

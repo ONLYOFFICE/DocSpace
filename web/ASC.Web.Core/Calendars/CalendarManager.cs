@@ -58,7 +58,7 @@ namespace ASC.Web.Core.Calendars
         {
             lock (this._calendars)
             {
-                if (!this._calendars.Exists(c => String.Equals(c.Id, calendar.Id, StringComparison.InvariantCultureIgnoreCase)))
+                if (!this._calendars.Exists(c => string.Equals(c.Id, calendar.Id, StringComparison.InvariantCultureIgnoreCase)))
                     this._calendars.Add(calendar);
             }
         }
@@ -67,7 +67,7 @@ namespace ASC.Web.Core.Calendars
         {
             lock (this._calendars)
             {
-                this._calendars.RemoveAll(c => String.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
+                this._calendars.RemoveAll(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.Calendars
 
         public BaseCalendar GetCalendarForUser(Tenant tenant, Guid userId, string calendarId)
         {
-            return GetCalendarsForUser(tenant, userId).Find(c => String.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
+            return GetCalendarsForUser(tenant, userId).Find(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public List<BaseCalendar> GetCalendarsForUser(Tenant tenant, Guid userId)

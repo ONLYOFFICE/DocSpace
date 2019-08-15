@@ -98,8 +98,10 @@ namespace ASC.Web.Core.Users.Import
 
         private UserInfo GetExportedUser(string line, IDictionary<int, PropertyInfo> mappedProperties, int fieldsCount)
         {
-            var exportedUser = new UserInfo();
-            exportedUser.ID = Guid.NewGuid();
+            var exportedUser = new UserInfo
+            {
+                ID = Guid.NewGuid()
+            };
 
             var dataFields = GetDataFields(line);
             for (var j = 0; j < Math.Min(fieldsCount, dataFields.Length); j++)
@@ -121,7 +123,7 @@ namespace ASC.Web.Core.Users.Import
 
         private string[] GetDataFields(string line)
         {
-            var pattern = String.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
+            var pattern = string.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
             var result = Regex.Split(line, pattern);
 
             //remove TextDelmiter

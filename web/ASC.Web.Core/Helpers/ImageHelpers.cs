@@ -169,7 +169,7 @@ namespace ASC.Web.Studio.Helpers
 
             var icJPG = getCodecInfo("image/jpeg");
 
-            if (!String.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
+            if (!string.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
             {
                 var indexDot = imageInfo.Name.ToLower().LastIndexOf(".");
 
@@ -447,8 +447,10 @@ namespace ASC.Web.Studio.Helpers
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.DoThumbnail(path, outputPath, ref imageInfo);
         }
@@ -458,8 +460,10 @@ namespace ASC.Web.Studio.Helpers
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
         }
@@ -482,9 +486,10 @@ namespace ASC.Web.Studio.Helpers
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
         }
 
@@ -517,9 +522,10 @@ namespace ASC.Web.Studio.Helpers
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
             _generator.DoPreviewImage(stream, outputPath, ref imageInfo);
 
         }
@@ -531,8 +537,10 @@ namespace ASC.Web.Studio.Helpers
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.RotateImage(path, outputPath, back);
         }

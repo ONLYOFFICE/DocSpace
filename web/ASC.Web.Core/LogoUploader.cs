@@ -111,7 +111,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         public static string SaveTmpLogo(string tmpLogoPath)
         {
-            if (String.IsNullOrEmpty(tmpLogoPath)) return null;
+            if (string.IsNullOrEmpty(tmpLogoPath)) return null;
 
             try
             {
@@ -141,7 +141,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         public static void DeleteLogo(string logoPath)
         {
-            if (String.IsNullOrEmpty(logoPath)) return;
+            if (string.IsNullOrEmpty(logoPath)) return;
 
             try
             {

@@ -39,11 +39,8 @@ namespace ASC.Common.Data.AdoProxy
 
         public DbCommandProxy(DbCommand command, ProxyContext ctx)
         {
-            if (command == null) throw new ArgumentNullException("command");
-            if (ctx == null) throw new ArgumentNullException("ctx");
-
-            this.command = command;
-            context = ctx;
+            this.command = command ?? throw new ArgumentNullException("command");
+            context = ctx ?? throw new ArgumentNullException("ctx");
         }
 
 

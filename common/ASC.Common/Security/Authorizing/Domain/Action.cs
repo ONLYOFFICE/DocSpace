@@ -62,8 +62,7 @@ namespace ASC.Common.Security.Authorizing
 
         public override bool Equals(object obj)
         {
-            var a = obj as Action;
-            return a != null && a.ID == ID;
+            return obj is Action a && a.ID == ID;
         }
 
         public override string ToString()

@@ -61,9 +61,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var defaultSettings = GetDefault() as MailWhiteLabelSettings;
-
-                if (defaultSettings == null) return false;
+                if (!(GetDefault() is MailWhiteLabelSettings defaultSettings)) return false;
 
                 return FooterEnabled == defaultSettings.FooterEnabled &&
                        FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
@@ -104,7 +102,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
             }
         }
@@ -131,7 +129,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }

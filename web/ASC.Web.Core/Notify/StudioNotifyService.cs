@@ -89,7 +89,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var salesEmail = AdditionalWhiteLabelSettings.Instance.SalesEmail ?? SetupInfo.SalesEmail;
 
-            var recipient = (IRecipient)(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), String.Empty, new[] { salesEmail }, false));
+            var recipient = (IRecipient)(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false));
 
             client.SendNoticeToAsync(license ? Actions.RequestLicense : Actions.RequestTariff,
                                      new[] { recipient },
@@ -271,7 +271,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendJoinMsg(int tenantId, string email, EmployeeType emplType)
         {
             var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType, SecurityContext.CurrentAccount.ID)
-                            + String.Format("&emplType={0}", emplType);
+                            + string.Format("&emplType={0}", emplType);
 
             Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonJoin;
 
@@ -810,7 +810,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        public void PortalRenameNotify(Tenant tenant, String oldVirtualRootPath)
+        public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
         {
             var users = CoreContext.UserManager.GetUsers(tenant)
                         .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
@@ -866,7 +866,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation);
 
-            return confirmUrl + String.Format("&uid={0}&firstname={1}&lastname={2}",
+            return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
                                               SecurityContext.CurrentAccount.ID,
                                               HttpUtility.UrlEncode(user.FirstName),
                                               HttpUtility.UrlEncode(user.LastName));

@@ -207,7 +207,7 @@ namespace ASC.Web.Studio.Core.Notify
                          var tags = r.Arguments;
 
                          var logoTextTag = tags.FirstOrDefault(a => a.Tag == CommonTags.LetterLogoText);
-                         var logoText = logoTextTag != null ? (String)logoTextTag.Value : string.Empty;
+                         var logoText = logoTextTag != null ? (string)logoTextTag.Value : string.Empty;
 
                          if (!string.IsNullOrEmpty(logoText))
                          {

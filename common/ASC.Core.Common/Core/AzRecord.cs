@@ -106,8 +106,7 @@ namespace ASC.Core
 
         public override bool Equals(object obj)
         {
-            var r = obj as AzRecord;
-            return r != null &&
+            return obj is AzRecord r &&
                 r.Tenant == Tenant &&
                 r.SubjectId == SubjectId &&
                 r.ActionId == ActionId &&

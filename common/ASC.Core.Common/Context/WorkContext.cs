@@ -144,8 +144,7 @@ namespace ASC.Core
 
         private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request)
         {
-            var tenant = (request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) as Tenant;
-            if (tenant != null)
+            if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
             {
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
             }

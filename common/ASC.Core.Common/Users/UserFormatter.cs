@@ -57,10 +57,10 @@ namespace ASC.Core.Users
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
-        public static string GetUserName(String firstName, String lastName)
+        public static string GetUserName(string firstName, string lastName)
         {
 
-            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty("lastName")) throw new ArgumentException();
+            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty("lastName")) throw new ArgumentException();
 
             return string.Format(GetUserDisplayFormat(DisplayUserNameFormat.Default), firstName, lastName);
         }
@@ -90,13 +90,13 @@ namespace ASC.Core.Users
             if (format == DisplayUserNameFormat.Default) format = GetUserDisplayDefaultOrder();
             if (format == DisplayUserNameFormat.FirstLast)
             {
-                result = String.Compare(x.FirstName, y.FirstName, true);
-                if (result == 0) result = String.Compare(x.LastName, y.LastName, true);
+                result = string.Compare(x.FirstName, y.FirstName, true);
+                if (result == 0) result = string.Compare(x.LastName, y.LastName, true);
             }
             else
             {
-                result = String.Compare(x.LastName, y.LastName, true);
-                if (result == 0) result = String.Compare(x.FirstName, y.FirstName, true);
+                result = string.Compare(x.LastName, y.LastName, true);
+                if (result == 0) result = string.Compare(x.FirstName, y.FirstName, true);
             }
             return result;
         }
@@ -118,7 +118,7 @@ namespace ASC.Core.Users
             if (!forceFormatChecked)
             {
                 forceFormat = ConfigurationManager.AppSettings["core:user-display-format"];
-                if (String.IsNullOrEmpty(forceFormat)) forceFormat = null;
+                if (string.IsNullOrEmpty(forceFormat)) forceFormat = null;
                 forceFormatChecked = true;
             }
             if (forceFormat != null) return forceFormat;

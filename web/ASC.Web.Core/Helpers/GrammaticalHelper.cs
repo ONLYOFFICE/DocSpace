@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Helpers
         public static string ChooseNumeralCase(int number, string nominative, string genitiveSingular, string genitivePlural)
         {
             if (
-                String.Compare(
+                string.Compare(
                     System.Threading.Thread.CurrentThread.CurrentUICulture.ThreeLetterISOLanguageName,
                     "rus", true) == 0)
             {

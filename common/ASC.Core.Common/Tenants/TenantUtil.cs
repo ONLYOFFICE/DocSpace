@@ -30,7 +30,7 @@ namespace ASC.Core.Tenants
 {
     public class TenantUtil
     {
-        public static String GetBaseDomain(string hostedRegion)
+        public static string GetBaseDomain(string hostedRegion)
         {
             var baseHost = CoreContext.Configuration.BaseDomain;
 

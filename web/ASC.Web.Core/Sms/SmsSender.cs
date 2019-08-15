@@ -70,14 +70,14 @@ namespace ASC.Web.Core.Sms
         public static string GetPhoneValueDigits(string mobilePhone)
         {
             var reg = new Regex(@"[^\d]");
-            mobilePhone = reg.Replace(mobilePhone ?? "", String.Empty).Trim();
+            mobilePhone = reg.Replace(mobilePhone ?? "", string.Empty).Trim();
             return mobilePhone.Substring(0, Math.Min(64, mobilePhone.Length));
         }
 
         public static string BuildPhoneNoise(string mobilePhone)
         {
-            if (String.IsNullOrEmpty(mobilePhone))
-                return String.Empty;
+            if (string.IsNullOrEmpty(mobilePhone))
+                return string.Empty;
 
             mobilePhone = GetPhoneValueDigits(mobilePhone);
 

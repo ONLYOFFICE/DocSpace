@@ -64,8 +64,7 @@ namespace ASC.Common.Threading.Workers
             {
                 if (disposing)
                 {
-                    var disposable = Item as IDisposable;
-                    if (disposable != null)
+                    if (Item is IDisposable disposable)
                     {
                         disposable.Dispose();
                     }

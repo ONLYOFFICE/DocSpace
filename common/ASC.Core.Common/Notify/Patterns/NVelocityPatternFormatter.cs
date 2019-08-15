@@ -59,7 +59,7 @@ namespace ASC.Notify.Patterns
 
         protected override string FormatText(string text, ITagValue[] tagsValues)
         {
-            if (String.IsNullOrEmpty(text)) return text;
+            if (string.IsNullOrEmpty(text)) return text;
             return VelocityFormatter.FormatText(text, _nvelocityContext);
         }
 
@@ -71,8 +71,7 @@ namespace ASC.Notify.Patterns
 
         private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
         {
-            var originalString = e.OriginalValue as string;
-            if (originalString == null) return;
+            if (!(e.OriginalValue is string originalString)) return;
             var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length == 0) return;
             e.NewValue = string.Empty;

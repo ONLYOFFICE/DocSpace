@@ -351,14 +351,14 @@ namespace ASC.Core.Billing
                 default;
         }
 
-        private static Decimal GetValueDecimal(XElement xelement)
+        private static decimal GetValueDecimal(XElement xelement)
         {
             if (xelement == null || string.IsNullOrEmpty(xelement.Value))
             {
                 return default;
             }
             var sep = CultureInfo.InvariantCulture.NumberFormat.CurrencyDecimalSeparator;
-            return Decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out var value) ? value : default;
+            return decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out var value) ? value : default;
         }
 
         void IDisposable.Dispose()

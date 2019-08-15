@@ -108,7 +108,7 @@ namespace ASC.Common.Logging
                 {
                     Exception = err,
                     Level = LogLevel.Error,
-                    Message = String.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
+                    Message = string.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
                     LoggerName = "SelfCleaningTarget"
                 });
             }

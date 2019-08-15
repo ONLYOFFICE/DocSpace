@@ -58,8 +58,7 @@ namespace ASC.Web.Core
 
         public override bool Equals(object obj)
         {
-            var m = obj as IWebItem;
-            return m != null && ID == m.ID;
+            return obj is IWebItem m && ID == m.ID;
         }
 
         public override int GetHashCode()

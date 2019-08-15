@@ -118,7 +118,7 @@ namespace ASC.Web.Core
             }
         }
 
-        public static byte[] SaveToBytes(Image img, String formatName)
+        public static byte[] SaveToBytes(Image img, string formatName)
         {
             byte[] data;
             using (var memoryStream = new MemoryStream())
@@ -131,7 +131,7 @@ namespace ASC.Web.Core
             return data;
         }
 
-        public static ImageCodecInfo GetCodecInfo(String formatName)
+        public static ImageCodecInfo GetCodecInfo(string formatName)
         {
             var mimeType = string.Format("image/{0}", formatName);
             if (mimeType == "image/jpg") mimeType = "image/jpeg";

@@ -106,7 +106,7 @@ namespace ASC.Core.Users
 
         public override string ToString()
         {
-            return String.Format("{0} {1}", FirstName, LastName).Trim();
+            return string.Format("{0} {1}", FirstName, LastName).Trim();
         }
 
         public override int GetHashCode()
@@ -116,8 +116,7 @@ namespace ASC.Core.Users
 
         public override bool Equals(object obj)
         {
-            var ui = obj as UserInfo;
-            return ui != null && ID.Equals(ui.ID);
+            return obj is UserInfo ui && ID.Equals(ui.ID);
         }
 
         public CultureInfo GetCulture()

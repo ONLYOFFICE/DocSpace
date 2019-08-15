@@ -77,8 +77,7 @@ namespace ASC.Common.DependencyInjection
 
         private static TypeConverter GetTypeConverterFromName(string converterTypeName)
         {
-            var typeConverter = Activator.CreateInstance(Type.GetType(converterTypeName, true)) as TypeConverter;
-            if (typeConverter == null)
+            if (!(Activator.CreateInstance(Type.GetType(converterTypeName, true)) is TypeConverter typeConverter))
                 throw new ConfigurationErrorsException("");
             return typeConverter;
         }
