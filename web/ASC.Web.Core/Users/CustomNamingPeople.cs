@@ -92,7 +92,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "GuestsCaption")]
         private string guestsCaption;
 
-        
+
         public static string DefaultID
         {
             get { return "common"; }

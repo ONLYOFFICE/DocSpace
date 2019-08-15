@@ -50,13 +50,13 @@ namespace ASC.Api.Settings
         public static UsageSpaceStatItemWrapper GetSample()
         {
             return new UsageSpaceStatItemWrapper
-                {
-                    Name = "Item name",
-                    Icon = "Item icon path",
-                    Disabled = false,
-                    Size = "0 Byte",
-                    Url = "Item url"
-                };
+            {
+                Name = "Item name",
+                Icon = "Item icon path",
+                Disabled = false,
+                Size = "0 Byte",
+                Url = "Item url"
+            };
         }
     }
 
@@ -78,12 +78,12 @@ namespace ASC.Api.Settings
         public static ChartPointWrapper GetSample()
         {
             return new ChartPointWrapper
-                {
-                    DisplayDate = DateTime.Now.ToShortDateString(),
-                    Date = DateTime.Now,
-                    Hosts = 0,
-                    Hits = 0
-                };
+            {
+                DisplayDate = DateTime.Now.ToShortDateString(),
+                Date = DateTime.Now,
+                Hosts = 0,
+                Hits = 0
+            };
         }
     }
 }

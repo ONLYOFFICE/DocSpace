@@ -37,7 +37,7 @@ namespace ASC.Resource.Manager
         public List<ResProject> Projects { get; set; }
 
         public Author()
-        {}
+        { }
 
         public Author(string login)
         {

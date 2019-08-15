@@ -140,13 +140,13 @@ namespace ASC.FederatedLogin.LoginProviders
             if (vkProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
             var profile = new LoginProfile
-                {
-                    Id = vkProfiles[0].id,
-                    FirstName = vkProfiles[0].first_name,
-                    LastName = vkProfiles[0].last_name,
+            {
+                Id = vkProfiles[0].id,
+                FirstName = vkProfiles[0].first_name,
+                LastName = vkProfiles[0].last_name,
 
-                    Provider = ProviderConstants.VK,
-                };
+                Provider = ProviderConstants.VK,
+            };
 
             return profile;
         }

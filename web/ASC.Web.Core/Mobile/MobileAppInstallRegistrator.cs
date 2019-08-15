@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Web;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Core.Common.Notify.Push;
@@ -43,12 +42,12 @@ namespace ASC.Web.Core.Mobile
                     " VALUES (@user_email, @app_type, @registered_on, @last_sign)" +
                     " ON DUPLICATE KEY UPDATE `last_sign`=@last_sign",
                     new
-                        {
-                            user_email = userEmail,
-                            app_type = (int) appType,
-                            registered_on = DateTime.UtcNow,
-                            last_sign = DateTime.UtcNow
-                        });
+                    {
+                        user_email = userEmail,
+                        app_type = (int)appType,
+                        registered_on = DateTime.UtcNow,
+                        last_sign = DateTime.UtcNow
+                    });
             }
         }
 
@@ -59,7 +58,7 @@ namespace ASC.Web.Core.Mobile
                 .Where("user_email", userEmail);
 
             if (appType.HasValue)
-                query.Where("app_type", (int) appType.Value);
+                query.Where("app_type", (int)appType.Value);
 
 
             using (var db = GetDbManager())

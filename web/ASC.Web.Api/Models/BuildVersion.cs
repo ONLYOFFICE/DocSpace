@@ -24,12 +24,8 @@
 */
 
 
-using System;
 using System.Runtime.Serialization;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Web.Core.Files;
 
 namespace ASC.Api.Settings
 {
@@ -48,11 +44,11 @@ namespace ASC.Api.Settings
         public static BuildVersion GetCurrentBuildVersion()
         {
             return new BuildVersion
-                {
-                    CommunityServer = GetCommunityVersion(),
-                    DocumentServer = GetDocumentVersion(),
-                    MailServer = GetMailServerVersion()
-                };
+            {
+                CommunityServer = GetCommunityVersion(),
+                DocumentServer = GetDocumentVersion(),
+                MailServer = GetMailServerVersion()
+            };
         }
 
         private static string GetCommunityVersion()

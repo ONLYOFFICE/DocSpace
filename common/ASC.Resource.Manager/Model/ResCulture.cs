@@ -34,7 +34,7 @@ namespace ASC.Resource.Manager
 
         public override bool Equals(object obj)
         {
-            return Title.Equals(((ResCulture) obj).Title);
+            return Title.Equals(((ResCulture)obj).Title);
         }
         public override int GetHashCode()
         {

@@ -91,7 +91,7 @@ namespace ASC.Feed.Data
                 {
                     if (0 >= f.Users.Count) continue;
 
-                   i.Values(f.Id, f.Tenant, f.ProductId, f.ModuleId, f.AuthorId, f.ModifiedById, f.GroupId, f.CreatedDate, f.ModifiedDate, f.Json, f.Keywords, aggregatedDate);
+                    i.Values(f.Id, f.Tenant, f.ProductId, f.ModuleId, f.AuthorId, f.ModifiedById, f.GroupId, f.CreatedDate, f.ModifiedDate, f.Json, f.Keywords, aggregatedDate);
 
 
 
@@ -243,7 +243,7 @@ namespace ASC.Feed.Data
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
                 .Where("u.user_id", SecurityContext.CurrentAccount.ID)
                 .SetMaxResults(1001);
-                
+
             if (1 < lastReadedTime.Year)
             {
                 q.Where(Exp.Ge("a.aggregated_date", lastReadedTime));
@@ -314,13 +314,13 @@ namespace ASC.Feed.Data
     public class FeedResultItem
     {
         public FeedResultItem(
-            string json, 
-            string module, 
-            Guid authorId, 
+            string json,
+            string module,
+            Guid authorId,
             Guid modifiedById,
-            string groupId, 
+            string groupId,
             DateTime createdDate,
-            DateTime modifiedDate, 
+            DateTime modifiedDate,
             DateTime aggregatedDate)
         {
             var now = TenantUtil.DateTimeFromUtc(DateTime.UtcNow);
@@ -330,7 +330,7 @@ namespace ASC.Feed.Data
 
             AuthorId = authorId;
             ModifiedById = modifiedById;
-            
+
             GroupId = groupId;
 
             if (now.Year == createdDate.Year && now.Date == createdDate.Date)

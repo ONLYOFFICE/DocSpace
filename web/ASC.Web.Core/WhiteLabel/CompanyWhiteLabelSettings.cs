@@ -28,7 +28,6 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
 using Newtonsoft.Json;
 
 namespace ASC.Web.Core.WhiteLabel

@@ -27,13 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using ASC.Common.Caching;
-using ASC.Core;
-using ASC.Data.Storage.Configuration;
-using ASC.Core.Common.Configuration;
-using ASC.Data.Storage.DiscStorage;
 using ASC.Common.DependencyInjection;
+using ASC.Core;
+using ASC.Core.Common.Configuration;
+using ASC.Data.Storage.Configuration;
+using ASC.Data.Storage.DiscStorage;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -116,7 +115,7 @@ namespace ASC.Data.Storage
             var section = CommonServiceProvider.GetService<Configuration.Storage>();
             return section.Module
                 .Where(x => x.Visible)
-                .Where(x=> !exceptDisabledMigration || !x.DisableMigrate)
+                .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
                 .Select(x => x.Name);
         }
 
@@ -142,7 +141,7 @@ namespace ASC.Data.Storage
             //{
             //    throw new InvalidOperationException("Application not hosted.");
             //}
-            
+
             var section = builder.ServiceProvider.GetService<Configuration.Storage>();
             if (section != null)
             {
@@ -242,7 +241,7 @@ namespace ASC.Data.Storage
             else
             {
                 instanceType = Type.GetType(handler.Type, true);
-                props = handler.Property.ToDictionary(r=> r.Name, r=> r.Value);
+                props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
             return ((IDataStore)Activator.CreateInstance(instanceType, tenant, handler, moduleElement))

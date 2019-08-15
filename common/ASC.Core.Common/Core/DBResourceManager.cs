@@ -34,14 +34,14 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
-using ASC.Core;
 using System.Web;
+using ASC.Common;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
-using ASC.Common;
 using ASC.Common.Utils;
+using ASC.Core;
 
 namespace TMResourceData
 {
@@ -261,7 +261,7 @@ namespace TMResourceData
                         .Where("f.resname", filename)
                         .Where("d.culturetitle", culture);
                     return dbManager.ExecuteList(q)
-                        .ToDictionary(r => (string) r[0], r => (string) r[1], StringComparer.InvariantCultureIgnoreCase);
+                        .ToDictionary(r => (string)r[0], r => (string)r[1], StringComparer.InvariantCultureIgnoreCase);
                 }
             }
         }
@@ -328,7 +328,7 @@ namespace TMResourceData
                             //Hack for string which used in string.Format
                             newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}");
                         }
-                        
+
                         var pattern = string.Format(replPattern, DefaultLogoText);
                         //Hack for resource strings with mails looked like ...@onlyoffice... or with website http://www.onlyoffice.com link or with the https://www.facebook.com/pages/OnlyOffice/833032526736775
 

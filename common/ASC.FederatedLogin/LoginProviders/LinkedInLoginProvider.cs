@@ -80,7 +80,7 @@ namespace ASC.FederatedLogin.LoginProviders
         private static LoginProfile RequestProfile(string accessToken)
         {
             var linkedInProfile = RequestHelper.PerformRequest(LinkedInProfileUrl,
-                headers: new Dictionary<string, string> {{"Authorization", "Bearer " + accessToken}});
+                headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var loginProfile = ProfileFromLinkedIn(linkedInProfile);
             return loginProfile;
         }

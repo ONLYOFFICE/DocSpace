@@ -216,7 +216,7 @@ namespace ASC.Web.Studio.Core.Notify
                         ? Actions.MailboxWithoutSettingsCreated
                         : Actions.MailboxCreated,
                     StudioNotifyHelper.RecipientFromEmail(email, false),
-                    new[] {EMailSenderName},
+                    new[] { EMailSenderName },
                     tags.ToArray());
             }
         }
@@ -563,7 +563,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 notifyAction,
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 tagValues.ToArray());
         }
 
@@ -574,7 +574,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 Actions.BackupCreated,
                 new[] { StudioNotifyHelper.ToRecipient(tenantId, userId) },
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 new TagValue(Tags.OwnerName, CoreContext.UserManager.GetUsers(tenantId, userId).DisplayUserName()));
         }
 
@@ -604,7 +604,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 Actions.RestoreCompleted,
                 users,
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 new TagValue(Tags.OwnerName, owner.DisplayUserName()));
         }
 
@@ -678,7 +678,7 @@ namespace ASC.Web.Studio.Core.Notify
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
             Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
-            
+
             client.SendNoticeToAsync(
                         Actions.ConfirmOwnerChange,
                         new IRecipient[] { u },
@@ -819,7 +819,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                     CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    CoreContext.TenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {

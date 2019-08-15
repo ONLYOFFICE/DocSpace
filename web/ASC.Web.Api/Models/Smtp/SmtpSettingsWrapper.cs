@@ -58,16 +58,16 @@ namespace ASC.Api.Settings.Smtp
         public static SmtpSettingsWrapper GetSample()
         {
             return new SmtpSettingsWrapper
-                {
-                    Host = "mail.example.com",
-                    Port = 25,
-                    CredentialsUserName = "notify@example.com",
-                    CredentialsUserPassword = "{password}",
-                    EnableAuth = true,
-                    EnableSSL = false,
-                    SenderAddress = "notify@example.com",
-                    SenderDisplayName = "Postman"
-                };
+            {
+                Host = "mail.example.com",
+                Port = 25,
+                CredentialsUserName = "notify@example.com",
+                CredentialsUserPassword = "{password}",
+                EnableAuth = true,
+                EnableSSL = false,
+                SenderAddress = "notify@example.com",
+                SenderDisplayName = "Postman"
+            };
         }
     }
 }

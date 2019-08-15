@@ -26,11 +26,8 @@
 
 using System;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common

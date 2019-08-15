@@ -34,8 +34,8 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class WordpressLoginProvider : BaseLoginProvider<WordpressLoginProvider>
     {
-        public const string WordpressMeInfoUrl      = "https://public-api.wordpress.com/rest/v1/me";
-        public const string WordpressSites          = "https://public-api.wordpress.com/rest/v1.2/sites/";
+        public const string WordpressMeInfoUrl = "https://public-api.wordpress.com/rest/v1/me";
+        public const string WordpressSites = "https://public-api.wordpress.com/rest/v1.2/sites/";
 
         public WordpressLoginProvider()
         {
@@ -79,7 +79,7 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string CodeUrl
         {
             get { return "https://public-api.wordpress.com/oauth2/authorize"; }
-    }
+        }
 
         public override string AccessTokenUrl
         {

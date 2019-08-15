@@ -46,8 +46,8 @@ namespace ASC.Data.Storage
 
             this.source = source;
             this.destination = destination;
-            maxChunkUploadSize = 10*1024*1024;
-            chunksize = 5*1024*1024;
+            maxChunkUploadSize = 10 * 1024 * 1024;
+            chunksize = 5 * 1024 * 1024;
         }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)

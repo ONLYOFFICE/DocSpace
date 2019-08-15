@@ -303,7 +303,7 @@ namespace ASC.Employee.Core.Controllers
                 };
 
                 var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
-                adminGroups.AddRange(products.Select(r=> r.ID));
+                adminGroups.AddRange(products.Select(r => r.ID));
 
                 includeGroups.Add(adminGroups);
             }
@@ -964,7 +964,7 @@ namespace ASC.Employee.Core.Controllers
                 if (user.Status != EmployeeStatus.Terminated) continue;
 
                 UserPhotoManager.RemovePhoto(Tenant, user.ID);
-                CoreContext.UserManager.DeleteUser(Tenant,user.ID);
+                CoreContext.UserManager.DeleteUser(Tenant, user.ID);
                 QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
             }
 

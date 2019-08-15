@@ -24,9 +24,9 @@
 */
 
 
-using ASC.Core.Common.Notify.Jabber;
 using System.Collections.Generic;
 using System.ServiceModel;
+using ASC.Core.Common.Notify.Jabber;
 
 namespace ASC.Core.Notify.Jabber
 {

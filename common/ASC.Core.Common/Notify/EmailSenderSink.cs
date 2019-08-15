@@ -103,7 +103,7 @@ namespace ASC.Core.Notify
 
             var from = MailAddressUtils.Create(CoreContext.Configuration.SmtpSettings.SenderAddress, CoreContext.Configuration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((CoreContext.Configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(CoreContext.Configuration.SmtpSettings.SenderDisplayName)) && 
+            if ((CoreContext.Configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(CoreContext.Configuration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try

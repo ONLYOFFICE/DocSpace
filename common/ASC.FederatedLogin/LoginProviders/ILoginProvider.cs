@@ -24,9 +24,9 @@
 */
 
 
+using System.Collections.Generic;
 using ASC.FederatedLogin.Profile;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -49,7 +49,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         string ClientID { get; }
 
-        string ClientSecret {get; }
+        string ClientSecret { get; }
 
         bool IsEnabled { get; }
     }

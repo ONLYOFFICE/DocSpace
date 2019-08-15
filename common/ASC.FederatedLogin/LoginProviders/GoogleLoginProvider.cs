@@ -92,10 +92,10 @@ namespace ASC.FederatedLogin.LoginProviders
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
             var profile = new LoginProfile
-                {
-                    Id = jProfile.Value<string>("resourceName").Replace("people/", ""),
-                    Provider = ProviderConstants.Google,
-                };
+            {
+                Id = jProfile.Value<string>("resourceName").Replace("people/", ""),
+                Provider = ProviderConstants.Google,
+            };
 
             var emailsArr = jProfile.Value<JArray>("emailAddresses");
             if (emailsArr != null)

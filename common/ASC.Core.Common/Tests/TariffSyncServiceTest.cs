@@ -27,9 +27,9 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
+    using System.Linq;
     using ASC.Core.Billing;
     using NUnit.Framework;
-    using System.Linq;
 
     [TestFixture]
     public class TariffSyncServiceTest

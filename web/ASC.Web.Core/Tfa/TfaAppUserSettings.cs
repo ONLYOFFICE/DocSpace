@@ -52,10 +52,10 @@ namespace ASC.Web.Studio.Core.TFA
         public override ISettings GetDefault()
         {
             return new TfaAppUserSettings
-                {
-                    CodesSetting = new List<BackupCode>(),
-                    SaltSetting = 0
-                };
+            {
+                CodesSetting = new List<BackupCode>(),
+                SaltSetting = 0
+            };
         }
 
         public static long GetSalt(Guid userId)

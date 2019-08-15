@@ -36,7 +36,7 @@ namespace ASC.Common.Data.AdoProxy
         private readonly ProxyContext context;
         private bool disposed;
 
-        
+
         public DbConnectionProxy(DbConnection connection, ProxyContext ctx)
         {
             if (connection == null) throw new ArgumentNullException("connection");
@@ -64,7 +64,7 @@ namespace ASC.Common.Data.AdoProxy
             connection.Close();
         }
 
-        public override string  ConnectionString
+        public override string ConnectionString
         {
             get { return connection.ConnectionString; }
             set { connection.ConnectionString = value; }

@@ -46,14 +46,14 @@ namespace ASC.Core.Common.Notify
             try
             {
                 var notification = new PushNotification
-                    {
-                        Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
-                        Action = GetTagValue<PushAction>(message, PushConstants.PushActionTagName),
-                        Item = GetTagValue<PushItem>(message, PushConstants.PushItemTagName),
-                        ParentItem = GetTagValue<PushItem>(message, PushConstants.PushParentItemTagName),
-                        Message = message.Body,
-                        ShortMessage = message.Subject
-                    };
+                {
+                    Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
+                    Action = GetTagValue<PushAction>(message, PushConstants.PushActionTagName),
+                    Item = GetTagValue<PushItem>(message, PushConstants.PushItemTagName),
+                    ParentItem = GetTagValue<PushItem>(message, PushConstants.PushParentItemTagName),
+                    Message = message.Body,
+                    ShortMessage = message.Subject
+                };
 
                 if (configured)
                 {

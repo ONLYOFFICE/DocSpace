@@ -54,7 +54,7 @@ namespace ASC.Notify.Channels
             this.SenderName = senderName;
             this.firstSink = decorateSink;
             this.senderSink = senderSink;
-            
+
             var dispatcherSink = new DispatchSink(SenderName, this.context.DispatchEngine);
             this.firstSink = AddSink(firstSink, dispatcherSink);
         }
@@ -71,7 +71,7 @@ namespace ASC.Notify.Channels
             return senderSink.ProcessMessage(message);
         }
 
-        
+
         private ISink AddSink(ISink firstSink, ISink addedSink)
         {
             if (firstSink == null) return addedSink;

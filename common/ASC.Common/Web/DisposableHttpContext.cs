@@ -26,10 +26,8 @@
 
 #region usings
 
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Web;
 
 #endregion
 
@@ -62,7 +60,7 @@ namespace ASC.Common.Web
             {
                 if (value == null) throw new ArgumentNullException();
                 if (!(value is IDisposable)) throw new ArgumentException("Only IDisposable may be added!");
-                Items[key] = (IDisposable) value;
+                Items[key] = (IDisposable)value;
             }
         }
 
@@ -70,7 +68,7 @@ namespace ASC.Common.Web
         {
             get
             {
-                var table = (Dictionary<string, IDisposable>) ctx.Items[key];
+                var table = (Dictionary<string, IDisposable>)ctx.Items[key];
                 if (table == null)
                 {
                     table = new Dictionary<string, IDisposable>(1);

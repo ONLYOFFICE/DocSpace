@@ -85,7 +85,7 @@ namespace ASC.VoipService
             {
                 try
                 {
-                    var settings = JsonConvert.DeserializeObject<VoipSettings>(value, new JsonSerializerSettings {ContractResolver = CustomSerializeContractResolver.Instance });
+                    var settings = JsonConvert.DeserializeObject<VoipSettings>(value, new JsonSerializerSettings { ContractResolver = CustomSerializeContractResolver.Instance });
 
                     Operators = settings.Operators ?? new List<Agent>();
                     Name = settings.Name;
@@ -139,7 +139,7 @@ namespace ASC.VoipService
 
         public static VoipSettings GetSettings(string settings)
         {
-            return new VoipSettings {JsonSettings = settings};
+            return new VoipSettings { JsonSettings = settings };
         }
     }
 

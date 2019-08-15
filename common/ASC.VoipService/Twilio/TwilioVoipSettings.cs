@@ -37,7 +37,7 @@ namespace ASC.VoipService.Twilio
     {
         public TwilioVoipSettings() { }
 
-        public TwilioVoipSettings(Uri voiceUrl) 
+        public TwilioVoipSettings(Uri voiceUrl)
         {
             if (string.IsNullOrEmpty(voiceUrl.Query)) return;
 
@@ -50,7 +50,7 @@ namespace ASC.VoipService.Twilio
 
         public override string Connect(bool user = true, string contactId = null)
         {
-            var result =  GetEcho("", user);
+            var result = GetEcho("", user);
             if (!string.IsNullOrEmpty(contactId))
             {
                 result += "&ContactId=" + contactId;
@@ -70,7 +70,7 @@ namespace ASC.VoipService.Twilio
 
         private string GetEcho(string method, bool user = true)
         {
-            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current,"")).GetEcho(method, user);
+            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, "")).GetEcho(method, user);
         }
     }
 }

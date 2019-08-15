@@ -34,7 +34,6 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
-using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Newtonsoft.Json;
 

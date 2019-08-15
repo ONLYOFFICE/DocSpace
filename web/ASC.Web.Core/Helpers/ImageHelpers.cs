@@ -24,12 +24,12 @@
 */
 
 
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using ASC.Data.Storage;
-using System;
 
 namespace ASC.Web.Studio.Helpers
 {
@@ -351,7 +351,7 @@ namespace ASC.Web.Studio.Helpers
         {
             try
             {
-                using(var stream = store.GetReadStream(path))
+                using (var stream = store.GetReadStream(path))
                 using (var image = Image.FromStream(stream))
                 {
                     if (back)

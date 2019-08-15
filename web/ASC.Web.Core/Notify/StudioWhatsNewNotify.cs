@@ -109,7 +109,7 @@ namespace ASC.Web.Studio.Core.Notify
                             .GroupBy(f => products[f.Product]);
 
                         var ProjectsProductName = products["projects"]?.Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
- 
+
                         var activities = feedMinGroupedWrappers
                             .Where(f => f.Key.Name != ProjectsProductName) //not for project product
                             .ToDictionary(
@@ -164,7 +164,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(tenant.TenantId)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
-                                        BreadCrumbs = i == 0 ? new string[1]{gr.Key} : new string[0],
+                                        BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
                                         Action = getWhatsNewActionText(ls)
                                     });
                             }
@@ -174,7 +174,7 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             activities.Add(ProjectsProductName, whatsNewUserActivityGroupByPrjs);
                         }
-                           
+
                         if (0 < activities.Count)
                         {
                             log.InfoFormat("Send whats new to {0}", user.Email);
@@ -194,7 +194,8 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static string getWhatsNewActionText(FeedMin feed) {
+        private static string getWhatsNewActionText(FeedMin feed)
+        {
 
             if (feed.Module == ASC.Feed.Constants.BookmarksModule)
                 return WebstudioNotifyPatternResource.ActionCreateBookmark;

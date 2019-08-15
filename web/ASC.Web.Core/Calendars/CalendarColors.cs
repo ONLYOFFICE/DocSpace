@@ -34,7 +34,8 @@ namespace ASC.Web.Core.Calendars
         public string TextColor { get; set; }
         public static List<CalendarColors> BaseColors
         {
-            get {
+            get
+            {
                 return new List<CalendarColors>(){
                     new CalendarColors(){ BackgroudColor = "#e34603", TextColor="#ffffff"},
                     new CalendarColors(){ BackgroudColor = "#f88e14", TextColor="#000000"},

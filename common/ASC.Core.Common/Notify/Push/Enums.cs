@@ -90,7 +90,7 @@ namespace ASC.Core.Common.Notify.Push
     {
         [EnumMember]
         IosProjects = 0,
-        
+
         [EnumMember]
         AndroidProjects = 1,
 

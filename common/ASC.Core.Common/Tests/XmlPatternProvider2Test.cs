@@ -25,10 +25,10 @@
 
 
 #if (DEBUG)
+using System;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using NUnit.Framework;
-using System;
 
 namespace ASC.Common.Tests.Notify
 {

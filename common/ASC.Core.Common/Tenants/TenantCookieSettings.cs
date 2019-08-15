@@ -27,9 +27,8 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
-
-using ASC.Core.Common.Settings;
 using ASC.Common.Utils;
+using ASC.Core.Common.Settings;
 
 namespace ASC.Core.Tenants
 {

@@ -81,7 +81,7 @@ namespace ASC.Resource.Manager
                 {
                     Title = key,
                     ValueFrom = jsonObj[key],
-                    ResFile = new ResFile {FileID = fileID}
+                    ResFile = new ResFile { FileID = fileID }
                 };
                 if (culture != "Neutral")
                 {
@@ -89,7 +89,7 @@ namespace ASC.Resource.Manager
                     {
                         Title = key,
                         ValueFrom = jsonObj[key],
-                        ResFile = new ResFile {FileID = fileID}
+                        ResFile = new ResFile { FileID = fileID }
                     };
 
                     ResourceData.GetValueByKey(neutralKey, "Neutral");
@@ -139,7 +139,7 @@ namespace ASC.Resource.Manager
                     if (File.Exists(zipFileName))
                     {
                         var jObject = JObject.Parse(File.ReadAllText(zipFileName));
-                        foreach(var j in jObject)
+                        foreach (var j in jObject)
                         {
                             toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value.ToString() });
                         }
@@ -155,7 +155,7 @@ namespace ASC.Resource.Manager
                     toAdd.AddRange(fileWords.OrderBy(x => x.Title).Where(word => !wordsDictionary.ContainsKey(word.Title)));
                 }
 
-                foreach (var word in toAdd.Where(r=> r != null))
+                foreach (var word in toAdd.Where(r => r != null))
                 {
                     if (string.IsNullOrEmpty(word.ValueTo)) continue;
 
@@ -174,7 +174,7 @@ namespace ASC.Resource.Manager
 
                 var obj = JsonConvert.SerializeObject(wordsDictionary, Formatting.Indented);
                 writer.Write(obj);
-                
+
             }
         }
 

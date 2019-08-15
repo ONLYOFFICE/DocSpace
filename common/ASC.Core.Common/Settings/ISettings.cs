@@ -38,7 +38,7 @@ namespace ASC.Core.Common.Settings
 
     [Serializable]
     [DataContract]
-    public abstract class BaseSettings<T> : ISettings where T: class, ISettings
+    public abstract class BaseSettings<T> : ISettings where T : class, ISettings
     {
         private static int TenantID
         {

@@ -25,9 +25,9 @@
 
 
 #if (DEBUG)
+using System;
 using ASC.Common.Utils;
 using NUnit.Framework;
-using System;
 
 namespace ASC.Core.Common.Tests
 {

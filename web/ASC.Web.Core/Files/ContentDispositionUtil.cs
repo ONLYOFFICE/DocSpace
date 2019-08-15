@@ -120,7 +120,7 @@ namespace ASC.Web.Core.Files
 
             int i = b;
             AddHexDigitToStringBuilder(i >> 4, builder);
-            AddHexDigitToStringBuilder(i%16, builder);
+            AddHexDigitToStringBuilder(i % 16, builder);
         }
 
         private const string HexDigits = "0123456789ABCDEF";

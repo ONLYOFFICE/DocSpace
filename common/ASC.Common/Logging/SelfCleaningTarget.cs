@@ -24,17 +24,17 @@
 */
 
 
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NLog;
 using NLog.Common;
 using NLog.Targets;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace ASC.Common.Logging
 {
-    [Target("SelfCleaning")] 
+    [Target("SelfCleaning")]
     public class SelfCleaningTarget : FileTarget
     {
         private static DateTime _lastCleanDate;
@@ -105,12 +105,12 @@ namespace ASC.Common.Logging
             catch (Exception err)
             {
                 base.Write(new LogEventInfo
-                    {
-                        Exception = err,
-                        Level = LogLevel.Error,
-                        Message = String.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
-                        LoggerName = "SelfCleaningTarget"
-                    });
+                {
+                    Exception = err,
+                    Level = LogLevel.Error,
+                    Message = String.Format("file: {0}, dir: {1}, mess: {2}", filePath, dirPath, err.Message),
+                    LoggerName = "SelfCleaningTarget"
+                });
             }
         }
 
@@ -123,7 +123,7 @@ namespace ASC.Common.Logging
             }
 
             base.Write(logEvents);
-        } 
+        }
 
         protected override void Write(LogEventInfo logEvent)
         {
@@ -134,6 +134,6 @@ namespace ASC.Common.Logging
             }
 
             base.Write(logEvent);
-        } 
+        }
     }
 }

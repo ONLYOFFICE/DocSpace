@@ -36,7 +36,7 @@ namespace ASC.Data.Storage.Configuration
 {
     [Serializable]
     [DataContract]
-    public abstract class BaseStorageSettings<T> : BaseSettings<T> where T: class, ISettings, new()
+    public abstract class BaseStorageSettings<T> : BaseSettings<T> where T : class, ISettings, new()
     {
         [DataMember(Name = "Module")]
         public string Module { get; set; }

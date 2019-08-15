@@ -27,8 +27,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Web;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Core.Common.Settings;
 using Microsoft.AspNetCore.Hosting;
@@ -53,10 +51,10 @@ namespace ASC.Web.Core.Utility
         public override ISettings GetDefault()
         {
             return new ColorThemesSettings
-                {
-                    ColorThemeName = DefaultName,
-                    FirstRequest = true
-                };
+            {
+                ColorThemeName = DefaultName,
+                FirstRequest = true
+            };
         }
 
         public override Guid ID
@@ -126,7 +124,7 @@ namespace ASC.Web.Core.Utility
             }
             catch (Exception)
             {
-                
+
             }
         }
     }

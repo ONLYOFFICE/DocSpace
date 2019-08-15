@@ -30,7 +30,7 @@ using ASC.Notify.Model;
 
 
 namespace ASC.Web.Core.Subscriptions
-{   
+{
 
     public interface ISubscriptionManager
     {
@@ -38,6 +38,6 @@ namespace ASC.Web.Core.Subscriptions
 
         List<SubscriptionType> GetSubscriptionTypes();
 
-        ISubscriptionProvider SubscriptionProvider { get; }        
+        ISubscriptionProvider SubscriptionProvider { get; }
     }
 }

@@ -70,7 +70,7 @@ namespace ASC.Web.Core.Mail
         {
             return new DbManager("webstudio");
         }
-        
+
         private static DbManager GetDb(string dbid, string connectionString)
         {
             var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");

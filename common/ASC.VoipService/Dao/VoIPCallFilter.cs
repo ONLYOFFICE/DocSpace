@@ -34,7 +34,7 @@ namespace ASC.VoipService.Dao
         public string Type { get; set; }
 
         public DateTime? FromDate { get; set; }
-        
+
         public DateTime? ToDate { get; set; }
 
         public Guid? Agent { get; set; }

@@ -49,17 +49,17 @@ namespace ASC.Web.Core.Calendars
         #endregion
     }
 
-    public interface ICalendar: IiCalFormatView
+    public interface ICalendar : IiCalFormatView
     {
-        string Id { get;}
+        string Id { get; }
         string Name { get; }
-        string Description { get; }        
+        string Description { get; }
         Guid OwnerId { get; }
         EventAlertType EventAlertType { get; }
         List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate);
         SharingOptions SharingOptions { get; }
         TimeZoneInfo TimeZone { get; }
 
-        CalendarContext Context {get;}
+        CalendarContext Context { get; }
     }
 }

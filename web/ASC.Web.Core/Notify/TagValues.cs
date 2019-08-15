@@ -24,10 +24,10 @@
 */
 
 
+using System;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Notify.Patterns;
-using System;
 using ASC.Web.Core.Users;
 
 namespace ASC.Web.Studio.Core.Notify

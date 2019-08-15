@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using ASC.FederatedLogin.Profile;
 using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
@@ -73,8 +72,8 @@ namespace ASC.FederatedLogin.LoginProviders
                             PostalCode = DemandLevel.Request,
                             TimeZone = DemandLevel.Request,
                             FullName = DemandLevel.Request,
-                                                        
-                                                       
+
+
                         });
                         var fetch = new FetchRequest();
                         fetch.Attributes.AddRequired(WellKnownAttributes.Contact.Email);
@@ -95,7 +94,7 @@ namespace ASC.FederatedLogin.LoginProviders
                     }
                     catch (ProtocolException ex)
                     {
-                       return LoginProfile.FromError(ex);
+                        return LoginProfile.FromError(ex);
                     }
                 }
                 else

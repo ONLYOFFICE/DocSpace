@@ -513,7 +513,7 @@ namespace ASC.Notify.Engine
 
                 var senderNames = new List<string>();
                 senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(tenant, request.NotifyAction, request.Recipient) ?? new string[0]);
-                senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string) tag.Value));
+                senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
                 request.SenderNames = senderNames.ToArray();
             }
@@ -620,12 +620,13 @@ namespace ASC.Notify.Engine
             {
                 lock (locker)
                 {
-                    Task.Run(() => {
+                    Task.Run(() =>
+                    {
                         try
                         {
                             method(d);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             log.Error(e);
                         }

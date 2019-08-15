@@ -24,12 +24,12 @@
 */
 
 
-using ASC.Core.Configuration;
-using ASC.Core.Tenants;
 using System;
 using System.Text;
-using Newtonsoft.Json;
 using ASC.Common.Utils;
+using ASC.Core.Configuration;
+using ASC.Core.Tenants;
+using Newtonsoft.Json;
 
 namespace ASC.Core
 {
@@ -71,7 +71,7 @@ namespace ASC.Core
 
                 if (quotaSettings.MaxSpace != long.MaxValue)
                     return quotaSettings.MaxSpace;
-                
+
                 if (personalMaxSpace.HasValue)
                     return personalMaxSpace.Value;
 

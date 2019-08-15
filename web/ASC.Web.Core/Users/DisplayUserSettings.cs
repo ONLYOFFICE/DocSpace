@@ -48,9 +48,9 @@ namespace ASC.Web.Core.Users
         public override ISettings GetDefault()
         {
             return new DisplayUserSettings
-                {
-                    IsDisableGettingStarted = false,
-                };
+            {
+                IsDisableGettingStarted = false,
+            };
         }
 
         public static string GetFullUserName(int tenantId, Guid userID, bool withHtmlEncode = true)

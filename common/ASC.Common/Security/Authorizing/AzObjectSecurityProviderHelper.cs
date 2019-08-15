@@ -49,7 +49,7 @@ namespace ASC.Common.Security.Authorizing
             if (currSecObjProvider == null && currObjId is ISecurityObjectProvider)
             {
                 currObjIdAsProvider = true;
-                currSecObjProvider = (ISecurityObjectProvider) currObjId;
+                currSecObjProvider = (ISecurityObjectProvider)currObjId;
             }
             callContext = new SecurityCallContext();
         }

@@ -58,13 +58,13 @@ namespace ASC.Core.Configuration
 
         private SmtpSettings()
         {
-            
+
         }
 
         public SmtpSettings(string host, string senderAddress)
             : this(host, senderAddress, DefaultSenderDisplayName)
         {
-            
+
         }
 
         public SmtpSettings(string host, string senderAddress, string senderDisplayName)
@@ -140,9 +140,9 @@ namespace ASC.Core.Configuration
             var senderDisplayName = HttpUtility.UrlDecode(props[6]) ?? DefaultSenderDisplayName;
 
             var settings = new SmtpSettings(host, port, senderAddress, senderDisplayName)
-                {
-                    EnableSSL = 7 < props.Length && !string.IsNullOrEmpty(props[7]) && Convert.ToBoolean(props[7])
-                };
+            {
+                EnableSSL = 7 < props.Length && !string.IsNullOrEmpty(props[7]) && Convert.ToBoolean(props[7])
+            };
 
             var credentialsUserName = HttpUtility.UrlDecode(props[1]);
             var credentialsUserPassword = HttpUtility.UrlDecode(props[2]);
@@ -156,7 +156,7 @@ namespace ASC.Core.Configuration
             {
                 settings.EnableAuth = false;
             }
-            
+
             return settings;
         }
 

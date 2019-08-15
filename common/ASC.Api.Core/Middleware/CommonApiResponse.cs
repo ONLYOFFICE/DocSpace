@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
 
@@ -67,7 +67,7 @@ namespace ASC.Api.Core.Middleware
             {
                 Count = collection.Count();
             }
-            else if(response == null)
+            else if (response == null)
             {
                 Count = 0;
             }

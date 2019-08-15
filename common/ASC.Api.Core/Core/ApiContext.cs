@@ -96,7 +96,7 @@ namespace ASC.Api.Core
                 var values = Query[key + "[]"];
                 if (values.Count > 0)
                     return values;
-                
+
                 values = Query[key];
                 if (values.Count > 0)
                 {
@@ -135,7 +135,7 @@ namespace ASC.Api.Core
         /// Don't forget to call _context.SetDataPaginated() to prevent SmartList from filtering response if you fetch data from DB with TOP & COUNT
         /// </remarks>
         public long Count { get; set; }
-        
+
         /// <summary>
         /// Gets start index to get item from collection. Request parameter "startIndex"
         /// </summary>
@@ -155,7 +155,7 @@ namespace ASC.Api.Core
         /// Gets field to filter from request parameter "filterBy"
         /// </summary>
         public string FilterBy { get; set; }
-        
+
         /// <summary>
         /// Gets filter operation from request parameter "filterOp"
         /// can be one of the following:"contains","equals","startsWith","present"
@@ -172,7 +172,7 @@ namespace ASC.Api.Core
         /// Like ...&sortOrder=descending&...
         /// </summary>
         public bool SortDescending { get; set; }
-        
+
         /// <summary>
         /// Gets value to filter from request parameter "updatedSince"
         /// </summary>
@@ -199,7 +199,7 @@ namespace ASC.Api.Core
             SortBy = string.Empty;
             return this;
         }
-        
+
         public ApiContext SetDataFiltered()
         {
             FilterBy = string.Empty;
@@ -262,7 +262,7 @@ namespace ASC.Api.Core
 
 
 
-        public static implicit operator ApiContext(HttpContext  httpContext)
+        public static implicit operator ApiContext(HttpContext httpContext)
         {
             return new ApiContext(httpContext);
         }

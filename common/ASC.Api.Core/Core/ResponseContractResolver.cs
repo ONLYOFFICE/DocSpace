@@ -28,8 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Api.Core;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,7 +52,7 @@ namespace ASC.Api.Core
         protected override JsonProperty CreateProperty(System.Reflection.MemberInfo member, Newtonsoft.Json.MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
-            if(property.PropertyName == "response")
+            if (property.PropertyName == "response")
             {
                 property.ItemConverter = new JsonStringConverter(Services);
             }

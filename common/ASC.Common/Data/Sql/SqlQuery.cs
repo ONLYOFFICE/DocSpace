@@ -244,7 +244,7 @@ namespace ASC.Common.Data.Sql
 
         public SqlQuery Select(params string[] columns)
         {
-            this.columns.AddRange(columns.Select(r => (SqlIdentifier) r));
+            this.columns.AddRange(columns.Select(r => (SqlIdentifier)r));
             return this;
         }
 

@@ -33,13 +33,13 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public EqColumnsExp(string column1, string column2)
         {
-            this.column1 = (SqlIdentifier) column1;
-            this.column2 = (SqlIdentifier) column2;
+            this.column1 = (SqlIdentifier)column1;
+            this.column2 = (SqlIdentifier)column2;
         }
 
         public EqColumnsExp(string column1, SqlQuery query)
         {
-            this.column1 = (SqlIdentifier) column1;
+            this.column1 = (SqlIdentifier)column1;
             column2 = new AsExp(query);
         }
 

@@ -24,9 +24,9 @@
 */
 
 
+using System;
 using ASC.Common.Caching;
 using ASC.Core.Common.Notify.Push;
-using System;
 
 namespace ASC.Web.Core.Mobile
 {
@@ -80,7 +80,7 @@ namespace ASC.Web.Core.Mobile
         private static string GetCacheKey(string userEmail, MobileAppType? appType)
         {
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
-            
+
             return String.Format("{0}:mobile:{1}", ASC.Core.CoreContext.TenantManager.GetCurrentTenant().TenantId, cacheKey);
         }
     }

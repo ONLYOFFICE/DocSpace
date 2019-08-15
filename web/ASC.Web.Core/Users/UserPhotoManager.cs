@@ -169,7 +169,7 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception)
             {
-                
+
             }
         }
 
@@ -307,7 +307,7 @@ namespace ASC.Web.Core.Users
             var fileName = Path.GetFileName(path);
             return fileName != _defaultAvatar;
         }
-        
+
         public static string GetPhotoAbsoluteWebPath(Tenant tenant, Guid userID)
         {
             var path = SearchInCache(userID, Size.Empty, out _);
@@ -496,7 +496,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userID.ToString()}, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userID.ToString() }, CacheNotifyAction.Remove);
             }
         }
 
@@ -504,7 +504,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userId.ToString(), Size = new CacheSize() { Height = size.Height, Width = size.Width }, FileName = fileName}, CacheNotifyAction.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userId.ToString(), Size = new CacheSize() { Height = size.Height, Width = size.Width }, FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
             }
         }
 
@@ -703,7 +703,7 @@ namespace ASC.Web.Core.Users
                     var imgFormat = img.RawFormat;
                     if (item.Size != img.Size)
                     {
-                        using (var img2 = item.Settings.IsDefault ? 
+                        using (var img2 = item.Settings.IsDefault ?
                             CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
                             UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings))
                         {
@@ -867,7 +867,7 @@ namespace ASC.Web.Core.Users
                 using (var s = GetDataStore().GetReadStream("", fileName))
                 {
                     var data = new MemoryStream();
-                    var buffer = new Byte[1024*10];
+                    var buffer = new Byte[1024 * 10];
                     while (true)
                     {
                         var count = s.Read(buffer, 0, buffer.Length);
@@ -939,12 +939,12 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Web.Photo").Error(err); 
+                LogManager.GetLogger("ASC.Web.Photo").Error(err);
             }
 
             return data;
         }
-        
+
         /// <summary>
         /// Rotate the given image file according to Exif Orientation data
         /// </summary>

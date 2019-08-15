@@ -243,7 +243,7 @@ namespace ASC.Core.Caching
 
             internal void Clear()
             {
-                if(!CoreContext.Configuration.Standalone) return;
+                if (!CoreContext.Configuration.Standalone) return;
                 lock (locker)
                 {
                     byId.Clear();

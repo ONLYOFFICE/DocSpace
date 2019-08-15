@@ -46,7 +46,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override object[] GetParameters()
         {
-            return value == null ? new object[0] : new[] {value};
+            return value == null ? new object[0] : new[] { value };
         }
     }
 }

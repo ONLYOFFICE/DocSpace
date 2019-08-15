@@ -50,7 +50,7 @@ namespace ASC.Common.Data.Sql.Expressions
         {
             var parameters = new List<object>();
             parameters.AddRange(_condition.GetParameters());
-            parameters.AddRange(new[] {_trueValue, _falseValue});
+            parameters.AddRange(new[] { _trueValue, _falseValue });
             return parameters.ToArray();
         }
     }

@@ -28,9 +28,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using ASC.Common.Utils;
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core.Tenants;
 using Autofac;
 
@@ -255,7 +254,7 @@ namespace ASC.Core.Common.Configuration
 
         public DataStoreConsumer()
         {
-            
+
         }
 
         public DataStoreConsumer(string name, int order, Dictionary<string, string> additional)
@@ -272,7 +271,7 @@ namespace ASC.Core.Common.Configuration
 
         public override IEnumerable<string> AdditionalKeys
         {
-            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r!= "cdn").ToList(); }
+            get { return base.AdditionalKeys.Where(r => r != HandlerTypeKey && r != "cdn").ToList(); }
         }
 
         protected override string GetSettingsKey(string name)
@@ -306,7 +305,7 @@ namespace ASC.Core.Common.Configuration
 
         public object Clone()
         {
-            return new DataStoreConsumer(Name, Order, Props.ToDictionary(r=> r.Key, r=> r.Value), Additional.ToDictionary(r=> r.Key, r=> r.Value));
+            return new DataStoreConsumer(Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 
@@ -345,7 +344,7 @@ namespace ASC.Core.Common.Configuration
             return new T();
         }
 
-        public static T Get<T>() where T : Consumer, new ()
+        public static T Get<T>() where T : Consumer, new()
         {
             T result;
             if (Builder.TryResolve(out result))

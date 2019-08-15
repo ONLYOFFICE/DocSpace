@@ -202,7 +202,7 @@ namespace ASC.Notify.Cron
             while (difference == 1000)
             {
                 DateTime newDate = GetTimeAfter(lastDate).Value;
-                difference = (long) (newDate - lastDate).TotalMilliseconds;
+                difference = (long)(newDate - lastDate).TotalMilliseconds;
                 if (difference == 1000)
                 {
                     lastDate = newDate;
@@ -265,7 +265,7 @@ namespace ASC.Notify.Cron
                 int exprOn = Second;
 #if NET_20                string[] exprsTok = expression.Trim().Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 #else
-                string[] exprsTok = expression.Trim().Split(new[] {' ', '\t', '\r', '\n'});
+                string[] exprsTok = expression.Trim().Split(new[] { ' ', '\t', '\r', '\n' });
 #endif
                 foreach (string exprTok in exprsTok)
                 {
@@ -445,7 +445,7 @@ namespace ASC.Notify.Cron
                 }
                 if (type == DayOfWeek && !lastdayOfMonth)
                 {
-                    var val = (int) daysOfMonth[daysOfMonth.Count - 1];
+                    var val = (int)daysOfMonth[daysOfMonth.Count - 1];
                     if (val == NoSpecInt)
                     {
                         throw new FormatException(
@@ -996,7 +996,7 @@ namespace ASC.Notify.Cron
                 }
                 else
                 {
-                    int i2 = i%max;
+                    int i2 = i % max;
 
                     if (i2 == 0 && (type == Month || type == DayOfWeek || type == DayOfMonth))
                     {
@@ -1068,7 +1068,7 @@ namespace ASC.Notify.Cron
         {
             if (monthMap.ContainsKey(s))
             {
-                return (int) monthMap[s];
+                return (int)monthMap[s];
             }
             else
             {
@@ -1080,7 +1080,7 @@ namespace ASC.Notify.Cron
         {
             if (dayMap.ContainsKey(s))
             {
-                return (int) dayMap[s];
+                return (int)dayMap[s];
             }
             else
             {
@@ -1138,11 +1138,11 @@ namespace ASC.Notify.Cron
                 st = seconds.TailSet(sec);
                 if (st != null && st.Count != 0)
                 {
-                    sec = (int) st.First();
+                    sec = (int)st.First();
                 }
                 else
                 {
-                    sec = ((int) seconds.First());
+                    sec = ((int)seconds.First());
                     d = d.AddMinutes(1);
                 }
                 d = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, sec, d.Millisecond);
@@ -1154,11 +1154,11 @@ namespace ASC.Notify.Cron
                 if (st != null && st.Count != 0)
                 {
                     t = min;
-                    min = ((int) st.First());
+                    min = ((int)st.First());
                 }
                 else
                 {
-                    min = (int) minutes.First();
+                    min = (int)minutes.First();
                     hr++;
                 }
                 if (min != t)
@@ -1176,11 +1176,11 @@ namespace ASC.Notify.Cron
                 if (st != null && st.Count != 0)
                 {
                     t = hr;
-                    hr = (int) st.First();
+                    hr = (int)st.First();
                 }
                 else
                 {
-                    hr = (int) hours.First();
+                    hr = (int)hours.First();
                     day++;
                 }
                 if (hr != t)
@@ -1251,7 +1251,7 @@ namespace ASC.Notify.Cron
                     else if (nearestWeekday)
                     {
                         t = day;
-                        day = (int) daysOfMonth.First();
+                        day = (int)daysOfMonth.First();
                         var tcal = new DateTime(d.Year, mon, day, 0, 0, 0);
                         int ldom = GetLastDayOfMonth(mon, d.Year);
                         DayOfWeek dow = tcal.DayOfWeek;
@@ -1274,25 +1274,25 @@ namespace ASC.Notify.Cron
                         tcal = new DateTime(tcal.Year, mon, day, hr, min, sec);
                         if (tcal.ToUniversalTime() < afterTimeUtc)
                         {
-                            day = ((int) daysOfMonth.First());
+                            day = ((int)daysOfMonth.First());
                             mon++;
                         }
                     }
                     else if (st != null && st.Count != 0)
                     {
                         t = day;
-                        day = (int) st.First();
+                        day = (int)st.First();
 
                         int lastDay = GetLastDayOfMonth(mon, d.Year);
                         if (day > lastDay)
                         {
-                            day = (int) daysOfMonth.First();
+                            day = (int)daysOfMonth.First();
                             mon++;
                         }
                     }
                     else
                     {
-                        day = ((int) daysOfMonth.First());
+                        day = ((int)daysOfMonth.First());
                         mon++;
                     }
                     if (day != t || mon != tmon)
@@ -1320,9 +1320,9 @@ namespace ASC.Notify.Cron
                 {
                     if (lastdayOfWeek)
                     {
-                        var dow = ((int) daysOfWeek.First());
+                        var dow = ((int)daysOfWeek.First());
 
-                        int cDow = ((int) d.DayOfWeek);
+                        int cDow = ((int)d.DayOfWeek);
                         int daysToAdd = 0;
                         if (cDow < dow)
                         {
@@ -1361,9 +1361,9 @@ namespace ASC.Notify.Cron
                     }
                     else if (nthdayOfWeek != 0)
                     {
-                        var dow = ((int) daysOfWeek.First());
+                        var dow = ((int)daysOfWeek.First());
 
-                        int cDow = ((int) d.DayOfWeek);
+                        int cDow = ((int)d.DayOfWeek);
                         int daysToAdd = 0;
                         if (cDow < dow)
                         {
@@ -1379,12 +1379,12 @@ namespace ASC.Notify.Cron
                             dayShifted = true;
                         }
                         day += daysToAdd;
-                        int weekOfMonth = day/7;
-                        if (day%7 > 0)
+                        int weekOfMonth = day / 7;
+                        if (day % 7 > 0)
                         {
                             weekOfMonth++;
                         }
-                        daysToAdd = (nthdayOfWeek - weekOfMonth)*7;
+                        daysToAdd = (nthdayOfWeek - weekOfMonth) * 7;
                         day += daysToAdd;
                         if (daysToAdd < 0 || day > GetLastDayOfMonth(mon, d.Year))
                         {
@@ -1408,13 +1408,13 @@ namespace ASC.Notify.Cron
                     }
                     else
                     {
-                        int cDow = ((int) d.DayOfWeek);
-                        var dow = ((int) daysOfWeek.First());
+                        int cDow = ((int)d.DayOfWeek);
+                        var dow = ((int)daysOfWeek.First());
 
                         st = daysOfWeek.TailSet(cDow);
                         if (st != null && st.Count > 0)
                         {
-                            dow = ((int) st.First());
+                            dow = ((int)st.First());
                         }
                         int daysToAdd = 0;
                         if (cDow < dow)
@@ -1465,11 +1465,11 @@ namespace ASC.Notify.Cron
                 if (st != null && st.Count != 0)
                 {
                     t = mon;
-                    mon = ((int) st.First());
+                    mon = ((int)st.First());
                 }
                 else
                 {
-                    mon = ((int) months.First());
+                    mon = ((int)months.First());
                     year++;
                 }
                 if (mon != t)
@@ -1485,7 +1485,7 @@ namespace ASC.Notify.Cron
                 if (st != null && st.Count != 0)
                 {
                     t = year;
-                    year = ((int) st.First());
+                    year = ((int)st.First());
                 }
                 else
                 {

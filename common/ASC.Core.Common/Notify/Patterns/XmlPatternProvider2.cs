@@ -152,7 +152,7 @@ namespace ASC.Notify.Patterns
             }
 
             var resourceManagerType = Type.GetType(array[1], true, true);
-            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ?? 
+            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
                            resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             if (property == null)
             {

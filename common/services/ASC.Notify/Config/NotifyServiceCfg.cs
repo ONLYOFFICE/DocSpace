@@ -56,7 +56,7 @@ namespace ASC.Notify.Config
 
                 }
             }
-            foreach(var s in Schedulers)
+            foreach (var s in Schedulers)
             {
                 try
                 {
@@ -79,7 +79,8 @@ namespace ASC.Notify.Config
 
         public void Init()
         {
-            if (MaxThreads == 0) {
+            if (MaxThreads == 0)
+            {
                 MaxThreads = Environment.ProcessorCount;
             }
         }

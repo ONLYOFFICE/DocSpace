@@ -52,12 +52,12 @@ namespace ASC.Web.Studio.UserControls.Management
         public override ISettings GetDefault()
         {
             return new TariffSettings
-                {
-                    HideBuyRecommendationSetting = false,
-                    HideNotifySetting = false,
-                    HidePricingPageForUsers = false,
-                    LicenseAcceptSetting = DateTime.MinValue.ToString(CultureInfo),
-                };
+            {
+                HideBuyRecommendationSetting = false,
+                HideNotifySetting = false,
+                HidePricingPageForUsers = false,
+                LicenseAcceptSetting = DateTime.MinValue.ToString(CultureInfo),
+            };
         }
 
         public override Guid ID

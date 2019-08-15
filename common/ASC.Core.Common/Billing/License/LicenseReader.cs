@@ -206,23 +206,23 @@ namespace ASC.Core.Billing
             var defaultQuota = CoreContext.TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
 
             var quota = new TenantQuota(-1000)
-                {
-                    ActiveUsers = license.ActiveUsers,
-                    MaxFileSize = defaultQuota.MaxFileSize,
-                    MaxTotalSize = defaultQuota.MaxTotalSize,
-                    Name = "license",
-                    HasDomain = true,
-                    Audit = true,
-                    ControlPanel = true,
-                    HealthCheck = true,
-                    Ldap = true,
-                    Sso = true,
-                    WhiteLabel = license.WhiteLabel || license.Customization,
-                    Update = true,
-                    Support = true,
-                    Trial = license.Trial,
-                    CountPortals = license.PortalCount,
-                };
+            {
+                ActiveUsers = license.ActiveUsers,
+                MaxFileSize = defaultQuota.MaxFileSize,
+                MaxTotalSize = defaultQuota.MaxTotalSize,
+                Name = "license",
+                HasDomain = true,
+                Audit = true,
+                ControlPanel = true,
+                HealthCheck = true,
+                Ldap = true,
+                Sso = true,
+                WhiteLabel = license.WhiteLabel || license.Customization,
+                Update = true,
+                Support = true,
+                Trial = license.Trial,
+                CountPortals = license.PortalCount,
+            };
             CoreContext.TenantManager.SaveTenantQuota(quota);
 
             if (defaultQuota.CountPortals != license.PortalCount)
@@ -232,10 +232,10 @@ namespace ASC.Core.Billing
             }
 
             var tariff = new Tariff
-                {
-                    QuotaId = quota.Id,
-                    DueDate = license.DueDate,
-                };
+            {
+                QuotaId = quota.Id,
+                DueDate = license.DueDate,
+            };
 
             CoreContext.PaymentManager.SetTariff(-1, tariff);
 

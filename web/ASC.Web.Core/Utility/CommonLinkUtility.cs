@@ -117,7 +117,7 @@ namespace ASC.Web.Studio.Utility
 
         public static string GetFullAbsolutePath(string virtualPath)
         {
-            return GetFullAbsolutePath(ASC.Common.HttpContext.Current,virtualPath);
+            return GetFullAbsolutePath(ASC.Common.HttpContext.Current, virtualPath);
         }
         public static string GetFullAbsolutePath(HttpContext context, string virtualPath)
         {

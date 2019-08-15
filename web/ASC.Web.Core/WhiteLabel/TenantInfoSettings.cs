@@ -55,9 +55,9 @@ namespace ASC.Web.Core.WhiteLabel
         public override ISettings GetDefault()
         {
             return new TenantInfoSettings
-                       {
-                           _isDefault = true
-                       };
+            {
+                _isDefault = true
+            };
         }
 
         public void RestoreDefault()

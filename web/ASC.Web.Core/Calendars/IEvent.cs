@@ -91,7 +91,7 @@ namespace ASC.Web.Core.Calendars
         bool AllDayLong { get; }
         RecurrenceRule RecurrenceRule { get; }
         EventContext Context { get; }
-        SharingOptions SharingOptions { get;}
+        SharingOptions SharingOptions { get; }
         EventStatus Status { get; }
     }
 }
