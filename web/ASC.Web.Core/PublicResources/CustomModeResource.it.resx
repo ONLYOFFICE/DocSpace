@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>h1.Benvenuti su ONLYOFFICE Personal
+
+Hai appena creato il tuo office in cloud personale.
+
+h3.
+793/5000
+È uno spazio di lavoro virtuale in cui è possibile modificare e archiviare documenti, lavorare con loro da qualsiasi luogo fornendo accesso ai tuoi amici o colleghi.
+
+ONLYOFFICE è compatibile con i formati di documenti Microsoft Office ™ e non garantisce alcuna perdita di formattazione o qualità degli oggetti creati. Ci impegniamo ad alleviarti dalla formattazione del mal di testa fedele e ti forniremo un set completo di strumenti di editing professionale.
+
+h3.Per iniziare, ecco cosa puoi fare in ONLYOFFICE:
+
+- Carica file dal tuo computer o creane di nuovi;
+
+- Lavora con tutti i formati di file più diffusi;
+
+- Modifica forme, grafici, tabelle, equazioni e altri oggetti;
+
+- Utilizzare vari componenti aggiuntivi per funzionalità di modifica estese;
+
+- Accedi facilmente al tuo personal cloud tramite "Estensione di Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
+
+Puoi anche modificare i documenti offline con i nostri "editor desktop" gratuiti: "https://www.onlyoffice.com/download-desktop.aspx" o ottenere una "suite di editing mobile": "https://www.onlyoffice.com /mobile.aspx "per il tuo dispositivo iOS o Android.
+
+Cordiali saluti,
+il team ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_after_registration7" xml:space="preserve">
+    <value>$PersonalHeaderStart Collega il tuo spazio di archiviazione cloud preferito a ONLYOFFICE $PersonalHeaderEnd
+
+È da una settimana che hai creato il tuo ufficio cloud, quindi crediamo che sia il momento di svelare alcune funzioni utili che potresti non aver ancora imparato.
+
+Collega *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* o *Yandex.Disk* a ONLYOFFICE e crea un unico spazio di gestione dei documenti per tutti i tuoi documenti. Sarai in grado di modificare file esterni in ONLYOFFICE e salvarli nella memoria in cui tieni i documenti. Leggi i dettagli sulla connessione degli archivi di file su ONLYOFFICE "qui":"${__HelpLink}/tipstricks/add-resource.aspx".
+
+Puoi anche integrare gli editor ONLYOFFICE in Google Drive utilizzando la nostra "app connettore": "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgn".
+
+Hai bisogno di più di gestione dei documenti?
+
+h3.Prova ONLYOFFICE per le aziende "nel cloud":"https://www.onlyoffice.com/cloud-office.aspx" o "sul tuo server":"https://www.onlyoffice.com/server-solutions .aspx "gratuitamente per 30 giorni e verificare le opportunità di gestione dei documenti estese insieme a un set di strumenti di business:
+
+- Gestire i documenti del team nei progetti;
+
+- Integrare i documenti con CRM e Email;
+
+- Condividi file per gruppi di utenti;
+
+- Ottimizza il tuo flusso di lavoro con gli strumenti di comunicazione del team.
+
+Interessato? Ulteriori informazioni su "ONLYOFFICE for business": "http://www.onlyoffice.com/document-management.aspx".
+
+Cordiali saluti,
+il team ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>Salve,
+
+Hai appena registrato un account presso la soluzione ONLYOFFICE per uso personale. Fai clic su "qui":"$InviteLink" per confermare la registrazione e creare una password.
+
+Se non riesci ad aprire il link, copia il seguente "$InviteLink":"$InviteLink" e incollalo nella barra degli indirizzi del browser.
+
+Cordiali saluti,
+il team ONLYOFFICE</value>
+  </data>
+  <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>Gentile $UserName,
+
+La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" è stata completata con successo.
+
+# Documenti - $DocsSpace
+# Mail - $MailSpace
+# Talk - $TalkSpace
+
+^ Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"$ {__VirtualRootPath}".^</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Benvenuto su ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
+    <value>Collega il tuo cloud storage preferito a ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_custom_mode_change_email" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Richiesta di modifica dell'email</value>
+  </data>
+  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
+    <value>ONLYOFFICE Personal assistenza per password</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Si prega di attivare il tuo indirizzo email</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>Chiusura account personale ONLYOFFICE </value>
+  </data>
+  <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
+    <value>${LetterLogoText}. Procedura di rimozione dati dell'utente completata</value>
+  </data>
+</root>

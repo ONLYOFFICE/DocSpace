@@ -27,7 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Notify\Jabber\IReverseJabberService.cs" />
-    <Compile Remove="Resources\ResourceGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="protos\AzRecordCache.proto" />
@@ -45,13 +44,6 @@
     <None Remove="protos\UserPhotoCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ResourceGenerator.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ResourceGenerator.tt</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.27" />
     <PackageReference Include="AWSSDK.Core" Version="3.3.103.24" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.104.12" />
@@ -61,12 +53,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.2.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Resources\ResourceGenerator.tt">
-      <LastGenOutput>ResourceGenerator.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\NotifyMessage.proto" />

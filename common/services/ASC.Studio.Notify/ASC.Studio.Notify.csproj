@@ -11,21 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\Resources.cs">
-      <DependentUpon>Resources.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\Resources.tt">
-      <LastGenOutput>Resources.cs</LastGenOutput>
-      <Generator>TextTemplatingFileGenerator</Generator>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
