@@ -37,8 +37,7 @@ namespace ASC.Common.Data
     {
         public DbTransaction(IDbTransaction transaction)
         {
-            if (transaction == null) throw new ArgumentNullException("transaction");
-            Transaction = transaction;
+            Transaction = transaction ?? throw new ArgumentNullException("transaction");
         }
 
         internal IDbTransaction Transaction { get; private set; }

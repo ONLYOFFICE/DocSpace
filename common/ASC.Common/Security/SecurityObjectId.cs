@@ -40,10 +40,8 @@ namespace ASC.Common.Security
 
         public SecurityObjectId(object id, Type objType)
         {
-            if (objType == null) throw new ArgumentNullException("objType");
-
             SecurityId = id;
-            ObjectType = objType;
+            ObjectType = objType ?? throw new ArgumentNullException("objType");
         }
 
         public override int GetHashCode()

@@ -74,9 +74,7 @@ namespace ASC.Notify.Engine
 
         public NotifyEngine(Context context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
@@ -538,11 +536,8 @@ namespace ASC.Notify.Engine
                     {
                         pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                     }
-                    if (pattern == null)
-                    {
-                        throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
-                    }
-                    request.Patterns[i] = pattern;
+
+                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
                 }
             }
         }

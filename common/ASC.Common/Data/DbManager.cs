@@ -91,8 +91,7 @@ namespace ASC.Common.Data
 
         public DbManager(string databaseId, bool shared, int? commandTimeout = null)
         {
-            if (databaseId == null) throw new ArgumentNullException("databaseId");
-            DatabaseId = databaseId;
+            DatabaseId = databaseId ?? throw new ArgumentNullException("databaseId");
             this.shared = shared;
 
             if (logger.IsDebugEnabled)

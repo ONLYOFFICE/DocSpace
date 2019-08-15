@@ -40,8 +40,7 @@ namespace ASC.Common.Web
 
         public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx)
         {
-            if (ctx == null) throw new ArgumentNullException();
-            this.ctx = ctx;
+            this.ctx = ctx ?? throw new ArgumentNullException();
         }
 
         public static DisposableHttpContext Current

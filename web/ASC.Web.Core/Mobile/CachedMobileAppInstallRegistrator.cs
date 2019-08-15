@@ -43,11 +43,7 @@ namespace ASC.Web.Core.Mobile
 
         public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TimeSpan cacheExpiration)
         {
-            if (registrator == null)
-            {
-                throw new ArgumentNullException("registrator");
-            }
-            this.registrator = registrator;
+            this.registrator = registrator ?? throw new ArgumentNullException("registrator");
             this.cacheExpiration = cacheExpiration;
         }
 

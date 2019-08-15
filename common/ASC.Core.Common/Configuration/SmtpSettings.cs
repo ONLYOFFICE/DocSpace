@@ -89,14 +89,11 @@ namespace ASC.Core.Configuration
             {
                 throw new ArgumentException("Empty sender address.", "senderAddress");
             }
-            if (senderDisplayName == null)
-            {
-                throw new ArgumentNullException("senderDisplayName");
-            }
+
             Host = host;
             Port = port;
             SenderAddress = senderAddress;
-            SenderDisplayName = senderDisplayName;
+            SenderDisplayName = senderDisplayName ?? throw new ArgumentNullException("senderDisplayName");
         }
 
         public void SetCredentials(string userName, string password)

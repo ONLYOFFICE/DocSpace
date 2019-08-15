@@ -45,9 +45,8 @@ namespace ASC.Common.Security.Authorizing
 
         public AuthorizingException(ISubject subject, IAction[] actions)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
             if (actions == null || actions.Length == 0) throw new ArgumentNullException("actions");
-            Subject = subject;
+            Subject = subject ?? throw new ArgumentNullException("subject");
             Actions = actions;
             var sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });

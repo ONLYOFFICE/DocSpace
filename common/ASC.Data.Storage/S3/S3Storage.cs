@@ -1150,9 +1150,7 @@ namespace ASC.Data.Storage.S3
 
             public ResponseStreamWrapper(GetObjectResponse response)
             {
-                if (response == null) throw new ArgumentNullException("response");
-
-                _response = response;
+                _response = response ?? throw new ArgumentNullException("response");
             }
 
 
