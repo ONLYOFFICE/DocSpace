@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
-import { getAvailableModules } from '../store/auth/selectors';
 
 class PeopleLayout extends React.PureComponent {
     onProfileClick = () => {
@@ -59,6 +58,23 @@ class PeopleLayout extends React.PureComponent {
 PeopleLayout.propTypes = {
     auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired
+};
+
+const getAvailableModules = (modules) => {
+    const separator = { seporator: true, id: 'nav-seporator-1' };
+    const products = modules.map(product => {
+        return {
+            id: product.id,
+            title: product.title,
+            iconName: 'PeopleIcon',
+            notifications: 0,
+            url: product.link,
+            onClick: () => window.open(product.link, '_self'),
+            onBadgeClick: e => console.log('PeopleIconBadge Clicked', e)
+        };
+    }) || [];
+
+    return products.length ? [separator, ...products] : products;
 };
 
 function mapStateToProps(state) {
