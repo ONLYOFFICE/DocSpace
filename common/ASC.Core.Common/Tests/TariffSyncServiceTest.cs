@@ -54,11 +54,9 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void SyncTest()
         {
-            using (var wcfClient = new TariffSyncClient())
-            {
-                var tariffs = wcfClient.GetTariffs(74, null);
-                Assert.IsTrue(tariffs.Any());
-            }
+            using var wcfClient = new TariffSyncClient();
+            var tariffs = wcfClient.GetTariffs(74, null);
+            Assert.IsTrue(tariffs.Any());
         }
     }
 }

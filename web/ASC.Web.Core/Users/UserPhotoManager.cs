@@ -559,61 +559,57 @@ namespace ASC.Web.Core.Users
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                using (var img = new Bitmap(stream))
+                using var stream = new MemoryStream(data);
+                using var img = new Bitmap(stream);
+                imgFormat = img.RawFormat;
+                width = img.Width;
+                height = img.Height;
+                var maxWidth = maxsize.Width;
+                var maxHeight = maxsize.Height;
+
+                if ((maxHeight != -1 && img.Height > maxHeight) || (maxWidth != -1 && img.Width > maxWidth))
                 {
-                    imgFormat = img.RawFormat;
-                    width = img.Width;
-                    height = img.Height;
-                    var maxWidth = maxsize.Width;
-                    var maxHeight = maxsize.Height;
+                    #region calulate height and width
 
-                    if ((maxHeight != -1 && img.Height > maxHeight) || (maxWidth != -1 && img.Width > maxWidth))
+                    if (width > maxWidth && height > maxHeight)
                     {
-                        #region calulate height and width
 
-                        if (width > maxWidth && height > maxHeight)
-                        {
-
-                            if (width > height)
-                            {
-                                height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
-                                width = maxWidth;
-                            }
-                            else
-                            {
-                                width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
-                                height = maxHeight;
-                            }
-                        }
-
-                        if (width > maxWidth && height <= maxHeight)
+                        if (width > height)
                         {
                             height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
                             width = maxWidth;
                         }
-
-                        if (width <= maxWidth && height > maxHeight)
+                        else
                         {
                             width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
                             height = maxHeight;
                         }
-
-                        #endregion
-
-                        using (var b = new Bitmap(width, height))
-                        using (var gTemp = Graphics.FromImage(b))
-                        {
-                            gTemp.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            gTemp.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            gTemp.SmoothingMode = SmoothingMode.HighQuality;
-                            gTemp.DrawImage(img, 0, 0, width, height);
-
-                            data = CommonPhotoManager.SaveToBytes(b);
-                        }
                     }
-                    return data;
+
+                    if (width > maxWidth && height <= maxHeight)
+                    {
+                        height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                        width = maxWidth;
+                    }
+
+                    if (width <= maxWidth && height > maxHeight)
+                    {
+                        width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                        height = maxHeight;
+                    }
+
+                    #endregion
+
+                    using var b = new Bitmap(width, height);
+                    using var gTemp = Graphics.FromImage(b);
+                    gTemp.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    gTemp.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    gTemp.SmoothingMode = SmoothingMode.HighQuality;
+                    gTemp.DrawImage(img, 0, 0, width, height);
+
+                    data = CommonPhotoManager.SaveToBytes(b);
                 }
+                return data;
             }
             catch (OutOfMemoryException)
             {
@@ -667,34 +663,28 @@ namespace ASC.Web.Core.Users
             try
             {
                 var data = item.Data;
-                using (var stream = new MemoryStream(data))
-                using (var img = Image.FromStream(stream))
+                using var stream = new MemoryStream(data);
+                using var img = Image.FromStream(stream);
+                var imgFormat = img.RawFormat;
+                if (item.Size != img.Size)
                 {
-                    var imgFormat = img.RawFormat;
-                    if (item.Size != img.Size)
-                    {
-                        using (var img2 = item.Settings.IsDefault ?
-                            CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
-                            UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings))
-                        {
-                            data = CommonPhotoManager.SaveToBytes(img2);
-                        }
-                    }
-                    else
-                    {
-                        data = CommonPhotoManager.SaveToBytes(img);
-                    }
-
-                    var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
-                    var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
-
-                    using (var stream2 = new MemoryStream(data))
-                    {
-                        item.DataStore.Save(fileName, stream2).ToString();
-
-                        AddToCache(item.UserId, item.Size, fileName);
-                    }
+                    using var img2 = item.Settings.IsDefault ?
+                        CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
+                        UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings);
+                    data = CommonPhotoManager.SaveToBytes(img2);
                 }
+                else
+                {
+                    data = CommonPhotoManager.SaveToBytes(img);
+                }
+
+                var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+                var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
+
+                using var stream2 = new MemoryStream(data);
+                item.DataStore.Save(fileName, stream2).ToString();
+
+                AddToCache(item.UserId, item.Size, fileName);
             }
             catch (ArgumentException error)
             {
@@ -714,26 +704,22 @@ namespace ASC.Web.Core.Users
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 
             var store = GetDataStore();
-            using (var stream = new MemoryStream(data))
-            {
-                return store.Save(_tempDomainName, fileName, stream).ToString();
-            }
+            using var stream = new MemoryStream(data);
+            return store.Save(_tempDomainName, fileName, stream).ToString();
         }
 
         public static byte[] GetTempPhotoData(string fileName)
         {
-            using (var s = GetDataStore().GetReadStream(_tempDomainName, fileName))
+            using var s = GetDataStore().GetReadStream(_tempDomainName, fileName);
+            var data = new MemoryStream();
+            var buffer = new byte[1024 * 10];
+            while (true)
             {
-                var data = new MemoryStream();
-                var buffer = new byte[1024 * 10];
-                while (true)
-                {
-                    var count = s.Read(buffer, 0, buffer.Length);
-                    if (count == 0) break;
-                    data.Write(buffer, 0, count);
-                }
-                return data.ToArray();
+                var count = s.Read(buffer, 0, buffer.Length);
+                if (count == 0) break;
+                data.Write(buffer, 0, count);
             }
+            return data.ToArray();
         }
 
         public static string GetSizedTempPhotoAbsoluteWebPath(string fileName, int newWidth, int newHeight)
@@ -741,33 +727,27 @@ namespace ASC.Web.Core.Users
             var store = GetDataStore();
             if (store.IsFile(_tempDomainName, fileName))
             {
-                using (var s = store.GetReadStream(_tempDomainName, fileName))
-                using (var img = Image.FromStream(s))
+                using var s = store.GetReadStream(_tempDomainName, fileName);
+                using var img = Image.FromStream(s);
+                var imgFormat = img.RawFormat;
+                byte[] data;
+
+                if (img.Width != newWidth || img.Height != newHeight)
                 {
-                    var imgFormat = img.RawFormat;
-                    byte[] data;
-
-                    if (img.Width != newWidth || img.Height != newHeight)
-                    {
-                        using (var img2 = CommonPhotoManager.DoThumbnail(img, new Size(newWidth, newHeight), true, true, true))
-                        {
-                            data = CommonPhotoManager.SaveToBytes(img2);
-                        }
-                    }
-                    else
-                    {
-                        data = CommonPhotoManager.SaveToBytes(img);
-                    }
-                    var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
-                    var index = fileName.LastIndexOf('.');
-                    var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
-
-                    var trueFileName = fileNameWithoutExt + "_size_" + newWidth.ToString() + "-" + newHeight.ToString() + "." + widening;
-                    using (var stream = new MemoryStream(data))
-                    {
-                        return store.Save(_tempDomainName, trueFileName, stream).ToString();
-                    }
+                    using var img2 = CommonPhotoManager.DoThumbnail(img, new Size(newWidth, newHeight), true, true, true);
+                    data = CommonPhotoManager.SaveToBytes(img2);
                 }
+                else
+                {
+                    data = CommonPhotoManager.SaveToBytes(img);
+                }
+                var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+                var index = fileName.LastIndexOf('.');
+                var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
+
+                var trueFileName = fileNameWithoutExt + "_size_" + newWidth.ToString() + "-" + newHeight.ToString() + "." + widening;
+                using var stream = new MemoryStream(data);
+                return store.Save(_tempDomainName, trueFileName, stream).ToString();
             }
             return GetDefaultPhotoAbsoluteWebPath(new Size(newWidth, newHeight));
         }
@@ -792,10 +772,8 @@ namespace ASC.Web.Core.Users
                 var data = CoreContext.UserManager.GetUserPhoto(tenantId, userID);
                 if (data != null)
                 {
-                    using (var s = new MemoryStream(data))
-                    {
-                        return new Bitmap(s);
-                    }
+                    using var s = new MemoryStream(data);
+                    return new Bitmap(s);
                 }
             }
             catch { }
@@ -831,18 +809,16 @@ namespace ASC.Web.Core.Users
 
                 if (string.IsNullOrEmpty(fileName)) return null;
 
-                using (var s = GetDataStore().GetReadStream("", fileName))
+                using var s = GetDataStore().GetReadStream("", fileName);
+                var data = new MemoryStream();
+                var buffer = new byte[1024 * 10];
+                while (true)
                 {
-                    var data = new MemoryStream();
-                    var buffer = new byte[1024 * 10];
-                    while (true)
-                    {
-                        var count = s.Read(buffer, 0, buffer.Length);
-                        if (count == 0) break;
-                        data.Write(buffer, 0, count);
-                    }
-                    return data.ToArray();
+                    var count = s.Read(buffer, 0, buffer.Length);
+                    if (count == 0) break;
+                    data.Write(buffer, 0, count);
                 }
+                return data.ToArray();
             }
             catch (Exception err)
             {

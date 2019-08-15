@@ -196,10 +196,8 @@ namespace ASC.Web.Core.Files
                 }
 
                 if (responseStream == null) throw new WebException("Could not get an answer");
-                using (var reader = new StreamReader(responseStream))
-                {
-                    dataResponse = reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(responseStream);
+                dataResponse = reader.ReadToEnd();
             }
             finally
             {
@@ -285,10 +283,8 @@ namespace ASC.Web.Core.Files
             {
                 if (stream == null) throw new Exception("Response is null");
 
-                using (var reader = new StreamReader(stream))
-                {
-                    dataResponse = reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(stream);
+                dataResponse = reader.ReadToEnd();
             }
 
             var jResponse = JObject.Parse(dataResponse);
@@ -368,10 +364,8 @@ namespace ASC.Web.Core.Files
             {
                 if (responseStream != null)
                 {
-                    using (var reader = new StreamReader(responseStream))
-                    {
-                        dataResponse = reader.ReadToEnd();
-                    }
+                    using var reader = new StreamReader(responseStream);
+                    dataResponse = reader.ReadToEnd();
                 }
             }
 
@@ -404,19 +398,15 @@ namespace ASC.Web.Core.Files
             var request = (HttpWebRequest)WebRequest.Create(healthcheckUrl);
             request.Timeout = Timeout;
 
-            using (var response = (HttpWebResponse)request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
+            using var response = (HttpWebResponse)request.GetResponse();
+            using var responseStream = response.GetResponseStream();
+            if (responseStream == null)
             {
-                if (responseStream == null)
-                {
-                    throw new Exception("Empty response");
-                }
-                using (var reader = new StreamReader(responseStream))
-                {
-                    var dataResponse = reader.ReadToEnd();
-                    return dataResponse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-                }
+                throw new Exception("Empty response");
             }
+            using var reader = new StreamReader(responseStream);
+            var dataResponse = reader.ReadToEnd();
+            return dataResponse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public enum CommandMethod

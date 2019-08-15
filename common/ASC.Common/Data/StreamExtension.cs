@@ -54,13 +54,11 @@ public static class StreamExtension
             throw new ArgumentNullException("stream");
         }
 
-        using (var mem = stream.GetBuffered())
-        {
-            var buffer = new byte[mem.Length];
-            mem.Position = 0;
-            mem.Read(buffer, 0, buffer.Length);
-            return buffer;
-        }
+        using var mem = stream.GetBuffered();
+        var buffer = new byte[mem.Length];
+        mem.Position = 0;
+        mem.Read(buffer, 0, buffer.Length);
+        return buffer;
     }
 
     public static void StreamCopyTo(this Stream srcStream, Stream dstStream)

@@ -80,10 +80,7 @@ namespace ASC.Data.Storage
             }
 
             uploadOperation.DoJob();
-            if (onComplete != null)
-            {
-                onComplete(uploadOperation.Result);
-            }
+            onComplete?.Invoke(uploadOperation.Result);
 
             return uploadOperation.Result;
         }
@@ -193,10 +190,8 @@ namespace ASC.Data.Storage
                 {
                     if (!dataStore.IsFile(path))
                     {
-                        using (var stream = File.OpenRead(mappedPath))
-                        {
-                            dataStore.Save(path, stream);
-                        }
+                        using var stream = File.OpenRead(mappedPath);
+                        dataStore.Save(path, stream);
                     }
 
                     Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();

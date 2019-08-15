@@ -109,21 +109,19 @@ namespace ASC.Core.Data
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            using (var db = GetDb())
-            using (var tx = db.BeginTransaction())
-            {
-                var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)
-                    .Select("counter")
-                    .Where("path", row.Path));
+            using var db = GetDb();
+            using var tx = db.BeginTransaction();
+            var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)
+.Select("counter")
+.Where("path", row.Path));
 
-                db.ExecuteNonQuery(Insert(tenants_quotarow, row.Tenant)
-                    .InColumnValue("path", row.Path)
-                    .InColumnValue("counter", exchange ? counter + row.Counter : row.Counter)
-                    .InColumnValue("tag", row.Tag)
-                    .InColumnValue("last_modified", DateTime.UtcNow));
+            db.ExecuteNonQuery(Insert(tenants_quotarow, row.Tenant)
+                .InColumnValue("path", row.Path)
+                .InColumnValue("counter", exchange ? counter + row.Counter : row.Counter)
+                .InColumnValue("tag", row.Tag)
+                .InColumnValue("last_modified", DateTime.UtcNow));
 
-                tx.Commit();
-            }
+            tx.Commit();
         }
 
         public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)

@@ -1220,11 +1220,9 @@ namespace ASC.Employee.Core.Controllers
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                using (var img = new Bitmap(stream))
-                {
-                    imgFormat = img.RawFormat;
-                }
+                using var stream = new MemoryStream(data);
+                using var img = new Bitmap(stream);
+                imgFormat = img.RawFormat;
             }
             catch (OutOfMemoryException)
             {

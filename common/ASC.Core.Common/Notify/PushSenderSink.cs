@@ -59,14 +59,12 @@ namespace ASC.Core.Common.Notify
                 {
                     try
                     {
-                        using (var pushClient = new PushServiceClient())
-                        {
-                            pushClient.EnqueueNotification(
-                                CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                                message.Recipient.ID,
-                                notification,
-                                new List<string>());
-                        }
+                        using var pushClient = new PushServiceClient();
+                        pushClient.EnqueueNotification(
+CoreContext.TenantManager.GetCurrentTenant().TenantId,
+message.Recipient.ID,
+notification,
+new List<string>());
                     }
                     catch (InvalidOperationException)
                     {

@@ -97,12 +97,10 @@ namespace ASC.Core.Common.Tests
             };
 
             var serializer = new DataContractJsonSerializer(quota1.GetType());
-            using (var ms = new MemoryStream())
-            {
-                serializer.WriteObject(ms, quota1);
-                var json = Encoding.UTF8.GetString(ms.ToArray());
-                Assert.AreEqual("{\"Id\":1024,\"Name\":\"quota1\",\"MaxFileSize\":3,\"MaxTotalSize\":4,\"ActiveUsers\":30,\"Features\":\"trial,year\",\"Price\":12.5,\"Price2\":45.23,\"AvangateId\":\"1\",\"Visible\":true}", json);
-            }
+            using var ms = new MemoryStream();
+            serializer.WriteObject(ms, quota1);
+            var json = Encoding.UTF8.GetString(ms.ToArray());
+            Assert.AreEqual("{\"Id\":1024,\"Name\":\"quota1\",\"MaxFileSize\":3,\"MaxTotalSize\":4,\"ActiveUsers\":30,\"Features\":\"trial,year\",\"Price\":12.5,\"Price2\":45.23,\"AvangateId\":\"1\",\"Visible\":true}", json);
         }
 
         [Test]

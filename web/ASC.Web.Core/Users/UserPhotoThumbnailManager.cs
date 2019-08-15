@@ -88,11 +88,9 @@ namespace ASC.Web.Core.Users
                 graphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 graphic.DrawImage(mainImg, rect);
 
-                using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
-                    graphic.DrawImage(mainImg, rect, 0, 0, mainImg.Width, mainImg.Height, GraphicsUnit.Pixel, wrapMode);
-                }
+                using var wrapMode = new System.Drawing.Imaging.ImageAttributes();
+                wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                graphic.DrawImage(mainImg, rect, 0, 0, mainImg.Width, mainImg.Height, GraphicsUnit.Pixel, wrapMode);
             }
 
             return thumbnailBitmap;

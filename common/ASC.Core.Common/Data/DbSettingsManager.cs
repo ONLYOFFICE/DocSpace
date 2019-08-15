@@ -179,22 +179,18 @@ namespace ASC.Core.Data
 
         private T Deserialize<T>(byte[] data)
         {
-            using (var stream = new MemoryStream(data))
-            {
-                var settings = data[0] == 0
-                    ? new BinaryFormatter().Deserialize(stream)
-                    : GetJsonSerializer(typeof(T)).ReadObject(stream);
-                return (T)settings;
-            }
+            using var stream = new MemoryStream(data);
+            var settings = data[0] == 0
+? new BinaryFormatter().Deserialize(stream)
+: GetJsonSerializer(typeof(T)).ReadObject(stream);
+            return (T)settings;
         }
 
         private byte[] Serialize(ISettings settings)
         {
-            using (var stream = new MemoryStream())
-            {
-                GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
-                return stream.ToArray();
-            }
+            using var stream = new MemoryStream();
+            GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
+            return stream.ToArray();
         }
 
         private IDbManager GetDbManager()

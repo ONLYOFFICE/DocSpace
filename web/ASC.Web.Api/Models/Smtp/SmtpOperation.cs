@@ -138,25 +138,23 @@ namespace ASC.Api.Settings.Smtp
 
                 mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
 
-                using (var client = GetSmtpClient())
+                using var client = GetSmtpClient();
+                SetProgress(40, "Connect to host");
+
+                client.Connect(SmtpSettings.Host, SmtpSettings.Port.GetValueOrDefault(25),
+                    SmtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
+
+                if (SmtpSettings.EnableAuth)
                 {
-                    SetProgress(40, "Connect to host");
+                    SetProgress(60, "Authenticate");
 
-                    client.Connect(SmtpSettings.Host, SmtpSettings.Port.GetValueOrDefault(25),
-                        SmtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None, cancellationToken);
-
-                    if (SmtpSettings.EnableAuth)
-                    {
-                        SetProgress(60, "Authenticate");
-
-                        client.Authenticate(SmtpSettings.CredentialsUserName,
-                            SmtpSettings.CredentialsUserPassword, cancellationToken);
-                    }
-
-                    SetProgress(80, "Send test message");
-
-                    client.Send(FormatOptions.Default, mimeMessage, cancellationToken);
+                    client.Authenticate(SmtpSettings.CredentialsUserName,
+                        SmtpSettings.CredentialsUserPassword, cancellationToken);
                 }
+
+                SetProgress(80, "Send test message");
+
+                client.Send(FormatOptions.Default, mimeMessage, cancellationToken);
 
             }
             catch (AuthorizingException authError)

@@ -160,25 +160,23 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
                     const string tableTitle = "files_converts";
 
-                    using (var dbManager = new DbManager(databaseId))
-                    {
-                        var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
+                    using var dbManager = new DbManager(databaseId);
+                    var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
 
-                        var list = dbManager.ExecuteList(sqlQuery);
+                    var list = dbManager.ExecuteList(sqlQuery);
 
-                        list.ForEach(item =>
-                            {
-                                var input = item[0] as string;
-                                var output = item[1] as string;
-                                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
-                                    return;
-                                input = input.ToLower().Trim();
-                                output = output.ToLower().Trim();
-                                if (!_extsConvertible.ContainsKey(input))
-                                    _extsConvertible[input] = new List<string>();
-                                _extsConvertible[input].Add(output);
-                            });
-                    }
+                    list.ForEach(item =>
+                        {
+                            var input = item[0] as string;
+                            var output = item[1] as string;
+                            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                                return;
+                            input = input.ToLower().Trim();
+                            output = output.ToLower().Trim();
+                            if (!_extsConvertible.ContainsKey(input))
+                                _extsConvertible[input] = new List<string>();
+                            _extsConvertible[input].Add(output);
+                        });
                 }
                 return _extsConvertible;
             }

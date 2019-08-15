@@ -70,21 +70,17 @@ namespace ASC.Web.Core.Utility
 
         public string GetShortenLink(string shareLink)
         {
-            using (var client = new WebClient { Encoding = Encoding.UTF8 })
-            {
-                client.Headers.Add("Authorization", CreateAuthToken());
-                return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
-            }
+            using var client = new WebClient { Encoding = Encoding.UTF8 };
+            client.Headers.Add("Authorization", CreateAuthToken());
+            return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
         {
-            using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(sKey)))
-            {
-                var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-                var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
-            }
+            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(sKey));
+            var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
         }
     }
 

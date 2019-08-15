@@ -33,8 +33,8 @@ namespace ASC.FederatedLogin.Helpers
     {
         public static string GetCallbackPage()
         {
-            using (var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("ASC.FederatedLogin.callback.htm")))
-                return reader.ReadToEnd();
+            using var reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("ASC.FederatedLogin.callback.htm"));
+            return reader.ReadToEnd();
         }
     }
 }

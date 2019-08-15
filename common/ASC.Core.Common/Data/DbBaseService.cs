@@ -106,10 +106,8 @@ namespace ASC.Core.Data
 
         private T Execute<T>(Func<IDbManager, T> action)
         {
-            using (var db = GetDb())
-            {
-                return action(db);
-            }
+            using var db = GetDb();
+            return action(db);
         }
     }
 }

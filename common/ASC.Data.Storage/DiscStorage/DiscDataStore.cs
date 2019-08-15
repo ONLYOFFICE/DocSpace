@@ -153,16 +153,14 @@ namespace ASC.Data.Storage.DiscStorage
             }
             else
             {
-                using (var fs = File.Open(target, FileMode.Create))
+                using var fs = File.Open(target, FileMode.Create);
+                var buffer = new byte[BufferSize];
+                int readed;
+                while ((readed = buffered.Read(buffer, 0, BufferSize)) != 0)
                 {
-                    var buffer = new byte[BufferSize];
-                    int readed;
-                    while ((readed = buffered.Read(buffer, 0, BufferSize)) != 0)
-                    {
-                        fs.Write(buffer, 0, readed);
-                    }
-                    fslen = fs.Length;
+                    fs.Write(buffer, 0, readed);
                 }
+                fslen = fs.Length;
             }
 
             QuotaUsedAdd(domain, fslen);

@@ -54,15 +54,13 @@ public static class Extensions
             try
             {
                 tryCurrent++;
-                using (var stream = store.GetReadStream(domain, path, offset))
+                using var stream = store.GetReadStream(domain, path, offset);
+                var buffer = new byte[BufferSize];
+                var readed = 0;
+                while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
                 {
-                    var buffer = new byte[BufferSize];
-                    var readed = 0;
-                    while ((readed = stream.Read(buffer, 0, BufferSize)) > 0)
-                    {
-                        readTo.Write(buffer, 0, readed);
-                        offset += readed;
-                    }
+                    readTo.Write(buffer, 0, readed);
+                    offset += readed;
                 }
                 break;
             }

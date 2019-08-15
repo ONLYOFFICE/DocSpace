@@ -71,68 +71,62 @@ namespace ASC.Web.Studio.Core.Statistic
 
         public static List<Guid> GetVisitorsToday(int tenantID, Guid productID)
         {
-            using (var db = GetDb())
+            using var db = GetDb();
+            var users = db
+.ExecuteList(
+new SqlQuery("webstudio_uservisit")
+.Select("UserID")
+.Where("VisitDate", DateTime.UtcNow.Date)
+.Where("TenantID", tenantID)
+.Where("ProductID", productID.ToString())
+.GroupBy(1)
+.OrderBy("FirstVisitTime", true)
+)
+.ConvertAll(r => new Guid((string)r[0]));
+            lock (cache)
             {
-                var users = db
-                    .ExecuteList(
-                        new SqlQuery("webstudio_uservisit")
-                            .Select("UserID")
-                            .Where("VisitDate", DateTime.UtcNow.Date)
-                            .Where("TenantID", tenantID)
-                            .Where("ProductID", productID.ToString())
-                            .GroupBy(1)
-                            .OrderBy("FirstVisitTime", true)
-                    )
-                    .ConvertAll(r => new Guid((string)r[0]));
-                lock (cache)
+                foreach (var visit in cache.Values)
                 {
-                    foreach (var visit in cache.Values)
+                    if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
                     {
-                        if (!users.Contains(visit.UserID) && visit.VisitDate.Date == DateTime.UtcNow.Date)
-                        {
-                            users.Add(visit.UserID);
-                        }
+                        users.Add(visit.UserID);
                     }
                 }
-                return users;
             }
+            return users;
         }
 
         public static List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            using (var db = GetDb())
-            {
-                return db.ExecuteList(new SqlQuery("webstudio_uservisit")
-                    .Select("VisitDate")
-                    .SelectSum("VisitCount")
-                    .Where(Exp.Between("VisitDate", startDate, endPeriod))
-                    .Where("TenantID", tenantID)
-                    .GroupBy("VisitDate")
-                    .OrderBy("VisitDate", true))
-                    .ConvertAll(
-                        r =>
-                            new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt32(r[1]) });
-            }
+            using var db = GetDb();
+            return db.ExecuteList(new SqlQuery("webstudio_uservisit")
+.Select("VisitDate")
+.SelectSum("VisitCount")
+.Where(Exp.Between("VisitDate", startDate, endPeriod))
+.Where("TenantID", tenantID)
+.GroupBy("VisitDate")
+.OrderBy("VisitDate", true))
+.ConvertAll(
+r =>
+new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt32(r[1]) });
         }
 
         public static List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            using (var db = GetDb())
-            {
-                return db.ExecuteList(new SqlQuery("webstudio_uservisit")
-                    .Select("VisitDate", "UserId")
-                    .Where(Exp.Between("VisitDate", startDate, endPeriod))
-                    .Where("TenantID", tenantID)
-                    .GroupBy("UserId", "VisitDate")
-                    .OrderBy("VisitDate", true))
-                    .ConvertAll(
-                        r =>
-                            new UserVisit
-                            {
-                                VisitDate = Convert.ToDateTime(r[0]),
-                                UserID = new Guid(Convert.ToString(r[1]))
-                            });
-            }
+            using var db = GetDb();
+            return db.ExecuteList(new SqlQuery("webstudio_uservisit")
+.Select("VisitDate", "UserId")
+.Where(Exp.Between("VisitDate", startDate, endPeriod))
+.Where("TenantID", tenantID)
+.GroupBy("UserId", "VisitDate")
+.OrderBy("VisitDate", true))
+.ConvertAll(
+r =>
+new UserVisit
+{
+VisitDate = Convert.ToDateTime(r[0]),
+UserID = new Guid(Convert.ToString(r[1]))
+});
         }
 
         private static void FlushCache()
@@ -147,29 +141,27 @@ namespace ASC.Web.Studio.Core.Statistic
                 lastSave = DateTime.UtcNow;
             }
 
-            using (var db = GetDb())
-            using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using var db = GetDb();
+            using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
+            foreach (var v in visits)
             {
-                foreach (var v in visits)
-                {
-                    var sql =
-                        "insert into webstudio_uservisit(tenantid, productid, userid, visitdate, firstvisittime, lastvisittime, visitcount) values " +
-                        "(@TenantId, @ProductId, @UserId, @VisitDate, @FirstVisitTime, @LastVisitTime, @VisitCount) " +
-                        "on duplicate key update lastvisittime = @LastVisitTime, visitcount = visitcount + @VisitCount";
+                var sql =
+                    "insert into webstudio_uservisit(tenantid, productid, userid, visitdate, firstvisittime, lastvisittime, visitcount) values " +
+                    "(@TenantId, @ProductId, @UserId, @VisitDate, @FirstVisitTime, @LastVisitTime, @VisitCount) " +
+                    "on duplicate key update lastvisittime = @LastVisitTime, visitcount = visitcount + @VisitCount";
 
-                    db.ExecuteNonQuery(sql, new
-                    {
-                        TenantId = v.TenantID,
-                        ProductId = v.ProductID.ToString(),
-                        UserId = v.UserID.ToString(),
-                        VisitDate = v.VisitDate.Date,
-                        FirstVisitTime = v.VisitDate,
-                        LastVisitTime = v.LastVisitTime,
-                        VisitCount = v.VisitCount,
-                    });
-                }
-                tx.Commit();
+                db.ExecuteNonQuery(sql, new
+                {
+                    TenantId = v.TenantID,
+                    ProductId = v.ProductID.ToString(),
+                    UserId = v.UserID.ToString(),
+                    VisitDate = v.VisitDate.Date,
+                    FirstVisitTime = v.VisitDate,
+                    v.LastVisitTime,
+                    v.VisitCount,
+                });
             }
+            tx.Commit();
         }
 
         private static IDbManager GetDb()

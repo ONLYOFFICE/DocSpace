@@ -316,15 +316,13 @@ namespace ASC.Core.Notify.Signalr
         {
             if (!IsAvailable()) return "";
 
-            using (var webClient = new WebClient())
-            {
-                var jsonData = JsonConvert.SerializeObject(data);
-                Log.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
-                webClient.Encoding = Encoding.UTF8;
-                webClient.Headers.Add("Authorization", CreateAuthToken());
-                webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
-                return webClient.UploadString(GetMethod(method), jsonData);
-            }
+            using var webClient = new WebClient();
+            var jsonData = JsonConvert.SerializeObject(data);
+            Log.DebugFormat("Method:{0}, Data:{1}", method, jsonData);
+            webClient.Encoding = Encoding.UTF8;
+            webClient.Headers.Add("Authorization", CreateAuthToken());
+            webClient.Headers[HttpRequestHeader.ContentType] = "application/json";
+            return webClient.UploadString(GetMethod(method), jsonData);
         }
 
         private T MakeRequest<T>(string method, object data)
@@ -345,12 +343,10 @@ namespace ASC.Core.Notify.Signalr
 
         public static string CreateAuthToken(string pkey = "socketio")
         {
-            using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(CoreMachineKey)))
-            {
-                var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-                var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
-            }
+            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(CoreMachineKey));
+            var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
         }
     }
 }

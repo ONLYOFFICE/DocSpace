@@ -72,12 +72,10 @@ namespace ASC.Core.Configuration
             {
                 var request = WebRequest.Create("http://169.254.169.254/latest/meta-data/public-hostname");
                 request.Timeout = 5000;
-                using (var responce = request.GetResponse())
-                using (var stream = responce.GetResponseStream())
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
+                using var responce = request.GetResponse();
+                using var stream = responce.GetResponseStream();
+                using var reader = new StreamReader(stream);
+                return reader.ReadToEnd();
             }
             catch (WebException ex)
             {

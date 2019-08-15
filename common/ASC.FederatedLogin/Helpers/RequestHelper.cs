@@ -59,23 +59,17 @@ namespace ASC.FederatedLogin.Helpers
             if (request.Method != "GET" && bytes.Length > 0)
             {
                 request.ContentLength = bytes.Length;
-                using (var stream = request.GetRequestStream())
-                {
-                    stream.Write(bytes, 0, bytes.Length);
-                }
+                using var stream = request.GetRequestStream();
+                stream.Write(bytes, 0, bytes.Length);
             }
 
             try
             {
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                {
-                    if (stream == null) return null;
-                    using (var readStream = new StreamReader(stream))
-                    {
-                        return readStream.ReadToEnd();
-                    }
-                }
+                using var response = request.GetResponse();
+                using var stream = response.GetResponseStream();
+                if (stream == null) return null;
+                using var readStream = new StreamReader(stream);
+                return readStream.ReadToEnd();
             }
             catch (WebException)
             {

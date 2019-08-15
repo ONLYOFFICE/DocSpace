@@ -54,46 +54,44 @@ namespace ASC.Data.Storage
             if (destDomain == null) throw new ArgumentNullException("destDomain");
             if (destPath == null) throw new ArgumentNullException("destPath");
 
-            using (var stream = source.GetReadStream(srcDomain, srcPath))
+            using var stream = source.GetReadStream(srcDomain, srcPath);
+            if (stream.Length < maxChunkUploadSize)
             {
-                if (stream.Length < maxChunkUploadSize)
+                destination.Save(destDomain, destPath, stream);
+            }
+            else
+            {
+                var session = new CommonChunkedUploadSession(stream.Length);
+                var holder = new CommonChunkedUploadSessionHolder(destination, destDomain);
+                holder.Init(session);
+                try
                 {
-                    destination.Save(destDomain, destPath, stream);
-                }
-                else
-                {
-                    var session = new CommonChunkedUploadSession(stream.Length);
-                    var holder = new CommonChunkedUploadSessionHolder(destination, destDomain);
-                    holder.Init(session);
+                    Stream memstream = null;
                     try
                     {
-                        Stream memstream = null;
-                        try
+                        while (GetStream(stream, out memstream))
                         {
-                            while (GetStream(stream, out memstream))
-                            {
-                                memstream.Seek(0, SeekOrigin.Begin);
-                                holder.UploadChunk(session, memstream, chunksize);
-                                memstream.Dispose();
-                                memstream = null;
-                            }
+                            memstream.Seek(0, SeekOrigin.Begin);
+                            holder.UploadChunk(session, memstream, chunksize);
+                            memstream.Dispose();
+                            memstream = null;
                         }
-                        finally
-                        {
-                            if (memstream != null)
-                            {
-                                memstream.Dispose();
-                            }
-                        }
-
-                        holder.Finalize(session);
-                        destination.Move(destDomain, session.TempPath, destDomain, destPath);
                     }
-                    catch (Exception ex)
+                    finally
                     {
-                        Log.Error("Copy File", ex);
-                        holder.Abort(session);
+                        if (memstream != null)
+                        {
+                            memstream.Dispose();
+                        }
                     }
+
+                    holder.Finalize(session);
+                    destination.Move(destDomain, session.TempPath, destDomain, destPath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("Copy File", ex);
+                    holder.Abort(session);
                 }
             }
         }

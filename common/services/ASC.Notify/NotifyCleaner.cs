@@ -66,18 +66,16 @@ namespace ASC.Notify
                 try
                 {
                     var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
-                    using (var db = new DbManager(NotifyServiceCfg.ConnectionStringName))
-                    using (var d1 = db.Connection.CreateCommand("delete from notify_info where modify_date < ? and state = 4", date))
-                    using (var d2 = db.Connection.CreateCommand("delete from notify_queue where creation_date < ?", date))
-                    {
-                        d1.CommandTimeout = 60 * 60; // hour
-                        d2.CommandTimeout = 60 * 60; // hour
+                    using var db = new DbManager(NotifyServiceCfg.ConnectionStringName);
+                    using var d1 = db.Connection.CreateCommand("delete from notify_info where modify_date < ? and state = 4", date);
+                    using var d2 = db.Connection.CreateCommand("delete from notify_queue where creation_date < ?", date);
+                    d1.CommandTimeout = 60 * 60; // hour
+                    d2.CommandTimeout = 60 * 60; // hour
 
-                        var affected1 = d1.ExecuteNonQuery();
-                        var affected2 = d2.ExecuteNonQuery();
+                    var affected1 = d1.ExecuteNonQuery();
+                    var affected2 = d2.ExecuteNonQuery();
 
-                        log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", affected1, affected2);
-                    }
+                    log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", affected1, affected2);
                 }
                 catch (ThreadAbortException)
                 {

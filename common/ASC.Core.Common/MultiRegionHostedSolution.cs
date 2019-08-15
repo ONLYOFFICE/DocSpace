@@ -248,29 +248,27 @@ namespace ASC.Core
                                 {
                                     try
                                     {
-                                        using (var db = new DbManager(connectionString.Name))
-                                        {
-                                            var q = new SqlQuery("regions")
-                                                .Select("region")
-                                                .Select("connection_string")
-                                                .Select("provider");
-                                            db.ExecuteList(q)
-                                                .ForEach(r =>
+                                        using var db = new DbManager(connectionString.Name);
+                                        var q = new SqlQuery("regions")
+.Select("region")
+.Select("connection_string")
+.Select("provider");
+                                        db.ExecuteList(q)
+                                            .ForEach(r =>
+                                            {
+                                                var cs = new System.Configuration.ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
+                                                if (!DbRegistry.IsDatabaseRegistered(cs.Name))
                                                 {
-                                                    var cs = new System.Configuration.ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
-                                                    if (!DbRegistry.IsDatabaseRegistered(cs.Name))
-                                                    {
-                                                        DbRegistry.RegisterDatabase(cs.Name, cs);
-                                                    }
+                                                    DbRegistry.RegisterDatabase(cs.Name, cs);
+                                                }
 
-                                                    if (!regions.ContainsKey(string.Empty))
-                                                    {
-                                                        regions[string.Empty] = new HostedSolution(cs, cs.Name);
-                                                    }
+                                                if (!regions.ContainsKey(string.Empty))
+                                                {
+                                                    regions[string.Empty] = new HostedSolution(cs, cs.Name);
+                                                }
 
-                                                    regions[cs.Name] = new HostedSolution(cs, cs.Name);
-                                                });
-                                        }
+                                                regions[cs.Name] = new HostedSolution(cs, cs.Name);
+                                            });
                                     }
                                     catch (DbException) { }
                                 }

@@ -482,33 +482,23 @@ namespace ASC.Web.Core.WhiteLabel
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                using (var img = Image.FromStream(stream))
+                using var stream = new MemoryStream(data);
+                using var img = Image.FromStream(stream);
+                var imgFormat = img.RawFormat;
+                if (size != img.Size)
                 {
-                    var imgFormat = img.RawFormat;
-                    if (size != img.Size)
-                    {
-                        using (var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false))
-                        {
-                            data = CommonPhotoManager.SaveToBytes(img2);
-                        }
-                    }
-                    else
-                    {
-                        data = CommonPhotoManager.SaveToBytes(img);
-                    }
-
-                    //fileExt = CommonPhotoManager.GetImgFormatName(imgFormat);
-
-                    using (var stream2 = new MemoryStream(data))
-                    {
-                        store.Save(fileName, stream2);
-                        //NOTE: Update cache here
-                        //var filePath = Path.GetFileName(photoUrl);
-
-                        //AddToCache(item.UserId, item.Size, fileNPath, true);
-                    }
+                    using var img2 = CommonPhotoManager.DoThumbnail(img, size, false, true, false);
+                    data = CommonPhotoManager.SaveToBytes(img2);
                 }
+                else
+                {
+                    data = CommonPhotoManager.SaveToBytes(img);
+                }
+
+                //fileExt = CommonPhotoManager.GetImgFormatName(imgFormat);
+
+                using var stream2 = new MemoryStream(data);
+                store.Save(fileName, stream2);
             }
             catch (ArgumentException error)
             {

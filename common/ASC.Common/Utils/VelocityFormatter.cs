@@ -83,17 +83,15 @@ namespace ASC.Common.Utils
                 initialized = true;
             }
 
-            using (var writer = new StringWriter())
+            using var writer = new StringWriter();
+            var key = templateText.GetHashCode().ToString();
+            if (!patterns.TryGetValue(key, out var template))
             {
-                var key = templateText.GetHashCode().ToString();
-                if (!patterns.TryGetValue(key, out var template))
-                {
-                    template = Velocity.GetTemplate(templateText);
-                    patterns.TryAdd(key, template);
-                }
-                template.Merge(context, writer);
-                return writer.GetStringBuilder().ToString();
+                template = Velocity.GetTemplate(templateText);
+                patterns.TryAdd(key, template);
             }
+            template.Merge(context, writer);
+            return writer.GetStringBuilder().ToString();
         }
     }
 }

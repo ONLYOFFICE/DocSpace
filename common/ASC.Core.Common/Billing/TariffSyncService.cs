@@ -97,24 +97,22 @@ namespace ASC.Core.Billing
                 var tenant = CoreContext.TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
                 if (tenant != null)
                 {
-                    using (var wcfClient = new TariffSyncClient())
+                    using var wcfClient = new TariffSyncClient();
+                    var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings[config.ConnectionStringName]);
+
+                    var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
+                    // save new
+                    foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
                     {
-                        var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings[config.ConnectionStringName]);
+                        quotaService.SaveTenantQuota(tariff);
+                        oldtariffs.Remove(tariff.Id);
+                    }
 
-                        var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
-                        // save new
-                        foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
-                        {
-                            quotaService.SaveTenantQuota(tariff);
-                            oldtariffs.Remove(tariff.Id);
-                        }
-
-                        // remove old
-                        foreach (var tariff in oldtariffs.Values)
-                        {
-                            tariff.Visible = false;
-                            quotaService.SaveTenantQuota(tariff);
-                        }
+                    // remove old
+                    foreach (var tariff in oldtariffs.Values)
+                    {
+                        tariff.Visible = false;
+                        quotaService.SaveTenantQuota(tariff);
                     }
                 }
             }
