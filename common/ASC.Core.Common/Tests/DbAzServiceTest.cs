@@ -39,7 +39,7 @@ namespace ASC.Core.Common.Tests
         [SetUp]
         public void ClearData()
         {
-            foreach (var ac in Service.GetAces(Tenant, default(DateTime)))
+            foreach (var ac in Service.GetAces(Tenant, default))
             {
                 if (ac.Tenant == Tenant) Service.RemoveAce(Tenant, ac);
             }
@@ -54,7 +54,7 @@ namespace ASC.Core.Common.Tests
             var ar2 = new AzRecord(new Guid("00000000-0000-0000-0000-000000000001"), new Guid("00000000-0000-0000-0000-000000000002"), AceType.Allow);
             Service.SaveAce(Tenant, ar2);
 
-            var list = Service.GetAces(Tenant, default(DateTime)).ToList();
+            var list = Service.GetAces(Tenant, default).ToList();
 
             CompareAces(ar1, list[list.IndexOf(ar1)]);
             CompareAces(ar2, list[list.IndexOf(ar2)]);

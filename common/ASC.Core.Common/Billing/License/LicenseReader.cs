@@ -176,7 +176,7 @@ namespace ASC.Core.Billing
                 throw new LicenseExpiredException("License expired", license.OriginalLicense);
             }
 
-            if (license.ActiveUsers.Equals(default(int)) || license.ActiveUsers < 1)
+            if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
             if (license.ActiveUsers < CoreContext.UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)

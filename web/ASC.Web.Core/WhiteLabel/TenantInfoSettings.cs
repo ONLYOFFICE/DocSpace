@@ -85,7 +85,7 @@ namespace ASC.Web.Core.WhiteLabel
             catch
             {
             }
-            CompanyLogoSize = default(Size);
+            CompanyLogoSize = default;
 
             TenantLogoManager.RemoveMailLogoDataFromCache();
         }

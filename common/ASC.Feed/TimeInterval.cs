@@ -41,7 +41,7 @@ namespace ASC.Feed
 
         public DateTime To
         {
-            get { return toTime != default(DateTime) ? toTime : DateTime.MaxValue; }
+            get { return toTime != default ? toTime : DateTime.MaxValue; }
         }
 
 

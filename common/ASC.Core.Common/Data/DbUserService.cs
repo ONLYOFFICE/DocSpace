@@ -181,7 +181,7 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, Guid id)
         {
-            var q = GetUserQuery(tenant, default(DateTime)).Where("id", id);
+            var q = GetUserQuery(tenant, default).Where("id", id);
             return ExecList(q).ConvertAll(ToUser).SingleOrDefault();
         }
 
@@ -207,8 +207,8 @@ namespace ASC.Core.Data
             if (user == null) throw new ArgumentNullException("user");
             if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
 
-            if (user.ID == default(Guid)) user.ID = Guid.NewGuid();
-            if (user.CreateDate == default(DateTime)) user.CreateDate = DateTime.UtcNow;
+            if (user.ID == default) user.ID = Guid.NewGuid();
+            if (user.CreateDate == default) user.CreateDate = DateTime.UtcNow;
             user.LastModified = DateTime.UtcNow;
             user.Tenant = tenant;
 
@@ -351,7 +351,7 @@ namespace ASC.Core.Data
 
         public Group GetGroup(int tenant, Guid id)
         {
-            var q = GetGroupQuery(tenant, default(DateTime)).Where("id", id);
+            var q = GetGroupQuery(tenant, default).Where("id", id);
             return ExecList(q).ConvertAll(ToGroup).SingleOrDefault();
         }
 
@@ -359,7 +359,7 @@ namespace ASC.Core.Data
         {
             if (group == null) throw new ArgumentNullException("user");
 
-            if (group.Id == default(Guid)) group.Id = Guid.NewGuid();
+            if (group.Id == default) group.Id = Guid.NewGuid();
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
@@ -460,7 +460,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("u.tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("u.last_modified", from);
             }
@@ -516,7 +516,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("last_modified", from);
             }
@@ -567,7 +567,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("last_modified", from);
             }

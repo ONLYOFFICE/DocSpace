@@ -88,7 +88,7 @@ namespace ASC.Core.ChunkedUploader
 
         public T GetItemOrDefault<T>(string key)
         {
-            return Items.ContainsKey(key) && Items[key] is T ? (T)Items[key] : default(T);
+            return Items.ContainsKey(key) && Items[key] is T ? (T)Items[key] : default;
         }
 
         public Stream Serialize()

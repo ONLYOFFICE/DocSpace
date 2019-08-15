@@ -163,7 +163,7 @@ namespace ASC.VoipService.Dao
                         query.InColumnValue("record_duration", call.VoipRecord.Duration);
                     }
 
-                    if (call.VoipRecord.Price != default(decimal))
+                    if (call.VoipRecord.Price != default)
                     {
                         query.InColumnValue("record_price", call.VoipRecord.Price);
                     }

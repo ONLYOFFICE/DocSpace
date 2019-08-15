@@ -70,7 +70,7 @@ namespace ASC.Core
 
         public List<Tenant> GetTenants(bool active = true)
         {
-            return tenantService.GetTenants(default(DateTime), active).ToList();
+            return tenantService.GetTenants(default, active).ToList();
         }
 
         public Tenant GetTenant(int tenantId)

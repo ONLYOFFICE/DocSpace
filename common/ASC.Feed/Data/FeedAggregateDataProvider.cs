@@ -48,7 +48,7 @@ namespace ASC.Feed.Data
             using (var db = new DbManager(Constants.FeedDbId))
             {
                 var value = db.ExecuteScalar<DateTime>(q);
-                return value != default(DateTime) ? value.AddSeconds(1) : value;
+                return value != default ? value.AddSeconds(1) : value;
             }
         }
 

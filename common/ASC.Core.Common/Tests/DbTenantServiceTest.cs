@@ -51,11 +51,11 @@ namespace ASC.Core.Common.Tests
         //[ClassInitialize]
         public void ClearData()
         {
-            foreach (var t in Service.GetTenants(default(DateTime)))
+            foreach (var t in Service.GetTenants(default))
             {
                 if (t.Name == "nct5nct5" || t.Name == "google5" || t.TenantId == Tenant) Service.RemoveTenant(t.TenantId);
             }
-            foreach (var u in userService.GetUsers(Tenant, default(DateTime)))
+            foreach (var u in userService.GetUsers(Tenant, default))
             {
                 userService.RemoveUser(Tenant, u.Value.ID, true);
             }
@@ -75,7 +75,7 @@ namespace ASC.Core.Common.Tests
             Service.SaveTenant(t1);
             Service.SaveTenant(t2);
 
-            var tenants = Service.GetTenants(default(DateTime));
+            var tenants = Service.GetTenants(default);
             CollectionAssert.Contains(tenants.ToList(), t1);
             CollectionAssert.Contains(tenants.ToList(), t2);
 

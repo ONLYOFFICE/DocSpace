@@ -82,7 +82,7 @@ namespace ASC.FederatedLogin
         {
             get
             {
-                if (!ExpiresIn.Equals(default(long)))
+                if (!ExpiresIn.Equals(default))
                     return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
                 return true;
             }

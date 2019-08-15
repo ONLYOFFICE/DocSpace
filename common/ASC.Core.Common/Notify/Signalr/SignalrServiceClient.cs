@@ -285,7 +285,7 @@ namespace ASC.Core.Notify.Signalr
                 ProcessError(error);
             }
 
-            return default(T);
+            return default;
         }
 
         private string ReplaceDomain(string domain)

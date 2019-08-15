@@ -224,7 +224,7 @@ namespace ASC.Core.Billing
                     }).ToArray();
         }
 
-        public string AuthorizedPartner(string partnerId, bool setAuthorized, DateTime startDate = default(DateTime))
+        public string AuthorizedPartner(string partnerId, bool setAuthorized, DateTime startDate = default)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace ASC.Core.Billing
                                Tuple.Create("ProductId", ConfigurationManager.AppSettings["core:payment:partners-product"]),
                                Tuple.Create("Status", setAuthorized ? "1" : "0"),
                                Tuple.Create("RecreateSKey", "0"),
-                               Tuple.Create("Renewal", (!setAuthorized || startDate == default(DateTime) || startDate == DateTime.MinValue
+                               Tuple.Create("Renewal", (!setAuthorized || startDate == default || startDate == DateTime.MinValue
                                                             ? string.Empty
                                                             : startDate.ToString("yyyy-MM-dd HH:mm:ss"))));
             }
@@ -342,25 +342,25 @@ namespace ASC.Core.Billing
 
         private static string GetValueString(XElement xelement)
         {
-            return xelement != null ? HttpUtility.HtmlDecode(xelement.Value) : default(string);
+            return xelement != null ? HttpUtility.HtmlDecode(xelement.Value) : default;
         }
 
         private static DateTime GetValueDateTime(XElement xelement)
         {
             return xelement != null ?
                 DateTime.ParseExact(xelement.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) :
-                default(DateTime);
+                default;
         }
 
         private static Decimal GetValueDecimal(XElement xelement)
         {
             if (xelement == null || string.IsNullOrEmpty(xelement.Value))
             {
-                return default(Decimal);
+                return default;
             }
             var sep = CultureInfo.InvariantCulture.NumberFormat.CurrencyDecimalSeparator;
             decimal value;
-            return Decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out value) ? value : default(Decimal);
+            return Decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out value) ? value : default;
         }
 
         void IDisposable.Dispose()

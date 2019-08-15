@@ -141,7 +141,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("path", query.Path);
             }
-            if (query.LastModified != default(DateTime))
+            if (query.LastModified != default)
             {
                 where &= Exp.Ge("last_modified", query.LastModified);
             }

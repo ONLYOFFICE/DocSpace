@@ -464,7 +464,7 @@ namespace ASC.Core.Billing
                         var fromDate = tenant.CreatedDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreatedDateTime;
                         var trialPeriod = GetPeriod("TrialPeriod", DEFAULT_TRIAL_PERIOD);
                         if (fromDate == DateTime.MinValue) fromDate = DateTime.UtcNow.Date;
-                        tariff.DueDate = trialPeriod != default(int) ? fromDate.Date.AddDays(trialPeriod) : DateTime.MaxValue;
+                        tariff.DueDate = trialPeriod != default ? fromDate.Date.AddDays(trialPeriod) : DateTime.MaxValue;
                     }
                     else
                     {
