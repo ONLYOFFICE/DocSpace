@@ -61,21 +61,13 @@ namespace ASC.Core.Notify
                 var m = CreateNotifyMessage(message);
                 var result = sender.Send(m);
 
-                switch (result)
+                responce.Result = result switch
                 {
-                    case NoticeSendResult.TryOnceAgain:
-                        responce.Result = SendResult.Inprogress;
-                        break;
-                    case NoticeSendResult.MessageIncorrect:
-                        responce.Result = SendResult.IncorrectRecipient;
-                        break;
-                    case NoticeSendResult.SendingImpossible:
-                        responce.Result = SendResult.Impossible;
-                        break;
-                    default:
-                        responce.Result = SendResult.OK;
-                        break;
-                }
+                    NoticeSendResult.TryOnceAgain => SendResult.Inprogress,
+                    NoticeSendResult.MessageIncorrect => SendResult.IncorrectRecipient,
+                    NoticeSendResult.SendingImpossible => SendResult.Impossible,
+                    _ => SendResult.OK,
+                };
                 return responce;
             }
             catch (Exception e)

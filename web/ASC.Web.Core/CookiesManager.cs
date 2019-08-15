@@ -50,13 +50,13 @@ namespace ASC.Web.Core
 
         private static string GetCookiesName(CookiesType type)
         {
-            switch (type)
+            return type switch
             {
-                case CookiesType.AuthKey: return AuthCookiesName;
-                case CookiesType.SocketIO: return SocketIOCookiesName;
-            }
+                CookiesType.AuthKey => AuthCookiesName,
+                CookiesType.SocketIO => SocketIOCookiesName,
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
 
         public static string GetRequestVar(this HttpContext httpContext, CookiesType type)

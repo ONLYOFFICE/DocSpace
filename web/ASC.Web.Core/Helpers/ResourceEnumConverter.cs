@@ -102,14 +102,12 @@ namespace ASC.Web.Core.Helpers
         /// <returns></returns>
         private bool IsSingleBitValue(ulong value)
         {
-            switch (value)
+            return value switch
             {
-                case 0:
-                    return false;
-                case 1:
-                    return true;
-            }
-            return ((value & (value - 1)) == 0);
+                0 => false,
+                1 => true,
+                _ => ((value & (value - 1)) == 0),
+            };
         }
 
         /// <summary>

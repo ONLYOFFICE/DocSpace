@@ -959,31 +959,17 @@ namespace ASC.Notify.Cron
             var max = -1;
             if (stopAt < startAt)
             {
-                switch (type)
+                max = type switch
                 {
-                    case Second:
-                        max = 60;
-                        break;
-                    case Minute:
-                        max = 60;
-                        break;
-                    case Hour:
-                        max = 24;
-                        break;
-                    case Month:
-                        max = 12;
-                        break;
-                    case DayOfWeek:
-                        max = 7;
-                        break;
-                    case DayOfMonth:
-                        max = 31;
-                        break;
-                    case Year:
-                        throw new ArgumentException("Start year must be less than stop year");
-                    default:
-                        throw new ArgumentException("Unexpected type encountered");
-                }
+                    Second => 60,
+                    Minute => 60,
+                    Hour => 24,
+                    Month => 12,
+                    DayOfWeek => 7,
+                    DayOfMonth => 31,
+                    Year => throw new ArgumentException("Start year must be less than stop year"),
+                    _ => throw new ArgumentException("Unexpected type encountered"),
+                };
                 stopAt += max;
             }
             for (var i = startAt; i <= stopAt; i += incr)
@@ -1007,25 +993,17 @@ namespace ASC.Notify.Cron
 
         protected virtual TreeSet GetSet(int type)
         {
-            switch (type)
+            return type switch
             {
-                case Second:
-                    return seconds;
-                case Minute:
-                    return minutes;
-                case Hour:
-                    return hours;
-                case DayOfMonth:
-                    return daysOfMonth;
-                case Month:
-                    return months;
-                case DayOfWeek:
-                    return daysOfWeek;
-                case Year:
-                    return years;
-                default:
-                    return null;
-            }
+                Second => seconds,
+                Minute => minutes,
+                Hour => hours,
+                DayOfMonth => daysOfMonth,
+                Month => months,
+                DayOfWeek => daysOfWeek,
+                Year => years,
+                _ => null,
+            };
         }
 
         protected virtual ValueSet GetValue(int v, string s, int i)

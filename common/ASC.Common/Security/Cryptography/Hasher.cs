@@ -101,19 +101,14 @@ namespace ASC.Security.Cryptography
 
         private static HashAlgorithm GetAlg(HashAlg hashAlg)
         {
-            switch (hashAlg)
+            return hashAlg switch
             {
-                case HashAlg.MD5:
-                    return MD5.Create();
-                case HashAlg.SHA1:
-                    return SHA1.Create();
-                case HashAlg.SHA256:
-                    return SHA256.Create();
-                case HashAlg.SHA512:
-                    return SHA512.Create();
-                default:
-                    return SHA256.Create();
-            }
+                HashAlg.MD5 => MD5.Create(),
+                HashAlg.SHA1 => SHA1.Create(),
+                HashAlg.SHA256 => SHA256.Create(),
+                HashAlg.SHA512 => SHA512.Create(),
+                _ => SHA256.Create(),
+            };
         }
 
         private static byte[] S2B(string str)

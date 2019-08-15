@@ -111,15 +111,12 @@ namespace ASC.Data.Storage.S3
 
         private S3CannedACL GetS3Acl(ACL acl)
         {
-            switch (acl)
+            return acl switch
             {
-                case ACL.Read:
-                    return S3CannedACL.PublicRead;
-                case ACL.Private:
-                    return S3CannedACL.Private;
-                default:
-                    return S3CannedACL.PublicRead;
-            }
+                ACL.Read => S3CannedACL.PublicRead,
+                ACL.Private => S3CannedACL.Private,
+                _ => S3CannedACL.PublicRead,
+            };
         }
 
         public Uri GetUriInternal(string path)

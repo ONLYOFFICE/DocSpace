@@ -34,15 +34,15 @@ namespace ASC.Web.Studio.Utility
         {
             region = region.ToLower().Trim();
 
-            switch (region)
+            return region switch
             {
-                case "eu": return Resource.EuServerRegion;
-                case "us": return Resource.UsServerRegion;
-                case "sg": return Resource.SgServerRegion;
-                case "org": return Resource.OrgServerRegion;
-            }
+                "eu" => Resource.EuServerRegion,
+                "us" => Resource.UsServerRegion,
+                "sg" => Resource.SgServerRegion,
+                "org" => Resource.OrgServerRegion,
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
     }
 }

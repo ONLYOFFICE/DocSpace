@@ -552,54 +552,23 @@ namespace ASC.Web.Core.Files
                 {
                     code = ErrorCode.Unknown;
                 }
-
-                string errorMessage;
-                switch (code)
+                var errorMessage = code switch
                 {
-                    case ErrorCode.VkeyUserCountExceed:
-                        errorMessage = "user count exceed";
-                        break;
-                    case ErrorCode.VkeyKeyExpire:
-                        errorMessage = "signature expire";
-                        break;
-                    case ErrorCode.VkeyEncrypt:
-                        errorMessage = "encrypt signature";
-                        break;
-                    case ErrorCode.UploadCountFiles:
-                        errorMessage = "count files";
-                        break;
-                    case ErrorCode.UploadExtension:
-                        errorMessage = "extension";
-                        break;
-                    case ErrorCode.UploadContentLength:
-                        errorMessage = "upload length";
-                        break;
-                    case ErrorCode.Vkey:
-                        errorMessage = "document signature";
-                        break;
-                    case ErrorCode.TaskQueue:
-                        errorMessage = "database";
-                        break;
-                    case ErrorCode.ConvertPassword:
-                        errorMessage = "password";
-                        break;
-                    case ErrorCode.ConvertDownload:
-                        errorMessage = "download";
-                        break;
-                    case ErrorCode.Convert:
-                        errorMessage = "convertation";
-                        break;
-                    case ErrorCode.ConvertTimeout:
-                        errorMessage = "convertation timeout";
-                        break;
-                    case ErrorCode.Unknown:
-                        errorMessage = "unknown error";
-                        break;
-                    default:
-                        errorMessage = "errorCode = " + errorCode;
-                        break;
-                }
-
+                    ErrorCode.VkeyUserCountExceed => "user count exceed",
+                    ErrorCode.VkeyKeyExpire => "signature expire",
+                    ErrorCode.VkeyEncrypt => "encrypt signature",
+                    ErrorCode.UploadCountFiles => "count files",
+                    ErrorCode.UploadExtension => "extension",
+                    ErrorCode.UploadContentLength => "upload length",
+                    ErrorCode.Vkey => "document signature",
+                    ErrorCode.TaskQueue => "database",
+                    ErrorCode.ConvertPassword => "password",
+                    ErrorCode.ConvertDownload => "download",
+                    ErrorCode.Convert => "convertation",
+                    ErrorCode.ConvertTimeout => "convertation timeout",
+                    ErrorCode.Unknown => "unknown error",
+                    _ => "errorCode = " + errorCode,
+                };
                 throw new DocumentServiceException(code, errorMessage);
             }
 
