@@ -132,9 +132,7 @@ namespace ASC.Web.Core.Helpers
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
-            return variants == null
-                       ? null
-                       : variants.Select(jv => jv.Value<string>()).ToList();
+            return variants?.Select(jv => jv.Value<string>()).ToList();
         }
 
         #endregion

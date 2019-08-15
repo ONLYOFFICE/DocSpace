@@ -114,7 +114,7 @@ namespace ASC.Core
                     return settings;
                 }
             }
-            set { SaveSetting("SmtpSettings", value != null ? value.Serialize() : null, CoreContext.TenantManager.GetCurrentTenant().TenantId); }
+            set { SaveSetting("SmtpSettings", value?.Serialize(), CoreContext.TenantManager.GetCurrentTenant().TenantId); }
         }
 
         public string BaseDomain

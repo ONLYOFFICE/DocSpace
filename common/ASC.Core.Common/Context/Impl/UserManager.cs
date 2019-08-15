@@ -286,7 +286,7 @@ namespace ASC.Core
                 userRefs = store.GetRefsByUser(userID);
             }
 
-            var userRefsContainsNotRemoved = userRefs != null ? userRefs.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList() : null;
+            var userRefsContainsNotRemoved = userRefs?.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList();
 
             foreach (var g in GetGroupsInternal(tenant.TenantId).Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
             {

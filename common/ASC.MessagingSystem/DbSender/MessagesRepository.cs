@@ -206,7 +206,7 @@ namespace ASC.MessagingSystem.DbSender
                     }));
             }
 
-            i.InColumnValue("target", message.Target == null ? null : message.Target.ToString());
+            i.InColumnValue("target", message.Target?.ToString());
 
             dbManager.ExecuteNonQuery(i);
         }
