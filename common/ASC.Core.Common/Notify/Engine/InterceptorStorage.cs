@@ -41,8 +41,7 @@ namespace ASC.Notify.Engine
         {
             get
             {
-                var storage = CallContext.GetData(CallContext_Prefix) as Dictionary<string, ISendInterceptor>;
-                if (storage == null)
+                if (!(CallContext.GetData(CallContext_Prefix) is Dictionary<string, ISendInterceptor> storage))
                 {
                     storage = new Dictionary<string, ISendInterceptor>(10);
                     CallContext.SetData(CallContext_Prefix, storage);

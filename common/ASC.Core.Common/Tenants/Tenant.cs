@@ -122,8 +122,7 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            var t = obj as Tenant;
-            return t != null && t.TenantId == TenantId;
+            return obj is Tenant t && t.TenantId == TenantId;
         }
 
         public override int GetHashCode()

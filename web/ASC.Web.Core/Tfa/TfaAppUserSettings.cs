@@ -106,8 +106,7 @@ namespace ASC.Web.Studio.Core.TFA
 
         public static void DisableForUser(Guid guid)
         {
-            var defaultSettings = new TfaAppUserSettings().GetDefault() as TfaAppUserSettings;
-            if (defaultSettings != null)
+            if (new TfaAppUserSettings().GetDefault() is TfaAppUserSettings defaultSettings)
             {
                 defaultSettings.SaveForUser(guid);
             }

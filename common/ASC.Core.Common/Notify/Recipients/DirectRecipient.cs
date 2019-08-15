@@ -77,8 +77,7 @@ namespace ASC.Notify.Recipients
 
         public override bool Equals(object obj)
         {
-            var recD = obj as IDirectRecipient;
-            if (recD == null) return false;
+            if (!(obj is IDirectRecipient recD)) return false;
             return Equals(recD.ID, ID);
         }
 

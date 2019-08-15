@@ -92,8 +92,7 @@ namespace ASC.Common.Data
                 return DBNull.Value;
             }
 
-            var @enum = value as Enum;
-            if (@enum != null)
+            if (value is Enum @enum)
             {
                 return @enum.ToString("d");
             }

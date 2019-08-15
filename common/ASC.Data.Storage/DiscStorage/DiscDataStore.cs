@@ -145,9 +145,8 @@ namespace ASC.Data.Storage.DiscStorage
             //Copy stream
 
             //optimaze disk file copy
-            var fileStream = buffered as FileStream;
             long fslen;
-            if (fileStream != null && WorkContext.IsMono)
+            if (buffered is FileStream fileStream && WorkContext.IsMono)
             {
                 File.Copy(fileStream.Name, target, true);
                 fslen = fileStream.Length;

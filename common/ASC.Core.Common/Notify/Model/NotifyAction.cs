@@ -59,8 +59,7 @@ namespace ASC.Notify.Model
 
         public override bool Equals(object obj)
         {
-            var a = obj as INotifyAction;
-            return a != null && a.ID == ID;
+            return obj is INotifyAction a && a.ID == ID;
         }
 
         public override int GetHashCode()

@@ -169,8 +169,7 @@ namespace ASC.Core
 
         public override bool Equals(object obj)
         {
-            var p = obj as Partner;
-            return p != null && p.Id == Id;
+            return obj is Partner p && p.Id == Id;
         }
 
         public override int GetHashCode()

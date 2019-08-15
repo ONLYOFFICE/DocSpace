@@ -128,8 +128,7 @@ namespace ASC.Common.Data
         {
             if (HttpContext.Current != null)
             {
-                var dbManager = DisposableHttpContext.Current[databaseId] as DbManager;
-                if (dbManager == null || dbManager.disposed)
+                if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
                 {
                     var localDbManager = new DbManager(databaseId);
                     var dbManagerAdapter = new DbManagerProxy(localDbManager);

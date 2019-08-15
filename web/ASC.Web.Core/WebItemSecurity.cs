@@ -370,11 +370,9 @@ namespace ASC.Web.Core
 
             public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
             {
-                var s = objectId as WebItemSecurityObject;
-                if (s != null)
+                if (objectId is WebItemSecurityObject s)
                 {
-                    var parent = WebItemSecurityObject.Create(WebItemManager.Instance.GetParentItemID(s.WebItemId).ToString("N")) as WebItemSecurityObject;
-                    return parent != null && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
+                    return WebItemSecurityObject.Create(WebItemManager.Instance.GetParentItemID(s.WebItemId).ToString("N")) is WebItemSecurityObject parent && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
                 }
                 return null;
             }

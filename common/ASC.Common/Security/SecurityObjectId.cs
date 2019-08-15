@@ -51,8 +51,7 @@ namespace ASC.Common.Security
 
         public override bool Equals(object obj)
         {
-            var other = obj as SecurityObjectId;
-            return other != null &&
+            return obj is SecurityObjectId other &&
                    Equals(AzObjectIdHelper.GetFullObjectId(other), AzObjectIdHelper.GetFullObjectId(this));
         }
     }

@@ -74,8 +74,7 @@ namespace ASC.Core
 
         public override bool Equals(object obj)
         {
-            var r = obj as UserGroupRef;
-            return r != null && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
+            return obj is UserGroupRef r && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
         }
 
         public static implicit operator UserGroupRef(UserGroupRefCacheItem cache)

@@ -69,8 +69,7 @@ namespace ASC.Core.Billing
 
         public override bool Equals(object obj)
         {
-            var t = obj as Tariff;
-            return t != null && t.QuotaId == QuotaId;
+            return obj is Tariff t && t.QuotaId == QuotaId;
         }
     }
 }

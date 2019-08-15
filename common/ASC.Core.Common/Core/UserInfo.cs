@@ -116,8 +116,7 @@ namespace ASC.Core.Users
 
         public override bool Equals(object obj)
         {
-            var ui = obj as UserInfo;
-            return ui != null && ID.Equals(ui.ID);
+            return obj is UserInfo ui && ID.Equals(ui.ID);
         }
 
         public CultureInfo GetCulture()
