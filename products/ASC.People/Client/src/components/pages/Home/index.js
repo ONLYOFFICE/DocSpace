@@ -24,9 +24,6 @@ class Home extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false,
       isLoading: false
     };
   }
