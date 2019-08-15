@@ -73,13 +73,13 @@ namespace ASC.Web.Core.Users
         {
             var thumbnailBitmap = new Bitmap(size.Width, size.Height);
 
-            var scaleX = size.Width/(1.0*thumbnailSettings.Size.Width);
-            var scaleY = size.Height/(1.0*thumbnailSettings.Size.Height);
+            var scaleX = size.Width / (1.0 * thumbnailSettings.Size.Width);
+            var scaleY = size.Height / (1.0 * thumbnailSettings.Size.Height);
 
-            var rect = new Rectangle(-(int) (scaleX*(1.0*thumbnailSettings.Point.X)),
-                                     -(int) (scaleY*(1.0*thumbnailSettings.Point.Y)),
-                                     (int) (scaleX*mainImg.Width),
-                                     (int) (scaleY*mainImg.Height));
+            var rect = new Rectangle(-(int)(scaleX * (1.0 * thumbnailSettings.Point.X)),
+                                     -(int)(scaleY * (1.0 * thumbnailSettings.Point.Y)),
+                                     (int)(scaleX * mainImg.Width),
+                                     (int)(scaleY * mainImg.Height));
 
             using (var graphic = Graphics.FromImage(thumbnailBitmap))
             {

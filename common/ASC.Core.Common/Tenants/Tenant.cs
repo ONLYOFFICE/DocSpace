@@ -156,9 +156,9 @@ namespace ASC.Core.Tenants
             }
         }
 
-        public String GetTenantDomain(bool allowMappedDomain = true)
+        public string GetTenantDomain(bool allowMappedDomain = true)
         {
-            var result = String.Empty;
+            var result = string.Empty;
 
             var baseHost = TenantUtil.GetBaseDomain(HostedRegion);
 

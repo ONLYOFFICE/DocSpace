@@ -41,13 +41,10 @@ namespace ASC.Data.Storage
 
         public CrossModuleTransferUtility(IDataStore source, IDataStore destination)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (destination == null) throw new ArgumentNullException("destination");
-
-            this.source = source;
-            this.destination = destination;
-            maxChunkUploadSize = 10*1024*1024;
-            chunksize = 5*1024*1024;
+            this.source = source ?? throw new ArgumentNullException("source");
+            this.destination = destination ?? throw new ArgumentNullException("destination");
+            maxChunkUploadSize = 10 * 1024 * 1024;
+            chunksize = 5 * 1024 * 1024;
         }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)

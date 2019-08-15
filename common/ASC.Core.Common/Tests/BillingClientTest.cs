@@ -27,10 +27,10 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
-    using Core.Billing;
-    using NUnit.Framework;
     using System;
     using System.Linq;
+    using Core.Billing;
+    using NUnit.Framework;
 
     [TestFixture]
     public class BillingClientTest

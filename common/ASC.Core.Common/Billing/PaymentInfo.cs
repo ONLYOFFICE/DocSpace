@@ -49,7 +49,7 @@ namespace ASC.Core.Billing
 
         public DateTime Date { get; set; }
 
-        public Decimal Price { get; set; }
+        public decimal Price { get; set; }
 
         public string Currency { get; set; }
 
@@ -63,6 +63,6 @@ namespace ASC.Core.Billing
 
         public string Country { get; set; }
 
-        public Decimal DiscountSum { get; set; }
+        public decimal DiscountSum { get; set; }
     }
 }

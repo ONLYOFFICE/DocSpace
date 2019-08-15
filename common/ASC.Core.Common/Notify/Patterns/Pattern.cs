@@ -47,15 +47,13 @@ namespace ASC.Notify.Patterns
 
         public string Styler { get; internal set; }
 
-        
+
         public Pattern(string id, string subject, string body, string contentType)
         {
-            if (String.IsNullOrEmpty(id)) throw new ArgumentException("id");
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (body == null) throw new ArgumentNullException("body");
+            if (string.IsNullOrEmpty(id)) throw new ArgumentException("id");
             ID = id;
-            Subject = subject;
-            Body = body;
+            Subject = subject ?? throw new ArgumentNullException("subject");
+            Body = body ?? throw new ArgumentNullException("body");
             ContentType = string.IsNullOrEmpty(contentType) ? HTMLContentType : contentType;
         }
 

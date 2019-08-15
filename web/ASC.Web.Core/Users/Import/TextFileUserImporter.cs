@@ -88,7 +88,7 @@ namespace ASC.Web.Core.Users.Import
                 var fieldsCount = GetFieldsMapping(fileLines[0], infos, mappedProperties);
 
                 //Begin read file
-                for (int i = 1; i < fileLines.Count; i++)
+                for (var i = 1; i < fileLines.Count; i++)
                 {
                     users.Add(GetExportedUser(fileLines[i], mappedProperties, fieldsCount));
                 }
@@ -102,14 +102,14 @@ namespace ASC.Web.Core.Users.Import
             exportedUser.ID = Guid.NewGuid();
 
             var dataFields = GetDataFields(line);
-            for (int j = 0; j < Math.Min(fieldsCount, dataFields.Length); j++)
+            for (var j = 0; j < Math.Min(fieldsCount, dataFields.Length); j++)
             {
                 //Get corresponding property
                 var propinfo = mappedProperties[j];
                 if (propinfo != null)
                 {
                     //Convert value
-                    object value = ConvertFromString(dataFields[j], propinfo.PropertyType);
+                    var value = ConvertFromString(dataFields[j], propinfo.PropertyType);
                     if (value != null)
                     {
                         propinfo.SetValue(exportedUser, value, new object[] { });
@@ -121,7 +121,7 @@ namespace ASC.Web.Core.Users.Import
 
         private string[] GetDataFields(string line)
         {
-            var pattern = String.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
+            var pattern = string.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
             var result = Regex.Split(line, pattern);
 
             //remove TextDelmiter
@@ -140,7 +140,7 @@ namespace ASC.Web.Core.Users.Import
         private int GetFieldsMapping(string firstLine, IEnumerable<PropertyInfo> infos, IDictionary<int, PropertyInfo> mappedProperties)
         {
             var fields = firstLine.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < fields.Length; i++)
+            for (var i = 0; i < fields.Length; i++)
             {
                 var field = fields[i];
                 //Find apropriate field in UserInfo

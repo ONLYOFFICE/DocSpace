@@ -94,7 +94,7 @@ namespace ASC.Common.Data.Sql
 
             if (0 < joins.Count)
             {
-                foreach (JoinInfo join in joins)
+                foreach (var join in joins)
                 {
                     if (join.JoinType == SqlJoin.Inner) sql.Append(" inner join ");
                     if (join.JoinType == SqlJoin.LeftOuter) sql.Append(" left outer join ");
@@ -108,7 +108,7 @@ namespace ASC.Common.Data.Sql
             if (0 < groups.Count)
             {
                 sql.Append(" group by ");
-                foreach (object group in groups)
+                foreach (var group in groups)
                 {
                     sql.AppendFormat("{0}, ", group.ToString());
                 }
@@ -148,7 +148,7 @@ namespace ASC.Common.Data.Sql
             var parameters = new List<object>();
             columns.ForEach(column => parameters.AddRange(column.GetParameters()));
             tables.ForEach(table => parameters.AddRange(table.GetParameters()));
-            foreach (JoinInfo join in joins)
+            foreach (var join in joins)
             {
                 parameters.AddRange(join.With.GetParameters());
                 parameters.AddRange(join.On.GetParameters());
@@ -244,7 +244,7 @@ namespace ASC.Common.Data.Sql
 
         public SqlQuery Select(params string[] columns)
         {
-            this.columns.AddRange(columns.Select(r => (SqlIdentifier) r));
+            this.columns.AddRange(columns.Select(r => (SqlIdentifier)r));
             return this;
         }
 

@@ -24,12 +24,12 @@
 */
 
 
-using ASC.Core.Configuration;
-using ASC.Core.Tenants;
 using System;
 using System.Text;
-using Newtonsoft.Json;
 using ASC.Common.Utils;
+using ASC.Core.Configuration;
+using ASC.Core.Tenants;
+using Newtonsoft.Json;
 
 namespace ASC.Core
 {
@@ -71,13 +71,12 @@ namespace ASC.Core
 
                 if (quotaSettings.MaxSpace != long.MaxValue)
                     return quotaSettings.MaxSpace;
-                
+
                 if (personalMaxSpace.HasValue)
                     return personalMaxSpace.Value;
 
-                long value;
 
-                if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out value))
+                if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out var value))
                     value = long.MaxValue;
 
                 personalMaxSpace = value;
@@ -115,7 +114,7 @@ namespace ASC.Core
                     return settings;
                 }
             }
-            set { SaveSetting("SmtpSettings", value != null ? value.Serialize() : null, CoreContext.TenantManager.GetCurrentTenant().TenantId); }
+            set { SaveSetting("SmtpSettings", value?.Serialize(), CoreContext.TenantManager.GetCurrentTenant().TenantId); }
         }
 
         public string BaseDomain
@@ -169,7 +168,7 @@ namespace ASC.Core
             {
                 throw new ArgumentNullException("key");
             }
-            byte[] bytes = tenantService.GetTenantSettings(tenant, key);
+            var bytes = tenantService.GetTenantSettings(tenant, key);
 
             var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
 

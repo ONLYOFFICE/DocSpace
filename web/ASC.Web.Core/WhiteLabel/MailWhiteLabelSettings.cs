@@ -28,7 +28,6 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -86,15 +85,15 @@ namespace ASC.Web.Core.WhiteLabel
         public override ISettings GetDefault()
         {
             return new MailWhiteLabelSettings
-                {
-                    FooterEnabled = true,
-                    FooterSocialEnabled = true,
-                    SupportUrl = DefaultMailSupportUrl,
-                    SupportEmail = DefaultMailSupportEmail,
-                    SalesEmail = DefaultMailSalesEmail,
-                    DemotUrl = DefaultMailDemotUrl,
-                    SiteUrl = DefaultMailSiteUrl
-                };
+            {
+                FooterEnabled = true,
+                FooterSocialEnabled = true,
+                SupportUrl = DefaultMailSupportUrl,
+                SupportEmail = DefaultMailSupportEmail,
+                SalesEmail = DefaultMailSalesEmail,
+                DemotUrl = DefaultMailDemotUrl,
+                SiteUrl = DefaultMailSiteUrl
+            };
         }
 
         #endregion
@@ -105,7 +104,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
             }
         }
@@ -132,7 +131,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }

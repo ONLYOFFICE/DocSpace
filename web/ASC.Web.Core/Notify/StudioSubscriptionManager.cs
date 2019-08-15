@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.Web.Core.Subscriptions;
 using ASC.Notify.Model;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Subscriptions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -69,7 +69,7 @@ namespace ASC.Web.Studio.Core.Notify
                 NotifyAction = Actions.SendWhatsNew,
                 Single = false
             };
-            
+
             types.Add(astype);
 
             return types;

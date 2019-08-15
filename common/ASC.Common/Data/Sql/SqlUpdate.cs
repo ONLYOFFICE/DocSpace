@@ -89,7 +89,7 @@ namespace ASC.Common.Data.Sql
                 parameters.AddRange(@join.On.GetParameters());
             }
 
-            foreach (object parameter in sets.Values)
+            foreach (var parameter in sets.Values)
             {
                 if (parameter is ISqlInstruction)
                 {

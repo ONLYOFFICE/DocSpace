@@ -109,7 +109,7 @@ namespace ASC.Core.Data
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            using(var db = GetDb())
+            using (var db = GetDb())
             using (var tx = db.BeginTransaction())
             {
                 var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)
@@ -141,7 +141,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("path", query.Path);
             }
-            if (query.LastModified != default(DateTime))
+            if (query.LastModified != default)
             {
                 where &= Exp.Ge("last_modified", query.LastModified);
             }

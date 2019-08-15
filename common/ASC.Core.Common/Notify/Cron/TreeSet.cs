@@ -78,15 +78,15 @@ namespace ASC.Notify.Cron
 
         public new bool Add(object obj)
         {
-            bool inserted = AddWithoutSorting(obj);
+            var inserted = AddWithoutSorting(obj);
             Sort(comparator);
             return inserted;
         }
 
         public bool AddAll(ICollection c)
         {
-            IEnumerator e = new ArrayList(c).GetEnumerator();
-            bool added = false;
+            var e = new ArrayList(c).GetEnumerator();
+            var added = false;
             while (e.MoveNext())
             {
                 if (AddWithoutSorting(e.Current))
@@ -105,7 +105,7 @@ namespace ASC.Notify.Cron
 
         public override bool Contains(object item)
         {
-            IEnumerator tempEnumerator = GetEnumerator();
+            var tempEnumerator = GetEnumerator();
             while (tempEnumerator.MoveNext())
             {
                 if (comparator.Compare(tempEnumerator.Current, item) == 0)
@@ -119,7 +119,7 @@ namespace ASC.Notify.Cron
         public ISortedSet TailSet(object limit)
         {
             ISortedSet newList = new TreeSet();
-            int i = 0;
+            var i = 0;
             while ((i < Count) && (comparator.Compare(this[i], limit) < 0))
             {
                 i++;

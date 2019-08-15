@@ -30,7 +30,7 @@ namespace ASC.Web.Core
 {
     public abstract class SpaceUsageStatManager
     {
-        public class UsageSpaceStatItem        
+        public class UsageSpaceStatItem
         {
             public string Name { get; set; }
             public string Url { get; set; }

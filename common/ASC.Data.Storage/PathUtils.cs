@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using ASC.Common.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
@@ -57,7 +56,7 @@ namespace ASC.Data.Storage
         //TODO
         public static string ResolveVirtualPath(string virtPath, bool addTrailingSlash = true)
         {
-            if(virtPath == null)
+            if (virtPath == null)
             {
                 virtPath = "";
             }

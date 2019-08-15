@@ -36,7 +36,7 @@ namespace ASC.MessagingSystem
         public string IP { get; set; }
 
         public string Initiator { get; set; }
-        
+
         public string Browser { get; set; }
 
         public string Platform { get; set; }

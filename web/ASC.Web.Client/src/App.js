@@ -1,12 +1,12 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Loader, ErrorContainer } from "asc-web-components";
-import StudioLayout from "./components/Layout/Layout";
+import StudioLayout from "./components/Layout";
 import Login from "./components/pages/Login/Login";
-import Home from "./components/pages/Home/Home";
 import { withTranslation } from 'react-i18next';
 import { PrivateRoute } from "./helpers/privateRoute";
 
+const Home = lazy(() => import("./components/pages/Home/Home"));
 const About = lazy(() => import("./components/pages/About/About"));
 
 const App = ({t}) => {

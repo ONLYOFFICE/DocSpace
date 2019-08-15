@@ -43,7 +43,7 @@ namespace ASC.Core.ChunkedUploader
         private const string StoragePath = "sessions";
 
         public CommonChunkedUploadSessionHolder(IDataStore dataStore, string domain,
-            long maxChunkUploadSize = 10*1024*1024)
+            long maxChunkUploadSize = 10 * 1024 * 1024)
         {
             DataStore = dataStore;
             Domain = domain;

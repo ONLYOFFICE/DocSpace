@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
@@ -105,7 +104,7 @@ namespace ASC.Data.Reassigns
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
         public QueueWorkerRemove QueueWorkerRemove { get; }
-        public QueueWorkerReassign(IHttpContextAccessor httpContextAccessor, 
+        public QueueWorkerReassign(IHttpContextAccessor httpContextAccessor,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             QueueWorkerRemove queueWorkerRemove) : base(httpContextAccessor, messageService, studioNotifyService)

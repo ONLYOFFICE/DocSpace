@@ -34,7 +34,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
-    public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new ()
+    public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
         public static T Instance
         {
@@ -63,12 +63,12 @@ namespace ASC.FederatedLogin.LoginProviders
 
         protected BaseLoginProvider()
         {
-            
+
         }
 
-        protected BaseLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null): base(name, order, props, additional)
+        protected BaseLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null) : base(name, order, props, additional)
         {
-            
+
         }
 
         public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
@@ -77,7 +77,7 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 var token = Auth(context, Scopes);
 
-                return GetLoginProfile(token == null ? null : token.AccessToken);
+                return GetLoginProfile(token?.AccessToken);
             }
             catch (ThreadAbortException)
             {

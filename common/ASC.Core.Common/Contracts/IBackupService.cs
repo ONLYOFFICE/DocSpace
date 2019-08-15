@@ -71,7 +71,7 @@ namespace ASC.Core.Common.Contracts
 
         [OperationContract]
         void CreateSchedule(CreateScheduleRequest request);
-        
+
         [OperationContract]
         void DeleteSchedule(int tenantId);
 

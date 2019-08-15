@@ -30,14 +30,10 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Utils;
-using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
@@ -70,7 +66,7 @@ namespace ASC.Core.Data
                     active
                         ? Exp.Eq("t.status", (int)TenantStatus.Active)
                         : Exp.Empty,
-                    from != default(DateTime)
+                    from != default
                         ? Exp.Ge("last_modified", from)
                         : Exp.Empty
                     )
@@ -295,7 +291,7 @@ namespace ASC.Core.Data
                 TrustedDomainsType = (TenantTrustedDomainsType)Convert.ToInt32(r[10]),
                 CreatedDateTime = (DateTime)r[11],
                 Status = (TenantStatus)Convert.ToInt32(r[12]),
-                StatusChangeDate = r[13] != null ? (DateTime)r[13] : default(DateTime),
+                StatusChangeDate = r[13] != null ? (DateTime)r[13] : default,
                 PaymentId = (string)r[14],
                 LastModified = (DateTime)r[15],
                 PartnerId = (string)r[16],
@@ -330,7 +326,7 @@ namespace ASC.Core.Data
                                 id = File.ReadAllText("/etc/timezone").Trim();
                             }
 
-                            if(string.IsNullOrEmpty(id))
+                            if (string.IsNullOrEmpty(id))
                             {
                                 var psi = new ProcessStartInfo
                                 {
@@ -356,7 +352,7 @@ namespace ASC.Core.Data
                     }
                     defaultTimeZone = tz;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     // ignore
                     defaultTimeZone = TimeZoneInfo.Utc;
@@ -395,7 +391,7 @@ namespace ASC.Core.Data
             if (!exists)
             {
                 exists = 0 < db.ExecuteScalar<int>(new SqlQuery("tenants_tenants").SelectCount()
-                    .Where(Exp.Eq("mappeddomain", domain) & !Exp.Eq("id", tenantId) & !Exp.In("status", new []{(int)TenantStatus.RemovePending, (int) TenantStatus.Restoring})));
+                    .Where(Exp.Eq("mappeddomain", domain) & !Exp.Eq("id", tenantId) & !Exp.In("status", new[] { (int)TenantStatus.RemovePending, (int)TenantStatus.Restoring })));
             }
             if (exists)
             {

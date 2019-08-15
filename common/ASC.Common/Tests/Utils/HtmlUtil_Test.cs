@@ -27,9 +27,9 @@
 #if DEBUG
 namespace ASC.Common.Tests.Utils
 {
+    using System.IO;
     using ASC.Common.Utils;
     using NUnit.Framework;
-    using System.IO;
 
     [TestFixture]
     public class HtmlUtil_Test
@@ -37,7 +37,7 @@ namespace ASC.Common.Tests.Utils
         [Test]
         public void GetTextBr()
         {
-            string html = "Hello";
+            var html = "Hello";
             Assert.AreEqual("Hello", HtmlUtil.GetText(html));
 
             html = "Hello    anton";
@@ -49,7 +49,7 @@ namespace ASC.Common.Tests.Utils
 
         public void Hard()
         {
-            string html = @"<a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/ViewBlog.aspx?blogID=94fae49d-2faa-46d3-bf34-655afbc6f7f4""><font size=""+1"">XXX</font></a>
+            var html = @"<a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/ViewBlog.aspx?blogID=94fae49d-2faa-46d3-bf34-655afbc6f7f4""><font size=""+1"">XXX</font></a>
 <div class=""moz-text-html"" lang=""x-unicode""><hr />
 A &quot;b&quot; c, d:<br />
 <blockquote>mp3 &quot;s&quot;<br />
@@ -69,7 +69,7 @@ w <a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/UserPage.as
             //var text = HtmlUtil.GetText(html);
 
             //var advancedFormating = HtmlUtil.GetText(html, true);
-            var advancedFormating2 = HtmlUtil.GetText(html,40);
+            var advancedFormating2 = HtmlUtil.GetText(html, 40);
             Assert.IsTrue(advancedFormating2.Length <= 40);
 
             var advancedFormating3 = HtmlUtil.GetText(html, 40, "...");
@@ -90,7 +90,7 @@ w <a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/UserPage.as
             var test1 = HtmlUtil.GetText(null);
             Assert.AreEqual(string.Empty, test1);
 
-            var test2 = HtmlUtil.GetText("text with \r\n line breaks",20);
+            var test2 = HtmlUtil.GetText("text with \r\n line breaks", 20);
             Assert.IsTrue(test2.Length <= 20);
 
             var test3 = HtmlUtil.GetText("long \r\n text \r\n with \r\n text with \r\n line breaks", 20);

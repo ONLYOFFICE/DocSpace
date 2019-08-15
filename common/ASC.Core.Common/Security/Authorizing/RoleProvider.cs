@@ -32,8 +32,6 @@ using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using AuthConst = ASC.Common.Security.Authorizing.Constants;
-using ConfConst = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
 {
@@ -52,7 +50,7 @@ namespace ASC.Core.Security.Authorizing
                 {
                     roles = CoreContext.UserManager
                                        .GetUserGroups(tenant, account.ID, IncludeType.Distinct | IncludeType.InParent)
-                                       .Select(g => (IRole) g)
+                                       .Select(g => (IRole)g)
                                        .ToList();
                 }
             }

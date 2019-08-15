@@ -18,7 +18,8 @@ namespace ASC.People
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-            .ConfigureAppConfiguration((hostingContext, config) => {
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
                 var buided = config.Build();
                 var path = buided["pathToConf"];
                 if (!Path.IsPathRooted(path))

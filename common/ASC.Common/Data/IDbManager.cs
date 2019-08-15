@@ -44,7 +44,7 @@ namespace ASC.Common.Data
         IDbTransaction BeginTransaction(IsolationLevel isolationLevel);
 
         IDbTransaction BeginTransaction(bool nestedIfAlreadyOpen);
-        
+
         List<object[]> ExecuteList(string sql, params object[] parameters);
 
         List<object[]> ExecuteList(ISqlInstruction sql);

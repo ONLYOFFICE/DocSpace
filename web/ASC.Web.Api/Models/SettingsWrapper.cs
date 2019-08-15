@@ -56,13 +56,13 @@ namespace ASC.Api.Settings
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper
-                {
-                    Culture = "en-US",
-                    Timezone = TimeZoneInfo.Utc.ToString(),
-                    TrustedDomains = new List<string> {"mydomain.com"},
-                    UtcHoursOffset = -8.5,
-                    UtcOffset = TimeSpan.FromHours(-8.5)
-                };
+            {
+                Culture = "en-US",
+                Timezone = TimeZoneInfo.Utc.ToString(),
+                TrustedDomains = new List<string> { "mydomain.com" },
+                UtcHoursOffset = -8.5,
+                UtcOffset = TimeSpan.FromHours(-8.5)
+            };
         }
     }
 }

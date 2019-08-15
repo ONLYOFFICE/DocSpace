@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Authentication;
-using System.Text;
+﻿using System.Security.Authentication;
 
 namespace ASC.Core.Common.Security
 {

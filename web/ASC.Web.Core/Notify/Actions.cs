@@ -50,7 +50,7 @@ namespace ASC.Web.Studio.Core.Notify
         public static readonly INotifyAction PortalDeactivate = new NotifyAction("portal_deactivate", "portal deactivate");
         public static readonly INotifyAction PortalDelete = new NotifyAction("portal_delete", "portal delete");
         public static readonly INotifyAction PortalDeleteSuccessV10 = new NotifyAction("portal_delete_success_v10");
-        
+
         public static readonly INotifyAction ProfileDelete = new NotifyAction("profile_delete", "profile_delete");
         public static readonly INotifyAction ReassignsCompleted = new NotifyAction("reassigns_completed", "reassigns_completed");
         public static readonly INotifyAction ReassignsFailed = new NotifyAction("reassigns_failed", "reassigns_failed");

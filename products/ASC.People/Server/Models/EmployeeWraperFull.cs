@@ -187,7 +187,7 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("avatarMax"))
             {
-                AvatarMax = UserPhotoManager.GetMaxPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "": $"?_={userInfoLM}");
+                AvatarMax = UserPhotoManager.GetMaxPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatarMedium"))

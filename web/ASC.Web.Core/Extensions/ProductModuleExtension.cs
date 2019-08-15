@@ -31,11 +31,11 @@ namespace ASC.Web.Core
 {
     public static class ProductModuleExtension
     {
-        
-        
+
+
         public static string GetSmallIconAbsoluteURL(this IModule module)
         {
-            if (module == null || module.Context == null || String.IsNullOrEmpty(module.Context.SmallIconFileName))
+            if (module == null || module.Context == null || string.IsNullOrEmpty(module.Context.SmallIconFileName))
                 return "";
 
             return WebImageSupplier.GetAbsoluteWebPath(module.Context.SmallIconFileName, module.ID);
@@ -43,7 +43,7 @@ namespace ASC.Web.Core
 
         public static string GetSmallIconAbsoluteURL(this IProduct product)
         {
-            if (product == null || product.Context == null || String.IsNullOrEmpty(product.Context.SmallIconFileName))
+            if (product == null || product.Context == null || string.IsNullOrEmpty(product.Context.SmallIconFileName))
                 return "";
 
             return WebImageSupplier.GetAbsoluteWebPath(product.Context.SmallIconFileName, product.ID);
@@ -51,7 +51,7 @@ namespace ASC.Web.Core
 
         public static string GetIconAbsoluteURL(this IModule module)
         {
-            if (module == null || module.Context == null || String.IsNullOrEmpty(module.Context.IconFileName))
+            if (module == null || module.Context == null || string.IsNullOrEmpty(module.Context.IconFileName))
                 return "";
 
             return WebImageSupplier.GetAbsoluteWebPath(module.Context.IconFileName, module.ID);
@@ -59,7 +59,7 @@ namespace ASC.Web.Core
 
         public static string GetIconAbsoluteURL(this IProduct product)
         {
-            if (product == null || product.Context == null || String.IsNullOrEmpty(product.Context.IconFileName))
+            if (product == null || product.Context == null || string.IsNullOrEmpty(product.Context.IconFileName))
                 return "";
 
             return WebImageSupplier.GetAbsoluteWebPath(product.Context.IconFileName, product.ID);

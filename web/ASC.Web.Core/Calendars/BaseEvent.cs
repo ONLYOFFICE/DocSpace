@@ -64,7 +64,7 @@ namespace ASC.Web.Core.Calendars
         public virtual DateTime UtcEndDate { get; set; }
 
         public virtual DateTime UtcStartDate { get; set; }
-        
+
         public virtual DateTime UtcUpdateDate { get; set; }
 
         public virtual EventContext Context { get; set; }
@@ -93,14 +93,14 @@ namespace ASC.Web.Core.Calendars
 
         public virtual string ToiCalFormat()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine("BEGIN:VEVENT");
-            sb.AppendLine(String.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
-            sb.AppendLine(String.Format("SUMMARY:{0}", this.Name));
+            sb.AppendLine(string.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));
+            sb.AppendLine(string.Format("SUMMARY:{0}", this.Name));
 
             if (!string.IsNullOrEmpty(this.Description))
-                sb.AppendLine(String.Format("DESCRIPTION:{0}", this.Description.Replace("\n","\\n")));
+                sb.AppendLine(string.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
 
             if (this.AllDayLong)
             {
@@ -115,20 +115,20 @@ namespace ASC.Web.Core.Calendars
                 }
 
                 if (this.UtcStartDate != DateTime.MinValue)
-                    sb.AppendLine(String.Format("DTSTART;VALUE=DATE:{0}", startDate.ToString("yyyyMMdd")));
+                    sb.AppendLine(string.Format("DTSTART;VALUE=DATE:{0}", startDate.ToString("yyyyMMdd")));
 
                 if (this.UtcEndDate != DateTime.MinValue)
-                    sb.AppendLine(String.Format("DTEND;VALUE=DATE:{0}", endDate.AddDays(1).ToString("yyyyMMdd")));
+                    sb.AppendLine(string.Format("DTEND;VALUE=DATE:{0}", endDate.AddDays(1).ToString("yyyyMMdd")));
             }
             else
             {
                 if (this.UtcStartDate != DateTime.MinValue)
-                    sb.AppendLine(String.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                    sb.AppendLine(string.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
 
                 if (this.UtcEndDate != DateTime.MinValue)
-                    sb.AppendLine(String.Format("DTEND:{0}", this.UtcEndDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
+                    sb.AppendLine(string.Format("DTEND:{0}", this.UtcEndDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
             }
-            
+
 
             if (this.RecurrenceRule != null)
                 sb.AppendLine(this.RecurrenceRule.ToiCalFormat());
@@ -137,7 +137,7 @@ namespace ASC.Web.Core.Calendars
             return sb.ToString();
         }
 
-        #endregion     
-        
+        #endregion
+
     }
 }

@@ -29,9 +29,9 @@ using System;
 
 namespace ASC.Common.Tests.Security.Cryptography
 {
-    using NUnit.Framework;
-    using ASC.Security.Cryptography;
     using System.Security.Cryptography;
+    using ASC.Security.Cryptography;
+    using NUnit.Framework;
 
     [TestFixture]
     public class EmailValidationKeyPairProvider_Test
@@ -39,12 +39,12 @@ namespace ASC.Common.Tests.Security.Cryptography
         public void PasswordDerivedBytes_Test()
         {
 
-            byte[] randBytes = new byte[5];
+            var randBytes = new byte[5];
             new Random(10032010).NextBytes(randBytes);
 
 
             var tdes = new TripleDESCryptoServiceProvider();
-            var pwddb = new PasswordDeriveBytes("1", new byte[] {1});
+            var pwddb = new PasswordDeriveBytes("1", new byte[] { 1 });
             tdes.Key = pwddb.CryptDeriveKey("TripleDES", "SHA1", 192, tdes.IV);
             //string s = Convert.ToBase64String(tdes.Key);
 

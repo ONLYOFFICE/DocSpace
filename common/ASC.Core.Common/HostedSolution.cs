@@ -96,7 +96,7 @@ namespace ASC.Core
             return tenantService.GetTenants(login, hash).Select(AddRegion).ToList();
         }
 
-        public Tenant GetTenant(String domain)
+        public Tenant GetTenant(string domain)
         {
             return AddRegion(tenantService.GetTenant(domain));
         }

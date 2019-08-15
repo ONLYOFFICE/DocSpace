@@ -47,7 +47,7 @@ namespace ASC.Web.Api.Models
 
             if (includeMembers)
             {
-                Members = new List<EmployeeWraper>(CoreContext.UserManager.GetUsersByGroup(context.Tenant, group.ID).Select(r=> EmployeeWraper.Get(r, context)));
+                Members = new List<EmployeeWraper>(CoreContext.UserManager.GetUsersByGroup(context.Tenant, group.ID).Select(r => EmployeeWraper.Get(r, context)));
             }
         }
 
@@ -79,14 +79,14 @@ namespace ASC.Web.Api.Models
         public static GroupWrapperFull GetSample()
         {
             return new GroupWrapperFull
-                {
-                    Id = Guid.NewGuid(),
-                    Manager = EmployeeWraper.GetSample(),
-                    Category = Guid.NewGuid(),
-                    Name = "Sample group",
-                    Parent = Guid.NewGuid(),
-                    Members = new List<EmployeeWraper> {EmployeeWraper.GetSample()}
-                };
+            {
+                Id = Guid.NewGuid(),
+                Manager = EmployeeWraper.GetSample(),
+                Category = Guid.NewGuid(),
+                Name = "Sample group",
+                Parent = Guid.NewGuid(),
+                Members = new List<EmployeeWraper> { EmployeeWraper.GetSample() }
+            };
         }
     }
 }

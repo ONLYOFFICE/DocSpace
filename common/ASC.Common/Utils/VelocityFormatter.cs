@@ -24,13 +24,13 @@
 */
 
 
-using NVelocity;
-using NVelocity.App;
-using NVelocity.Runtime.Resource.Loader;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using NVelocity;
+using NVelocity.App;
+using NVelocity.Runtime.Resource.Loader;
 
 namespace ASC.Common.Utils
 {
@@ -85,9 +85,8 @@ namespace ASC.Common.Utils
 
             using (var writer = new StringWriter())
             {
-                Template template;
                 var key = templateText.GetHashCode().ToString();
-                if (!patterns.TryGetValue(key, out template))
+                if (!patterns.TryGetValue(key, out var template))
                 {
                     template = Velocity.GetTemplate(templateText);
                     patterns.TryAdd(key, template);

@@ -89,7 +89,7 @@ namespace ASC.Notify.Recipients
 
         public override string ToString()
         {
-            return String.Format("{0}({1})", Name, String.Join(";", _Addresses.ToArray()));
+            return string.Format("{0}({1})", Name, string.Join(";", _Addresses.ToArray()));
         }
     }
 }

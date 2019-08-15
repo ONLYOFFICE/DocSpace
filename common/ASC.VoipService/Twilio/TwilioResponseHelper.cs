@@ -27,11 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
 using Twilio.TwiML;
-using Twilio.Types;
 
 namespace ASC.VoipService.Twilio
 {
@@ -46,12 +44,12 @@ namespace ASC.VoipService.Twilio
             this.baseUrl = baseUrl.TrimEnd('/') + "/twilio/";
         }
 
-        public VoiceResponse Inbound(Tuple<Agent,bool> agentTuple)
+        public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
         {
-            var agent = agentTuple != null ? agentTuple.Item1 : null;
+            var agent = agentTuple?.Item1;
             var anyOnline = agentTuple != null ? agentTuple.Item2 : false;
             var response = new VoiceResponse();
-            
+
             if (settings.WorkingHours != null && settings.WorkingHours.Enabled)
             {
                 var now = TenantUtil.DateTimeFromUtc(DateTime.UtcNow);
@@ -147,9 +145,8 @@ namespace ASC.VoipService.Twilio
                 return new VoiceResponse().Play(Uri.EscapeUriString(settings.HoldAudio), 0);
             }
 
-            Guid newCallerId;
 
-            if (Guid.TryParse(to, out newCallerId))
+            if (Guid.TryParse(to, out var newCallerId))
             {
                 SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
             }

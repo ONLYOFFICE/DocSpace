@@ -6,7 +6,9 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { Calendar } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
-import moment from 'moment/min/moment-with-locales';
+//import moment from 'moment/min/moment-with-locales';
+import moment from 'moment';
+import 'moment/min/locales'
 
 function myDateKnob(name, defaultValue) {
   const stringTimestamp = date(name, defaultValue)

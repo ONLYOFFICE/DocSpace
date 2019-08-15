@@ -45,7 +45,7 @@ namespace ASC.Common.DependencyInjection
             public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
             {
                 var instantiableType = GetInstantiableType(destinationType);
-                var elementCollection = (ListElementCollection) value;
+                var elementCollection = (ListElementCollection)value;
                 if (elementCollection == null || !(instantiableType != null))
                     return base.ConvertTo(context, culture, value, destinationType);
                 var genericArguments = instantiableType.GetGenericArguments();

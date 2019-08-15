@@ -26,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="PublicResources\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
     <Compile Update="PublicResources\WebPatternResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -166,6 +161,36 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Compile Update="PublicResources\CustomModeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CustomModeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.ru.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.de.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.es.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.fr.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.it.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
     <Protobuf Include="protos\SmsKeyCacheKey.proto" />
     <Protobuf Include="protos\TenantLogoCacheItem.proto" />
     <Protobuf Include="protos\MailServiceHelperCache.proto" />
@@ -179,7 +204,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0-preview7.19362.9" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0-preview8.19405.3" />
   </ItemGroup>
   
 </Project>

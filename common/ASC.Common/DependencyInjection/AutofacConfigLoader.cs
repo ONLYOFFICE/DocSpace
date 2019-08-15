@@ -79,13 +79,14 @@ namespace ASC.Common.DependencyInjection
                             builder.WithParameter(
                                 (pi, ctx) => parameterType.IsSubclassOf(pi.ParameterType) && pi.Name == parameterName,
                                 (pi, ctx) => Activator.CreateInstance(parameterType));
-                        } else if (parameter.List != null && parameter.List.Any())
+                        }
+                        else if (parameter.List != null && parameter.List.Any())
                         {
                             builder.WithParameter(new NamedParameter(parameter.Name, parameter.List.Select(r => r.Value).ToArray()));
                         }
                         else if (parameter.Dictionary != null && parameter.Dictionary.Any())
                         {
-                            builder.WithParameter(new NamedParameter(parameter.Name, parameter.Dictionary.ToDictionary(r=> r.Key, r=> r.Value)));
+                            builder.WithParameter(new NamedParameter(parameter.Name, parameter.Dictionary.ToDictionary(r => r.Key, r => r.Value)));
                         }
                         else
                         {

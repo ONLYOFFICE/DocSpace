@@ -34,7 +34,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public LGExp(string column, object value, bool equal)
         {
-            this.column = (SqlIdentifier) column;
+            this.column = (SqlIdentifier)column;
             this.value = value;
             this.equal = equal;
         }
@@ -48,7 +48,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override object[] GetParameters()
         {
-            return new[] {value};
+            return new[] { value };
         }
     }
 }

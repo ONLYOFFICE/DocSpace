@@ -70,7 +70,7 @@ namespace ASC.Web.Core.Mail
         {
             return new DbManager("webstudio");
         }
-        
+
         private static DbManager GetDb(string dbid, string connectionString)
         {
             var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
@@ -154,10 +154,9 @@ namespace ASC.Web.Core.Mail
                     .Select(r => Convert.ToString(r[0]))
                     .FirstOrDefault();
 
-                IPAddress ipAddress;
                 string hostname;
 
-                if (IPAddress.TryParse(ip, out ipAddress))
+                if (IPAddress.TryParse(ip, out var ipAddress))
                 {
                     selectQuery = new SqlQuery("greylisting_whitelist")
                         .Select("Comment")

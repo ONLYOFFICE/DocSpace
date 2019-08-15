@@ -74,9 +74,7 @@ namespace ASC.Notify.Engine
 
         public NotifyEngine(Context context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
@@ -179,9 +177,9 @@ namespace ASC.Notify.Engine
                     {
                         wait = defaultSleep;
                     }
-                    else if (wait.Ticks > Int32.MaxValue)
+                    else if (wait.Ticks > int.MaxValue)
                     {
-                        wait = TimeSpan.FromTicks(Int32.MaxValue);
+                        wait = TimeSpan.FromTicks(int.MaxValue);
                     }
                     methodsEvent.WaitOne(wait, false);
                 }
@@ -388,7 +386,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(String.Format("Not registered sender \"{0}\".", sendertag)));
+                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
                     }
                     responses.Add(response);
                 }
@@ -408,8 +406,7 @@ namespace ASC.Notify.Engine
 
             request.CurrentSender = channel.SenderName;
 
-            NoticeMessage noticeMessage;
-            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out noticeMessage);
+            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out var noticeMessage);
             if (oops != null) return oops;
 
             request.CurrentMessage = noticeMessage;
@@ -448,7 +445,7 @@ namespace ASC.Notify.Engine
             var pattern = request.GetSenderPattern(sender);
             if (pattern == null)
             {
-                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(String.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
             }
 
             noticeMessage.Pattern = pattern;
@@ -513,7 +510,7 @@ namespace ASC.Notify.Engine
 
                 var senderNames = new List<string>();
                 senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(tenant, request.NotifyAction, request.Recipient) ?? new string[0]);
-                senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string) tag.Value));
+                senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
                 request.SenderNames = senderNames.ToArray();
             }
@@ -539,11 +536,8 @@ namespace ASC.Notify.Engine
                     {
                         pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                     }
-                    if (pattern == null)
-                    {
-                        throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
-                    }
-                    request.Patterns[i] = pattern;
+
+                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
                 }
             }
         }
@@ -620,12 +614,13 @@ namespace ASC.Notify.Engine
             {
                 lock (locker)
                 {
-                    Task.Run(() => {
+                    Task.Run(() =>
+                    {
                         try
                         {
                             method(d);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             log.Error(e);
                         }

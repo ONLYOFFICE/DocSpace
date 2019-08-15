@@ -49,7 +49,7 @@ namespace ASC.Common.Web
 
         public override string ToString()
         {
-            return string.Format("{0} {1} T:{2},{3}", Method.ToUpper(),Url,Tid,string.Join(",",Params.Select(x=>string.Format("{0}={1}",x.Key,x.Value)).ToArray()));
+            return string.Format("{0} {1} T:{2},{3}", Method.ToUpper(), Url, Tid, string.Join(",", Params.Select(x => string.Format("{0}={1}", x.Key, x.Value)).ToArray()));
         }
     }
 }

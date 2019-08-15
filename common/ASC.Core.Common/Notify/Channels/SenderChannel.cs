@@ -47,14 +47,11 @@ namespace ASC.Notify.Channels
         public SenderChannel(Context context, string senderName, ISink decorateSink, ISink senderSink)
         {
             if (senderName == null) throw new ArgumentNullException("senderName");
-            if (context == null) throw new ArgumentNullException("context");
-            if (senderSink == null) throw new ApplicationException(string.Format("channel with tag {0} not created sender sink", senderName));
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             this.SenderName = senderName;
             this.firstSink = decorateSink;
-            this.senderSink = senderSink;
-            
+            this.senderSink = senderSink ?? throw new ApplicationException(string.Format("channel with tag {0} not created sender sink", senderName));
+
             var dispatcherSink = new DispatchSink(SenderName, this.context.DispatchEngine);
             this.firstSink = AddSink(firstSink, dispatcherSink);
         }
@@ -71,7 +68,7 @@ namespace ASC.Notify.Channels
             return senderSink.ProcessMessage(message);
         }
 
-        
+
         private ISink AddSink(ISink firstSink, ISink addedSink)
         {
             if (firstSink == null) return addedSink;

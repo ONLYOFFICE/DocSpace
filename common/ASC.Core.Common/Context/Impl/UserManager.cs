@@ -27,9 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Core.Caching;
 
 namespace ASC.Core
 {
@@ -286,7 +286,7 @@ namespace ASC.Core
                 userRefs = store.GetRefsByUser(userID);
             }
 
-            var userRefsContainsNotRemoved = userRefs != null ? userRefs.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList() : null;
+            var userRefsContainsNotRemoved = userRefs?.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList();
 
             foreach (var g in GetGroupsInternal(tenant.TenantId).Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
             {
@@ -302,7 +302,7 @@ namespace ASC.Core
                 result.AddRange(distinctUserGroups);
             }
 
-            result.Sort((group1, group2) => String.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
+            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
 
             return result.ToArray();
         }
@@ -320,8 +320,8 @@ namespace ASC.Core
 
                 if (userRefs != null)
                 {
-                    var toAdd = userRefs.Where(r => !r.Removed && 
-                        r.RefType == UserGroupRefType.Contains && 
+                    var toAdd = userRefs.Where(r => !r.Removed &&
+                        r.RefType == UserGroupRefType.Contains &&
                         !Constants.BuildinGroups.Any(g => g.ID.Equals(r.GroupId)))
                         .Select(r => r.GroupId);
                     result.AddRange(toAdd);

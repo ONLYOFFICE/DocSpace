@@ -30,9 +30,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using ASC.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using Microsoft.AspNetCore.Hosting;
 
@@ -89,13 +89,13 @@ namespace ASC.Data.Storage
                 }
                 catch (Exception)
                 {
-                    
+
                 }
             }
-            
+
             if (Appenders.Any())
             {
-                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || String.IsNullOrEmpty(ext)).ToList();
+                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
                 var avaliableAppendersCount = avaliableAppenders.LongCount();
 
                 Appender appender;
@@ -128,7 +128,7 @@ namespace ASC.Data.Storage
                     //}
                     //else
                     //{
-                        result = string.Format("{0}/{1}{2}", appender.Append.TrimEnd('/').TrimStart('~'), relativePath.TrimStart('/'), query);
+                    result = string.Format("{0}/{1}{2}", appender.Append.TrimEnd('/').TrimStart('~'), relativePath.TrimStart('/'), query);
                     //}
                 }
                 else

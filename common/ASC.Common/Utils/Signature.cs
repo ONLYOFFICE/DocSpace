@@ -74,7 +74,7 @@ namespace ASC.Common.Utils
             catch (Exception)
             {
             }
-            return default(T);
+            return default;
         }
 
         private static string GetHashBase64(string str)

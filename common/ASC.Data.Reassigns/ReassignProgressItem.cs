@@ -26,9 +26,11 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Logging;
 //using System.Web;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 //using ASC.Web.CRM.Core;
@@ -39,8 +41,6 @@ using ASC.Web.Studio.Core.Notify;
 //using Autofac;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
-using ASC.Common.Logging;
-using ASC.Core.Tenants;
 
 namespace ASC.Data.Reassigns
 {
@@ -173,7 +173,7 @@ namespace ASC.Data.Reassigns
             var toUserName = toUser.DisplayUserName(false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(_fromUserId), new[] {fromUserName, toUserName});
+                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(_fromUserId), new[] { fromUserName, toUserName });
             else
                 MessageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(_fromUserId), fromUserName, toUserName);
         }
@@ -196,7 +196,7 @@ namespace ASC.Data.Reassigns
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), new[] {userName});
+                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), new[] { userName });
             else
                 MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), userName);
         }

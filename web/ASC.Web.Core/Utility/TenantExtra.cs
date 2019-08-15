@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -60,12 +59,12 @@ namespace ASC.Web.Studio.Utility
 
         public static bool Enterprise
         {
-            get { return CoreContext.Configuration.Standalone && !String.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreContext.Configuration.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public static bool Opensource
         {
-            get { return CoreContext.Configuration.Standalone && String.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreContext.Configuration.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public static bool EnterprisePaid
@@ -75,11 +74,12 @@ namespace ASC.Web.Studio.Utility
 
         public static bool EnableControlPanel
         {
-            get {
+            get
+            {
                 var tenant = CoreContext.TenantManager.GetCurrentTenant();
-                return Enterprise && 
-                    GetTenantQuota().ControlPanel && 
-                    GetCurrentTariff().State < TariffState.NotPaid && 
+                return Enterprise &&
+                    GetTenantQuota().ControlPanel &&
+                    GetCurrentTariff().State < TariffState.NotPaid &&
                     CoreContext.UserManager.GetUsers(tenant.TenantId, SecurityContext.CurrentAccount.ID).IsAdmin(tenant);
             }
         }

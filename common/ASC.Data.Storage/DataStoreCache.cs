@@ -24,16 +24,16 @@
 */
 
 
-using ASC.Common.Caching;
 using System;
+using ASC.Common.Caching;
 
 namespace ASC.Data.Storage
 {
     static class DataStoreCache
     {
         private static readonly ICache Cache = AscCache.Memory;
-        
- 
+
+
         public static void Put(IDataStore store, string tenantId, string module)
         {
             Cache.Insert(DataStoreCacheItemExtenstion.MakeCacheKey(tenantId, module), store, DateTime.MaxValue);
@@ -48,7 +48,7 @@ namespace ASC.Data.Storage
         {
             Cache.Remove(DataStoreCacheItemExtenstion.MakeCacheKey(tenantId, module));
         }
-        
+
 
     }
 

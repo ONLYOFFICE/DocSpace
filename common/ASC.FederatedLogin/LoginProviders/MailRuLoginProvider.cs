@@ -141,14 +141,14 @@ namespace ASC.FederatedLogin.LoginProviders
             if (mailRuProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
             var profile = new LoginProfile
-                {
-                    EMail = mailRuProfiles[0].email,
-                    Id = mailRuProfiles[0].uid,
-                    FirstName = mailRuProfiles[0].first_name,
-                    LastName = mailRuProfiles[0].last_name,
+            {
+                EMail = mailRuProfiles[0].email,
+                Id = mailRuProfiles[0].uid,
+                FirstName = mailRuProfiles[0].first_name,
+                LastName = mailRuProfiles[0].last_name,
 
-                    Provider = ProviderConstants.MailRu,
-                };
+                Provider = ProviderConstants.MailRu,
+            };
 
             return profile;
         }
@@ -167,9 +167,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var parser = JObject.Parse(token.OriginJson);
 
             return
-                parser == null
-                    ? null
-                    : parser.Value<string>("x_mailru_vid");
+                parser?.Value<string>("x_mailru_vid");
         }
     }
 }

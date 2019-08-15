@@ -286,8 +286,7 @@ namespace ASC.Web.Core.Sms
 
         public bool ValidateKeys()
         {
-            double balance;
-            return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out balance) && balance > 0;
+            return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
     }
 

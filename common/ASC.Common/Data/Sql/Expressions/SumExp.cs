@@ -32,7 +32,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public SumExp(string column)
         {
-            _exp = (SqlIdentifier) column;
+            _exp = (SqlIdentifier)column;
         }
 
         public SumExp(Exp exp)

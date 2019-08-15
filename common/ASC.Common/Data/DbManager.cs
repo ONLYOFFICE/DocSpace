@@ -29,12 +29,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
-using System.Web;
 using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Common.Web;
-using Microsoft.AspNetCore.Http;
 
 namespace ASC.Common.Data
 {
@@ -93,8 +91,7 @@ namespace ASC.Common.Data
 
         public DbManager(string databaseId, bool shared, int? commandTimeout = null)
         {
-            if (databaseId == null) throw new ArgumentNullException("databaseId");
-            DatabaseId = databaseId;
+            DatabaseId = databaseId ?? throw new ArgumentNullException("databaseId");
             this.shared = shared;
 
             if (logger.IsDebugEnabled)

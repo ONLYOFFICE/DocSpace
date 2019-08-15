@@ -39,7 +39,7 @@ namespace ASC.Data.Storage
             {
                 return HttpContext.Current != null && Uri.UriSchemeHttps.Equals(HttpContext.Current.Request.GetUrlRewriter().Scheme, StringComparison.OrdinalIgnoreCase);
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 LogManager.GetLogger("ASC.Data.Storage.SecureHelper").Error(err);
                 return false;

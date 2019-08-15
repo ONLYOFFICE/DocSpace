@@ -60,13 +60,13 @@ namespace ASC.Web.Core
         {
             log = LogManager.GetLogger("ASC.Web");
             disableItem = (ConfigurationManager.AppSettings["web:disabled-items"] ?? "").Split(",").ToList();
-    }
+        }
 
         public static Guid CommunityProductID
         {
             get { return new Guid("{EA942538-E68E-4907-9394-035336EE0BA8}"); }
         }
-        
+
         public static Guid ProjectsProductID
         {
             get { return new Guid("{1e044602-43b5-4d79-82f3-fd6208a11960}"); }
@@ -113,7 +113,8 @@ namespace ASC.Web.Core
         }
 
         private static WebItemManager instance;
-        public static WebItemManager Instance {
+        public static WebItemManager Instance
+        {
             get
             {
                 return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>());
@@ -129,8 +130,7 @@ namespace ASC.Web.Core
         {
             get
             {
-                IWebItem i;
-                items.TryGetValue(id, out i);
+                items.TryGetValue(id, out var i);
                 return i;
             }
         }
@@ -175,7 +175,7 @@ namespace ASC.Web.Core
                     {
                         ((IProduct)webitem).Init();
                     }
-                    
+
                     if (webitem is IModule module)
                     {
                         if (module.Context != null && module.Context.SearchHandler != null)

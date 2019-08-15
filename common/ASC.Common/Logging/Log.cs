@@ -30,10 +30,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using ASC.Common.Utils;
 using Autofac;
-using Autofac.Configuration;
 using log4net.Config;
 using log4net.Core;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
@@ -131,7 +129,7 @@ namespace ASC.Common.Logging
 
         public void Trace(object message)
         {
-            if(IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, message, null);
+            if (IsTraceEnabled) loger.Logger.Log(GetType(), Level.Trace, message, null);
         }
 
         public void TraceFormat(string message, object arg0)

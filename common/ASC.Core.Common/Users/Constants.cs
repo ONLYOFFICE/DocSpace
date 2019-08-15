@@ -38,8 +38,7 @@ namespace ASC.Core.Users
         {
             get
             {
-                int count;
-                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out count))
+                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out var count))
                 {
                     count = 10000;
                 }
@@ -105,7 +104,7 @@ namespace ASC.Core.Users
         {
             ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
             FirstName = ConfigurationManager.AppSettings["core:system:poster:name"] ?? "ONLYOFFICE Poster",
-            LastName = String.Empty,
+            LastName = string.Empty,
             ActivationStatus = EmployeeActivationStatus.Activated
         };
 
@@ -114,7 +113,7 @@ namespace ASC.Core.Users
             ID = new Guid("{74B9CBD1-2412-4e79-9F36-7163583E9D3A}"),
             Name = "Unknown"
         };
-                
+
         #endregion
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components';
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import ComboBox from '../combobox';
 import moment from 'moment/min/moment-with-locales';
 import "react-datepicker/dist/react-datepicker.css";
@@ -194,7 +194,7 @@ class Calendar extends Component {
             <CalendarContainer>
                 <DataSelector>
                     <div>
-                        <ComboBox scaled={false} onSelect={this.selectedMonth.bind(this)} isDisabled={this.props.disabled} options={this.getArrayMonth()} /*selectedOption={this.getCurrentMonth.bind(this)}*/ />
+                        <ComboBox scaled={false} onSelect={this.selectedMonth.bind(this)} isDisabled={this.props.disabled} options={this.getArrayMonth()} selectedOption={this.getCurrentMonth.bind(this)} />
                     </div>
                     <ComboboxStyled>
                         <ComboBox onSelect={this.selectedDate.bind(this)} isDisabled={this.props.disabled} options={this.getArrayDates()} selectedOption={this.getCurrentDate()} />

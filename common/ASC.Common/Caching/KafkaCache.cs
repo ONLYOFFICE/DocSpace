@@ -36,7 +36,7 @@ namespace ASC.Common.Caching
 
         public async void Publish(T obj, CacheNotifyAction cacheNotifyAction)
         {
-            if(ClientConfig == null)
+            if (ClientConfig == null)
             {
                 MemoryCacheNotify.Publish(obj, cacheNotifyAction);
                 return;
@@ -124,7 +124,7 @@ namespace ASC.Common.Caching
         public void Unsubscribe(CacheNotifyAction action)
         {
             Cts.TryGetValue(action, out var source);
-            if(source != null)
+            if (source != null)
             {
                 source.Cancel();
             }
@@ -144,7 +144,7 @@ namespace ASC.Common.Caching
         {
             if (actions.TryGetValue(GetKey(action), out var onchange) && onchange != null)
             {
-                foreach(var a in onchange)
+                foreach (var a in onchange)
                 {
                     a(obj);
                 }

@@ -254,7 +254,7 @@ namespace ASC.Core.Billing
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
-                          : String.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+                          : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
             key += quota.Visible ? "" : "0";
             var urls = cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) as IDictionary<string, Tuple<Uri, Uri>>;
             if (urls == null)
@@ -286,8 +286,7 @@ namespace ASC.Core.Billing
 
             ResetCacheExpiration();
 
-            Tuple<Uri, Uri> tuple;
-            if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out tuple))
+            if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var tuple))
             {
                 var result = tuple.Item2;
 
@@ -464,7 +463,7 @@ namespace ASC.Core.Billing
                         var fromDate = tenant.CreatedDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreatedDateTime;
                         var trialPeriod = GetPeriod("TrialPeriod", DEFAULT_TRIAL_PERIOD);
                         if (fromDate == DateTime.MinValue) fromDate = DateTime.UtcNow.Date;
-                        tariff.DueDate = trialPeriod != default(int) ? fromDate.Date.AddDays(trialPeriod) : DateTime.MaxValue;
+                        tariff.DueDate = trialPeriod != default ? fromDate.Date.AddDays(trialPeriod) : DateTime.MaxValue;
                     }
                     else
                     {

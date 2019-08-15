@@ -55,7 +55,7 @@ namespace ASC.Common.Data.AdoProxy
             if (command != null)
             {
                 Sql = command.CommandText;
-                
+
                 if (0 < command.Parameters.Count)
                 {
                     var stringBuilder = new StringBuilder();

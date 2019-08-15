@@ -114,7 +114,7 @@ namespace ASC.Common.Threading.Progress
 
         protected virtual Task DoJobAsync()
         {
-            return Task.Run(()=>{});
+            return Task.Run(() => { });
         }
 
 

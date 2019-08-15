@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
-import { getAvailableModules } from '../store/auth/selectors';
+import { withTranslation } from 'react-i18next';
 
 class PeopleLayout extends React.PureComponent {
     onProfileClick = () => {
@@ -24,17 +24,17 @@ class PeopleLayout extends React.PureComponent {
     onLogoClick = () => window.open("/", '_self');
 
     render() {
-        const { auth, children } = this.props;
+        const { auth, children, t } = this.props;
 
         const currentUserActions = [
             {
-                key: 'ProfileBtn', label: 'Profile', onClick: this.onProfileClick
+                key: 'ProfileBtn', label: t('Resource:Profile'), onClick: this.onProfileClick
             },
             {
-                key: 'AboutBtn', label: 'About', onClick: this.onAboutClick
+                key: 'AboutBtn', label: t('Resource:AboutCompanyTitle'), onClick: this.onAboutClick
             },
             {
-                key: 'LogoutBtn', label: 'Log out', onClick: this.onLogoutClick
+                key: 'LogoutBtn', label: t('Resource:LogoutButton'), onClick: this.onLogoutClick
             },
         ];
 
@@ -61,6 +61,23 @@ PeopleLayout.propTypes = {
     logout: PropTypes.func.isRequired
 };
 
+const getAvailableModules = (modules) => {
+    const separator = { seporator: true, id: 'nav-seporator-1' };
+    const products = modules.map(product => {
+        return {
+            id: product.id,
+            title: product.title,
+            iconName: 'PeopleIcon',
+            notifications: 0,
+            url: product.link,
+            onClick: () => window.open(product.link, '_self'),
+            onBadgeClick: e => console.log('PeopleIconBadge Clicked', e)
+        };
+    }) || [];
+
+    return products.length ? [separator, ...products] : products;
+};
+
 function mapStateToProps(state) {
     return {
         auth: state.auth,
@@ -71,4 +88,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { logout })(withRouter(PeopleLayout));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(PeopleLayout)));

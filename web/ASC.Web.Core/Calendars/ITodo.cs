@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.Web.Core.Calendars
 {
-    
+
     public class TodoContext : ICloneable
     {
         #region ICloneable Members
@@ -41,7 +41,7 @@ namespace ASC.Web.Core.Calendars
         #endregion
     }
 
-    public interface ITodo: IiCalFormatView
+    public interface ITodo : IiCalFormatView
     {
         string Id { get; }
         string Uid { get; }

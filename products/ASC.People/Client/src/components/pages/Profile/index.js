@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
+import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
@@ -15,43 +15,6 @@ class Profile extends React.Component {
       isArticleVisible: false,
       isArticlePinned: false
     }
-
-    this.onBackdropClick = this.onBackdropClick.bind(this);
-    this.onPinArticle = this.onPinArticle.bind(this);
-    this.onUnpinArticle = this.onUnpinArticle.bind(this);
-    this.onShowArticle = this.onShowArticle.bind(this);
-  }
-
-  onBackdropClick() {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false
-    });
-  }
-
-  onPinArticle() {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: true,
-      isArticlePinned: true
-    });
-  }
-
-  onUnpinArticle() {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false
-    });
-  }
-
-  onShowArticle() {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false
-    });
   }
 
   componentDidMount() {
@@ -78,47 +41,33 @@ class Profile extends React.Component {
   render() {
     console.log("Profile render")
 
-    const { isBackdropVisible, isArticleVisible, isArticlePinned } = this.state;
     const { profile } = this.props;
     return (
       profile
-        ? <>
-          <Backdrop visible={isBackdropVisible} onClick={this.onBackdropClick} />
-          <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
-            <NPL.ArticleHeader visible={isArticlePinned}>
-              <ArticleHeaderContent />
-            </NPL.ArticleHeader>
-            <NPL.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </NPL.ArticleMainButton>
-            <NPL.ArticleBody>
-              <ArticleBodyContent />
-            </NPL.ArticleBody>
-            <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={this.onPinArticle} unpinText="Unpin this panel" onUnpin={this.onUnpinArticle} />
-          </NPL.Article>
-          <NPL.Section>
-            <NPL.SectionHeader>
-              <SectionHeaderContent profile={profile} />
-            </NPL.SectionHeader>
-            <NPL.SectionBody>
-              <SectionBodyContent profile={profile} />
-            </NPL.SectionBody>
-            <NPL.SectionToggler visible={!isArticlePinned} onClick={this.onShowArticle} />
-          </NPL.Section>
-        </>
-        : <>
-          <NPL.Section>
-            <NPL.SectionBody>
-              <Loader className="pageLoader" type="rombs" size={40} />
-            </NPL.SectionBody>
-          </NPL.Section>
-        </>
+        ? <PageLayout
+          articleHeaderContent={<ArticleHeaderContent />}
+          articleMainButtonContent={<ArticleMainButtonContent />}
+          articleBodyContent={<ArticleBodyContent />}
+          sectionHeaderContent={
+            <SectionHeaderContent profile={profile} />
+          }
+          sectionBodyContent={
+            <SectionBodyContent profile={profile} />
+          }
+        />
+        : <PageLayout
+          articleHeaderContent={<ArticleHeaderContent />}
+          articleMainButtonContent={<ArticleMainButtonContent />}
+          articleBodyContent={<ArticleBodyContent />}
+          sectionBodyContent={
+            <Loader className="pageLoader" type="rombs" size={40} />
+          }
+        />
     );
   };
 };
 
 Profile.propTypes = {
-  auth: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,

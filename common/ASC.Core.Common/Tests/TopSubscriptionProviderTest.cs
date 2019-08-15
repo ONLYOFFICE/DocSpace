@@ -29,8 +29,8 @@ using System;
 using System.Linq;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
-using NUnit.Framework;
 using ASC.Notify.Recipients;
+using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
 {
@@ -45,8 +45,8 @@ namespace ASC.Core.Common.Tests
         private string objectId;
         private string rndObj;
         private string rndObj2;
-        private IRecipient everyone = new RecipientsGroup(String.Empty, String.Empty);
-        private IRecipient otdel = new RecipientsGroup(String.Empty, String.Empty);
+        private IRecipient everyone = new RecipientsGroup(string.Empty, string.Empty);
+        private IRecipient otdel = new RecipientsGroup(string.Empty, string.Empty);
         private IRecipient testRec;
         private IRecipient testRec2;
         private NotifyAction nAction;
@@ -94,7 +94,7 @@ namespace ASC.Core.Common.Tests
                 res = subProvider.GetRecipients(tenant.TenantId, nAction, objectId);
                 Assert.AreEqual(cnt, res.Count());
 
-                String[] objs;
+                string[] objs;
 
                 //GetSubscribtions
 
@@ -114,7 +114,7 @@ namespace ASC.Core.Common.Tests
                 CollectionAssert.AllItemsAreUnique(objsGroup);
 
                 //Подписываем весь отдел на объект
-                rndObj = String.Concat("TestObject#", new Random().Next().ToString());
+                rndObj = string.Concat("TestObject#", new Random().Next().ToString());
                 subProvider.Subscribe(nAction, rndObj, otdel);
                 //Проверяем подписался ли юзер вместе со всем отделом двумя способами.
                 Assert.AreEqual(objsGroup.Count() + 1, subProvider.GetSubscriptions(tenant, nAction, otdel).Count());
@@ -122,7 +122,7 @@ namespace ASC.Core.Common.Tests
                 Assert.AreEqual(true, subProvider.IsSubscribed(tenant, nAction, testRec2, rndObj));
 
                 //Подписываем Everybody
-                rndObj2 = String.Concat("TestObject#", new Random().Next().ToString());
+                rndObj2 = string.Concat("TestObject#", new Random().Next().ToString());
                 objs = subProvider.GetSubscriptions(tenant, nAction, testRec2);
                 subProvider.Subscribe(nAction, rndObj2, everyone);
                 //Проверяем подписался ли user двумя способами.

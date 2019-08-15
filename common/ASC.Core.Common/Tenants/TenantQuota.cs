@@ -36,12 +36,12 @@ namespace ASC.Core.Tenants
     public class TenantQuota : ICloneable
     {
         public static readonly TenantQuota Default = new TenantQuota(Tenant.DEFAULT_TENANT)
-            {
-                Name = "Default",
-                MaxFileSize = 25*1024*1024, // 25Mb
-                MaxTotalSize = long.MaxValue,
-                ActiveUsers = int.MaxValue,
-            };
+        {
+            Name = "Default",
+            MaxFileSize = 25 * 1024 * 1024, // 25Mb
+            MaxTotalSize = long.MaxValue,
+            ActiveUsers = int.MaxValue,
+        };
 
         [DataMember(Name = "Id", Order = 10)]
         public int Id { get; private set; }
@@ -178,8 +178,7 @@ namespace ASC.Core.Tenants
             {
                 var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
                 var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
-                int countPortals;
-                if (portals == null || !Int32.TryParse(portals.Replace("portals:", ""), out countPortals) || countPortals <= 0)
+                if (portals == null || !int.TryParse(portals.Replace("portals:", ""), out var countPortals) || countPortals <= 0)
                 {
                     countPortals = 0;
                 }

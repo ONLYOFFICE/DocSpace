@@ -25,10 +25,10 @@
 
 
 #if DEBUG
+using System.Collections.Generic;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace ASC.Common.Tests.Security.Authorizing
 {
@@ -137,7 +137,7 @@ namespace ASC.Common.Tests.Security.Authorizing
         [Test]
         public void GetAzManagerObjectAcl()
         {
-            AzManager azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
+            var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
             AzManager.AzManagerAcl acl = null;
 
             var c1 = new Class1(1);

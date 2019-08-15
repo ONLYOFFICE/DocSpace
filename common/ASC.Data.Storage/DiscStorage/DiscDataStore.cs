@@ -39,7 +39,7 @@ namespace ASC.Data.Storage.DiscStorage
         private const int BufferSize = 8192;
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
 
-      
+
 
         public DiscDataStore(string tenant, Handler handlerConfig, Module moduleConfig)
         {
@@ -62,7 +62,7 @@ namespace ASC.Data.Storage.DiscStorage
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
         }
 
-        public String GetPhysicalPath(string domain, string path)
+        public string GetPhysicalPath(string domain, string path)
         {
             if (path == null)
             {
@@ -99,7 +99,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                FileStream stream = File.OpenRead(target);
+                var stream = File.OpenRead(target);
                 if (0 < offset) stream.Seek(offset, SeekOrigin.Begin);
                 return stream;
             }
@@ -353,7 +353,7 @@ namespace ASC.Data.Storage.DiscStorage
                     File.Delete(newtarget);
                 }
                 File.Move(target, newtarget);
-               
+
                 QuotaUsedDelete(srcdomain, flength);
                 QuotaUsedAdd(newdomain, flength);
             }
@@ -634,7 +634,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private static void CreateDirectory(string target)
         {
-            string targetDirectory = Path.GetDirectoryName(target);
+            var targetDirectory = Path.GetDirectoryName(target);
             if (!Directory.Exists(targetDirectory))
             {
                 Directory.CreateDirectory(targetDirectory);
@@ -659,5 +659,5 @@ namespace ASC.Data.Storage.DiscStorage
                 throw new ArgumentException("bad path");
             }
         }
-        }
+    }
 }

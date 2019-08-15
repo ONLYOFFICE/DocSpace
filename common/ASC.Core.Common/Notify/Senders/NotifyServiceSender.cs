@@ -24,8 +24,8 @@
 */
 
 
-using ASC.Notify.Messages;
 using System.Collections.Generic;
+using ASC.Notify.Messages;
 
 namespace ASC.Core.Notify.Senders
 {

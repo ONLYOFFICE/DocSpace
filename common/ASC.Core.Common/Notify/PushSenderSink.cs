@@ -46,14 +46,14 @@ namespace ASC.Core.Common.Notify
             try
             {
                 var notification = new PushNotification
-                    {
-                        Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
-                        Action = GetTagValue<PushAction>(message, PushConstants.PushActionTagName),
-                        Item = GetTagValue<PushItem>(message, PushConstants.PushItemTagName),
-                        ParentItem = GetTagValue<PushItem>(message, PushConstants.PushParentItemTagName),
-                        Message = message.Body,
-                        ShortMessage = message.Subject
-                    };
+                {
+                    Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
+                    Action = GetTagValue<PushAction>(message, PushConstants.PushActionTagName),
+                    Item = GetTagValue<PushItem>(message, PushConstants.PushItemTagName),
+                    ParentItem = GetTagValue<PushItem>(message, PushConstants.PushParentItemTagName),
+                    Message = message.Body,
+                    ShortMessage = message.Subject
+                };
 
                 if (configured)
                 {
@@ -90,7 +90,7 @@ namespace ASC.Core.Common.Notify
         private T GetTagValue<T>(INoticeMessage message, string tagName)
         {
             var tag = message.Arguments.FirstOrDefault(arg => arg.Tag == tagName);
-            return tag != null ? (T)tag.Value : default(T);
+            return tag != null ? (T)tag.Value : default;
         }
     }
 }

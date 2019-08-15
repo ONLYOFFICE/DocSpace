@@ -24,12 +24,6 @@
 */
 
 
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Web.Studio.Utility;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +32,12 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Tenants;
+using ASC.Web.Studio.Utility;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
 {
@@ -93,7 +93,7 @@ namespace ASC.Web.Core.Helpers
                         {
                             if (resObj["error"].ToString() == "portalNameExist")
                             {
-                                var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<String>());
+                                var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<string>());
                                 throw new TenantAlreadyExistsException("Address busy.", varians);
                             }
 
@@ -132,25 +132,22 @@ namespace ASC.Web.Core.Helpers
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
-            return variants == null
-                       ? null
-                       : variants.Select(jv => jv.Value<String>()).ToList();
+            return variants?.Select(jv => jv.Value<string>()).ToList();
         }
 
         #endregion
 
         private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, string data = null)
         {
-            Uri uri;
-            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out uri))
+            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
                 var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
                 absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');
             }
 
-            var url = String.Format("{0}/{1}", absoluteApiUrl, apiPath);
+            var url = string.Format("{0}/{1}", absoluteApiUrl, apiPath);
 
-            var webRequest = (HttpWebRequest) WebRequest.Create(url);
+            var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;
             webRequest.Accept = "application/json";
             webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(SecurityContext.CurrentAccount.ID.ToString()));

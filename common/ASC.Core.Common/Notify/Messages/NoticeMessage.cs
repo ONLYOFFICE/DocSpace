@@ -47,30 +47,25 @@ namespace ASC.Notify.Messages
 
         public NoticeMessage(IDirectRecipient recipient, INotifyAction action, string objectID)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            Recipient = recipient;
+            Recipient = recipient ?? throw new ArgumentNullException("recipient");
             Action = action;
             ObjectID = objectID;
         }
 
         public NoticeMessage(IDirectRecipient recipient, INotifyAction action, string objectID, IPattern pattern)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (pattern == null) throw new ArgumentNullException("pattern");
-            Recipient = recipient;
+            Recipient = recipient ?? throw new ArgumentNullException("recipient");
             Action = action;
-            Pattern = pattern;
+            Pattern = pattern ?? throw new ArgumentNullException("pattern");
             ObjectID = objectID;
             ContentType = pattern.ContentType;
         }
 
         public NoticeMessage(IDirectRecipient recipient, string subject, string body, string contentType)
         {
-            if (recipient == null) throw new ArgumentNullException("recipient");
-            if (body == null) throw new ArgumentNullException("body");
-            Recipient = recipient;
+            Recipient = recipient ?? throw new ArgumentNullException("recipient");
             Subject = subject;
-            Body = body;
+            Body = body ?? throw new ArgumentNullException("body");
             ContentType = contentType;
         }
 
@@ -95,8 +90,8 @@ namespace ASC.Notify.Messages
         {
             if (tagValues == null) throw new ArgumentNullException("tagValues");
             Array.ForEach(tagValues,
-                tagValue => 
-                {   
+                tagValue =>
+                {
                     if (!arguments.Exists(tv => Equals(tv.Tag, tagValue.Tag)))
                     {
                         arguments.Add(tagValue);

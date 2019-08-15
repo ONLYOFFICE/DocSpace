@@ -94,7 +94,7 @@ namespace ASC.Api.Settings
 
             //TODO: Add validation check
 
-            if(smtpSettings == null)
+            if (smtpSettings == null)
                 throw new ArgumentNullException("smtpSettings");
 
             SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
@@ -120,7 +120,7 @@ namespace ASC.Api.Settings
             }
 
             var current = CoreContext.Configuration.Standalone ? CoreContext.Configuration.SmtpSettings : SmtpSettings.Empty;
-            
+
             return ToSmtpSettings(current, true);
         }
 

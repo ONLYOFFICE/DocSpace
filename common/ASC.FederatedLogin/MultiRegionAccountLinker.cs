@@ -34,24 +34,24 @@ namespace ASC.FederatedLogin
 {
     public class MultiRegionAccountLinker
     {
-        private readonly Dictionary<String, AccountLinker> _accountLinkers = new Dictionary<String, AccountLinker>();
-        private readonly String _baseDatabaseId = null;
+        private readonly Dictionary<string, AccountLinker> _accountLinkers = new Dictionary<string, AccountLinker>();
+        private readonly string _baseDatabaseId = null;
 
-        private String GetDatabaseId(String hostedRegion)
+        private string GetDatabaseId(string hostedRegion)
         {
             var databaseId = _baseDatabaseId;
 
-            if (!String.IsNullOrEmpty(hostedRegion))
-                databaseId = String.Join(".", new[] {_baseDatabaseId, hostedRegion.Trim()});
+            if (!string.IsNullOrEmpty(hostedRegion))
+                databaseId = string.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
 
             if (!_accountLinkers.ContainsKey(databaseId))
-                throw new ArgumentException(String.Format("Region {0} is not defined", databaseId), "hostedRegion");
+                throw new ArgumentException(string.Format("Region {0} is not defined", databaseId), "hostedRegion");
 
             return databaseId;
         }
 
 
-        public MultiRegionAccountLinker(String databaseId)
+        public MultiRegionAccountLinker(string databaseId)
         {
             foreach (var connection in ConfigurationManager.ConnectionStrings)
             {
@@ -60,47 +60,47 @@ namespace ASC.FederatedLogin
             }
         }
 
-        public IEnumerable<String> GetLinkedObjects(string id, string provider)
+        public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
             return _accountLinkers.Values.SelectMany(x => x.GetLinkedObjects(id, provider));
         }
 
-        public IEnumerable<String> GetLinkedObjects(LoginProfile profile)
+        public IEnumerable<string> GetLinkedObjects(LoginProfile profile)
         {
             return _accountLinkers.Values.SelectMany(x => x.GetLinkedObjects(profile));
         }
 
-        public IEnumerable<String> GetLinkedObjectsByHashId(string hashid)
+        public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
             return _accountLinkers.Values.SelectMany(x => x.GetLinkedObjectsByHashId(hashid));
         }
 
-        public void AddLink(String hostedRegion, string obj, LoginProfile profile)
+        public void AddLink(string hostedRegion, string obj, LoginProfile profile)
         {
             _accountLinkers[GetDatabaseId(hostedRegion)].AddLink(obj, profile);
         }
 
-        public void AddLink(String hostedRegion, string obj, string id, string provider)
+        public void AddLink(string hostedRegion, string obj, string id, string provider)
         {
             _accountLinkers[GetDatabaseId(hostedRegion)].AddLink(obj, id, provider);
         }
 
-        public void RemoveLink(String hostedRegion, string obj, string id, string provider)
+        public void RemoveLink(string hostedRegion, string obj, string id, string provider)
         {
             _accountLinkers[GetDatabaseId(hostedRegion)].RemoveLink(obj, id, provider);
         }
 
-        public void RemoveLink(String hostedRegion, string obj, LoginProfile profile)
+        public void RemoveLink(string hostedRegion, string obj, LoginProfile profile)
         {
             _accountLinkers[GetDatabaseId(hostedRegion)].RemoveLink(obj, profile);
         }
 
-        public void Unlink(String region, string obj)
+        public void Unlink(string region, string obj)
         {
             _accountLinkers[GetDatabaseId(region)].RemoveProvider(obj);
         }
 
-        public void RemoveProvider(String hostedRegion, string obj, string provider)
+        public void RemoveProvider(string hostedRegion, string obj, string provider)
         {
             _accountLinkers[GetDatabaseId(hostedRegion)].RemoveProvider(obj, provider);
         }

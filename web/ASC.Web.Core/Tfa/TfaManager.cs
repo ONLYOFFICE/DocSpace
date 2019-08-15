@@ -36,7 +36,6 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Users;
-using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using Google.Authenticator;
 
@@ -90,8 +89,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (string.IsNullOrEmpty(code)) throw new Exception(Resource.ActivateTfaAppEmptyCode);
 
-            int counter;
-            int.TryParse(Cache.Get<string>("tfa/" + user.ID), out counter);
+            int.TryParse(Cache.Get<string>("tfa/" + user.ID), out var counter);
             if (++counter > SetupInfo.LoginThreshold)
             {
                 throw new BruteForceCredentialException(Resource.TfaTooMuchError);

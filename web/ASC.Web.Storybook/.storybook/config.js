@@ -1,4 +1,3 @@
-import React from 'react';
 import { addParameters, configure } from '@storybook/react';
 import { addDecorator } from '@storybook/react';
 import { withConsole } from '@storybook/addon-console';

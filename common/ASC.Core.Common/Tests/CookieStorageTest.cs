@@ -47,15 +47,8 @@ namespace ASC.Core.Common.Tests
 
             var cookie = CookieStorage.EncryptCookie(t1, id1, login1, pwd1, it1, expire1, iu1);
 
-            int t2;
-            Guid id2;
-            string login2;
-            string pwd2;
-            int it2;
-            DateTime expire2;
-            int iu2;
 
-            CookieStorage.DecryptCookie(cookie, out t2, out id2, out login2, out pwd2, out it2, out expire2, out iu2);
+            CookieStorage.DecryptCookie(cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
 
             Assert.AreEqual(t1, t2);
             Assert.AreEqual(id1, id2);

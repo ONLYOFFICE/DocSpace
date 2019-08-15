@@ -27,10 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -43,7 +41,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core;
 //using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Studio.Core.Notify;
-using Autofac;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 
@@ -108,8 +105,8 @@ namespace ASC.Data.Reassigns
                 var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
-                long docsSpace, crmSpace, mailSpace, talkSpace;
-                GetUsageSpace(tenant, out docsSpace, out mailSpace, out talkSpace);
+                long crmSpace;
+                GetUsageSpace(tenant, out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", _userId);
 
@@ -230,7 +227,7 @@ namespace ASC.Data.Reassigns
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(_userId),  new[] {_userName});
+                MessageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(_userId), new[] { _userName });
             else
                 MessageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(_userId), _userName);
         }

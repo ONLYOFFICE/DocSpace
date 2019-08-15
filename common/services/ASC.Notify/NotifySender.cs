@@ -125,7 +125,7 @@ namespace ASC.Notify
 
                         log.DebugFormat("Notify #{0} has been sent.", m.Key);
                     }
-                     catch (Exception e)
+                    catch (Exception e)
                     {
                         result = MailSendingState.FatalError;
                         log.Error(e);

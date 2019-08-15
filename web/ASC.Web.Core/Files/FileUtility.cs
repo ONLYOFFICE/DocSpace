@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
-using System.Text.RegularExpressions;
 using ASC.Common.Utils;
 
 namespace ASC.Web.Core.Files
@@ -59,8 +59,7 @@ namespace ASC.Web.Core.Files
         public static string GetInternalExtension(string fileName)
         {
             var extension = GetFileExtension(fileName);
-            string internalExtension;
-            return InternalExtension.TryGetValue(GetFileTypeByExtention(extension), out internalExtension)
+            return InternalExtension.TryGetValue(GetFileTypeByExtention(extension), out var internalExtension)
                        ? internalExtension
                        : extension;
         }
@@ -360,7 +359,7 @@ namespace ASC.Web.Core.Files
             if (regex.IsMatch(result))
                 result = "";
 
-            return result;         
+            return result;
         }
 
         private static string GetSignatureHeader()

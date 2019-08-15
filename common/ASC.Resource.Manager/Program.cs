@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using CommandLine;
@@ -35,7 +37,6 @@ namespace ASC.Resource.Manager
             try
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
-
 
                 if (format == "json")
                 {
@@ -83,7 +84,13 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    foreach (var p in projects.Select(r => r.ProjectName).Intersect(enabledSettings.Projects))
+                    var projectToExport = projects
+                        .Where(r => string.IsNullOrEmpty(r.ModuleName) || r.ModuleName == moduleName)
+                        .Where(r => string.IsNullOrEmpty(r.FileName) || r.FileName == fileName)
+                        .Select(r => r.ProjectName)
+                        .Intersect(enabledSettings.Projects);
+
+                    foreach (var p in projectToExport)
                     {
                         ExportWithModule(p, moduleName, fileName, culture, exportPath, key);
                     }
@@ -98,7 +105,12 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    foreach (var m in projects.Where(r => r.ProjectName == projectName).Select(r => r.ModuleName))
+                    var moduleToExport = projects
+                        .Where(r => r.ProjectName == projectName)
+                        .Where(r => string.IsNullOrEmpty(r.FileName) || r.FileName == fileName)
+                        .Select(r => r.ModuleName);
+
+                    foreach (var m in moduleToExport)
                     {
                         ExportWithFile(projectName, m, fileName, culture, exportPath, key);
                     }
@@ -129,6 +141,42 @@ namespace ASC.Resource.Manager
                     ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(projectName, moduleName, fileName, c, exportPath, key));
                 }
             }
+        }
+
+        public static string CheckExist(string resName, string fullClassName)
+        {
+            var bag = new ConcurrentBag<string>();
+            var path = "..\\..\\..\\..\\..\\";
+
+            var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories);
+            var xmlFiles = Directory.GetFiles(Path.GetFullPath(path), "*.xml", SearchOption.AllDirectories);
+
+            string localInit() => "";
+
+            Func<string, ParallelLoopState, long, string, string> func(string regexp) => (f, state, index, a) =>
+            {
+                var data = File.ReadAllText(f);
+                var regex = new Regex(regexp);
+                var matches = regex.Matches(data);
+                if (matches.Count > 0)
+                {
+                    return a + "," + string.Join(",", matches.Select(r => r.Groups[1].Value));
+                }
+                return a;
+            };
+
+            void localFinally(string r)
+            {
+                if (!bag.Contains(r) && !string.IsNullOrEmpty(r))
+                {
+                    bag.Add(r.Trim(','));
+                }
+            }
+
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.(\w*)"), localFinally);
+            _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
+
+            return string.Join(',', bag.ToArray());
         }
     }
 }

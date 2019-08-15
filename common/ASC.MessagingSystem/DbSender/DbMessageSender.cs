@@ -49,12 +49,12 @@ namespace ASC.MessagingSystem.DbSender
             try
             {
                 if (!MessagingEnabled) return;
-                
+
                 if (message == null) return;
-                
+
                 MessagesRepository.Add(message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 log.Error("Failed to send a message", ex);
             }

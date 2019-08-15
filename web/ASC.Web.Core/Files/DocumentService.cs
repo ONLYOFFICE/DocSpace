@@ -35,7 +35,6 @@ using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 using ASC.Common.Web;
 using ASC.Core;
 using JWT;
@@ -124,14 +123,14 @@ namespace ASC.Web.Core.Files
             request.Timeout = Timeout;
 
             var body = new ConvertionBody
-                {
-                    Async = isAsync,
-                    FileType = fromExtension.Trim('.'),
-                    Key = documentRevisionId,
-                    OutputType = toExtension.Trim('.'),
-                    Title = title,
-                    Url = documentUri,
-                };
+            {
+                Async = isAsync,
+                FileType = fromExtension.Trim('.'),
+                Key = documentRevisionId,
+                OutputType = toExtension.Trim('.'),
+                Title = title,
+                Url = documentUri,
+            };
 
             if (!string.IsNullOrEmpty(password))
             {
@@ -241,10 +240,10 @@ namespace ASC.Web.Core.Files
             request.Timeout = Timeout;
 
             var body = new CommandBody
-                {
-                    Command = method,
-                    Key = documentRevisionId,
-                };
+            {
+                Command = method,
+                Key = documentRevisionId,
+            };
 
             if (!string.IsNullOrEmpty(callbackUrl)) body.Callback = callbackUrl;
             if (users != null && users.Length > 0) body.Users = users;
@@ -326,11 +325,11 @@ namespace ASC.Web.Core.Files
             request.Timeout = Timeout;
 
             var body = new BuilderBody
-                {
-                    Async = isAsync,
-                    Key = requestKey,
-                    Url = scriptUrl
-                };
+            {
+                Async = isAsync,
+                Key = requestKey,
+                Url = scriptUrl
+            };
 
             if (!string.IsNullOrEmpty(signatureSecret))
             {
@@ -559,8 +558,7 @@ namespace ASC.Web.Core.Files
 
             public static void ProcessResponseError(string errorCode)
             {
-                ErrorCode code;
-                if (!Enum.TryParse(errorCode, true, out code))
+                if (!Enum.TryParse(errorCode, true, out ErrorCode code))
                 {
                     code = ErrorCode.Unknown;
                 }
@@ -685,10 +683,10 @@ namespace ASC.Web.Core.Files
             public string Serialize(object obj)
             {
                 var settings = new JsonSerializerSettings
-                    {
-                        ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                        NullValueHandling = NullValueHandling.Ignore,
-                    };
+                {
+                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
+                    NullValueHandling = NullValueHandling.Ignore,
+                };
 
                 return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
             }
@@ -696,10 +694,10 @@ namespace ASC.Web.Core.Files
             public T Deserialize<T>(string json)
             {
                 var settings = new JsonSerializerSettings
-                    {
-                        ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                        NullValueHandling = NullValueHandling.Ignore,
-                    };
+                {
+                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
+                    NullValueHandling = NullValueHandling.Ignore,
+                };
 
                 return JsonConvert.DeserializeObject<T>(json, settings);
             }

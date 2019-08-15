@@ -25,7 +25,6 @@
 
 
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -45,7 +44,7 @@ namespace System.Web
         }
         public static Uri Url(this HttpRequest request)
         {
-            return request != null ?  new Uri(request.GetDisplayUrl()) : null;
+            return request != null ? new Uri(request.GetDisplayUrl()) : null;
         }
 
         /*public static Uri GetUrlRewriter(this HttpRequestBase request)
@@ -124,7 +123,7 @@ namespace System.Web
                                                         rewrittenUri.Host + ":" + requestUri.Port);
                         }
                         //Hack:
-                        typeof (HttpRequest).InvokeMember("_url",
+                        typeof(HttpRequest).InvokeMember("_url",
                                                           BindingFlags.NonPublic | BindingFlags.SetField |
                                                           BindingFlags.Instance,
                                                           null, request,
@@ -196,8 +195,7 @@ namespace System.Web
                 s = HttpUtility.UrlDecode(s);
             }
 
-            Uri result;
-            Uri.TryCreate(s, UriKind.Absolute, out result);
+            Uri.TryCreate(s, UriKind.Absolute, out var result);
             return result;
         }
 

@@ -41,7 +41,7 @@ namespace ASC.Data.Storage
             while (true)
             {
                 int i;
-                for (i = 0; i < pattern.Length; )
+                for (i = 0; i < pattern.Length;)
                 {
                     switch (pattern[i])
                     {

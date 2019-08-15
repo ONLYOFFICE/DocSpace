@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using System.Web;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
@@ -121,7 +120,7 @@ namespace ASC.Geolocation
                 var index = ip.IndexOf("::");
                 if (0 <= index)
                 {
-                    ip = ip.Insert(index + 2, new String(':', 8 - ip.Split(':').Length));
+                    ip = ip.Insert(index + 2, new string(':', 8 - ip.Split(':').Length));
                 }
                 return string.Join(":", ip.Split(':').Select(s => ("0000" + s).Substring(s.Length)).ToArray());
             }

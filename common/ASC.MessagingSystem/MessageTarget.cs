@@ -52,9 +52,9 @@ namespace ASC.MessagingSystem
                 }
 
                 return new MessageTarget
-                    {
-                        _items = res.Distinct()
-                    };
+                {
+                    _items = res.Distinct()
+                };
             }
             catch (Exception e)
             {

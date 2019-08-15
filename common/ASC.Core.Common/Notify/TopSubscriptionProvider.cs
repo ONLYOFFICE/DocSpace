@@ -41,11 +41,8 @@ namespace ASC.Notify.Model
 
         public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider)
         {
-            if (recipientProvider == null) throw new ArgumentNullException("recipientProvider");
-            if (directSubscriptionProvider == null) throw new ArgumentNullException("directSubscriptionProvider");
-
-            this.recipientProvider = recipientProvider;
-            subscriptionProvider = directSubscriptionProvider;
+            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException("recipientProvider");
+            subscriptionProvider = directSubscriptionProvider ?? throw new ArgumentNullException("directSubscriptionProvider");
         }
 
         public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider, string[] defaultSenderMethods)
@@ -55,7 +52,7 @@ namespace ASC.Notify.Model
         }
 
 
-        public virtual string[] GetSubscriptionMethod(Tenant tenant,INotifyAction action, IRecipient recipient)
+        public virtual string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
@@ -126,7 +123,7 @@ namespace ASC.Notify.Model
         public virtual void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             var objects = GetSubscriptions(tenant, action, recipient);
-            foreach (string objectID in objects)
+            foreach (var objectID in objects)
             {
                 subscriptionProvider.UnSubscribe(action, objectID, recipient);
             }
@@ -193,7 +190,7 @@ namespace ASC.Notify.Model
         }
 
 
-        private List<IRecipient> WalkUp(Tenant tenant,IRecipient recipient)
+        private List<IRecipient> WalkUp(Tenant tenant, IRecipient recipient)
         {
             var parents = new List<IRecipient>();
             var groups = recipientProvider.GetGroups(tenant, recipient) ?? new IRecipientsGroup[0];

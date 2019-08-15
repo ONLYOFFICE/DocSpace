@@ -35,11 +35,11 @@ namespace ASC.Core.Notify.Jabber
     {
         private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
 
-        private static DateTime lastErrorTime = default(DateTime);
+        private static DateTime lastErrorTime = default;
 
         private static bool IsServiceProbablyNotAvailable()
         {
-            return lastErrorTime != default(DateTime) && lastErrorTime + Timeout > DateTime.Now;
+            return lastErrorTime != default && lastErrorTime + Timeout > DateTime.Now;
         }
 
         public bool SendMessage(int tenantId, string from, string to, string text, string subject)

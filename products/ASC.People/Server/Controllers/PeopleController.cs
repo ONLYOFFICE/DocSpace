@@ -303,12 +303,12 @@ namespace ASC.Employee.Core.Controllers
                 };
 
                 var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
-                adminGroups.AddRange(products.Select(r=> r.ID));
+                adminGroups.AddRange(products.Select(r => r.ID));
 
                 includeGroups.Add(adminGroups);
             }
 
-            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out int total);
+            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out var total);
 
             ApiContext.SetTotalCount(total);
 
@@ -964,7 +964,7 @@ namespace ASC.Employee.Core.Controllers
                 if (user.Status != EmployeeStatus.Terminated) continue;
 
                 UserPhotoManager.RemovePhoto(Tenant, user.ID);
-                CoreContext.UserManager.DeleteUser(Tenant,user.ID);
+                CoreContext.UserManager.DeleteUser(Tenant, user.ID);
                 QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
             }
 

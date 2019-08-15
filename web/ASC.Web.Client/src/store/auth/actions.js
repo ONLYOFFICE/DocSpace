@@ -1,6 +1,11 @@
-import * as api from '../utils/api';
-import { SET_CURRENT_USER, SET_MODULES, SET_IS_LOADED, LOGOUT } from './actionTypes';
-import setAuthorizationToken from '../utils/setAuthorizationToken';
+import * as api from '../services/api';
+import setAuthorizationToken from '../services/setAuthorizationToken';
+
+export const LOGIN_POST = 'LOGIN_POST';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_MODULES = 'SET_MODULES';
+export const SET_IS_LOADED = 'SET_IS_LOADED';
+export const LOGOUT = 'LOGOUT';
 
 export function setCurrentUser(user) {
     return {

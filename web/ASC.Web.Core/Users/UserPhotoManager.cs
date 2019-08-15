@@ -113,7 +113,7 @@ namespace ASC.Web.Core.Users
         {
             unchecked
             {
-                int result = UserId.GetHashCode();
+                var result = UserId.GetHashCode();
                 result = (result * 397) ^ MaxFileSize.GetHashCode();
                 result = (result * 397) ^ Size.GetHashCode();
                 return result;
@@ -169,7 +169,7 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception)
             {
-                
+
             }
         }
 
@@ -307,7 +307,7 @@ namespace ASC.Web.Core.Users
             var fileName = Path.GetFileName(path);
             return fileName != _defaultAvatar;
         }
-        
+
         public static string GetPhotoAbsoluteWebPath(Tenant tenant, Guid userID)
         {
             var path = SearchInCache(userID, Size.Empty, out _);
@@ -347,7 +347,7 @@ namespace ASC.Web.Core.Users
                 var sizePart = virtualPath.Substring(virtualPath.LastIndexOf('_'));
                 sizePart = sizePart.Trim('_');
                 sizePart = sizePart.Remove(sizePart.LastIndexOf('.'));
-                return new Size(Int32.Parse(sizePart.Split('-')[0]), Int32.Parse(sizePart.Split('-')[1]));
+                return new Size(int.Parse(sizePart.Split('-')[0]), int.Parse(sizePart.Split('-')[1]));
             }
             catch
             {
@@ -436,7 +436,7 @@ namespace ASC.Web.Core.Users
                 else
                     fileName = Photofiles[userId]
                                 .Select(x => x.Value)
-                                .FirstOrDefault(x => !String.IsNullOrEmpty(x) && x.Contains("_orig_"));
+                                .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
             }
             if (fileName != null && fileName.StartsWith("default"))
             {
@@ -496,7 +496,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userID.ToString()}, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userID.ToString() }, CacheNotifyAction.Remove);
             }
         }
 
@@ -504,7 +504,7 @@ namespace ASC.Web.Core.Users
         {
             if (CacheNotify != null)
             {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem {UserID = userId.ToString(), Size = new CacheSize() { Height = size.Height, Width = size.Width }, FileName = fileName}, CacheNotifyAction.InsertOrUpdate);
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = userId.ToString(), Size = new CacheSize() { Height = size.Height, Width = size.Width }, FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
             }
         }
 
@@ -516,8 +516,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
-            string fileName;
-            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out var fileName);
         }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
@@ -528,10 +527,7 @@ namespace ASC.Web.Core.Users
 
         private static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {
-            ImageFormat imgFormat;
-            int width;
-            int height;
-            data = TryParseImage(data, maxFileSize, size, out imgFormat, out width, out height);
+            data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
 
             var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
             fileName = string.Format("{0}_orig_{1}-{2}.{3}", userID, width, height, widening);
@@ -703,7 +699,7 @@ namespace ASC.Web.Core.Users
                     var imgFormat = img.RawFormat;
                     if (item.Size != img.Size)
                     {
-                        using (var img2 = item.Settings.IsDefault ? 
+                        using (var img2 = item.Settings.IsDefault ?
                             CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
                             UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings))
                         {
@@ -739,10 +735,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
         {
-            ImageFormat imgFormat;
-            int width;
-            int height;
-            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out imgFormat, out width, out height);
+            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out var width, out var height);
 
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 
@@ -758,7 +751,7 @@ namespace ASC.Web.Core.Users
             using (var s = GetDataStore().GetReadStream(_tempDomainName, fileName))
             {
                 var data = new MemoryStream();
-                var buffer = new Byte[1024 * 10];
+                var buffer = new byte[1024 * 10];
                 while (true)
                 {
                     var count = s.Read(buffer, 0, buffer.Length);
@@ -867,7 +860,7 @@ namespace ASC.Web.Core.Users
                 using (var s = GetDataStore().GetReadStream("", fileName))
                 {
                     var data = new MemoryStream();
-                    var buffer = new Byte[1024*10];
+                    var buffer = new byte[1024 * 10];
                     while (true)
                     {
                         var count = s.Read(buffer, 0, buffer.Length);
@@ -939,12 +932,12 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Web.Photo").Error(err); 
+                LogManager.GetLogger("ASC.Web.Photo").Error(err);
             }
 
             return data;
         }
-        
+
         /// <summary>
         /// Rotate the given image file according to Exif Orientation data
         /// </summary>

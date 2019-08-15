@@ -26,7 +26,7 @@ namespace ASC.Common.Utils
         {
             Init(applicationBuilder.ApplicationServices);
         }
-        public static IEnumerable<T> GetSettings<T> (string section) where T : new ()
+        public static IEnumerable<T> GetSettings<T>(string section) where T : new()
         {
             var result = new List<T>();
 
@@ -41,7 +41,7 @@ namespace ASC.Common.Utils
 
             return result;
         }
-        public static T GetSetting<T> (string section) where T : new ()
+        public static T GetSetting<T>(string section) where T : new()
         {
             var sectionSettings = AppSettings.GetSection(section);
 
@@ -72,7 +72,7 @@ namespace ASC.Common.Utils
         {
             get
             {
-                return Data.FirstOrDefault(r=> r.Name == name);
+                return Data.FirstOrDefault(r => r.Name == name);
             }
         }
     }

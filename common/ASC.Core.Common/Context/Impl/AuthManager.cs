@@ -63,7 +63,7 @@ namespace ASC.Core
         {
             var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
             if (s != null) return s;
- 
+
             var u = CoreContext.UserManager.GetUsers(tenantId, id);
             return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }

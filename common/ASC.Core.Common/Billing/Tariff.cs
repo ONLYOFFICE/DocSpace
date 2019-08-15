@@ -24,9 +24,9 @@
 */
 
 
-using ASC.Core.Tenants;
 using System;
 using System.Diagnostics;
+using ASC.Core.Tenants;
 
 namespace ASC.Core.Billing
 {
@@ -52,13 +52,13 @@ namespace ASC.Core.Billing
         public static Tariff CreateDefault()
         {
             return new Tariff
-                {
-                    QuotaId = Tenant.DEFAULT_TENANT,
-                    State = TariffState.Paid,
-                    DueDate = DateTime.MaxValue,
-                    DelayDueDate = DateTime.MaxValue,
-                    LicenseDate = DateTime.MaxValue,
-                };
+            {
+                QuotaId = Tenant.DEFAULT_TENANT,
+                State = TariffState.Paid,
+                DueDate = DateTime.MaxValue,
+                DelayDueDate = DateTime.MaxValue,
+                LicenseDate = DateTime.MaxValue,
+            };
         }
 
 

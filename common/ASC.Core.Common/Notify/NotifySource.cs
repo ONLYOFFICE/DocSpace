@@ -28,9 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
-using ASC.Common.Module;
 using ASC.Notify;
-using ASC.Notify.Messages;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -135,13 +133,13 @@ namespace ASC.Core.Notify
                         RecipientsProvider = CreateRecipientsProvider();
                         if (RecipientsProvider == null)
                         {
-                            throw new NotifyException(String.Format("Provider {0} not instanced.", "IRecipientsProvider"));
+                            throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
                         }
 
                         SubscriprionProvider = CreateSubscriptionProvider();
                         if (SubscriprionProvider == null)
                         {
-                            throw new NotifyException(String.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
+                            throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
                         }
 
                         initialized = true;

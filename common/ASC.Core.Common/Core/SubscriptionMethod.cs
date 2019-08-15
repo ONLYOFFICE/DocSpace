@@ -49,7 +49,7 @@ namespace ASC.Core
                 Tenant = cache.Tenant,
                 SourceId = cache.SourceId,
                 ActionId = cache.ActionId,
-                RecipientId= cache.RecipientId
+                RecipientId = cache.RecipientId
             };
         }
 

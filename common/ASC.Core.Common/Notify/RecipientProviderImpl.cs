@@ -100,15 +100,14 @@ namespace ASC.Core.Notify
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
 
-            Guid userID;
-            if (TryParseGuid(recipient.ID, out userID))
+            if (TryParseGuid(recipient.ID, out var userID))
             {
                 var user = CoreContext.UserManager.GetUsers(tenantId, userID);
                 if (user.ID != Constants.LostUser.ID)
                 {
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] {user.Email};
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] {user.UserName};
-                    if (senderName == ASC.Core.Configuration.Constants.NotifyPushSenderSysName) return new[] {user.UserName};
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyMessengerSenderSysName) return new[] { user.UserName };
+                    if (senderName == ASC.Core.Configuration.Constants.NotifyPushSenderSysName) return new[] { user.UserName };
                 }
             }
             return new string[0];

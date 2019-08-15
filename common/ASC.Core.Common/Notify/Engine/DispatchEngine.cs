@@ -43,9 +43,7 @@ namespace ASC.Notify.Engine
 
         public DispatchEngine(Context context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             logOnly = "log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }
@@ -70,7 +68,7 @@ namespace ASC.Notify.Engine
             LogMessage(message, senderName);
             return response;
         }
-        
+
         private void LogResponce(INoticeMessage message, SendResponse response, string senderName)
         {
             var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
@@ -87,7 +85,7 @@ namespace ASC.Notify.Engine
                 log.Debug(logmsg);
             }
         }
-        
+
         private void LogMessage(INoticeMessage message, string senderName)
         {
             try

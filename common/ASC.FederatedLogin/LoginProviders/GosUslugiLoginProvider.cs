@@ -208,15 +208,15 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 throw new Exception("userinfo is incorrect");
             }
-            
-            var profile = new LoginProfile
-                {
-                    Id = oid,
-                    FirstName = userInfo.Value<string>("firstName"),
-                    LastName = userInfo.Value<string>("lastName"),
 
-                    Provider = ProviderConstants.GosUslugi,
-                };
+            var profile = new LoginProfile
+            {
+                Id = oid,
+                FirstName = userInfo.Value<string>("firstName"),
+                LastName = userInfo.Value<string>("lastName"),
+
+                Provider = ProviderConstants.GosUslugi,
+            };
 
             var userContactsString = RequestHelper.PerformRequest(GosUslugiProfileUrl + oid + "/ctts", "application/x-www-form-urlencoded", headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var userContacts = JObject.Parse(userContactsString);

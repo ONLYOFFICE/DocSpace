@@ -109,7 +109,7 @@ namespace ASC.Web.Studio.Core.Notify
                             .GroupBy(f => products[f.Product]);
 
                         var ProjectsProductName = products["projects"]?.Name; //from ASC.Feed.Aggregator.Modules.ModulesHelper.ProjectsProductName
- 
+
                         var activities = feedMinGroupedWrappers
                             .Where(f => f.Key.Name != ProjectsProductName) //not for project product
                             .ToDictionary(
@@ -130,7 +130,7 @@ namespace ASC.Web.Studio.Core.Notify
                             .Where(f => f.Key.Name == ProjectsProductName) // for project product
                             .SelectMany(f => f);
 
-                        var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => String.IsNullOrEmpty(p.ExtraLocation));
+                        var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => string.IsNullOrEmpty(p.ExtraLocation));
 
                         var whatsNewUserActivityGroupByPrjs = new List<WhatsNewUserActivity>();
 
@@ -149,7 +149,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         });
                         }
 
-                        var groupByPrjs = projectActivities.Where(p => !String.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
+                        var groupByPrjs = projectActivities.Where(p => !string.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
                         foreach (var gr in groupByPrjs)
                         {
                             var grlist = gr.ToList();
@@ -164,7 +164,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(tenant.TenantId)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
-                                        BreadCrumbs = i == 0 ? new string[1]{gr.Key} : new string[0],
+                                        BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
                                         Action = getWhatsNewActionText(ls)
                                     });
                             }
@@ -174,7 +174,7 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             activities.Add(ProjectsProductName, whatsNewUserActivityGroupByPrjs);
                         }
-                           
+
                         if (0 < activities.Count)
                         {
                             log.InfoFormat("Send whats new to {0}", user.Email);
@@ -194,7 +194,8 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static string getWhatsNewActionText(FeedMin feed) {
+        private static string getWhatsNewActionText(FeedMin feed)
+        {
 
             if (feed.Module == ASC.Feed.Constants.BookmarksModule)
                 return WebstudioNotifyPatternResource.ActionCreateBookmark;
@@ -247,8 +248,7 @@ namespace ASC.Web.Studio.Core.Notify
             var hourToSend = 7;
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.whatsnew-time"]))
             {
-                var hour = 0;
-                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out hour))
+                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out var hour))
                 {
                     hourToSend = hour;
                 }

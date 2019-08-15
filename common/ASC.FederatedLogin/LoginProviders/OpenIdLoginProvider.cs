@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using ASC.FederatedLogin.Profile;
 using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
@@ -47,19 +46,18 @@ namespace ASC.FederatedLogin.LoginProviders
             var response = Openid.GetResponse();
             if (response == null)
             {
-                Identifier id;
-                if (Identifier.TryParse(@params["oid"], out id))
+                if (Identifier.TryParse(@params["oid"], out var id))
                 {
                     try
                     {
                         IAuthenticationRequest request;
 
-                        var realmUrlString = String.Empty;
+                        var realmUrlString = string.Empty;
 
                         if (@params.ContainsKey("realmUrl"))
                             realmUrlString = @params["realmUrl"];
 
-                        if (!String.IsNullOrEmpty(realmUrlString))
+                        if (!string.IsNullOrEmpty(realmUrlString))
                             request = Openid.CreateRequest(id, new Realm(realmUrlString));
                         else
                             request = Openid.CreateRequest(id);
@@ -73,8 +71,8 @@ namespace ASC.FederatedLogin.LoginProviders
                             PostalCode = DemandLevel.Request,
                             TimeZone = DemandLevel.Request,
                             FullName = DemandLevel.Request,
-                                                        
-                                                       
+
+
                         });
                         var fetch = new FetchRequest();
                         fetch.Attributes.AddRequired(WellKnownAttributes.Contact.Email);
@@ -95,7 +93,7 @@ namespace ASC.FederatedLogin.LoginProviders
                     }
                     catch (ProtocolException ex)
                     {
-                       return LoginProfile.FromError(ex);
+                        return LoginProfile.FromError(ex);
                     }
                 }
                 else
@@ -112,7 +110,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         var spprofile = response.GetExtension<ClaimsResponse>();
                         var fetchprofile = response.GetExtension<FetchResponse>();
 
-                        var realmUrlString = String.Empty;
+                        var realmUrlString = string.Empty;
                         if (@params.ContainsKey("realmUrl"))
                             realmUrlString = @params["realmUrl"];
 

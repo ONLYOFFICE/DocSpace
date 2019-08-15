@@ -113,7 +113,7 @@ namespace ASC.Core.Common.Billing
         internal static async Task<IEnumerable<AvangateProduct>> GetProducts()
         {
             if (Products != null) return Products;
-            
+
             await SemaphoreSlim.WaitAsync();
 
             if (Products != null)
@@ -153,7 +153,7 @@ namespace ASC.Core.Common.Billing
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
-            var httpClient = new HttpClient {BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3)};
+            var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());
@@ -198,7 +198,7 @@ namespace ASC.Core.Common.Billing
         public Coupon Coupon { get; set; }
         public Discount Discount { get; set; }
         public IEnumerable<CouponProduct> Products { get; set; }
-        public int PublishToAffiliatesNetwork {get; set;}
+        public int PublishToAffiliatesNetwork { get; set; }
         public int AutoApply { get; set; }
 
         public static async Task<string> GeneratePromotion(int percent, int schedule)
@@ -224,8 +224,8 @@ namespace ASC.Core.Common.Billing
                     StartDate = startDate.ToString("yyyy-MM-dd"),
                     EndDate = endDate.ToString("yyyy-MM-dd"),
                     Name = string.Format("{0} {1}% off", code, percent),
-                    Coupon = new Coupon {Type = "SINGLE", Code = code},
-                    Discount = new Discount {Type = "PERCENT", Value = percent},
+                    Coupon = new Coupon { Type = "SINGLE", Code = code },
+                    Discount = new Discount { Type = "PERCENT", Value = percent },
                     Products = (await CouponManager.GetProducts()).Select(r => new CouponProduct { Code = r.ProductCode })
 
                 };

@@ -37,7 +37,7 @@ namespace ASC.Common.DependencyInjection
             {
                 productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
             }
-            
+
             var module = new ConfigurationModule(configuration);
             var builder = new ContainerBuilder();
             builder.RegisterModule(module);

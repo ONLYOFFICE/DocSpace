@@ -134,7 +134,7 @@ namespace ASC.Common.Threading.Workers
             if (started)
             {
                 started = false;
-                
+
                 stopEvent.Set();
                 waitEvent.Set();
 
@@ -153,7 +153,7 @@ namespace ASC.Common.Threading.Workers
             if (started)
             {
                 started = false;
-                
+
                 stopEvent.Set();
                 waitEvent.Set();
 
@@ -230,8 +230,8 @@ namespace ASC.Common.Threading.Workers
             if (!started)
             {
                 started = true;
-                action = starter; 
-                
+                action = starter;
+
                 stopEvent.Reset();
                 waitEvent.Reset();
 
@@ -253,7 +253,7 @@ namespace ASC.Common.Threading.Workers
         {
             try
             {
-                bool stopAfterFinsih = false;
+                var stopAfterFinsih = false;
                 if (state != null && state is bool)
                 {
                     stopAfterFinsih = (bool)state;
@@ -279,7 +279,7 @@ namespace ASC.Common.Threading.Workers
                         try
                         {
                             localAction(item.Item);
-                            bool fallSleep = false;
+                            var fallSleep = false;
                             lock (Items)
                             {
                                 PostComplete(item);

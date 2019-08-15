@@ -192,7 +192,7 @@ namespace ASC.Common.Data
 
             if (scalar == null || scalar == DBNull.Value)
             {
-                return default(T);
+                return default;
             }
             var scalarType = typeof(T);
             if (scalarType == typeof(object))
@@ -214,7 +214,7 @@ namespace ASC.Common.Data
 
             if (scalar == null || scalar == DBNull.Value)
             {
-                return default(T);
+                return default;
             }
             var scalarType = typeof(T);
             if (scalarType == typeof(object))
@@ -301,7 +301,7 @@ namespace ASC.Common.Data
         {
             if (r.IsDBNull(i))
             {
-                return default(T);
+                return default;
             }
 
             var value = r.GetValue(i);

@@ -57,7 +57,7 @@ namespace ASC.Core.Notify.Senders
         private bool _ssl;
         private ICredentials _credentials;
         protected bool _useCoreSettings;
-        const int NETWORK_TIMEOUT = 30000; 
+        const int NETWORK_TIMEOUT = 30000;
 
         public SmtpSender()
         {
@@ -217,14 +217,14 @@ namespace ASC.Core.Notify.Senders
                 if (m.EmbeddedAttachments != null && m.EmbeddedAttachments.Count > 0)
                 {
                     var multipartRelated = new MultipartRelated
-                        {
-                            Root = htmlPart
-                        };
+                    {
+                        Root = htmlPart
+                    };
 
                     foreach (var attachment in m.EmbeddedAttachments)
                     {
                         var mimeEntity = ConvertAttachmentToMimePart(attachment);
-                        if(mimeEntity != null)
+                        if (mimeEntity != null)
                             multipartRelated.Add(mimeEntity);
                     }
 
@@ -240,10 +240,10 @@ namespace ASC.Core.Notify.Senders
             else
             {
                 mimeMessage.Body = new TextPart("plain")
-                    {
-                        Text = m.Content,
-                        ContentTransferEncoding = ContentEncoding.QuotedPrintable
-                    };
+                {
+                    Text = m.Content,
+                    ContentTransferEncoding = ContentEncoding.QuotedPrintable
+                };
             }
 
             if (!string.IsNullOrEmpty(m.ReplyTo))

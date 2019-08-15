@@ -29,7 +29,6 @@ using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
@@ -83,8 +82,7 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return;
 
-            string key;
-            if (!SmsKeyStorage.GenerateKey(mobilePhone, out key)) throw new Exception(Resource.SmsTooMuchError);
+            if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
             if (SmsSender.SendSMS(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
                 CoreContext.TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantProvider.CurrentTenantID, Path = "/sms", Counter = 1 }, true);

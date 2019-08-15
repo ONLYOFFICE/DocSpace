@@ -24,13 +24,13 @@
 */
 
 
-using log4net.Appender;
-using log4net.Core;
-using log4net.Util;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Util;
 
 namespace ASC.Common.Logging
 {
@@ -65,17 +65,17 @@ namespace ASC.Common.Logging
         {
             try
             {
-                if(string.IsNullOrEmpty(File))
+                if (string.IsNullOrEmpty(File))
                     return;
-                
+
                 var fileInfo = new FileInfo(File);
 
-                if(!fileInfo.Exists)
+                if (!fileInfo.Exists)
                     return;
 
                 var directory = fileInfo.Directory;
 
-                if(directory == null || !directory.Exists)
+                if (directory == null || !directory.Exists)
                     return;
 
                 var files = directory.GetFiles();
@@ -100,10 +100,10 @@ namespace ASC.Common.Logging
                 _lastCleanDate = DateTime.UtcNow.Date;
                 Clean();
             }
-            
+
             base.Append(loggingEvent);
         }
-        
+
         protected override void Append(LoggingEvent[] loggingEvents)
         {
             if (DateTime.UtcNow.Date > _lastCleanDate.Date)
@@ -111,7 +111,7 @@ namespace ASC.Common.Logging
                 _lastCleanDate = DateTime.UtcNow.Date;
                 Clean();
             }
-            
+
             base.Append(loggingEvents);
         }
     }

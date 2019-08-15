@@ -54,7 +54,8 @@ namespace ASC.Feed.Data
 
         public string GroupId { get { return Feed.GroupId; } }
 
-        public string Json {
+        public string Json
+        {
             get
             {
                 return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings

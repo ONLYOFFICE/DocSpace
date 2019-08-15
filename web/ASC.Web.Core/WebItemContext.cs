@@ -45,7 +45,7 @@ namespace ASC.Web.Core
         public string SmallIconFileName { get; set; }
 
         public string DisabledIconFileName { get; set; }
-        
+
         public string IconFileName { get; set; }
 
         public string LargeIconFileName { get; set; }

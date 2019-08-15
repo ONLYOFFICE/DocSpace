@@ -54,7 +54,7 @@ namespace ASC.Web.Core.Users
 
         public int Compare(UserInfo x, UserInfo y)
         {
-            int result = 0;
+            var result = 0;
             switch (SortOrder)
             {
                 case UserSortOrder.DisplayName:

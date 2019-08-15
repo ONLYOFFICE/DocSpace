@@ -25,17 +25,14 @@
 
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
-
-using ASC.Data.Storage.Configuration;
 using ASC.Common.Logging;
-
+using ASC.Data.Storage.Configuration;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
-
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.RackspaceCloud
@@ -44,22 +41,22 @@ namespace ASC.Data.Storage.RackspaceCloud
     {
         private string _region;
         private string _private_container;
-        private String _public_container;
+        private string _public_container;
         private readonly List<string> _domains = new List<string>();
-        private readonly Dictionary<String, ACL> _domainsAcl;
+        private readonly Dictionary<string, ACL> _domainsAcl;
         private readonly ACL _moduleAcl;
-        private String _subDir;
+        private string _subDir;
         private string _username;
         private string _apiKey;
         private bool _lowerCasing = true;
         private Uri _cname;
-        private Uri _cnameSSL;     
+        private Uri _cnameSSL;
 
         private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
-        
+
         public RackspaceCloudStorage(string tenant)
         {
-             
+
             _tenant = tenant;
             _modulename = string.Empty;
             _dataList = null;
@@ -71,7 +68,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public RackspaceCloudStorage(string tenant, Handler handlerConfig, Module moduleConfig)
         {
-             
+
             _tenant = tenant;
             _modulename = moduleConfig.Name;
             _dataList = new DataList(moduleConfig);
@@ -89,7 +86,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
             _moduleAcl = moduleConfig.Acl;
-            
+
         }
 
         private string MakePath(string domain, string path)
@@ -98,12 +95,12 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
 
-            if (!String.IsNullOrEmpty(_subDir))
+            if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = String.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
                 result = string.Format("{0}/{1}/{2}/{3}",
@@ -117,18 +114,18 @@ namespace ASC.Data.Storage.RackspaceCloud
             {
                 result = result.ToLowerInvariant();
             }
-            
+
             return result;
         }
-        
+
         private CloudFilesProvider GetClient()
         {
-            CloudIdentity cloudIdentity = new CloudIdentity()
+            var cloudIdentity = new CloudIdentity()
             {
                 Username = _username,
                 APIKey = _apiKey
             };
-                     
+
             return new CloudFilesProvider(cloudIdentity);
         }
 
@@ -151,7 +148,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             _public_container = props["public_container"];
 
-            if (String.IsNullOrEmpty(_public_container))
+            if (string.IsNullOrEmpty(_public_container))
                 throw new ArgumentException("_public_container");
 
             var client = GetClient();
@@ -185,8 +182,8 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var accounMetaData = client.GetAccountMetaData(_region);
-            var secretKey = String.Empty;
-      
+            var secretKey = string.Empty;
+
             if (accounMetaData.ContainsKey("Temp-Url-Key"))
             {
                 secretKey = accounMetaData["Temp-Url-Key"];
@@ -197,19 +194,19 @@ namespace ASC.Data.Storage.RackspaceCloud
                 accounMetaData.Add("Temp-Url-Key", secretKey);
                 client.UpdateAccountMetadata(accounMetaData, _region);
             }
-            
+
             return client.CreateTemporaryPublicUri(
                                                         JSIStudios.SimpleRESTServices.Client.HttpMethod.GET,
                                                         _private_container,
                                                         MakePath(domain, path),
-                                                        secretKey,                                                       
+                                                        secretKey,
                                                         DateTime.UtcNow.Add(expire),
                                                         _region);
         }
 
         private Uri GetUriShared(string domain, string path)
         {
-            return new Uri(String.Format("{0}{1}", SecureHelper.IsSecure() ? _cnameSSL : _cname, MakePath(domain, path)));
+            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure() ? _cnameSSL : _cname, MakePath(domain, path)));
         }
 
         public override Stream GetReadStream(string domain, string path)
@@ -219,7 +216,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override Stream GetReadStream(string domain, string path, int offset)
         {
-            Stream outputStream = TempStream.Create();
+            var outputStream = TempStream.Create();
 
             var client = GetClient();
 
@@ -266,7 +263,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         }
 
         public Uri Save(string domain, string path, Stream stream, string contentType,
-                              string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5, 
+                              string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
             var buffered = stream.GetBuffered();
@@ -287,18 +284,18 @@ namespace ASC.Data.Storage.RackspaceCloud
                 contentDisposition = "attachment";
             }
 
-            var customHeaders = new Dictionary<String, String>();
+            var customHeaders = new Dictionary<string, string>();
 
             if (cacheDays > 0)
             {
-                customHeaders.Add("Cache-Control", String.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds));
+                customHeaders.Add("Cache-Control", string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds));
                 customHeaders.Add("Expires", DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays)).ToString());
             }
 
             if (deleteAt.HasValue)
             {
                 var ts = deleteAt.Value - new DateTime(1970, 1, 1, 0, 0, 0);
-                var unixTimestamp =  (long)ts.TotalSeconds;
+                var unixTimestamp = (long)ts.TotalSeconds;
 
                 customHeaders.Add("X-Delete-At", unixTimestamp.ToString());
             }
@@ -309,7 +306,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             }
 
 
-            if (!String.IsNullOrEmpty(contentEncoding))
+            if (!string.IsNullOrEmpty(contentEncoding))
                 customHeaders.Add("Content-Encoding", contentEncoding);
 
             var cannedACL = acl == ACL.Auto ? GetDomainACL(domain) : ACL.Read;
@@ -322,9 +319,9 @@ namespace ASC.Data.Storage.RackspaceCloud
                     using (var emptyStream = TempStream.Create())
                     {
 
-                        var headers = new Dictionary<String, String>();
+                        var headers = new Dictionary<string, string>();
 
-                        headers.Add("X-Object-Manifest", String.Format("{0}/{1}", _private_container, MakePath(domain, path)));
+                        headers.Add("X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)));
                         // create symlink
                         client.CreateObject(_public_container,
                                    emptyStream,
@@ -344,10 +341,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 {
                     _logger.InfoFormat("The invalidation {0} failed", _public_container + "/" + MakePath(domain, path));
                     _logger.Error(exp);
-                }            
+                }
             }
             stream.Position = 0;
-            
+
             client.CreateObject(_private_container,
                                 stream,
                                 MakePath(domain, path),
@@ -355,8 +352,8 @@ namespace ASC.Data.Storage.RackspaceCloud
                                 4096,
                                 customHeaders,
                                 _region
-                               );         
-            
+                               );
+
             QuotaUsedAdd(domain, buffered.Length);
 
             return GetUri(domain, path);
@@ -375,7 +372,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 return _domainsAcl[domain];
             }
             return _moduleAcl;
-        }       
+        }
 
         public override void Delete(string domain, string path)
         {
@@ -411,7 +408,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             if (!paths.Any()) return;
 
-            var keysToDel = new List<String>();
+            var keysToDel = new List<string>();
 
             long quotaUsed = 0;
 
@@ -513,7 +510,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string[] ListFilesRelative(string domain, string path, string pattern, bool recursive)
         {
-            var paths = new List<String>();
+            var paths = new List<string>();
 
             var client = GetClient();
 
@@ -585,7 +582,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var objects = client
-                          .ListObjects(_private_container, null, null, null, MakePath(domain, String.Empty), _region);
+                          .ListObjects(_private_container, null, null, null, MakePath(domain, string.Empty), _region);
 
             if (QuotaController != null)
             {
@@ -609,7 +606,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var objects = client
-                          .ListObjects(_private_container, null, null, null, MakePath(domain, String.Empty), _region);
+                          .ListObjects(_private_container, null, null, null, MakePath(domain, string.Empty), _region);
 
             long result = 0;
 
@@ -692,7 +689,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
-            int BufferSize = 4096;
+            var BufferSize = 4096;
 
             var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 

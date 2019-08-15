@@ -8,6 +8,7 @@ import {
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
+import { getUserStatus } from "../../../../../store/people/selectors";
 
 const wrapperStyle = {
   display: "flex",
@@ -42,37 +43,130 @@ const SectionHeaderContent = props => {
     toastr.success("Context action: Disable");
   };
 
-  const getUserContextOptions = user => {
-    return [
-      {
-        key: "key1",
-        label: "Edit profile",
-        onClick: onEditClick.bind(this, user)
-      },
-      {
-        key: "key2",
-        label: "Change e-mail",
-        onClick: onChangeEmailClick
-      },
-      {
-        key: "key3",
-        label: "Change phone",
-        onClick: onChangePhoneClick
-      },
-      {
-        key: "key4",
-        label: "Change password",
-        onClick: onChangePasswordClick
-      },
-      {
-        key: "key5",
-        label: "Disable",
-        onClick: onDisableClick
-      }
-    ];
+  const onEditPhoto = () => {
+    toastr.success("Context action: Edit Photo");
   };
 
-  const contextOptions = () => getUserContextOptions(profile);
+  const onEnableClick = () => {
+    toastr.success("Context action: Enable");
+  };
+  
+  const onReassignDataClick = () => {
+    toastr.success("Context action: Reassign data");
+  };
+  
+  const onDeletePersonalDataClick = user => {
+    toastr.success("Context action: Delete personal data");
+  };
+  
+  const onDeleteProfileClick = () => {
+    toastr.success("Context action: Delete profile");
+  };
+  
+  const onInviteAgainClick = () => {
+    toastr.success("Context action: Invite again");
+  };
+
+  const getUserContextOptions = (user, viewer) => {
+
+    let status = "";
+
+    if(isAdmin|| (!isAdmin && isMe(user, viewer.userName))) {
+      status = getUserStatus(user); 
+    }
+
+    switch (status) {
+      case "normal":
+      case "unknown":
+        return [
+          {
+            key: "edit",
+            label: "Edit profile",
+            onClick: onEditClick.bind(this, user)
+          },
+          {
+            key: "edit-photo",
+            label: "Edit Photo",
+            onClick: onEditPhoto
+          },
+          {
+            key: "change-email",
+            label: "Change e-mail",
+            onClick: onChangeEmailClick
+          },
+          {
+            key: "change-phone",
+            label: "Change phone",
+            onClick: onChangePhoneClick
+          },
+          {
+            key: "change-password",
+            label: "Change password",
+            onClick: onChangePasswordClick
+          },
+          {
+            key: "disable",
+            label: "Disable",
+            onClick: onDisableClick
+          }
+        ];
+      case "disabled":
+        return [
+          {
+            key: "enable",
+            label: "Enable",
+            onClick: onEnableClick
+          },
+          {
+            key: "edit-photo",
+            label: "Edit photo",
+            onClick: onEditPhoto
+          },
+          {
+            key: "reassign-data",
+            label: "Reassign data",
+            onClick: onReassignDataClick
+          },
+          {
+            key: "delete-personal-data",
+            label: "Delete personal data",
+            onClick: onDeletePersonalDataClick.bind(this, user)
+          },
+          {
+            key: "delete-profile",
+            label: "Delete profile",
+            onClick: onDeleteProfileClick
+          }
+        ];
+      case "pending":
+        return [
+          {
+            key: "edit",
+            label: "Edit",
+            onClick: onEditClick.bind(this, user)
+          },
+          {
+            key: "edit-photo",
+            label: "Edit Photo",
+            onClick: onEditPhoto
+          },
+          {
+            key: "invite-again",
+            label: "Invite again",
+            onClick: onInviteAgainClick
+          },
+          {
+            key: "key5",
+            label: "Disable",
+            onClick: onDisableClick
+          }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const contextOptions = () => getUserContextOptions(profile, viewer);
 
   return (
     <div style={wrapperStyle}>

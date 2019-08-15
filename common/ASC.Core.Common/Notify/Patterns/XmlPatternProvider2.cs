@@ -106,8 +106,7 @@ namespace ASC.Notify.Patterns
 
         public IPattern GetPattern(INotifyAction action, string senderName)
         {
-            IPattern p;
-            if (patterns.TryGetValue(action.ID + senderName, out p))
+            if (patterns.TryGetValue(action.ID + senderName, out var p))
             {
                 return p;
             }
@@ -152,7 +151,7 @@ namespace ASC.Notify.Patterns
             }
 
             var resourceManagerType = Type.GetType(array[1], true, true);
-            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ?? 
+            var property = resourceManagerType.GetProperty(array[0], BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static) ??
                            resourceManagerType.GetProperty(ToUpper(array[0]), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             if (property == null)
             {

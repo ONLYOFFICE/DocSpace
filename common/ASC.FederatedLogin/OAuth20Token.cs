@@ -82,7 +82,7 @@ namespace ASC.FederatedLogin
         {
             get
             {
-                if (!ExpiresIn.Equals(default(long)))
+                if (!ExpiresIn.Equals(default))
                     return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
                 return true;
             }
@@ -100,17 +100,16 @@ namespace ASC.FederatedLogin
                 return null;
 
             var token = new OAuth20Token
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = parser.Value<string>("refresh_token"),
-                    ClientID = parser.Value<string>("client_id"),
-                    ClientSecret = parser.Value<string>("client_secret"),
-                    RedirectUri = parser.Value<string>("redirect_uri"),
-                    OriginJson = json,
-                };
+            {
+                AccessToken = accessToken,
+                RefreshToken = parser.Value<string>("refresh_token"),
+                ClientID = parser.Value<string>("client_id"),
+                ClientSecret = parser.Value<string>("client_secret"),
+                RedirectUri = parser.Value<string>("redirect_uri"),
+                OriginJson = json,
+            };
 
-            long expiresIn;
-            if (long.TryParse(parser.Value<string>("expires_in"), out expiresIn))
+            if (long.TryParse(parser.Value<string>("expires_in"), out var expiresIn))
                 token.ExpiresIn = expiresIn;
 
             try

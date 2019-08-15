@@ -24,10 +24,10 @@
 */
 
 
-using ASC.Common.Data;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using ASC.Common.Data;
 
 namespace ASC.Core.Configuration
 {

@@ -25,8 +25,8 @@
 
 
 using System;
-using ASC.Core.Users;
 using System.Collections.Generic;
+using ASC.Core.Users;
 
 namespace ASC.Feed
 {

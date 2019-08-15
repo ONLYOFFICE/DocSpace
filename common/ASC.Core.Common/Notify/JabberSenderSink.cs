@@ -40,9 +40,7 @@ namespace ASC.Core.Notify
 
         public JabberSenderSink(INotifySender sender)
         {
-            if (sender == null) throw new ArgumentNullException("sender");
-
-            this.sender = sender;
+            this.sender = sender ?? throw new ArgumentNullException("sender");
         }
 
 

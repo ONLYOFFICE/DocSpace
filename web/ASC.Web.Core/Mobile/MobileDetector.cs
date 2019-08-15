@@ -63,9 +63,8 @@ namespace ASC.Web.Core.Mobile
             {
                 var key = "mobileDetector/" + ua.GetHashCode();
 
-                bool fromCache;
 
-                if (bool.TryParse(cache.Get<string>(key), out fromCache))
+                if (bool.TryParse(cache.Get<string>(key), out var fromCache))
                 {
                     result = fromCache;
                 }

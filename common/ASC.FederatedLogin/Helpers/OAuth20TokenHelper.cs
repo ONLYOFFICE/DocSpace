@@ -36,7 +36,7 @@ namespace ASC.FederatedLogin.Helpers
 {
     public static class OAuth20TokenHelper
     {
-        public static void RequestCode<T>(HttpContext context, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new ()
+        public static void RequestCode<T>(HttpContext context, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
@@ -75,16 +75,16 @@ namespace ASC.FederatedLogin.Helpers
             var clientSecret = loginProvider.ClientSecret;
             var redirectUri = loginProvider.RedirectUri;
 
-            if (String.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
-            if (String.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
-            if (String.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
+            if (string.IsNullOrEmpty(authCode)) throw new ArgumentNullException("authCode");
+            if (string.IsNullOrEmpty(clientID)) throw new ArgumentNullException("clientID");
+            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
 
             var data = string.Format("code={0}&client_id={1}&client_secret={2}",
                                      HttpUtility.UrlEncode(authCode),
                                      HttpUtility.UrlEncode(clientID),
                                      HttpUtility.UrlEncode(clientSecret));
 
-            if (!String.IsNullOrEmpty(redirectUri))
+            if (!string.IsNullOrEmpty(redirectUri))
                 data += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
 
             data += "&grant_type=authorization_code";
@@ -119,7 +119,7 @@ namespace ASC.FederatedLogin.Helpers
         {
             if (token == null || !CanRefresh(token)) throw new ArgumentException("Can not refresh given token", "token");
 
-            var data = String.Format("client_id={0}&client_secret={1}&refresh_token={2}&grant_type=refresh_token",
+            var data = string.Format("client_id={0}&client_secret={1}&refresh_token={2}&grant_type=refresh_token",
                                      HttpUtility.UrlEncode(token.ClientID),
                                      HttpUtility.UrlEncode(token.ClientSecret),
                                      HttpUtility.UrlEncode(token.RefreshToken));
@@ -140,7 +140,7 @@ namespace ASC.FederatedLogin.Helpers
 
         private static bool CanRefresh(OAuth20Token token)
         {
-            return !String.IsNullOrEmpty(token.ClientID) && !String.IsNullOrEmpty(token.ClientSecret);
+            return !string.IsNullOrEmpty(token.ClientID) && !string.IsNullOrEmpty(token.ClientSecret);
         }
     }
 }

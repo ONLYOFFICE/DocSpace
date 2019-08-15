@@ -88,7 +88,7 @@ namespace ASC.Core.ChunkedUploader
 
         public T GetItemOrDefault<T>(string key)
         {
-            return Items.ContainsKey(key) && Items[key] is T ? (T)Items[key] : default(T);
+            return Items.ContainsKey(key) && Items[key] is T ? (T)Items[key] : default;
         }
 
         public Stream Serialize()
@@ -105,7 +105,7 @@ namespace ASC.Core.ChunkedUploader
 
         public virtual object Clone()
         {
-            return (CommonChunkedUploadSession) MemberwiseClone();
+            return (CommonChunkedUploadSession)MemberwiseClone();
         }
     }
 }

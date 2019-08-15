@@ -50,7 +50,7 @@ namespace ASC.Core.Data
             return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
         }
 
-        public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin, 
+        public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
@@ -59,7 +59,7 @@ namespace ASC.Core.Data
             string sortBy,
             bool sortOrderAsc,
             long limit,
-            long offset, 
+            long offset,
             out int total)
         {
             var totalQuery = new SqlQuery("core_user u").Where("u.tenant", tenant).SelectCount();
@@ -75,12 +75,12 @@ namespace ASC.Core.Data
                 q.OrderBy(sortBy, sortOrderAsc);
             }
 
-            if(limit != 0)
+            if (limit != 0)
             {
                 q.SetMaxResults((int)limit);
             }
 
-            if(offset != 0)
+            if (offset != 0)
             {
                 q.SetFirstResult((int)offset);
             }
@@ -88,7 +88,7 @@ namespace ASC.Core.Data
             return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
         }
 
-        private SqlQuery GetUserQueryForFilter(SqlQuery q,bool isAdmin,
+        private SqlQuery GetUserQueryForFilter(SqlQuery q, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
@@ -108,7 +108,7 @@ namespace ASC.Core.Data
                 {
                     var subQuery = Exp.Empty;
 
-                    foreach(var g in groups)
+                    foreach (var g in groups)
                     {
                         subQuery |= Exp.Eq("cug.groupid", g);
                     }
@@ -181,7 +181,7 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, Guid id)
         {
-            var q = GetUserQuery(tenant, default(DateTime)).Where("id", id);
+            var q = GetUserQuery(tenant, default).Where("id", id);
             return ExecList(q).ConvertAll(ToUser).SingleOrDefault();
         }
 
@@ -207,8 +207,8 @@ namespace ASC.Core.Data
             if (user == null) throw new ArgumentNullException("user");
             if (string.IsNullOrEmpty(user.UserName)) throw new ArgumentOutOfRangeException("Empty username.");
 
-            if (user.ID == default(Guid)) user.ID = Guid.NewGuid();
-            if (user.CreateDate == default(DateTime)) user.CreateDate = DateTime.UtcNow;
+            if (user.ID == default) user.ID = Guid.NewGuid();
+            if (user.CreateDate == default) user.CreateDate = DateTime.UtcNow;
             user.LastModified = DateTime.UtcNow;
             user.Tenant = tenant;
 
@@ -351,7 +351,7 @@ namespace ASC.Core.Data
 
         public Group GetGroup(int tenant, Guid id)
         {
-            var q = GetGroupQuery(tenant, default(DateTime)).Where("id", id);
+            var q = GetGroupQuery(tenant, default).Where("id", id);
             return ExecList(q).ConvertAll(ToGroup).SingleOrDefault();
         }
 
@@ -359,7 +359,7 @@ namespace ASC.Core.Data
         {
             if (group == null) throw new ArgumentNullException("user");
 
-            if (group.Id == default(Guid)) group.Id = Guid.NewGuid();
+            if (group.Id == default) group.Id = Guid.NewGuid();
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
@@ -460,7 +460,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("u.tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("u.last_modified", from);
             }
@@ -478,32 +478,32 @@ namespace ASC.Core.Data
         private static UserInfo ToUser(object[] r)
         {
             var u = new UserInfo
-                {
-                    ID = new Guid((string)r[0]),
-                    UserName = (string)r[1],
-                    FirstName = (string)r[2],
-                    LastName = (string)r[3],
-                    Sex = r[4] != null ? Convert.ToBoolean(r[4]) : (bool?)null,
-                    BirthDate = (DateTime?)r[5],
-                    Status = (EmployeeStatus)Convert.ToInt32(r[6]),
-                    Title = (string)r[7],
-                    WorkFromDate = (DateTime?)r[8],
-                    TerminatedDate = (DateTime?)r[9],
-                    Email = (string)r[11],
-                    Location = (string)r[12],
-                    Notes = (string)r[13],
-                    Removed = Convert.ToBoolean(r[14]),
-                    LastModified = Convert.ToDateTime(r[15]),
-                    Tenant = Convert.ToInt32(r[16]),
-                    ActivationStatus = (EmployeeActivationStatus)Convert.ToInt32(r[17]),
-                    CultureName = (string)r[18],
-                    MobilePhone = (string)r[19],
-                    MobilePhoneActivationStatus = (MobilePhoneActivationStatus)Convert.ToInt32(r[20]),
-                    Sid = (string)r[21],
-                    SsoNameId = (string)r[22],
-                    SsoSessionId = (string)r[23],
-                    CreateDate = Convert.ToDateTime(r[24])
-                };
+            {
+                ID = new Guid((string)r[0]),
+                UserName = (string)r[1],
+                FirstName = (string)r[2],
+                LastName = (string)r[3],
+                Sex = r[4] != null ? Convert.ToBoolean(r[4]) : (bool?)null,
+                BirthDate = (DateTime?)r[5],
+                Status = (EmployeeStatus)Convert.ToInt32(r[6]),
+                Title = (string)r[7],
+                WorkFromDate = (DateTime?)r[8],
+                TerminatedDate = (DateTime?)r[9],
+                Email = (string)r[11],
+                Location = (string)r[12],
+                Notes = (string)r[13],
+                Removed = Convert.ToBoolean(r[14]),
+                LastModified = Convert.ToDateTime(r[15]),
+                Tenant = Convert.ToInt32(r[16]),
+                ActivationStatus = (EmployeeActivationStatus)Convert.ToInt32(r[17]),
+                CultureName = (string)r[18],
+                MobilePhone = (string)r[19],
+                MobilePhoneActivationStatus = (MobilePhoneActivationStatus)Convert.ToInt32(r[20]),
+                Sid = (string)r[21],
+                SsoNameId = (string)r[22],
+                SsoSessionId = (string)r[23],
+                CreateDate = Convert.ToDateTime(r[24])
+            };
             u.ContactsFromString((string)r[10]);
             return u;
         }
@@ -516,7 +516,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("last_modified", from);
             }
@@ -534,16 +534,16 @@ namespace ASC.Core.Data
         private Group ToGroup(object[] r)
         {
             return new Group
-                {
-                    Id = new Guid((string)r[0]),
-                    Name = (string)r[1],
-                    ParentId = r[2] != null ? new Guid((string)r[2]) : Guid.Empty,
-                    CategoryId = r[3] != null ? new Guid((string)r[3]) : Guid.Empty,
-                    Removed = Convert.ToBoolean(r[4]),
-                    LastModified = Convert.ToDateTime(r[5]),
-                    Tenant = Convert.ToInt32(r[6]),
-                    Sid = (string)r[7]
-                };
+            {
+                Id = new Guid((string)r[0]),
+                Name = (string)r[1],
+                ParentId = r[2] != null ? new Guid((string)r[2]) : Guid.Empty,
+                CategoryId = r[3] != null ? new Guid((string)r[3]) : Guid.Empty,
+                Removed = Convert.ToBoolean(r[4]),
+                LastModified = Convert.ToDateTime(r[5]),
+                Tenant = Convert.ToInt32(r[6]),
+                Sid = (string)r[7]
+            };
         }
 
         private List<string> CollectGroupChilds(int tenant, string id)
@@ -567,7 +567,7 @@ namespace ASC.Core.Data
             {
                 where &= Exp.Eq("tenant", tenant);
             }
-            if (from != default(DateTime))
+            if (from != default)
             {
                 where &= Exp.Ge("last_modified", from);
             }
@@ -585,11 +585,11 @@ namespace ASC.Core.Data
         private static UserGroupRef ToUserGroupRef(object[] r)
         {
             return new UserGroupRef(new Guid((string)r[0]), new Guid((string)r[1]), (UserGroupRefType)Convert.ToInt32(r[2]))
-                {
-                    Removed = Convert.ToBoolean(r[3]),
-                    LastModified = Convert.ToDateTime(r[4]),
-                    Tenant = Convert.ToInt32(r[5])
-                };
+            {
+                Removed = Convert.ToBoolean(r[3]),
+                LastModified = Convert.ToDateTime(r[4]),
+                Tenant = Convert.ToInt32(r[5])
+            };
         }
     }
 }

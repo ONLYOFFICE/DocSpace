@@ -68,16 +68,17 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
                 faviconPath = tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
-                if (timeParam) {
+                if (timeParam)
+                {
                     var now = DateTime.Now;
-                    faviconPath = String.Format("{0}?t={1}", faviconPath, now.Ticks);
+                    faviconPath = string.Format("{0}?t={1}", faviconPath, now.Ticks);
                 }
             }
             else
             {
                 faviconPath = TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
             }
-            
+
             return faviconPath;
         }
 
@@ -92,7 +93,8 @@ namespace ASC.Web.Core.WhiteLabel
             return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
         }
 
-        public static string GetLogoDark(bool general) {
+        public static string GetLogoDark(bool general)
+        {
             if (WhiteLabelEnabled)
             {
                 var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
@@ -132,10 +134,9 @@ namespace ASC.Web.Core.WhiteLabel
             if (request != null)
             {
                 var cookie = request.Cookies["is_retina"];
-                if (cookie != null && !String.IsNullOrEmpty(cookie))
+                if (cookie != null && !string.IsNullOrEmpty(cookie))
                 {
-                    bool result;
-                    if (Boolean.TryParse(cookie, out result))
+                    if (bool.TryParse(cookie, out var result))
                     {
                         isRetina = result;
                     }
@@ -144,7 +145,7 @@ namespace ASC.Web.Core.WhiteLabel
             return isRetina;
         }
 
-         public static bool WhiteLabelPaid
+        public static bool WhiteLabelPaid
         {
             get
             {

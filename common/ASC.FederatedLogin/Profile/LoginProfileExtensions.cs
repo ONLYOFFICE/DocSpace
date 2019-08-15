@@ -26,7 +26,6 @@
 
 using System;
 using System.Web;
-using ASC.Common.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -55,7 +54,7 @@ namespace ASC.FederatedLogin.Profile
             var queryString = HttpUtility.ParseQueryString(uri.Query);
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) && context != null && context.Session != null)
             {
-                return JsonConvert.DeserializeObject< LoginProfile>(context.Session.GetString(queryString[LoginProfile.QuerySessionParamName]));
+                return JsonConvert.DeserializeObject<LoginProfile>(context.Session.GetString(queryString[LoginProfile.QuerySessionParamName]));
             }
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QueryParamName]))
             {

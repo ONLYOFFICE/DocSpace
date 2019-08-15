@@ -21,7 +21,8 @@
   "peerDependencies": {
     "react": "16.x",
     "react-dom": "16.x",
-    "react-intl": "2.x"
+    "react-intl": "2.x",
+    "styled-components": "^4.3.2"
   },
   "dependencies": {
     "@emotion/core": "10.0.14",
@@ -39,8 +40,7 @@
     "react-lifecycles-compat": "^3.0.4",
     "react-toastify": "^5.3.2",
     "react-window": "^1.8.5",
-    "reactstrap": "^8.0.0",
-    "styled-components": "^4.3.2"
+    "reactstrap": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",

@@ -30,10 +30,9 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Linq;
     using ASC.Core.Data;
+    using ASC.Core.Users;
     using ASC.Security.Cryptography;
     using NUnit.Framework;
-    using ASC.Core.Users;
-    using System.Globalization;
 
     [TestFixture]
     public class DbUserServiceTest : DbBaseTest<DbUserService>
@@ -41,15 +40,15 @@ namespace ASC.Core.Common.Tests
         [OneTimeSetUp]
         public void ClearData()
         {
-            Service.GetUsers(Tenant, default(DateTime))
+            Service.GetUsers(Tenant, default)
                 .ToList()
                 .ForEach(u => Service.RemoveUser(Tenant, u.Value.ID, true));
 
-            Service.GetGroups(Tenant, default(DateTime))
+            Service.GetGroups(Tenant, default)
                 .ToList()
                 .ForEach(g => Service.RemoveGroup(Tenant, g.Value.Id, true));
 
-            Service.GetUserGroupRefs(Tenant, default(DateTime))
+            Service.GetUserGroupRefs(Tenant, default)
                 .ToList()
                 .ForEach(r => Service.RemoveUserGroupRef(Tenant, r.Value.UserId, r.Value.GroupId, r.Value.RefType, true));
         }

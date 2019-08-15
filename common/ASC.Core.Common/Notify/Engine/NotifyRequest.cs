@@ -66,18 +66,14 @@ namespace ASC.Notify.Engine
 
         public NotifyRequest(INotifySource notifySource, INotifyAction action, string objectID, IRecipient recipient)
         {
-            if (notifySource == null) throw new ArgumentNullException("notifySource");
-            if (action == null) throw new ArgumentNullException("action");
-            if (recipient == null) throw new ArgumentNullException("recipient");
-
             Properties = new Hashtable();
             Arguments = new List<ITagValue>();
             RequaredTags = new List<string>();
             Interceptors = new List<ISendInterceptor>();
 
-            NotifySource = notifySource;
-            Recipient = recipient;
-            NotifyAction = action;
+            NotifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            Recipient = recipient ?? throw new ArgumentNullException("recipient");
+            NotifyAction = action ?? throw new ArgumentNullException("action");
             ObjectID = objectID;
 
             IsNeedCheckSubscriptions = true;
@@ -115,10 +111,10 @@ namespace ASC.Notify.Engine
                 return null;
             }
 
-            int index = Array.IndexOf(SenderNames, senderName);
+            var index = Array.IndexOf(SenderNames, senderName);
             if (index < 0)
             {
-                throw new ApplicationException(String.Format("Sender with tag {0} dnot found", senderName));
+                throw new ApplicationException(string.Format("Sender with tag {0} dnot found", senderName));
             }
             return Patterns[index];
         }

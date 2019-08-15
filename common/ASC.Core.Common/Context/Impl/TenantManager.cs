@@ -70,7 +70,7 @@ namespace ASC.Core
 
         public List<Tenant> GetTenants(bool active = true)
         {
-            return tenantService.GetTenants(default(DateTime), active).ToList();
+            return tenantService.GetTenants(default, active).ToList();
         }
 
         public Tenant GetTenant(int tenantId)
@@ -91,7 +91,7 @@ namespace ASC.Core
             if (t == null)
             {
                 var baseUrl = CoreContext.Configuration.BaseDomain;
-                if (!String.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     isAlias = true;
                     t = tenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));

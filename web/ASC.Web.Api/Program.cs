@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Api
 {
@@ -18,7 +18,8 @@ namespace ASC.Web.Api
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-            .ConfigureAppConfiguration((hostingContext, config) => {
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
                 var buided = config.Build();
                 var path = buided["pathToConf"];
                 if (!Path.IsPathRooted(path))

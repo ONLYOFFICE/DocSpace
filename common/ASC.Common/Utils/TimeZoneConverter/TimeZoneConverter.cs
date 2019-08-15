@@ -64,11 +64,11 @@ namespace ASC.Common.Utils
                                 let olsonTimeZones = row.Attribute("type").Value.Split(' ')
                                 from olsonTimeZone in olsonTimeZones
                                 select new MapZone
-                                    {
-                                        OlsonTimeZoneId = olsonTimeZone,
-                                        WindowsTimeZoneId = row.Attribute("other").Value,
-                                        Territory = row.Attribute("territory").Value
-                                    };
+                                {
+                                    OlsonTimeZoneId = olsonTimeZone,
+                                    WindowsTimeZoneId = row.Attribute("other").Value,
+                                    Territory = row.Attribute("territory").Value
+                                };
                 }
             }
             catch (Exception error)
@@ -182,9 +182,8 @@ namespace ASC.Common.Utils
 
             if (string.IsNullOrEmpty(offsetStr)) return null;
 
-            TimeSpan offset;
 
-            if (!TimeSpan.TryParse(offsetStr, out offset))
+            if (!TimeSpan.TryParse(offsetStr, out var offset))
                 return null;
 
             return systemTimeZones.FirstOrDefault(tz => tz.BaseUtcOffset == offset);

@@ -93,8 +93,7 @@ namespace ASC.Notify
         {
             lock (channels)
             {
-                ISenderChannel channel;
-                channels.TryGetValue(senderName, out channel);
+                channels.TryGetValue(senderName, out var channel);
                 return channel;
             }
         }

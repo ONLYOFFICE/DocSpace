@@ -158,7 +158,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = String.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -233,7 +233,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = String.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -352,13 +352,13 @@ namespace ASC.Web.Studio.Core.Notify
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
                                                                                  "\",\"alias\":\"" + tenant.TenantAlias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}")); 
+                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
                         }
                         else if (duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
                         {
                             CoreContext.TenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!String.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
                                 ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias);
                             }
@@ -432,7 +432,7 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             CoreContext.TenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!String.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
                                 ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias);
                             }
@@ -632,7 +632,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = String.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -706,7 +706,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = String.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -1062,7 +1062,7 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> greenButtonText = () => string.Empty;
                     var greenButtonUrl = string.Empty;
 
-                    int sendCount = 0;
+                    var sendCount = 0;
 
                     CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
 

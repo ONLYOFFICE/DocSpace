@@ -34,14 +34,14 @@ namespace ASC.Feed
         private readonly DateTime toTime;
 
 
-        public DateTime From 
+        public DateTime From
         {
             get { return fromTime; }
         }
 
         public DateTime To
         {
-            get { return toTime != default(DateTime) ? toTime : DateTime.MaxValue; }
+            get { return toTime != default ? toTime : DateTime.MaxValue; }
         }
 
 

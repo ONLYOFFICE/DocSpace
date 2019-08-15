@@ -89,7 +89,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var salesEmail = AdditionalWhiteLabelSettings.Instance.SalesEmail ?? SetupInfo.SalesEmail;
 
-            var recipient = (IRecipient)(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), String.Empty, new[] { salesEmail }, false));
+            var recipient = (IRecipient)(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false));
 
             client.SendNoticeToAsync(license ? Actions.RequestLicense : Actions.RequestTariff,
                                      new[] { recipient },
@@ -216,7 +216,7 @@ namespace ASC.Web.Studio.Core.Notify
                         ? Actions.MailboxWithoutSettingsCreated
                         : Actions.MailboxCreated,
                     StudioNotifyHelper.RecipientFromEmail(email, false),
-                    new[] {EMailSenderName},
+                    new[] { EMailSenderName },
                     tags.ToArray());
             }
         }
@@ -271,7 +271,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendJoinMsg(int tenantId, string email, EmployeeType emplType)
         {
             var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType, SecurityContext.CurrentAccount.ID)
-                            + String.Format("&emplType={0}", emplType);
+                            + string.Format("&emplType={0}", emplType);
 
             Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonJoin;
 
@@ -563,7 +563,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 notifyAction,
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 tagValues.ToArray());
         }
 
@@ -574,7 +574,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 Actions.BackupCreated,
                 new[] { StudioNotifyHelper.ToRecipient(tenantId, userId) },
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 new TagValue(Tags.OwnerName, CoreContext.UserManager.GetUsers(tenantId, userId).DisplayUserName()));
         }
 
@@ -604,7 +604,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeToAsync(
                 Actions.RestoreCompleted,
                 users,
-                new[] {EMailSenderName},
+                new[] { EMailSenderName },
                 new TagValue(Tags.OwnerName, owner.DisplayUserName()));
         }
 
@@ -678,7 +678,7 @@ namespace ASC.Web.Studio.Core.Notify
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
             Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
-            
+
             client.SendNoticeToAsync(
                         Actions.ConfirmOwnerChange,
                         new IRecipient[] { u },
@@ -810,7 +810,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        public void PortalRenameNotify(Tenant tenant, String oldVirtualRootPath)
+        public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
         {
             var users = CoreContext.UserManager.GetUsers(tenant)
                         .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
@@ -819,7 +819,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                     CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    CoreContext.TenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -866,7 +866,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation);
 
-            return confirmUrl + String.Format("&uid={0}&firstname={1}&lastname={2}",
+            return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
                                               SecurityContext.CurrentAccount.ID,
                                               HttpUtility.UrlEncode(user.FirstName),
                                               HttpUtility.UrlEncode(user.LastName));

@@ -291,17 +291,17 @@ namespace ASC.Resource.Manager
                     .Where(!Exp.Like("rd1.title", @"del\_", SqlLike.StartWith) & !Exp.Exists(exist))
                     .OrderBy("rd1.id", true);
 
-                if(current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
+                if (current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
                 {
                     sql.Where("rf.moduleName", current.Module.Name);
                 }
 
-                if(current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
+                if (current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
                 {
                     sql.Where("rf.projectName", current.Project.Name);
                 }
 
-                if(current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
+                if (current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
                 {
                     sql.Where("rf.resName", current.Word.ResFile.FileName);
                 }
@@ -343,10 +343,10 @@ namespace ASC.Resource.Manager
                     .Where("resourceType", "text")
                     .OrderBy(ResDataTable + ".id", true);
 
-                if (!String.IsNullOrEmpty(resFile.FileName))
+                if (!string.IsNullOrEmpty(resFile.FileName))
                     sql.Where("resName", resFile.FileName);
 
-                if (!String.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     sql.Where(Exp.Like("textvalue", search));
 
                 return dbManager.ExecuteList(sql).ConvertAll(GetWord);
@@ -483,7 +483,7 @@ namespace ASC.Resource.Manager
             var langs = (ConfigurationManager.AppSettings["resources.com-lang"] ?? string.Empty).Split(';').ToList();
             var dom = langs.Exists(lang => lang == to) ? ".info" : ".com";
 
-            word.Link = !String.IsNullOrEmpty((string)r[2]) ? String.Format("http://{0}-translator.teamlab{1}{2}", to, dom, r[2]) : "";
+            word.Link = !string.IsNullOrEmpty((string)r[2]) ? string.Format("http://{0}-translator.teamlab{1}{2}", to, dom, r[2]) : "";
         }
 
         public static List<Author> GetListAuthors()

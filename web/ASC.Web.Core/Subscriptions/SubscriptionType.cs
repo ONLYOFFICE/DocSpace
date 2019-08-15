@@ -25,8 +25,8 @@
 
 
 using System;
-using ASC.Notify.Model;
 using System.Collections.Generic;
+using ASC.Notify.Model;
 
 namespace ASC.Web.Core.Subscriptions
 {
@@ -49,6 +49,6 @@ namespace ASC.Web.Core.Subscriptions
         public IsEmptySubscriptionTypeDelegate IsEmptySubscriptionType;
 
         public GetSubscriptionObjectsDelegate GetSubscriptionObjects;
-        
+
     }
 }

@@ -26,10 +26,8 @@
 
 #region usings
 
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.Web;
 
 #endregion
 
@@ -42,8 +40,7 @@ namespace ASC.Common.Web
 
         public DisposableHttpContext(Microsoft.AspNetCore.Http.HttpContext ctx)
         {
-            if (ctx == null) throw new ArgumentNullException();
-            this.ctx = ctx;
+            this.ctx = ctx ?? throw new ArgumentNullException();
         }
 
         public static DisposableHttpContext Current
@@ -62,7 +59,7 @@ namespace ASC.Common.Web
             {
                 if (value == null) throw new ArgumentNullException();
                 if (!(value is IDisposable)) throw new ArgumentException("Only IDisposable may be added!");
-                Items[key] = (IDisposable) value;
+                Items[key] = (IDisposable)value;
             }
         }
 
@@ -70,7 +67,7 @@ namespace ASC.Common.Web
         {
             get
             {
-                var table = (Dictionary<string, IDisposable>) ctx.Items[key];
+                var table = (Dictionary<string, IDisposable>)ctx.Items[key];
                 if (table == null)
                 {
                     table = new Dictionary<string, IDisposable>(1);
@@ -88,7 +85,7 @@ namespace ASC.Common.Web
         {
             if (!_isDisposed)
             {
-                foreach (IDisposable item in Items.Values)
+                foreach (var item in Items.Values)
                 {
                     try
                     {

@@ -43,9 +43,7 @@ namespace ASC.Notify.Model
 
         public NotifyAction(string id, string name)
         {
-            if (id == null) throw new ArgumentNullException("id");
-
-            ID = id;
+            ID = id ?? throw new ArgumentNullException("id");
             Name = name;
         }
 
@@ -72,7 +70,7 @@ namespace ASC.Notify.Model
 
         public override string ToString()
         {
-            return String.Format("action: {0}", ID);
+            return string.Format("action: {0}", ID);
         }
     }
 }
