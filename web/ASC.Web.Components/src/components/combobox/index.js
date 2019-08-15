@@ -81,7 +81,8 @@ white-space: nowrap;
 margin-right: 8px;
 
 ${props => props.noBorder && `
-  line-height: none;
+  line-height: 11px;
+  border-bottom: 1px dashed transparent;
 
   :hover{
     border-bottom: 1px dashed;
@@ -228,8 +229,8 @@ class ComboBox extends React.PureComponent {
 ComboBox.propTypes = {
   noBorder: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  selectedOption: PropTypes.object,
-  options: PropTypes.array,
+  selectedOption: PropTypes.object.isRequired,
+  options: PropTypes.array.isRequired,
   onSelect: PropTypes.func,
   dropDownMaxHeight: PropTypes.number,
 

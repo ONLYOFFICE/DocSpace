@@ -69,7 +69,7 @@ const options = [
 | `options`              | `array`           |    ✅    | -                            | -       | Combo box options                            |
 | `isDisabled`           | `bool`            |    -     | -                            | `false` | Indicates that component is disabled         |
 | `noBorder`             | `bool`            |    -     | -                            | `false` | Indicates that component is displayed without borders |
-| `selectedOption`       | `object`          |    -     | -                            | -       | Selected option                              |
+| `selectedOption`       | `object`          |    ✅    | -                            | -       | Selected option                              |
 | `onSelect`             | `func`            |    -     | -                            | -       | Will be triggered whenever an ComboBox is selected option |
 | `dropDownMaxHeight`    | `string`          |    -     | -                            | -       | Height of Dropdown                           |
 | `scaled`               | `bool`            |    -     | -                            | `true`  | Indicates that component is scaled by parent |
