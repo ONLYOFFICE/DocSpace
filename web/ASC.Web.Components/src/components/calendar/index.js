@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components';
-import DatePicker, { registerLocale } from "react-datepicker";
+import DatePicker from "react-datepicker";
 import ComboBox from '../combobox';
 import moment from 'moment/min/moment-with-locales';
 import "react-datepicker/dist/react-datepicker.css";
