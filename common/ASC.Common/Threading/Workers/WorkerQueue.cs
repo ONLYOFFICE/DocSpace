@@ -35,7 +35,7 @@ namespace ASC.Common.Threading.Workers
 {
     public class WorkerQueue<T>
     {
-        private static ILog log = LogManager.GetLogger("ASC.WorkerQueue");
+        private static readonly ILog log = LogManager.GetLogger("ASC.WorkerQueue");
 
         private readonly ICollection<WorkItem<T>> items = new List<WorkItem<T>>();
         private readonly List<Thread> threads = new List<Thread>();

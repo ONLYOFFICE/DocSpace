@@ -35,7 +35,7 @@ namespace ASC.Common.Security
         private const int MBIG = int.MaxValue;
         private const int MSEED = 161803398;
         private const int MZ = 0;
-        private int[] seeds;
+        private readonly int[] seeds;
 
 
         public AscRandom() : this(Environment.TickCount)

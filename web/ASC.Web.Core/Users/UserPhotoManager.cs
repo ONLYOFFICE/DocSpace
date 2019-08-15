@@ -70,7 +70,7 @@ namespace ASC.Web.Core.Users
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(ResizeWorkerItem)) return false;
             return Equals((ResizeWorkerItem)obj);
@@ -78,7 +78,7 @@ namespace ASC.Web.Core.Users
 
         public bool Equals(ResizeWorkerItem other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return other.UserId.Equals(UserId) && other.MaxFileSize == MaxFileSize && other.Size.Equals(Size);
         }
@@ -267,12 +267,12 @@ namespace ASC.Web.Core.Users
             get { return new Size(32, 32); }
         }
 
-        private static string _defaultRetinaAvatar = "default_user_photo_size_360-360.png";
-        private static string _defaultAvatar = "default_user_photo_size_200-200.png";
-        private static string _defaultSmallAvatar = "default_user_photo_size_32-32.png";
-        private static string _defaultMediumAvatar = "default_user_photo_size_48-48.png";
-        private static string _defaultBigAvatar = "default_user_photo_size_82-82.png";
-        private static string _tempDomainName = "temp";
+        private static readonly string _defaultRetinaAvatar = "default_user_photo_size_360-360.png";
+        private static readonly string _defaultAvatar = "default_user_photo_size_200-200.png";
+        private static readonly string _defaultSmallAvatar = "default_user_photo_size_32-32.png";
+        private static readonly string _defaultMediumAvatar = "default_user_photo_size_48-48.png";
+        private static readonly string _defaultBigAvatar = "default_user_photo_size_82-82.png";
+        private static readonly string _tempDomainName = "temp";
 
 
         public static bool UserHasAvatar(Tenant tenant, Guid userID)

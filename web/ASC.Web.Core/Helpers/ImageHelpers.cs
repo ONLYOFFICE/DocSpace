@@ -120,11 +120,11 @@ namespace ASC.Web.Studio.Helpers
 
     public class ThumbnailGenerator
     {
-        bool _crop = false;
-        int _width;
-        int _heigth;
-        int _widthPreview;
-        int _heightPreview;
+        readonly bool _crop = false;
+        readonly int _width;
+        readonly int _heigth;
+        readonly int _widthPreview;
+        readonly int _heightPreview;
 
         public IDataStore store
         {

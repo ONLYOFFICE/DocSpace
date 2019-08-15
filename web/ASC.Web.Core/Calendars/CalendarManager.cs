@@ -40,8 +40,8 @@ namespace ASC.Web.Core.Calendars
             private set;
         }
 
-        private List<GetCalendarForUser> _calendarProviders;
-        private List<BaseCalendar> _calendars;
+        private readonly List<GetCalendarForUser> _calendarProviders;
+        private readonly List<BaseCalendar> _calendars;
 
         static CalendarManager()
         {

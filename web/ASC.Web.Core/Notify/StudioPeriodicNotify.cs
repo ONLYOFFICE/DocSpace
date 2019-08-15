@@ -93,7 +93,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var coupon = string.Empty;
 
                     Func<string> greenButtonText = () => string.Empty;
-                    Func<string> blueButtonText = () => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -129,12 +129,12 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> tableItemComment7 = () => string.Empty;
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText2 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText3 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText4 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText5 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText6 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText7 = () => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -533,7 +533,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var tousers = false;
 
                     Func<string> greenButtonText = () => string.Empty;
-                    Func<string> blueButtonText = () => WebstudioNotifyPatternResource.ButtonRequestCallButton;
+                    string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                     var greenButtonUrl = string.Empty;
 
                     Func<string> tableItemText1 = () => string.Empty;
@@ -569,12 +569,12 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> tableItemComment7 = () => string.Empty;
 
                     Func<string> tableItemLearnMoreText1 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText2 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText3 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText4 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText5 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText6 = () => string.Empty;
-                    Func<string> tableItemLearnMoreText7 = () => string.Empty;
+                    string tableItemLearnMoreText2() => string.Empty;
+                    string tableItemLearnMoreText3() => string.Empty;
+                    string tableItemLearnMoreText4() => string.Empty;
+                    string tableItemLearnMoreText5() => string.Empty;
+                    string tableItemLearnMoreText6() => string.Empty;
+                    string tableItemLearnMoreText7() => string.Empty;
 
                     var tableItemLearnMoreUrl1 = string.Empty;
                     var tableItemLearnMoreUrl2 = string.Empty;
@@ -902,13 +902,13 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> greenButtonText = () => string.Empty;
                     var greenButtonUrl = string.Empty;
 
-                    Func<string> tableItemText1 = () => string.Empty;
-                    Func<string> tableItemText2 = () => string.Empty;
-                    Func<string> tableItemText3 = () => string.Empty;
-                    Func<string> tableItemText4 = () => string.Empty;
-                    Func<string> tableItemText5 = () => string.Empty;
-                    Func<string> tableItemText6 = () => string.Empty;
-                    Func<string> tableItemText7 = () => string.Empty;
+                    string tableItemText1() => string.Empty;
+                    string tableItemText2() => string.Empty;
+                    string tableItemText3() => string.Empty;
+                    string tableItemText4() => string.Empty;
+                    string tableItemText5() => string.Empty;
+                    string tableItemText6() => string.Empty;
+                    string tableItemText7() => string.Empty;
 
                     var tableItemUrl1 = string.Empty;
                     var tableItemUrl2 = string.Empty;
