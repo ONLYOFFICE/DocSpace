@@ -26,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="PublicResources\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
     <Compile Update="PublicResources\WebPatternResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -162,6 +157,36 @@
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\WebstudioNotifyPatternResource.it.resx">
       <DependentUpon>WebstudioNotifyPatternResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="PublicResources\CustomModeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CustomModeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.ru.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.de.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.es.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.fr.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="PublicResources\CustomModeResource.it.resx">
+      <DependentUpon>CustomModeResource.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   
