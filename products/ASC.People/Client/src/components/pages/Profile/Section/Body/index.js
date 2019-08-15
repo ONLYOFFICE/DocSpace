@@ -109,7 +109,7 @@ const getFormattedDepartments = departments => {
   const formattedDepartments = splittedDepartments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="action" fontSize={13} isHovered={true}>
+        <Link type="page" fontSize={13} isHovered={true}>
           {department.trim()}
         </Link>
         {departmentsLength !== index ? ", " : ""}
@@ -142,8 +142,8 @@ const createContacts = contacts => {
 };
 
 const SectionBodyContent = props => {
-  const { profile, history, isSelf, settings, isAdmin, viewer } = props;
-  //console.log(profile, settings);
+  const { profile, history, settings, isAdmin, viewer } = props;
+  //console.log(props);
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
   const workFrom = getFormattedDate(profile.workFrom);
@@ -152,6 +152,7 @@ const SectionBodyContent = props => {
   const formatedDepartments = getFormattedDepartments(profile.department);
   const socialContacts = contacts && createContacts(contacts.social);
   const infoContacts = contacts && createContacts(contacts.contact);
+  const isSelf = isMe(viewer, profile.userName);
 
   const onEmailClick = useCallback(
     () => window.open("mailto:" + profile.email),
@@ -184,7 +185,7 @@ const SectionBodyContent = props => {
           source={profile.avatarMax}
           userName={profile.displayName}
         />
-        {(isAdmin || isMe(viewer, profile.userName)) && (
+        {(isAdmin || isSelf) && (
           <Button
             style={editButtonWrapper}
             size="big"
@@ -268,7 +269,7 @@ const SectionBodyContent = props => {
             </Link>
             {profile.activationStatus === 2 && " (Pending)"}
           </Text.Body>
-          <Text.Body style={restMargins}>{formatedDepartments}</Text.Body>
+          <Text.Body as="div" style={restMargins}>{formatedDepartments}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
           <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
           <Text.Body style={restMargins}>{formatedSex}</Text.Body>
