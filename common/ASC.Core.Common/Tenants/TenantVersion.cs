@@ -57,8 +57,7 @@ namespace ASC.Core
 
         public override bool Equals(object obj)
         {
-            var v = obj as TenantVersion;
-            return v != null && v.Id == Id;
+            return obj is TenantVersion v && v.Id == Id;
         }
 
         public override string ToString()

@@ -95,7 +95,7 @@ namespace ASC.Data.Storage
 
             if (Appenders.Any())
             {
-                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || String.IsNullOrEmpty(ext)).ToList();
+                var avaliableAppenders = Appenders.Where(x => x.Extensions != null && x.Extensions.Split('|').Contains(ext) || string.IsNullOrEmpty(ext)).ToList();
                 var avaliableAppendersCount = avaliableAppenders.LongCount();
 
                 Appender appender;

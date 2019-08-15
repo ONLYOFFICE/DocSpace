@@ -962,7 +962,7 @@ namespace ASC.Web.Core.Calendars
         public string ToiCalFormat()
         {
             if (this.Freq == Frequency.Never)
-                return String.Empty;
+                return string.Empty;
 
             var sb = new StringBuilder();
             sb.Append("RRULE:" + this.ToString(true));

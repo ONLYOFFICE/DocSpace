@@ -37,27 +37,22 @@ namespace ASC.Common.Security.Authorizing
     {
         private readonly SecurityCallContext callContext;
         private readonly bool currObjIdAsProvider;
-        private ISecurityObjectId currObjId;
         private ISecurityObjectProvider currSecObjProvider;
 
         public AzObjectSecurityProviderHelper(ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
-            if (objectId == null) throw new ArgumentNullException("objectId");
             currObjIdAsProvider = false;
-            currObjId = objectId;
+            CurrentObjectId = objectId ?? throw new ArgumentNullException("objectId");
             currSecObjProvider = secObjProvider;
-            if (currSecObjProvider == null && currObjId is ISecurityObjectProvider)
+            if (currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider)
             {
                 currObjIdAsProvider = true;
-                currSecObjProvider = (ISecurityObjectProvider)currObjId;
+                currSecObjProvider = (ISecurityObjectProvider)CurrentObjectId;
             }
             callContext = new SecurityCallContext();
         }
 
-        public ISecurityObjectId CurrentObjectId
-        {
-            get { return currObjId; }
-        }
+        public ISecurityObjectId CurrentObjectId { get; private set; }
 
         public bool ObjectRolesSupported
         {
@@ -66,7 +61,7 @@ namespace ASC.Common.Security.Authorizing
 
         public IEnumerable<IRole> GetObjectRoles(ISubject account)
         {
-            var roles = currSecObjProvider.GetObjectRoles(account, currObjId, callContext);
+            var roles = currSecObjProvider.GetObjectRoles(account, CurrentObjectId, callContext);
             foreach (var role in roles)
             {
                 if (!callContext.RolesList.Contains(role)) callContext.RolesList.Add(role);
@@ -77,11 +72,11 @@ namespace ASC.Common.Security.Authorizing
         public bool NextInherit()
         {
             if (currSecObjProvider == null || !currSecObjProvider.InheritSupported) return false;
-            currObjId = currSecObjProvider.InheritFrom(currObjId);
-            if (currObjId == null) return false;
+            CurrentObjectId = currSecObjProvider.InheritFrom(CurrentObjectId);
+            if (CurrentObjectId == null) return false;
             if (currObjIdAsProvider)
             {
-                currSecObjProvider = currObjId as ISecurityObjectProvider;
+                currSecObjProvider = CurrentObjectId as ISecurityObjectProvider;
             }
             callContext.ObjectsStack.Insert(0, CurrentObjectId);
             return currSecObjProvider != null;

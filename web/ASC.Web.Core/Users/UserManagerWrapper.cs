@@ -55,7 +55,7 @@ namespace ASC.Web.Core.Users
 
         private static bool TestUniqueUserName(string uniqueName, int tenantId)
         {
-            if (String.IsNullOrEmpty(uniqueName))
+            if (string.IsNullOrEmpty(uniqueName))
                 return false;
             return Equals(CoreContext.UserManager.GetUserByUserName(tenantId, uniqueName), Constants.LostUser);
         }
@@ -161,7 +161,7 @@ namespace ASC.Web.Core.Users
 
         public static void CheckPasswordPolicy(string password)
         {
-            if (String.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(password))
                 throw new Exception(Resource.ErrorPasswordEmpty);
 
             var passwordSettingsObj = PasswordSettings.Load();
@@ -220,11 +220,11 @@ namespace ASC.Web.Core.Users
                             - (ps.SpecSymbols ? 1 : 0);
             var minLength = Math.Min(ps.MinLength, maxLength);
 
-            return String.Format("{0}{1}{2}{3}",
+            return string.Format("{0}{1}{2}{3}",
                                  GeneratePassword(minLength, minLength, Noise.Substring(0, Noise.Length - 4)),
-                                 ps.Digits ? GeneratePassword(1, 1, Noise.Substring(0, 10)) : String.Empty,
-                                 ps.UpperCase ? GeneratePassword(1, 1, Noise.Substring(10, 20).ToUpper()) : String.Empty,
-                                 ps.SpecSymbols ? GeneratePassword(1, 1, Noise.Substring(Noise.Length - 4, 4).ToUpper()) : String.Empty);
+                                 ps.Digits ? GeneratePassword(1, 1, Noise.Substring(0, 10)) : string.Empty,
+                                 ps.UpperCase ? GeneratePassword(1, 1, Noise.Substring(10, 20).ToUpper()) : string.Empty,
+                                 ps.SpecSymbols ? GeneratePassword(1, 1, Noise.Substring(Noise.Length - 4, 4).ToUpper()) : string.Empty);
         }
 
         private static readonly Random Rnd = new Random();

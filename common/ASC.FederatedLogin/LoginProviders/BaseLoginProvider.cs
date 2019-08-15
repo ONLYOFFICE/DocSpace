@@ -77,7 +77,7 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 var token = Auth(context, Scopes);
 
-                return GetLoginProfile(token == null ? null : token.AccessToken);
+                return GetLoginProfile(token?.AccessToken);
             }
             catch (ThreadAbortException)
             {

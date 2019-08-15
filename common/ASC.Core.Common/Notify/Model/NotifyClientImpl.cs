@@ -141,9 +141,11 @@ namespace ASC.Notify.Model
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
 
-            var request = new NotifyRequest(notifySource, action, objectID, recipient);
-            request.SenderNames = senders;
-            request.IsNeedCheckSubscriptions = checkSubsciption;
+            var request = new NotifyRequest(notifySource, action, objectID, recipient)
+            {
+                SenderNames = senders,
+                IsNeedCheckSubscriptions = checkSubsciption
+            };
             if (args != null) request.Arguments.AddRange(args);
             return request;
         }

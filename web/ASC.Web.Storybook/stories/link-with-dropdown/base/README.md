@@ -19,7 +19,7 @@ Link with dropdown
 #### Properties
 
 | Props              | Type     | Required | Values                      | Default        | Description                                                       |
-| ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |                 |
+| ------------------ | -------- | :------: | --------------------------- | -------------- | ----------------------------------------------------------------- |       
 | `dropdownType`     | `oneOf`  |    ✅    | `alwaysDotted, appearDottedAfterHover`| -  | Type of dropdown: alwaysDotted is always show dotted style and icon of arrow, appearDottedAfterHover is show dotted style and icon arrow only after hover              |
 | `data`            | `array`  |    -     | - | -  | Array of objects, each can contain `<DropDownItem />` props              |
 | `color`            | `oneOf`  |    -     | gray, black, blue| `black`  | Color of link in all states - hover, active, visited              |

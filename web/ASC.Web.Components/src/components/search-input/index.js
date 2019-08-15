@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from 'styled-components';
 import InputBlock from '../input-block';
+import ComboBox from '../combobox';
 
 import FilterButton from './filter-button';
 import HideFilter from './hide-filter';
@@ -46,22 +47,62 @@ const StyledCloseButtonBlock = styled.div`
   right: 0;
   top: 0;
 `;
+const StyledComboBox = styled(ComboBox)`
+  display: inline-block;
+  background: transparent;
+  cursor: pointer;
+  vertical-align: top;
+  margin-left: -10px;
+`;
 
-const FilterItem = props => {
-  //console.log("FilterItem render");
-  const { groupLabel, id, label, block } = props;
-  return (
-    <StyledFilterItem key={id} id={id} block={block} >
-        {groupLabel}: {label}
+class FilterItem extends React.Component {
+  constructor(props) {
+      super(props);
+
+      this.state={
+        id: this.props.id
+      };
+
+      this.onSelect = this.onSelect.bind(this);
+  }
+
+  onSelect(option){
+
+    this.props.onSelectFilterItem(null, {
+      key: option.group + "_" + option.key,
+      label: option.label,
+      group: option.group
+    });
+  }
+
+  render(){
+    return(
+      <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} >
+        {this.props.groupLabel}: 
+          <StyledComboBox
+            options={this.props.groupItems}
+            isDisabled={this.props.isDisabled}
+            onSelect={this.onSelect}
+            selectedOption={{
+              key:this.state.id,
+              label: this.props.label
+            }}
+            size='content'
+            scaled={false}
+            noBorder={true}
+          ></StyledComboBox>
+          
         <StyledCloseButtonBlock>
           <CloseButton
-            isDisabled={props.isDisabled}
-            onClick={!props.isDisabled ? ((e) => props.onClose(e, id)) : undefined}
+            isDisabled={this.props.isDisabled}
+            onClick={!this.props.isDisabled ? ((e) => this.props.onClose(e, this.props.id)) : undefined}
           />
         </StyledCloseButtonBlock>
-    </StyledFilterItem>
-  );
-};
+      </StyledFilterItem>
+    );
+  }
+}
+
 
 const cloneProperty = function(props){
   var newProps = [];
@@ -213,6 +254,10 @@ class SearchInput extends React.Component  {
             return <FilterItem 
               isDisabled={_this.props.isDisabled} 
               key={item.key}
+              groupItems={_this.props.getFilterData().filter(function(t) {
+                return (t.group == item.group && t.group != t.key);
+              })}
+              onSelectFilterItem={_this.onClickDropDownItem}
               id={item.key} 
               groupLabel={item.groupLabel} 
               label={item.label} 
@@ -229,6 +274,10 @@ class SearchInput extends React.Component  {
                 block={true}
                 isDisabled={_this.props.isDisabled} 
                 key={item.key}
+                groupItems={_this.props.getFilterData().filter(function(t) {
+                  return (t.group == item.group && t.group != t.key);
+                })}
+                onSelectFilterItem={_this.onClickDropDownItem}
                 id={item.key} 
                 groupLabel={item.groupLabel} 
                 label={item.label} 
@@ -244,6 +293,10 @@ class SearchInput extends React.Component  {
             return <FilterItem 
               isDisabled={_this.props.isDisabled} 
               key={item.key}
+              groupItems={_this.props.getFilterData().filter(function(t) {
+                return (t.group == item.group && t.group != t.key);
+              })}
+              onSelectFilterItem={_this.onClickDropDownItem}
               id={item.key} 
               groupLabel={item.groupLabel} 
               label={item.label} 

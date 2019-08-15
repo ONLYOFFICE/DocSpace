@@ -46,53 +46,27 @@ namespace ASC.Web.Core.Users
 {
     internal class ResizeWorkerItem
     {
-        private readonly Guid _userId;
-        private readonly byte[] _data;
-        private readonly long _maxFileSize;
-        private readonly Size _size;
-        private readonly IDataStore _dataStore;
-        private readonly UserPhotoThumbnailSettings _settings;
-
-
         public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings)
         {
-            _userId = userId;
-            _data = data;
-            _maxFileSize = maxFileSize;
-            _size = size;
-            _dataStore = dataStore;
-            _settings = settings;
+            UserId = userId;
+            Data = data;
+            MaxFileSize = maxFileSize;
+            Size = size;
+            DataStore = dataStore;
+            Settings = settings;
         }
 
-        public Size Size
-        {
-            get { return _size; }
-        }
+        public Size Size { get; }
 
-        public IDataStore DataStore
-        {
-            get { return _dataStore; }
-        }
+        public IDataStore DataStore { get; }
 
-        public long MaxFileSize
-        {
-            get { return _maxFileSize; }
-        }
+        public long MaxFileSize { get; }
 
-        public byte[] Data
-        {
-            get { return _data; }
-        }
+        public byte[] Data { get; }
 
-        public Guid UserId
-        {
-            get { return _userId; }
-        }
+        public Guid UserId { get; }
 
-        public UserPhotoThumbnailSettings Settings
-        {
-            get { return _settings; }
-        }
+        public UserPhotoThumbnailSettings Settings { get; }
 
         public override bool Equals(object obj)
         {
@@ -347,7 +321,7 @@ namespace ASC.Web.Core.Users
                 var sizePart = virtualPath.Substring(virtualPath.LastIndexOf('_'));
                 sizePart = sizePart.Trim('_');
                 sizePart = sizePart.Remove(sizePart.LastIndexOf('.'));
-                return new Size(Int32.Parse(sizePart.Split('-')[0]), Int32.Parse(sizePart.Split('-')[1]));
+                return new Size(int.Parse(sizePart.Split('-')[0]), int.Parse(sizePart.Split('-')[1]));
             }
             catch
             {
@@ -436,7 +410,7 @@ namespace ASC.Web.Core.Users
                 else
                     fileName = Photofiles[userId]
                                 .Select(x => x.Value)
-                                .FirstOrDefault(x => !String.IsNullOrEmpty(x) && x.Contains("_orig_"));
+                                .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
             }
             if (fileName != null && fileName.StartsWith("default"))
             {
@@ -751,7 +725,7 @@ namespace ASC.Web.Core.Users
             using (var s = GetDataStore().GetReadStream(_tempDomainName, fileName))
             {
                 var data = new MemoryStream();
-                var buffer = new Byte[1024 * 10];
+                var buffer = new byte[1024 * 10];
                 while (true)
                 {
                     var count = s.Read(buffer, 0, buffer.Length);
@@ -860,7 +834,7 @@ namespace ASC.Web.Core.Users
                 using (var s = GetDataStore().GetReadStream("", fileName))
                 {
                     var data = new MemoryStream();
-                    var buffer = new Byte[1024 * 10];
+                    var buffer = new byte[1024 * 10];
                     while (true)
                     {
                         var count = s.Read(buffer, 0, buffer.Length);

@@ -74,9 +74,7 @@ namespace ASC.Notify.Engine
 
         public NotifyEngine(Context context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
@@ -179,9 +177,9 @@ namespace ASC.Notify.Engine
                     {
                         wait = defaultSleep;
                     }
-                    else if (wait.Ticks > Int32.MaxValue)
+                    else if (wait.Ticks > int.MaxValue)
                     {
-                        wait = TimeSpan.FromTicks(Int32.MaxValue);
+                        wait = TimeSpan.FromTicks(int.MaxValue);
                     }
                     methodsEvent.WaitOne(wait, false);
                 }
@@ -388,7 +386,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(String.Format("Not registered sender \"{0}\".", sendertag)));
+                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
                     }
                     responses.Add(response);
                 }
@@ -403,8 +401,7 @@ namespace ASC.Notify.Engine
 
         private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel)
         {
-            var recipient = request.Recipient as IDirectRecipient;
-            if (recipient == null) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+            if (!(request.Recipient is IDirectRecipient recipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
             request.CurrentSender = channel.SenderName;
 
@@ -447,7 +444,7 @@ namespace ASC.Notify.Engine
             var pattern = request.GetSenderPattern(sender);
             if (pattern == null)
             {
-                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(String.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
             }
 
             noticeMessage.Pattern = pattern;
@@ -490,8 +487,7 @@ namespace ASC.Notify.Engine
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
-                    var styler = Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) as IPatternStyler;
-                    if (styler != null)
+                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);
                     }
@@ -538,11 +534,8 @@ namespace ASC.Notify.Engine
                     {
                         pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                     }
-                    if (pattern == null)
-                    {
-                        throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
-                    }
-                    request.Patterns[i] = pattern;
+
+                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
                 }
             }
         }

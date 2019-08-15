@@ -92,15 +92,13 @@ namespace ASC.Common.Data
                 return DBNull.Value;
             }
 
-            var @enum = value as Enum;
-            if (@enum != null)
+            if (value is Enum @enum)
             {
                 return @enum.ToString("d");
             }
 
-            if (value is DateTime)
+            if (value is DateTime d)
             {
-                var d = (DateTime)value;
                 return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
             }
             return value;

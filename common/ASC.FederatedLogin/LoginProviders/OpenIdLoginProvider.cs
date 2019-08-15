@@ -52,12 +52,12 @@ namespace ASC.FederatedLogin.LoginProviders
                     {
                         IAuthenticationRequest request;
 
-                        var realmUrlString = String.Empty;
+                        var realmUrlString = string.Empty;
 
                         if (@params.ContainsKey("realmUrl"))
                             realmUrlString = @params["realmUrl"];
 
-                        if (!String.IsNullOrEmpty(realmUrlString))
+                        if (!string.IsNullOrEmpty(realmUrlString))
                             request = Openid.CreateRequest(id, new Realm(realmUrlString));
                         else
                             request = Openid.CreateRequest(id);
@@ -110,7 +110,7 @@ namespace ASC.FederatedLogin.LoginProviders
                         var spprofile = response.GetExtension<ClaimsResponse>();
                         var fetchprofile = response.GetExtension<FetchResponse>();
 
-                        var realmUrlString = String.Empty;
+                        var realmUrlString = string.Empty;
                         if (@params.ContainsKey("realmUrl"))
                             realmUrlString = @params["realmUrl"];
 

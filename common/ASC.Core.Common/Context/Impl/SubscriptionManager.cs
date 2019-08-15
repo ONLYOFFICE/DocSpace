@@ -36,8 +36,7 @@ namespace ASC.Core
 
         public SubscriptionManager(ISubscriptionService service)
         {
-            if (service == null) throw new ArgumentNullException("subscriptionManager");
-            this.service = service;
+            this.service = service ?? throw new ArgumentNullException("subscriptionManager");
         }
 
 

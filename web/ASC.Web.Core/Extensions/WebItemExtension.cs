@@ -69,25 +69,25 @@ namespace ASC.Web.Core
 
         public static string GetDisabledIconAbsoluteURL(this IWebItem item)
         {
-            if (item == null || item.Context == null || String.IsNullOrEmpty(item.Context.DisabledIconFileName)) return string.Empty;
+            if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.DisabledIconFileName)) return string.Empty;
             return WebImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
         }
 
         public static string GetSmallIconAbsoluteURL(this IWebItem item)
         {
-            if (item == null || item.Context == null || String.IsNullOrEmpty(item.Context.SmallIconFileName)) return string.Empty;
+            if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.SmallIconFileName)) return string.Empty;
             return WebImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
         }
 
         public static string GetIconAbsoluteURL(this IWebItem item)
         {
-            if (item == null || item.Context == null || String.IsNullOrEmpty(item.Context.IconFileName)) return string.Empty;
+            if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.IconFileName)) return string.Empty;
             return WebImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
         }
 
         public static string GetLargeIconAbsoluteURL(this IWebItem item)
         {
-            if (item == null || item.Context == null || String.IsNullOrEmpty(item.Context.LargeIconFileName)) return string.Empty;
+            if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.LargeIconFileName)) return string.Empty;
             return WebImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
         }
 

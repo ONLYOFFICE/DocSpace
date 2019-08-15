@@ -91,8 +91,7 @@ namespace ASC.Common.Data
 
         public DbManager(string databaseId, bool shared, int? commandTimeout = null)
         {
-            if (databaseId == null) throw new ArgumentNullException("databaseId");
-            DatabaseId = databaseId;
+            DatabaseId = databaseId ?? throw new ArgumentNullException("databaseId");
             this.shared = shared;
 
             if (logger.IsDebugEnabled)
@@ -129,8 +128,7 @@ namespace ASC.Common.Data
         {
             if (HttpContext.Current != null)
             {
-                var dbManager = DisposableHttpContext.Current[databaseId] as DbManager;
-                if (dbManager == null || dbManager.disposed)
+                if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
                 {
                     var localDbManager = new DbManager(databaseId);
                     var dbManagerAdapter = new DbManagerProxy(localDbManager);

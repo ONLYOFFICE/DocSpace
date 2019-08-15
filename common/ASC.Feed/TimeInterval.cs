@@ -30,14 +30,10 @@ namespace ASC.Feed
 {
     public struct TimeInterval
     {
-        private readonly DateTime fromTime;
         private readonly DateTime toTime;
 
 
-        public DateTime From
-        {
-            get { return fromTime; }
-        }
+        public DateTime From { get; }
 
         public DateTime To
         {
@@ -47,7 +43,7 @@ namespace ASC.Feed
 
         public TimeInterval(DateTime fromTime, DateTime toTime)
         {
-            this.fromTime = fromTime;
+            this.From = fromTime;
             this.toTime = toTime;
         }
     }

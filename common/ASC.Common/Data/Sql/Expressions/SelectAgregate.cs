@@ -53,7 +53,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public string ToString(ISqlDialect dialect)
         {
-            return string.Format("{0}({1})", agregateType, column == null ? "*" : column);
+            return string.Format("{0}({1})", agregateType, column ?? "*");
         }
 
         public object[] GetParameters()

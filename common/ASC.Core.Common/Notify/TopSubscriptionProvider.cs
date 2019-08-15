@@ -41,11 +41,8 @@ namespace ASC.Notify.Model
 
         public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider)
         {
-            if (recipientProvider == null) throw new ArgumentNullException("recipientProvider");
-            if (directSubscriptionProvider == null) throw new ArgumentNullException("directSubscriptionProvider");
-
-            this.recipientProvider = recipientProvider;
-            subscriptionProvider = directSubscriptionProvider;
+            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException("recipientProvider");
+            subscriptionProvider = directSubscriptionProvider ?? throw new ArgumentNullException("directSubscriptionProvider");
         }
 
         public TopSubscriptionProvider(IRecipientProvider recipientProvider, ISubscriptionProvider directSubscriptionProvider, string[] defaultSenderMethods)

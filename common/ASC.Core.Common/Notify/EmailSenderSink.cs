@@ -44,9 +44,7 @@ namespace ASC.Core.Notify
 
         public EmailSenderSink(INotifySender sender)
         {
-            if (sender == null) throw new ArgumentNullException("sender");
-
-            this.sender = sender;
+            this.sender = sender ?? throw new ArgumentNullException("sender");
         }
 
 

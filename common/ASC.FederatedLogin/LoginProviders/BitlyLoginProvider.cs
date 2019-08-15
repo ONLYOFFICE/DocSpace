@@ -79,13 +79,13 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             get
             {
-                return !String.IsNullOrEmpty(BitlyClientId) &&
-                       !String.IsNullOrEmpty(BitlyClientSecret) &&
-                       !String.IsNullOrEmpty(BitlyUrl);
+                return !string.IsNullOrEmpty(BitlyClientId) &&
+                       !string.IsNullOrEmpty(BitlyClientSecret) &&
+                       !string.IsNullOrEmpty(BitlyUrl);
             }
         }
 
-        public static String GetShortenLink(String shareLink)
+        public static string GetShortenLink(string shareLink)
         {
             var uri = new Uri(shareLink);
 

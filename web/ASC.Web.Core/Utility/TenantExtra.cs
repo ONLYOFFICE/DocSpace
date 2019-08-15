@@ -59,12 +59,12 @@ namespace ASC.Web.Studio.Utility
 
         public static bool Enterprise
         {
-            get { return CoreContext.Configuration.Standalone && !String.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreContext.Configuration.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public static bool Opensource
         {
-            get { return CoreContext.Configuration.Standalone && String.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreContext.Configuration.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public static bool EnterprisePaid

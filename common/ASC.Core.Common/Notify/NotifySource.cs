@@ -133,13 +133,13 @@ namespace ASC.Core.Notify
                         RecipientsProvider = CreateRecipientsProvider();
                         if (RecipientsProvider == null)
                         {
-                            throw new NotifyException(String.Format("Provider {0} not instanced.", "IRecipientsProvider"));
+                            throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
                         }
 
                         SubscriprionProvider = CreateSubscriptionProvider();
                         if (SubscriprionProvider == null)
                         {
-                            throw new NotifyException(String.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
+                            throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
                         }
 
                         initialized = true;

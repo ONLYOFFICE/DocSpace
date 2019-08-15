@@ -43,9 +43,7 @@ namespace ASC.Notify.Engine
 
         public DispatchEngine(Context context)
         {
-            if (context == null) throw new ArgumentNullException("context");
-
-            this.context = context;
+            this.context = context ?? throw new ArgumentNullException("context");
             logOnly = "log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }

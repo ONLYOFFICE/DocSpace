@@ -178,7 +178,7 @@ namespace ASC.Core.Tenants
             {
                 var features = (Features ?? string.Empty).Split(' ', ',', ';').ToList();
                 var portals = features.FirstOrDefault(f => f.StartsWith("portals:"));
-                if (portals == null || !Int32.TryParse(portals.Replace("portals:", ""), out var countPortals) || countPortals <= 0)
+                if (portals == null || !int.TryParse(portals.Replace("portals:", ""), out var countPortals) || countPortals <= 0)
                 {
                     countPortals = 0;
                 }
@@ -211,8 +211,7 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            var q = obj as TenantQuota;
-            return q != null && q.Id == Id;
+            return obj is TenantQuota q && q.Id == Id;
         }
 
 

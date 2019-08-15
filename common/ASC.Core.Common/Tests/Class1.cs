@@ -56,8 +56,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
         public override bool Equals(object obj)
         {
-            var class1 = obj as Class1;
-            return class1 != null && Equals(class1.Id, Id);
+            return obj is Class1 class1 && Equals(class1.Id, Id);
         }
 
         public override int GetHashCode()

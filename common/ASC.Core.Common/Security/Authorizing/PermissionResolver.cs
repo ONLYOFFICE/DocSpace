@@ -42,8 +42,7 @@ namespace ASC.Core.Security.Authorizing
 
         public PermissionResolver(AzManager azManager)
         {
-            if (azManager == null) throw new ArgumentNullException("azManager");
-            this.azManager = azManager;
+            this.azManager = azManager ?? throw new ArgumentNullException("azManager");
         }
 
 
