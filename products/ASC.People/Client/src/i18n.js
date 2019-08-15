@@ -21,7 +21,7 @@ i18n
     lng: 'en',
     fallbackLng: 'en',
     debug: true,
-    ns: ["PeopleJSResource", "PeopleResource", "Resource"],
+    ns: ['PeopleJSResource', 'PeopleResource', 'Resource', 'UserControlsCommonResource'],
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
