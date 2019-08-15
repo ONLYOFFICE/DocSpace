@@ -69,7 +69,7 @@ namespace System
 
             var byteHash = CSP.ComputeHash(bytes);
 
-            return byteHash.Aggregate(String.Empty, (current, b) => current + String.Format("{0:x2}", b));
+            return byteHash.Aggregate(string.Empty, (current, b) => current + string.Format("{0:x2}", b));
         }
 
         public static int EnumerableComparer(this string x, string y)
@@ -103,7 +103,7 @@ namespace System
                     }
                     catch (OverflowException)
                     {
-                        xValue = Int64.MaxValue;
+                        xValue = long.MaxValue;
                     }
 
                     long yValue;
@@ -113,7 +113,7 @@ namespace System
                     }
                     catch (OverflowException)
                     {
-                        yValue = Int64.MaxValue;
+                        yValue = long.MaxValue;
                     }
 
                     int difference;

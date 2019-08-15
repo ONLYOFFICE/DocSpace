@@ -45,7 +45,7 @@ namespace ASC.Notify.Engine
 
         internal SingleRecipientInterceptor(string name)
         {
-            if (String.IsNullOrEmpty(name)) throw new ArgumentException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("name");
             Name = name;
         }
 

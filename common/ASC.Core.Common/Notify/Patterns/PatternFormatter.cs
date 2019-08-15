@@ -55,7 +55,7 @@ namespace ASC.Notify.Patterns
 
         internal PatternFormatter(string tagSearchRegExp, bool formatMessage)
         {
-            if (String.IsNullOrEmpty(tagSearchRegExp)) throw new ArgumentException("tagSearchRegExp");
+            if (string.IsNullOrEmpty(tagSearchRegExp)) throw new ArgumentException("tagSearchRegExp");
 
             tagSearchPattern = tagSearchRegExp;
             RegEx = new Regex(tagSearchPattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -97,7 +97,7 @@ namespace ASC.Notify.Patterns
 
         protected virtual string[] SearchTags(string text)
         {
-            if (String.IsNullOrEmpty(text) || String.IsNullOrEmpty(tagSearchPattern)) return new string[0];
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(tagSearchPattern)) return new string[0];
 
             var maches = RegEx.Matches(text);
             var findedTags = new List<string>(maches.Count);

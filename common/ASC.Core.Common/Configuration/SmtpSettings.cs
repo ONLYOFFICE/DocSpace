@@ -135,7 +135,7 @@ namespace ASC.Core.Configuration
             props = Array.ConvertAll(props, p => !string.IsNullOrEmpty(p) ? p : null);
 
             var host = HttpUtility.UrlDecode(props[3]);
-            var port = !string.IsNullOrEmpty(props[4]) ? Int32.Parse(props[4]) : DefaultSmtpPort;
+            var port = !string.IsNullOrEmpty(props[4]) ? int.Parse(props[4]) : DefaultSmtpPort;
             var senderAddress = HttpUtility.UrlDecode(props[5]);
             var senderDisplayName = HttpUtility.UrlDecode(props[6]) ?? DefaultSenderDisplayName;
 

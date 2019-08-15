@@ -106,7 +106,7 @@ namespace ASC.Web.Studio.Core
         public static string GetFileSizeNote(string note, bool withHtmlStrong)
         {
             return
-                String.Format(note,
+                string.Format(note,
                               FilesSizeToString(SetupInfo.MaxUploadSize),
                               withHtmlStrong ? "<strong>" : string.Empty,
                               withHtmlStrong ? "</strong>" : string.Empty);
@@ -121,7 +121,7 @@ namespace ASC.Web.Studio.Core
         public static string GetFileImageSizeNote(string note, bool withHtmlStrong)
         {
             return
-                String.Format(note,
+                string.Format(note,
                               FilesSizeToString(SetupInfo.MaxImageUploadSize),
                               withHtmlStrong ? "<strong>" : string.Empty,
                               withHtmlStrong ? "</strong>" : string.Empty);

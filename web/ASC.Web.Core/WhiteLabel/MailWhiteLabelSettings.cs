@@ -104,7 +104,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
             }
         }
@@ -131,7 +131,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? String.Empty, null);
+                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }

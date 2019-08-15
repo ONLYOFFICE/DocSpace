@@ -118,7 +118,7 @@ namespace ASC.Notify.Engine
             var index = Array.IndexOf(SenderNames, senderName);
             if (index < 0)
             {
-                throw new ApplicationException(String.Format("Sender with tag {0} dnot found", senderName));
+                throw new ApplicationException(string.Format("Sender with tag {0} dnot found", senderName));
             }
             return Patterns[index];
         }

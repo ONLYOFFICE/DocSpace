@@ -347,7 +347,7 @@ namespace ASC.Web.Core.Users
                 var sizePart = virtualPath.Substring(virtualPath.LastIndexOf('_'));
                 sizePart = sizePart.Trim('_');
                 sizePart = sizePart.Remove(sizePart.LastIndexOf('.'));
-                return new Size(Int32.Parse(sizePart.Split('-')[0]), Int32.Parse(sizePart.Split('-')[1]));
+                return new Size(int.Parse(sizePart.Split('-')[0]), int.Parse(sizePart.Split('-')[1]));
             }
             catch
             {
@@ -436,7 +436,7 @@ namespace ASC.Web.Core.Users
                 else
                     fileName = Photofiles[userId]
                                 .Select(x => x.Value)
-                                .FirstOrDefault(x => !String.IsNullOrEmpty(x) && x.Contains("_orig_"));
+                                .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
             }
             if (fileName != null && fileName.StartsWith("default"))
             {
@@ -751,7 +751,7 @@ namespace ASC.Web.Core.Users
             using (var s = GetDataStore().GetReadStream(_tempDomainName, fileName))
             {
                 var data = new MemoryStream();
-                var buffer = new Byte[1024 * 10];
+                var buffer = new byte[1024 * 10];
                 while (true)
                 {
                     var count = s.Read(buffer, 0, buffer.Length);
@@ -860,7 +860,7 @@ namespace ASC.Web.Core.Users
                 using (var s = GetDataStore().GetReadStream("", fileName))
                 {
                     var data = new MemoryStream();
-                    var buffer = new Byte[1024 * 10];
+                    var buffer = new byte[1024 * 10];
                     while (true)
                     {
                         var count = s.Read(buffer, 0, buffer.Length);

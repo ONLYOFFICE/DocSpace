@@ -77,7 +77,7 @@ namespace ASC.Security.Cryptography
 
         public static bool EqualHash(byte[] dataToCompare, byte[] hash, HashAlg hashAlg)
         {
-            return String.Equals(
+            return string.Equals(
                 ComputeHash64(dataToCompare, hashAlg),
                 B2S64(hash)
                 );

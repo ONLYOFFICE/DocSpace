@@ -50,7 +50,7 @@ namespace ASC.Notify.Patterns
 
         public Pattern(string id, string subject, string body, string contentType)
         {
-            if (String.IsNullOrEmpty(id)) throw new ArgumentException("id");
+            if (string.IsNullOrEmpty(id)) throw new ArgumentException("id");
             if (subject == null) throw new ArgumentNullException("subject");
             if (body == null) throw new ArgumentNullException("body");
             ID = id;

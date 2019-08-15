@@ -121,7 +121,7 @@ namespace ASC.Web.Core.Users.Import
 
         private string[] GetDataFields(string line)
         {
-            var pattern = String.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
+            var pattern = string.Format("{0}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))", Separator);
             var result = Regex.Split(line, pattern);
 
             //remove TextDelmiter

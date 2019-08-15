@@ -62,7 +62,7 @@ namespace ASC.Data.Storage.DiscStorage
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
         }
 
-        public String GetPhysicalPath(string domain, string path)
+        public string GetPhysicalPath(string domain, string path)
         {
             if (path == null)
             {

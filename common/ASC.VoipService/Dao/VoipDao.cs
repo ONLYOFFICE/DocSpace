@@ -142,7 +142,7 @@ namespace ASC.VoipService.Dao
                 {
                     query.InColumnValue("dial_duration", call.DialDuration);
                 }
-                if (call.Price > Decimal.Zero)
+                if (call.Price > decimal.Zero)
                 {
                     query.InColumnValue("price", call.Price);
                 }

@@ -302,7 +302,7 @@ namespace ASC.Core
                 result.AddRange(distinctUserGroups);
             }
 
-            result.Sort((group1, group2) => String.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
+            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
 
             return result.ToArray();
         }

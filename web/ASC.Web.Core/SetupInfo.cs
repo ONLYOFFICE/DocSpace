@@ -392,7 +392,7 @@ namespace ASC.Web.Studio.Core
 
             TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
             ChunkUploadSize = GetAppSettings("files.uploader.chunk-size", 5 * 1024 * 1024);
-            ThirdPartyAuthEnabled = String.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
+            ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
             NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
             CustomScripts = GetAppSettings("web.custom-scripts", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -453,7 +453,7 @@ namespace ASC.Web.Studio.Core
         {
             var result = ConfigurationManager.AppSettings[key] ?? defaultValue;
 
-            if (!String.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result))
                 result = result.Trim();
 
             return result;

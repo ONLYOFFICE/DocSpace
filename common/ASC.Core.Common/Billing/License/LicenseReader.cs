@@ -307,9 +307,9 @@ namespace ASC.Core.Billing
                         }
                     }
 
-                    var year = Int32.Parse(versionDate.Substring(0, 4));
-                    var month = Int32.Parse(versionDate.Substring(4, 2));
-                    var day = Int32.Parse(versionDate.Substring(6, 2));
+                    var year = int.Parse(versionDate.Substring(0, 4));
+                    var month = int.Parse(versionDate.Substring(4, 2));
+                    var day = int.Parse(versionDate.Substring(6, 2));
                     _date = new DateTime(year, month, day);
                 }
                 catch (Exception ex)

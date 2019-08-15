@@ -63,7 +63,7 @@ namespace ASC.Web.Core.Mobile
         {
             if (string.IsNullOrEmpty(userEmail)) return false;
 
-            var fromCache = cache.Get<String>(GetCacheKey(userEmail, appType));
+            var fromCache = cache.Get<string>(GetCacheKey(userEmail, appType));
 
 
             if (bool.TryParse(fromCache, out var cachedValue))
@@ -80,7 +80,7 @@ namespace ASC.Web.Core.Mobile
         {
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-            return String.Format("{0}:mobile:{1}", ASC.Core.CoreContext.TenantManager.GetCurrentTenant().TenantId, cacheKey);
+            return string.Format("{0}:mobile:{1}", ASC.Core.CoreContext.TenantManager.GetCurrentTenant().TenantId, cacheKey);
         }
     }
 }

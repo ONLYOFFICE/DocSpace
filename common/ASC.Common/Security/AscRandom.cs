@@ -91,7 +91,7 @@ namespace ASC.Common.Security
 
             for (var i = 0; i < buffer.Length; i++)
             {
-                buffer[i] = (byte)(InternalSample() % (Byte.MaxValue + 1));
+                buffer[i] = (byte)(InternalSample() % (byte.MaxValue + 1));
             }
         }
 

@@ -179,9 +179,9 @@ namespace ASC.Notify.Engine
                     {
                         wait = defaultSleep;
                     }
-                    else if (wait.Ticks > Int32.MaxValue)
+                    else if (wait.Ticks > int.MaxValue)
                     {
-                        wait = TimeSpan.FromTicks(Int32.MaxValue);
+                        wait = TimeSpan.FromTicks(int.MaxValue);
                     }
                     methodsEvent.WaitOne(wait, false);
                 }
@@ -388,7 +388,7 @@ namespace ASC.Notify.Engine
                     }
                     else
                     {
-                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(String.Format("Not registered sender \"{0}\".", sendertag)));
+                        response = new SendResponse(request.NotifyAction, sendertag, request.Recipient, new NotifyException(string.Format("Not registered sender \"{0}\".", sendertag)));
                     }
                     responses.Add(response);
                 }
@@ -447,7 +447,7 @@ namespace ASC.Notify.Engine
             var pattern = request.GetSenderPattern(sender);
             if (pattern == null)
             {
-                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(String.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+                return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
             }
 
             noticeMessage.Pattern = pattern;

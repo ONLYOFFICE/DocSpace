@@ -96,11 +96,11 @@ namespace ASC.Security.Cryptography
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2) return ValidationResult.Invalid;
 
-            if (!Int64.TryParse(parts[0], out var ms)) return ValidationResult.Invalid;
+            if (!long.TryParse(parts[0], out var ms)) return ValidationResult.Invalid;
 
             var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
             var key2 = DoStringFromBytes(hash);
-            var key2_good = String.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
+            var key2_good = string.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
             if (!key2_good) return ValidationResult.Invalid;
             var ms_current = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
             return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms) ? ValidationResult.Ok : ValidationResult.Expired;

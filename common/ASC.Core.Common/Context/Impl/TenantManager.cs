@@ -91,7 +91,7 @@ namespace ASC.Core
             if (t == null)
             {
                 var baseUrl = CoreContext.Configuration.BaseDomain;
-                if (!String.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     isAlias = true;
                     t = tenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));

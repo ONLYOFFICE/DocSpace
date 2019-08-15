@@ -169,7 +169,7 @@ namespace ASC.Web.Studio.Helpers
 
             var icJPG = getCodecInfo("image/jpeg");
 
-            if (!String.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
+            if (!string.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
             {
                 var indexDot = imageInfo.Name.ToLower().LastIndexOf(".");
 

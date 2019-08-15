@@ -41,7 +41,7 @@ namespace ASC.Core
     {
         private readonly object locker = new object();
         private readonly Dictionary<string, HostedSolution> regions = new Dictionary<string, HostedSolution>();
-        private readonly String dbid;
+        private readonly string dbid;
         private volatile bool initialized = false;
 
         public MultiRegionHostedSolution(string dbid)
@@ -183,7 +183,7 @@ namespace ASC.Core
         {
             Initialize();
 
-            return regions.Where(x => !String.IsNullOrEmpty(x.Key))
+            return regions.Where(x => !string.IsNullOrEmpty(x.Key))
                    .Select(x => x.Value);
         }
 

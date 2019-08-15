@@ -106,7 +106,7 @@ namespace ASC.Core.Users
 
         public override string ToString()
         {
-            return String.Format("{0} {1}", FirstName, LastName).Trim();
+            return string.Format("{0} {1}", FirstName, LastName).Trim();
         }
 
         public override int GetHashCode()

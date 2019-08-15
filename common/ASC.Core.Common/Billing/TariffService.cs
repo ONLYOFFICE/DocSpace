@@ -254,7 +254,7 @@ namespace ASC.Core.Billing
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
-                          : String.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
+                          : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
             key += quota.Visible ? "" : "0";
             var urls = cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) as IDictionary<string, Tuple<Uri, Uri>>;
             if (urls == null)
