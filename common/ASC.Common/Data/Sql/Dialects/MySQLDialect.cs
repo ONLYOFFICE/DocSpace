@@ -66,7 +66,7 @@ namespace ASC.Common.Data.Sql.Dialects
                 case DbType.AnsiString:
                 case DbType.String:
                     if (size <= 8192) return string.Format("VARCHAR({0})", size);
-                    else if (size <= UInt16.MaxValue) return "TEXT";
+                    else if (size <= ushort.MaxValue) return "TEXT";
                     else if (size <= ((int)Math.Pow(2, 24) - 1)) return "MEDIUMTEXT";
                     else return "LONGTEXT";
 
@@ -80,7 +80,7 @@ namespace ASC.Common.Data.Sql.Dialects
                 case DbType.Binary:
                 case DbType.Object:
                     if (size <= 8192) return string.Format("BINARY({0})", size);
-                    else if (size <= UInt16.MaxValue) return "BLOB";
+                    else if (size <= ushort.MaxValue) return "BLOB";
                     else if (size <= ((int)Math.Pow(2, 24) - 1)) return "MEDIUMBLOB";
                     else return "LONGBLOB";
 

@@ -118,8 +118,7 @@ namespace ASC.FederatedLogin
             {
                 if (_params.ContainsKey("min"))
                 {
-                    bool result;
-                    bool.TryParse(_params.Get("min"), out result);
+                    bool.TryParse(_params.Get("min"), out var result);
                     return result;
                 }
                 return false;

@@ -176,7 +176,7 @@ namespace ASC.Core.Billing
                 throw new LicenseExpiredException("License expired", license.OriginalLicense);
             }
 
-            if (license.ActiveUsers.Equals(default(int)) || license.ActiveUsers < 1)
+            if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
             if (license.ActiveUsers < CoreContext.UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)
@@ -307,9 +307,9 @@ namespace ASC.Core.Billing
                         }
                     }
 
-                    var year = Int32.Parse(versionDate.Substring(0, 4));
-                    var month = Int32.Parse(versionDate.Substring(4, 2));
-                    var day = Int32.Parse(versionDate.Substring(6, 2));
+                    var year = int.Parse(versionDate.Substring(0, 4));
+                    var month = int.Parse(versionDate.Substring(4, 2));
+                    var day = int.Parse(versionDate.Substring(6, 2));
                     _date = new DateTime(year, month, day);
                 }
                 catch (Exception ex)

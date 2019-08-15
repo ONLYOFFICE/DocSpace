@@ -46,7 +46,7 @@ namespace ASC.VoipService.Twilio
 
         public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
         {
-            var agent = agentTuple != null ? agentTuple.Item1 : null;
+            var agent = agentTuple?.Item1;
             var anyOnline = agentTuple != null ? agentTuple.Item2 : false;
             var response = new VoiceResponse();
 
@@ -145,9 +145,8 @@ namespace ASC.VoipService.Twilio
                 return new VoiceResponse().Play(Uri.EscapeUriString(settings.HoldAudio), 0);
             }
 
-            Guid newCallerId;
 
-            if (Guid.TryParse(to, out newCallerId))
+            if (Guid.TryParse(to, out var newCallerId))
             {
                 SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
             }

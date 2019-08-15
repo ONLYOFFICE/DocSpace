@@ -558,8 +558,7 @@ namespace ASC.Web.Core.Files
 
             public static void ProcessResponseError(string errorCode)
             {
-                ErrorCode code;
-                if (!Enum.TryParse(errorCode, true, out code))
+                if (!Enum.TryParse(errorCode, true, out ErrorCode code))
                 {
                     code = ErrorCode.Unknown;
                 }

@@ -130,7 +130,7 @@ namespace ASC.Web.Studio.Core.Notify
                             .Where(f => f.Key.Name == ProjectsProductName) // for project product
                             .SelectMany(f => f);
 
-                        var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => String.IsNullOrEmpty(p.ExtraLocation));
+                        var projectActivitiesWithoutBreadCrumbs = projectActivities.Where(p => string.IsNullOrEmpty(p.ExtraLocation));
 
                         var whatsNewUserActivityGroupByPrjs = new List<WhatsNewUserActivity>();
 
@@ -149,7 +149,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         });
                         }
 
-                        var groupByPrjs = projectActivities.Where(p => !String.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
+                        var groupByPrjs = projectActivities.Where(p => !string.IsNullOrEmpty(p.ExtraLocation)).GroupBy(f => f.ExtraLocation);
                         foreach (var gr in groupByPrjs)
                         {
                             var grlist = gr.ToList();
@@ -248,8 +248,7 @@ namespace ASC.Web.Studio.Core.Notify
             var hourToSend = 7;
             if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.whatsnew-time"]))
             {
-                var hour = 0;
-                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out hour))
+                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out var hour))
                 {
                     hourToSend = hour;
                 }

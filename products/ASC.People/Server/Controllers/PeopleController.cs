@@ -308,7 +308,7 @@ namespace ASC.Employee.Core.Controllers
                 includeGroups.Add(adminGroups);
             }
 
-            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out int total);
+            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out var total);
 
             ApiContext.SetTotalCount(total);
 

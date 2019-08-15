@@ -87,7 +87,7 @@ namespace ASC.Core.Caching
             var users = GetUsers(tenant);
             lock (users)
             {
-                return (from == default(DateTime) ? users.Values : users.Values.Where(u => u.LastModified >= from)).ToDictionary(u => u.ID);
+                return (from == default ? users.Values : users.Values.Where(u => u.LastModified >= from)).ToDictionary(u => u.ID);
             }
         }
 
@@ -106,8 +106,7 @@ namespace ASC.Core.Caching
             var users = GetUsers(tenant);
             lock (users)
             {
-                UserInfo u;
-                users.TryGetValue(id, out u);
+                users.TryGetValue(id, out var u);
                 return u;
             }
         }
@@ -189,7 +188,7 @@ namespace ASC.Core.Caching
             var groups = GetGroups(tenant);
             lock (groups)
             {
-                return (from == default(DateTime) ? groups.Values : groups.Values.Where(g => g.LastModified >= from)).ToDictionary(g => g.Id);
+                return (from == default ? groups.Values : groups.Values.Where(g => g.LastModified >= from)).ToDictionary(g => g.Id);
             }
         }
 
@@ -198,8 +197,7 @@ namespace ASC.Core.Caching
             var groups = GetGroups(tenant);
             lock (groups)
             {
-                Group g;
-                groups.TryGetValue(id, out g);
+                groups.TryGetValue(id, out var g);
                 return g;
             }
         }
@@ -223,15 +221,14 @@ namespace ASC.Core.Caching
             GetChangesFromDb();
 
             var key = GetRefCacheKey(tenant);
-            var refs = cache.Get<UserGroupRefStore>(key) as IDictionary<string, UserGroupRef>;
-            if (refs == null)
+            if (!(cache.Get<UserGroupRefStore>(key) is IDictionary<string, UserGroupRef> refs))
             {
-                refs = service.GetUserGroupRefs(tenant, default(DateTime));
+                refs = service.GetUserGroupRefs(tenant, default);
                 cache.Insert(key, new UserGroupRefStore(refs), CacheExpiration);
             }
             lock (refs)
             {
-                return from == default(DateTime) ? refs : refs.Values.Where(r => r.LastModified >= from).ToDictionary(r => r.CreateKey());
+                return from == default ? refs : refs.Values.Where(r => r.LastModified >= from).ToDictionary(r => r.CreateKey());
             }
         }
 
@@ -275,7 +272,7 @@ namespace ASC.Core.Caching
             var users = cache.Get<IDictionary<Guid, UserInfo>>(key);
             if (users == null)
             {
-                users = service.GetUsers(tenant, default(DateTime));
+                users = service.GetUsers(tenant, default);
 
                 cache.Insert(key, users, CacheExpiration);
             }
@@ -290,7 +287,7 @@ namespace ASC.Core.Caching
             var groups = cache.Get<IDictionary<Guid, Group>>(key);
             if (groups == null)
             {
-                groups = service.GetGroups(tenant, default(DateTime));
+                groups = service.GetGroups(tenant, default);
                 cache.Insert(key, groups, CacheExpiration);
             }
             return groups;
@@ -313,7 +310,7 @@ namespace ASC.Core.Caching
                     }
 
                     var starttime = trustInterval.StartTime;
-                    if (starttime != default(DateTime))
+                    if (starttime != default)
                     {
                         var correction = TimeSpan.FromTicks(DbExpiration.Ticks * 3);
                         starttime = trustInterval.StartTime.Subtract(correction);

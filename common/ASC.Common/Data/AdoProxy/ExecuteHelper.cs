@@ -37,9 +37,7 @@ namespace ASC.Common.Data.AdoProxy
 
         private ExecuteHelper(Action<TimeSpan> onStop)
         {
-            if (onStop == null) throw new ArgumentNullException("onStop");
-
-            this.onStop = onStop;
+            this.onStop = onStop ?? throw new ArgumentNullException("onStop");
             stopwatch = Stopwatch.StartNew();
         }
 

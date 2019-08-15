@@ -71,7 +71,7 @@ namespace ASC.Web.Core.WhiteLabel
                 if (timeParam)
                 {
                     var now = DateTime.Now;
-                    faviconPath = String.Format("{0}?t={1}", faviconPath, now.Ticks);
+                    faviconPath = string.Format("{0}?t={1}", faviconPath, now.Ticks);
                 }
             }
             else
@@ -134,10 +134,9 @@ namespace ASC.Web.Core.WhiteLabel
             if (request != null)
             {
                 var cookie = request.Cookies["is_retina"];
-                if (cookie != null && !String.IsNullOrEmpty(cookie))
+                if (cookie != null && !string.IsNullOrEmpty(cookie))
                 {
-                    bool result;
-                    if (Boolean.TryParse(cookie, out result))
+                    if (bool.TryParse(cookie, out var result))
                     {
                         isRetina = result;
                     }

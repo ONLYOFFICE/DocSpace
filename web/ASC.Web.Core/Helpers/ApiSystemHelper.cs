@@ -93,7 +93,7 @@ namespace ASC.Web.Core.Helpers
                         {
                             if (resObj["error"].ToString() == "portalNameExist")
                             {
-                                var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<String>());
+                                var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<string>());
                                 throw new TenantAlreadyExistsException("Address busy.", varians);
                             }
 
@@ -132,23 +132,20 @@ namespace ASC.Web.Core.Helpers
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
-            return variants == null
-                       ? null
-                       : variants.Select(jv => jv.Value<String>()).ToList();
+            return variants?.Select(jv => jv.Value<string>()).ToList();
         }
 
         #endregion
 
         private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, string data = null)
         {
-            Uri uri;
-            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out uri))
+            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
                 var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
                 absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');
             }
 
-            var url = String.Format("{0}/{1}", absoluteApiUrl, apiPath);
+            var url = string.Format("{0}/{1}", absoluteApiUrl, apiPath);
 
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;

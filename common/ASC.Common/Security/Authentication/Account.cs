@@ -65,8 +65,7 @@ namespace ASC.Common.Security.Authentication
 
         public override bool Equals(object obj)
         {
-            var a = obj as IAccount;
-            return a != null && ID.Equals(a.ID);
+            return obj is IAccount a && ID.Equals(a.ID);
         }
 
         public override int GetHashCode()

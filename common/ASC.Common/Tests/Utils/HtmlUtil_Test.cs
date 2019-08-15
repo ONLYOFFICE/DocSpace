@@ -37,7 +37,7 @@ namespace ASC.Common.Tests.Utils
         [Test]
         public void GetTextBr()
         {
-            string html = "Hello";
+            var html = "Hello";
             Assert.AreEqual("Hello", HtmlUtil.GetText(html));
 
             html = "Hello    anton";
@@ -49,7 +49,7 @@ namespace ASC.Common.Tests.Utils
 
         public void Hard()
         {
-            string html = @"<a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/ViewBlog.aspx?blogID=94fae49d-2faa-46d3-bf34-655afbc6f7f4""><font size=""+1"">XXX</font></a>
+            var html = @"<a href=""http://mediaserver:8080/Products/Community/Modules/Blogs/ViewBlog.aspx?blogID=94fae49d-2faa-46d3-bf34-655afbc6f7f4""><font size=""+1"">XXX</font></a>
 <div class=""moz-text-html"" lang=""x-unicode""><hr />
 A &quot;b&quot; c, d:<br />
 <blockquote>mp3 &quot;s&quot;<br />

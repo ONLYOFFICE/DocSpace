@@ -45,7 +45,7 @@ namespace ASC.Data.Storage.GoogleCloud
 {
     public class GoogleCloudStorage : BaseStorage
     {
-        private String _subDir = String.Empty;
+        private string _subDir = string.Empty;
         private readonly Dictionary<string, PredefinedObjectAcl> _domainsAcl;
         private readonly PredefinedObjectAcl _moduleAcl;
 
@@ -137,12 +137,12 @@ namespace ASC.Data.Storage.GoogleCloud
 
             path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
 
-            if (!String.IsNullOrEmpty(_subDir))
+            if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = String.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
                 result = string.Format("{0}/{1}/{2}/{3}",
@@ -270,7 +270,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var storage = GetStorage();
 
-            UploadObjectOptions uploadObjectOptions = new UploadObjectOptions
+            var uploadObjectOptions = new UploadObjectOptions
             {
                 PredefinedAcl = acl == ACL.Auto ? GetDomainACL(domain) : GetGoogleCloudAcl(acl)
             };
@@ -280,10 +280,10 @@ namespace ASC.Data.Storage.GoogleCloud
             var uploaded = storage.UploadObject(_bucket, MakePath(domain, path), mime, buffered, uploadObjectOptions, null);
 
             uploaded.ContentEncoding = contentEncoding;
-            uploaded.CacheControl = String.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds);
+            uploaded.CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(cacheDays).TotalSeconds);
 
             if (uploaded.Metadata == null)
-                uploaded.Metadata = new Dictionary<String, String>();
+                uploaded.Metadata = new Dictionary<string, string>();
 
             uploaded.Metadata["Expires"] = DateTime.UtcNow.Add(TimeSpan.FromDays(cacheDays)).ToString("R");
 
@@ -559,7 +559,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var storage = GetStorage();
 
             var objects = storage
-                          .ListObjects(_bucket, MakePath(domain, String.Empty));
+                          .ListObjects(_bucket, MakePath(domain, string.Empty));
 
             if (QuotaController != null)
             {
@@ -584,7 +584,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var storage = GetStorage();
 
             var objects = storage
-                          .ListObjects(_bucket, MakePath(domain, String.Empty));
+                          .ListObjects(_bucket, MakePath(domain, string.Empty));
 
             long result = 0;
 
@@ -606,9 +606,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var size = GetFileSize(srcdomain, srcpath);
 
-            CopyObjectOptions options = new CopyObjectOptions();
-
-            options.DestinationPredefinedAcl = GetDomainACL(newdomain);
+            var options = new CopyObjectOptions
+            {
+                DestinationPredefinedAcl = GetDomainACL(newdomain)
+            };
 
             storage.CopyObject(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
 
@@ -649,7 +650,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var objectKey = MakePath(domain, path);
             var buffered = stream.GetBuffered();
 
-            UploadObjectOptions uploadObjectOptions = new UploadObjectOptions
+            var uploadObjectOptions = new UploadObjectOptions
             {
                 PredefinedAcl = PredefinedObjectAcl.BucketOwnerFullControl
             };
@@ -658,11 +659,11 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var uploaded = storage.UploadObject(_bucket, MakePath(domain, path), "application/octet-stream", buffered, uploadObjectOptions, null);
 
-            uploaded.CacheControl = String.Format("public, maxage={0}", (int)TimeSpan.FromDays(5).TotalSeconds);
+            uploaded.CacheControl = string.Format("public, maxage={0}", (int)TimeSpan.FromDays(5).TotalSeconds);
             uploaded.ContentDisposition = "attachment";
 
             if (uploaded.Metadata == null)
-                uploaded.Metadata = new Dictionary<String, String>();
+                uploaded.Metadata = new Dictionary<string, string>();
 
             uploaded.Metadata["Expires"] = DateTime.UtcNow.Add(TimeSpan.FromDays(5)).ToString("R");
             uploaded.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
@@ -690,9 +691,8 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 if (string.IsNullOrEmpty(privateExpireKey)) continue;
 
-                long fileTime;
 
-                if (!long.TryParse(privateExpireKey, out fileTime)) continue;
+                if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
                 if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
 
                 storage.DeleteObject(_bucket, MakePath(domain, path));
@@ -702,7 +702,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         #region chunking
 
-        public override String InitiateChunkedUpload(string domain, string path)
+        public override string InitiateChunkedUpload(string domain, string path)
         {
             var storage = GetStorage();
 
@@ -713,26 +713,26 @@ namespace ASC.Data.Storage.GoogleCloud
             return sessionUri.ToString();
         }
 
-        public override string UploadChunk(String domain,
-                                           String path,
-                                           String uploadUri,
+        public override string UploadChunk(string domain,
+                                           string path,
+                                           string uploadUri,
                                            Stream stream,
                                            long defaultChunkSize,
                                            int chunkNumber,
                                            long chunkLength)
         {
 
-            String bytesRangeStart = Convert.ToString((chunkNumber - 1) * defaultChunkSize);
-            String bytesRangeEnd = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength - 1);
+            var bytesRangeStart = Convert.ToString((chunkNumber - 1) * defaultChunkSize);
+            var bytesRangeEnd = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength - 1);
 
-            String totalBytes = "*";
+            var totalBytes = "*";
 
-            int BufferSize = 2 * 4096;
+            var BufferSize = 2 * 4096;
 
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
 
-            String contentRangeHeader = String.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
+            var contentRangeHeader = string.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
 
             var request = HttpWebRequest.CreateHttp(uploadUri);
 
@@ -740,7 +740,7 @@ namespace ASC.Data.Storage.GoogleCloud
             request.ContentLength = chunkLength;
             request.Headers.Add("Content-Range", contentRangeHeader);
 
-            using (Stream rs = request.GetRequestStream())
+            using (var rs = request.GetRequestStream())
             {
                 var buffer = new byte[BufferSize];
 
@@ -757,9 +757,9 @@ namespace ASC.Data.Storage.GoogleCloud
             long MAX_RETRIES = 100;
             int millisecondsTimeout;
 
-            for (int i = 0; i < MAX_RETRIES; i++)
+            for (var i = 0; i < MAX_RETRIES; i++)
             {
-                Random random = new Random();
+                var random = new Random();
 
                 millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + random.Next(0, 1000), 32 * 1000);
 
@@ -794,7 +794,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 }
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         public override Uri FinalizeChunkedUpload(string domain, string path, string uploadUri, Dictionary<int, string> eTags)

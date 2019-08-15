@@ -65,8 +65,7 @@ namespace ASC.Core.Users
 
         public override bool Equals(object obj)
         {
-            var g = obj as GroupInfo;
-            if (g == null) return false;
+            if (!(obj is GroupInfo g)) return false;
             if (ID == Guid.Empty && g.ID == Guid.Empty) return ReferenceEquals(this, g);
             return g.ID == ID;
         }

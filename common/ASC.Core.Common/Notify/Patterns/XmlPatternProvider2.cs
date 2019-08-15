@@ -59,8 +59,7 @@ namespace ASC.Notify.Patterns
             var xdoc = new XmlDocument();
             xdoc.LoadXml(xml);
 
-            var xformatter = xdoc.SelectSingleNode("/patterns/formatter") as XmlElement;
-            if (xformatter != null)
+            if (xdoc.SelectSingleNode("/patterns/formatter") is XmlElement xformatter)
             {
                 var type = xformatter.GetAttribute("type");
                 if (!string.IsNullOrEmpty(type))
@@ -106,8 +105,7 @@ namespace ASC.Notify.Patterns
 
         public IPattern GetPattern(INotifyAction action, string senderName)
         {
-            IPattern p;
-            if (patterns.TryGetValue(action.ID + senderName, out p))
+            if (patterns.TryGetValue(action.ID + senderName, out var p))
             {
                 return p;
             }

@@ -130,8 +130,7 @@ namespace ASC.Web.Core
         {
             get
             {
-                IWebItem i;
-                items.TryGetValue(id, out i);
+                items.TryGetValue(id, out var i);
                 return i;
             }
         }
@@ -230,8 +229,7 @@ namespace ASC.Web.Core
 
         public Guid GetParentItemID(Guid itemID)
         {
-            var m = this[itemID] as IModule;
-            return m != null ? m.ProjectId : Guid.Empty;
+            return this[itemID] is IModule m ? m.ProjectId : Guid.Empty;
         }
 
         public static int GetSortOrder(IWebItem item)

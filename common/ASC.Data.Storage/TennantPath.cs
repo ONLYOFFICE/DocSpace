@@ -38,8 +38,7 @@ namespace ASC.Data.Storage
                 throw new ArgumentNullException("tenant");
             }
 
-            long tennantId;
-            if (long.TryParse(tenant, NumberStyles.Integer, CultureInfo.InvariantCulture, out tennantId))
+            if (long.TryParse(tenant, NumberStyles.Integer, CultureInfo.InvariantCulture, out var tennantId))
             {
                 var culture = CultureInfo.InvariantCulture;
                 return tennantId == 0 ? tennantId.ToString(culture) : tennantId.ToString("00/00/00", culture);

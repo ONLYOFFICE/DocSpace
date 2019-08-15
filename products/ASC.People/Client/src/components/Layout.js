@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
+import { withTranslation } from 'react-i18next';
 
 class PeopleLayout extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -30,24 +31,24 @@ class PeopleLayout extends React.Component {
 
     onLogoClick = () => window.open("/", '_self');
 
-    currentUserActions = [
-        {
-            key: 'ProfileBtn', label: 'Profile', onClick: this.onProfileClick
-        },
-        {
-            key: 'AboutBtn', label: 'About', onClick: this.onAboutClick
-        },
-        {
-            key: 'LogoutBtn', label: 'Log out', onClick: this.onLogoutClick
-        },
-    ];
-
     render() {
-        const { hasChanges, children } = this.props;
+        const { hasChanges, children, t } = this.props;
+
+        const currentUserActions = [
+            {
+                    key: 'ProfileBtn', label: t('Resource:Profile'), onClick: this.onProfileClick
+            },
+            {
+                    key: 'AboutBtn', label: t('Resource:AboutCompanyTitle'), onClick: this.onAboutClick
+            },
+            {
+                    key: 'LogoutBtn', label: t('Resource:LogoutButton'), onClick: this.onLogoutClick
+            },
+        ];
 
         const newProps = hasChanges
             ? {
-                currentUserActions: this.currentUserActions,
+                currentUserActions: currentUserActions,
                 onLogoClick: this.onLogoClick,
                 ...this.props
             }
@@ -94,4 +95,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { logout })(withRouter(PeopleLayout));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(PeopleLayout)));

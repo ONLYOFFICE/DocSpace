@@ -141,16 +141,14 @@ namespace ASC.Common.Tests.Security.Authorizing
 
         public void AddAccountInRole(ISubject account, IRole role)
         {
-            List<IRole> roles = null;
-            if (!AccountRoles.TryGetValue(account, out roles))
+            if (!AccountRoles.TryGetValue(account, out var roles))
             {
                 roles = new List<IRole>(10);
                 AccountRoles.Add(account, roles);
             }
             if (!roles.Contains(role)) roles.Add(role);
 
-            List<ISubject> accounts = null;
-            if (!RoleAccounts.TryGetValue(role, out accounts))
+            if (!RoleAccounts.TryGetValue(role, out var accounts))
             {
                 accounts = new List<ISubject>(10);
                 RoleAccounts.Add(role, accounts);
@@ -162,15 +160,13 @@ namespace ASC.Common.Tests.Security.Authorizing
 
         public List<IRole> GetRoles(Tenant tenant, ISubject account)
         {
-            List<IRole> roles = null;
-            if (!AccountRoles.TryGetValue(account, out roles)) roles = new List<IRole>();
+            if (!AccountRoles.TryGetValue(account, out var roles)) roles = new List<IRole>();
             return roles;
         }
 
         public List<ISubject> GetSubjects(IRole role)
         {
-            List<ISubject> accounts = null;
-            if (!RoleAccounts.TryGetValue(role, out accounts)) accounts = new List<ISubject>();
+            if (!RoleAccounts.TryGetValue(role, out var accounts)) accounts = new List<ISubject>();
             return accounts;
         }
 
@@ -264,7 +260,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
             allAces.AddRange(GetAcl(subject, action, fullObjectId));
 
-            bool inherit = GetObjectAcesInheritance(objectId);
+            var inherit = GetObjectAcesInheritance(objectId);
             if (inherit)
             {
                 var providerHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
@@ -338,8 +334,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
             public override bool Equals(object obj)
             {
-                var p = obj as PermissionRecord;
-                return p != null && Id == p.Id;
+                return obj is PermissionRecord p && Id == p.Id;
             }
         }
     }

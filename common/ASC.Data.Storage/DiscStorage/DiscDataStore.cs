@@ -62,7 +62,7 @@ namespace ASC.Data.Storage.DiscStorage
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
         }
 
-        public String GetPhysicalPath(string domain, string path)
+        public string GetPhysicalPath(string domain, string path)
         {
             if (path == null)
             {
@@ -99,7 +99,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                FileStream stream = File.OpenRead(target);
+                var stream = File.OpenRead(target);
                 if (0 < offset) stream.Seek(offset, SeekOrigin.Begin);
                 return stream;
             }
@@ -145,9 +145,8 @@ namespace ASC.Data.Storage.DiscStorage
             //Copy stream
 
             //optimaze disk file copy
-            var fileStream = buffered as FileStream;
             long fslen;
-            if (fileStream != null && WorkContext.IsMono)
+            if (buffered is FileStream fileStream && WorkContext.IsMono)
             {
                 File.Copy(fileStream.Name, target, true);
                 fslen = fileStream.Length;
@@ -634,7 +633,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private static void CreateDirectory(string target)
         {
-            string targetDirectory = Path.GetDirectoryName(target);
+            var targetDirectory = Path.GetDirectoryName(target);
             if (!Directory.Exists(targetDirectory))
             {
                 Directory.CreateDirectory(targetDirectory);

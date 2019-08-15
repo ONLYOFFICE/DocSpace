@@ -59,8 +59,7 @@ namespace ASC.Web.Core.Files
         public static string GetInternalExtension(string fileName)
         {
             var extension = GetFileExtension(fileName);
-            string internalExtension;
-            return InternalExtension.TryGetValue(GetFileTypeByExtention(extension), out internalExtension)
+            return InternalExtension.TryGetValue(GetFileTypeByExtention(extension), out var internalExtension)
                        ? internalExtension
                        : extension;
         }

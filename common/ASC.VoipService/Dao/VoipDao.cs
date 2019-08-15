@@ -142,7 +142,7 @@ namespace ASC.VoipService.Dao
                 {
                     query.InColumnValue("dial_duration", call.DialDuration);
                 }
-                if (call.Price > Decimal.Zero)
+                if (call.Price > decimal.Zero)
                 {
                     query.InColumnValue("price", call.Price);
                 }
@@ -163,7 +163,7 @@ namespace ASC.VoipService.Dao
                         query.InColumnValue("record_duration", call.VoipRecord.Duration);
                     }
 
-                    if (call.VoipRecord.Price != default(decimal))
+                    if (call.VoipRecord.Price != default)
                     {
                         query.InColumnValue("record_price", call.VoipRecord.Price);
                     }

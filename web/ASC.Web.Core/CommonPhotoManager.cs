@@ -52,7 +52,7 @@ namespace ASC.Web.Core
             if (crop) alignWidth = (minSide == realWidth);
             else alignWidth = (maxSide == realWidth);
 
-            double scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
+            var scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 
             if (scaleFactor < 1) scaleFactor = 1;
 
@@ -80,7 +80,7 @@ namespace ASC.Web.Core
                     graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                    using (ImageAttributes wrapMode = new ImageAttributes())
+                    using (var wrapMode = new ImageAttributes())
                     {
                         wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                         graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
@@ -118,7 +118,7 @@ namespace ASC.Web.Core
             }
         }
 
-        public static byte[] SaveToBytes(Image img, String formatName)
+        public static byte[] SaveToBytes(Image img, string formatName)
         {
             byte[] data;
             using (var memoryStream = new MemoryStream())
@@ -131,7 +131,7 @@ namespace ASC.Web.Core
             return data;
         }
 
-        public static ImageCodecInfo GetCodecInfo(String formatName)
+        public static ImageCodecInfo GetCodecInfo(string formatName)
         {
             var mimeType = string.Format("image/{0}", formatName);
             if (mimeType == "image/jpg") mimeType = "image/jpeg";

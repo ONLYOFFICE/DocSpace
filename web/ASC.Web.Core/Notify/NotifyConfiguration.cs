@@ -207,7 +207,7 @@ namespace ASC.Web.Studio.Core.Notify
                          var tags = r.Arguments;
 
                          var logoTextTag = tags.FirstOrDefault(a => a.Tag == CommonTags.LetterLogoText);
-                         var logoText = logoTextTag != null ? (String)logoTextTag.Value : string.Empty;
+                         var logoText = logoTextTag != null ? (string)logoTextTag.Value : string.Empty;
 
                          if (!string.IsNullOrEmpty(logoText))
                          {
@@ -244,10 +244,8 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-            IProduct product;
-            IModule module;
             //TODOL httpContext
-            CommonLinkUtility.GetLocationByRequest(tenant, out product, out module, null);
+            CommonLinkUtility.GetLocationByRequest(tenant, out var product, out var module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;

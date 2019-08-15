@@ -100,8 +100,7 @@ namespace ASC.Core.Notify
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
 
-            Guid userID;
-            if (TryParseGuid(recipient.ID, out userID))
+            if (TryParseGuid(recipient.ID, out var userID))
             {
                 var user = CoreContext.UserManager.GetUsers(tenantId, userID);
                 if (user.ID != Constants.LostUser.ID)

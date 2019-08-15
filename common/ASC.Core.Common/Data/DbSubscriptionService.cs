@@ -147,8 +147,7 @@ namespace ASC.Core.Data
                 }
                 else
                 {
-                    SubscriptionMethod r;
-                    if (common.TryGetValue(key, out r))
+                    if (common.TryGetValue(key, out var r))
                     {
                         result.Remove(r);
                     }
@@ -226,8 +225,7 @@ namespace ASC.Core.Data
                 }
                 else
                 {
-                    SubscriptionRecord r;
-                    if (common.TryGetValue(key, out r))
+                    if (common.TryGetValue(key, out var r))
                     {
                         result.Remove(r);
                     }

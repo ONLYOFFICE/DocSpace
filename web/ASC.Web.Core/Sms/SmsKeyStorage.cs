@@ -51,8 +51,7 @@ namespace ASC.Web.Core.Sms
                 KeyLength = 6;
             }
 
-            int store;
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keystore"], out store))
+            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keystore"], out var store))
             {
                 store = 10;
             }
@@ -125,8 +124,7 @@ namespace ASC.Web.Core.Sms
             }
 
             var cacheCheck = BuildCacheKey("check" + phone);
-            int counter;
-            int.TryParse(CheckCache.Get<String>(cacheCheck), out counter);
+            int.TryParse(CheckCache.Get<string>(cacheCheck), out var counter);
             if (++counter > AttemptCount)
                 return Result.TooMuch;
             CheckCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));

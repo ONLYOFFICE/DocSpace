@@ -58,7 +58,7 @@ namespace ASC.Web.Core.Calendars
 
         public static int GetDayOfWeekInMonth(this DateTime date)
         {
-            int count = 0;
+            var count = 0;
             var d = date;
             while (date.Month == d.Month)
             {
@@ -472,7 +472,7 @@ namespace ASC.Web.Core.Calendars
                     while (d.Year <= endDate.Year && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
-                        bool isFirst = true;
+                        var isFirst = true;
 
                         if (ByMonth != null)
                         {
@@ -946,8 +946,7 @@ namespace ASC.Web.Core.Calendars
 
                         foreach (var date in val.Split(','))
                         {
-                            DateTime dt;
-                            if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dt))
+                            if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dt))
                                 rr.ExDates.Add(new ExDate() { Date = dt, isDateTime = (date.ToLower().IndexOf('t') >= 0) });
 
                         }
@@ -963,9 +962,9 @@ namespace ASC.Web.Core.Calendars
         public string ToiCalFormat()
         {
             if (this.Freq == Frequency.Never)
-                return String.Empty;
+                return string.Empty;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("RRULE:" + this.ToString(true));
 
             if (this.ExDates.Count > 0)

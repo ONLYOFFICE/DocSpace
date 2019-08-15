@@ -77,16 +77,16 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                if (!String.IsNullOrEmpty(_logoText) && _logoText != DefaultLogoText)
+                if (!string.IsNullOrEmpty(_logoText) && _logoText != DefaultLogoText)
                     return _logoText;
 
                 var partnerSettings = LoadForDefaultTenant();
-                return String.IsNullOrEmpty(partnerSettings._logoText) ? DefaultLogoText : partnerSettings._logoText;
+                return string.IsNullOrEmpty(partnerSettings._logoText) ? DefaultLogoText : partnerSettings._logoText;
             }
             set { _logoText = value; }
         }
 
-        private const String moduleName = "whitelabel";
+        private const string moduleName = "whitelabel";
 
         #endregion
 
@@ -219,7 +219,7 @@ namespace ASC.Web.Core.WhiteLabel
                 var currentLogoType = (WhiteLabelLogoTypeEnum)(currentLogo.Key);
                 var currentLogoPath = currentLogo.Value;
 
-                if (!String.IsNullOrEmpty(currentLogoPath))
+                if (!string.IsNullOrEmpty(currentLogoPath))
                 {
                     var fileExt = "png";
                     byte[] data = null;
@@ -322,7 +322,7 @@ namespace ASC.Web.Core.WhiteLabel
             return "";
         }
 
-        private void SetExt(WhiteLabelLogoTypeEnum type, String fileExt)
+        private void SetExt(WhiteLabelLogoTypeEnum type, string fileExt)
         {
             switch (type)
             {
@@ -370,7 +370,7 @@ namespace ASC.Web.Core.WhiteLabel
         public static string GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum type, bool general)
         {
             var partnerLogoPath = GetPartnerStorageLogoPath(type, general);
-            if (!String.IsNullOrEmpty(partnerLogoPath))
+            if (!string.IsNullOrEmpty(partnerLogoPath))
                 return partnerLogoPath;
 
             switch (type)
@@ -445,9 +445,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, String fileExt, bool general)
+        public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool general)
         {
-            return String.Format("logo_{0}{2}.{1}", type.ToString().ToLowerInvariant(), fileExt, general ? "_general" : "");
+            return string.Format("logo_{0}{2}.{1}", type.ToString().ToLowerInvariant(), fileExt, general ? "_general" : "");
         }
 
         public static Size GetSize(WhiteLabelLogoTypeEnum type, bool general)
@@ -474,7 +474,7 @@ namespace ASC.Web.Core.WhiteLabel
             return new Size(0, 0);
         }
 
-        private static void ResizeLogo(WhiteLabelLogoTypeEnum type, String fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
+        private static void ResizeLogo(WhiteLabelLogoTypeEnum type, string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();

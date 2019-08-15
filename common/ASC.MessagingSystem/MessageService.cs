@@ -205,7 +205,7 @@ namespace ASC.MessagingSystem
 
         public void Send(Dictionary<string, string> httpHeaders, MessageAction action, IEnumerable<string> d1)
         {
-            SendHeadersMessage(null, httpHeaders, action, null, d1 != null ? d1.ToArray() : null);
+            SendHeadersMessage(null, httpHeaders, action, null, d1?.ToArray());
         }
 
         public void Send(MessageUserData userData, Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target)
@@ -229,7 +229,7 @@ namespace ASC.MessagingSystem
 
         public void Send(Dictionary<string, string> httpHeaders, MessageAction action, MessageTarget target, IEnumerable<string> d1)
         {
-            SendHeadersMessage(null, httpHeaders, action, target, d1 != null ? d1.ToArray() : null);
+            SendHeadersMessage(null, httpHeaders, action, target, d1?.ToArray());
         }
 
         #endregion

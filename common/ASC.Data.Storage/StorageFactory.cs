@@ -56,8 +56,7 @@ namespace ASC.Data.Storage
 
         public static IDataStore GetStorage(string configpath, string tenant, string module)
         {
-            int tenantId;
-            int.TryParse(tenant, out tenantId);
+            int.TryParse(tenant, out var tenantId);
             return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId));
         }
 
@@ -105,8 +104,7 @@ namespace ASC.Data.Storage
                 throw new InvalidOperationException("config section not found");
             }
 
-            int tenantId;
-            int.TryParse(tenant, out tenantId);
+            int.TryParse(tenant, out var tenantId);
             return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId));
         }
 

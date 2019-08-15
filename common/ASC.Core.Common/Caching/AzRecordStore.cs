@@ -46,8 +46,7 @@ namespace ASC.Core.Caching
 
         public IEnumerable<AzRecord> Get(string objectId)
         {
-            List<AzRecord> aces;
-            byObjectId.TryGetValue(objectId ?? string.Empty, out aces);
+            byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
             return aces ?? new List<AzRecord>();
         }
 

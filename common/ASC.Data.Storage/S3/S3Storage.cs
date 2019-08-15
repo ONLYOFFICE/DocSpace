@@ -61,7 +61,7 @@ namespace ASC.Data.Storage.S3
         private bool _lowerCasing = true;
         private bool _revalidateCloudFront;
         private string _distributionId = string.Empty;
-        private String _subDir = String.Empty;
+        private string _subDir = string.Empty;
 
         public S3Storage(string tenant)
         {
@@ -676,7 +676,7 @@ namespace ASC.Data.Storage.S3
                     Verb = HttpVerb.GET
                 };
 
-                string url = client.GetPreSignedURL(pUrlRequest);
+                var url = client.GetPreSignedURL(pUrlRequest);
                 //TODO: CNAME!
                 return url;
             }
@@ -699,8 +699,7 @@ namespace ASC.Data.Storage.S3
                     var privateExpireKey = metadata.Metadata["private-expire"];
                     if (string.IsNullOrEmpty(privateExpireKey)) continue;
 
-                    long fileTime;
-                    if (!long.TryParse(privateExpireKey, out fileTime)) continue;
+                    if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
                     if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
                     //Delete it
                     var deleteObjectRequest = new DeleteObjectRequest
@@ -724,9 +723,8 @@ namespace ASC.Data.Storage.S3
         {
             var key = MakePath(domain, directoryPath) + "/";
             //Generate policy
-            string sign;
             var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
-                                                  out sign);
+                                                  out var sign);
             var postBuilder = new StringBuilder();
             postBuilder.Append("{");
             postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
@@ -754,9 +752,8 @@ namespace ASC.Data.Storage.S3
             var destBucket = GetUploadUrl();
             var key = MakePath(domain, directoryPath) + "/";
             //Generate policy
-            string sign;
             var policyBase64 = GetPolicyBase64(key, redirectTo, contentType, contentDisposition, maxUploadSize,
-                                                  out sign);
+                                                  out var sign);
 
             var formBuilder = new StringBuilder();
             formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
@@ -1048,11 +1045,11 @@ namespace ASC.Data.Storage.S3
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                               ? new Uri(props["cname"], UriKind.Absolute)
-                              : new Uri(String.Format("http://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+                              : new Uri(string.Format("http://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
             _bucketSSlRoot = props.ContainsKey("cnamessl") &&
                              Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
-                                 : new Uri(String.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
+                                 : new Uri(string.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
 
             if (props.ContainsKey("lower"))
             {
@@ -1081,12 +1078,12 @@ namespace ASC.Data.Storage.S3
 
             path = path.TrimStart('\\', '/').TrimEnd('/').Replace('\\', '/');
 
-            if (!String.IsNullOrEmpty(_subDir))
+            if (!string.IsNullOrEmpty(_subDir))
             {
                 if (_subDir.Length == 1 && (_subDir[0] == '/' || _subDir[0] == '\\'))
                     result = path;
                 else
-                    result = String.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
+                    result = string.Format("{0}/{1}", _subDir, path); // Ignory all, if _subDir is not null
             }
             else//Key combined from module+domain+filename
                 result = string.Format("{0}/{1}/{2}/{3}",
@@ -1153,9 +1150,7 @@ namespace ASC.Data.Storage.S3
 
             public ResponseStreamWrapper(GetObjectResponse response)
             {
-                if (response == null) throw new ArgumentNullException("response");
-
-                _response = response;
+                _response = response ?? throw new ArgumentNullException("response");
             }
 
 

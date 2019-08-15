@@ -45,13 +45,12 @@ namespace ASC.Common.Security.Authorizing
 
         public AuthorizingException(ISubject subject, IAction[] actions)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
             if (actions == null || actions.Length == 0) throw new ArgumentNullException("actions");
-            Subject = subject;
+            Subject = subject ?? throw new ArgumentNullException("subject");
             Actions = actions;
-            string sactions = "";
+            var sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
-            _Message = String.Format(
+            _Message = string.Format(
                 "\"{0}\" access denied \"{1}\"",
                 subject,
                 sactions
@@ -96,25 +95,25 @@ namespace ASC.Common.Security.Authorizing
             if (denyActions == null || denyActions.Length == 0) throw new ArgumentNullException("denyActions");
             if (actions.Length != denySubjects.Length || actions.Length != denyActions.Length)
                 throw new ArgumentException();
-            string reasons = "";
-            for (int i = 0; i < actions.Length; i++)
+            var reasons = "";
+            for (var i = 0; i < actions.Length; i++)
             {
-                string reason = "";
+                var reason = "";
                 if (denySubjects[i] != null && denyActions[i] != null)
-                    reason = String.Format("{0}:{1} access denied {2}.",
+                    reason = string.Format("{0}:{1} access denied {2}.",
                                            actions[i].Name,
                                            (denySubjects[i] is IRole ? "role:" : "") + denySubjects[i].Name,
                                            denyActions[i].Name
                         );
                 else
-                    reason = String.Format("{0}: access denied.", actions[i].Name);
+                    reason = string.Format("{0}: access denied.", actions[i].Name);
                 if (i != actions.Length - 1)
                     reason += ", ";
                 reasons += reason;
             }
-            string sactions = "";
+            var sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
-            string message = String.Format(
+            var message = string.Format(
                 "\"{0}\" access denied \"{1}\". Cause: {2}.",
                 (subject is IRole ? "role:" : "") + subject.Name,
                 sactions,

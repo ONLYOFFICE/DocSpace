@@ -70,11 +70,11 @@ namespace ASC.Common.Data.Sql
                 sql.Append(replaceExists ? "replace" : "insert");
             }
             sql.AppendFormat(" into {0}", table);
-            bool identityInsert = IsIdentityInsert();
+            var identityInsert = IsIdentityInsert();
             if (0 < columns.Count)
             {
                 sql.Append("(");
-                for (int i = 0; i < columns.Count; i++)
+                for (var i = 0; i < columns.Count; i++)
                 {
                     if (identityInsert && identityPosition == i) continue;
                     sql.AppendFormat("{0},", columns[i]);
@@ -87,7 +87,7 @@ namespace ASC.Common.Data.Sql
                 return sql.ToString();
             }
             sql.Append(" values (");
-            for (int i = 0; i < values.Count; i++)
+            for (var i = 0; i < values.Count; i++)
             {
                 if (identityInsert && identityPosition == i)
                 {

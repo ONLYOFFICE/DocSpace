@@ -58,9 +58,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var defaultSettings = GetDefault() as CompanyWhiteLabelSettings;
-
-                if (defaultSettings == null) return false;
+                if (!(GetDefault() is CompanyWhiteLabelSettings defaultSettings)) return false;
 
                 return CompanyName == defaultSettings.CompanyName &&
                        Site == defaultSettings.Site &&

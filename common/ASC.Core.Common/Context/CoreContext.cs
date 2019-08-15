@@ -63,9 +63,8 @@ namespace ASC.Core
                 if (ConfigurationManager.AppSettings["core.enable-quota-cache"] == null)
                     return true;
 
-                bool enabled;
 
-                return !bool.TryParse(ConfigurationManager.AppSettings["core.enable-quota-cache"], out enabled) || enabled;
+                return !bool.TryParse(ConfigurationManager.AppSettings["core.enable-quota-cache"], out var enabled) || enabled;
             }
         }
 

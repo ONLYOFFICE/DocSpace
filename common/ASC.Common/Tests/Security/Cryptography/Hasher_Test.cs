@@ -39,7 +39,7 @@ namespace ASC.Common.Tests.Security.Cryptography
         [Test]
         public void DoHash()
         {
-            string str = "Hello, Jhon!";
+            var str = "Hello, Jhon!";
 
             Assert.AreEqual(
                 Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),

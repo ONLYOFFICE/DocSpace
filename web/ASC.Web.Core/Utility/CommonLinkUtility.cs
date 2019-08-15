@@ -183,10 +183,10 @@ namespace ASC.Web.Studio.Utility
         {
             var queryParams = "";
 
-            if (!String.IsNullOrEmpty(user))
+            if (!string.IsNullOrEmpty(user))
             {
                 var guid = Guid.Empty;
-                if (!String.IsNullOrEmpty(user) && 32 <= user.Length && user[8] == '-')
+                if (!string.IsNullOrEmpty(user) && 32 <= user.Length && user[8] == '-')
                 {
                     try
                     {
@@ -252,7 +252,7 @@ namespace ASC.Web.Studio.Utility
 
         public static IWebItem GetWebItemByUrl(string currentURL)
         {
-            if (!String.IsNullOrEmpty(currentURL))
+            if (!string.IsNullOrEmpty(currentURL))
             {
 
                 var itemName = GetWebItemNameFromUrl(currentURL);
@@ -261,7 +261,7 @@ namespace ASC.Web.Studio.Utility
                     foreach (var item in WebItemManager.Instance.GetItemsAll())
                     {
                         var _itemName = GetWebItemNameFromUrl(item.StartURL);
-                        if (String.Compare(itemName, _itemName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        if (string.Compare(itemName, _itemName, StringComparison.InvariantCultureIgnoreCase) == 0)
                             return item;
                     }
                 }
@@ -271,7 +271,7 @@ namespace ASC.Web.Studio.Utility
                     var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
                     var pid = productByName == null ? Guid.Empty : productByName.ID;
 
-                    if (pid == Guid.Empty && !String.IsNullOrEmpty(urlParams["pid"]))
+                    if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
                     {
                         try
                         {
@@ -296,13 +296,13 @@ namespace ASC.Web.Studio.Utility
             currentProduct = null;
             currentModule = null;
 
-            if (String.IsNullOrEmpty(currentURL)) return;
+            if (string.IsNullOrEmpty(currentURL)) return;
 
             var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
             var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
             var pid = productByName == null ? Guid.Empty : productByName.ID;
 
-            if (pid == Guid.Empty && !String.IsNullOrEmpty(urlParams["pid"]))
+            if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
             {
                 try
                 {
@@ -324,18 +324,18 @@ namespace ASC.Web.Studio.Utility
                     var _productName = GetProductNameFromUrl(product.StartURL);
                     if (!string.IsNullOrEmpty(_productName))
                     {
-                        if (String.Compare(productName, _productName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        if (string.Compare(productName, _productName, StringComparison.InvariantCultureIgnoreCase) == 0)
                         {
                             currentProduct = product;
 
-                            if (!String.IsNullOrEmpty(moduleName))
+                            if (!string.IsNullOrEmpty(moduleName))
                             {
                                 foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
                                     {
-                                        if (String.Compare(moduleName, _moduleName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                                        if (string.Compare(moduleName, _moduleName, StringComparison.InvariantCultureIgnoreCase) == 0)
                                         {
                                             currentModule = module;
                                             break;
@@ -368,10 +368,10 @@ namespace ASC.Web.Studio.Utility
         private static string GetWebItemNameFromUrl(string url)
         {
             var name = GetModuleNameFromUrl(url);
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
                 name = GetProductNameFromUrl(url);
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     try
                     {
@@ -434,10 +434,10 @@ namespace ASC.Web.Studio.Utility
         {
             IProduct result = null;
 
-            if (!String.IsNullOrEmpty(sysName))
+            if (!string.IsNullOrEmpty(sysName))
                 foreach (var product in WebItemManager.Instance.GetItemsAll<IProduct>())
                 {
-                    if (String.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
+                    if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
                     {
                         result = product;
                         break;
@@ -460,7 +460,7 @@ namespace ASC.Web.Studio.Utility
             if (user == null || string.IsNullOrEmpty(user.UserName))
                 return "";
 
-            return String.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));
+            return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));
         }
 
         #region Help Centr
@@ -468,35 +468,35 @@ namespace ASC.Web.Studio.Utility
         public static string GetHelpLink(bool inCurrentCulture = true)
         {
             if (!AdditionalWhiteLabelSettings.Instance.HelpCenterEnabled)
-                return String.Empty;
+                return string.Empty;
 
             var url = AdditionalWhiteLabelSettings.DefaultHelpCenterUrl;
 
-            if (String.IsNullOrEmpty(url))
-                return String.Empty;
+            if (string.IsNullOrEmpty(url))
+                return string.Empty;
 
             return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
         }
 
         public static string GetRegionalUrl(string url, string lang)
         {
-            if (String.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
                 return url;
 
             //-replace language
             var regex = new Regex("{.*?}");
             var matches = regex.Matches(url);
 
-            if (String.IsNullOrEmpty(lang))
+            if (string.IsNullOrEmpty(lang))
             {
-                url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, String.Empty));
+                url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
             }
             else
             {
                 foreach (Match match in matches)
                 {
                     var values = match.Value.TrimStart('{').TrimEnd('}').Split('|');
-                    url = url.Replace(match.Value, values.Contains(lang) ? lang : String.Empty);
+                    url = url.Replace(match.Value, values.Contains(lang) ? lang : string.Empty);
                 }
             }
             //-
@@ -528,12 +528,12 @@ namespace ASC.Web.Studio.Utility
 
         #region confirm links
 
-        public static string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default(Guid))
+        public static string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
             return GetFullAbsolutePath(GetConfirmationUrlRelative(CoreContext.TenantManager.GetCurrentTenant().TenantId, email, confirmType, postfix, userId));
         }
 
-        public static string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default(Guid))
+        public static string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
             var validationKey = EmailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
 
@@ -544,7 +544,7 @@ namespace ASC.Web.Studio.Utility
                 link += "&email=" + HttpUtility.UrlEncode(email);
             }
 
-            if (userId != default(Guid))
+            if (userId != default)
             {
                 link += "&uid=" + userId;
             }

@@ -280,13 +280,12 @@ namespace ASC.Core
 
             var refs = GetRefsInternal(tenant.TenantId);
             IEnumerable<UserGroupRef> userRefs = null;
-            var store = refs as UserGroupRefStore;
-            if (store != null)
+            if (refs is UserGroupRefStore store)
             {
                 userRefs = store.GetRefsByUser(userID);
             }
 
-            var userRefsContainsNotRemoved = userRefs != null ? userRefs.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList() : null;
+            var userRefsContainsNotRemoved = userRefs?.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList();
 
             foreach (var g in GetGroupsInternal(tenant.TenantId).Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
             {
@@ -302,7 +301,7 @@ namespace ASC.Core
                 result.AddRange(distinctUserGroups);
             }
 
-            result.Sort((group1, group2) => String.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
+            result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
 
             return result.ToArray();
         }
@@ -313,8 +312,7 @@ namespace ASC.Core
 
             var refs = GetRefsInternal(tenantId);
 
-            var store = refs as UserGroupRefStore;
-            if (store != null)
+            if (refs is UserGroupRefStore store)
             {
                 var userRefs = store.GetRefsByUser(userID);
 

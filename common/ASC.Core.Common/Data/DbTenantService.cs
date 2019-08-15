@@ -66,7 +66,7 @@ namespace ASC.Core.Data
                     active
                         ? Exp.Eq("t.status", (int)TenantStatus.Active)
                         : Exp.Empty,
-                    from != default(DateTime)
+                    from != default
                         ? Exp.Ge("last_modified", from)
                         : Exp.Empty
                     )
@@ -291,7 +291,7 @@ namespace ASC.Core.Data
                 TrustedDomainsType = (TenantTrustedDomainsType)Convert.ToInt32(r[10]),
                 CreatedDateTime = (DateTime)r[11],
                 Status = (TenantStatus)Convert.ToInt32(r[12]),
-                StatusChangeDate = r[13] != null ? (DateTime)r[13] : default(DateTime),
+                StatusChangeDate = r[13] != null ? (DateTime)r[13] : default,
                 PaymentId = (string)r[14],
                 LastModified = (DateTime)r[15],
                 PartnerId = (string)r[16],

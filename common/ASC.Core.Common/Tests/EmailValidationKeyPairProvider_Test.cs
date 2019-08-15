@@ -39,7 +39,7 @@ namespace ASC.Common.Tests.Security.Cryptography
         public void PasswordDerivedBytes_Test()
         {
 
-            byte[] randBytes = new byte[5];
+            var randBytes = new byte[5];
             new Random(10032010).NextBytes(randBytes);
 
 

@@ -324,8 +324,7 @@ namespace ASC.Core.Common.Configuration
 
         public static Consumer GetByName(string name)
         {
-            object result;
-            if (Builder.TryResolveNamed(name, typeof(Consumer), out result))
+            if (Builder.TryResolveNamed(name, typeof(Consumer), out var result))
             {
                 return (Consumer)result;
             }
@@ -335,8 +334,7 @@ namespace ASC.Core.Common.Configuration
 
         public static T GetByName<T>(string name) where T : Consumer, new()
         {
-            object result;
-            if (Builder.TryResolveNamed(name, typeof(T), out result))
+            if (Builder.TryResolveNamed(name, typeof(T), out var result))
             {
                 return (T)result;
             }
@@ -346,8 +344,7 @@ namespace ASC.Core.Common.Configuration
 
         public static T Get<T>() where T : Consumer, new()
         {
-            T result;
-            if (Builder.TryResolve(out result))
+            if (Builder.TryResolve(out T result))
             {
                 return result;
             }

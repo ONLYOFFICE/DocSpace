@@ -82,7 +82,7 @@ namespace ASC.FederatedLogin
         {
             get
             {
-                if (!ExpiresIn.Equals(default(long)))
+                if (!ExpiresIn.Equals(default))
                     return DateTime.UtcNow > Timestamp + TimeSpan.FromSeconds(ExpiresIn);
                 return true;
             }
@@ -109,8 +109,7 @@ namespace ASC.FederatedLogin
                 OriginJson = json,
             };
 
-            long expiresIn;
-            if (long.TryParse(parser.Value<string>("expires_in"), out expiresIn))
+            if (long.TryParse(parser.Value<string>("expires_in"), out var expiresIn))
                 token.ExpiresIn = expiresIn;
 
             try

@@ -42,12 +42,9 @@ namespace ASC.Core.Notify
         public DirectSubscriptionProvider(string sourceID, SubscriptionManager subscriptionManager, IRecipientProvider recipientProvider)
         {
             if (string.IsNullOrEmpty(sourceID)) throw new ArgumentNullException("sourceID");
-            if (subscriptionManager == null) throw new ArgumentNullException("subscriptionManager");
-            if (recipientProvider == null) throw new ArgumentNullException("recipientProvider");
-
             this.sourceID = sourceID;
-            this.subscriptionManager = subscriptionManager;
-            this.recipientProvider = recipientProvider;
+            this.subscriptionManager = subscriptionManager ?? throw new ArgumentNullException("subscriptionManager");
+            this.recipientProvider = recipientProvider ?? throw new ArgumentNullException("recipientProvider");
         }
 
 

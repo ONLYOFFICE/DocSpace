@@ -90,8 +90,7 @@ namespace ASC.Core
 
         public override bool Equals(object obj)
         {
-            var g = obj as Group;
-            return g != null && g.Id == Id;
+            return obj is Group g && g.Id == Id;
         }
     }
 }

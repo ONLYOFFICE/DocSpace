@@ -143,35 +143,35 @@ namespace ASC.Web.Studio.Helpers
 
         public void DoThumbnail(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 DoThumbnail(fs, outputPath, ref imageInfo);
             }
         }
         public void DoThumbnail(Stream image, string outputPath, ref ImageInfo imageInfo)
         {
-            using (Image img = Image.FromStream(image))
+            using (var img = Image.FromStream(image))
             {
                 DoThumbnail(img, outputPath, ref imageInfo);
             }
         }
         public void DoThumbnail(Image image, string outputPath, ref ImageInfo imageInfo)
         {
-            int realWidth = image.Width;
-            int realHeight = image.Height;
+            var realWidth = image.Width;
+            var realHeight = image.Height;
 
             imageInfo.OriginalWidth = realWidth;
             imageInfo.OriginalHeight = realHeight;
 
-            EncoderParameters ep = new EncoderParameters(1);
+            var ep = new EncoderParameters(1);
 
             ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)90);
 
-            ImageCodecInfo icJPG = getCodecInfo("image/jpeg");
+            var icJPG = getCodecInfo("image/jpeg");
 
-            if (!String.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
+            if (!string.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
             {
-                int indexDot = imageInfo.Name.ToLower().LastIndexOf(".");
+                var indexDot = imageInfo.Name.ToLower().LastIndexOf(".");
 
                 if (imageInfo.Name.ToLower().IndexOf("png", indexDot) > indexDot)
                     icJPG = getCodecInfo("image/png");
@@ -190,7 +190,7 @@ namespace ASC.Web.Studio.Helpers
                 else
                 {
 
-                    MemoryStream ms = new MemoryStream();
+                    var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
                     ms.Seek(0, SeekOrigin.Begin);
                     store.Save(outputPath, ms);
@@ -202,16 +202,16 @@ namespace ASC.Web.Studio.Helpers
             {
                 thumbnail = new Bitmap(_width < realWidth ? _width : realWidth, _heigth < realHeight ? _heigth : realHeight);
 
-                int maxSide = realWidth > realHeight ? realWidth : realHeight;
-                int minSide = realWidth < realHeight ? realWidth : realHeight;
+                var maxSide = realWidth > realHeight ? realWidth : realHeight;
+                var minSide = realWidth < realHeight ? realWidth : realHeight;
 
-                bool alignWidth = true;
+                var alignWidth = true;
                 if (_crop)
                     alignWidth = (minSide == realWidth);
                 else
                     alignWidth = (maxSide == realWidth);
 
-                double scaleFactor = (alignWidth) ? (realWidth / (1.0 * _width)) : (realHeight / (1.0 * _heigth));
+                var scaleFactor = (alignWidth) ? (realWidth / (1.0 * _width)) : (realHeight / (1.0 * _heigth));
 
                 if (scaleFactor < 1) scaleFactor = 1;
 
@@ -225,13 +225,13 @@ namespace ASC.Web.Studio.Helpers
                 locationY = (int)(((_heigth < realHeight ? _heigth : realHeight) / 2.0) - (finalHeigth / 2.0));
                 locationX = (int)(((_width < realWidth ? _width : realWidth) / 2.0) - (finalWidth / 2.0));
 
-                Rectangle rect = new Rectangle(locationX, locationY, finalWidth, finalHeigth);
+                var rect = new Rectangle(locationX, locationY, finalWidth, finalHeigth);
 
                 imageInfo.ThumbnailWidth = thumbnail.Width;
                 imageInfo.ThumbnailHeight = thumbnail.Height;
 
 
-                using (Graphics graphic = Graphics.FromImage(thumbnail))
+                using (var graphic = Graphics.FromImage(thumbnail))
                 {
                     graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -245,7 +245,7 @@ namespace ASC.Web.Studio.Helpers
             else
             {
 
-                MemoryStream ms = new MemoryStream();
+                var ms = new MemoryStream();
                 thumbnail.Save(ms, icJPG, ep);
                 ms.Seek(0, SeekOrigin.Begin);
                 store.Save(outputPath, ms);
@@ -259,28 +259,28 @@ namespace ASC.Web.Studio.Helpers
 
         public void DoPreviewImage(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 DoPreviewImage(fs, outputPath, ref imageInfo);
             }
         }
         public void DoPreviewImage(Stream image, string outputPath, ref ImageInfo imageInfo)
         {
-            using (Image img = Image.FromStream(image))
+            using (var img = Image.FromStream(image))
             {
                 DoPreviewImage(img, outputPath, ref imageInfo);
             }
         }
         public void DoPreviewImage(Image image, string outputPath, ref ImageInfo imageInfo)
         {
-            int realWidth = image.Width;
-            int realHeight = image.Height;
+            var realWidth = image.Width;
+            var realHeight = image.Height;
 
-            int heightPreview = realHeight;
-            int widthPreview = realWidth;
+            var heightPreview = realHeight;
+            var widthPreview = realWidth;
 
-            EncoderParameters ep = new EncoderParameters(1);
-            ImageCodecInfo icJPG = getCodecInfo("image/jpeg");
+            var ep = new EncoderParameters(1);
+            var icJPG = getCodecInfo("image/jpeg");
             ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)90);
 
             if (realWidth <= _widthPreview && realHeight <= _heightPreview)
@@ -293,7 +293,7 @@ namespace ASC.Web.Studio.Helpers
                 else
                 {
 
-                    MemoryStream ms = new MemoryStream();
+                    var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
                     ms.Seek(0, SeekOrigin.Begin);
                     store.Save(outputPath, ms);
@@ -322,9 +322,9 @@ namespace ASC.Web.Studio.Helpers
             imageInfo.PreviewWidth = widthPreview;
             imageInfo.PreviewHeight = heightPreview;
 
-            Bitmap preview = new Bitmap(widthPreview, heightPreview);
+            var preview = new Bitmap(widthPreview, heightPreview);
 
-            using (Graphics graphic = Graphics.FromImage(preview))
+            using (var graphic = Graphics.FromImage(preview))
             {
                 graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -337,7 +337,7 @@ namespace ASC.Web.Studio.Helpers
             else
             {
 
-                MemoryStream ms = new MemoryStream();
+                var ms = new MemoryStream();
                 preview.Save(ms, icJPG, ep);
                 ms.Seek(0, SeekOrigin.Begin);
                 store.Save(outputPath, ms);
@@ -389,9 +389,9 @@ namespace ASC.Web.Studio.Helpers
 
         private static ImageCodecInfo getCodecInfo(string mt)
         {
-            ImageCodecInfo[] ici = ImageCodecInfo.GetImageEncoders();
-            int idx = 0;
-            for (int ii = 0; ii < ici.Length; ii++)
+            var ici = ImageCodecInfo.GetImageEncoders();
+            var idx = 0;
+            for (var ii = 0; ii < ici.Length; ii++)
             {
                 if (ici[ii].MimeType == mt)
                 {
@@ -411,7 +411,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -422,7 +422,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -432,7 +432,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -443,23 +443,27 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.DoThumbnail(path, outputPath, ref imageInfo);
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
         }
@@ -467,7 +471,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -478,20 +482,21 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
         }
 
 
         public static void GeneratePreview(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -502,7 +507,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -513,13 +518,14 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
             _generator.DoPreviewImage(stream, outputPath, ref imageInfo);
 
         }
@@ -527,12 +533,14 @@ namespace ASC.Web.Studio.Helpers
 
         public static void RotateImage(string path, string outputPath, bool back, IDataStore store)
         {
-            ThumbnailGenerator _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(null, true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
-                maxHeightPreview);
-            _generator.store = store;
+                maxHeightPreview)
+            {
+                store = store
+            };
 
             _generator.RotateImage(path, outputPath, back);
         }

@@ -45,7 +45,7 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId)
         {
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
             return aces
                 .Where(a => a.ActionId == actionId && (a.SubjectId == subjectId || subjectId == Guid.Empty))
                 .ToList();
@@ -53,7 +53,7 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
             return FilterAces(aces, subjectId, actionId, objectId)
                 .ToList();
         }
@@ -66,7 +66,7 @@ namespace ASC.Core
             }
 
             var result = new List<AzRecord>();
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
             result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
             var inherits = new List<AzRecord>();
@@ -102,7 +102,7 @@ namespace ASC.Core
 
         private IEnumerable<AzRecord> GetAcesInternal()
         {
-            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default(DateTime));
+            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
         }
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
@@ -118,8 +118,7 @@ namespace ASC.Core
         private IEnumerable<AzRecord> FilterAces(IEnumerable<AzRecord> aces, Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
             var objId = AzObjectIdHelper.GetFullObjectId(objectId);
-            var store = aces as AzRecordStore;
-            return store != null ?
+            return aces is AzRecordStore store ?
                 store.Get(objId).Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty)) :
                 aces.Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty) && a.ObjectId == objId);
         }

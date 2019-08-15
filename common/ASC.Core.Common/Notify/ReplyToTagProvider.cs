@@ -59,11 +59,11 @@ namespace ASC.Core.Common.Notify
         /// <returns>New TeamLab tag</returns>
         public static TagValue Comment(string entity, string entityId, string parentId)
         {
-            if (String.IsNullOrEmpty(entity) || !EntityType.Match(entity).Success) throw new ArgumentException(@"Not supported entity type", entity);
-            if (String.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
+            if (string.IsNullOrEmpty(entity) || !EntityType.Match(entity).Success) throw new ArgumentException(@"Not supported entity type", entity);
+            if (string.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
 
-            string pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : String.Empty;
-            return new TagValue(TagName, String.Format("reply_{0}_{1}_{2}@{3}", entity, entityId, pId, AutoreplyDomain));
+            var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : string.Empty;
+            return new TagValue(TagName, string.Format("reply_{0}_{1}_{2}@{3}", entity, entityId, pId, AutoreplyDomain));
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace ASC.Core.Common.Notify
         /// <returns>New TeamLab tag</returns>
         public static TagValue Message(int projectId)
         {
-            return new TagValue(TagName, String.Format("message_{0}@{1}", projectId, AutoreplyDomain));
+            return new TagValue(TagName, string.Format("message_{0}@{1}", projectId, AutoreplyDomain));
         }
 
         private static string AutoreplyDomain
