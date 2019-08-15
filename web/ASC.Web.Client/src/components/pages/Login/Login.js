@@ -5,6 +5,33 @@ import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactst
 import { Button, TextInput, PageLayout } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../store/auth/actions';
+import styled from 'styled-components';
+
+const FormContainer = styled(Container)`
+    margin-top: 70px;
+
+    .login-row {
+        margin: 23px 0 0;
+
+        .login-card {
+            border: none;
+
+            .card-img {
+                max-width: 216px; 
+                max-height: 35px;
+            }
+            .card-title {
+                word-wrap: break-word; 
+                margin: 8px 0; 
+                text-align: left;
+                font-size: 24px; 
+                color: #116d9d;
+            }
+        }
+    }
+`;
+
+const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
     const [identifier, setIdentifier] = useState('');
@@ -72,17 +99,17 @@ const Form = props => {
     }, [onKeyPress]);
 
     return (
-        <Container style={{ marginTop: "70px" }}>
-            <Row style={{ margin: "23px 0 0" }}>
-                <Col sm="12" md={{ size: 6, offset: 3 }}>
-                    <Card style={{ border: 'none' }}>
-                        <CardImg top style={{ maxWidth: '216px', maxHeight: '35px' }} src="images/dark_general.png" alt="Logo" />
-                        <CardTitle style={{ wordWrap: 'break-word', margin: '8px 0', textAlign: 'left', fontSize: '24px', color: '#116d9d' }}>Cloud Office Applications</CardTitle>
+        <FormContainer>
+            <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
+                    <Card className="login-card">
+                        <CardImg className="card-img" src="images/dark_general.png" alt="Logo" top />
+                        <CardTitle  className="card-title">Cloud Office Applications</CardTitle>
                     </Card>
                 </Col>
             </Row>
-            <Row style={{ margin: "23px 0 0" }}>
-                <Col sm="12" md={{ size: 6, offset: 3 }}>
+            <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
                     <TextInput
                         id="login"
                         name="login"
@@ -103,8 +130,8 @@ const Form = props => {
                         onKeyDown={event => onKeyPress(event.target)} />
                 </Col>
             </Row>
-            <Row style={{ margin: "23px 0 0" }}>
-                <Col sm="12" md={{ size: 6, offset: 3 }}>
+            <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
                     <TextInput
                         id="password"
                         name="password"
@@ -126,8 +153,8 @@ const Form = props => {
                         onKeyDown={event => onKeyPress(event.target)} />
                 </Col>
             </Row>
-            <Row style={{ margin: "23px 0 0" }}>
-                <Col sm="12" md={{ size: 6, offset: 3 }}>
+            <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
                     <Button
                         primary
                         size='big'
@@ -139,17 +166,17 @@ const Form = props => {
                 </Col>
             </Row>
             <Collapse isOpen={ !!errorText }>
-                <Row style={{ margin: "23px 0 0" }}>
-                    <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <Row className="login-row">
+                    <Col sm="12" md={mdOptions}>
                         <div className="alert alert-danger">{errorText}</div>
                     </Col>
                 </Row>
             </Collapse>
-        </Container>
+        </FormContainer>
     );
 }
 
-const LoginForm = (props) => <PageLayout sectionBodyContent={<Form {...props} />} />;
+const LoginForm = (props) => (<PageLayout sectionBodyContent={<Form {...props} />} />);
 
 LoginForm.propTypes = {
     login: PropTypes.func.isRequired,
