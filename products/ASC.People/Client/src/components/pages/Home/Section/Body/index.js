@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
+import { withTranslation } from 'react-i18next';
 import {
   ContentRow,
   toastr,
@@ -110,6 +111,7 @@ class SectionBodyContent extends React.PureComponent {
   getUserContextOptions = (user, viewer) => {
 
     let status = "";
+    const { t } = this.props;
 
     if(isAdmin(viewer) || (!isAdmin(viewer) && isMe(user, viewer.userName))) {
       status = getUserStatus(user); 
@@ -123,33 +125,33 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "send-email",
-            label: "Send e-mail",
+            label: t('PeopleResource:LblSendEmail'),
             onClick: this.onEmailSentClick
           },
           {
             key: "send-message",
-            label: "Send message",
+            label: t('PeopleResource:LblSendMessage'),
             onClick: this.onSendMessageClick
           },
           { key: "key3", isSeparator: true },
           {
             key: "edit",
-            label: "Edit",
+            label: t('PeopleResource:LblEdit'),
             onClick: this.onEditClick.bind(this, user)
           },
           {
             key: "change-password",
-            label: "Change password",
+            label: t('PeopleResource:LblChangePassword'),
             onClick: this.onChangePasswordClick
           },
           {
             key: "change-email",
-            label: "Change e-mail",
+            label: t('PeopleResource:LblChangeEmail'),
             onClick: this.onChangeEmailClick
           },
           {
             key: "disable",
-            label: "Disable",
+            label: t('PeopleResource:DisableUserButton'),
             onClick: this.onDisableClick
           }
         ];
@@ -157,22 +159,22 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "enable",
-            label: "Enable",
+            label: t('PeopleResource:EnableUserButton'),
             onClick: this.onEnableClick
           },
           {
             key: "reassign-data",
-            label: "Reassign data",
+            label: t('PeopleResource:LblReassignData'),
             onClick: this.onReassignDataClick
           },
           {
             key: "delete-personal-data",
-            label: "Delete personal data",
+            label: t('PeopleResource:LblRemoveData'),
             onClick: this.onDeletePersonalDataClick.bind(this, user)
           },
           {
             key: "delete-profile",
-            label: "Delete profile",
+            label: t('PeopleResource:LblDeleteProfile'),
             onClick: this.onDeleteProfileClick
           }
         ];
@@ -180,7 +182,7 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: "Edit",
+            label: t('PeopleResource:LblEdit'),
             onClick: this.onEditClick.bind(this, user)
           },
           {
@@ -190,7 +192,7 @@ class SectionBodyContent extends React.PureComponent {
           },
           {
             key: "delete-profile",
-            label: "Delete profile",
+            label: t('PeopleResource:LblDeleteProfile'),
             onClick: this.onDeleteProfileClick
           }
         ];
@@ -218,7 +220,7 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     console.log("Home SectionBodyContent render()");
-    const { users, viewer, selection, history, settings } = this.props;
+    const { users, viewer, selection, history, settings, t } = this.props;
 
     return users.length > 0 ? (
       <AutoSizer>
@@ -252,8 +254,8 @@ class SectionBodyContent extends React.PureComponent {
       <EmptyScreenContainer
         imageSrc="images/empty_screen_filter.png"
         imageAlt="Empty Screen Filter image"
-        headerText="No results matching your search could be found"
-        descriptionText="No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section."
+        headerText={t('PeopleResource:NotFoundTitle')}
+        descriptionText={t('PeopleResource:NotFoundDescription')}
         buttons={
           <>
             <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
@@ -262,7 +264,7 @@ class SectionBodyContent extends React.PureComponent {
               isHovered={true}
               onClick={this.onResetFilter}
             >
-              Reset filter
+              {t('PeopleResource:ClearButton')}
             </Link>
           </>
         }
@@ -289,4 +291,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { selectUser, deselectUser, setSelection, fetchPeople }
-)(withRouter(SectionBodyContent));
+)(withRouter(withTranslation()(SectionBodyContent)));
