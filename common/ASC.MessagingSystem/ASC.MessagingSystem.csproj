@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UAParser" Version="3.1.38" />
+    <PackageReference Include="UAParser" Version="3.1.41" />
   </ItemGroup>
 
   <ItemGroup>
