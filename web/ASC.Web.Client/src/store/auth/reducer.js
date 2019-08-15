@@ -8,7 +8,7 @@ const initialState = {
     user: {},
     modules: [],
     settings: {
-        currentProductId: "",
+        currentProductId: "home",
         culture: "en-US",
         trustedDomains: [],
         trustedDomainsType: 1,
