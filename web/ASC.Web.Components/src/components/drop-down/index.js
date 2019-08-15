@@ -20,8 +20,8 @@ const StyledDropdown = styled.div`
     ${props => props.manualWidth && `width: ${props.manualWidth};`}
     ${props => (props.directionY === 'top' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
     ${props => (props.directionY === 'bottom' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
-    ${props => (props.directionX === 'right' && css`right: 0px;`)}
-    ${props => (props.directionX === 'left' && css`left: 0px;`)}
+    ${props => (props.directionX === 'right' && css`right: ${props => props.manualX ? props.manualX : '0px'};`)}
+    ${props => (props.directionX === 'left' && css`left: ${props => props.manualX ? props.manualX : '0px'};`)}
     z-index: 1000;
     margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
     margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
@@ -119,6 +119,7 @@ DropDown.propTypes = {
   withArrow: PropTypes.bool,
   manualWidth: PropTypes.string,
   manualY: PropTypes.string,
+  manualX: PropTypes.string,
   maxHeight: PropTypes.number
 };
 

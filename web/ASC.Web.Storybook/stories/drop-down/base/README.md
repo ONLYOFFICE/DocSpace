@@ -25,4 +25,5 @@ Is a dropdown with any number of action
 | `directionY`       | `oneOf`  |    -     | `top`, `bottom`             | `bottom`       | Sets the opening direction relative to the parent                 |
 | `manualWidth`      | `string` |    -     | -                           | -              | Required if you need to specify the exact width of the component, for example 100%|
 | `manualY`          | `string` |    -     | -                           | -              | Required if you need to specify the exact distance from the parent component|
+| `manualX`          | `string` |    -     | -                           | -              | Required if you need to specify the exact distance from the parent component|
 | `maxHeight`        | `number` |    -     | -                           | -              | Required if the scrollbar is displayed                            |
