@@ -84,7 +84,13 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    foreach (var p in projects.Select(r => r.ProjectName).Intersect(enabledSettings.Projects))
+                    var projectToExport = projects
+                        .Where(r => string.IsNullOrEmpty(r.ModuleName) || r.ModuleName == moduleName)
+                        .Where(r => string.IsNullOrEmpty(r.FileName) || r.FileName == fileName)
+                        .Select(r => r.ProjectName)
+                        .Intersect(enabledSettings.Projects);
+
+                    foreach (var p in projectToExport)
                     {
                         ExportWithModule(p, moduleName, fileName, culture, exportPath, key);
                     }
@@ -99,7 +105,12 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    foreach (var m in projects.Where(r => r.ProjectName == projectName).Select(r => r.ModuleName))
+                    var moduleToExport = projects
+                        .Where(r => r.ProjectName == projectName)
+                        .Where(r => string.IsNullOrEmpty(r.FileName) || r.FileName == fileName)
+                        .Select(r => r.ModuleName);
+
+                    foreach (var m in moduleToExport)
                     {
                         ExportWithFile(projectName, m, fileName, culture, exportPath, key);
                     }
