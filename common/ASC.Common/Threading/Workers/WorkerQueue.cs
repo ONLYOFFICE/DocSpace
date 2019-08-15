@@ -253,7 +253,7 @@ namespace ASC.Common.Threading.Workers
         {
             try
             {
-                bool stopAfterFinsih = false;
+                var stopAfterFinsih = false;
                 if (state != null && state is bool)
                 {
                     stopAfterFinsih = (bool)state;
@@ -279,7 +279,7 @@ namespace ASC.Common.Threading.Workers
                         try
                         {
                             localAction(item.Item);
-                            bool fallSleep = false;
+                            var fallSleep = false;
                             lock (Items)
                             {
                                 PostComplete(item);

@@ -44,7 +44,7 @@ namespace ASC.Security.Cryptography
 
         public static byte[] Encrypt(byte[] data)
         {
-            Rijndael hasher = Rijndael.Create();
+            var hasher = Rijndael.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
             using (var ms = new MemoryStream())
@@ -64,7 +64,7 @@ namespace ASC.Security.Cryptography
 
         public static byte[] Decrypt(byte[] data)
         {
-            Rijndael hasher = Rijndael.Create();
+            var hasher = Rijndael.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
@@ -72,7 +72,7 @@ namespace ASC.Security.Cryptography
             using (var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read))
             {
                 var buffer = new byte[data.Length];
-                int size = ss.Read(buffer, 0, buffer.Length);
+                var size = ss.Read(buffer, 0, buffer.Length);
                 hasher.Clear();
                 var newBuffer = new byte[size];
                 Array.Copy(buffer, newBuffer, size);

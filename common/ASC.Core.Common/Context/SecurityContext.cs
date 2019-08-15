@@ -86,13 +86,6 @@ namespace ASC.Core
         {
             if (!string.IsNullOrEmpty(cookie))
             {
-                int tenant;
-                Guid userid;
-                string login;
-                string password;
-                int indexTenant;
-                DateTime expire;
-                int indexUser;
 
                 if (cookie.Equals("Bearer", StringComparison.InvariantCulture))
                 {
@@ -106,7 +99,7 @@ namespace ASC.Core
                     }
                     log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out tenant, out userid, out login, out password, out indexTenant, out expire, out indexUser))
+                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
                 {
                     if (tenant != CoreContext.TenantManager.GetCurrentTenant().TenantId)
                     {

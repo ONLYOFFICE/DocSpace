@@ -106,8 +106,7 @@ namespace ASC.Core.Caching
             var users = GetUsers(tenant);
             lock (users)
             {
-                UserInfo u;
-                users.TryGetValue(id, out u);
+                users.TryGetValue(id, out var u);
                 return u;
             }
         }
@@ -198,8 +197,7 @@ namespace ASC.Core.Caching
             var groups = GetGroups(tenant);
             lock (groups)
             {
-                Group g;
-                groups.TryGetValue(id, out g);
+                groups.TryGetValue(id, out var g);
                 return g;
             }
         }

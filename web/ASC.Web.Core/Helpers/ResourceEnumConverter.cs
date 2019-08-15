@@ -60,16 +60,15 @@ namespace ASC.Web.Core.Helpers
         /// <returns></returns>
         private LookupTable GetLookupTable(CultureInfo culture)
         {
-            LookupTable result = null;
             if (culture == null)
                 culture = CultureInfo.CurrentCulture;
 
-            if (!_lookupTables.TryGetValue(culture, out result))
+            if (!_lookupTables.TryGetValue(culture, out var result))
             {
                 result = new LookupTable();
-                foreach (object value in GetStandardValues())
+                foreach (var value in GetStandardValues())
                 {
-                    string text = GetValueText(culture, value);
+                    var text = GetValueText(culture, value);
                     if (text != null)
                     {
                         result.Add(text, value);
@@ -88,9 +87,9 @@ namespace ASC.Web.Core.Helpers
         /// <returns>The localized text</returns>
         private string GetValueText(CultureInfo culture, object value)
         {
-            Type type = value.GetType();
-            string resourceName = string.Format("{0}_{1}", type.Name, value.ToString());
-            string result = _resourceManager.GetString(resourceName, culture);
+            var type = value.GetType();
+            var resourceName = string.Format("{0}_{1}", type.Name, value.ToString());
+            var result = _resourceManager.GetString(resourceName, culture);
             if (result == null)
                 result = resourceName;
             return result;
@@ -133,14 +132,14 @@ namespace ASC.Web.Core.Helpers
             //
             ulong lValue = Convert.ToUInt32(value);
             string result = null;
-            foreach (object flagValue in _flagValues)
+            foreach (var flagValue in _flagValues)
             {
                 ulong lFlagValue = Convert.ToUInt32(flagValue);
                 if (IsSingleBitValue(lFlagValue))
                 {
                     if ((lFlagValue & lValue) == lFlagValue)
                     {
-                        string valueText = GetValueText(culture, flagValue);
+                        var valueText = GetValueText(culture, flagValue);
                         if (result == null)
                         {
                             result = valueText;
@@ -163,9 +162,8 @@ namespace ASC.Web.Core.Helpers
         /// <returns>The enum value</returns>
         private object GetValue(CultureInfo culture, string text)
         {
-            LookupTable lookupTable = GetLookupTable(culture);
-            object result = null;
-            lookupTable.TryGetValue(text, out result);
+            var lookupTable = GetLookupTable(culture);
+            lookupTable.TryGetValue(text, out var result);
             return result;
         }
 
@@ -177,14 +175,13 @@ namespace ASC.Web.Core.Helpers
         /// <returns>The enum value</returns>
         private object GetFlagValue(CultureInfo culture, string text)
         {
-            LookupTable lookupTable = GetLookupTable(culture);
-            string[] textValues = text.Split(',');
+            var lookupTable = GetLookupTable(culture);
+            var textValues = text.Split(',');
             ulong result = 0;
-            foreach (string textValue in textValues)
+            foreach (var textValue in textValues)
             {
-                object value = null;
-                string trimmedTextValue = textValue.Trim();
-                if (!lookupTable.TryGetValue(trimmedTextValue, out value))
+                var trimmedTextValue = textValue.Trim();
+                if (!lookupTable.TryGetValue(trimmedTextValue, out var value))
                 {
                     return null;
                 }
@@ -202,7 +199,7 @@ namespace ASC.Web.Core.Helpers
             : base(type)
         {
             _resourceManager = resourceManager;
-            object[] flagAttributes = type.GetCustomAttributes(typeof(FlagsAttribute), true);
+            var flagAttributes = type.GetCustomAttributes(typeof(FlagsAttribute), true);
             _isFlagEnum = flagAttributes.Length > 0;
             if (_isFlagEnum)
             {
@@ -221,7 +218,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value is string)
             {
-                object result = (_isFlagEnum) ?
+                var result = (_isFlagEnum) ?
                     GetFlagValue(culture, (string)value) : GetValue(culture, (string)value);
                 if (result == null)
                 {
@@ -264,7 +261,7 @@ namespace ASC.Web.Core.Helpers
         /// <returns>The localized string value for the enum</returns>
         static public string ConvertToString(Enum value)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(value.GetType());
+            var converter = TypeDescriptor.GetConverter(value.GetType());
             return converter.ConvertToString(value);
         }
 
@@ -284,11 +281,11 @@ namespace ASC.Web.Core.Helpers
         /// </remarks>
         static public List<KeyValuePair<Enum, string>> GetValues(Type enumType, CultureInfo culture)
         {
-            List<KeyValuePair<Enum, string>> result = new List<KeyValuePair<Enum, string>>();
-            TypeConverter converter = TypeDescriptor.GetConverter(enumType);
+            var result = new List<KeyValuePair<Enum, string>>();
+            var converter = TypeDescriptor.GetConverter(enumType);
             foreach (Enum value in Enum.GetValues(enumType))
             {
-                KeyValuePair<Enum, string> pair = new KeyValuePair<Enum, string>(value, converter.ConvertToString(null, culture, value));
+                var pair = new KeyValuePair<Enum, string>(value, converter.ConvertToString(null, culture, value));
                 result.Add(pair);
             }
             return result;

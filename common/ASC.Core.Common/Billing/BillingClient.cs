@@ -155,10 +155,9 @@ namespace ASC.Core.Billing
 
             foreach (var p in products)
             {
-                string url;
                 var paymentUrl = (Uri)null;
                 var upgradeUrl = (Uri)null;
-                if (paymentUrls.TryGetValue(p, out url) && !string.IsNullOrEmpty(url))
+                if (paymentUrls.TryGetValue(p, out var url) && !string.IsNullOrEmpty(url))
                 {
                     paymentUrl = new Uri(url);
                 }
@@ -359,8 +358,7 @@ namespace ASC.Core.Billing
                 return default;
             }
             var sep = CultureInfo.InvariantCulture.NumberFormat.CurrencyDecimalSeparator;
-            decimal value;
-            return Decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out value) ? value : default;
+            return Decimal.TryParse(xelement.Value.Replace(".", sep).Replace(",", sep), NumberStyles.Currency, CultureInfo.InvariantCulture, out var value) ? value : default;
         }
 
         void IDisposable.Dispose()

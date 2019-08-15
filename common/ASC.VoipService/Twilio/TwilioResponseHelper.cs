@@ -145,9 +145,8 @@ namespace ASC.VoipService.Twilio
                 return new VoiceResponse().Play(Uri.EscapeUriString(settings.HoldAudio), 0);
             }
 
-            Guid newCallerId;
 
-            if (Guid.TryParse(to, out newCallerId))
+            if (Guid.TryParse(to, out var newCallerId))
             {
                 SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
             }

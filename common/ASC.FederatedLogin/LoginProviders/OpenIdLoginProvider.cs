@@ -46,8 +46,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var response = Openid.GetResponse();
             if (response == null)
             {
-                Identifier id;
-                if (Identifier.TryParse(@params["oid"], out id))
+                if (Identifier.TryParse(@params["oid"], out var id))
                 {
                     try
                     {

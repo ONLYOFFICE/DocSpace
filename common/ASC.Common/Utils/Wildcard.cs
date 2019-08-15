@@ -49,8 +49,8 @@ namespace ASC.Common.Utils
 
         public static bool IsMatch(string pattern, string input, bool ignoreCase)
         {
-            int offsetInput = 0;
-            bool isAsterix = false;
+            var offsetInput = 0;
+            var isAsterix = false;
             int i;
             while (true)
             {

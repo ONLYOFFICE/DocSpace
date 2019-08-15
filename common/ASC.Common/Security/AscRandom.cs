@@ -49,7 +49,7 @@ namespace ASC.Common.Security
             var num2 = 161803398 - num4;
             seeds[seeds.Length - 1] = num2;
             var num3 = 1;
-            for (int i = 1; i < seeds.Length - 1; i++)
+            for (var i = 1; i < seeds.Length - 1; i++)
             {
                 var index = (21 * i) % (seeds.Length - 1);
                 seeds[index] = num3;
@@ -60,9 +60,9 @@ namespace ASC.Common.Security
                 }
                 num2 = seeds[index];
             }
-            for (int j = 1; j < 5; j++)
+            for (var j = 1; j < 5; j++)
             {
-                for (int k = 1; k < seeds.Length; k++)
+                for (var k = 1; k < seeds.Length; k++)
                 {
                     seeds[k] -= seeds[1 + ((k + 30) % (seeds.Length - 1))];
                     if (seeds[k] < 0)
@@ -107,7 +107,7 @@ namespace ASC.Common.Security
             {
                 inextp = 1;
             }
-            int num = seeds[inext] - seeds[inextp];
+            var num = seeds[inext] - seeds[inextp];
             if (num == int.MaxValue)
             {
                 num--;

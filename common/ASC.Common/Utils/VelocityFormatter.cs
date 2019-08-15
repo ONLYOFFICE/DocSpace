@@ -85,9 +85,8 @@ namespace ASC.Common.Utils
 
             using (var writer = new StringWriter())
             {
-                Template template;
                 var key = templateText.GetHashCode().ToString();
-                if (!patterns.TryGetValue(key, out template))
+                if (!patterns.TryGetValue(key, out var template))
                 {
                     template = Velocity.GetTemplate(templateText);
                     patterns.TryAdd(key, template);

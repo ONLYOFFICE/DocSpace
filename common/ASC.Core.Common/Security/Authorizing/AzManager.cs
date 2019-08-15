@@ -116,7 +116,7 @@ namespace ASC.Common.Security.Authorizing
                 do
                 {
                     if (!secObjProviderHelper.ObjectRolesSupported) continue;
-                    foreach (IRole role in secObjProviderHelper.GetObjectRoles(subject))
+                    foreach (var role in secObjProviderHelper.GetObjectRoles(subject))
                     {
                         if (!subjects.Contains(role)) subjects.Add(role);
                     }

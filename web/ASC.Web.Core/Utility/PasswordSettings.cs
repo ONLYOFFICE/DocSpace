@@ -77,8 +77,7 @@ namespace ASC.Web.Core.Utility
             {
                 _default = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
 
-                int defaultMinLength;
-                if (int.TryParse(ConfigurationManager.AppSettings["web.password.min"], out defaultMinLength))
+                if (int.TryParse(ConfigurationManager.AppSettings["web.password.min"], out var defaultMinLength))
                 {
                     _default.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
                 }

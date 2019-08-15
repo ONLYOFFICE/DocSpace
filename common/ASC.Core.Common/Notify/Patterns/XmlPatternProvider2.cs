@@ -106,8 +106,7 @@ namespace ASC.Notify.Patterns
 
         public IPattern GetPattern(INotifyAction action, string senderName)
         {
-            IPattern p;
-            if (patterns.TryGetValue(action.ID + senderName, out p))
+            if (patterns.TryGetValue(action.ID + senderName, out var p))
             {
                 return p;
             }

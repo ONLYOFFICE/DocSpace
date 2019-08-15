@@ -123,8 +123,7 @@ namespace ASC.Core.Users
             }
             if (forceFormat != null) return forceFormat;
             var culture = Thread.CurrentThread.CurrentCulture.Name;
-            Dictionary<DisplayUserNameFormat, string> formats = null;
-            if (!DisplayFormats.TryGetValue(culture, out formats))
+            if (!DisplayFormats.TryGetValue(culture, out var formats))
             {
                 var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
                 if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
@@ -135,10 +134,9 @@ namespace ASC.Core.Users
         public static DisplayUserNameFormat GetUserDisplayDefaultOrder()
         {
             var culture = Thread.CurrentThread.CurrentCulture.Name;
-            Dictionary<DisplayUserNameFormat, string> formats = null;
-            if (!DisplayFormats.TryGetValue(culture, out formats))
+            if (!DisplayFormats.TryGetValue(culture, out var formats))
             {
-                string twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+                var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
                 if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
             }
             var format = formats[DisplayUserNameFormat.Default];

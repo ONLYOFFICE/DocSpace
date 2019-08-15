@@ -94,7 +94,7 @@ public static class StreamExtension
         if (dstStream == null) throw new ArgumentNullException("dstStream");
 
         var buffer = new byte[BufferSize];
-        int totalRead = 0;
+        var totalRead = 0;
         int readed;
         while ((readed = srcStream.Read(buffer, 0, length - totalRead > BufferSize ? BufferSize : length - totalRead)) > 0 && totalRead < length)
         {

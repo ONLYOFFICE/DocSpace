@@ -113,7 +113,7 @@ namespace ASC.Web.Core.Users
         {
             unchecked
             {
-                int result = UserId.GetHashCode();
+                var result = UserId.GetHashCode();
                 result = (result * 397) ^ MaxFileSize.GetHashCode();
                 result = (result * 397) ^ Size.GetHashCode();
                 return result;
@@ -516,8 +516,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
-            string fileName;
-            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out var fileName);
         }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
@@ -528,10 +527,7 @@ namespace ASC.Web.Core.Users
 
         private static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
         {
-            ImageFormat imgFormat;
-            int width;
-            int height;
-            data = TryParseImage(data, maxFileSize, size, out imgFormat, out width, out height);
+            data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
 
             var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
             fileName = string.Format("{0}_orig_{1}-{2}.{3}", userID, width, height, widening);
@@ -739,10 +735,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
         {
-            ImageFormat imgFormat;
-            int width;
-            int height;
-            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out imgFormat, out width, out height);
+            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out var width, out var height);
 
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 

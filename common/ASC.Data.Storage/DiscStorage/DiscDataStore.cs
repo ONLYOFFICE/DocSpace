@@ -99,7 +99,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (File.Exists(target))
             {
-                FileStream stream = File.OpenRead(target);
+                var stream = File.OpenRead(target);
                 if (0 < offset) stream.Seek(offset, SeekOrigin.Begin);
                 return stream;
             }
@@ -634,7 +634,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         private static void CreateDirectory(string target)
         {
-            string targetDirectory = Path.GetDirectoryName(target);
+            var targetDirectory = Path.GetDirectoryName(target);
             if (!Directory.Exists(targetDirectory))
             {
                 Directory.CreateDirectory(targetDirectory);

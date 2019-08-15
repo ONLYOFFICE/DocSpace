@@ -43,7 +43,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override string ToString(ISqlDialect dialect)
         {
-            string format = exp1 is JunctionExp && ((JunctionExp)exp1).and != and ? "({0})" : "{0}";
+            var format = exp1 is JunctionExp && ((JunctionExp)exp1).and != and ? "({0})" : "{0}";
             format += " {1} ";
             format += exp2 is JunctionExp && ((JunctionExp)exp2).and != and ? "({2})" : "{2}";
             return Not

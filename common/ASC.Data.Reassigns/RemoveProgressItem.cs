@@ -105,8 +105,8 @@ namespace ASC.Data.Reassigns
                 var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
-                long docsSpace, crmSpace, mailSpace, talkSpace;
-                GetUsageSpace(tenant, out docsSpace, out mailSpace, out talkSpace);
+                long crmSpace;
+                GetUsageSpace(tenant, out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", _userId);
 

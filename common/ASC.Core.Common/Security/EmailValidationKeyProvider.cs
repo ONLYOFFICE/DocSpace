@@ -96,8 +96,7 @@ namespace ASC.Security.Cryptography
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2) return ValidationResult.Invalid;
 
-            long ms = 0;
-            if (!Int64.TryParse(parts[0], out ms)) return ValidationResult.Invalid;
+            if (!Int64.TryParse(parts[0], out var ms)) return ValidationResult.Invalid;
 
             var hash = GetMashineHashedData(BitConverter.GetBytes(ms), Encoding.ASCII.GetBytes(email));
             var key2 = DoStringFromBytes(hash);
@@ -109,7 +108,7 @@ namespace ASC.Security.Cryptography
 
         internal static string DoStringFromBytes(byte[] data)
         {
-            string str = Convert.ToBase64String(data);
+            var str = Convert.ToBase64String(data);
             str = str.Replace("=", "").Replace("+", "").Replace("/", "").Replace("\\", "");
             return str.ToUpperInvariant();
         }

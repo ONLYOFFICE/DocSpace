@@ -676,7 +676,7 @@ namespace ASC.Data.Storage.S3
                     Verb = HttpVerb.GET
                 };
 
-                string url = client.GetPreSignedURL(pUrlRequest);
+                var url = client.GetPreSignedURL(pUrlRequest);
                 //TODO: CNAME!
                 return url;
             }
@@ -699,8 +699,7 @@ namespace ASC.Data.Storage.S3
                     var privateExpireKey = metadata.Metadata["private-expire"];
                     if (string.IsNullOrEmpty(privateExpireKey)) continue;
 
-                    long fileTime;
-                    if (!long.TryParse(privateExpireKey, out fileTime)) continue;
+                    if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
                     if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
                     //Delete it
                     var deleteObjectRequest = new DeleteObjectRequest
@@ -724,9 +723,8 @@ namespace ASC.Data.Storage.S3
         {
             var key = MakePath(domain, directoryPath) + "/";
             //Generate policy
-            string sign;
             var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
-                                                  out sign);
+                                                  out var sign);
             var postBuilder = new StringBuilder();
             postBuilder.Append("{");
             postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
@@ -754,9 +752,8 @@ namespace ASC.Data.Storage.S3
             var destBucket = GetUploadUrl();
             var key = MakePath(domain, directoryPath) + "/";
             //Generate policy
-            string sign;
             var policyBase64 = GetPolicyBase64(key, redirectTo, contentType, contentDisposition, maxUploadSize,
-                                                  out sign);
+                                                  out var sign);
 
             var formBuilder = new StringBuilder();
             formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);

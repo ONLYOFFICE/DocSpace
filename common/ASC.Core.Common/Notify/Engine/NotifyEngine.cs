@@ -408,8 +408,7 @@ namespace ASC.Notify.Engine
 
             request.CurrentSender = channel.SenderName;
 
-            NoticeMessage noticeMessage;
-            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out noticeMessage);
+            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out var noticeMessage);
             if (oops != null) return oops;
 
             request.CurrentMessage = noticeMessage;
