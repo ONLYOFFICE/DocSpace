@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
+import { withTranslation } from 'react-i18next';
 
 class PeopleLayout extends React.PureComponent {
     onProfileClick = () => {
@@ -23,17 +24,17 @@ class PeopleLayout extends React.PureComponent {
     onLogoClick = () => window.open("/", '_self');
 
     render() {
-        const { auth, children } = this.props;
+        const { auth, children, t } = this.props;
 
         const currentUserActions = [
             {
-                key: 'ProfileBtn', label: 'Profile', onClick: this.onProfileClick
+                key: 'ProfileBtn', label: t('Resource:Profile'), onClick: this.onProfileClick
             },
             {
-                key: 'AboutBtn', label: 'About', onClick: this.onAboutClick
+                key: 'AboutBtn', label: t('Resource:AboutCompanyTitle'), onClick: this.onAboutClick
             },
             {
-                key: 'LogoutBtn', label: 'Log out', onClick: this.onLogoutClick
+                key: 'LogoutBtn', label: t('Resource:LogoutButton'), onClick: this.onLogoutClick
             },
         ];
 
@@ -87,4 +88,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { logout })(withRouter(PeopleLayout));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(PeopleLayout)));
