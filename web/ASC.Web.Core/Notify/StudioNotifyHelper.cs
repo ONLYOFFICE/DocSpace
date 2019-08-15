@@ -99,7 +99,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static IRecipient[] RecipientFromEmail(string email, bool checkActivation)
         {
-            return RecipientFromEmail(new[] {email}, checkActivation);
+            return RecipientFromEmail(new[] { email }, checkActivation);
         }
 
         public static IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
@@ -110,7 +110,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             res.AddRange(emails.
                              Select(email => email.ToLower()).
-                             Select(e => new DirectRecipient(e, null, new[] {e}, checkActivation)));
+                             Select(e => new DirectRecipient(e, null, new[] { e }, checkActivation)));
 
             return res.ToArray();
         }

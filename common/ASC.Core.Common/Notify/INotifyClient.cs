@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;

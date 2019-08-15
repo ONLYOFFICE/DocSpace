@@ -44,9 +44,9 @@ namespace ASC.Web.Studio.Core
             if (!SecurityContext.IsAuthenticated || user.IsVisitor(tenant)) throw new SecurityException();
 
             var loginProfile = new LoginProfile
-                {
-                    Provider = ProviderConstants.Blockchain,
-                };
+            {
+                Provider = ProviderConstants.Blockchain,
+            };
 
             var linker = new AccountLinker("webstudio");
             if (string.IsNullOrEmpty(account))

@@ -26,9 +26,8 @@
 
 using System;
 using System.Collections.Generic;
-
-using System.Data.Common;
 using System.Configuration;
+using System.Data.Common;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Dialects;
 

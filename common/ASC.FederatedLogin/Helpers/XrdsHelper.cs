@@ -24,10 +24,7 @@
 */
 
 
-using System;
 using System.Threading.Tasks;
-using System.Web;
-using ASC.Common;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.Helpers
@@ -44,7 +41,7 @@ namespace ASC.FederatedLogin.Helpers
 
         internal static async Task RenderXrds(HttpResponse responce, string location, string iconlink)
         {
-            await responce.WriteAsync(string.Format(Xrds,location,iconlink));
+            await responce.WriteAsync(string.Format(Xrds, location, iconlink));
         }
 
         //TODO

@@ -47,7 +47,7 @@ namespace ASC.Web.Core.Notify
         {
             var subscriptionSource = StudioNotifyHelper.NotifySource.GetSubscriptionProvider();
             var recipients = subscriptionSource.GetRecipients(tenantId, action, objectID);
-            
+
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 
@@ -66,7 +66,7 @@ namespace ASC.Web.Core.Notify
                 CheckSubsciption = checkSubsciption
             };
 
-            if(objectID != null)
+            if (objectID != null)
             {
                 item.ObjectID = objectID;
             }

@@ -39,7 +39,7 @@ namespace ASC.Core
 
         void RemoveTenantQuota(int id);
 
-        
+
         IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query);
 
         void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);

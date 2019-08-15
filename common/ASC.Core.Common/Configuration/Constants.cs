@@ -43,9 +43,9 @@ namespace ASC.Core.Configuration
 
         public static readonly ISystemAccount Guest = new SystemAccount(new Guid("712D9EC3-5D2B-4b13-824F-71F00191DCCA"), "guest", false);
 
-        public static readonly IPrincipal Anonymous = new GenericPrincipal(Guest, new[] {Role.Everyone});
+        public static readonly IPrincipal Anonymous = new GenericPrincipal(Guest, new[] { Role.Everyone });
 
-        public static readonly ISystemAccount[] SystemAccounts = new[] {CoreSystem, Guest};
+        public static readonly ISystemAccount[] SystemAccounts = new[] { CoreSystem, Guest };
 
         public static readonly int DefaultTrialPeriod = 30;
     }

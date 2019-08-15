@@ -367,7 +367,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-               // Close();
+                // Close();
             }
             catch (CommunicationException)
             {

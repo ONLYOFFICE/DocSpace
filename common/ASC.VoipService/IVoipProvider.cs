@@ -45,7 +45,7 @@ namespace ASC.VoipService
 
         VoipCall GetCall(string callId);
 
-        string GetToken(Agent agent, int seconds = 60*60*24);
+        string GetToken(Agent agent, int seconds = 60 * 60 * 24);
 
         void UpdateSettings(VoipPhone phone);
 

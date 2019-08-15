@@ -104,19 +104,19 @@ namespace ASC.Web.Core.WhiteLabel
         public override ISettings GetDefault()
         {
             return new TenantWhiteLabelSettings
-                {
-                    _logoLightSmallExt = null,
-                    _logoDarkExt = null,
-                    _logoFaviconExt = null,
-                    _logoDocsEditorExt = null,
+            {
+                _logoLightSmallExt = null,
+                _logoDarkExt = null,
+                _logoFaviconExt = null,
+                _logoDocsEditorExt = null,
 
-                    _isDefaultLogoLightSmall = true,
-                    _isDefaultLogoDark = true,
-                    _isDefaultLogoFavicon = true,
-                    _isDefaultLogoDocsEditor = true,
+                _isDefaultLogoLightSmall = true,
+                _isDefaultLogoDark = true,
+                _isDefaultLogoFavicon = true,
+                _isDefaultLogoDocsEditor = true,
 
-                    LogoText = null
-                };
+                LogoText = null
+            };
         }
         #endregion
 
@@ -255,10 +255,10 @@ namespace ASC.Web.Core.WhiteLabel
         public void SetLogoFromStream(WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream)
         {
             byte[] data = null;
-            using(var memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-              fileStream.CopyTo(memoryStream);
-              data = memoryStream.ToArray();
+                fileStream.CopyTo(memoryStream);
+                data = memoryStream.ToArray();
             }
 
             if (data != null)
@@ -552,7 +552,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 WhiteLabelHelper.RestoreOldText(tenantId);
             }
-            else if(!string.IsNullOrEmpty(LogoText))
+            else if (!string.IsNullOrEmpty(LogoText))
             {
                 WhiteLabelHelper.SetNewText(tenantId, LogoText);
             }

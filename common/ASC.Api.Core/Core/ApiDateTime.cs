@@ -41,8 +41,8 @@ namespace ASC.Api.Core
         private static readonly string[] Formats = new[]
                                                        {
                                                            "o",
-                                                           "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK", 
-                                                           "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffK", 
+                                                           "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK",
+                                                           "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffK",
                                                            "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffK",
                                                            "yyyy'-'MM'-'dd'T'HH'-'mm'-'ssK",
                                                            "yyyy'-'MM'-'dd'T'HH':'mm':'ssK",
@@ -124,7 +124,7 @@ namespace ASC.Api.Core
             {
                 timeZone = GetTimeZoneInfo();
             }
-            
+
             //Hack
             if (timeZone.IsInvalidTime(new DateTime(value.Ticks, DateTimeKind.Unspecified)))
             {
@@ -257,7 +257,7 @@ namespace ASC.Api.Core
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return UtcTime.Equals(other.UtcTime)&& TimeZoneOffset.Equals(other.TimeZoneOffset);
+            return UtcTime.Equals(other.UtcTime) && TimeZoneOffset.Equals(other.TimeZoneOffset);
         }
 
         public override int GetHashCode()

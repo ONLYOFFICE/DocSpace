@@ -61,7 +61,7 @@ namespace ASC.Web.Core
             var m = obj as IWebItem;
             return m != null && ID == m.ID;
         }
-        
+
         public override int GetHashCode()
         {
             return ID.GetHashCode();

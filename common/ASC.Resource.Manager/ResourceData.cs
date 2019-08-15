@@ -291,17 +291,17 @@ namespace ASC.Resource.Manager
                     .Where(!Exp.Like("rd1.title", @"del\_", SqlLike.StartWith) & !Exp.Exists(exist))
                     .OrderBy("rd1.id", true);
 
-                if(current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
+                if (current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
                 {
                     sql.Where("rf.moduleName", current.Module.Name);
                 }
 
-                if(current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
+                if (current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
                 {
                     sql.Where("rf.projectName", current.Project.Name);
                 }
 
-                if(current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
+                if (current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
                 {
                     sql.Where("rf.resName", current.Word.ResFile.FileName);
                 }

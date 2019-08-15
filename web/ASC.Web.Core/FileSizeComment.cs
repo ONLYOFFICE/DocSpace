@@ -134,15 +134,15 @@ namespace ASC.Web.Studio.Core
         /// <returns>10 b, 100 Kb, 25 Mb, 1 Gb</returns>
         public static string FilesSizeToString(long size)
         {
-            var sizeNames = !string.IsNullOrEmpty(Resource.FileSizePostfix) ? Resource.FileSizePostfix.Split(',') : new[] {"bytes", "KB", "MB", "GB", "TB"};
+            var sizeNames = !string.IsNullOrEmpty(Resource.FileSizePostfix) ? Resource.FileSizePostfix.Split(',') : new[] { "bytes", "KB", "MB", "GB", "TB" };
             var power = 0;
 
             double resultSize = size;
             if (1024 <= resultSize)
             {
-                power = (int) Math.Log(resultSize, 1024);
+                power = (int)Math.Log(resultSize, 1024);
                 power = power < sizeNames.Length ? power : sizeNames.Length - 1;
-                resultSize = resultSize/Math.Pow(1024d, power);
+                resultSize = resultSize / Math.Pow(1024d, power);
             }
             return string.Format("{0:#,0.##} {1}", resultSize, sizeNames[power]);
         }

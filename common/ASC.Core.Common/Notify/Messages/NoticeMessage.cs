@@ -95,8 +95,8 @@ namespace ASC.Notify.Messages
         {
             if (tagValues == null) throw new ArgumentNullException("tagValues");
             Array.ForEach(tagValues,
-                tagValue => 
-                {   
+                tagValue =>
+                {
                     if (!arguments.Exists(tv => Equals(tv.Tag, tagValue.Tag)))
                     {
                         arguments.Add(tagValue);

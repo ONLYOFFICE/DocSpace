@@ -25,17 +25,14 @@
 
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
-
-using ASC.Data.Storage.Configuration;
 using ASC.Common.Logging;
-
+using ASC.Data.Storage.Configuration;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
-
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.RackspaceCloud
@@ -53,13 +50,13 @@ namespace ASC.Data.Storage.RackspaceCloud
         private string _apiKey;
         private bool _lowerCasing = true;
         private Uri _cname;
-        private Uri _cnameSSL;     
+        private Uri _cnameSSL;
 
         private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
-        
+
         public RackspaceCloudStorage(string tenant)
         {
-             
+
             _tenant = tenant;
             _modulename = string.Empty;
             _dataList = null;
@@ -71,7 +68,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public RackspaceCloudStorage(string tenant, Handler handlerConfig, Module moduleConfig)
         {
-             
+
             _tenant = tenant;
             _modulename = moduleConfig.Name;
             _dataList = new DataList(moduleConfig);
@@ -89,7 +86,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
             _moduleAcl = moduleConfig.Acl;
-            
+
         }
 
         private string MakePath(string domain, string path)
@@ -117,10 +114,10 @@ namespace ASC.Data.Storage.RackspaceCloud
             {
                 result = result.ToLowerInvariant();
             }
-            
+
             return result;
         }
-        
+
         private CloudFilesProvider GetClient()
         {
             CloudIdentity cloudIdentity = new CloudIdentity()
@@ -128,7 +125,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 Username = _username,
                 APIKey = _apiKey
             };
-                     
+
             return new CloudFilesProvider(cloudIdentity);
         }
 
@@ -186,7 +183,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             var accounMetaData = client.GetAccountMetaData(_region);
             var secretKey = String.Empty;
-      
+
             if (accounMetaData.ContainsKey("Temp-Url-Key"))
             {
                 secretKey = accounMetaData["Temp-Url-Key"];
@@ -197,12 +194,12 @@ namespace ASC.Data.Storage.RackspaceCloud
                 accounMetaData.Add("Temp-Url-Key", secretKey);
                 client.UpdateAccountMetadata(accounMetaData, _region);
             }
-            
+
             return client.CreateTemporaryPublicUri(
                                                         JSIStudios.SimpleRESTServices.Client.HttpMethod.GET,
                                                         _private_container,
                                                         MakePath(domain, path),
-                                                        secretKey,                                                       
+                                                        secretKey,
                                                         DateTime.UtcNow.Add(expire),
                                                         _region);
         }
@@ -266,7 +263,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         }
 
         public Uri Save(string domain, string path, Stream stream, string contentType,
-                              string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5, 
+                              string contentDisposition, ACL acl, string contentEncoding = null, int cacheDays = 5,
             DateTime? deleteAt = null, long? deleteAfter = null)
         {
             var buffered = stream.GetBuffered();
@@ -298,7 +295,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             if (deleteAt.HasValue)
             {
                 var ts = deleteAt.Value - new DateTime(1970, 1, 1, 0, 0, 0);
-                var unixTimestamp =  (long)ts.TotalSeconds;
+                var unixTimestamp = (long)ts.TotalSeconds;
 
                 customHeaders.Add("X-Delete-At", unixTimestamp.ToString());
             }
@@ -344,10 +341,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                 {
                     _logger.InfoFormat("The invalidation {0} failed", _public_container + "/" + MakePath(domain, path));
                     _logger.Error(exp);
-                }            
+                }
             }
             stream.Position = 0;
-            
+
             client.CreateObject(_private_container,
                                 stream,
                                 MakePath(domain, path),
@@ -355,8 +352,8 @@ namespace ASC.Data.Storage.RackspaceCloud
                                 4096,
                                 customHeaders,
                                 _region
-                               );         
-            
+                               );
+
             QuotaUsedAdd(domain, buffered.Length);
 
             return GetUri(domain, path);
@@ -375,7 +372,7 @@ namespace ASC.Data.Storage.RackspaceCloud
                 return _domainsAcl[domain];
             }
             return _moduleAcl;
-        }       
+        }
 
         public override void Delete(string domain, string path)
         {

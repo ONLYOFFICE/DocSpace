@@ -50,9 +50,9 @@ namespace ASC.Data.Storage.DiscStorage
         {
             domain = domain.Replace('.', '_'); //Domain prep. Remove dots
             return new MappedPath
-                {
-                    PhysicalPath = Path.Combine(PhysicalPath, PathUtils.Normalize(domain, true)),
-                };
+            {
+                PhysicalPath = Path.Combine(PhysicalPath, PathUtils.Normalize(domain, true)),
+            };
         }
     }
 }

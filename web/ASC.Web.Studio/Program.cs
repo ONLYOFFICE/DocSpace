@@ -14,14 +14,16 @@ namespace ASC.Web.Studio
 
         public static IHostBuilder CreateWebHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(w=>
+                .ConfigureWebHostDefaults(w =>
                 {
                     w.UseStartup<Startup>();
                 })
-                .ConfigureAppConfiguration((hostingContext, config) => {
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
                     var buided = config.Build();
                     var path = buided["pathToConf"];
-                    if (!Path.IsPathRooted(path)) {
+                    if (!Path.IsPathRooted(path))
+                    {
                         path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);

@@ -44,7 +44,7 @@ namespace ASC.IPSecurity
 
         public override ISettings GetDefault()
         {
-            return new IPRestrictionsSettings {Enable = false};
+            return new IPRestrictionsSettings { Enable = false };
         }
     }
 }

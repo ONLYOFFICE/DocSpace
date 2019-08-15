@@ -85,7 +85,7 @@ namespace ASC.Web.Core
                         wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                         graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
                     }
-                    
+
                     //graphic.DrawImage(image, rect);
                 }
             }

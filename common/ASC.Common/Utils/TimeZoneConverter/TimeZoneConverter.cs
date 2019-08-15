@@ -64,11 +64,11 @@ namespace ASC.Common.Utils
                                 let olsonTimeZones = row.Attribute("type").Value.Split(' ')
                                 from olsonTimeZone in olsonTimeZones
                                 select new MapZone
-                                    {
-                                        OlsonTimeZoneId = olsonTimeZone,
-                                        WindowsTimeZoneId = row.Attribute("other").Value,
-                                        Territory = row.Attribute("territory").Value
-                                    };
+                                {
+                                    OlsonTimeZoneId = olsonTimeZone,
+                                    WindowsTimeZoneId = row.Attribute("other").Value,
+                                    Territory = row.Attribute("territory").Value
+                                };
                 }
             }
             catch (Exception error)

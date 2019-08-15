@@ -24,12 +24,6 @@
 */
 
 
-using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.Web.Studio.Utility;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +32,12 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Tenants;
+using ASC.Web.Studio.Utility;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
 {
@@ -150,7 +150,7 @@ namespace ASC.Web.Core.Helpers
 
             var url = String.Format("{0}/{1}", absoluteApiUrl, apiPath);
 
-            var webRequest = (HttpWebRequest) WebRequest.Create(url);
+            var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;
             webRequest.Accept = "application/json";
             webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(SecurityContext.CurrentAccount.ID.ToString()));

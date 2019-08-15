@@ -98,7 +98,7 @@ namespace ASC.Notify
             DbRegistry.Configure();
             NotifyConfiguration.Configure();
             WebItemManager.LoadItems();
-            foreach (var pair in NotifyServiceCfg.Schedulers.Where(r=> r.MethodInfo != null))
+            foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {
                 LogManager.GetLogger("ASC.Notify").DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
                 pair.MethodInfo.Invoke(null, null);

@@ -36,7 +36,7 @@ namespace ASC.Core.Tenants
     {
         [DataMember(Name = "MaxLifeTime")]
         public const int MaxLifeTime = 180;
-        
+
         [DataMember(Name = "LoginHistoryLifeTime")]
         public int LoginHistoryLifeTime { get; set; }
 

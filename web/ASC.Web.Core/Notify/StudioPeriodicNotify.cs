@@ -352,7 +352,7 @@ namespace ASC.Web.Studio.Core.Notify
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
                                                                                  "\",\"alias\":\"" + tenant.TenantAlias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}")); 
+                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
                         }
                         else if (duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
                         {

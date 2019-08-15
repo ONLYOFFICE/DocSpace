@@ -31,8 +31,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-
-using ASC.Common.DependencyInjection;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
@@ -84,7 +82,7 @@ namespace ASC.FederatedLogin
             else
             {
                 _params = ((Dictionary<string, object>)JsonConvert.DeserializeObject(
-                    Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(context.Request.Query["p"])))).ToDictionary(x => x.Key, y => (string) y.Value);
+                    Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(context.Request.Query["p"])))).ToDictionary(x => x.Key, y => (string)y.Value);
             }
 
             if (!string.IsNullOrEmpty(Auth))
@@ -146,7 +144,7 @@ namespace ASC.FederatedLogin
             {
                 if (!string.IsNullOrEmpty(_params.Get("mode")))
                 {
-                    return (LoginMode) Enum.Parse(typeof (LoginMode), _params.Get("mode"), true);
+                    return (LoginMode)Enum.Parse(typeof(LoginMode), _params.Get("mode"), true);
                 }
                 return LoginMode.Popup;
             }

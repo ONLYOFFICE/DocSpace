@@ -24,9 +24,9 @@
 */
 
 
+using System;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
-using System;
 
 namespace ASC.Core
 {
@@ -43,7 +43,7 @@ namespace ASC.Core
 
         public int Tenant { get; set; }
 
-        
+
         public AzRecord()
         {
         }

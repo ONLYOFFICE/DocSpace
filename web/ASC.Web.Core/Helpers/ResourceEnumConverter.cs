@@ -222,7 +222,7 @@ namespace ASC.Web.Core.Helpers
             if (value is string)
             {
                 object result = (_isFlagEnum) ?
-                    GetFlagValue(culture, (string)value): GetValue(culture, (string)value);
+                    GetFlagValue(culture, (string)value) : GetValue(culture, (string)value);
                 if (result == null)
                 {
                     result = base.ConvertFrom(context, culture, value);
@@ -247,7 +247,7 @@ namespace ASC.Web.Core.Helpers
         {
             if (value != null && destinationType == typeof(string))
             {
-                object result = (_isFlagEnum) ? 
+                object result = (_isFlagEnum) ?
                     GetFlagValueText(culture, value) : GetValueText(culture, value);
                 return result;
             }
@@ -289,7 +289,7 @@ namespace ASC.Web.Core.Helpers
             foreach (Enum value in Enum.GetValues(enumType))
             {
                 KeyValuePair<Enum, string> pair = new KeyValuePair<Enum, string>(value, converter.ConvertToString(null, culture, value));
-                result.Add(pair); 
+                result.Add(pair);
             }
             return result;
         }

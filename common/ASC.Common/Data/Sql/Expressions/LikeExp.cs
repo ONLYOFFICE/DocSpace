@@ -61,7 +61,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override object[] GetParameters()
         {
-            return str == null ? new object[0] : new object[] {str};
+            return str == null ? new object[0] : new object[] { str };
         }
     }
 }

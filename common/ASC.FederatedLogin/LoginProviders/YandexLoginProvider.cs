@@ -93,16 +93,16 @@ namespace ASC.FederatedLogin.LoginProviders
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
             var profile = new LoginProfile
-                {
-                    EMail = jProfile.Value<string>("default_email"),
-                    Id = jProfile.Value<string>("id"),
-                    FirstName = jProfile.Value<string>("first_name"),
-                    LastName = jProfile.Value<string>("last_name"),
-                    DisplayName = jProfile.Value<string>("display_name"),
-                    Gender = jProfile.Value<string>("sex"),
+            {
+                EMail = jProfile.Value<string>("default_email"),
+                Id = jProfile.Value<string>("id"),
+                FirstName = jProfile.Value<string>("first_name"),
+                LastName = jProfile.Value<string>("last_name"),
+                DisplayName = jProfile.Value<string>("display_name"),
+                Gender = jProfile.Value<string>("sex"),
 
-                    Provider = ProviderConstants.Yandex,
-                };
+                Provider = ProviderConstants.Yandex,
+            };
 
             return profile;
         }

@@ -95,7 +95,7 @@ namespace ASC.Data.Storage.S3
                     nextUploadIdMarker = response.NextUploadIdMarker;
                 }
                 while (isTruncated);
-                
+
             }
         }
 
@@ -113,7 +113,7 @@ namespace ASC.Data.Storage.S3
 
         private AmazonS3Client GetClient()
         {
-            var s3Config = new AmazonS3Config {UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(region)};
+            var s3Config = new AmazonS3Config { UseHttp = true, MaxErrorRetry = 3, RegionEndpoint = RegionEndpoint.GetBySystemName(region) };
             return new AmazonS3Client(accessKey, secretAccessKey, s3Config);
         }
 

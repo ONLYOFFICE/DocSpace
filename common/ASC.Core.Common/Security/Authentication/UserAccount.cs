@@ -60,7 +60,7 @@ namespace ASC.Core.Security.Authentication
             LastName = info.LastName;
             Title = info.Title;
             Tenant = tenant;
-            Email = info.Email;            
+            Email = info.Email;
         }
 
 

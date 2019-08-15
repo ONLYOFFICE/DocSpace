@@ -24,9 +24,9 @@
 */
 
 
-using Newtonsoft.Json;
 using System;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ASC.Common.Threading
 {
@@ -94,14 +94,15 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            return DistributedTaskCache.Props.Any(r=> r.Key == name) ? 
-                JsonConvert.DeserializeObject<T>(DistributedTaskCache.Props.Single(r => r.Key == name).Value) : 
+            return DistributedTaskCache.Props.Any(r => r.Key == name) ?
+                JsonConvert.DeserializeObject<T>(DistributedTaskCache.Props.Single(r => r.Key == name).Value) :
                 default;
         }
 
         public void SetProperty(string name, object value)
         {
-            var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp() {
+            var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp()
+            {
                 Key = name,
                 Value = JsonConvert.SerializeObject(value)
             };

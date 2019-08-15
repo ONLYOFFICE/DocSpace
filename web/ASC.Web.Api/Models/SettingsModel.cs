@@ -14,6 +14,6 @@ namespace ASC.Web.Api.Models
 
         public bool Show { get; set; } //tips
 
-        public int VersionId { get; set; } 
+        public int VersionId { get; set; }
     }
 }

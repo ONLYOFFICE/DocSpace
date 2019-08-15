@@ -33,7 +33,7 @@ namespace ASC.Notify.Model
     {
         private readonly Dictionary<string, INotifyAction> actions;
 
-        
+
         public ConstActionProvider(params INotifyAction[] actions)
         {
             this.actions = actions.ToDictionary(a => a.ID);

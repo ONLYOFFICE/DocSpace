@@ -46,7 +46,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override object[] GetParameters()
         {
-            return new[] {minValue, maxValue};
+            return new[] { minValue, maxValue };
         }
     }
 }

@@ -127,13 +127,13 @@ namespace ASC.Core.Data
 
             var methods = ExecList(q)
                 .ConvertAll(r => new SubscriptionMethod
-                                     {
-                                         Tenant = Convert.ToInt32(r[0]),
-                                         SourceId = sourceId,
-                                         ActionId = Convert.ToString(r[3]),
-                                         RecipientId = (string)r[1],
-                                         Methods = Convert.ToString(r[2]).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries),
-                                     });
+                {
+                    Tenant = Convert.ToInt32(r[0]),
+                    SourceId = sourceId,
+                    ActionId = Convert.ToString(r[3]),
+                    RecipientId = (string)r[1],
+                    Methods = Convert.ToString(r[2]).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries),
+                });
 
             var result = methods.ToList();
             var common = new Dictionary<string, SubscriptionMethod>();
@@ -197,7 +197,8 @@ namespace ASC.Core.Data
         private IEnumerable<SubscriptionRecord> GetSubscriptions(ISqlInstruction q, int tenant)
         {
             var subs = ExecList(q)
-                .ConvertAll(r => {
+                .ConvertAll(r =>
+                {
                     var result = new SubscriptionRecord
                     {
                         Tenant = Convert.ToInt32(r[0]),

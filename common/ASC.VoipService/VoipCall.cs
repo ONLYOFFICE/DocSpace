@@ -52,7 +52,7 @@ namespace ASC.VoipService
         public int ContactId { get; set; }
 
         public bool ContactIsCompany { get; set; }
-        
+
         public string ContactTitle { get; set; }
 
         public DateTime Date { get; set; }

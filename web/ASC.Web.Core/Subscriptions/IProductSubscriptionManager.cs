@@ -26,12 +26,12 @@
 
 using System.Collections.Generic;
 namespace ASC.Web.Core.Subscriptions
-{    
+{
     public enum GroupByType
     {
         Modules,
         Groups,
-        Simple 
+        Simple
     }
     public interface IProductSubscriptionManager : ISubscriptionManager
     {

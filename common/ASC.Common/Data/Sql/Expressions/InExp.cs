@@ -49,7 +49,7 @@ namespace ASC.Common.Data.Sql.Expressions
 
         public override string ToString(ISqlDialect dialect)
         {
-            if (values != null && values.Count() < 2) 
+            if (values != null && values.Count() < 2)
             {
                 var exp = values.Count() == 0 ? Exp.False : Exp.Eq(column, values.ElementAt(0));
                 return (Not ? !exp : exp).ToString(dialect);

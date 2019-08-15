@@ -42,7 +42,7 @@ namespace ASC.FederatedLogin
             var databaseId = _baseDatabaseId;
 
             if (!String.IsNullOrEmpty(hostedRegion))
-                databaseId = String.Join(".", new[] {_baseDatabaseId, hostedRegion.Trim()});
+                databaseId = String.Join(".", new[] { _baseDatabaseId, hostedRegion.Trim() });
 
             if (!_accountLinkers.ContainsKey(databaseId))
                 throw new ArgumentException(String.Format("Region {0} is not defined", databaseId), "hostedRegion");

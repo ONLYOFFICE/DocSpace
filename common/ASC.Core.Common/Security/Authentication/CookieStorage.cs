@@ -27,11 +27,10 @@
 using System;
 using System.Globalization;
 using System.Web;
-using ASC.Common.Logging;
-using ASC.Security.Cryptography;
-using ASC.Core.Tenants;
 using ASC.Common;
-using ASC.Common.Web;
+using ASC.Common.Logging;
+using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 
 namespace ASC.Core.Security.Authentication
 {

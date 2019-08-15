@@ -67,7 +67,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -198,15 +197,15 @@ namespace ASC.Api.Settings
 
             var subItemList = WebItemManager.Instance.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
-            return ids.Select(r=> WebItemSecurity.GetSecurityInfo(Tenant.TenantId, r))
+            return ids.Select(r => WebItemSecurity.GetSecurityInfo(Tenant.TenantId, r))
                       .Select(i => new SecurityWrapper
-                          {
-                              WebItemId = i.WebItemId,
-                              Enabled = i.Enabled,
-                              Users = i.Users.Select(r=> EmployeeWraper.Get(r, ApiContext)),
-                              Groups = i.Groups.Select(g => new GroupWrapperSummary(g, ApiContext)),
-                              IsSubItem = subItemList.Contains(i.WebItemId),
-                          }).ToList();
+                      {
+                          WebItemId = i.WebItemId,
+                          Enabled = i.Enabled,
+                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext)),
+                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, ApiContext)),
+                          IsSubItem = subItemList.Contains(i.WebItemId),
+                      }).ToList();
         }
 
         [Read("security/{id}")]
@@ -325,7 +324,7 @@ namespace ASC.Api.Settings
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(Tenant, productid)
-                                  .Select(r=> EmployeeWraper.Get(r, ApiContext))
+                                  .Select(r => EmployeeWraper.Get(r, ApiContext))
                                   .ToList();
         }
 
@@ -662,7 +661,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(ApiContext.Tenant) || currentUser.IsOutsider(ApiContext.Tenant))
                 throw new NotSupportedException("Not available.");
 
-            return TfaAppUserSettings.LoadForCurrentUser().CodesSetting.Select(r => new {r.IsUsed, r.Code }).ToList();
+            return TfaAppUserSettings.LoadForCurrentUser().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
         }
 
         [Update("tfaappnewcodes")]
@@ -936,13 +935,13 @@ namespace ASC.Api.Settings
 
             return webtem.Context.SpaceUsageStatManager.GetStatData()
                          .ConvertAll(it => new UsageSpaceStatItemWrapper
-                             {
-                                 Name = it.Name.HtmlEncode(),
-                                 Icon = it.ImgUrl,
-                                 Disabled = it.Disabled,
-                                 Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
-                                 Url = it.Url
-                             });
+                         {
+                             Name = it.Name.HtmlEncode(),
+                             Icon = it.ImgUrl,
+                             Disabled = it.Disabled,
+                             Size = FileSizeComment.FilesSizeToString(it.SpaceUsage),
+                             Url = it.Url
+                         });
         }
 
         [Read("statistics/visit")]
@@ -960,12 +959,12 @@ namespace ASC.Api.Settings
             for (var d = new DateTime(from.Ticks); d.Date.CompareTo(to.Date) <= 0; d = d.AddDays(1))
             {
                 points.Add(new ChartPointWrapper
-                    {
-                        DisplayDate = d.Date.ToShortDateString(),
-                        Date = d.Date,
-                        Hosts = 0,
-                        Hits = 0
-                    });
+                {
+                    DisplayDate = d.Date.ToShortDateString(),
+                    Date = d.Date,
+                    Hosts = 0,
+                    Hits = 0
+                });
             }
 
             var hits = StatisticManager.GetHitsByPeriod(TenantProvider.CurrentTenantID, from, to);

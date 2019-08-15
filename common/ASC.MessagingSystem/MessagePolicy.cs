@@ -34,9 +34,9 @@ namespace ASC.MessagingSystem
     {
         private static readonly string[] secretIps =
             ConfigurationManager.AppSettings["messaging.secret-ips"] == null
-                ? new string[] {}
+                ? new string[] { }
                 : ConfigurationManager.AppSettings["messaging.secret-ips"]
-                      .Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                      .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
         public static bool Check(EventMessage message)
         {

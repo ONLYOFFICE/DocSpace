@@ -29,8 +29,8 @@ using System;
 using System.Linq;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
-using NUnit.Framework;
 using ASC.Notify.Recipients;
+using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
 {

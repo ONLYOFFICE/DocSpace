@@ -99,12 +99,12 @@ namespace ASC.Web.Api.Models
         public static EmployeeWraper GetSample()
         {
             return new EmployeeWraper
-                {
-                    Id = Guid.Empty,
-                    DisplayName = "Mike Zanyatski",
-                    Title = "Manager",
-                    AvatarSmall = "url to small avatar",
-                };
+            {
+                Id = Guid.Empty,
+                DisplayName = "Mike Zanyatski",
+                Title = "Manager",
+                AvatarSmall = "url to small avatar",
+            };
         }
     }
 }

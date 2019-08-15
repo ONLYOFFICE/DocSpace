@@ -26,10 +26,9 @@
 
 using System;
 using System.Text;
-
-using ASC.Core;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core;
 
 namespace ASC.Security.Cryptography
 {
@@ -105,7 +104,7 @@ namespace ASC.Security.Cryptography
             var key2_good = String.Compare(parts[1], key2, StringComparison.InvariantCultureIgnoreCase) == 0;
             if (!key2_good) return ValidationResult.Invalid;
             var ms_current = (long)(DateTime.UtcNow - _from).TotalMilliseconds;
-            return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms)?ValidationResult.Ok : ValidationResult.Expired;
+            return validInterval >= TimeSpan.FromMilliseconds(ms_current - ms) ? ValidationResult.Ok : ValidationResult.Expired;
         }
 
         internal static string DoStringFromBytes(byte[] data)

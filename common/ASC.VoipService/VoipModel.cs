@@ -78,7 +78,7 @@ namespace ASC.VoipService
         public string WaitUrl { get; set; }
         public int WaitTime { get; set; }
 
-        public Queue(){}
+        public Queue() { }
 
         public Queue(string id, string name, int size, string waitUrl, int waitTime)
         {
@@ -96,7 +96,7 @@ namespace ASC.VoipService
         public TimeSpan? From { get; set; }
         public TimeSpan? To { get; set; }
 
-        public WorkingHours(){}
+        public WorkingHours() { }
 
         public WorkingHours(TimeSpan from, TimeSpan to)
         {

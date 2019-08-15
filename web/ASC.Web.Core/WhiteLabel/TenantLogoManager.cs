@@ -68,7 +68,8 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
                 faviconPath = tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
-                if (timeParam) {
+                if (timeParam)
+                {
                     var now = DateTime.Now;
                     faviconPath = String.Format("{0}?t={1}", faviconPath, now.Ticks);
                 }
@@ -77,7 +78,7 @@ namespace ASC.Web.Core.WhiteLabel
             {
                 faviconPath = TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
             }
-            
+
             return faviconPath;
         }
 
@@ -92,7 +93,8 @@ namespace ASC.Web.Core.WhiteLabel
             return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
         }
 
-        public static string GetLogoDark(bool general) {
+        public static string GetLogoDark(bool general)
+        {
             if (WhiteLabelEnabled)
             {
                 var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
@@ -144,7 +146,7 @@ namespace ASC.Web.Core.WhiteLabel
             return isRetina;
         }
 
-         public static bool WhiteLabelPaid
+        public static bool WhiteLabelPaid
         {
             get
             {

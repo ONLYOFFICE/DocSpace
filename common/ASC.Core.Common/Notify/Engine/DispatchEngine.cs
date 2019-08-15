@@ -70,7 +70,7 @@ namespace ASC.Notify.Engine
             LogMessage(message, senderName);
             return response;
         }
-        
+
         private void LogResponce(INoticeMessage message, SendResponse response, string senderName)
         {
             var logmsg = string.Format("[{0}] sended to [{1}] over {2}, status: {3} ", message.Subject, message.Recipient, senderName, response.Result);
@@ -87,7 +87,7 @@ namespace ASC.Notify.Engine
                 log.Debug(logmsg);
             }
         }
-        
+
         private void LogMessage(INoticeMessage message, string senderName)
         {
             try

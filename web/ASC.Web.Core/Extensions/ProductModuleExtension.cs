@@ -31,8 +31,8 @@ namespace ASC.Web.Core
 {
     public static class ProductModuleExtension
     {
-        
-        
+
+
         public static string GetSmallIconAbsoluteURL(this IModule module)
         {
             if (module == null || module.Context == null || String.IsNullOrEmpty(module.Context.SmallIconFileName))

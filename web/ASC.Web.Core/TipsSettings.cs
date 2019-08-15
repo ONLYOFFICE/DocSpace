@@ -44,7 +44,7 @@ namespace ASC.Web.Studio.Core
 
         public override ISettings GetDefault()
         {
-            return new TipsSettings {Show = true};
+            return new TipsSettings { Show = true };
         }
     }
 }

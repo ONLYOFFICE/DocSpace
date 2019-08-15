@@ -47,7 +47,7 @@ namespace ASC.Notify.Patterns
 
         public string Styler { get; internal set; }
 
-        
+
         public Pattern(string id, string subject, string body, string contentType)
         {
             if (String.IsNullOrEmpty(id)) throw new ArgumentException("id");

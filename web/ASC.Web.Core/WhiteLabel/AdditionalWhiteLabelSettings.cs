@@ -29,7 +29,6 @@ using System.Globalization;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -106,20 +105,20 @@ namespace ASC.Web.Core.WhiteLabel
         public override ISettings GetDefault()
         {
             return new AdditionalWhiteLabelSettings
-                {
-                    StartDocsEnabled = true,
-                    HelpCenterEnabled = DefaultHelpCenterUrl != null,
-                    FeedbackAndSupportEnabled = DefaultFeedbackAndSupportUrl != null,
-                    FeedbackAndSupportUrl = DefaultFeedbackAndSupportUrl,
-                    UserForumEnabled = DefaultUserForumUrl != null,
-                    UserForumUrl = DefaultUserForumUrl,
-                    VideoGuidesEnabled = DefaultVideoGuidesUrl != null,
-                    VideoGuidesUrl = DefaultVideoGuidesUrl,
-                    SalesEmail = DefaultMailSalesEmail,
-                    BuyUrl = DefaultBuyUrl,
-                    LicenseAgreementsEnabled = true,
-                    LicenseAgreementsUrl = DefaultLicenseAgreements
-                };
+            {
+                StartDocsEnabled = true,
+                HelpCenterEnabled = DefaultHelpCenterUrl != null,
+                FeedbackAndSupportEnabled = DefaultFeedbackAndSupportUrl != null,
+                FeedbackAndSupportUrl = DefaultFeedbackAndSupportUrl,
+                UserForumEnabled = DefaultUserForumUrl != null,
+                UserForumUrl = DefaultUserForumUrl,
+                VideoGuidesEnabled = DefaultVideoGuidesUrl != null,
+                VideoGuidesUrl = DefaultVideoGuidesUrl,
+                SalesEmail = DefaultMailSalesEmail,
+                BuyUrl = DefaultBuyUrl,
+                LicenseAgreementsEnabled = true,
+                LicenseAgreementsUrl = DefaultLicenseAgreements
+            };
         }
 
         #endregion

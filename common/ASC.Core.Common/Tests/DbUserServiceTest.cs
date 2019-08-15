@@ -30,10 +30,9 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Linq;
     using ASC.Core.Data;
+    using ASC.Core.Users;
     using ASC.Security.Cryptography;
     using NUnit.Framework;
-    using ASC.Core.Users;
-    using System.Globalization;
 
     [TestFixture]
     public class DbUserServiceTest : DbBaseTest<DbUserService>

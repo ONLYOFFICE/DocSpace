@@ -66,7 +66,7 @@ namespace ASC.Common.Caching
         public void Insert(string key, object value, TimeSpan sligingExpiration)
         {
             var cache = GetCache();
-            cache.Set(key, value, new CacheItemPolicy {SlidingExpiration = sligingExpiration});
+            cache.Set(key, value, new CacheItemPolicy { SlidingExpiration = sligingExpiration });
         }
 
         public void Insert(string key, object value, DateTime absolutExpiration)
@@ -99,7 +99,7 @@ namespace ASC.Common.Caching
         public IDictionary<string, T> HashGetAll<T>(string key)
         {
             var cache = GetCache();
-            var dic = (IDictionary<string, T>) cache.Get(key);
+            var dic = (IDictionary<string, T>)cache.Get(key);
             return dic != null ? new Dictionary<string, T>(dic) : new Dictionary<string, T>();
         }
 
@@ -117,7 +117,7 @@ namespace ASC.Common.Caching
         public void HashSet<T>(string key, string field, T value)
         {
             var cache = GetCache();
-            var dic = (IDictionary<string, T>) cache.Get(key);
+            var dic = (IDictionary<string, T>)cache.Get(key);
             if (value != null)
             {
                 if (dic == null)

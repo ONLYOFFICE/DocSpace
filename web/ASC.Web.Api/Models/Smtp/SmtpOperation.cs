@@ -209,7 +209,7 @@ namespace ASC.Api.Settings.Smtp
                 ServerCertificateValidationCallback = (sender, certificate, chain, errors) =>
                     sslCertificatePermit ||
                     MailKit.MailService.DefaultServerCertificateValidationCallback(sender, certificate, chain, errors),
-                Timeout = (int) TimeSpan.FromSeconds(30).TotalMilliseconds
+                Timeout = (int)TimeSpan.FromSeconds(30).TotalMilliseconds
             };
         }
 

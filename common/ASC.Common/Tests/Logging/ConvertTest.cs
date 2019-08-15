@@ -25,12 +25,12 @@
 
 
 #if DEBUG
+using System;
+using System.Reflection;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
 using NUnit.Framework;
-using System;
-using System.Reflection;
 
 namespace ASC.Common.Tests.Logging
 {

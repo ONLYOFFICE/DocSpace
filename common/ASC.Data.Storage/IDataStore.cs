@@ -148,7 +148,7 @@ namespace ASC.Data.Storage
         /// <param name="contentEncoding"></param>
         /// <param name="cacheDays"></param>
         /// <returns></returns>
-         Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
+        Uri Save(string domain, string path, Stream stream, string contentEncoding, int cacheDays);
 
         string InitiateChunkedUpload(string domain, string path);
 

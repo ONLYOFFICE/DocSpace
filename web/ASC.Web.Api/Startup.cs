@@ -1,4 +1,3 @@
-using System.Threading;
 
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
@@ -6,8 +5,6 @@ using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
@@ -42,7 +39,8 @@ namespace ASC.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                    .AddNewtonsoftJson(s => {
+                    .AddNewtonsoftJson(s =>
+                    {
                         s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
                         s.UseCamelCasing(true);
                     })
@@ -55,7 +53,7 @@ namespace ASC.Web.Api
 
             services.AddHttpContextAccessor();
 
-            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a=> { });
+            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             var builder = services.AddMvc(config =>
             {

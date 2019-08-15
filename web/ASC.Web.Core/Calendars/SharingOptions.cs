@@ -56,11 +56,11 @@ namespace ASC.Web.Core.Calendars
             if (SharedForAll)
                 return true;
 
-            if(PublicItems.Exists(i=> i.Id.Equals(itemId)))
+            if (PublicItems.Exists(i => i.Id.Equals(itemId)))
                 return true;
 
             var u = CoreContext.UserManager.GetUsers(tenant.TenantId, itemId);
-            if(u!=null && u.ID!= ASC.Core.Users.Constants.LostUser.ID)
+            if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
             {
                 var userGroups = new List<GroupInfo>(CoreContext.UserManager.GetUserGroups(tenant, itemId));
                 userGroups.AddRange(CoreContext.UserManager.GetUserGroups(tenant, itemId, Constants.SysGroupCategoryId));
@@ -76,14 +76,14 @@ namespace ASC.Web.Core.Calendars
         {
             var o = new SharingOptions();
             o.SharedForAll = this.SharedForAll;
-            foreach (var i in this.PublicItems)            
+            foreach (var i in this.PublicItems)
                 o.PublicItems.Add(new PublicItem() { Id = i.Id, IsGroup = i.IsGroup });
-            
+
             return o;
         }
 
         #endregion
     }
 
-   
+
 }

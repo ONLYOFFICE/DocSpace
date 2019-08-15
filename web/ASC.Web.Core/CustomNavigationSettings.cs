@@ -34,7 +34,7 @@ namespace ASC.Web.Studio.Core
     [Serializable]
     [DataContract]
     public class CustomNavigationSettings : BaseSettings<CustomNavigationSettings>
-    {       
+    {
         [DataMember]
         public List<CustomNavigationItem> Items { get; set; }
 
@@ -51,7 +51,7 @@ namespace ASC.Web.Studio.Core
 
     [Serializable]
     [DataContract]
-    public class CustomNavigationItem 
+    public class CustomNavigationItem
     {
         [DataMember]
         public Guid Id { get; set; }

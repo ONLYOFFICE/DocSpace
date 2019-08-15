@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Linq;
+using System.Text;
 using ASC.Collections;
-using ASC.Notify.Recipients;
 using ASC.Core.Tenants;
+using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users
 {
@@ -128,7 +128,7 @@ namespace ASC.Core.Users
 
         string[] IDirectRecipient.Addresses
         {
-            get { return !string.IsNullOrEmpty(Email) ? new[] {Email} : new string[0]; }
+            get { return !string.IsNullOrEmpty(Email) ? new[] { Email } : new string[0]; }
         }
 
         public bool CheckActivation
@@ -188,7 +188,7 @@ namespace ASC.Core.Users
         {
             if (string.IsNullOrEmpty(contacts)) return this;
             Contacts.Clear();
-            foreach (var contact in contacts.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var contact in contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 Contacts.Add(contact);
             }

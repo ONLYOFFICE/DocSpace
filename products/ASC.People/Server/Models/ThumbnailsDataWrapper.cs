@@ -70,14 +70,14 @@ namespace ASC.Web.Api.Models
         public static ThumbnailsDataWrapper GetSample()
         {
             return new ThumbnailsDataWrapper
-                {
-                    Original = "default_user_photo_size_1280-1280.png",
-                    Retina = "default_user_photo_size_360-360.png",
-                    Max = "default_user_photo_size_200-200.png",
-                    Big = "default_user_photo_size_82-82.png",
-                    Medium = "default_user_photo_size_48-48.png",
-                    Small = "default_user_photo_size_32-32.png",
-                };
+            {
+                Original = "default_user_photo_size_1280-1280.png",
+                Retina = "default_user_photo_size_360-360.png",
+                Max = "default_user_photo_size_200-200.png",
+                Big = "default_user_photo_size_82-82.png",
+                Medium = "default_user_photo_size_48-48.png",
+                Small = "default_user_photo_size_32-32.png",
+            };
         }
     }
 }

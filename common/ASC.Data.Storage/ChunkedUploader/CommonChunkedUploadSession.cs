@@ -105,7 +105,7 @@ namespace ASC.Core.ChunkedUploader
 
         public virtual object Clone()
         {
-            return (CommonChunkedUploadSession) MemberwiseClone();
+            return (CommonChunkedUploadSession)MemberwiseClone();
         }
     }
 }

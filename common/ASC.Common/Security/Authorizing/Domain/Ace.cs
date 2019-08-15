@@ -35,7 +35,7 @@ namespace ASC.Common.Security.Authorizing
 
         public AceType Reaction { get; set; }
 
-        
+
         public Ace(Guid actionId, AceType reaction)
         {
             ActionId = actionId;

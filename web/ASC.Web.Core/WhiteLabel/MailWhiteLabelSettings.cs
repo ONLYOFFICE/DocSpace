@@ -28,7 +28,6 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -86,15 +85,15 @@ namespace ASC.Web.Core.WhiteLabel
         public override ISettings GetDefault()
         {
             return new MailWhiteLabelSettings
-                {
-                    FooterEnabled = true,
-                    FooterSocialEnabled = true,
-                    SupportUrl = DefaultMailSupportUrl,
-                    SupportEmail = DefaultMailSupportEmail,
-                    SalesEmail = DefaultMailSalesEmail,
-                    DemotUrl = DefaultMailDemotUrl,
-                    SiteUrl = DefaultMailSiteUrl
-                };
+            {
+                FooterEnabled = true,
+                FooterSocialEnabled = true,
+                SupportUrl = DefaultMailSupportUrl,
+                SupportEmail = DefaultMailSupportEmail,
+                SalesEmail = DefaultMailSalesEmail,
+                DemotUrl = DefaultMailDemotUrl,
+                SiteUrl = DefaultMailSiteUrl
+            };
         }
 
         #endregion

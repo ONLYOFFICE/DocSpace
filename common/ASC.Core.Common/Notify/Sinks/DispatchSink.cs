@@ -38,7 +38,7 @@ namespace ASC.Notify.Sinks
         public DispatchSink(string senderName, DispatchEngine dispatcher)
         {
             if (dispatcher == null) throw new ArgumentNullException("dispatcher");
-            
+
             this.dispatcher = dispatcher;
             this.senderName = senderName;
         }

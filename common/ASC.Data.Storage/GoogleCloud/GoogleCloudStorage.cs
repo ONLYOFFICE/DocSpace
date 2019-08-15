@@ -28,23 +28,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Cloud.Storage.V1;
-using ASC.Data.Storage.Configuration;
-using System.IO;
-using Google.Apis.Auth.OAuth2;
-using ASC.Common.Web;
-using System.Web;
-using MimeMapping = ASC.Common.Web.MimeMapping;
 using System.Globalization;
-using Google.Apis.Upload;
-using System.Security.Cryptography;
-using System.Net.Http.Headers;
-using System.Net.Http;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
+using System.Web;
+using ASC.Data.Storage.Configuration;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
+using MimeMapping = ASC.Common.Web.MimeMapping;
 
 
 namespace ASC.Data.Storage.GoogleCloud
@@ -60,7 +54,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
-   
+
         private bool _lowerCasing = true;
 
         public GoogleCloudStorage(string tenant)
@@ -98,7 +92,7 @@ namespace ASC.Data.Storage.GoogleCloud
         public override IDataStore Configure(IDictionary<string, string> props)
         {
 
-            _bucket = props["bucket"];          
+            _bucket = props["bucket"];
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
                               ? new Uri(props["cname"], UriKind.Absolute)
@@ -108,13 +102,13 @@ namespace ASC.Data.Storage.GoogleCloud
                              Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
                                  : new Uri(string.Format("https://storage.googleapis.com/{0}/", _bucket), UriKind.Absolute);
-                     
+
             if (props.ContainsKey("lower"))
             {
                 bool.TryParse(props["lower"], out _lowerCasing);
             }
 
-            _jsonPath = props["jsonPath"];         
+            _jsonPath = props["jsonPath"];
 
             if (props.ContainsKey("subdir"))
             {

@@ -134,7 +134,7 @@ namespace ASC.Common.Threading.Workers
             if (started)
             {
                 started = false;
-                
+
                 stopEvent.Set();
                 waitEvent.Set();
 
@@ -153,7 +153,7 @@ namespace ASC.Common.Threading.Workers
             if (started)
             {
                 started = false;
-                
+
                 stopEvent.Set();
                 waitEvent.Set();
 
@@ -230,8 +230,8 @@ namespace ASC.Common.Threading.Workers
             if (!started)
             {
                 started = true;
-                action = starter; 
-                
+                action = starter;
+
                 stopEvent.Reset();
                 waitEvent.Reset();
 

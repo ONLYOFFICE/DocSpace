@@ -28,10 +28,10 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
+    using System.Diagnostics;
     using System.Threading;
     using ASC.Core.Users;
     using NUnit.Framework;
-    using System.Diagnostics;
 
     [TestFixture]
     public class UserManagerTest

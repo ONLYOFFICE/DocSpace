@@ -55,7 +55,7 @@ namespace ASC.Notify.Model
         }
 
 
-        public virtual string[] GetSubscriptionMethod(Tenant tenant,INotifyAction action, IRecipient recipient)
+        public virtual string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             if (action == null) throw new ArgumentNullException("action");
             if (recipient == null) throw new ArgumentNullException("recipient");
@@ -193,7 +193,7 @@ namespace ASC.Notify.Model
         }
 
 
-        private List<IRecipient> WalkUp(Tenant tenant,IRecipient recipient)
+        private List<IRecipient> WalkUp(Tenant tenant, IRecipient recipient)
         {
             var parents = new List<IRecipient>();
             var groups = recipientProvider.GetGroups(tenant, recipient) ?? new IRecipientsGroup[0];

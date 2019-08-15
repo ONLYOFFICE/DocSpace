@@ -33,7 +33,7 @@ namespace ASC.Web.Core.Calendars
     public delegate List<BaseCalendar> GetCalendarForUser(Guid userId);
 
     public class CalendarManager
-    {   
+    {
         public static CalendarManager Instance
         {
             get;
@@ -55,8 +55,8 @@ namespace ASC.Web.Core.Calendars
         }
 
         public void RegistryCalendar(BaseCalendar calendar)
-        { 
-            lock(this._calendars)
+        {
+            lock (this._calendars)
             {
                 if (!this._calendars.Exists(c => String.Equals(c.Id, calendar.Id, StringComparison.InvariantCultureIgnoreCase)))
                     this._calendars.Add(calendar);
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.Calendars
 
         public BaseCalendar GetCalendarForUser(Tenant tenant, Guid userId, string calendarId)
         {
-            return GetCalendarsForUser(tenant, userId).Find(c=> String.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
+            return GetCalendarsForUser(tenant, userId).Find(c => String.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public List<BaseCalendar> GetCalendarsForUser(Tenant tenant, Guid userId)
@@ -98,8 +98,8 @@ namespace ASC.Web.Core.Calendars
             var cals = new List<BaseCalendar>();
             foreach (var h in _calendarProviders)
             {
-                var list =  h(userId);
-                if(list!=null)
+                var list = h(userId);
+                if (list != null)
                     cals.AddRange(list.FindAll(c => c.SharingOptions.PublicForItem(tenant, userId)));
             }
 

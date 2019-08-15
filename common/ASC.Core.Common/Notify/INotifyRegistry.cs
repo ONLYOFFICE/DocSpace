@@ -24,9 +24,9 @@
 */
 
 
+using ASC.Notify.Channels;
 using ASC.Notify.Model;
 using ASC.Notify.Sinks;
-using ASC.Notify.Channels;
 
 namespace ASC.Notify
 {

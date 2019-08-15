@@ -40,10 +40,10 @@ namespace ASC.Core.Common.Configuration
         public ConsumersElementCollection Containers
         {
             get
-        {
+            {
                 return (ConsumersElementCollection)this[ComponentsPropertyName];
+            }
         }
-    }
     }
 
     public class ConsumersElementCollection : ConfigurationElementCollection<ConsumerElement>
@@ -58,7 +58,7 @@ namespace ASC.Core.Common.Configuration
     }
 
     public class ConsumerElement : ComponentElement
-        {
+    {
         public const string OrderElement = "order";
         public const string PropsElement = "props";
         public const string AdditionalElement = "additional";
@@ -71,7 +71,7 @@ namespace ASC.Core.Common.Configuration
 
         [ConfigurationProperty(AdditionalElement, IsRequired = false)]
         public DictionaryElementCollection Additional { get { return this[AdditionalElement] as DictionaryElementCollection; } }
-        }
+    }
 
     public class ConsumerConfigLoader
     {
@@ -82,7 +82,7 @@ namespace ASC.Core.Common.Configuration
             var autofacConfigurationSection = (ConsumerConfigurationSection)ConfigurationManager.GetSection(section);
 
             foreach (var component in autofacConfigurationSection.Containers)
-        {
+            {
                 var componentType = Type.GetType(component.Type);
                 var builder = container.RegisterType(componentType)
                     .AsSelf()
@@ -90,26 +90,26 @@ namespace ASC.Core.Common.Configuration
                     .SingleInstance();
 
                 if (!string.IsNullOrEmpty(component.Name))
-        {
+                {
                     builder
                         .Named<Consumer>(component.Name)
                         .Named(component.Name, componentType)
                         .Named<Consumer>(component.Name.ToLower())
                         .Named(component.Name.ToLower(), componentType);
-        }
+                }
 
                 builder.WithParameter(new NamedParameter("name", component.Name));
                 builder.WithParameter(new NamedParameter(ConsumerElement.OrderElement, component.Order));
 
                 if (component.Props != null && component.Props.Any())
-        {
+                {
                     builder.WithParameter(new NamedParameter(ConsumerElement.PropsElement, component.Props.ToDictionary(r => r.Key, r => r.Value)));
-        }
+                }
 
                 if (component.Additional != null && component.Additional.Any())
-        {
+                {
                     builder.WithParameter(new NamedParameter(ConsumerElement.AdditionalElement, component.Additional.ToDictionary(r => r.Key, r => r.Value)));
-        }
+                }
             }
 
             return container;

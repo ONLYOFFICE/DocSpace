@@ -52,19 +52,19 @@ namespace ASC.Api.Settings
         public static SecurityWrapper GetSample()
         {
             return new SecurityWrapper
-                {
-                    WebItemId = Guid.Empty.ToString(),
-                    Enabled = true,
-                    IsSubItem = false,
-                    Groups = new List<GroupWrapperSummary>
+            {
+                WebItemId = Guid.Empty.ToString(),
+                Enabled = true,
+                IsSubItem = false,
+                Groups = new List<GroupWrapperSummary>
                         {
                             GroupWrapperSummary.GetSample()
                         },
-                    Users = new List<EmployeeWraper>
+                Users = new List<EmployeeWraper>
                         {
                             EmployeeWraper.GetSample()
                         }
-                };
+            };
         }
     }
 }

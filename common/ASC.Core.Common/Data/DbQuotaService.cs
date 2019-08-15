@@ -109,7 +109,7 @@ namespace ASC.Core.Data
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            using(var db = GetDb())
+            using (var db = GetDb())
             using (var tx = db.BeginTransaction())
             {
                 var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)

@@ -39,7 +39,7 @@ namespace ASC.Data.Storage.DiscStorage
         private const int BufferSize = 8192;
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
 
-      
+
 
         public DiscDataStore(string tenant, Handler handlerConfig, Module moduleConfig)
         {
@@ -353,7 +353,7 @@ namespace ASC.Data.Storage.DiscStorage
                     File.Delete(newtarget);
                 }
                 File.Move(target, newtarget);
-               
+
                 QuotaUsedDelete(srcdomain, flength);
                 QuotaUsedAdd(newdomain, flength);
             }
@@ -659,5 +659,5 @@ namespace ASC.Data.Storage.DiscStorage
                 throw new ArgumentException("bad path");
             }
         }
-        }
+    }
 }

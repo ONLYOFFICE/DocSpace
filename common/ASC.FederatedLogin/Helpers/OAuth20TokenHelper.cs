@@ -36,7 +36,7 @@ namespace ASC.FederatedLogin.Helpers
 {
     public static class OAuth20TokenHelper
     {
-        public static void RequestCode<T>(HttpContext context, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new ()
+        public static void RequestCode<T>(HttpContext context, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;

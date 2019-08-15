@@ -25,11 +25,11 @@
 
 
 #if DEBUG
-using ASC.Security.Cryptography;
-using NUnit.Framework;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using ASC.Security.Cryptography;
+using NUnit.Framework;
 
 namespace ASC.Common.Tests.Security.Cryptography
 {
@@ -40,10 +40,10 @@ namespace ASC.Common.Tests.Security.Cryptography
         public void DoHash()
         {
             string str = "Hello, Jhon!";
-            
+
             Assert.AreEqual(
                 Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
-                Hasher.Base64Hash(str,HashAlg.MD5)
+                Hasher.Base64Hash(str, HashAlg.MD5)
                 );
 
             Assert.AreEqual(

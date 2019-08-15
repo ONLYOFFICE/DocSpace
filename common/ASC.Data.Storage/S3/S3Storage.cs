@@ -24,16 +24,6 @@
 */
 
 
-using Amazon;
-using Amazon.CloudFront;
-using Amazon.CloudFront.Model;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
-using Amazon.Util;
-using ASC.Core.Tenants;
-using ASC.Data.Storage.Configuration;
-using ASC.Security.Cryptography;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -42,9 +32,17 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
-using ASC.Core;
-using MimeMapping = ASC.Common.Web.MimeMapping;
+using Amazon;
+using Amazon.CloudFront;
+using Amazon.CloudFront.Model;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Amazon.Util;
 using ASC.Common;
+using ASC.Core;
+using ASC.Data.Storage.Configuration;
+using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
 {
@@ -151,9 +149,9 @@ namespace ASC.Data.Storage.S3
                 Expires = DateTime.UtcNow.Add(expire),
                 Key = MakePath(domain, path),
                 Protocol = SecureHelper.IsSecure() ? Protocol.HTTPS : Protocol.HTTP,
-                Verb = HttpVerb.GET                
+                Verb = HttpVerb.GET
             };
-            
+
             if (headers != null && headers.Any())
             {
                 var headersOverrides = new ResponseHeaderOverrides();
@@ -515,7 +513,7 @@ namespace ASC.Data.Storage.S3
         {
             var makedPath = MakePath(domain, path) + '/';
             var objToDel = GetS3Objects(domain, path)
-                .Where(x => 
+                .Where(x =>
                     Wildcard.IsMatch(pattern, Path.GetFileName(x.Key))
                     && (recursive || !x.Key.Remove(0, makedPath.Length).Contains('/'))
                     );
@@ -922,7 +920,7 @@ namespace ASC.Data.Storage.S3
 
         public override long GetDirectorySize(string domain, string path)
         {
-            if(!IsDirectory(domain, path))
+            if (!IsDirectory(domain, path))
                 throw new FileNotFoundException("directory not found", path);
 
             return GetS3Objects(domain, path)
@@ -1055,7 +1053,7 @@ namespace ASC.Data.Storage.S3
                              Uri.IsWellFormedUriString(props["cnamessl"], UriKind.Absolute)
                                  ? new Uri(props["cnamessl"], UriKind.Absolute)
                                  : new Uri(String.Format("https://s3.{1}.amazonaws.com/{0}/", _bucket, _region), UriKind.Absolute);
-                      
+
             if (props.ContainsKey("lower"))
             {
                 bool.TryParse(props["lower"], out _lowerCasing);
@@ -1132,7 +1130,7 @@ namespace ASC.Data.Storage.S3
         private IAmazonCloudFront GetCloudFrontClient()
         {
             var cfg = new AmazonCloudFrontConfig { MaxErrorRetry = 3 };
-            return new  AmazonCloudFrontClient(_accessKeyId, _secretAccessKeyId, cfg);
+            return new AmazonCloudFrontClient(_accessKeyId, _secretAccessKeyId, cfg);
         }
 
         private IAmazonS3 GetClient()

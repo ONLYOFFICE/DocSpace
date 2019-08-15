@@ -36,7 +36,7 @@ namespace ASC.Notify.Engine
         private readonly object syncRoot = new object();
         private readonly Dictionary<string, ISendInterceptor> globalInterceptors = new Dictionary<string, ISendInterceptor>(10);
 
-        
+
         private Dictionary<string, ISendInterceptor> callInterceptors
         {
             get

@@ -1,5 +1,3 @@
-using System.Globalization;
-using System.Threading;
 
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
@@ -7,8 +5,6 @@ using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Common.Web;
-using ASC.Core;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
@@ -47,7 +43,8 @@ namespace ASC.People
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                .AddNewtonsoftJson(s => {
+                .AddNewtonsoftJson(s =>
+                {
                     s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
                 })
                 .AddXmlSerializerFormatters();

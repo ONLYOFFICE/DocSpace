@@ -49,10 +49,10 @@ namespace ASC.Web.Core.Utility.Settings
         public override ISettings GetDefault()
         {
             return new WizardSettings
-                {
-                    Analytics = false,
-                    Completed = true
-                };
+            {
+                Analytics = false,
+                Completed = true
+            };
         }
     }
 }

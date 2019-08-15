@@ -85,9 +85,9 @@ namespace ASC.Web.Core.Calendars
             sb.AppendLine(String.Format("SUMMARY:{0}", this.Name));
 
             if (!string.IsNullOrEmpty(this.Description))
-                sb.AppendLine(String.Format("DESCRIPTION:{0}", this.Description.Replace("\n","\\n")));
+                sb.AppendLine(String.Format("DESCRIPTION:{0}", this.Description.Replace("\n", "\\n")));
 
-            
+
             if (this.UtcStartDate != DateTime.MinValue)
                 sb.AppendLine(String.Format("DTSTART:{0}", this.UtcStartDate.ToString("yyyyMMdd'T'HHmmss'Z'")));
 
@@ -98,7 +98,7 @@ namespace ASC.Web.Core.Calendars
             return sb.ToString();
         }
 
-        #endregion     
-        
+        #endregion
+
     }
 }

@@ -41,7 +41,7 @@ namespace ASC.Feed.Aggregator
         {
             AuthorId = author;
             ModifiedBy = author;
-            
+
             CreatedDate = date;
             ModifiedDate = date;
 

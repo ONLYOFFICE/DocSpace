@@ -34,7 +34,7 @@ namespace ASC.Feed
         private readonly DateTime toTime;
 
 
-        public DateTime From 
+        public DateTime From
         {
             get { return fromTime; }
         }

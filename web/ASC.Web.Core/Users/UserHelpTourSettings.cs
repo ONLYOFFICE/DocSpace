@@ -49,13 +49,13 @@ namespace ASC.Web.Core.Users
         public override ISettings GetDefault()
         {
             return new UserHelpTourSettings
-                       {
-                           ModuleHelpTour = new Dictionary<Guid, int>(),
-                           IsNewUser = false
-                       };
+            {
+                ModuleHelpTour = new Dictionary<Guid, int>(),
+                IsNewUser = false
+            };
         }
     }
-        
+
     public class UserHelpTourHelper
     {
         public static bool IsNewUser
