@@ -34,12 +34,7 @@ namespace ASC.Web.Studio.Core.Notify
 {
     internal class StudioSubscriptionManager : ISubscriptionManager
     {
-        private static StudioSubscriptionManager _instance = new StudioSubscriptionManager();
-
-        public static StudioSubscriptionManager Instance
-        {
-            get { return _instance; }
-        }
+        public static StudioSubscriptionManager Instance { get; } = new StudioSubscriptionManager();
 
         private StudioSubscriptionManager()
         { }
@@ -53,14 +48,16 @@ namespace ASC.Web.Studio.Core.Notify
 
         public List<SubscriptionType> GetSubscriptionTypes()
         {
-            var types = new List<SubscriptionType>();
-            types.Add(new SubscriptionType()
+            var types = new List<SubscriptionType>
             {
-                ID = new Guid("{148B5E30-C81A-4ff8-B749-C46BAE340093}"),
-                Name = Resource.WhatsNewSubscriptionName,
-                NotifyAction = Actions.SendWhatsNew,
-                Single = true
-            });
+                new SubscriptionType()
+                {
+                    ID = new Guid("{148B5E30-C81A-4ff8-B749-C46BAE340093}"),
+                    Name = Resource.WhatsNewSubscriptionName,
+                    NotifyAction = Actions.SendWhatsNew,
+                    Single = true
+                }
+            };
 
             var astype = new SubscriptionType()
             {

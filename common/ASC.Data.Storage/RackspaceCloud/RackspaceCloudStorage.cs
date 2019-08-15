@@ -319,9 +319,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                     using (var emptyStream = TempStream.Create())
                     {
 
-                        var headers = new Dictionary<string, string>();
-
-                        headers.Add("X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)));
+                        var headers = new Dictionary<string, string>
+                        {
+                            { "X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)) }
+                        };
                         // create symlink
                         client.CreateObject(_public_container,
                                    emptyStream,

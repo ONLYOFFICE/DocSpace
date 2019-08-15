@@ -43,16 +43,11 @@ namespace ASC.Notify.Cron
     {
         #region Members
 
-        private readonly IComparer comparator = Comparer.Default;
-
         #endregion
 
         #region Properties
 
-        public IComparer Comparator
-        {
-            get { return comparator; }
-        }
+        public IComparer Comparator { get; } = Comparer.Default;
 
         #endregion
 
@@ -69,7 +64,7 @@ namespace ASC.Notify.Cron
 
         public TreeSet(IComparer c)
         {
-            comparator = c;
+            Comparator = c;
         }
 
         #endregion
@@ -79,7 +74,7 @@ namespace ASC.Notify.Cron
         public new bool Add(object obj)
         {
             var inserted = AddWithoutSorting(obj);
-            Sort(comparator);
+            Sort(Comparator);
             return inserted;
         }
 
@@ -94,7 +89,7 @@ namespace ASC.Notify.Cron
                     added = true;
                 }
             }
-            Sort(comparator);
+            Sort(Comparator);
             return added;
         }
 
@@ -108,7 +103,7 @@ namespace ASC.Notify.Cron
             var tempEnumerator = GetEnumerator();
             while (tempEnumerator.MoveNext())
             {
-                if (comparator.Compare(tempEnumerator.Current, item) == 0)
+                if (Comparator.Compare(tempEnumerator.Current, item) == 0)
                 {
                     return true;
                 }
@@ -120,7 +115,7 @@ namespace ASC.Notify.Cron
         {
             ISortedSet newList = new TreeSet();
             var i = 0;
-            while ((i < Count) && (comparator.Compare(this[i], limit) < 0))
+            while ((i < Count) && (Comparator.Compare(this[i], limit) < 0))
             {
                 i++;
             }

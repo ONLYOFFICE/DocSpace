@@ -52,7 +52,6 @@ namespace ASC.Data.Reassigns
         private readonly Dictionary<string, string> _httpHeaders;
 
         private readonly int _tenantId;
-        private readonly Guid _userId;
         private readonly string _userName;
         private readonly Guid _currentUserId;
         private readonly bool _notify;
@@ -65,7 +64,7 @@ namespace ASC.Data.Reassigns
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
-        public Guid FromUser { get { return _userId; } }
+        public Guid FromUser { get; }
 
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -78,7 +77,7 @@ namespace ASC.Data.Reassigns
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
-            _userId = user.ID;
+            FromUser = user.ID;
             _userName = UserFormatter.GetUserName(user, DisplayUserNameFormat.Default);
             _currentUserId = currentUserId;
             _notify = notify;
@@ -86,7 +85,7 @@ namespace ASC.Data.Reassigns
             //_docService = Web.Files.Classes.Global.FileStorageService;
             //_mailEraser = new MailGarbageEngine();
 
-            Id = queueWorkerRemove.GetProgressItemId(tenantId, _userId);
+            Id = queueWorkerRemove.GetProgressItemId(tenantId, FromUser);
             Status = ProgressStatus.Queued;
             Error = null;
             Percentage = 0;
@@ -108,7 +107,7 @@ namespace ASC.Data.Reassigns
                 long crmSpace;
                 GetUsageSpace(tenant, out var docsSpace, out var mailSpace, out var talkSpace);
 
-                logger.InfoFormat("deleting user data for {0} ", _userId);
+                logger.InfoFormat("deleting user data for {0} ", FromUser);
 
                 logger.Info("deleting of data from documents");
 
@@ -180,28 +179,28 @@ namespace ASC.Data.Reassigns
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    docsSpace = manager.GetUserSpaceUsage(_userId);
+                    docsSpace = manager.GetUserSpaceUsage(FromUser);
                 }
 
                 if (item.ID == WebItemManager.MailProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    mailSpace = manager.GetUserSpaceUsage(_userId);
+                    mailSpace = manager.GetUserSpaceUsage(FromUser);
                 }
 
                 if (item.ID == WebItemManager.TalkProductID)
                 {
                     manager = item.Context.SpaceUsageStatManager as IUserSpaceUsage;
                     if (manager == null) continue;
-                    talkSpace = manager.GetUserSpaceUsage(_userId);
+                    talkSpace = manager.GetUserSpaceUsage(FromUser);
                 }
             }
         }
 
         private void DeleteTalkStorage()
         {
-            var data = MD5.Create().ComputeHash(Encoding.Default.GetBytes(_userId.ToString()));
+            var data = MD5.Create().ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
 
             var sBuilder = new StringBuilder();
 
@@ -223,20 +222,20 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, _userId, _userName,
+                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, FromUser, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(_userId), new[] { _userName });
+                MessageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { _userName });
             else
-                MessageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(_userId), _userName);
+                MessageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), _userName);
         }
 
         private void SendErrorNotify(string errorMessage)
         {
             if (!_notify) return;
 
-            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, _userId, _userName, errorMessage);
+            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, FromUser, _userName, errorMessage);
         }
     }
 }
