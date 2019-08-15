@@ -109,8 +109,7 @@ namespace ASC.FederatedLogin
                 OriginJson = json,
             };
 
-            long expiresIn;
-            if (long.TryParse(parser.Value<string>("expires_in"), out expiresIn))
+            if (long.TryParse(parser.Value<string>("expires_in"), out var expiresIn))
                 token.ExpiresIn = expiresIn;
 
             try

@@ -136,8 +136,7 @@ namespace ASC.Web.Core.WhiteLabel
                 var cookie = request.Cookies["is_retina"];
                 if (cookie != null && !String.IsNullOrEmpty(cookie))
                 {
-                    bool result;
-                    if (Boolean.TryParse(cookie, out result))
+                    if (Boolean.TryParse(cookie, out var result))
                     {
                         isRetina = result;
                     }

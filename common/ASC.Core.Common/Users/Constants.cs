@@ -38,8 +38,7 @@ namespace ASC.Core.Users
         {
             get
             {
-                int count;
-                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out count))
+                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out var count))
                 {
                     count = 10000;
                 }

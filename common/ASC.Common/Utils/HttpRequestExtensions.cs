@@ -195,8 +195,7 @@ namespace System.Web
                 s = HttpUtility.UrlDecode(s);
             }
 
-            Uri result;
-            Uri.TryCreate(s, UriKind.Absolute, out result);
+            Uri.TryCreate(s, UriKind.Absolute, out var result);
             return result;
         }
 

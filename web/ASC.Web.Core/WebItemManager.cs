@@ -130,8 +130,7 @@ namespace ASC.Web.Core
         {
             get
             {
-                IWebItem i;
-                items.TryGetValue(id, out i);
+                items.TryGetValue(id, out var i);
                 return i;
             }
         }

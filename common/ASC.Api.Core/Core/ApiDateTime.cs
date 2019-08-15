@@ -90,8 +90,7 @@ namespace ASC.Api.Core
             if (data.Length < 7) throw new ArgumentException("invalid date time format");
 
             var offsetPart = data.Substring(data.Length - 6, 6);
-            DateTime dateTime;
-            if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dateTime))
+            if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dateTime))
             {
                 //Parse time   
                 var tzOffset = TimeSpan.Zero;

@@ -946,8 +946,7 @@ namespace ASC.Web.Core.Calendars
 
                         foreach (var date in val.Split(','))
                         {
-                            DateTime dt;
-                            if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dt))
+                            if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dt))
                                 rr.ExDates.Add(new ExDate() { Date = dt, isDateTime = (date.ToLower().IndexOf('t') >= 0) });
 
                         }

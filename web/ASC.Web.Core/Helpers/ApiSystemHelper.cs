@@ -141,8 +141,7 @@ namespace ASC.Web.Core.Helpers
 
         private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, string data = null)
         {
-            Uri uri;
-            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out uri))
+            if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
                 var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
                 absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');

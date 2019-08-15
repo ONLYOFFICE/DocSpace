@@ -286,8 +286,7 @@ namespace ASC.Core.Billing
 
             ResetCacheExpiration();
 
-            Tuple<Uri, Uri> tuple;
-            if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out tuple))
+            if (!string.IsNullOrEmpty(quota.AvangateId) && urls.TryGetValue(quota.AvangateId, out var tuple))
             {
                 var result = tuple.Item2;
 

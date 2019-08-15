@@ -43,8 +43,7 @@ namespace ASC.Core.Tenants
         {
             MinLength = 6;
 
-            int defaultMinLength;
-            if (int.TryParse(ConfigurationManager.AppSettings["web:alias:min"], out defaultMinLength))
+            if (int.TryParse(ConfigurationManager.AppSettings["web:alias:min"], out var defaultMinLength))
             {
                 MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }

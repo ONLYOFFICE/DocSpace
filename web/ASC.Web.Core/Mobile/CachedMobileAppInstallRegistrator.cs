@@ -65,9 +65,8 @@ namespace ASC.Web.Core.Mobile
 
             var fromCache = cache.Get<String>(GetCacheKey(userEmail, appType));
 
-            bool cachedValue;
 
-            if (bool.TryParse(fromCache, out cachedValue))
+            if (bool.TryParse(fromCache, out var cachedValue))
             {
                 return cachedValue;
             }

@@ -154,10 +154,9 @@ namespace ASC.Web.Core.Mail
                     .Select(r => Convert.ToString(r[0]))
                     .FirstOrDefault();
 
-                IPAddress ipAddress;
                 string hostname;
 
-                if (IPAddress.TryParse(ip, out ipAddress))
+                if (IPAddress.TryParse(ip, out var ipAddress))
                 {
                     selectQuery = new SqlQuery("greylisting_whitelist")
                         .Select("Comment")

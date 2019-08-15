@@ -690,9 +690,8 @@ namespace ASC.Data.Storage.GoogleCloud
 
                 if (string.IsNullOrEmpty(privateExpireKey)) continue;
 
-                long fileTime;
 
-                if (!long.TryParse(privateExpireKey, out fileTime)) continue;
+                if (!long.TryParse(privateExpireKey, out var fileTime)) continue;
                 if (DateTime.UtcNow <= DateTime.FromFileTimeUtc(fileTime)) continue;
 
                 storage.DeleteObject(_bucket, MakePath(domain, path));

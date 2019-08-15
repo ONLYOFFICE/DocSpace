@@ -182,9 +182,8 @@ namespace ASC.Common.Utils
 
             if (string.IsNullOrEmpty(offsetStr)) return null;
 
-            TimeSpan offset;
 
-            if (!TimeSpan.TryParse(offsetStr, out offset))
+            if (!TimeSpan.TryParse(offsetStr, out var offset))
                 return null;
 
             return systemTimeZones.FirstOrDefault(tz => tz.BaseUtcOffset == offset);

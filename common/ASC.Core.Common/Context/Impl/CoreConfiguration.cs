@@ -75,9 +75,8 @@ namespace ASC.Core
                 if (personalMaxSpace.HasValue)
                     return personalMaxSpace.Value;
 
-                long value;
 
-                if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out value))
+                if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out var value))
                     value = long.MaxValue;
 
                 personalMaxSpace = value;

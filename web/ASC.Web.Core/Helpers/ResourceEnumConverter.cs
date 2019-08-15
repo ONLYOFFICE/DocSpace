@@ -60,11 +60,10 @@ namespace ASC.Web.Core.Helpers
         /// <returns></returns>
         private LookupTable GetLookupTable(CultureInfo culture)
         {
-            LookupTable result = null;
             if (culture == null)
                 culture = CultureInfo.CurrentCulture;
 
-            if (!_lookupTables.TryGetValue(culture, out result))
+            if (!_lookupTables.TryGetValue(culture, out var result))
             {
                 result = new LookupTable();
                 foreach (var value in GetStandardValues())
@@ -164,8 +163,7 @@ namespace ASC.Web.Core.Helpers
         private object GetValue(CultureInfo culture, string text)
         {
             var lookupTable = GetLookupTable(culture);
-            object result = null;
-            lookupTable.TryGetValue(text, out result);
+            lookupTable.TryGetValue(text, out var result);
             return result;
         }
 
@@ -182,9 +180,8 @@ namespace ASC.Web.Core.Helpers
             ulong result = 0;
             foreach (var textValue in textValues)
             {
-                object value = null;
                 var trimmedTextValue = textValue.Trim();
-                if (!lookupTable.TryGetValue(trimmedTextValue, out value))
+                if (!lookupTable.TryGetValue(trimmedTextValue, out var value))
                 {
                     return null;
                 }

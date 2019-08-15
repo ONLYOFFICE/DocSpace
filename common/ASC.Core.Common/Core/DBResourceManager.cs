@@ -126,8 +126,7 @@ namespace TMResourceData
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            ResourceSet set;
-            resourceSets.TryGetValue(culture.Name, out set);
+            resourceSets.TryGetValue(culture.Name, out var set);
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
@@ -291,8 +290,7 @@ namespace TMResourceData
         {
             try
             {
-                string text;
-                whiteLabelDictionary.TryRemove(tenantId, out text);
+                whiteLabelDictionary.TryRemove(tenantId, out var text);
             }
             catch (Exception e)
             {
@@ -314,8 +312,7 @@ namespace TMResourceData
                     var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
                     if (tenant == null) return resourceValue;
 
-                    string newText;
-                    if (whiteLabelDictionary.TryGetValue(tenant.TenantId, out newText))
+                    if (whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
                     {
                         var newTextReplacement = newText;
 
