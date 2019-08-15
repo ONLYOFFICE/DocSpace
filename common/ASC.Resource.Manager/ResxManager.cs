@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,7 +41,7 @@ namespace ASC.Resource.Manager
                 Project = new ResProject { Name = project },
                 Module = new ResModule { Name = module },
                 Language = new ResCulture { Title = language },
-                Word = new ResWord() {  ResFile = new ResFile() {  FileName = fName } }
+                Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
             var words = ResourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
@@ -72,7 +71,7 @@ namespace ASC.Resource.Manager
 
                 if (!string.IsNullOrEmpty(key))
                 {
-                    var keys = key.Split(",");
+                    var keys = key.Split(",").Distinct();
 
                     if (File.Exists(zipFileName))
                     {
@@ -102,7 +101,7 @@ namespace ASC.Resource.Manager
 
                 using var resXResourceWriter = new ResXResourceWriter(zipFileName);
 
-                foreach (var word in toAdd.Where(r=> r != null && !string.IsNullOrEmpty(r.ValueTo)).OrderBy(x => x.Title))
+                foreach (var word in toAdd.Where(r => r != null && !string.IsNullOrEmpty(r.ValueTo)).OrderBy(x => x.Title))
                 {
                     resXResourceWriter.AddResource(word.Title, word.ValueTo);
                 }

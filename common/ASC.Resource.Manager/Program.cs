@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using CommandLine;
@@ -35,7 +37,6 @@ namespace ASC.Resource.Manager
             try
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
-
 
                 if (format == "json")
                 {
@@ -129,6 +130,42 @@ namespace ASC.Resource.Manager
                     ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(projectName, moduleName, fileName, c, exportPath, key));
                 }
             }
+        }
+
+        public static string CheckExist(string resName, string fullClassName)
+        {
+            var bag = new ConcurrentBag<string>();
+            var path = "..\\..\\..\\..\\..\\";
+
+            var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories);
+            var xmlFiles = Directory.GetFiles(Path.GetFullPath(path), "*.xml", SearchOption.AllDirectories);
+
+            string localInit() => "";
+
+            Func<string, ParallelLoopState, long, string, string> func(string regexp) => (f, state, index, a) =>
+            {
+                var data = File.ReadAllText(f);
+                var regex = new Regex(regexp);
+                var matches = regex.Matches(data);
+                if (matches.Count > 0)
+                {
+                    return a + "," + string.Join(",", matches.Select(r => r.Groups[1].Value));
+                }
+                return a;
+            };
+
+            void localFinally(string r)
+            {
+                if (!bag.Contains(r) && !string.IsNullOrEmpty(r))
+                {
+                    bag.Add(r.Trim(','));
+                }
+            }
+
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.(\w*)"), localFinally);
+            _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
+
+            return string.Join(',', bag.ToArray());
         }
     }
 }
