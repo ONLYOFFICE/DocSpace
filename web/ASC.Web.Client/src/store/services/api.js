@@ -28,3 +28,9 @@ export function getModulesList() {
 export function getUser() {
     return IS_FAKE ? fakeApi.getUser() :  axios.get(`${API_URL}/people/@self.json`);
 };
+
+export function getSettings() {
+    return IS_FAKE 
+        ? fakeApi.getSettings() 
+        : axios.get(`${API_URL}/settings.json`);
+};

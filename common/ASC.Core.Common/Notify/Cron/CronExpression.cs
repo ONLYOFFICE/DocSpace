@@ -62,7 +62,6 @@ namespace ASC.Notify.Cron
         protected const int NoSpec = NoSpecInt;
         private static readonly Hashtable monthMap = new Hashtable(20);
         private static readonly Hashtable dayMap = new Hashtable(60);
-        private readonly string cronExpressionString;
         [NonSerialized] protected bool calendardayOfMonth;
         [NonSerialized] protected bool calendardayOfWeek;
 
@@ -112,7 +111,7 @@ namespace ASC.Notify.Cron
             {
                 throw new ArgumentException("cronExpression cannot be null");
             }
-            cronExpressionString = cronExpression.ToUpper(CultureInfo.InvariantCulture);
+            CronExpressionString = cronExpression.ToUpper(CultureInfo.InvariantCulture);
             BuildExpression(cronExpression);
         }
 
@@ -129,10 +128,7 @@ namespace ASC.Notify.Cron
             }
         }
 
-        public string CronExpressionString
-        {
-            get { return cronExpressionString; }
-        }
+        public string CronExpressionString { get; }
 
         public TimeSpan? Period()
         {
@@ -168,7 +164,7 @@ namespace ASC.Notify.Cron
 
         public void OnDeserialization(object sender)
         {
-            BuildExpression(cronExpressionString);
+            BuildExpression(CronExpressionString);
         }
 
         #endregion
@@ -215,7 +211,7 @@ namespace ASC.Notify.Cron
 
         public override string ToString()
         {
-            return cronExpressionString;
+            return CronExpressionString;
         }
 
         public static bool IsValidExpression(string cronExpression)

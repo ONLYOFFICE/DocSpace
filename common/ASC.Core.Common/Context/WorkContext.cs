@@ -112,8 +112,10 @@ namespace ASC.Core
                 {
                     jabberSender = new JabberSender();
 
-                    var properties = new Dictionary<string, string>();
-                    properties["useCoreSettings"] = "true";
+                    var properties = new Dictionary<string, string>
+                    {
+                        ["useCoreSettings"] = "true"
+                    };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
                         emailSender = new AWSSender();

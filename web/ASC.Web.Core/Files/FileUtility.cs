@@ -202,9 +202,6 @@ namespace ASC.Web.Core.Files
             }
         }
 
-
-        private static readonly List<string> extsImagePreviewed = (ConfigurationManager.AppSettings["files.viewed-images"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsMediaPreviewed = (ConfigurationManager.AppSettings["files.viewed-media"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebPreviewed = (ConfigurationManager.AppSettings["files.docservice.viewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebEdited = (ConfigurationManager.AppSettings["files.docservice.edited-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebEncrypt = (ConfigurationManager.AppSettings["files.docservice.encrypted-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -215,15 +212,9 @@ namespace ASC.Web.Core.Files
         private static readonly List<string> extsCoAuthoring = (ConfigurationManager.AppSettings["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsIndexing = (ConfigurationManager.AppSettings["files.index.formats"] ?? "").Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        public static List<string> ExtsImagePreviewed
-        {
-            get { return extsImagePreviewed; }
-        }
+        public static List<string> ExtsImagePreviewed { get; } = (ConfigurationManager.AppSettings["files.viewed-images"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        public static List<string> ExtsMediaPreviewed
-        {
-            get { return extsMediaPreviewed; }
-        }
+        public static List<string> ExtsMediaPreviewed { get; } = (ConfigurationManager.AppSettings["files.viewed-media"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
         public static List<string> ExtsWebPreviewed
         {
