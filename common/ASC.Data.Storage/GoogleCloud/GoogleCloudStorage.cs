@@ -606,9 +606,10 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var size = GetFileSize(srcdomain, srcpath);
 
-            var options = new CopyObjectOptions();
-
-            options.DestinationPredefinedAcl = GetDomainACL(newdomain);
+            var options = new CopyObjectOptions
+            {
+                DestinationPredefinedAcl = GetDomainACL(newdomain)
+            };
 
             storage.CopyObject(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
 

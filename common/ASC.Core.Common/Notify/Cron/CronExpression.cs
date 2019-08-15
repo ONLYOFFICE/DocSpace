@@ -150,8 +150,10 @@ namespace ASC.Notify.Cron
             CronExpression copy;
             try
             {
-                copy = new CronExpression(CronExpressionString);
-                copy.TimeZone = TimeZone;
+                copy = new CronExpression(CronExpressionString)
+                {
+                    TimeZone = TimeZone
+                };
             }
             catch (FormatException)
             {
