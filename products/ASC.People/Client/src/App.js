@@ -1,14 +1,13 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Switch } from "react-router-dom";
-import { Loader, ErrorContainer } from "asc-web-components";
+import { Loader } from "asc-web-components";
 import PeopleLayout from "./components/Layout";
 import Home from "./components/pages/Home";
 import PrivateRoute from "./helpers/privateRoute";
 import Profile from './components/pages/Profile';
 import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
-import { isAdmin } from "./store/auth/selectors";
 import { Error404 } from "./components/pages/Error";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
