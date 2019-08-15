@@ -290,7 +290,7 @@ namespace ASC.Common.Data
                 command.AddParameter(name, parameters[i]);
                 sqlBuilder.AppendFormat("{0}@{1}", sqlParts[i], name);
             }
-            sqlBuilder.Append(sqlParts[sqlParts.Length - 1]);
+            sqlBuilder.Append(sqlParts[^1]);
             command.CommandText = sqlBuilder.ToString();
         }
 

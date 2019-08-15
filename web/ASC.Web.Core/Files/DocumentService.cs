@@ -67,7 +67,7 @@ namespace ASC.Web.Core.Files
         /// <returns>Supported key</returns>
         public static string GenerateRevisionId(string expectedKey)
         {
-            expectedKey = expectedKey ?? "";
+            expectedKey ??= "";
             const int maxLength = 128;
             if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
             var key = Regex.Replace(expectedKey, "[^0-9a-zA-Z_]", "_");

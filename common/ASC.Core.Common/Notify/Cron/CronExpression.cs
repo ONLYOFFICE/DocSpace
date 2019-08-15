@@ -1058,7 +1058,7 @@ namespace ASC.Notify.Cron
         protected virtual int GetNumericValue(string s, int i)
         {
             var endOfVal = FindNextWhiteSpace(i, s);
-            var val = s.Substring(i, endOfVal - i);
+            var val = s[i..endOfVal];
             return Convert.ToInt32(val, CultureInfo.InvariantCulture);
         }
 

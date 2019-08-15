@@ -316,7 +316,7 @@ namespace ASC.Common.Data.Sql
 
         public SqlQuery Where(Exp exp)
         {
-            where = where & exp;
+            where &= exp;
             return this;
         }
 

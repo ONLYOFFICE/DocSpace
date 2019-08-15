@@ -47,7 +47,7 @@ namespace ASC.Common.Security
             seeds = new int[56];
             var num4 = (seed == int.MinValue) ? int.MaxValue : Math.Abs(seed);
             var num2 = 161803398 - num4;
-            seeds[seeds.Length - 1] = num2;
+            seeds[^1] = num2;
             var num3 = 1;
             for (var i = 1; i < seeds.Length - 1; i++)
             {

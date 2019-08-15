@@ -400,7 +400,7 @@ namespace ASC.Core.Data
                 {
                     if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1))
                     {
-                        domain = domain.Substring(0, domain.Length - 1);
+                        domain = domain[0..^1];
                     }
                     else
                     {

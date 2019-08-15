@@ -175,7 +175,7 @@ namespace ASC.Web.Core.Calendars
                 if (iCalStrValue.Length > 2)
                 {
                     d.Id = iCalStrValue.Substring(iCalStrValue.Length - 2).ToLower();
-                    d.Number = Convert.ToInt32(iCalStrValue.Substring(0, iCalStrValue.Length - 2));
+                    d.Number = Convert.ToInt32(iCalStrValue[0..^2]);
                 }
                 else
                 {
