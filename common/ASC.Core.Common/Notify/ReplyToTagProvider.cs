@@ -62,7 +62,7 @@ namespace ASC.Core.Common.Notify
             if (String.IsNullOrEmpty(entity) || !EntityType.Match(entity).Success) throw new ArgumentException(@"Not supported entity type", entity);
             if (String.IsNullOrEmpty(entityId)) throw new ArgumentException(@"Entity Id is null or empty", entityId);
 
-            string pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : String.Empty;
+            var pId = parentId != Guid.Empty.ToString() && parentId != null ? parentId : String.Empty;
             return new TagValue(TagName, String.Format("reply_{0}_{1}_{2}@{3}", entity, entityId, pId, AutoreplyDomain));
         }
 

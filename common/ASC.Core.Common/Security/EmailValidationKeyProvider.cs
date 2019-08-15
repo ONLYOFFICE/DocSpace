@@ -109,7 +109,7 @@ namespace ASC.Security.Cryptography
 
         internal static string DoStringFromBytes(byte[] data)
         {
-            string str = Convert.ToBase64String(data);
+            var str = Convert.ToBase64String(data);
             str = str.Replace("=", "").Replace("+", "").Replace("/", "").Replace("\\", "");
             return str.ToUpperInvariant();
         }

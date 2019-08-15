@@ -270,7 +270,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var storage = GetStorage();
 
-            UploadObjectOptions uploadObjectOptions = new UploadObjectOptions
+            var uploadObjectOptions = new UploadObjectOptions
             {
                 PredefinedAcl = acl == ACL.Auto ? GetDomainACL(domain) : GetGoogleCloudAcl(acl)
             };
@@ -606,7 +606,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             var size = GetFileSize(srcdomain, srcpath);
 
-            CopyObjectOptions options = new CopyObjectOptions();
+            var options = new CopyObjectOptions();
 
             options.DestinationPredefinedAcl = GetDomainACL(newdomain);
 
@@ -649,7 +649,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var objectKey = MakePath(domain, path);
             var buffered = stream.GetBuffered();
 
-            UploadObjectOptions uploadObjectOptions = new UploadObjectOptions
+            var uploadObjectOptions = new UploadObjectOptions
             {
                 PredefinedAcl = PredefinedObjectAcl.BucketOwnerFullControl
             };
@@ -722,17 +722,17 @@ namespace ASC.Data.Storage.GoogleCloud
                                            long chunkLength)
         {
 
-            String bytesRangeStart = Convert.ToString((chunkNumber - 1) * defaultChunkSize);
-            String bytesRangeEnd = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength - 1);
+            var bytesRangeStart = Convert.ToString((chunkNumber - 1) * defaultChunkSize);
+            var bytesRangeEnd = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength - 1);
 
-            String totalBytes = "*";
+            var totalBytes = "*";
 
-            int BufferSize = 2 * 4096;
+            var BufferSize = 2 * 4096;
 
             if (chunkLength != defaultChunkSize)
                 totalBytes = Convert.ToString((chunkNumber - 1) * defaultChunkSize + chunkLength);
 
-            String contentRangeHeader = String.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
+            var contentRangeHeader = String.Format("bytes {0}-{1}/{2}", bytesRangeStart, bytesRangeEnd, totalBytes);
 
             var request = HttpWebRequest.CreateHttp(uploadUri);
 
@@ -740,7 +740,7 @@ namespace ASC.Data.Storage.GoogleCloud
             request.ContentLength = chunkLength;
             request.Headers.Add("Content-Range", contentRangeHeader);
 
-            using (Stream rs = request.GetRequestStream())
+            using (var rs = request.GetRequestStream())
             {
                 var buffer = new byte[BufferSize];
 
@@ -757,9 +757,9 @@ namespace ASC.Data.Storage.GoogleCloud
             long MAX_RETRIES = 100;
             int millisecondsTimeout;
 
-            for (int i = 0; i < MAX_RETRIES; i++)
+            for (var i = 0; i < MAX_RETRIES; i++)
             {
-                Random random = new Random();
+                var random = new Random();
 
                 millisecondsTimeout = Math.Min(Convert.ToInt32(Math.Pow(2, i)) + random.Next(0, 1000), 32 * 1000);
 

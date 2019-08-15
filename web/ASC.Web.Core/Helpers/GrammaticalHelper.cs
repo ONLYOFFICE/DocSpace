@@ -40,7 +40,7 @@ namespace ASC.Web.Core.Helpers
                 int[] formsTable = { 2, 0, 1, 1, 1, 2, 2, 2, 2, 2 };
 
                 number = Math.Abs(number);
-                int res = formsTable[((((number % 100) / 10) != 1) ? 1 : 0) * (number % 10)];
+                var res = formsTable[((((number % 100) / 10) != 1) ? 1 : 0) * (number % 10)];
                 switch (res)
                 {
                     case 0:

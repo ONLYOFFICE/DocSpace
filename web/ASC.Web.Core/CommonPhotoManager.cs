@@ -52,7 +52,7 @@ namespace ASC.Web.Core
             if (crop) alignWidth = (minSide == realWidth);
             else alignWidth = (maxSide == realWidth);
 
-            double scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
+            var scaleFactor = (alignWidth) ? (realWidth / (1.0 * width)) : (realHeight / (1.0 * height));
 
             if (scaleFactor < 1) scaleFactor = 1;
 
@@ -80,7 +80,7 @@ namespace ASC.Web.Core
                     graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
                     graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                    using (ImageAttributes wrapMode = new ImageAttributes())
+                    using (var wrapMode = new ImageAttributes())
                     {
                         wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                         graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);

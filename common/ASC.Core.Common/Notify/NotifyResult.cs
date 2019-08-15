@@ -47,10 +47,10 @@ namespace ASC.Notify
         {
             var sb = new StringBuilder();
             sb.AppendFormat("SendResult: {0} whith {1} sub-results", Result, Responses.Count);
-            foreach (SendResponse responce in Responses)
+            foreach (var responce in Responses)
             {
-                string recipient = "<recipient:nomessage>";
-                string error = "";
+                var recipient = "<recipient:nomessage>";
+                var error = "";
                 if (responce.NoticeMessage != null)
                 {
                     if (responce.NoticeMessage.Recipient != null)

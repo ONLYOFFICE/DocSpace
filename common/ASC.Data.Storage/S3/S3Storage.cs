@@ -676,7 +676,7 @@ namespace ASC.Data.Storage.S3
                     Verb = HttpVerb.GET
                 };
 
-                string url = client.GetPreSignedURL(pUrlRequest);
+                var url = client.GetPreSignedURL(pUrlRequest);
                 //TODO: CNAME!
                 return url;
             }

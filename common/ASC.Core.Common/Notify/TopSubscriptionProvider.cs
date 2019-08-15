@@ -126,7 +126,7 @@ namespace ASC.Notify.Model
         public virtual void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
         {
             var objects = GetSubscriptions(tenant, action, recipient);
-            foreach (string objectID in objects)
+            foreach (var objectID in objects)
             {
                 subscriptionProvider.UnSubscribe(action, objectID, recipient);
             }

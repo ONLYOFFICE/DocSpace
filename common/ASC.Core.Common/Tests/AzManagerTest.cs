@@ -137,7 +137,7 @@ namespace ASC.Common.Tests.Security.Authorizing
         [Test]
         public void GetAzManagerObjectAcl()
         {
-            AzManager azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
+            var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
             AzManager.AzManagerAcl acl = null;
 
             var c1 = new Class1(1);

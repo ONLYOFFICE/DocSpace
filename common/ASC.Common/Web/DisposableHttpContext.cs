@@ -86,7 +86,7 @@ namespace ASC.Common.Web
         {
             if (!_isDisposed)
             {
-                foreach (IDisposable item in Items.Values)
+                foreach (var item in Items.Values)
                 {
                     try
                     {

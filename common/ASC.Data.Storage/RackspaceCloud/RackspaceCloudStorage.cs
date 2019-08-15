@@ -120,7 +120,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private CloudFilesProvider GetClient()
         {
-            CloudIdentity cloudIdentity = new CloudIdentity()
+            var cloudIdentity = new CloudIdentity()
             {
                 Username = _username,
                 APIKey = _apiKey
@@ -216,7 +216,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override Stream GetReadStream(string domain, string path, int offset)
         {
-            Stream outputStream = TempStream.Create();
+            var outputStream = TempStream.Create();
 
             var client = GetClient();
 
@@ -689,7 +689,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         public override string UploadChunk(string domain, string path, string filePath, Stream stream, long defaultChunkSize, int chunkNumber, long chunkLength)
         {
-            int BufferSize = 4096;
+            var BufferSize = 4096;
 
             var mode = chunkNumber == 0 ? FileMode.Create : FileMode.Append;
 

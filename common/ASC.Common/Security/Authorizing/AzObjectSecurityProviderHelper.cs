@@ -66,8 +66,8 @@ namespace ASC.Common.Security.Authorizing
 
         public IEnumerable<IRole> GetObjectRoles(ISubject account)
         {
-            IEnumerable<IRole> roles = currSecObjProvider.GetObjectRoles(account, currObjId, callContext);
-            foreach (IRole role in roles)
+            var roles = currSecObjProvider.GetObjectRoles(account, currObjId, callContext);
+            foreach (var role in roles)
             {
                 if (!callContext.RolesList.Contains(role)) callContext.RolesList.Add(role);
             }

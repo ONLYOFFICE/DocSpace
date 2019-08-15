@@ -1062,7 +1062,7 @@ namespace ASC.Web.Studio.Core.Notify
                     Func<string> greenButtonText = () => string.Empty;
                     var greenButtonUrl = string.Empty;
 
-                    int sendCount = 0;
+                    var sendCount = 0;
 
                     CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
 

@@ -58,7 +58,7 @@ namespace ASC.Web.Core.Calendars
 
         public static int GetDayOfWeekInMonth(this DateTime date)
         {
-            int count = 0;
+            var count = 0;
             var d = date;
             while (date.Month == d.Month)
             {
@@ -472,7 +472,7 @@ namespace ASC.Web.Core.Calendars
                     while (d.Year <= endDate.Year && CheckCount(dates, fromDate, maxCount))
                     {
                         var dateRange = new List<DateTime>();
-                        bool isFirst = true;
+                        var isFirst = true;
 
                         if (ByMonth != null)
                         {
@@ -965,7 +965,7 @@ namespace ASC.Web.Core.Calendars
             if (this.Freq == Frequency.Never)
                 return String.Empty;
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("RRULE:" + this.ToString(true));
 
             if (this.ExDates.Count > 0)

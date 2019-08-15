@@ -94,7 +94,7 @@ namespace ASC.Api.Core
             if (DateTime.TryParseExact(data, Formats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dateTime))
             {
                 //Parse time   
-                TimeSpan tzOffset = TimeSpan.Zero;
+                var tzOffset = TimeSpan.Zero;
                 if (offsetPart.Contains(":") && TimeSpan.TryParse(offsetPart.TrimStart('+'), out tzOffset))
                 {
                     return new ApiDateTime(dateTime, tzOffset);
@@ -277,7 +277,7 @@ namespace ASC.Api.Core
 
         public override string ToString()
         {
-            DateTime localUtcTime = UtcTime;
+            var localUtcTime = UtcTime;
 
             if (!UtcTime.Equals(DateTime.MinValue))
                 localUtcTime = UtcTime.Add(TimeZoneOffset);

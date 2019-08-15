@@ -169,7 +169,7 @@ namespace ASC.Core
             {
                 throw new ArgumentNullException("key");
             }
-            byte[] bytes = tenantService.GetTenantSettings(tenant, key);
+            var bytes = tenantService.GetTenantSettings(tenant, key);
 
             var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
 

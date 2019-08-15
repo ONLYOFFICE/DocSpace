@@ -138,7 +138,7 @@ namespace ASC.Core.Users
             Dictionary<DisplayUserNameFormat, string> formats = null;
             if (!DisplayFormats.TryGetValue(culture, out formats))
             {
-                string twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+                var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
                 if (!DisplayFormats.TryGetValue(twoletter, out formats)) formats = DisplayFormats["default"];
             }
             var format = formats[DisplayUserNameFormat.Default];

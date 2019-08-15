@@ -78,7 +78,7 @@ namespace ASC.Web.Core.Calendars
 
         public virtual string ToiCalFormat()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine("BEGIN:TODO");
             sb.AppendLine(String.Format("UID:{0}", string.IsNullOrEmpty(this.Uid) ? this.Id : this.Uid));

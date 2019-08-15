@@ -113,7 +113,7 @@ namespace ASC.Web.Core.Users
         {
             unchecked
             {
-                int result = UserId.GetHashCode();
+                var result = UserId.GetHashCode();
                 result = (result * 397) ^ MaxFileSize.GetHashCode();
                 result = (result * 397) ^ Size.GetHashCode();
                 return result;

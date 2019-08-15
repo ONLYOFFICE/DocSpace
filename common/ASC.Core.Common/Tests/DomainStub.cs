@@ -264,7 +264,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
             allAces.AddRange(GetAcl(subject, action, fullObjectId));
 
-            bool inherit = GetObjectAcesInheritance(objectId);
+            var inherit = GetObjectAcesInheritance(objectId);
             if (inherit)
             {
                 var providerHelper = new AzObjectSecurityProviderHelper(objectId, secObjProvider);
