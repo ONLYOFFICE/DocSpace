@@ -215,7 +215,6 @@ class SectionBodyContent extends React.PureComponent {
     const newFilter = filter.clone(true);
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
-    //fetchPeople(newFilter).finally(() => onLoading(false));
   };
 
   render() {
