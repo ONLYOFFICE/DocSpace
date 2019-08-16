@@ -106,7 +106,6 @@ import OrigAZSortingIcon from './a-z.sorting.react.svg';
 import OrigZASortingIcon from './z-a.sorting.react.svg';
 import OrigExternalLinkIcon from './external.link.react.svg';
 import OrigRadiobuttonIcon from './radiobutton.react.svg';
-import OrigRadiobuttonHoverIcon from './radiobutton.hover.react.svg';
 import OrigRadiobuttonCheckedIcon from './radiobutton.checked.react.svg';
 import OrigPlusIcon from './actions.header.touch.react.svg';
 import OrigPlusSharpIcon from './plus.sharp.react.svg';
@@ -135,9 +134,6 @@ import OrigDangerIcon from './danger.react.svg';
 import OrigInfoIcon from './info.react.svg';
 
 import OrigArrowPathIcon from './arrow.path.react.svg'
-import OrigRadiobuttonDisabledIcon from './radiobutton.disabled.react.svg'
-import OrigRadiobuttonDisabledCheckedIcon from './radiobutton.disabled.checked.react.svg'
-import OrigRadiobuttonHoverCheckedIcon from './radiobutton.hover.checked.react.svg'
 
 import OrigToggleButtonCheckedIcon from './toggle.button.checked.react.svg';
 import OrigToggleButtonIcon from './toggle.button.react.svg';
@@ -559,22 +555,6 @@ export const ProjectsTimeTrackingIcon = createStyledIcon(
 export const RadiobuttonCheckedIcon = createStyledIcon(
   OrigRadiobuttonCheckedIcon,
   'RadiobuttonCheckedIcon'
-);
-export const RadiobuttonDisabledIcon = createStyledIcon(
-  OrigRadiobuttonDisabledIcon,
-  'RadiobuttonDisabledIcon'
-);
-export const RadiobuttonDisabledCheckedIcon = createStyledIcon(
-  OrigRadiobuttonDisabledCheckedIcon,
-  'RadiobuttonDisabledCheckedIcon'
-);
-export const RadiobuttonHoverIcon = createStyledIcon(
-  OrigRadiobuttonHoverIcon,
-  'RadiobuttonHoverIcon'
-);
-export const RadiobuttonHoverCheckedIcon = createStyledIcon(
-  OrigRadiobuttonHoverCheckedIcon,
-  'RadiobuttonHoverCheckedIcon'
 );
 export const RadiobuttonIcon = createStyledIcon(
   OrigRadiobuttonIcon,
