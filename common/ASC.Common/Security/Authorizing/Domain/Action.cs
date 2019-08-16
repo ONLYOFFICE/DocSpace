@@ -47,7 +47,7 @@ namespace ASC.Common.Security.Authorizing
 
         public Action(Guid id, string name, bool administratorAlwaysAllow, bool conjunction)
         {
-            if (id == Guid.Empty) throw new ArgumentNullException("id");
+            if (id == Guid.Empty) throw new ArgumentNullException(nameof(id));
 
             ID = id;
             Name = name;

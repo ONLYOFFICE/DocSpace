@@ -35,7 +35,7 @@ public static class StreamExtension
 
     public static Stream GetBuffered(this Stream srcStream)
     {
-        if (srcStream == null) throw new ArgumentNullException("srcStream");
+        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
         if (!srcStream.CanSeek || srcStream.CanTimeout)
         {
             //Buffer it
@@ -51,7 +51,7 @@ public static class StreamExtension
     {
         if (stream == null)
         {
-            throw new ArgumentNullException("stream");
+            throw new ArgumentNullException(nameof(stream));
         }
 
         using var mem = stream.GetBuffered();
@@ -63,8 +63,8 @@ public static class StreamExtension
 
     public static void StreamCopyTo(this Stream srcStream, Stream dstStream)
     {
-        if (srcStream == null) throw new ArgumentNullException("srcStream");
-        if (dstStream == null) throw new ArgumentNullException("dstStream");
+        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
 
         var buffer = new byte[BufferSize];
         int readed;
@@ -75,8 +75,8 @@ public static class StreamExtension
     }
     public static async Task StreamCopyToAsync(this Stream srcStream, Stream dstStream)
     {
-        if (srcStream == null) throw new ArgumentNullException("srcStream");
-        if (dstStream == null) throw new ArgumentNullException("dstStream");
+        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
 
         var buffer = new byte[BufferSize];
         int readed;
@@ -88,8 +88,8 @@ public static class StreamExtension
 
     public static void StreamCopyTo(this Stream srcStream, Stream dstStream, int length)
     {
-        if (srcStream == null) throw new ArgumentNullException("srcStream");
-        if (dstStream == null) throw new ArgumentNullException("dstStream");
+        if (srcStream == null) throw new ArgumentNullException(nameof(srcStream));
+        if (dstStream == null) throw new ArgumentNullException(nameof(dstStream));
 
         var buffer = new byte[BufferSize];
         var totalRead = 0;

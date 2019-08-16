@@ -63,7 +63,7 @@ namespace ASC.Common.Threading
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             key = name + GetType().Name;

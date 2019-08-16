@@ -42,7 +42,7 @@ namespace ASC.Common.Security.Authorizing
         public AzObjectSecurityProviderHelper(ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
             currObjIdAsProvider = false;
-            CurrentObjectId = objectId ?? throw new ArgumentNullException("objectId");
+            CurrentObjectId = objectId ?? throw new ArgumentNullException(nameof(objectId));
             currSecObjProvider = secObjProvider;
             if (currSecObjProvider == null && CurrentObjectId is ISecurityObjectProvider)
             {

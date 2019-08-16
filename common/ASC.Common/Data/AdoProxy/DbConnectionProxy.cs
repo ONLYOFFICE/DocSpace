@@ -39,8 +39,8 @@ namespace ASC.Common.Data.AdoProxy
 
         public DbConnectionProxy(DbConnection connection, ProxyContext ctx)
         {
-            this.connection = connection ?? throw new ArgumentNullException("connection");
-            context = ctx ?? throw new ArgumentNullException("ctx");
+            this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            context = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
         protected override System.Data.Common.DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)

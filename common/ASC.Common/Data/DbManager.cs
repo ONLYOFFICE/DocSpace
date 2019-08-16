@@ -91,7 +91,7 @@ namespace ASC.Common.Data
 
         public DbManager(string databaseId, bool shared, int? commandTimeout = null)
         {
-            DatabaseId = databaseId ?? throw new ArgumentNullException("databaseId");
+            DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
             this.shared = shared;
 
             if (logger.IsDebugEnabled)
@@ -267,7 +267,7 @@ namespace ASC.Common.Data
 
         public int ExecuteBatch(IEnumerable<ISqlInstruction> batch)
         {
-            if (batch == null) throw new ArgumentNullException("batch");
+            if (batch == null) throw new ArgumentNullException(nameof(batch));
 
             var affected = 0;
             using (var tx = BeginTransaction())

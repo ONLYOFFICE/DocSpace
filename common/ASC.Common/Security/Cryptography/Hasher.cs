@@ -113,25 +113,25 @@ namespace ASC.Security.Cryptography
 
         private static byte[] S2B(string str)
         {
-            if (str == null) throw new ArgumentNullException("str");
+            if (str == null) throw new ArgumentNullException(nameof(str));
             return Encoding.UTF8.GetBytes(str);
         }
 
         private static string B2S(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (data == null) throw new ArgumentNullException(nameof(data));
             return Encoding.UTF8.GetString(data);
         }
 
         private static byte[] S642B(string str)
         {
-            if (str == null) throw new ArgumentNullException("str");
+            if (str == null) throw new ArgumentNullException(nameof(str));
             return Convert.FromBase64String(str);
         }
 
         private static string B2S64(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (data == null) throw new ArgumentNullException(nameof(data));
             return Convert.ToBase64String(data);
         }
 

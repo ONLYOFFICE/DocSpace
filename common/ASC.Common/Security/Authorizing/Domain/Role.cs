@@ -56,7 +56,7 @@ namespace ASC.Common.Security.Authorizing
         public Role(Guid id, string name)
         {
             if (id == Guid.Empty) throw new ArgumentException("id");
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             ID = id;
             Name = name;

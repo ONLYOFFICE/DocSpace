@@ -53,7 +53,7 @@ namespace ASC.Common.Threading
         {
             if (maxDegreeOfParallelism < 1)
             {
-                throw new ArgumentOutOfRangeException("maxDegreeOfParallelism");
+                throw new ArgumentOutOfRangeException(nameof(maxDegreeOfParallelism));
             }
             this.maxDegreeOfParallelism = maxDegreeOfParallelism;
         }
