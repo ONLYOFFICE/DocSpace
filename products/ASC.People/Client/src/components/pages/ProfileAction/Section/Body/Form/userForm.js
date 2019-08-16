@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react'
 import { withRouter } from 'react-router'
-import { Field, reduxForm, SubmissionError } from 'redux-form'
-import { Avatar, Button } from 'asc-web-components'
+import { Field, reduxForm } from 'redux-form'
+import { Avatar, Button, TextInput, Textarea, Label  } from 'asc-web-components'
 import submit from './submit'
 import validate from './validate'
+import styled from 'styled-components';
 
 
 const getUserRole = user => {
@@ -15,14 +16,73 @@ const getUserRole = user => {
 
 const onEditAvatar = () => {};
 
+const size = {
+  mobile: "375px",
+  tablet: "768px",
+  desktop: "1024px"
+};
+
+const device = {
+  mobile: `(max-width: ${size.mobile})`,
+  tablet: `(max-width: ${size.tablet})`,
+  desktop: `(max-width: ${size.desktop})`
+};
+
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  @media ${device.tablet} {
+    flex-direction: column;
+  }
+`;
+
+const AvatarContainer = styled.div`
+  margin: 0 32px 32px 0;
+  width: 160px;
+`;
+
+const MainFieldsContainer = styled.div`
+  flex-grow: 1;
+`;
+
+const FieldContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 0 0 16px 0;
+
+  .label {
+    line-height: 32px;
+    margin: 0;
+    width: 110px;
+  }
+
+  @media ${device.tablet} {
+    flex-direction: column;
+    align-items: start;
+
+    .label {
+      margin: 0 0 8px 0;
+      width: auto;
+      flex-grow: 1;
+    }
+  }
+`;
+
+
+
+const FieldBody = styled.div`
+  flex-grow: 1;
+`;
+
 const renderField = ({ input, label, type, meta: { touched, error } }) => (
-  <div>
-    <label>{label}</label>
-    <div>
-      <input {...input} placeholder={label} type={type} />
-      {touched && error && <span>{error}</span>}
-    </div>
-  </div>
+  <FieldContainer>
+    <Label isRequired={true} error={touched && error} text={label} className="label"/>
+    <FieldBody>
+      <TextInput {...input} type={type} />
+      {/* {touched && error && <span>{error}</span>} */}
+    </FieldBody>
+  </FieldContainer>
 )
 
 const UserForm = props => {
@@ -34,8 +94,8 @@ const UserForm = props => {
 
   return (
     <form onSubmit={handleSubmit(submit)}>
-      <div style={{display: "flex"}}>
-        <div style={{marginRight: "30px"}}>
+      <MainContainer>
+        <AvatarContainer>
           {
             initialValues
             ? <Avatar
@@ -55,39 +115,31 @@ const UserForm = props => {
                 editAction={onEditAvatar}
               />
           }
-        </div>
-        <div>
+        </AvatarContainer>
+        <MainFieldsContainer>
           <Field
             name="firstName"
             type="text"
             component={renderField}
-            label="First Name"
+            label="First name:"
           />
           <Field
             name="lastName"
             type="text"
             component={renderField}
-            label="Last Name"
+            label="Last name:"
           />
           <Field
             name="email"
             type="text"
             component={renderField}
-            label="Email"
+            label="E-mail:"
           />
-        </div>
-      </div>
+        </MainFieldsContainer>
+      </MainContainer>
       <div>
-        <div>Comment</div>
-        <textarea style={{width: "100%"}}></textarea>
-      </div>
-      <div>
-        <div>Contact Information</div>
-        <input type="text"/>
-      </div>
-      <div>
-        <div>Social Profiles</div>
-        <input type="text"/>
+        <Label text="Comment"/>
+        <Textarea />
       </div>
       <div>
         {error && <strong>{error}</strong>}
