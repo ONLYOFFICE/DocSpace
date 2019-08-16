@@ -5,6 +5,7 @@ import { Avatar, Button, TextInput, Textarea, Label } from 'asc-web-components'
 import submit from './submit'
 import validate from './validate'
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 
 const getUserRole = user => {
@@ -87,6 +88,7 @@ const renderField = ({ input, label, type, meta: { touched, error } }) => (
 )
 
 const UserForm = props => {
+  const { t, i18n } = useTranslation();
   const { error, handleSubmit, submitting, initialValues, userType, history } = props;
 
   const onCancel = useCallback(() => {
@@ -105,7 +107,7 @@ const UserForm = props => {
                 source={initialValues.avatarMax}
                 userName={initialValues.displayName}
                 editing={true}
-                editLabel={"Edit photo"}
+                editLabel={t('Resource:EditPhoto')}
                 editAction={onEditAvatar}
               />
             : <Avatar
@@ -122,32 +124,32 @@ const UserForm = props => {
             name="firstName"
             type="text"
             component={renderField}
-            label="First name:"
+            label={`${t('Resource:FirstName')}:`}
           />
           <Field
             name="lastName"
             type="text"
             component={renderField}
-            label="Last name:"
+            label={`${t('Resource:LastName')}:`}
           />
           <Field
             name="email"
             type="text"
             component={renderField}
-            label="E-mail:"
+            label={`${t('Resource:Email')}:`}
           />
         </MainFieldsContainer>
       </MainContainer>
       <div>
-        <Label text="Comment"/>
+        <Label text={t('Resource:Comments')} />
         <Textarea />
       </div>
       <div>
         {error && <strong>{error}</strong>}
       </div>
       <div style={{marginTop: "60px"}}>
-        <Button label="Save" primary type="submit" isDisabled={submitting}/>
-        <Button label="Cancel" style={{ marginLeft: '8px' }} isDisabled={submitting} onClick={onCancel}/>
+        <Button label={t('UserControlsCommonResource:SaveButton')} primary type="submit" isDisabled={submitting}/>
+        <Button label={t('UserControlsCommonResource:CancelButton')} style={{ marginLeft: '8px' }} isDisabled={submitting} onClick={onCancel}/>
       </div>
     </form>
   )
