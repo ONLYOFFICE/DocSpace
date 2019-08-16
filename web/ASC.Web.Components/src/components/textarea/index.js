@@ -65,7 +65,7 @@ class Textarea extends React.PureComponent {
           isDisabled={this.props.isDisabled}
           disabled={this.props.isDisabled}
           readOnly={this.props.isReadOnly}
-          value={this.props.value}
+          defaultValue={this.props.value}
         />
       </StyledScrollbar>
     )
