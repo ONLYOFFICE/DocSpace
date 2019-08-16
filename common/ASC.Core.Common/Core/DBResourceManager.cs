@@ -251,16 +251,14 @@ namespace TMResourceData
 
             private static Dictionary<string, string> LoadResourceSet(string filename, string culture)
             {
-                using (var dbManager = DbManager.FromHttpContext("tmresource"))
-                {
-                    var q = new SqlQuery("res_data d")
-                        .Select("d.title", "d.textvalue")
-                        .InnerJoin("res_files f", Exp.EqColumns("f.id", "d.fileid"))
-                        .Where("f.resname", filename)
-                        .Where("d.culturetitle", culture);
-                    return dbManager.ExecuteList(q)
-                        .ToDictionary(r => (string)r[0], r => (string)r[1], StringComparer.InvariantCultureIgnoreCase);
-                }
+                using var dbManager = DbManager.FromHttpContext("tmresource");
+                var q = new SqlQuery("res_data d")
+.Select("d.title", "d.textvalue")
+.InnerJoin("res_files f", Exp.EqColumns("f.id", "d.fileid"))
+.Where("f.resname", filename)
+.Where("d.culturetitle", culture);
+                return dbManager.ExecuteList(q)
+                    .ToDictionary(r => (string)r[0], r => (string)r[1], StringComparer.InvariantCultureIgnoreCase);
             }
         }
     }

@@ -32,9 +32,9 @@ namespace ASC.Notify.Channels
 {
     public class SenderChannel : ISenderChannel
     {
-        private ISink firstSink;
-        private ISink senderSink;
-        private Context context;
+        private readonly ISink firstSink;
+        private readonly ISink senderSink;
+        private readonly Context context;
 
 
         public string SenderName

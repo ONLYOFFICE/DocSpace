@@ -142,7 +142,7 @@ namespace ASC.Web.Studio.Core
             {
                 power = (int)Math.Log(resultSize, 1024);
                 power = power < sizeNames.Length ? power : sizeNames.Length - 1;
-                resultSize = resultSize / Math.Pow(1024d, power);
+                resultSize /= Math.Pow(1024d, power);
             }
             return string.Format("{0:#,0.##} {1}", resultSize, sizeNames[power]);
         }

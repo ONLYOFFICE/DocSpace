@@ -221,7 +221,7 @@ namespace ASC.Web.Core.Users
             var minLength = Math.Min(ps.MinLength, maxLength);
 
             return string.Format("{0}{1}{2}{3}",
-                                 GeneratePassword(minLength, minLength, Noise.Substring(0, Noise.Length - 4)),
+                                 GeneratePassword(minLength, minLength, Noise[0..^4]),
                                  ps.Digits ? GeneratePassword(1, 1, Noise.Substring(0, 10)) : string.Empty,
                                  ps.UpperCase ? GeneratePassword(1, 1, Noise.Substring(10, 20).ToUpper()) : string.Empty,
                                  ps.SpecSymbols ? GeneratePassword(1, 1, Noise.Substring(Noise.Length - 4, 4).ToUpper()) : string.Empty);

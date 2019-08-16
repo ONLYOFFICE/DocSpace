@@ -406,13 +406,11 @@ namespace ASC.FederatedLogin.Profile
 
         public string ToJson()
         {
-            using (var ms = new MemoryStream())
-            {
-                var serializer = new DataContractJsonSerializer(typeof(LoginProfile));
-                serializer.WriteObject(ms, this);
-                ms.Seek(0, SeekOrigin.Begin);
-                return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
-            }
+            using var ms = new MemoryStream();
+            var serializer = new DataContractJsonSerializer(typeof(LoginProfile));
+            serializer.WriteObject(ms, this);
+            ms.Seek(0, SeekOrigin.Begin);
+            return Encoding.UTF8.GetString(ms.GetBuffer(), 0, (int)ms.Length);
         }
     }
 }

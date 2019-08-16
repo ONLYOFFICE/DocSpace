@@ -101,48 +101,44 @@ namespace ASC.Security.Cryptography
 
         private static HashAlgorithm GetAlg(HashAlg hashAlg)
         {
-            switch (hashAlg)
+            return hashAlg switch
             {
-                case HashAlg.MD5:
-                    return MD5.Create();
-                case HashAlg.SHA1:
-                    return SHA1.Create();
-                case HashAlg.SHA256:
-                    return SHA256.Create();
-                case HashAlg.SHA512:
-                    return SHA512.Create();
-                default:
-                    return SHA256.Create();
-            }
+                HashAlg.MD5 => MD5.Create(),
+                HashAlg.SHA1 => SHA1.Create(),
+                HashAlg.SHA256 => SHA256.Create(),
+                HashAlg.SHA512 => SHA512.Create(),
+                _ => SHA256.Create(),
+            };
         }
 
         private static byte[] S2B(string str)
         {
-            if (str == null) throw new ArgumentNullException("str");
+            if (str == null) throw new ArgumentNullException(nameof(str));
             return Encoding.UTF8.GetBytes(str);
         }
 
         private static string B2S(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (data == null) throw new ArgumentNullException(nameof(data));
             return Encoding.UTF8.GetString(data);
         }
 
         private static byte[] S642B(string str)
         {
-            if (str == null) throw new ArgumentNullException("str");
+            if (str == null) throw new ArgumentNullException(nameof(str));
             return Convert.FromBase64String(str);
         }
 
         private static string B2S64(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (data == null) throw new ArgumentNullException(nameof(data));
             return Convert.ToBase64String(data);
         }
 
         private static byte[] ComputeHash(byte[] data, HashAlg hashAlg)
         {
-            return GetAlg(hashAlg).ComputeHash(data);
+            using var alg = GetAlg(hashAlg);
+            return alg.ComputeHash(data);
         }
 
         private static byte[] ComputeHash(string data, HashAlg hashAlg)

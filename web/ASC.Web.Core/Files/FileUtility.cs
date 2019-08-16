@@ -160,25 +160,23 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
                     const string tableTitle = "files_converts";
 
-                    using (var dbManager = new DbManager(databaseId))
-                    {
-                        var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
+                    using var dbManager = new DbManager(databaseId);
+                    var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
 
-                        var list = dbManager.ExecuteList(sqlQuery);
+                    var list = dbManager.ExecuteList(sqlQuery);
 
-                        list.ForEach(item =>
-                            {
-                                var input = item[0] as string;
-                                var output = item[1] as string;
-                                if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
-                                    return;
-                                input = input.ToLower().Trim();
-                                output = output.ToLower().Trim();
-                                if (!_extsConvertible.ContainsKey(input))
-                                    _extsConvertible[input] = new List<string>();
-                                _extsConvertible[input].Add(output);
-                            });
-                    }
+                    list.ForEach(item =>
+                        {
+                            var input = item[0] as string;
+                            var output = item[1] as string;
+                            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
+                                return;
+                            input = input.ToLower().Trim();
+                            output = output.ToLower().Trim();
+                            if (!_extsConvertible.ContainsKey(input))
+                                _extsConvertible[input] = new List<string>();
+                            _extsConvertible[input].Add(output);
+                        });
                 }
                 return _extsConvertible;
             }
@@ -204,12 +202,10 @@ namespace ASC.Web.Core.Files
 
         private static readonly List<string> extsWebPreviewed = (ConfigurationManager.AppSettings["files.docservice.viewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebEdited = (ConfigurationManager.AppSettings["files.docservice.edited-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsWebEncrypt = (ConfigurationManager.AppSettings["files.docservice.encrypted-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebReviewed = (ConfigurationManager.AppSettings["files.docservice.reviewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebRestrictedEditing = (ConfigurationManager.AppSettings["files.docservice.formfilling-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsWebCommented = (ConfigurationManager.AppSettings["files.docservice.commented-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsMustConvert = (ConfigurationManager.AppSettings["files.docservice.convert-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsCoAuthoring = (ConfigurationManager.AppSettings["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static readonly List<string> extsIndexing = (ConfigurationManager.AppSettings["files.index.formats"] ?? "").Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
         public static List<string> ExtsImagePreviewed { get; } = (ConfigurationManager.AppSettings["files.viewed-images"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -226,10 +222,7 @@ namespace ASC.Web.Core.Files
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebEdited; }
         }
 
-        public static List<string> ExtsWebEncrypt
-        {
-            get { return extsWebEncrypt; }
-        }
+        public static List<string> ExtsWebEncrypt { get; } = (ConfigurationManager.AppSettings["files.docservice.encrypted-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
         public static List<string> ExtsWebReviewed
         {
@@ -251,10 +244,7 @@ namespace ASC.Web.Core.Files
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl) ? new List<string>() : extsMustConvert; }
         }
 
-        public static List<string> ExtsCoAuthoring
-        {
-            get { return extsCoAuthoring; }
-        }
+        public static List<string> ExtsCoAuthoring { get; } = (ConfigurationManager.AppSettings["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
         public static readonly List<string> ExtsArchive = new List<string>
             {

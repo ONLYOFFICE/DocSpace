@@ -327,11 +327,9 @@ namespace ASC.Web.Studio.Core.Notify
 
             using (inputStream)
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    inputStream.CopyTo(memoryStream);
-                    return memoryStream.ToArray();
-                }
+                using var memoryStream = new MemoryStream();
+                inputStream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
             }
         }
 

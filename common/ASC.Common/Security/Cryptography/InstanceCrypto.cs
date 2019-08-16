@@ -47,14 +47,12 @@ namespace ASC.Security.Cryptography
             var hasher = Rijndael.Create();
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
-            using (var ms = new MemoryStream())
-            using (var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write))
-            {
-                ss.Write(data, 0, data.Length);
-                ss.FlushFinalBlock();
-                hasher.Clear();
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
+            ss.Write(data, 0, data.Length);
+            ss.FlushFinalBlock();
+            hasher.Clear();
+            return ms.ToArray();
         }
 
         public static string Decrypt(string data)
@@ -68,16 +66,14 @@ namespace ASC.Security.Cryptography
             hasher.Key = EKey();
             hasher.IV = new byte[hasher.BlockSize >> 3];
 
-            using (var ms = new MemoryStream(data))
-            using (var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read))
-            {
-                var buffer = new byte[data.Length];
-                var size = ss.Read(buffer, 0, buffer.Length);
-                hasher.Clear();
-                var newBuffer = new byte[size];
-                Array.Copy(buffer, newBuffer, size);
-                return newBuffer;
-            }
+            using var ms = new MemoryStream(data);
+            using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
+            var buffer = new byte[data.Length];
+            var size = ss.Read(buffer, 0, buffer.Length);
+            hasher.Clear();
+            var newBuffer = new byte[size];
+            Array.Copy(buffer, newBuffer, size);
+            return newBuffer;
         }
 
         private static byte[] EKey()

@@ -401,7 +401,7 @@ namespace ASC.Notify.Engine
 
         private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel)
         {
-            if (!(request.Recipient is IDirectRecipient recipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
             request.CurrentSender = channel.SenderName;
 

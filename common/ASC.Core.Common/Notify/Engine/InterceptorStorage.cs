@@ -72,9 +72,7 @@ namespace ASC.Notify.Engine
         public ISendInterceptor Get(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
-
-            ISendInterceptor result = null;
-            result = GetInternal(name, callInterceptors);
+            var result = GetInternal(name, callInterceptors);
             if (result == null) result = GetInternal(name, globalInterceptors);
             return result;
         }

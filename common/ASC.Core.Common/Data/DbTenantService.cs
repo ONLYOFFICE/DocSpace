@@ -53,10 +53,8 @@ namespace ASC.Core.Data
 
         public void ValidateDomain(string domain)
         {
-            using (var db = GetDb())
-            {
-                ValidateDomain(db, domain, Tenant.DEFAULT_TENANT, true);
-            }
+            using var db = GetDb();
+            ValidateDomain(db, domain, Tenant.DEFAULT_TENANT, true);
         }
 
         public IEnumerable<Tenant> GetTenants(DateTime from, bool active = true)
@@ -220,21 +218,19 @@ namespace ASC.Core.Data
         {
             var postfix = auto ? "_auto_deleted" : "_deleted";
 
-            using (var db = GetDb())
-            using (var tx = db.BeginTransaction())
-            {
-                var alias = db.ExecuteScalar<string>(new SqlQuery("tenants_tenants").Select("alias").Where("id", id));
-                var count = db.ExecuteScalar<int>(new SqlQuery("tenants_tenants").SelectCount().Where(Exp.Like("alias", alias + postfix, SqlLike.StartWith)));
-                db.ExecuteNonQuery(
-                    new SqlUpdate("tenants_tenants")
-                        .Set("alias", alias + postfix + (count > 0 ? count.ToString() : ""))
-                        .Set("status", TenantStatus.RemovePending)
-                        .Set("statuschanged", DateTime.UtcNow)
-                        .Set("last_modified", DateTime.UtcNow)
-                        .Where("id", id));
+            using var db = GetDb();
+            using var tx = db.BeginTransaction();
+            var alias = db.ExecuteScalar<string>(new SqlQuery("tenants_tenants").Select("alias").Where("id", id));
+            var count = db.ExecuteScalar<int>(new SqlQuery("tenants_tenants").SelectCount().Where(Exp.Like("alias", alias + postfix, SqlLike.StartWith)));
+            db.ExecuteNonQuery(
+                new SqlUpdate("tenants_tenants")
+                    .Set("alias", alias + postfix + (count > 0 ? count.ToString() : ""))
+                    .Set("status", TenantStatus.RemovePending)
+                    .Set("statuschanged", DateTime.UtcNow)
+                    .Set("last_modified", DateTime.UtcNow)
+                    .Where("id", id));
 
-                tx.Commit();
-            }
+            tx.Commit();
         }
 
         public IEnumerable<TenantVersion> GetTenantVersions()
@@ -335,14 +331,12 @@ namespace ASC.Core.Data
                                     RedirectStandardOutput = true,
                                     UseShellExecute = false,
                                 };
-                                using (var p = Process.Start(psi))
+                                using var p = Process.Start(psi);
+                                if (p.WaitForExit(1000))
                                 {
-                                    if (p.WaitForExit(1000))
-                                    {
-                                        id = p.StandardOutput.ReadToEnd();
-                                    }
-                                    p.Close();
+                                    id = p.StandardOutput.ReadToEnd();
                                 }
+                                p.Close();
                             }
                             if (!string.IsNullOrEmpty(id))
                             {
@@ -400,7 +394,7 @@ namespace ASC.Core.Data
                 {
                     if (6 < domain.Length && char.IsNumber(domain, domain.Length - 1))
                     {
-                        domain = domain.Substring(0, domain.Length - 1);
+                        domain = domain[0..^1];
                     }
                     else
                     {

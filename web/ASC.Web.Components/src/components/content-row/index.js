@@ -56,12 +56,12 @@ const StyledContent = styled.div`
 const StyledCheckbox = styled.div`
     flex-basis: 16px;
     display: flex;
-    margin-right: 16px;
 `;
 
 const StyledAvatar = styled.div`
     flex: 0 0 32px;
     display: flex;
+    margin-left: 8px;
 
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -121,14 +121,16 @@ class ContentRow extends React.PureComponent {
 
   render() {
     //console.log("ContentRow render");
-    const { avatarRole, avatarSource, avatarName, children } = this.props;
+    const {checked, avatarRole, avatarSource, avatarName , children } = this.props;
     
 
     return (
       <StyledContentRow {...this.props}>
+        {this.props.hasOwnProperty("checked") &&
         <StyledCheckbox>
-          <Checkbox isChecked={this.props.checked} onChange={this.changeCheckbox} />
+          <Checkbox isChecked={checked} onChange={this.changeCheckbox} />
         </StyledCheckbox>
+        }
         {(avatarRole !== '' || avatarSource !== '' || avatarName !== '') &&
           <StyledAvatar>
             <Avatar size='small' role={avatarRole || ''} source={avatarSource || ''} userName={avatarName || ''} />

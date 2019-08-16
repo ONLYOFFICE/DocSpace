@@ -1009,10 +1009,8 @@ namespace ASC.Api.Settings
 
             if (!CoreContext.Configuration.Standalone) return -1;
 
-            using (var migrateClient = new ServiceClient())
-            {
-                return migrateClient.GetProgress(Tenant.TenantId);
-            }
+            using var migrateClient = new ServiceClient();
+            return migrateClient.GetProgress(Tenant.TenantId);
         }
 
         [Update("storage")]
@@ -1095,10 +1093,8 @@ namespace ASC.Api.Settings
 
             try
             {
-                using (var migrateClient = new ServiceClient())
-                {
-                    migrateClient.UploadCdn(Tenant.TenantId, "/", WebHostEnvironment.ContentRootPath, settings);
-                }
+                using var migrateClient = new ServiceClient();
+                migrateClient.UploadCdn(Tenant.TenantId, "/", WebHostEnvironment.ContentRootPath, settings);
             }
             catch (Exception e)
             {

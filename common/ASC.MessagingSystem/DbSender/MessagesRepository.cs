@@ -70,10 +70,8 @@ namespace ASC.MessagingSystem.DbSender
             // messages with action code < 2000 are related to login-history
             if ((int)message.Action < 2000)
             {
-                using (var db = DbManager.FromHttpContext(MessagesDbId))
-                {
-                    AddLoginEvent(message, db);
-                }
+                using var db = DbManager.FromHttpContext(MessagesDbId);
+                AddLoginEvent(message, db);
                 return;
             }
 
@@ -112,51 +110,49 @@ namespace ASC.MessagingSystem.DbSender
 
             if (events == null) return;
 
-            using (var db = DbManager.FromHttpContext(MessagesDbId))
-            using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+            using var db = DbManager.FromHttpContext(MessagesDbId);
+            using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
+            var dict = new Dictionary<string, ClientInfo>();
+
+            foreach (var message in events)
             {
-                var dict = new Dictionary<string, ClientInfo>();
-
-                foreach (var message in events)
+                if (!string.IsNullOrEmpty(message.UAHeader))
                 {
-                    if (!string.IsNullOrEmpty(message.UAHeader))
+                    try
                     {
-                        try
+
+                        ClientInfo clientInfo;
+
+                        if (dict.ContainsKey(message.UAHeader))
                         {
-
-                            ClientInfo clientInfo;
-
-                            if (dict.ContainsKey(message.UAHeader))
-                            {
-                                clientInfo = dict[message.UAHeader];
-                            }
-                            else
-                            {
-                                clientInfo = Parser.Parse(message.UAHeader);
-                                dict.Add(message.UAHeader, clientInfo);
-                            }
-
-                            if (clientInfo != null)
-                            {
-                                message.Browser = GetBrowser(clientInfo);
-                                message.Platform = GetPlatform(clientInfo);
-                            }
+                            clientInfo = dict[message.UAHeader];
                         }
-                        catch (Exception e)
+                        else
                         {
-                            LogManager.GetLogger("ASC").Error("FlushCache " + message.Id, e);
+                            clientInfo = Parser.Parse(message.UAHeader);
+                            dict.Add(message.UAHeader, clientInfo);
+                        }
+
+                        if (clientInfo != null)
+                        {
+                            message.Browser = GetBrowser(clientInfo);
+                            message.Platform = GetPlatform(clientInfo);
                         }
                     }
-
-                    // messages with action code < 2000 are related to login-history
-                    if ((int)message.Action >= 2000)
+                    catch (Exception e)
                     {
-                        AddAuditEvent(message, db);
+                        LogManager.GetLogger("ASC").Error("FlushCache " + message.Id, e);
                     }
                 }
 
-                tx.Commit();
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action >= 2000)
+                {
+                    AddAuditEvent(message, db);
+                }
             }
+
+            tx.Commit();
         }
 
         private static void AddLoginEvent(EventMessage message, IDbManager dbManager)
@@ -278,16 +274,14 @@ namespace ASC.MessagingSystem.DbSender
 
             do
             {
-                using (var dbManager = new DbManager(MessagesDbId, 180000))
-                {
-                    ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
+                using var dbManager = new DbManager(MessagesDbId, 180000);
+                ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
 
-                    if (!ids.Any()) return;
+                if (!ids.Any()) return;
 
-                    var deleteQuery = new SqlDelete(table).Where(Exp.In("id", ids));
+                var deleteQuery = new SqlDelete(table).Where(Exp.In("id", ids));
 
-                    dbManager.ExecuteNonQuery(deleteQuery);
-                }
+                dbManager.ExecuteNonQuery(deleteQuery);
             } while (ids.Any());
         }
     }

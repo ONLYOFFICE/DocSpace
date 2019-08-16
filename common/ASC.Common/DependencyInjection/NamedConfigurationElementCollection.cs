@@ -64,11 +64,11 @@ namespace ASC.Common.DependencyInjection
         protected NamedConfigurationElementCollection(string eName, string eKey)
         {
             if (eName == null)
-                throw new ArgumentNullException("eName");
+                throw new ArgumentNullException(nameof(eName));
             if (eName.Length == 0)
                 throw new ArgumentOutOfRangeException(eName);
             if (eKey == null)
-                throw new ArgumentNullException("eKey");
+                throw new ArgumentNullException(nameof(eKey));
             if (eKey.Length == 0)
                 throw new ArgumentOutOfRangeException(eKey);
             elementName = eName;
@@ -90,7 +90,7 @@ namespace ASC.Common.DependencyInjection
         protected override object GetElementKey(ConfigurationElement element)
         {
             if (element == null || element.ElementInformation.Properties[elementKey] == null)
-                throw new ArgumentNullException("element");
+                throw new ArgumentNullException(nameof(element));
             return (string)element.ElementInformation.Properties[elementKey].Value;
         }
 

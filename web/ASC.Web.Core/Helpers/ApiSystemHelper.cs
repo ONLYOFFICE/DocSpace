@@ -59,12 +59,10 @@ namespace ASC.Web.Core.Helpers
 
         public static string CreateAuthToken(string pkey)
         {
-            using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(Skey)))
-            {
-                var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-                var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-                return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
-            }
+            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(Skey));
+            var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
+            return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
         }
 
         #region system
@@ -83,22 +81,20 @@ namespace ASC.Web.Core.Helpers
                 var response = exception.Response;
                 try
                 {
-                    using (var stream = response.GetResponseStream())
-                    using (var reader = new StreamReader(stream, Encoding.UTF8))
+                    using var stream = response.GetResponseStream();
+                    using var reader = new StreamReader(stream, Encoding.UTF8);
+                    var result = reader.ReadToEnd();
+
+                    var resObj = JObject.Parse(result);
+                    if (resObj["error"] != null)
                     {
-                        var result = reader.ReadToEnd();
-
-                        var resObj = JObject.Parse(result);
-                        if (resObj["error"] != null)
+                        if (resObj["error"].ToString() == "portalNameExist")
                         {
-                            if (resObj["error"].ToString() == "portalNameExist")
-                            {
-                                var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<string>());
-                                throw new TenantAlreadyExistsException("Address busy.", varians);
-                            }
-
-                            throw new Exception(resObj["error"].ToString());
+                            var varians = resObj.Value<JArray>("variants").Select(jv => jv.Value<string>());
+                            throw new TenantAlreadyExistsException("Address busy.", varians);
                         }
+
+                        throw new Exception(resObj["error"].ToString());
                     }
                 }
                 finally
@@ -158,18 +154,14 @@ namespace ASC.Web.Core.Helpers
             {
                 webRequest.ContentLength = data.Length;
 
-                using (var writer = new StreamWriter(webRequest.GetRequestStream()))
-                {
-                    writer.Write(data);
-                }
+                using var writer = new StreamWriter(webRequest.GetRequestStream());
+                writer.Write(data);
             }
 
-            using (var response = webRequest.GetResponse())
-            using (var stream = response.GetResponseStream())
-            using (var reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                return reader.ReadToEnd();
-            }
+            using var response = webRequest.GetResponse();
+            using var stream = response.GetResponseStream();
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            return reader.ReadToEnd();
         }
     }
 }

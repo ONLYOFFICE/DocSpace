@@ -63,40 +63,37 @@ namespace ASC.Data.Storage.S3
                 return;
             }
 
-            using (var s3 = GetClient())
+            using var s3 = GetClient();
+            var nextKeyMarker = string.Empty;
+            var nextUploadIdMarker = string.Empty;
+            bool isTruncated;
+
+            do
             {
-                var nextKeyMarker = string.Empty;
-                var nextUploadIdMarker = string.Empty;
-                bool isTruncated;
+                var request = new ListMultipartUploadsRequest { BucketName = bucket };
 
-                do
+                if (!string.IsNullOrEmpty(nextKeyMarker))
                 {
-                    var request = new ListMultipartUploadsRequest { BucketName = bucket };
-
-                    if (!string.IsNullOrEmpty(nextKeyMarker))
-                    {
-                        request.KeyMarker = nextKeyMarker;
-                    }
-
-                    if (!string.IsNullOrEmpty(nextUploadIdMarker))
-                    {
-                        request.UploadIdMarker = nextUploadIdMarker;
-                    }
-
-                    var response = s3.ListMultipartUploadsAsync(request).Result;
-
-                    foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
-                    {
-                        AbortMultipartUpload(u, s3);
-                    }
-
-                    isTruncated = response.IsTruncated;
-                    nextKeyMarker = response.NextKeyMarker;
-                    nextUploadIdMarker = response.NextUploadIdMarker;
+                    request.KeyMarker = nextKeyMarker;
                 }
-                while (isTruncated);
 
+                if (!string.IsNullOrEmpty(nextUploadIdMarker))
+                {
+                    request.UploadIdMarker = nextUploadIdMarker;
+                }
+
+                var response = s3.ListMultipartUploadsAsync(request).Result;
+
+                foreach (var u in response.MultipartUploads.Where(x => x.Initiated + trustInterval <= DateTime.UtcNow))
+                {
+                    AbortMultipartUpload(u, s3);
+                }
+
+                isTruncated = response.IsTruncated;
+                nextKeyMarker = response.NextKeyMarker;
+                nextUploadIdMarker = response.NextUploadIdMarker;
             }
+            while (isTruncated);
         }
 
         private void AbortMultipartUpload(MultipartUpload u, AmazonS3Client client)

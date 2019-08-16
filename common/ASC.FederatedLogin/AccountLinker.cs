@@ -65,12 +65,10 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            using (var db = new DbManager(dbid))
-            {
-                var query = new SqlQuery("account_links")
-                    .Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
-                return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
-            }
+            using var db = new DbManager(dbid);
+            var query = new SqlQuery("account_links")
+.Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
+            return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
         }
 
         public IEnumerable<LoginProfile> GetLinkedProfiles(string obj, string provider)
@@ -91,12 +89,10 @@ namespace ASC.FederatedLogin
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            using (var db = new DbManager(dbid))
-            {
-                var query = new SqlQuery("account_links")
-                    .Select("profile").Where("id", obj);
-                return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString((string)x[0]));
-            }
+            using var db = new DbManager(dbid);
+            var query = new SqlQuery("account_links")
+.Select("profile").Where("id", obj);
+            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString((string)x[0]));
         }
 
         public void AddLink(string obj, LoginProfile profile)

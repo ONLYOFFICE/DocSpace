@@ -137,15 +137,13 @@ namespace ASC.VoipService.Twilio
 
         public IEnumerable<VoipPhone> GetAvailablePhoneNumbers(PhoneNumberType phoneNumberType, string isoCountryCode)
         {
-            switch (phoneNumberType)
+            return phoneNumberType switch
             {
-                case PhoneNumberType.Local:
-                    return LocalResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client) { Number = r.PhoneNumber.ToString() });
-                case PhoneNumberType.TollFree:
-                    return TollFreeResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client) { Number = r.PhoneNumber.ToString() });
-            }
+                PhoneNumberType.Local => LocalResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client) { Number = r.PhoneNumber.ToString() }),
+                PhoneNumberType.TollFree => TollFreeResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client) { Number = r.PhoneNumber.ToString() }),
 
-            return new List<VoipPhone>();
+                _ => new List<VoipPhone>(),
+            };
         }
 
         public VoipPhone GetPhone(string phoneSid)

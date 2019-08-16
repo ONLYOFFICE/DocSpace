@@ -67,9 +67,10 @@ namespace ASC.Web.Core.Files
         /// <returns>Supported key</returns>
         public static string GenerateRevisionId(string expectedKey)
         {
-            expectedKey = expectedKey ?? "";
+            expectedKey ??= "";
             const int maxLength = 128;
-            if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
+            using var sha256 = SHA256.Create();
+            if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
             var key = Regex.Replace(expectedKey, "[^0-9a-zA-Z_]", "_");
             return key.Substring(key.Length - Math.Min(key.Length, maxLength));
         }
@@ -196,10 +197,8 @@ namespace ASC.Web.Core.Files
                 }
 
                 if (responseStream == null) throw new WebException("Could not get an answer");
-                using (var reader = new StreamReader(responseStream))
-                {
-                    dataResponse = reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(responseStream);
+                dataResponse = reader.ReadToEnd();
             }
             finally
             {
@@ -285,10 +284,8 @@ namespace ASC.Web.Core.Files
             {
                 if (stream == null) throw new Exception("Response is null");
 
-                using (var reader = new StreamReader(stream))
-                {
-                    dataResponse = reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(stream);
+                dataResponse = reader.ReadToEnd();
             }
 
             var jResponse = JObject.Parse(dataResponse);
@@ -368,10 +365,8 @@ namespace ASC.Web.Core.Files
             {
                 if (responseStream != null)
                 {
-                    using (var reader = new StreamReader(responseStream))
-                    {
-                        dataResponse = reader.ReadToEnd();
-                    }
+                    using var reader = new StreamReader(responseStream);
+                    dataResponse = reader.ReadToEnd();
                 }
             }
 
@@ -404,19 +399,15 @@ namespace ASC.Web.Core.Files
             var request = (HttpWebRequest)WebRequest.Create(healthcheckUrl);
             request.Timeout = Timeout;
 
-            using (var response = (HttpWebResponse)request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
+            using var response = (HttpWebResponse)request.GetResponse();
+            using var responseStream = response.GetResponseStream();
+            if (responseStream == null)
             {
-                if (responseStream == null)
-                {
-                    throw new Exception("Empty response");
-                }
-                using (var reader = new StreamReader(responseStream))
-                {
-                    var dataResponse = reader.ReadToEnd();
-                    return dataResponse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
-                }
+                throw new Exception("Empty response");
             }
+            using var reader = new StreamReader(responseStream);
+            var dataResponse = reader.ReadToEnd();
+            return dataResponse.Equals("true", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public enum CommandMethod
@@ -562,54 +553,23 @@ namespace ASC.Web.Core.Files
                 {
                     code = ErrorCode.Unknown;
                 }
-
-                string errorMessage;
-                switch (code)
+                var errorMessage = code switch
                 {
-                    case ErrorCode.VkeyUserCountExceed:
-                        errorMessage = "user count exceed";
-                        break;
-                    case ErrorCode.VkeyKeyExpire:
-                        errorMessage = "signature expire";
-                        break;
-                    case ErrorCode.VkeyEncrypt:
-                        errorMessage = "encrypt signature";
-                        break;
-                    case ErrorCode.UploadCountFiles:
-                        errorMessage = "count files";
-                        break;
-                    case ErrorCode.UploadExtension:
-                        errorMessage = "extension";
-                        break;
-                    case ErrorCode.UploadContentLength:
-                        errorMessage = "upload length";
-                        break;
-                    case ErrorCode.Vkey:
-                        errorMessage = "document signature";
-                        break;
-                    case ErrorCode.TaskQueue:
-                        errorMessage = "database";
-                        break;
-                    case ErrorCode.ConvertPassword:
-                        errorMessage = "password";
-                        break;
-                    case ErrorCode.ConvertDownload:
-                        errorMessage = "download";
-                        break;
-                    case ErrorCode.Convert:
-                        errorMessage = "convertation";
-                        break;
-                    case ErrorCode.ConvertTimeout:
-                        errorMessage = "convertation timeout";
-                        break;
-                    case ErrorCode.Unknown:
-                        errorMessage = "unknown error";
-                        break;
-                    default:
-                        errorMessage = "errorCode = " + errorCode;
-                        break;
-                }
-
+                    ErrorCode.VkeyUserCountExceed => "user count exceed",
+                    ErrorCode.VkeyKeyExpire => "signature expire",
+                    ErrorCode.VkeyEncrypt => "encrypt signature",
+                    ErrorCode.UploadCountFiles => "count files",
+                    ErrorCode.UploadExtension => "extension",
+                    ErrorCode.UploadContentLength => "upload length",
+                    ErrorCode.Vkey => "document signature",
+                    ErrorCode.TaskQueue => "database",
+                    ErrorCode.ConvertPassword => "password",
+                    ErrorCode.ConvertDownload => "download",
+                    ErrorCode.Convert => "convertation",
+                    ErrorCode.ConvertTimeout => "convertation timeout",
+                    ErrorCode.Unknown => "unknown error",
+                    _ => "errorCode = " + errorCode,
+                };
                 throw new DocumentServiceException(code, errorMessage);
             }
 

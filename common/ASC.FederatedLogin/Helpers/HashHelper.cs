@@ -66,7 +66,7 @@ namespace ASC.FederatedLogin.Helpers
 
         public static byte[] MD5(byte[] data)
         {
-            var md5 = System.Security.Cryptography.MD5.Create();
+            using var md5 = System.Security.Cryptography.MD5.Create();
             return md5.ComputeHash(data);
         }
     }

@@ -174,10 +174,8 @@ namespace ASC.Data.Storage
             {
                 var request = (HttpWebRequest)WebRequest.Create(path);
                 request.Method = "HEAD";
-                using (var resp = (HttpWebResponse)request.GetResponse())
-                {
-                    return resp.StatusCode == HttpStatusCode.OK;
-                }
+                using var resp = (HttpWebResponse)request.GetResponse();
+                return resp.StatusCode == HttpStatusCode.OK;
             }
             catch (Exception)
             {

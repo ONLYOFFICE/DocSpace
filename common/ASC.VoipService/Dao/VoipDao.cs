@@ -68,31 +68,27 @@ namespace ASC.VoipService.Dao
 
         public virtual void DeleteNumber(string phoneId = "")
         {
-            using (var db = GetDb())
+            using var db = GetDb();
+            var query = Delete("crm_voip_number");
+            if (!string.IsNullOrEmpty(phoneId))
             {
-                var query = Delete("crm_voip_number");
-                if (!string.IsNullOrEmpty(phoneId))
-                {
-                    query.Where("id", phoneId);
-                }
-                db.ExecuteNonQuery(query);
+                query.Where("id", phoneId);
             }
+            db.ExecuteNonQuery(query);
         }
 
         public virtual IEnumerable<VoipPhone> GetNumbers(params object[] ids)
         {
-            using (var db = GetDb())
+            using var db = GetDb();
+            var query = Query("crm_voip_number")
+.Select("id", "number", "alias", "settings");
+
+            if (ids.Any())
             {
-                var query = Query("crm_voip_number")
-                    .Select("id", "number", "alias", "settings");
-
-                if (ids.Any())
-                {
-                    query.Where(Exp.In("number", ids) | Exp.In("id", ids));
-                }
-
-                return db.ExecuteList(query).ConvertAll(ToPhone);
+                query.Where(Exp.In("number", ids) | Exp.In("id", ids));
             }
+
+            return db.ExecuteList(query).ConvertAll(ToPhone);
         }
 
         public VoipPhone GetNumber(string id)
@@ -177,28 +173,26 @@ namespace ASC.VoipService.Dao
 
         public IEnumerable<VoipCall> GetCalls(VoipCallFilter filter)
         {
-            using (var db = GetDb())
+            using var db = GetDb();
+            var query = GetCallsQuery(filter);
+
+            if (filter.SortByColumn != null)
             {
-                var query = GetCallsQuery(filter);
-
-                if (filter.SortByColumn != null)
-                {
-                    query.OrderBy(filter.SortByColumn, filter.SortOrder);
-                }
-
-                query.SetFirstResult((int)filter.Offset);
-                query.SetMaxResults((int)filter.Max * 3);
-
-                var calls = db.ExecuteList(query).ConvertAll(ToCall);
-
-                calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
-                {
-                    call.ChildCalls.AddRange(h);
-                    return call;
-                }).Where(r => string.IsNullOrEmpty(r.ParentID)).ToList();
-
-                return calls;
+                query.OrderBy(filter.SortByColumn, filter.SortOrder);
             }
+
+            query.SetFirstResult((int)filter.Offset);
+            query.SetMaxResults((int)filter.Max * 3);
+
+            var calls = db.ExecuteList(query).ConvertAll(ToCall);
+
+            calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
+            {
+                call.ChildCalls.AddRange(h);
+                return call;
+            }).Where(r => string.IsNullOrEmpty(r.ParentID)).ToList();
+
+            return calls;
         }
 
         public VoipCall GetCall(string id)
@@ -208,43 +202,39 @@ namespace ASC.VoipService.Dao
 
         public int GetCallsCount(VoipCallFilter filter)
         {
-            using (var db = GetDb())
-            {
-                var query = GetCallsQuery(filter).Where("ca.parent_call_id", "");
-                var queryCount = new SqlQuery().SelectCount().From(query, "t1");
+            using var db = GetDb();
+            var query = GetCallsQuery(filter).Where("ca.parent_call_id", "");
+            var queryCount = new SqlQuery().SelectCount().From(query, "t1");
 
-                return db.ExecuteScalar<int>(queryCount);
-            }
+            return db.ExecuteScalar<int>(queryCount);
         }
 
         public IEnumerable<VoipCall> GetMissedCalls(Guid agent, long count = 0, DateTime? from = null)
         {
-            using (var db = GetDb())
+            using var db = GetDb();
+            var query = GetCallsQuery(new VoipCallFilter { Agent = agent, SortBy = "date", SortOrder = true, Type = "missed" });
+
+            var subQuery = new SqlQuery("crm_voip_calls tmp")
+                .SelectMax("tmp.dial_date")
+                .Where(Exp.EqColumns("ca.tenant_id", "tmp.tenant_id"))
+                .Where(Exp.EqColumns("ca.number_from", "tmp.number_from") | Exp.EqColumns("ca.number_from", "tmp.number_to"))
+                .Where(Exp.Lt("tmp.status", VoipCallStatus.Missed));
+
+            if (from.HasValue)
             {
-                var query = GetCallsQuery(new VoipCallFilter { Agent = agent, SortBy = "date", SortOrder = true, Type = "missed" });
-
-                var subQuery = new SqlQuery("crm_voip_calls tmp")
-                    .SelectMax("tmp.dial_date")
-                    .Where(Exp.EqColumns("ca.tenant_id", "tmp.tenant_id"))
-                    .Where(Exp.EqColumns("ca.number_from", "tmp.number_from") | Exp.EqColumns("ca.number_from", "tmp.number_to"))
-                    .Where(Exp.Lt("tmp.status", VoipCallStatus.Missed));
-
-                if (from.HasValue)
-                {
-                    query.Where(Exp.Ge("ca.dial_date", TenantUtil.DateTimeFromUtc(from.Value)));
-                }
-
-                if (count != 0)
-                {
-                    query.SetMaxResults((int)count);
-                }
-
-                query.Select(subQuery, "tmp_date");
-
-                query.Having(Exp.Sql("ca.dial_date >= tmp_date") | Exp.Eq("tmp_date", null));
-
-                return db.ExecuteList(query).ConvertAll(ToCall);
+                query.Where(Exp.Ge("ca.dial_date", TenantUtil.DateTimeFromUtc(from.Value)));
             }
+
+            if (count != 0)
+            {
+                query.SetMaxResults((int)count);
+            }
+
+            query.Select(subQuery, "tmp_date");
+
+            query.Having(Exp.Sql("ca.dial_date >= tmp_date") | Exp.Eq("tmp_date", null));
+
+            return db.ExecuteList(query).ConvertAll(ToCall);
         }
 
         private SqlQuery GetCallsQuery(VoipCallFilter filter)

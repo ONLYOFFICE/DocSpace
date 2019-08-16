@@ -50,13 +50,13 @@ namespace ASC.Web.Core
 
         private static string GetCookiesName(CookiesType type)
         {
-            switch (type)
+            return type switch
             {
-                case CookiesType.AuthKey: return AuthCookiesName;
-                case CookiesType.SocketIO: return SocketIOCookiesName;
-            }
+                CookiesType.AuthKey => AuthCookiesName,
+                CookiesType.SocketIO => SocketIOCookiesName,
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
 
         public static string GetRequestVar(this HttpContext httpContext, CookiesType type)
@@ -160,7 +160,7 @@ namespace ASC.Web.Core
 
             if (lifeTime > 0)
             {
-                settings.Index = settings.Index + 1;
+                settings.Index += 1;
                 settings.LifeTime = lifeTime;
             }
             else
@@ -183,7 +183,7 @@ namespace ASC.Web.Core
         public static void ResetUserCookie(this HttpContext httpContext, int tenantId, Guid? userId = null)
         {
             var settings = TenantCookieSettings.GetForUser(userId ?? SecurityContext.CurrentAccount.ID);
-            settings.Index = settings.Index + 1;
+            settings.Index += 1;
             TenantCookieSettings.SetForUser(userId ?? SecurityContext.CurrentAccount.ID, settings);
 
             if (!userId.HasValue)
@@ -204,7 +204,7 @@ namespace ASC.Web.Core
             }
 
             var settings = TenantCookieSettings.GetForTenant(tenant.TenantId);
-            settings.Index = settings.Index + 1;
+            settings.Index += 1;
             TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
 
             var cookie = SecurityContext.AuthenticateMe(tenant.TenantId, SecurityContext.CurrentAccount.ID);

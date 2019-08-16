@@ -54,7 +54,7 @@ namespace ASC.Common.Utils
         public List<MxRecord> GetDomainMxRecords(string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var mxRecords = DnsResolve<MxRecord>(domainName, RecordType.Mx);
 
@@ -72,10 +72,10 @@ namespace ASC.Common.Utils
         public bool IsDomainMxRecordExists(string domainName, string mxRecord)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             if (string.IsNullOrEmpty(mxRecord))
-                throw new ArgumentNullException("mxRecord");
+                throw new ArgumentNullException(nameof(mxRecord));
 
             var mxDomain = DomainName.Parse(mxRecord);
 
@@ -96,7 +96,7 @@ namespace ASC.Common.Utils
         public bool IsDomainExists(string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var dnsMessage = GetDnsMessage(domainName);
 
@@ -113,7 +113,7 @@ namespace ASC.Common.Utils
         public List<ARecord> GetDomainARecords(string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var aRecords = DnsResolve<ARecord>(domainName, RecordType.A);
 
@@ -130,7 +130,7 @@ namespace ASC.Common.Utils
         public List<IPAddress> GetDomainIPs(string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var addresses = _sDnsResolver.ResolveHost(domainName);
 
@@ -147,7 +147,7 @@ namespace ASC.Common.Utils
         public List<TxtRecord> GetDomainTxtRecords(string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var txtRecords = DnsResolve<TxtRecord>(domainName, RecordType.Txt);
 
@@ -201,10 +201,10 @@ namespace ASC.Common.Utils
         public bool IsDomainPtrRecordExists(IPAddress ipAddress, string domainName)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             if (ipAddress == null)
-                throw new ArgumentNullException("ipAddress");
+                throw new ArgumentNullException(nameof(ipAddress));
 
             var domain = DomainName.Parse(domainName);
 
@@ -230,7 +230,7 @@ namespace ASC.Common.Utils
         private DnsMessage GetDnsMessage(string domainName, RecordType? type = null)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var domain = DomainName.Parse(domainName);
 
@@ -248,7 +248,7 @@ namespace ASC.Common.Utils
         private List<T> DnsResolve<T>(string domainName, RecordType type)
         {
             if (string.IsNullOrEmpty(domainName))
-                throw new ArgumentNullException("domainName");
+                throw new ArgumentNullException(nameof(domainName));
 
             var dnsMessage = GetDnsMessage(domainName, type);
 

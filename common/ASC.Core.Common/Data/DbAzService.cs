@@ -103,20 +103,18 @@ namespace ASC.Core.Data
         public void RemoveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using (var db = GetDb())
-            using (var tx = db.BeginTransaction())
+            using var db = GetDb();
+            using var tx = db.BeginTransaction();
+            if (ExistEscapeRecord(db, r))
             {
-                if (ExistEscapeRecord(db, r))
-                {
-                    // escape
-                    InsertRecord(db, r);
-                }
-                else
-                {
-                    DeleteRecord(db, r);
-                }
-                tx.Commit();
+                // escape
+                InsertRecord(db, r);
             }
+            else
+            {
+                DeleteRecord(db, r);
+            }
+            tx.Commit();
         }
 
 

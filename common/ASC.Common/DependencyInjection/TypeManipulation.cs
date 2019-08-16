@@ -37,7 +37,7 @@ namespace ASC.Common.DependencyInjection
         public static object ChangeToCompatibleType(object value, Type destinationType, ICustomAttributeProvider memberInfo)
         {
             if (destinationType == null)
-                throw new ArgumentNullException("destinationType");
+                throw new ArgumentNullException(nameof(destinationType));
             if (value == null)
             {
                 if (!destinationType.IsValueType)

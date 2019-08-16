@@ -120,11 +120,11 @@ namespace ASC.Web.Studio.Helpers
 
     public class ThumbnailGenerator
     {
-        bool _crop = false;
-        int _width;
-        int _heigth;
-        int _widthPreview;
-        int _heightPreview;
+        readonly bool _crop = false;
+        readonly int _width;
+        readonly int _heigth;
+        readonly int _widthPreview;
+        readonly int _heightPreview;
 
         public IDataStore store
         {
@@ -143,17 +143,13 @@ namespace ASC.Web.Studio.Helpers
 
         public void DoThumbnail(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
-                DoThumbnail(fs, outputPath, ref imageInfo);
-            }
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            DoThumbnail(fs, outputPath, ref imageInfo);
         }
         public void DoThumbnail(Stream image, string outputPath, ref ImageInfo imageInfo)
         {
-            using (var img = Image.FromStream(image))
-            {
-                DoThumbnail(img, outputPath, ref imageInfo);
-            }
+            using var img = Image.FromStream(image);
+            DoThumbnail(img, outputPath, ref imageInfo);
         }
         public void DoThumbnail(Image image, string outputPath, ref ImageInfo imageInfo)
         {
@@ -231,13 +227,11 @@ namespace ASC.Web.Studio.Helpers
                 imageInfo.ThumbnailHeight = thumbnail.Height;
 
 
-                using (var graphic = Graphics.FromImage(thumbnail))
-                {
-                    graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphic.SmoothingMode = SmoothingMode.HighQuality;
-                    graphic.DrawImage(image, rect);
-                }
+                using var graphic = Graphics.FromImage(thumbnail);
+                graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphic.SmoothingMode = SmoothingMode.HighQuality;
+                graphic.DrawImage(image, rect);
             }
 
             if (store == null)
@@ -259,17 +253,13 @@ namespace ASC.Web.Studio.Helpers
 
         public void DoPreviewImage(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            {
-                DoPreviewImage(fs, outputPath, ref imageInfo);
-            }
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            DoPreviewImage(fs, outputPath, ref imageInfo);
         }
         public void DoPreviewImage(Stream image, string outputPath, ref ImageInfo imageInfo)
         {
-            using (var img = Image.FromStream(image))
-            {
-                DoPreviewImage(img, outputPath, ref imageInfo);
-            }
+            using var img = Image.FromStream(image);
+            DoPreviewImage(img, outputPath, ref imageInfo);
         }
         public void DoPreviewImage(Image image, string outputPath, ref ImageInfo imageInfo)
         {
@@ -351,38 +341,34 @@ namespace ASC.Web.Studio.Helpers
         {
             try
             {
-                using (var stream = store.GetReadStream(path))
-                using (var image = Image.FromStream(stream))
+                using var stream = store.GetReadStream(path);
+                using var image = Image.FromStream(stream);
+                if (back)
                 {
-                    if (back)
-                    {
-                        image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    }
-                    else
-                    {
-                        image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    }
-
-                    var ep = new EncoderParameters(1);
-                    var icJPG = getCodecInfo("image/jpeg");
-                    ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)100);
-
-                    if (store == null)
-                    {
-                        image.Save(outputPath, icJPG, ep);
-                    }
-                    else
-                    {
-                        using (var ms = new MemoryStream())
-                        {
-                            image.Save(ms, icJPG, ep);
-                            ms.Seek(0, SeekOrigin.Begin);
-                            store.Save(outputPath, ms);
-                        }
-                    }
-
-                    store.Delete(path);
+                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
                 }
+                else
+                {
+                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                }
+
+                var ep = new EncoderParameters(1);
+                var icJPG = getCodecInfo("image/jpeg");
+                ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)100);
+
+                if (store == null)
+                {
+                    image.Save(outputPath, icJPG, ep);
+                }
+                else
+                {
+                    using var ms = new MemoryStream();
+                    image.Save(ms, icJPG, ep);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    store.Save(outputPath, ms);
+                }
+
+                store.Delete(path);
             }
             catch { }
         }

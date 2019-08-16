@@ -87,18 +87,16 @@ namespace ASC.Core.Notify.Jabber
             byte result = 4;
             if (IsServiceProbablyNotAvailable()) throw new Exception();
 
-            using (var service = GetService())
+            using var service = GetService();
+            try
             {
-                try
-                {
-                    result = service.AddXmppConnection(connectionId, GetCurrentUserName(), state, GetCurrentTenantId());
-                }
-                catch (Exception error)
-                {
-                    ProcessError(error);
-                }
-                return result;
+                result = service.AddXmppConnection(connectionId, GetCurrentUserName(), state, GetCurrentTenantId());
             }
+            catch (Exception error)
+            {
+                ProcessError(error);
+            }
+            return result;
         }
 
         public byte RemoveXmppConnection(string connectionId)
@@ -128,10 +126,8 @@ namespace ASC.Core.Notify.Jabber
             try
             {
                 if (IsServiceProbablyNotAvailable()) return defaultState;
-                using (var service = GetService())
-                {
-                    return service.GetState(GetCurrentTenantId(), userName);
-                }
+                using var service = GetService();
+                return service.GetState(GetCurrentTenantId(), userName);
             }
             catch (Exception error)
             {
@@ -146,10 +142,8 @@ namespace ASC.Core.Notify.Jabber
             try
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using (var service = GetService())
-                {
-                    return service.SendState(GetCurrentTenantId(), GetCurrentUserName(), state);
-                }
+                using var service = GetService();
+                return service.SendState(GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {
@@ -164,10 +158,8 @@ namespace ASC.Core.Notify.Jabber
             try
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using (var service = GetService())
-                {
-                    states = service.GetAllStates(GetCurrentTenantId(), GetCurrentUserName());
-                }
+                using var service = GetService();
+                states = service.GetAllStates(GetCurrentTenantId(), GetCurrentUserName());
             }
             catch (Exception error)
             {
@@ -182,10 +174,8 @@ namespace ASC.Core.Notify.Jabber
             try
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using (var service = GetService())
-                {
-                    messages = service.GetRecentMessages(GetCurrentTenantId(), GetCurrentUserName(), to, id);
-                }
+                using var service = GetService();
+                messages = service.GetRecentMessages(GetCurrentTenantId(), GetCurrentUserName(), to, id);
             }
             catch (Exception error)
             {
@@ -199,10 +189,8 @@ namespace ASC.Core.Notify.Jabber
             try
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
-                using (var service = GetService())
-                {
-                    service.Ping(SecurityContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
-                }
+                using var service = GetService();
+                service.Ping(SecurityContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {

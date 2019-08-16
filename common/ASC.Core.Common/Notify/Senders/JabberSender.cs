@@ -35,7 +35,7 @@ namespace ASC.Core.Notify.Senders
 {
     public class JabberSender : INotifySender
     {
-        private JabberServiceClient service = new JabberServiceClient();
+        private readonly JabberServiceClient service = new JabberServiceClient();
         private static readonly ILog log = LogManager.GetLogger("ASC");
 
         public void Init(IDictionary<string, string> properties)

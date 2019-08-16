@@ -308,7 +308,7 @@ namespace ASC.Employee.Core.Controllers
                 includeGroups.Add(adminGroups);
             }
 
-            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count - 1, ApiContext.StartIndex, out var total);
+            var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total);
 
             ApiContext.SetTotalCount(total);
 
@@ -1220,11 +1220,9 @@ namespace ASC.Employee.Core.Controllers
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                using (var img = new Bitmap(stream))
-                {
-                    imgFormat = img.RawFormat;
-                }
+                using var stream = new MemoryStream(data);
+                using var img = new Bitmap(stream);
+                imgFormat = img.RawFormat;
             }
             catch (OutOfMemoryException)
             {

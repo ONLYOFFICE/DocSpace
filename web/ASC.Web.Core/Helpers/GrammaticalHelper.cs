@@ -41,15 +41,12 @@ namespace ASC.Web.Core.Helpers
 
                 number = Math.Abs(number);
                 var res = formsTable[((((number % 100) / 10) != 1) ? 1 : 0) * (number % 10)];
-                switch (res)
+                return res switch
                 {
-                    case 0:
-                        return nominative;
-                    case 1:
-                        return genitiveSingular;
-                    default:
-                        return genitivePlural;
-                }
+                    0 => nominative,
+                    1 => genitiveSingular,
+                    _ => genitivePlural,
+                };
             }
             else
                 return number == 1 ? nominative : genitivePlural;

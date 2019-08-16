@@ -64,29 +64,25 @@ namespace ASC.Core
             string result;
             if (reverse)
             {
-                using (var ms = new MemoryStream())
-                using (var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    var buffer = Encoding.Unicode.GetBytes(data);
-                    ss.Write(buffer, 0, buffer.Length);
-                    ss.FlushFinalBlock();
-                    hasher.Clear();
-                    result = Convert.ToBase64String(ms.ToArray());
-                }
+                using var ms = new MemoryStream();
+                using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
+                var buffer = Encoding.Unicode.GetBytes(data);
+                ss.Write(buffer, 0, buffer.Length);
+                ss.FlushFinalBlock();
+                hasher.Clear();
+                result = Convert.ToBase64String(ms.ToArray());
             }
             else
             {
                 var bytes = Convert.FromBase64String(data);
-                using (var ms = new MemoryStream(bytes))
-                using (var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read))
-                {
-                    var buffer = new byte[bytes.Length];
-                    var size = ss.Read(buffer, 0, buffer.Length);
-                    hasher.Clear();
-                    var newBuffer = new byte[size];
-                    Array.Copy(buffer, newBuffer, size);
-                    result = Encoding.Unicode.GetString(newBuffer);
-                }
+                using var ms = new MemoryStream(bytes);
+                using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
+                var buffer = new byte[bytes.Length];
+                var size = ss.Read(buffer, 0, buffer.Length);
+                hasher.Clear();
+                var newBuffer = new byte[size];
+                Array.Copy(buffer, newBuffer, size);
+                result = Encoding.Unicode.GetString(newBuffer);
             }
 
             return result;
@@ -101,29 +97,25 @@ namespace ASC.Core
             byte[] result;
             if (reverse)
             {
-                using (var ms = new MemoryStream())
-                using (var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    var buffer = data;
-                    ss.Write(buffer, 0, buffer.Length);
-                    ss.FlushFinalBlock();
-                    hasher.Clear();
-                    result = ms.ToArray();
-                }
+                using var ms = new MemoryStream();
+                using var ss = new CryptoStream(ms, hasher.CreateEncryptor(), CryptoStreamMode.Write);
+                var buffer = data;
+                ss.Write(buffer, 0, buffer.Length);
+                ss.FlushFinalBlock();
+                hasher.Clear();
+                result = ms.ToArray();
             }
             else
             {
                 var bytes = data;
-                using (var ms = new MemoryStream(bytes))
-                using (var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read))
-                {
-                    var buffer = new byte[bytes.Length];
-                    var size = ss.Read(buffer, 0, buffer.Length);
-                    hasher.Clear();
-                    var newBuffer = new byte[size];
-                    Array.Copy(buffer, newBuffer, size);
-                    result = newBuffer;
-                }
+                using var ms = new MemoryStream(bytes);
+                using var ss = new CryptoStream(ms, hasher.CreateDecryptor(), CryptoStreamMode.Read);
+                var buffer = new byte[bytes.Length];
+                var size = ss.Read(buffer, 0, buffer.Length);
+                hasher.Clear();
+                var newBuffer = new byte[size];
+                Array.Copy(buffer, newBuffer, size);
+                result = newBuffer;
             }
 
             return result;
