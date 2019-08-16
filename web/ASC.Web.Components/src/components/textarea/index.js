@@ -46,8 +46,6 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 
 class Textarea extends React.PureComponent {
 
-  onChange = (e) => this.props.onChange && this.props.onChange(e);
-
   render() {
     // console.log('Textarea render');
     return (
@@ -58,7 +56,7 @@ class Textarea extends React.PureComponent {
         <StyledTextarea
           id={this.props.id}
           placeholder={this.props.placeholder}
-          onChange={this.onChange}
+          onChange={(e) => this.props.onChange && this.props.onChange(e)}
           maxLength={this.props.maxLength}
           name={this.props.name}
           tabIndex={this.props.tabIndex}
