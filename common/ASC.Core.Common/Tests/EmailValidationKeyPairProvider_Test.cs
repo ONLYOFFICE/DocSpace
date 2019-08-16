@@ -43,7 +43,7 @@ namespace ASC.Common.Tests.Security.Cryptography
             new Random(10032010).NextBytes(randBytes);
 
 
-            var tdes = new TripleDESCryptoServiceProvider();
+            using var tdes = new TripleDESCryptoServiceProvider();
             var pwddb = new PasswordDeriveBytes("1", new byte[] { 1 });
             tdes.Key = pwddb.CryptDeriveKey("TripleDES", "SHA1", 192, tdes.IV);
             //string s = Convert.ToBase64String(tdes.Key);

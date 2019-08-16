@@ -36,7 +36,7 @@ namespace ASC.Common.Tests.Data
         [Test]
         public void ExecuteListTest()
         {
-            var db = new MultiRegionalDbManager("core");
+            using var db = new MultiRegionalDbManager("core");
             var r1 = db.ExecuteList("select 1");
             Assert.IsTrue(r1.Count > 1);
         }

@@ -137,7 +137,8 @@ namespace ASC.Security.Cryptography
 
         private static byte[] ComputeHash(byte[] data, HashAlg hashAlg)
         {
-            return GetAlg(hashAlg).ComputeHash(data);
+            using var alg = GetAlg(hashAlg);
+            return alg.ComputeHash(data);
         }
 
         private static byte[] ComputeHash(string data, HashAlg hashAlg)

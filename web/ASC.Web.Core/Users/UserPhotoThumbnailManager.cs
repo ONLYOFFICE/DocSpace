@@ -158,7 +158,10 @@ namespace ASC.Web.Core.Users
         public void Save(int tenantId, List<ThumbnailItem> bitmaps)
         {
             foreach (var item in bitmaps)
-                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, MainImgBitmap(tenantId).RawFormat);
+            {
+                using var mainImgBitmap = MainImgBitmap(tenantId);
+                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
+            }
         }
     }
 }

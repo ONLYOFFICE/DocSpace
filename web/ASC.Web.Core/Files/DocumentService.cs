@@ -69,7 +69,8 @@ namespace ASC.Web.Core.Files
         {
             expectedKey ??= "";
             const int maxLength = 128;
-            if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
+            using var sha256 = SHA256.Create();
+            if (expectedKey.Length > maxLength) expectedKey = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(expectedKey)));
             var key = Regex.Replace(expectedKey, "[^0-9a-zA-Z_]", "_");
             return key.Substring(key.Length - Math.Min(key.Length, maxLength));
         }
