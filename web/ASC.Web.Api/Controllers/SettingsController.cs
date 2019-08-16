@@ -109,17 +109,24 @@ namespace ASC.Api.Settings
         }
 
         [Read("")]
+        [AllowAnonymous]
         public SettingsWrapper GetSettings()
         {
             var settings = new SettingsWrapper
             {
-                Timezone = Tenant.TimeZone.ToSerializedString(),
-                UtcOffset = Tenant.TimeZone.GetUtcOffset(DateTime.UtcNow),
-                UtcHoursOffset = Tenant.TimeZone.GetUtcOffset(DateTime.UtcNow).TotalHours,
-                TrustedDomains = Tenant.TrustedDomains,
-                TrustedDomainsType = Tenant.TrustedDomainsType,
                 Culture = Tenant.GetCulture().ToString()
             };
+
+            if (SecurityContext.IsAuthenticated)
+            {
+                settings.TrustedDomains = Tenant.TrustedDomains;
+                settings.TrustedDomainsType = Tenant.TrustedDomainsType;
+                var timeZone = Tenant.TimeZone;
+                settings.Timezone = timeZone.ToSerializedString();
+                settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
+                settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
+            }
+
             return settings;
         }
 
