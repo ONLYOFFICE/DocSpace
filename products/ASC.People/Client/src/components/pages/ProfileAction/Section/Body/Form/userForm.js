@@ -78,7 +78,7 @@ const FieldBody = styled.div`
 
 const renderField = ({ input, label, type, meta: { touched, error } }) => (
   <FieldContainer>
-    <Label isRequired={true} error={touched && error} text={label} className="label"/>
+    <Label isRequired={true} error={!!(touched && error)} text={label} className="label"/>
     <FieldBody>
       <TextInput {...input} type={type} />
       {/* {touched && error && <span>{error}</span>} */}
