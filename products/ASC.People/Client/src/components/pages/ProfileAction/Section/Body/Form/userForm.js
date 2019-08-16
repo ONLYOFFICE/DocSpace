@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { withRouter } from 'react-router'
 import { Field, reduxForm } from 'redux-form'
-import { Avatar, Button, TextInput, Textarea, Label  } from 'asc-web-components'
+import { Avatar, Button, TextInput, Textarea, Label } from 'asc-web-components'
 import submit from './submit'
 import validate from './validate'
 import styled from 'styled-components';
@@ -62,7 +62,8 @@ const FieldContainer = styled.div`
     align-items: start;
 
     .label {
-      margin: 0 0 8px 0;
+      line-height: unset;
+      margin: 0 0 4px 0;
       width: auto;
       flex-grow: 1;
     }
