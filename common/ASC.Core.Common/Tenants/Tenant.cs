@@ -157,8 +157,6 @@ namespace ASC.Core.Tenants
 
         public string GetTenantDomain(bool allowMappedDomain = true)
         {
-            var result = string.Empty;
-
             var baseHost = TenantUtil.GetBaseDomain(HostedRegion);
 
             if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
@@ -166,6 +164,7 @@ namespace ASC.Core.Tenants
                 baseHost = HostedRegion;
             }
 
+            string result;
             if (baseHost == "localhost" || TenantAlias == "localhost")
             {
                 //single tenant on local host

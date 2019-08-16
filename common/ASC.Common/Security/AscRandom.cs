@@ -73,21 +73,20 @@ namespace ASC.Common.Security
             }
             inext = 0;
             inextp = 21;
-            seed = 1;
         }
 
         public override int Next(int maxValue)
         {
             if (maxValue < 0)
             {
-                throw new ArgumentOutOfRangeException("maxValue");
+                throw new ArgumentOutOfRangeException(nameof(maxValue));
             }
             return (int)(InternalSample() * 4.6566128752457969E-10 * maxValue);
         }
 
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
             for (var i = 0; i < buffer.Length; i++)
             {

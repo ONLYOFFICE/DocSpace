@@ -30,7 +30,7 @@ namespace System
     {
         public static T TryParseEnum<T>(this Type enumType, string value, T defaultValue) where T : struct
         {
-            return TryParseEnum<T>(enumType, value, defaultValue, out var isDefault);
+            return TryParseEnum<T>(enumType, value, defaultValue, out _);
         }
 
         public static T TryParseEnum<T>(this Type enumType, string value, T defaultValue, out bool isDefault) where T : struct

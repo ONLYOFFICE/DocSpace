@@ -36,7 +36,7 @@ namespace ASC.Common.Data
 
         public DbNestedTransaction(IDbTransaction transaction)
         {
-            this.transaction = transaction ?? throw new ArgumentNullException("transaction");
+            this.transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));
         }
 
         public IDbConnection Connection

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, PageLayout, Loader } from "asc-web-components";
+import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
@@ -53,20 +53,14 @@ class ProfileAction extends React.Component {
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
-          sectionHeaderContent={
-            <SectionHeaderContent profile={profile} userType={type} />
-          }
-          sectionBodyContent={
-            <SectionBodyContent profile={profile} userType={type} />
-          }
+          sectionHeaderContent={<SectionHeaderContent profile={profile} userType={type} />}
+          sectionBodyContent={<SectionBodyContent profile={profile} userType={type} />}
         />
         : <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
-          sectionBodyContent={
-            <Loader className="pageLoader" type="rombs" size={40} />
-          }
+          sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
         />
     );
   }

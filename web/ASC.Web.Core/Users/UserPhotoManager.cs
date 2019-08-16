@@ -490,7 +490,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
-            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out var fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out _);
         }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
@@ -899,7 +899,7 @@ namespace ASC.Web.Core.Users
         public static RotateFlipType RotateImageByExifOrientationData(string sourceFilePath, string targetFilePath, ImageFormat targetFormat, bool updateExifData = true)
         {
             // Rotate the image according to EXIF data
-            var bmp = new Bitmap(sourceFilePath);
+            using var bmp = new Bitmap(sourceFilePath);
             var fType = RotateImageByExifOrientationData(bmp, updateExifData);
             if (fType != RotateFlipType.RotateNoneFlipNone)
             {

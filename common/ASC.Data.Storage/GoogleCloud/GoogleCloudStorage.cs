@@ -178,7 +178,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 return GetUriShared(domain, path);
             }
 
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var preSignedURL = UrlSigner.FromServiceAccountPath(_jsonPath)
                                         .Sign(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
@@ -209,7 +209,7 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             var tempStream = TempStream.Create();
 
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             storage.DownloadObject(_bucket, MakePath(domain, path), tempStream, null, null);
 
@@ -268,7 +268,7 @@ namespace ASC.Data.Storage.GoogleCloud
                         ? MimeMapping.GetMimeMapping(Path.GetFileName(path))
                         : contentType;
 
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var uploadObjectOptions = new UploadObjectOptions
             {
@@ -335,7 +335,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void Delete(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var key = MakePath(domain, path);
             var size = GetFileSize(domain, path);
@@ -348,7 +348,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteFiles(string domain, string folderPath, string pattern, bool recursive)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             IEnumerable<Google.Apis.Storage.v1.Data.Object> objToDel;
 
@@ -396,7 +396,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
             if (!keysToDel.Any()) return;
 
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             keysToDel.ForEach(x => storage.DeleteObject(_bucket, x));
 
@@ -408,7 +408,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteFiles(string domain, string folderPath, DateTime fromDate, DateTime toDate)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objToDel = GetObjects(domain, folderPath, true)
                               .Where(x => x.Updated >= fromDate && x.Updated <= toDate);
@@ -422,8 +422,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void MoveDirectory(string srcdomain, string srcdir, string newdomain, string newdir)
         {
-            var storage = GetStorage();
-
+            using var storage = GetStorage();
             var srckey = MakePath(srcdomain, srcdir);
             var dstkey = MakePath(newdomain, newdir);
 
@@ -443,7 +442,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override Uri Move(string srcdomain, string srcpath, string newdomain, string newpath)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var srcKey = MakePath(srcdomain, srcpath);
             var dstKey = MakePath(newdomain, newpath);
@@ -479,7 +478,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private IEnumerable<Google.Apis.Storage.v1.Data.Object> GetObjects(string domain, string path, bool recursive)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var items = storage.ListObjects(_bucket, MakePath(domain, path));
 
@@ -496,7 +495,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override bool IsFile(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objects = storage.ListObjects(_bucket, MakePath(domain, path), null);
 
@@ -510,7 +509,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteDirectory(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objToDel = storage
                           .ListObjects(_bucket, MakePath(domain, path));
@@ -524,7 +523,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override long GetFileSize(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var obj = storage.GetObject(_bucket, MakePath(domain, path));
 
@@ -536,7 +535,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override long GetDirectorySize(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objToDel = storage
                           .ListObjects(_bucket, MakePath(domain, path));
@@ -554,7 +553,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override long ResetQuota(string domain)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objects = storage
                           .ListObjects(_bucket, MakePath(domain, string.Empty));
@@ -579,7 +578,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override long GetUsedQuota(string domain)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objects = storage
                           .ListObjects(_bucket, MakePath(domain, string.Empty));
@@ -597,7 +596,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override Uri Copy(string srcdomain, string srcpath, string newdomain, string newpath)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var srcKey = MakePath(srcdomain, srcpath);
             var dstKey = MakePath(newdomain, newpath);
@@ -622,7 +621,7 @@ namespace ASC.Data.Storage.GoogleCloud
             var dstkey = MakePath(newdomain, newdir);
             //List files from src
 
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
 
             var options = new ListObjectsOptions();
@@ -643,7 +642,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override string SavePrivate(string domain, string path, System.IO.Stream stream, DateTime expires)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objectKey = MakePath(domain, path);
             var buffered = stream.GetBuffered();
@@ -677,7 +676,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override void DeleteExpired(string domain, string path, TimeSpan oldThreshold)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var objects = storage.ListObjects(_bucket, MakePath(domain, path));
 
@@ -702,7 +701,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public override string InitiateChunkedUpload(string domain, string path)
         {
-            var storage = GetStorage();
+            using var storage = GetStorage();
 
             var tempUploader = storage.CreateObjectUploader(_bucket, MakePath(domain, path), null, new MemoryStream());
 

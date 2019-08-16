@@ -58,8 +58,8 @@ namespace ASC.Common.Data
 
         internal static void RegisterDatabase(string databaseId, DbProviderFactory providerFactory, string connectionString)
         {
-            if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
-            if (providerFactory == null) throw new ArgumentNullException("providerFactory");
+            if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException(nameof(databaseId));
+            if (providerFactory == null) throw new ArgumentNullException(nameof(providerFactory));
 
             if (!providers.ContainsKey(databaseId))
             {
@@ -89,7 +89,7 @@ namespace ASC.Common.Data
 
         public static void UnRegisterDatabase(string databaseId)
         {
-            if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException("databaseId");
+            if (string.IsNullOrEmpty(databaseId)) throw new ArgumentNullException(nameof(databaseId));
 
             if (providers.ContainsKey(databaseId))
             {
