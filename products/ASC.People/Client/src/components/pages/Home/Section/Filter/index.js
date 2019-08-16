@@ -5,6 +5,7 @@ import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { isAdmin } from "../../../../../store/auth/selectors";
+import { useTranslation } from 'react-i18next';
 
 const getSortData = () => {
   return [
@@ -47,6 +48,7 @@ const getRole = filterValues => {
 };
 
 const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
+  const { t, i18n } = useTranslation();
   const selectedFilterData = {
     filterValue: [],
     sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -83,11 +85,11 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
           {
             key: "filter-status",
             group: "filter-status",
-            label: "Status",
+            label: t('PeopleResource:LblStatus'),
             isHeader: true
           },
-          { key: "1", group: "filter-status", label: "Active" },
-          { key: "2", group: "filter-status", label: "Disabled" }
+          { key: "1", group: "filter-status", label: t('PeopleResource:LblActive') },
+          { key: "2", group: "filter-status", label: t('PeopleResource:LblTerminated') }
         ];
 
     return [
@@ -95,28 +97,24 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
       {
         key: "filter-email",
         group: "filter-email",
-        label: "Email",
+        label: t('PeopleResource:Email'),
         isHeader: true
       },
-      { key: "1", group: "filter-email", label: "Active" },
-      { key: "2", group: "filter-email", label: "Pending" },
+      { key: "1", group: "filter-email", label: t('PeopleResource:LblActive') },
+      { key: "2", group: "filter-email", label: t('PeopleResource:LblPending') },
       {
         key: "filter-type",
         group: "filter-type",
-        label: "Type",
+        label: t('PeopleResource:LblByType'),
         isHeader: true
       },
-      {
-        key: "admin",
-        group: "filter-type",
-        label: "Administrator"
-      },
+      { key: "admin", group: "filter-type", label: "Administrator"},
       { key: "user", group: "filter-type", label: "User" },
       { key: "guest", group: "filter-type", label: "Guest" },
       {
         key: "filter-group",
         group: "filter-group",
-        label: "Group",
+        label: t('PeopleResource:LblOther'),
         isHeader: true
       },
       { key: "filter-type-group", group: "filter-group", label: "Group" }
