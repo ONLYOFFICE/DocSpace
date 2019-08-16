@@ -1,8 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ContentRow, Link, Icons } from 'asc-web-components';
+import { ContentRow, PeopleRow } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
-import { Container, Row, Col } from 'reactstrap';
 
 const users = [
   {
@@ -12,24 +11,9 @@ const users = [
     role: 'owner',
     status: 'normal',
     isHead: false,
-    departments: [
-      {
-        title: 'Administration',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+5 104 6473420',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'percival1979@yahoo.com',
-        action: () => console.log('Email action')
-      }
-    ],
+    department: 'Administration',
+    mobilePhone: '+5 104 6473420',
+    email: 'percival1979@yahoo.com',
     contextOptions: [
       { key: 'key1', label: 'Send e-mail', onClick: () => console.log('Context action: Send e-mail') },
       { key: 'key2', label: 'Send message', onClick: () => console.log('Context action: Send message') },
@@ -47,33 +31,10 @@ const users = [
     role: 'user',
     status: 'normal',
     isHead: true,
-    departments: [
-      {
-        title: 'Development',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+1 716 3748605',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'herta.reynol@yahoo.com',
-        action: () => console.log('Email action')
-      }
-    ],
-    contextOptions: [
-      { key: 'key1', label: 'Send e-mail', onClick: () => console.log('Context action: Send e-mail') },
-      { key: 'key2', label: 'Send message', onClick: () => console.log('Context action: Send message') },
-      { key: 'key3', isSeparator: true },
-      { key: 'key4', label: 'Edit', onClick: () => console.log('Context action: Edit') },
-      { key: 'key5', label: 'Change password', onClick: () => console.log('Context action: Change password') },
-      { key: 'key6', label: 'Change e-mail', onClick: () => console.log('Context action: Change e-mail') },
-      { key: 'key7', label: 'Disable', onClick: () => console.log('Context action: Disable') }
-    ]
+    department: 'Development',
+    mobilePhone: '+1 716 3748605',
+    email: 'herta.reynol@yahoo.com',
+    contextOptions: []
   },
   {
     id: '3',
@@ -82,24 +43,9 @@ const users = [
     role: 'admin',
     status: 'normal',
     isHead: true,
-    departments: [
-      {
-        title: 'Administration',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+3 956 2064314',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'davin_lindgr@hotmail.com',
-        action: () => console.log('Email action')
-      }
-    ],
+    department: '',
+    mobilePhone: '+3 956 2064314',
+    email: 'davin_lindgr@hotmail.com',
     contextOptions: [
       { key: 'key1', label: 'Send e-mail', onClick: () => console.log('Context action: Send e-mail') },
       { key: 'key2', label: 'Send message', onClick: () => console.log('Context action: Send message') },
@@ -117,24 +63,9 @@ const users = [
     role: 'guest',
     status: 'normal',
     isHead: false,
-    departments: [
-      {
-        title: 'Visitors',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+7 715 6018678',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'fidel_kerlu@hotmail.com',
-        action: () => console.log('Email action')
-      }
-    ],
+    department: 'Visitors',
+    mobilePhone: '+7 715 6018678',
+    email: 'fidel_kerlu@hotmail.com',
     contextOptions: [
       { key: 'key1', label: 'Send e-mail', onClick: () => console.log('Context action: Send e-mail') },
       { key: 'key2', label: 'Send message', onClick: () => console.log('Context action: Send message') },
@@ -147,29 +78,14 @@ const users = [
   },
   {
     id: '5',
-    userName: 'Robert Gardner',
+    userName: 'Robert Gardner Robert Gardner',
     avatar: '',
     role: 'user',
     status: 'pending',
     isHead: false,
-    departments: [
-      {
-        title: 'Pending',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+0 000 0000000',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'robert_gardner@hotmail.com',
-        action: () => console.log('Email action')
-      }
-    ],
+    department: '',
+    mobilePhone: '',
+    email: 'robert_gardner@hotmail.com',
     contextOptions: [
       { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
       { key: 'key2', label: 'Invite again', onClick: () => console.log('Context action: Invite again') },
@@ -178,29 +94,14 @@ const users = [
   },
   {
     id: '6',
-    userName: 'Timothy Morphis',
+    displayName: 'Timothy Morphis',
     avatar: '',
     role: 'user',
     status: 'disabled',
     isHead: false,
-    departments: [
-      {
-        title: 'Disabled',
-        action: () => console.log('Department action')
-      }
-    ],
-    phones: [
-      {
-        title: '+9 641 1689548',
-        action: () => console.log('Phone action')
-      }
-    ],
-    emails: [
-      {
-        title: 'timothy_j_morphis@hotmail.com',
-        action: () => console.log('Email action')
-      }
-    ],
+    department: 'Disabled',
+    mobilePhone: '',
+    email: 'timothy_j_morphis@hotmail.com',
     contextOptions: [
       { key: 'key1', label: 'Edit', onClick: () => console.log('Context action: Edit') },
       { key: 'key2', label: 'Reassign data', onClick: () => console.log('Context action: Reassign data') },
@@ -213,86 +114,12 @@ const users = [
 storiesOf('EXAMPLES|ContentRow', module)
   .add('people row', () => {
 
-    const peopleContent = (userName, department, phone, email, headDepartment, status) => {
-      return (
-        <Container fluid={true}>
-          <Row className="justify-content-start no-gutters">
-            <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
-              <Link
-                type='action'
-                title={userName}
-                isBold={true}
-                fontSize={15}
-                isSemitransparent={status === 'pending'}
-                onClick={() => console.log('User name action')} >
-                {userName}
-              </Link>
-              {status === "pending" && <Icons.SendClockIcon style={{ marginLeft: "8px", marginTop: "-4px" }} size='small' isfill color='#3B72A7' />}
-              {status === "disabled" && <Icons.CatalogSpamIcon style={{ marginLeft: "8px", marginTop: "-4px" }} size='small' isfill color='#3B72A7' />}
-            </Col>
-            <Col className={`${headDepartment ? 'col-3' : 'col-auto'} col-sm-auto col-lg-2 text-truncate`}>
-              <Link
-                type='action'
-                color='#A3A9AE'
-                isHovered
-                title={headDepartment ? 'Head of department' : ''}
-                text={headDepartment ? 'Head of department' : ''}
-                isSemitransparent={status === 'pending'}
-                onClick={() => console.log('Head of department action')} >
-                {headDepartment ? 'Head of department' : ''}
-              </Link>
-            </Col>
-            <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-              {headDepartment &&
-                <span className="d-lg-none" style={{ margin: '0 4px' }}>{department.title ? '|' : ''}</span>
-              }
-              <Link
-                type='action'
-                color='#A3A9AE'
-                isHovered
-                title={department.title}
-                isSemitransparent={status === 'pending'}
-                onClick={department.action} >
-                {department.title}
-              </Link>
-            </Col>
-            <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-              {department.title &&
-                <span className="d-lg-none" style={{ margin: '0 4px' }}>{phone.title ? '|' : ''}</span>
-              }
-              <Link
-                type='action'
-                color='#A3A9AE'
-                title={phone.title}
-                isSemitransparent={status === 'pending'}
-                onClick={phone.action} >
-                {phone.title}
-              </Link>
-            </Col>
-            <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-              {phone.title &&
-                <span className="d-lg-none" style={{ margin: '0 4px' }}>{email.title ? '|' : ''}</span>
-              }
-              <Link
-                type='action'
-                color='#A3A9AE'
-                isHovered
-                title={email.title}
-                isSemitransparent={status === 'pending'}
-                onClick={email.action} >
-                {email.title}
-              </Link>
-            </Col>
-          </Row>
-        </Container>
-      )
-    };
-
     return (
       <Section>
         {users.map(user => {
           return (
-            <ContentRow key={user.id}
+            <ContentRow 
+              key={user.id}
               status={user.status}
               checked={false}
               data={user}
@@ -301,7 +128,13 @@ storiesOf('EXAMPLES|ContentRow', module)
               avatarName={user.userName}
               contextOptions={user.contextOptions}
             >
-              {peopleContent(user.userName, user.departments[0], user.phones[0], user.emails[0], user.isHead, user.status)}
+              <PeopleRow
+                status={user.status}
+                displayName={user.userName}
+                department={user.department}
+                phone={user.mobilePhone}
+                email={user.email}
+              />
             </ContentRow>
           );
         })}
