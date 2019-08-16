@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
 
-const StyledScrollbar = styled(Scrollbar)`
+const ClearScrollbar = ({isDisabled, ...props}) => <Scrollbar {...props} />
+const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
     :focus-within {
       border-color: #2DA7DB;
@@ -22,8 +23,8 @@ const StyledScrollbar = styled(Scrollbar)`
 }
 
 `;
-
-const StyledTextarea = styled(TextareaAutosize)`
+const ClearTextareaAutosize = ({isDisabled, ...props}) => <TextareaAutosize {...props} />
+const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
   height: 96%;
