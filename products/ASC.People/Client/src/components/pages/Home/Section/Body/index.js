@@ -231,7 +231,7 @@ class SectionBodyContent extends React.PureComponent {
             className="List"
             height={height}
             width={width}
-            itemSize={46} // ContentRow height
+            itemSize={50} // ContentRow height
             itemCount={users.length}
             itemData={users}
             outerElementType={CustomScrollbarsVirtualList}
