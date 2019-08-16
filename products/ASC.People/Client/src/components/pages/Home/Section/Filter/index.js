@@ -123,27 +123,30 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
     ];
   }, [user]);
 
+  const onFilter = useCallback((data) => {
+    console.log(data);
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.sortBy = data.sortId;
+    newFilter.sortOrder =
+      data.sortDirection === "desc" ? "descending" : "ascending";
+    newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
+    newFilter.activationStatus = getActivationStatus(data.filterValue);
+    newFilter.role = getRole(data.filterValue);
+    newFilter.search = data.inputValue || null;
+
+    onLoading(true);
+    fetchPeople(newFilter).finally(() => onLoading(false));
+
+  }, [onLoading,fetchPeople,filter])
+
   return (
     <FilterInput
       getFilterData={getData}
       getSortData={getSortData}
       selectedFilterData={selectedFilterData}
-      onFilter={data => {
-        console.log(data);
-
-        const newFilter = filter.clone();
-        newFilter.page = 0;
-        newFilter.sortBy = data.sortId;
-        newFilter.sortOrder =
-          data.sortDirection === "desc" ? "descending" : "ascending";
-        newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
-        newFilter.activationStatus = getActivationStatus(data.filterValue);
-        newFilter.role = getRole(data.filterValue);
-        newFilter.search = data.inputValue || null;
-
-        onLoading(true);
-        fetchPeople(newFilter).finally(() => onLoading(false));
-      }}
+      onFilter={onFilter}
     />
   );
 };
