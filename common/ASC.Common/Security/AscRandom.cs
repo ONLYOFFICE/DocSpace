@@ -73,7 +73,6 @@ namespace ASC.Common.Security
             }
             inext = 0;
             inextp = 21;
-            seed = 1;
         }
 
         public override int Next(int maxValue)

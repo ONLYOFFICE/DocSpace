@@ -85,9 +85,9 @@ namespace ASC.Core.Users
             if (x == null && y == null) return 0;
             if (x == null && y != null) return -1;
             if (x != null && y == null) return +1;
-
-            var result = 0;
             if (format == DisplayUserNameFormat.Default) format = GetUserDisplayDefaultOrder();
+
+            int result;
             if (format == DisplayUserNameFormat.FirstLast)
             {
                 result = string.Compare(x.FirstName, y.FirstName, true);

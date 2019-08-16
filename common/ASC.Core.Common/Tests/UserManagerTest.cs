@@ -83,10 +83,9 @@ namespace ASC.Core.Common.Tests
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
-
-            var ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
+            _ = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
             CoreContext.UserManager.SetCompanyCEO(tenant.TenantId, ceo.ID);
-            ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
+            var ceoTemp = CoreContext.UserManager.GetCompanyCEO(tenant.TenantId);
             Assert.AreEqual(ceo, ceoTemp);
 
             Thread.Sleep(TimeSpan.FromSeconds(6));

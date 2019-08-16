@@ -490,7 +490,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
-            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out var fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out _);
         }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)

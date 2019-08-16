@@ -64,7 +64,7 @@ namespace ASC.Core.Notify.Senders
 
         public override NoticeSendResult Send(NotifyMessage m)
         {
-            var result = default(NoticeSendResult);
+            NoticeSendResult result;
             try
             {
                 try

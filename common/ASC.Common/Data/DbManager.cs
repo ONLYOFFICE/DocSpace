@@ -150,8 +150,8 @@ namespace ASC.Common.Data
         private DbConnection GetConnection()
         {
             CheckDispose();
-            DbConnection connection = null;
             string key = null;
+            DbConnection connection;
             if (shared && HttpContext.Current != null)
             {
                 key = string.Format("Connection {0}|{1}", GetDialect(), DbRegistry.GetConnectionString(DatabaseId));
