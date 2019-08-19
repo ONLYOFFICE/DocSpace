@@ -74,3 +74,9 @@ export function getInitInfo() {
     })
   );
 }
+
+export function updateUserStatus(status, userIds) {
+  return IS_FAKE
+    ? fakeApi.updateUserStatus(status, userIds)
+    : axios.put(`${API_URL}/people/status/${status}`, { userIds });
+}
