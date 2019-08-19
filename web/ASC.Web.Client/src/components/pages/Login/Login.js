@@ -6,6 +6,7 @@ import { Button, TextInput, PageLayout } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../store/auth/actions';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 const FormContainer = styled(Container)`
     margin-top: 70px;
@@ -34,6 +35,7 @@ const FormContainer = styled(Container)`
 const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
+    const { t, i18n } = useTranslation();
     const [identifier, setIdentifier] = useState('');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
@@ -115,7 +117,7 @@ const Form = props => {
                         name="login"
                         hasError={!identifierValid}
                         value={identifier}
-                        placeholder="You registration email"
+                        placeholder={t('Resource:RegistrationEmailWatermark')}
                         size='huge'
                         scale={true}
                         isAutoFocussed={true}
@@ -138,7 +140,7 @@ const Form = props => {
                         type="password"
                         hasError={!passwordValid}
                         value={password}
-                        placeholder="Password"
+                        placeholder={t('Resource:Password')}
                         size='huge'
                         scale={true}
                         tabIndex={2}
@@ -158,7 +160,7 @@ const Form = props => {
                     <Button
                         primary
                         size='big'
-                        label={isLoading ? "Loading..." : "Sign In"}
+                        label={isLoading ? t('Resource:LoadingProcessing') : t('Resource:LoginButton')}
                         tabIndex={3}
                         isDisabled={isLoading}
                         isLoading={isLoading}
