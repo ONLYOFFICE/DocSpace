@@ -13,11 +13,15 @@ const sizeOptions = ['base', 'middle', 'big', 'huge'];
 function getData() {
     return [
       { key: 'filter-status', group: 'filter-status', label: 'Status', isHeader: true },
-      { key: '0', group: 'filter-status', label: 'Active' },
-      { key: '1', group: 'filter-status', label: 'Disabled' },
+        { key: '0', group: 'filter-status', label: 'Active' },
+        { key: '1', group: 'filter-status', label: 'Disabled' },
       { key: 'filter-type', group: 'filter-type', label: 'Type', isHeader: true },
-      { key: '0', group: 'filter-type', label: 'Folders' },
-      { key: '1', group: 'filter-type', label: 'Employee' },
+        { key: '0', group: 'filter-type', label: 'Folders' },
+        { key: '1', group: 'filter-type', label: 'Employee' },
+      { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
+        { key: '0', group: 'filter-other', subgroup: 'filter-groups', label: 'Groups' },
+          { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
+          { key: '1', inSubgroup: true, group: 'filter-groups', label: 'Public Relations'},
     ];
   }
 function getSortData() {
@@ -41,7 +45,8 @@ class FilterStory extends React.Component  {
       selectedFilterData: {
         filterValue: [
           {key: "0", group: "filter-status"},
-          {key: "1", group: "filter-type"}
+          {key: "1", group: "filter-type"},
+          {key: "1", group: "filter-groups"}
         ],
         sortDirection: "asc",
         sortId: "surname",
