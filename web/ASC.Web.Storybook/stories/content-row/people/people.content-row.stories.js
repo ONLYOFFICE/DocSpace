@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ContentRow, PeopleRow } from 'asc-web-components';
+import { ContentRow, Row } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 
 const users = [
@@ -128,7 +128,7 @@ storiesOf('EXAMPLES|ContentRow', module)
               avatarName={user.userName}
               contextOptions={user.contextOptions}
             >
-              <PeopleRow
+              <Row.People
                 status={user.status}
                 displayName={user.userName}
                 department={user.department}
