@@ -258,7 +258,7 @@ class FilterInput extends React.Component {
                     options={this.props.getSortData()}
                     isDisabled={this.props.isDisabled}
                     onSelect={this.onClickSortItem}
-                    selectedOption={this.props.getSortData().length > 0 ? this.props.getSortData()[0] : {}}
+                    selectedOption={this.props.getSortData().length > 0 ? this.props.getSortData().find(x => x.key === this.state.sortId) : {}}
                     onButtonClick={this.onSortDirectionClick}
                     sortDirection={this.state.sortDirection}
                 />

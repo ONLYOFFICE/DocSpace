@@ -13,11 +13,20 @@ const sizeOptions = ['base', 'middle', 'big', 'huge'];
 function getData() {
     return [
       { key: 'filter-status', group: 'filter-status', label: 'Status', isHeader: true },
-      { key: '0', group: 'filter-status', label: 'Active' },
-      { key: '1', group: 'filter-status', label: 'Disabled' },
+        { key: '0', group: 'filter-status', label: 'Active' },
+        { key: '1', group: 'filter-status', label: 'Disabled' },
       { key: 'filter-type', group: 'filter-type', label: 'Type', isHeader: true },
-      { key: '0', group: 'filter-type', label: 'Folders' },
-      { key: '1', group: 'filter-type', label: 'Employee' },
+        { key: '0', group: 'filter-type', label: 'Folders' },
+        { key: '1', group: 'filter-type', label: 'Employee' },
+
+      { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
+        { key: '0', group: 'filter-other', subgroup: 'filter-groups', label: 'Groups' },
+          { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
+          { key: '1', inSubgroup: true, group: 'filter-groups', label: 'Public Relations'},
+        { key: '1', group: 'filter-other', subgroup: 'filter-test', label: 'Test' },
+          { key: '0', inSubgroup: true, group: 'filter-test', label: 'test1'},
+          { key: '1', inSubgroup: true, group: 'filter-test', label: 'test2'},
+
     ];
 }
 class SearchStory extends React.Component  {
@@ -25,7 +34,8 @@ class SearchStory extends React.Component  {
     super(props);
     this.state = {
       selectedFilterData: [
-          {key: "0", group: "filter-status"}
+          {key: "0", group: "filter-status"},
+          {key: "0", group: "filter-groups"}
         ]
     };
     this.buttonClick = this.buttonClick.bind(this);

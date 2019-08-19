@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
+  <PropertyGroup>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <AssemblyTitle>ASC.Notify.Textile</AssemblyTitle>
+    <Company>Ascensio System SIA</Company>
+    <Product>ASC.Notify.Textile</Product>
+    <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\ASC.Textile\ASC.Textile.csproj" />
+  </ItemGroup>
+</Project>

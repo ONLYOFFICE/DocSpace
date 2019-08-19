@@ -27,8 +27,8 @@
 using System;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
+using ASC.Core.Common;
 using ASC.Core.Common.Settings;
-using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -102,7 +102,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.support-feedback"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web:support-feedback"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
             }
         }
@@ -111,7 +111,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = ConfigurationManager.AppSettings["web.support.email"];
+                var email = ConfigurationManager.AppSettings["web:support:email"];
                 return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
             }
         }
@@ -120,7 +120,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var email = ConfigurationManager.AppSettings["web.payment.email"];
+                var email = ConfigurationManager.AppSettings["web:payment:email"];
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
@@ -129,7 +129,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = CommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web.demo-order"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web:demo-order"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }
@@ -138,7 +138,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var url = ConfigurationManager.AppSettings["web.teamlab-site"];
+                var url = ConfigurationManager.AppSettings["web:teamlab-site"];
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
             }
         }
