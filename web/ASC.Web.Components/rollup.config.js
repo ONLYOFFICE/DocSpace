@@ -20,7 +20,7 @@ const configureRollupPlugins = (options = {}) => [
   generatePackageJson({
     baseContents: {
       name: pkg.name,
-      version: pkg.name,
+      version: pkg.version,
       description: pkg.description,
       license: pkg.license,
       main: pkg.main,
