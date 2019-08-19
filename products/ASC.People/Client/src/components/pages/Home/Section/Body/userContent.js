@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { PeopleRow } from "asc-web-components";
+import { Row } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 
@@ -34,7 +34,7 @@ const UserContent = ({user, history,settings }) => {
   );
 
   return (
-    <PeopleRow
+    <Row.People
       status={status}
       displayName={displayName}
       department={department}
