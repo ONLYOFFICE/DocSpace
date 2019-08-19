@@ -86,9 +86,7 @@ namespace ASC.Common.Tests.Security.Authorizing
         {
 
             var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
-            AzManager.AzManagerAcl acl = null;
-
-            acl = azMan.GetAzManagerAcl(null, Constants.Admin, Domain.actionAddUser, null, null);
+            var acl = azMan.GetAzManagerAcl(null, Constants.Admin, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
             acl = azMan.GetAzManagerAcl(null, Constants.Everyone, Domain.actionAddUser, null, null);
@@ -138,8 +136,6 @@ namespace ASC.Common.Tests.Security.Authorizing
         public void GetAzManagerObjectAcl()
         {
             var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
-            AzManager.AzManagerAcl acl = null;
-
             var c1 = new Class1(1);
             var c2 = new Class1(2);
             var sop = new Class1SecurityProvider();
@@ -151,7 +147,7 @@ namespace ASC.Common.Tests.Security.Authorizing
             Domain.PermissionProvider.SetObjectAcesInheritance(c2Id, false);
             Domain.PermissionProvider.AddAce(Constants.Owner, Domain.actionAddUser, c1Id, AceType.Allow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c1Id, sop);
+            var acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c1Id, sop);
             Assert.IsTrue(acl.IsAllow);
 
             acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c2Id, sop);

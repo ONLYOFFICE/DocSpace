@@ -1,4 +1,6 @@
 {
   "PreviousPage": "Previous",
-  "NextPage": "Next"
+  "NextPage": "Next",
+  "CancelButton": "Cancel",
+  "SaveButton": "Save"  
 }

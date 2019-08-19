@@ -42,11 +42,12 @@ const StyledComboBox = styled.div`
   `}
 
   :hover{
-    border-color: ${state => state.isOpen ? '#2DA7DB' : '#A3A9AE'};
+    border-color: ${state => state.isOpen ? '#2DA7DB' : '#A3A9AE' };
+    cursor: ${props => (props.isDisabled || !props.options.length) ? 'default' : 'pointer'};
 
     ${props => props.isDisabled && `
       border-color: #ECEEF1;
-  `}
+    `}
   }
 `;
 
@@ -95,8 +96,8 @@ display: flex;
 align-self: start;
   width: 8px;
   margin-top: ${props => props.noBorder ? `5px` : `12px`};
-  margin-right: 8px;
-  margin-left: auto;
+  margin-right: ${props => props.options.length ?  '8px' : '0px'};
+  margin-left: ${props => props.options.length ?  'auto' : '0px'};
 
   ${props => props.isOpen && `
     transform: scale(1, -1);
@@ -128,13 +129,13 @@ class ComboBox extends React.PureComponent {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
-    if (this.props.isDisabled || e.target.closest('.optionalBlock')) return;
+    if (this.props.isDisabled  || !this.props.options.length || e.target.closest('.optionalBlock')) return;
     this.toggle(!this.state.isOpen);
   };
 
   optionClick = (option) => {
     this.toggle(!this.state.isOpen);
-    this.setState({ 
+    this.setState({
       isOpen: !this.state.isOpen,
       selectedOption: option
     });
@@ -155,7 +156,7 @@ class ComboBox extends React.PureComponent {
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
-      this.setState({selectedOption: this.props.selectedOption});
+      this.setState({ selectedOption: this.props.selectedOption });
     }
   };
 
@@ -196,15 +197,18 @@ class ComboBox extends React.PureComponent {
           <StyledLabel noBorder={noBorder}>
             {selectedOption.label}
           </StyledLabel>
-          <StyledArrowIcon noBorder={noBorder} isOpen={this.state.isOpen}>
-            {React.createElement(Icons['ExpanderDownIcon'],
-              {
-                size: 'scale',
-                color: arrowIconColor,
-                isfill: true
-              })
+
+          <StyledArrowIcon options={options} noBorder={noBorder} isOpen={isOpen}>
+            {options.length > 0 &&
+              React.createElement(Icons['ExpanderDownIcon'],
+                {
+                  size: 'scale',
+                  color: arrowIconColor,
+                  isfill: true
+                })
             }
           </StyledArrowIcon>
+
         </StyledComboButton>
         <DropDown
           directionX={directionX}

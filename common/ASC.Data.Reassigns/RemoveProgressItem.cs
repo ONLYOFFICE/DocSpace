@@ -200,7 +200,8 @@ namespace ASC.Data.Reassigns
 
         private void DeleteTalkStorage()
         {
-            var data = MD5.Create().ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
+            using var md5 = MD5.Create();
+            var data = md5.ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
 
             var sBuilder = new StringBuilder();
 

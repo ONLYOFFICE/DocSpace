@@ -113,8 +113,6 @@ namespace ASC.Core
 
         public void RegisterTenant(TenantRegistrationInfo ri, out Tenant tenant)
         {
-            tenant = null;
-
             if (ri == null) throw new ArgumentNullException("registrationInfo");
             if (string.IsNullOrEmpty(ri.Address)) throw new Exception("Address can not be empty");
 

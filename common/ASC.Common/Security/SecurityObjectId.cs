@@ -41,7 +41,7 @@ namespace ASC.Common.Security
         public SecurityObjectId(object id, Type objType)
         {
             SecurityId = id;
-            ObjectType = objType ?? throw new ArgumentNullException("objType");
+            ObjectType = objType ?? throw new ArgumentNullException(nameof(objType));
         }
 
         public override int GetHashCode()

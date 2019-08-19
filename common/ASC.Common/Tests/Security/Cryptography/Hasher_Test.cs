@@ -41,28 +41,32 @@ namespace ASC.Common.Tests.Security.Cryptography
         {
             var str = "Hello, Jhon!";
 
+            using var md5 = MD5.Create();
             Assert.AreEqual(
-                Convert.ToBase64String(MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
+                Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str))),
                 Hasher.Base64Hash(str, HashAlg.MD5)
                 );
 
+            using var sha1 = SHA1.Create();
             Assert.AreEqual(
-               Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
+               Convert.ToBase64String(sha1.ComputeHash(Encoding.UTF8.GetBytes(str))),
                Hasher.Base64Hash(str, HashAlg.SHA1)
                );
 
+            using var sha256 = SHA256.Create();
             Assert.AreEqual(
-               Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
+               Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(str))),
                Hasher.Base64Hash(str, HashAlg.SHA256)
                );
 
+            using var sha512 = SHA512.Create();
             Assert.AreEqual(
-               Convert.ToBase64String(SHA512.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
+               Convert.ToBase64String(sha512.ComputeHash(Encoding.UTF8.GetBytes(str))),
                Hasher.Base64Hash(str, HashAlg.SHA512)
                );
 
             Assert.AreEqual(
-              Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(str))),
+              Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(str))),
               Hasher.Base64Hash(str) //DEFAULT
               );
         }

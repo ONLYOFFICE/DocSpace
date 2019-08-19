@@ -45,8 +45,8 @@ namespace ASC.Common.Security.Authorizing
 
         public AuthorizingException(ISubject subject, IAction[] actions)
         {
-            if (actions == null || actions.Length == 0) throw new ArgumentNullException("actions");
-            Subject = subject ?? throw new ArgumentNullException("subject");
+            if (actions == null || actions.Length == 0) throw new ArgumentNullException(nameof(actions));
+            Subject = subject ?? throw new ArgumentNullException(nameof(subject));
             Actions = actions;
             var sactions = "";
             Array.ForEach(actions, action => { sactions += action.ToString() + ", "; });
@@ -89,10 +89,10 @@ namespace ASC.Common.Security.Authorizing
         internal static string FormatErrorMessage(ISubject subject, IAction[] actions, ISubject[] denySubjects,
                                                   IAction[] denyActions)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (actions == null || actions.Length == 0) throw new ArgumentNullException("actions");
-            if (denySubjects == null || denySubjects.Length == 0) throw new ArgumentNullException("denySubjects");
-            if (denyActions == null || denyActions.Length == 0) throw new ArgumentNullException("denyActions");
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
+            if (actions == null || actions.Length == 0) throw new ArgumentNullException(nameof(actions));
+            if (denySubjects == null || denySubjects.Length == 0) throw new ArgumentNullException(nameof(denySubjects));
+            if (denyActions == null || denyActions.Length == 0) throw new ArgumentNullException(nameof(denyActions));
             if (actions.Length != denySubjects.Length || actions.Length != denyActions.Length)
                 throw new ArgumentException();
             var reasons = "";

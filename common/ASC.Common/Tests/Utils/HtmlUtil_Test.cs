@@ -43,7 +43,7 @@ namespace ASC.Common.Tests.Utils
             html = "Hello    anton";
             Assert.AreEqual("Hello    anton", HtmlUtil.GetText(html));
 
-            html = "Hello<\\ br>anton";
+            //html = "Hello<\\ br>anton";
             //Assert.AreEqual("Hello\n\ranton", HtmlUtil.GetText(html));
         }
 

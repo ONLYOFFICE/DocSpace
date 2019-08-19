@@ -42,6 +42,8 @@ const Row = memo(
     const user = data[index];
     const contextOptions = getUserContextOptions(user, viewer);
     const contextOptionsProps = !contextOptions.length ? {} : {contextOptions};
+    const checked = isUserSelected(selection, user.id);
+    const checkedProps = isAdmin(viewer) ? {checked} : {};
 
     return (
       <ContentRow
@@ -51,9 +53,9 @@ const Row = memo(
         avatarRole={getUserRole(user)}
         avatarSource={user.avatar}
         avatarName={user.displayName}
-        checked={isUserSelected(selection, user.id)}
         onSelect={onContentRowSelect}
         style={style}
+        {...checkedProps}
         {...contextOptionsProps}
       >
         <UserContent user={user} history={history} settings={settings} />
@@ -228,7 +230,7 @@ class SectionBodyContent extends React.PureComponent {
             className="List"
             height={height}
             width={width}
-            itemSize={46} // ContentRow height
+            itemSize={50} // ContentRow height
             itemCount={users.length}
             itemData={users}
             outerElementType={CustomScrollbarsVirtualList}

@@ -160,7 +160,7 @@ namespace ASC.Core.Data
         {
             if (m == null) throw new ArgumentNullException("m");
 
-            ISqlInstruction i = null;
+            ISqlInstruction i;
             if (m.Methods == null || m.Methods.Length == 0)
             {
                 i = Delete("core_subscriptionmethod", m.Tenant)

@@ -50,7 +50,7 @@ namespace ASC.Common.Tests.Logging
         {
             XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
             var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
-            var fname = ((FileAppender)appenders[0]).File;
+            _ = ((FileAppender)appenders[0]).File;
             //Assert.AreEqual(Path.GetTempPath() + "onlyoffice\\8.0\\bin\\Test." + DateTime.Now.ToString("MM-dd") + ".log", ((FileAppender)appenders[0]).File);
         }
     }

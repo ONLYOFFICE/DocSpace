@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { Container, Row, Col } from "reactstrap";
-import { Link, Icons } from "asc-web-components";
+import { PeopleRow } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 
@@ -35,104 +34,17 @@ const UserContent = ({user, history,settings }) => {
   );
 
   return (
-    <Container fluid={true}>
-      <Row className="justify-content-start no-gutters">
-        <Col className="col-12 col-sm-12 col-lg-4 text-truncate">
-          {displayName && 
-          <Link
-            isSemitransparent={status === "pending"}
-            type="page"
-            title={displayName}
-            isBold={true}
-            fontSize={15}
-            onClick={onUserNameClick}
-          >
-            {displayName}
-          </Link>}
-          {status === "pending" && (
-            <Icons.SendClockIcon
-              style={{ marginLeft: "8px", marginTop: "-4px" }}
-              size="small"
-              isfill
-              color="#3B72A7"
-            />
-          )}
-          {status === "disabled" && (
-            <Icons.CatalogSpamIcon
-              style={{ marginLeft: "8px", marginTop: "-4px" }}
-              size="small"
-              isfill
-              color="#3B72A7"
-            />
-          )}
-        </Col>
-        <Col
-          className={`${
-            headDepartment ? "col-3" : "col-auto"
-          } col-sm-auto col-lg-2 text-truncate`}
-        >
-          {headDepartment &&
-          <Link
-            isSemitransparent={status === "pending"}
-            type="action"
-            title={headDepartment ? "Head of department" : ""}
-            onClick={onHeadDepartmentClick}
-          >
-            {headDepartment ? "Head of department" : ""}
-          </Link>
-          }
-        </Col>
-        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-          {headDepartment && (
-            <span className="d-lg-none" style={{ margin: "0 4px" }}>
-              {department ? "|" : ""}
-            </span>
-          )}
-          {department &&
-          <Link
-            isSemitransparent={status === "pending"}
-            type="action"
-            title={department}
-            onClick={onDepartmentClick}
-          >
-            {department}
-          </Link>
-          }
-        </Col>
-        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-          {department && (
-            <span className="d-lg-none" style={{ margin: "0 4px" }}>
-              {mobilePhone ? "|" : ""}
-            </span>
-          )}
-          {mobilePhone && 
-          <Link
-            isSemitransparent={status === "pending"}
-            type="action"
-            title={mobilePhone}
-            onClick={onPhoneClick}
-          >
-            {mobilePhone}
-          </Link>
-          }
-        </Col>
-        <Col className={`col-3 col-sm-auto col-lg-2 text-truncate`}>
-          {mobilePhone && (
-            <span className="d-lg-none" style={{ margin: "0 4px" }}>
-              {email ? "|" : ""}
-            </span>
-          )}
-          <Link
-            isSemitransparent={status === "pending"}
-            type="action"
-            title={email}
-            onClick={onEmailClick}
-          >
-            {email}
-          </Link>
-        </Col>
-      </Row>
-    </Container>
+    <PeopleRow
+      status={status}
+      displayName={displayName}
+      department={department}
+      phone={mobilePhone}
+      email={email}
+      onDisplayNameClick={onUserNameClick} 
+      onDepartmentClick={onDepartmentClick}
+      onPhoneClick={onPhoneClick}
+      onEmailClick={onEmailClick}
+    />
   );
 };
 

@@ -674,7 +674,7 @@ namespace ASC.Notify.Cron
                     end = v1;
                     i = vs.pos;
                 }
-                if (i < s.Length && ((c = s[i]) == '/'))
+                if (i < s.Length && ((_ = s[i]) == '/'))
                 {
                     i++;
                     c = s[i];
@@ -1455,8 +1455,6 @@ namespace ASC.Notify.Cron
                 }
                 d = new DateTime(d.Year, mon, d.Day, d.Hour, d.Minute, d.Second);
                 year = d.Year;
-                t = -1;
-
                 st = years.TailSet((year));
                 if (st != null && st.Count != 0)
                 {

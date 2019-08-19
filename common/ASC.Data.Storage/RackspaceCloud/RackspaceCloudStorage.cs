@@ -182,8 +182,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var accounMetaData = client.GetAccountMetaData(_region);
-            var secretKey = string.Empty;
-
+            string secretKey;
             if (accounMetaData.ContainsKey("Temp-Url-Key"))
             {
                 secretKey = accounMetaData["Temp-Url-Key"];
@@ -378,7 +377,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override void Delete(string domain, string path)
         {
             var client = GetClient();
-            var key = MakePath(domain, path);
+            _ = MakePath(domain, path);
             var size = GetFileSize(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));
