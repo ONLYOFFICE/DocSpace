@@ -2391,7 +2391,7 @@ asap@~2.0.3, asap@~2.0.6:
     prop-types "^15.7.2"
     rc-tree "^2.1.2"
     react-autosize-textarea "^7.0.0"
-    react-calendar "file:C:/Users/alexey.safronov/AppData/Local/Yarn/Cache/v4/npm-asc-web-components-1.0.0-3d5cd4a2-0618-4363-ad21-7721f90da543-1566201166587/node_modules/react-calendar/react-calendar-v2.13.2.tgz"
+    react-calendar "file:../../packages/react-calendar/react-calendar-v2.13.2.tgz"
     react-custom-scrollbars "^4.2.1"
     react-datepicker "^2.7.0"
     react-lifecycles-compat "^3.0.4"
