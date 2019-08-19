@@ -7,6 +7,7 @@ import replace from "rollup-plugin-replace";
 import postcss from 'rollup-plugin-postcss';
 import copy from 'rollup-plugin-copy';
 import svgrPlugin from "@svgr/rollup";
+import generatePackageJson from 'rollup-plugin-generate-package-json'
 import pkg from "./package.json";
 
 const getBabelPreset = require("./scripts/get-babel-preset");
@@ -16,6 +17,18 @@ const babelOptions = getBabelPreset();
 // This list includes common plugins shared between each output format.
 // NOTE: the order of the plugins is important!
 const configureRollupPlugins = (options = {}) => [
+  generatePackageJson({
+    baseContents: {
+      name: pkg.name,
+      version: pkg.name,
+      description: pkg.description,
+      license: pkg.license,
+      main: pkg.main,
+      module: pkg.module,
+      peerDependencies: pkg.peerDependencies
+    },
+    outputFolder: '../../packages/asc-web-components'
+  }),
   replace({
     "process.env.NODE_ENV": JSON.stringify("production")
   }),
@@ -99,7 +112,6 @@ const config = [
       copy({
       targets: [
         { src: 'dist', dest: '../../packages/asc-web-components' },
-        { src: 'dist.package.json', dest: '../../packages/asc-web-components', rename: "package.json" },
         { src: 'README.md', dest: '../../packages/asc-web-components' },
       ],
       verbose: true
