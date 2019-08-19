@@ -25,6 +25,8 @@
 
 
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Web;
@@ -152,6 +154,40 @@ namespace ASC.Core.Common
                 return virtualPath;
             }
             return (_vpath != "/" ? _vpath : string.Empty) + "/" + virtualPath.TrimStart('~', '/');
+        }
+
+        public static string GetRegionalUrl(string url, string lang)
+        {
+            if (string.IsNullOrEmpty(url))
+                return url;
+
+            //-replace language
+            var regex = new Regex("{.*?}");
+            var matches = regex.Matches(url);
+
+            if (string.IsNullOrEmpty(lang))
+            {
+                url = matches.Cast<Match>().Aggregate(url, (current, match) => current.Replace(match.Value, string.Empty));
+            }
+            else
+            {
+                foreach (Match match in matches)
+                {
+                    var values = match.Value.TrimStart('{').TrimEnd('}').Split('|');
+                    url = url.Replace(match.Value, values.Contains(lang) ? lang : string.Empty);
+                }
+            }
+            //-
+
+            //--remove redundant slashes
+            var uri = new Uri(url);
+            var baseUri = new UriBuilder(uri.Scheme, uri.Host, uri.Port).Uri;
+            baseUri = uri.Segments.Aggregate(baseUri, (current, segment) => new Uri(current, segment));
+            //--
+            //todo: lost query string!!!
+
+
+            return baseUri.ToString().TrimEnd('/');
         }
     }
 }
