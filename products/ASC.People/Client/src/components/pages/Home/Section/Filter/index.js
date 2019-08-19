@@ -9,8 +9,8 @@ import { useTranslation } from 'react-i18next';
 
 const getSortData = () => {
   return [
-    { key: "firstname", label: "Name" },
-    { key: "lastname", label: "Surname" }
+    { key: "firstname", label: "By first name" },
+    { key: "lastname", label: "By last name" }
   ];
 };
 

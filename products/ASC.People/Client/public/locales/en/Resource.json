@@ -7,5 +7,16 @@
   "LastName": "Last Name",
   "Email": "Email",
   "Comments": "Comments",
-  "ContactInformation": "Contact Information"
+  "ContactInformation": "Contact Information",
+  "UserType": "Type",
+  "Sex": "Sex",
+  "Birthdate": "Date of Birth",
+  "Location": "Location",
+  "Language": "Language",
+  "Subscriptions": "Subscriptions",
+  "SocialProfiles": "Social Profiles",
+  "PendingTitle": "Pending",
+  "EditUserDialogTitle": "Edit Profile",
+  "LoadingProcessing": "Loading...",
+  "LoadingDescription": "Please wait..."
 }

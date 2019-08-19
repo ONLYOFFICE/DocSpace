@@ -35,13 +35,13 @@ class StudioLayout extends React.Component {
 
         const currentUserActions = [
             {
-                key: 'ProfileBtn', label: t("Profile"), onClick: this.onProfileClick
+                key: 'ProfileBtn', label: t("Resource:Profile"), onClick: this.onProfileClick
             },
             {
-                key: 'AboutBtn', label: t("AboutCompanyTitle"), onClick: this.onAboutClick
+                key: 'AboutBtn', label: t("Resource:AboutCompanyTitle"), onClick: this.onAboutClick
             },
             {
-                key: 'LogoutBtn', label: t("LogoutButton"), onClick: this.onLogoutClick
+                key: 'LogoutBtn', label: t("Resource:LogoutButton"), onClick: this.onLogoutClick
             },
         ];
 
