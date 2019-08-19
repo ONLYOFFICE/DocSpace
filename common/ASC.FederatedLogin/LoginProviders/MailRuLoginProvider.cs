@@ -120,8 +120,9 @@ namespace ASC.FederatedLogin.LoginProviders
             var sortedKeys = queryDictionary.Keys.ToList();
             sortedKeys.Sort();
 
+            using var md5 = MD5.Create();
             var mailruParams = string.Join("", sortedKeys.Select(key => key + "=" + queryDictionary[key]).ToList());
-            var sig = string.Join("", MD5.Create().ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
+            var sig = string.Join("", md5.ComputeHash(Encoding.ASCII.GetBytes(mailruParams + ClientSecret)).Select(b => b.ToString("x2")));
 
             var mailRuProfile = RequestHelper.PerformRequest(
                 MailRuApiUrl

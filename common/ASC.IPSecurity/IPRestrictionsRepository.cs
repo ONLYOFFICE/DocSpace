@@ -39,40 +39,36 @@ namespace ASC.IPSecurity
 
         public static List<IPRestriction> Get(int tenant)
         {
-            using (var db = new DbManager(dbId))
-            {
-                return db
-                    .ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
-                    .ConvertAll(r => new IPRestriction
-                    {
-                        Id = Convert.ToInt32(r[0]),
-                        Ip = Convert.ToString(r[1]),
-                        TenantId = tenant,
-                    });
-            }
+            using var db = new DbManager(dbId);
+            return db
+.ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
+.ConvertAll(r => new IPRestriction
+{
+Id = Convert.ToInt32(r[0]),
+Ip = Convert.ToString(r[1]),
+TenantId = tenant,
+});
         }
 
         public static List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            using (var db = new DbManager(dbId))
-            using (var tx = db.BeginTransaction())
+            using var db = new DbManager(dbId);
+            using var tx = db.BeginTransaction();
+            var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
+            db.ExecuteNonQuery(d);
+
+            var ipsList = ips.ToList();
+            foreach (var ip in ipsList)
             {
-                var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
-                db.ExecuteNonQuery(d);
+                var i = new SqlInsert("tenants_iprestrictions")
+                    .InColumnValue("tenant", tenant)
+                    .InColumnValue("ip", ip);
 
-                var ipsList = ips.ToList();
-                foreach (var ip in ipsList)
-                {
-                    var i = new SqlInsert("tenants_iprestrictions")
-                        .InColumnValue("tenant", tenant)
-                        .InColumnValue("ip", ip);
-
-                    db.ExecuteNonQuery(i);
-                }
-
-                tx.Commit();
-                return ipsList;
+                db.ExecuteNonQuery(i);
             }
+
+            tx.Commit();
+            return ipsList;
         }
     }
 }

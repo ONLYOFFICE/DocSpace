@@ -65,10 +65,8 @@ namespace ASC.Core.ChunkedUploader
 
         public void Store(CommonChunkedUploadSession s)
         {
-            using (var stream = s.Serialize())
-            {
-                DataStore.SavePrivate(Domain, GetPathWithId(s.Id), stream, s.Expired);
-            }
+            using var stream = s.Serialize();
+            DataStore.SavePrivate(Domain, GetPathWithId(s.Id), stream, s.Expired);
         }
 
         public void Remove(CommonChunkedUploadSession s)
@@ -78,10 +76,8 @@ namespace ASC.Core.ChunkedUploader
 
         public CommonChunkedUploadSession Get(string sessionId)
         {
-            using (var stream = DataStore.GetReadStream(Domain, GetPathWithId(sessionId)))
-            {
-                return CommonChunkedUploadSession.Deserialize(stream);
-            }
+            using var stream = DataStore.GetReadStream(Domain, GetPathWithId(sessionId));
+            return CommonChunkedUploadSession.Deserialize(stream);
         }
 
         public void Init(CommonChunkedUploadSession chunkedUploadSession)

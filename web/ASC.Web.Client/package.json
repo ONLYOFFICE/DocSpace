@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "asc-web-components": "file:../npm-local/asc-web-components",
+    "asc-web-components": "file:../../packages/asc-web-components",
     "axios": "^0.19.0",
     "bootstrap": "4.3.1",
     "connected-react-router": "6.5.0",

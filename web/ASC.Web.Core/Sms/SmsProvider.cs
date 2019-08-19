@@ -157,18 +157,14 @@ namespace ASC.Web.Core.Sms
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.Timeout = 15000;
 
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                using var response = request.GetResponse();
+                using var stream = response.GetResponseStream();
+                if (stream != null)
                 {
-                    if (stream != null)
-                    {
-                        using (var reader = new StreamReader(stream))
-                        {
-                            var result = reader.ReadToEnd();
-                            Log.InfoFormat("SMS was sent to {0}, service returned: {1}", number, result);
-                            return true;
-                        }
-                    }
+                    using var reader = new StreamReader(stream);
+                    var result = reader.ReadToEnd();
+                    Log.InfoFormat("SMS was sent to {0}, service returned: {1}", number, result);
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -244,19 +240,15 @@ namespace ASC.Web.Core.Sms
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.Timeout = 1000;
 
-                    using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream())
+                    using var response = request.GetResponse();
+                    using var stream = response.GetResponseStream();
+                    if (stream != null)
                     {
-                        if (stream != null)
-                        {
-                            using (var reader = new StreamReader(stream))
-                            {
-                                var result = reader.ReadToEnd();
-                                Log.InfoFormat("SMS balance service returned: {0}", result);
+                        using var reader = new StreamReader(stream);
+                        var result = reader.ReadToEnd();
+                        Log.InfoFormat("SMS balance service returned: {0}", result);
 
-                                balance = result;
-                            }
-                        }
+                        balance = result;
                     }
                 }
                 catch (Exception ex)

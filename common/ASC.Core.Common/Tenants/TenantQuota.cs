@@ -211,8 +211,7 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            var q = obj as TenantQuota;
-            return q != null && q.Id == Id;
+            return obj is TenantQuota q && q.Id == Id;
         }
 
 

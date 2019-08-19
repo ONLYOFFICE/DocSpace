@@ -38,8 +38,8 @@ namespace ASC.Common.Data.AdoProxy
 
         public DbTransactionProxy(System.Data.Common.DbTransaction transaction, ProxyContext ctx)
         {
-            Transaction = transaction ?? throw new ArgumentNullException("transaction");
-            context = ctx ?? throw new ArgumentNullException("ctx");
+            Transaction = transaction ?? throw new ArgumentNullException(nameof(transaction));
+            context = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
 
 

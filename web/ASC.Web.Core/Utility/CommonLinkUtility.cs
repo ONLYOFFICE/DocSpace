@@ -225,7 +225,7 @@ namespace ASC.Web.Studio.Utility
 
             if (context != null)
             {
-                GetLocationByRequest(tenant, out var product, out var module, context);
+                GetLocationByRequest(tenant, out var product, out _, context);
                 if (product != null) productID = product.ID;
             }
 

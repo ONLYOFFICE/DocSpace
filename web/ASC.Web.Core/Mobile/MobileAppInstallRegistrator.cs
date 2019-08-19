@@ -35,20 +35,18 @@ namespace ASC.Web.Core.Mobile
     {
         public void RegisterInstall(string userEmail, MobileAppType appType)
         {
-            using (var db = GetDbManager())
-            {
-                db.ExecuteNonQuery(
-                    "INSERT INTO `mobile_app_install` (`user_email`, `app_type`, `registered_on`, `last_sign`)" +
-                    " VALUES (@user_email, @app_type, @registered_on, @last_sign)" +
-                    " ON DUPLICATE KEY UPDATE `last_sign`=@last_sign",
-                    new
-                    {
-                        user_email = userEmail,
-                        app_type = (int)appType,
-                        registered_on = DateTime.UtcNow,
-                        last_sign = DateTime.UtcNow
-                    });
-            }
+            using var db = GetDbManager();
+            db.ExecuteNonQuery(
+"INSERT INTO `mobile_app_install` (`user_email`, `app_type`, `registered_on`, `last_sign`)" +
+" VALUES (@user_email, @app_type, @registered_on, @last_sign)" +
+" ON DUPLICATE KEY UPDATE `last_sign`=@last_sign",
+new
+{
+user_email = userEmail,
+app_type = (int)appType,
+registered_on = DateTime.UtcNow,
+last_sign = DateTime.UtcNow
+});
         }
 
         public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
@@ -61,10 +59,8 @@ namespace ASC.Web.Core.Mobile
                 query.Where("app_type", (int)appType.Value);
 
 
-            using (var db = GetDbManager())
-            {
-                return db.ExecuteScalar<int>(query) > 0;
-            }
+            using var db = GetDbManager();
+            return db.ExecuteScalar<int>(query) > 0;
         }
 
         private IDbManager GetDbManager()

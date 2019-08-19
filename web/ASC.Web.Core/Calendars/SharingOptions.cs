@@ -74,8 +74,10 @@ namespace ASC.Web.Core.Calendars
 
         public object Clone()
         {
-            var o = new SharingOptions();
-            o.SharedForAll = this.SharedForAll;
+            var o = new SharingOptions
+            {
+                SharedForAll = this.SharedForAll
+            };
             foreach (var i in this.PublicItems)
                 o.PublicItems.Add(new PublicItem() { Id = i.Id, IsGroup = i.IsGroup });
 

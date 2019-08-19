@@ -145,25 +145,22 @@ namespace ASC.Data.Storage.DiscStorage
             //Copy stream
 
             //optimaze disk file copy
-            var fileStream = buffered as FileStream;
             long fslen;
-            if (fileStream != null && WorkContext.IsMono)
+            if (buffered is FileStream fileStream && WorkContext.IsMono)
             {
                 File.Copy(fileStream.Name, target, true);
                 fslen = fileStream.Length;
             }
             else
             {
-                using (var fs = File.Open(target, FileMode.Create))
+                using var fs = File.Open(target, FileMode.Create);
+                var buffer = new byte[BufferSize];
+                int readed;
+                while ((readed = buffered.Read(buffer, 0, BufferSize)) != 0)
                 {
-                    var buffer = new byte[BufferSize];
-                    int readed;
-                    while ((readed = buffered.Read(buffer, 0, BufferSize)) != 0)
-                    {
-                        fs.Write(buffer, 0, readed);
-                    }
-                    fslen = fs.Length;
+                    fs.Write(buffer, 0, readed);
                 }
+                fslen = fs.Length;
             }
 
             QuotaUsedAdd(domain, fslen);

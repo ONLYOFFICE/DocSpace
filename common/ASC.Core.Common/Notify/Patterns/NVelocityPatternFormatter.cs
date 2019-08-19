@@ -71,8 +71,7 @@ namespace ASC.Notify.Patterns
 
         private static void EventCartridgeReferenceInsertion(object sender, ReferenceInsertionEventArgs e)
         {
-            var originalString = e.OriginalValue as string;
-            if (originalString == null) return;
+            if (!(e.OriginalValue is string originalString)) return;
             var lines = originalString.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
             if (lines.Length == 0) return;
             e.NewValue = string.Empty;
@@ -80,7 +79,7 @@ namespace ASC.Notify.Patterns
             {
                 e.NewValue += string.Format("{0}{1}{2}\n", NoStylePreffix, lines[i], NoStyleSuffix);
             }
-            e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[lines.Length - 1], NoStyleSuffix);
+            e.NewValue += string.Format("{0}{1}{2}", NoStylePreffix, lines[^1], NoStyleSuffix);
         }
     }
 }

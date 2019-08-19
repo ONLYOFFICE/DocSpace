@@ -334,8 +334,7 @@ namespace ASC.Common.Tests.Security.Authorizing
 
             public override bool Equals(object obj)
             {
-                var p = obj as PermissionRecord;
-                return p != null && Id == p.Id;
+                return obj is PermissionRecord p && Id == p.Id;
             }
         }
     }

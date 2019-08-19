@@ -122,8 +122,7 @@ namespace ASC.Core.Tenants
 
         public override bool Equals(object obj)
         {
-            var t = obj as Tenant;
-            return t != null && t.TenantId == TenantId;
+            return obj is Tenant t && t.TenantId == TenantId;
         }
 
         public override int GetHashCode()
@@ -158,8 +157,6 @@ namespace ASC.Core.Tenants
 
         public string GetTenantDomain(bool allowMappedDomain = true)
         {
-            var result = string.Empty;
-
             var baseHost = TenantUtil.GetBaseDomain(HostedRegion);
 
             if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
@@ -167,6 +164,7 @@ namespace ASC.Core.Tenants
                 baseHost = HostedRegion;
             }
 
+            string result;
             if (baseHost == "localhost" || TenantAlias == "localhost")
             {
                 //single tenant on local host

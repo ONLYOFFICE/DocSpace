@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
+import { useTranslation } from 'react-i18next';
 
 const SectionPagingContent = ({
   fetchPeople,
@@ -9,6 +10,7 @@ const SectionPagingContent = ({
   onLoading,
   selectedCount
 }) => {
+  const { t, i18n } = useTranslation();
   const onNextClick = useCallback(
     e => {
       if (!filter.hasNext()) {
@@ -116,8 +118,8 @@ const SectionPagingContent = ({
 
   return (
     <Paging
-      previousLabel="Previous"
-      nextLabel="Next"
+      previousLabel={t('UserControlsCommonResource:PreviousPage')}
+      nextLabel={t('UserControlsCommonResource:NextPage')}
       pageItems={pageItems}
       onSelectPage={onChangePage}
       countItems={countItems}

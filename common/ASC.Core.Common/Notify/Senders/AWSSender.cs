@@ -64,7 +64,7 @@ namespace ASC.Core.Notify.Senders
 
         public override NoticeSendResult Send(NotifyMessage m)
         {
-            var result = default(NoticeSendResult);
+            NoticeSendResult result;
             try
             {
                 try
@@ -143,8 +143,10 @@ namespace ASC.Core.Notify.Senders
             Body body;
             if (m.ContentType == Pattern.HTMLContentType)
             {
-                body = new Body(new Content(HtmlUtil.GetText(m.Content)) { Charset = Encoding.UTF8.WebName });
-                body.Html = new Content(GetHtmlView(m.Content)) { Charset = Encoding.UTF8.WebName };
+                body = new Body(new Content(HtmlUtil.GetText(m.Content)) { Charset = Encoding.UTF8.WebName })
+                {
+                    Html = new Content(GetHtmlView(m.Content)) { Charset = Encoding.UTF8.WebName }
+                };
             }
             else
             {

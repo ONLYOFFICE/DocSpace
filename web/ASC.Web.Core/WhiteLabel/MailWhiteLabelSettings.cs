@@ -61,9 +61,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var defaultSettings = GetDefault() as MailWhiteLabelSettings;
-
-                if (defaultSettings == null) return false;
+                if (!(GetDefault() is MailWhiteLabelSettings defaultSettings)) return false;
 
                 return FooterEnabled == defaultSettings.FooterEnabled &&
                        FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&

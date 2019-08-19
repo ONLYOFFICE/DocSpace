@@ -117,7 +117,7 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.ClientID = ClientID;
             refreshed.ClientSecret = ClientSecret;
             refreshed.RedirectUri = RedirectUri;
-            refreshed.RefreshToken = refreshed.RefreshToken ?? refreshToken;
+            refreshed.RefreshToken ??= refreshToken;
             return refreshed;
         }
     }

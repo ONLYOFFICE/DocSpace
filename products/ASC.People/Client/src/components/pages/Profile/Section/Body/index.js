@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
+import { useTranslation } from 'react-i18next';
 import {
   Text,
   Avatar,
@@ -142,6 +143,7 @@ const createContacts = contacts => {
 };
 
 const SectionBodyContent = props => {
+  const { t, i18n } = useTranslation();
   const { profile, history, settings, isAdmin, viewer } = props;
   //console.log(props);
   const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -189,19 +191,19 @@ const SectionBodyContent = props => {
           <Button
             style={editButtonWrapper}
             size="big"
-            label="Edit profile"
+            label={t("Resource:EditUserDialogTitle")}
             onClick={onEditProfileClick}
           />
         )}
       </div>
       <div style={infoWrapper}>
         <div style={titlesWrapper}>
-          <Text.Body style={restMargins} color="#A3A9AE" title="Type">
-            Type:
+          <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:UserType')}>
+          {t('Resource:UserType')}:
           </Text.Body>
           {profile.email && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="E-mail">
-              E-mail:
+            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Email')}>
+              {t('Resource:Email')}:
             </Text.Body>
           )}
           {profile.department && (
@@ -220,8 +222,8 @@ const SectionBodyContent = props => {
             </Text.Body>
           )}
           {profile.sex && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Sex">
-              Sex:
+            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Sex')}>
+              {t('Resource:Sex')}:
             </Text.Body>
           )}
           {profile.workFrom && (
@@ -237,19 +239,19 @@ const SectionBodyContent = props => {
             <Text.Body
               style={restMargins}
               color="#A3A9AE"
-              title="Date of birth"
+              title={t('Resource:Birthdate')}
             >
-              Date of birth:
+              {t('Resource:Birthdate')}:
             </Text.Body>
           )}
           {profile.location && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Location">
-              Location:
+            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Location')}>
+              {t('Resource:Location')}:
             </Text.Body>
           )}
           {isSelf && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Language">
-              Language:
+            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Language')}>
+              {t('Resource:Language')}:
             </Text.Body>
           )}
           {/*{isSelf && <Text.Body style={marginTop24} color='#A3A9AE' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
@@ -267,7 +269,7 @@ const SectionBodyContent = props => {
             >
               {profile.email}
             </Link>
-            {profile.activationStatus === 2 && " (Pending)"}
+            {profile.activationStatus === 2 && ` (${t("Resource:PendingTitle")})`}
           </Text.Body>
           <Text.Body as="div" style={restMargins}>{formatedDepartments}</Text.Body>
           <Text.Body style={restMargins}>{profile.title}</Text.Body>
@@ -300,7 +302,7 @@ const SectionBodyContent = props => {
       {isSelf && (
         <div style={selfToggleWrapper}>
           <ToggleContent
-            label="Subscriptions"
+            label={t('Resource:Subscriptions')}
             style={notesWrapper}
             isOpen={true}
           >
@@ -317,7 +319,7 @@ const SectionBodyContent = props => {
       )}
       {profile.notes && (
         <div style={notesToggleWrapper}>
-          <ToggleContent label="Comment" style={notesWrapper} isOpen={true}>
+          <ToggleContent label={t('Resource:Comments')} style={notesWrapper} isOpen={true}>
             <Text.Body as="span">{profile.notes}</Text.Body>
           </ToggleContent>
         </div>
@@ -325,7 +327,7 @@ const SectionBodyContent = props => {
       {profile.contacts && (
         <div style={contactsToggleWrapper}>
           <ToggleContent
-            label="Contact information"
+            label={t('Resource:ContactInformation')}
             style={notesWrapper}
             isOpen={true}
           >
@@ -336,7 +338,7 @@ const SectionBodyContent = props => {
       {profile.contacts && (
         <div style={contactsToggleWrapper}>
           <ToggleContent
-            label="Social profiles"
+            label={t('Resource:SocialProfiles')}
             style={notesWrapper}
             isOpen={true}
           >

@@ -46,57 +46,31 @@ namespace ASC.Web.Core.Users
 {
     internal class ResizeWorkerItem
     {
-        private readonly Guid _userId;
-        private readonly byte[] _data;
-        private readonly long _maxFileSize;
-        private readonly Size _size;
-        private readonly IDataStore _dataStore;
-        private readonly UserPhotoThumbnailSettings _settings;
-
-
         public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings)
         {
-            _userId = userId;
-            _data = data;
-            _maxFileSize = maxFileSize;
-            _size = size;
-            _dataStore = dataStore;
-            _settings = settings;
+            UserId = userId;
+            Data = data;
+            MaxFileSize = maxFileSize;
+            Size = size;
+            DataStore = dataStore;
+            Settings = settings;
         }
 
-        public Size Size
-        {
-            get { return _size; }
-        }
+        public Size Size { get; }
 
-        public IDataStore DataStore
-        {
-            get { return _dataStore; }
-        }
+        public IDataStore DataStore { get; }
 
-        public long MaxFileSize
-        {
-            get { return _maxFileSize; }
-        }
+        public long MaxFileSize { get; }
 
-        public byte[] Data
-        {
-            get { return _data; }
-        }
+        public byte[] Data { get; }
 
-        public Guid UserId
-        {
-            get { return _userId; }
-        }
+        public Guid UserId { get; }
 
-        public UserPhotoThumbnailSettings Settings
-        {
-            get { return _settings; }
-        }
+        public UserPhotoThumbnailSettings Settings { get; }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof(ResizeWorkerItem)) return false;
             return Equals((ResizeWorkerItem)obj);
@@ -104,7 +78,7 @@ namespace ASC.Web.Core.Users
 
         public bool Equals(ResizeWorkerItem other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return other.UserId.Equals(UserId) && other.MaxFileSize == MaxFileSize && other.Size.Equals(Size);
         }
@@ -293,12 +267,12 @@ namespace ASC.Web.Core.Users
             get { return new Size(32, 32); }
         }
 
-        private static string _defaultRetinaAvatar = "default_user_photo_size_360-360.png";
-        private static string _defaultAvatar = "default_user_photo_size_200-200.png";
-        private static string _defaultSmallAvatar = "default_user_photo_size_32-32.png";
-        private static string _defaultMediumAvatar = "default_user_photo_size_48-48.png";
-        private static string _defaultBigAvatar = "default_user_photo_size_82-82.png";
-        private static string _tempDomainName = "temp";
+        private static readonly string _defaultRetinaAvatar = "default_user_photo_size_360-360.png";
+        private static readonly string _defaultAvatar = "default_user_photo_size_200-200.png";
+        private static readonly string _defaultSmallAvatar = "default_user_photo_size_32-32.png";
+        private static readonly string _defaultMediumAvatar = "default_user_photo_size_48-48.png";
+        private static readonly string _defaultBigAvatar = "default_user_photo_size_82-82.png";
+        private static readonly string _tempDomainName = "temp";
 
 
         public static bool UserHasAvatar(Tenant tenant, Guid userID)
@@ -516,7 +490,7 @@ namespace ASC.Web.Core.Users
 
         public static string SaveOrUpdatePhoto(Tenant tenant, Guid userID, byte[] data)
         {
-            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out var fileName);
+            return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out _);
         }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
@@ -585,61 +559,57 @@ namespace ASC.Web.Core.Users
 
             try
             {
-                using (var stream = new MemoryStream(data))
-                using (var img = new Bitmap(stream))
+                using var stream = new MemoryStream(data);
+                using var img = new Bitmap(stream);
+                imgFormat = img.RawFormat;
+                width = img.Width;
+                height = img.Height;
+                var maxWidth = maxsize.Width;
+                var maxHeight = maxsize.Height;
+
+                if ((maxHeight != -1 && img.Height > maxHeight) || (maxWidth != -1 && img.Width > maxWidth))
                 {
-                    imgFormat = img.RawFormat;
-                    width = img.Width;
-                    height = img.Height;
-                    var maxWidth = maxsize.Width;
-                    var maxHeight = maxsize.Height;
+                    #region calulate height and width
 
-                    if ((maxHeight != -1 && img.Height > maxHeight) || (maxWidth != -1 && img.Width > maxWidth))
+                    if (width > maxWidth && height > maxHeight)
                     {
-                        #region calulate height and width
 
-                        if (width > maxWidth && height > maxHeight)
-                        {
-
-                            if (width > height)
-                            {
-                                height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
-                                width = maxWidth;
-                            }
-                            else
-                            {
-                                width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
-                                height = maxHeight;
-                            }
-                        }
-
-                        if (width > maxWidth && height <= maxHeight)
+                        if (width > height)
                         {
                             height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
                             width = maxWidth;
                         }
-
-                        if (width <= maxWidth && height > maxHeight)
+                        else
                         {
                             width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
                             height = maxHeight;
                         }
-
-                        #endregion
-
-                        using (var b = new Bitmap(width, height))
-                        using (var gTemp = Graphics.FromImage(b))
-                        {
-                            gTemp.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                            gTemp.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                            gTemp.SmoothingMode = SmoothingMode.HighQuality;
-                            gTemp.DrawImage(img, 0, 0, width, height);
-
-                            data = CommonPhotoManager.SaveToBytes(b);
-                        }
                     }
-                    return data;
+
+                    if (width > maxWidth && height <= maxHeight)
+                    {
+                        height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                        width = maxWidth;
+                    }
+
+                    if (width <= maxWidth && height > maxHeight)
+                    {
+                        width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                        height = maxHeight;
+                    }
+
+                    #endregion
+
+                    using var b = new Bitmap(width, height);
+                    using var gTemp = Graphics.FromImage(b);
+                    gTemp.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    gTemp.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    gTemp.SmoothingMode = SmoothingMode.HighQuality;
+                    gTemp.DrawImage(img, 0, 0, width, height);
+
+                    data = CommonPhotoManager.SaveToBytes(b);
                 }
+                return data;
             }
             catch (OutOfMemoryException)
             {
@@ -693,34 +663,28 @@ namespace ASC.Web.Core.Users
             try
             {
                 var data = item.Data;
-                using (var stream = new MemoryStream(data))
-                using (var img = Image.FromStream(stream))
+                using var stream = new MemoryStream(data);
+                using var img = Image.FromStream(stream);
+                var imgFormat = img.RawFormat;
+                if (item.Size != img.Size)
                 {
-                    var imgFormat = img.RawFormat;
-                    if (item.Size != img.Size)
-                    {
-                        using (var img2 = item.Settings.IsDefault ?
-                            CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
-                            UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings))
-                        {
-                            data = CommonPhotoManager.SaveToBytes(img2);
-                        }
-                    }
-                    else
-                    {
-                        data = CommonPhotoManager.SaveToBytes(img);
-                    }
-
-                    var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
-                    var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
-
-                    using (var stream2 = new MemoryStream(data))
-                    {
-                        item.DataStore.Save(fileName, stream2).ToString();
-
-                        AddToCache(item.UserId, item.Size, fileName);
-                    }
+                    using var img2 = item.Settings.IsDefault ?
+                        CommonPhotoManager.DoThumbnail(img, item.Size, true, true, true) :
+                        UserPhotoThumbnailManager.GetBitmap(img, item.Size, item.Settings);
+                    data = CommonPhotoManager.SaveToBytes(img2);
                 }
+                else
+                {
+                    data = CommonPhotoManager.SaveToBytes(img);
+                }
+
+                var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+                var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
+
+                using var stream2 = new MemoryStream(data);
+                item.DataStore.Save(fileName, stream2).ToString();
+
+                AddToCache(item.UserId, item.Size, fileName);
             }
             catch (ArgumentException error)
             {
@@ -740,26 +704,22 @@ namespace ASC.Web.Core.Users
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 
             var store = GetDataStore();
-            using (var stream = new MemoryStream(data))
-            {
-                return store.Save(_tempDomainName, fileName, stream).ToString();
-            }
+            using var stream = new MemoryStream(data);
+            return store.Save(_tempDomainName, fileName, stream).ToString();
         }
 
         public static byte[] GetTempPhotoData(string fileName)
         {
-            using (var s = GetDataStore().GetReadStream(_tempDomainName, fileName))
+            using var s = GetDataStore().GetReadStream(_tempDomainName, fileName);
+            var data = new MemoryStream();
+            var buffer = new byte[1024 * 10];
+            while (true)
             {
-                var data = new MemoryStream();
-                var buffer = new byte[1024 * 10];
-                while (true)
-                {
-                    var count = s.Read(buffer, 0, buffer.Length);
-                    if (count == 0) break;
-                    data.Write(buffer, 0, count);
-                }
-                return data.ToArray();
+                var count = s.Read(buffer, 0, buffer.Length);
+                if (count == 0) break;
+                data.Write(buffer, 0, count);
             }
+            return data.ToArray();
         }
 
         public static string GetSizedTempPhotoAbsoluteWebPath(string fileName, int newWidth, int newHeight)
@@ -767,33 +727,27 @@ namespace ASC.Web.Core.Users
             var store = GetDataStore();
             if (store.IsFile(_tempDomainName, fileName))
             {
-                using (var s = store.GetReadStream(_tempDomainName, fileName))
-                using (var img = Image.FromStream(s))
+                using var s = store.GetReadStream(_tempDomainName, fileName);
+                using var img = Image.FromStream(s);
+                var imgFormat = img.RawFormat;
+                byte[] data;
+
+                if (img.Width != newWidth || img.Height != newHeight)
                 {
-                    var imgFormat = img.RawFormat;
-                    byte[] data;
-
-                    if (img.Width != newWidth || img.Height != newHeight)
-                    {
-                        using (var img2 = CommonPhotoManager.DoThumbnail(img, new Size(newWidth, newHeight), true, true, true))
-                        {
-                            data = CommonPhotoManager.SaveToBytes(img2);
-                        }
-                    }
-                    else
-                    {
-                        data = CommonPhotoManager.SaveToBytes(img);
-                    }
-                    var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
-                    var index = fileName.LastIndexOf('.');
-                    var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
-
-                    var trueFileName = fileNameWithoutExt + "_size_" + newWidth.ToString() + "-" + newHeight.ToString() + "." + widening;
-                    using (var stream = new MemoryStream(data))
-                    {
-                        return store.Save(_tempDomainName, trueFileName, stream).ToString();
-                    }
+                    using var img2 = CommonPhotoManager.DoThumbnail(img, new Size(newWidth, newHeight), true, true, true);
+                    data = CommonPhotoManager.SaveToBytes(img2);
                 }
+                else
+                {
+                    data = CommonPhotoManager.SaveToBytes(img);
+                }
+                var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+                var index = fileName.LastIndexOf('.');
+                var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
+
+                var trueFileName = fileNameWithoutExt + "_size_" + newWidth.ToString() + "-" + newHeight.ToString() + "." + widening;
+                using var stream = new MemoryStream(data);
+                return store.Save(_tempDomainName, trueFileName, stream).ToString();
             }
             return GetDefaultPhotoAbsoluteWebPath(new Size(newWidth, newHeight));
         }
@@ -818,10 +772,8 @@ namespace ASC.Web.Core.Users
                 var data = CoreContext.UserManager.GetUserPhoto(tenantId, userID);
                 if (data != null)
                 {
-                    using (var s = new MemoryStream(data))
-                    {
-                        return new Bitmap(s);
-                    }
+                    using var s = new MemoryStream(data);
+                    return new Bitmap(s);
                 }
             }
             catch { }
@@ -857,18 +809,16 @@ namespace ASC.Web.Core.Users
 
                 if (string.IsNullOrEmpty(fileName)) return null;
 
-                using (var s = GetDataStore().GetReadStream("", fileName))
+                using var s = GetDataStore().GetReadStream("", fileName);
+                var data = new MemoryStream();
+                var buffer = new byte[1024 * 10];
+                while (true)
                 {
-                    var data = new MemoryStream();
-                    var buffer = new byte[1024 * 10];
-                    while (true)
-                    {
-                        var count = s.Read(buffer, 0, buffer.Length);
-                        if (count == 0) break;
-                        data.Write(buffer, 0, count);
-                    }
-                    return data.ToArray();
+                    var count = s.Read(buffer, 0, buffer.Length);
+                    if (count == 0) break;
+                    data.Write(buffer, 0, count);
                 }
+                return data.ToArray();
             }
             catch (Exception err)
             {
@@ -949,7 +899,7 @@ namespace ASC.Web.Core.Users
         public static RotateFlipType RotateImageByExifOrientationData(string sourceFilePath, string targetFilePath, ImageFormat targetFormat, bool updateExifData = true)
         {
             // Rotate the image according to EXIF data
-            var bmp = new Bitmap(sourceFilePath);
+            using var bmp = new Bitmap(sourceFilePath);
             var fType = RotateImageByExifOrientationData(bmp, updateExifData);
             if (fType != RotateFlipType.RotateNoneFlipNone)
             {
@@ -988,27 +938,18 @@ namespace ASC.Web.Core.Users
         /// <returns>the corresponding System.Drawing.RotateFlipType enum value</returns>
         public static RotateFlipType GetRotateFlipTypeByExifOrientationData(int orientation)
         {
-            switch (orientation)
+            return orientation switch
             {
-                case 1:
-                    return RotateFlipType.RotateNoneFlipNone;
-                case 2:
-                    return RotateFlipType.RotateNoneFlipX;
-                case 3:
-                    return RotateFlipType.Rotate180FlipNone;
-                case 4:
-                    return RotateFlipType.Rotate180FlipX;
-                case 5:
-                    return RotateFlipType.Rotate90FlipX;
-                case 6:
-                    return RotateFlipType.Rotate90FlipNone;
-                case 7:
-                    return RotateFlipType.Rotate270FlipX;
-                case 8:
-                    return RotateFlipType.Rotate270FlipNone;
-                default:
-                    return RotateFlipType.RotateNoneFlipNone;
-            }
+                1 => RotateFlipType.RotateNoneFlipNone,
+                2 => RotateFlipType.RotateNoneFlipX,
+                3 => RotateFlipType.Rotate180FlipNone,
+                4 => RotateFlipType.Rotate180FlipX,
+                5 => RotateFlipType.Rotate90FlipX,
+                6 => RotateFlipType.Rotate90FlipNone,
+                7 => RotateFlipType.Rotate270FlipX,
+                8 => RotateFlipType.Rotate270FlipNone,
+                _ => RotateFlipType.RotateNoneFlipNone,
+            };
         }
     }
 }

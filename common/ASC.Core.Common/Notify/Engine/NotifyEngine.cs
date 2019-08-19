@@ -401,8 +401,7 @@ namespace ASC.Notify.Engine
 
         private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel)
         {
-            var recipient = request.Recipient as IDirectRecipient;
-            if (recipient == null) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
+            if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
             request.CurrentSender = channel.SenderName;
 
@@ -488,8 +487,7 @@ namespace ASC.Notify.Engine
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
-                    var styler = Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) as IPatternStyler;
-                    if (styler != null)
+                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);
                     }

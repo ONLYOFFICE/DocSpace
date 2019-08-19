@@ -195,6 +195,10 @@ const sectionPagingContent = <Paging
   nextLabel="Next"
   pageItems={pageItems}
   perPageItems={perPageItems}
+  selectedPageItem={pageItems[0]}
+  selectedCountItem={perPageItems[0]}
+  onSelectPage={(a) => console.log(a)}
+  onSelectCount={(a) => console.log(a)}
   previousAction={(e) => action('Prev Clicked')(e)}
   nextAction={(e) => action('Next Clicked')(e)}
   openDirection="top"

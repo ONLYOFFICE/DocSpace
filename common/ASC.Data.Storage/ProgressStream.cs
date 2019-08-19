@@ -74,11 +74,7 @@ namespace ASC.Data.Storage
 
         public void InvokeOnReadProgress(int progress)
         {
-            var handler = OnReadProgress;
-            if (handler != null)
-            {
-                handler(this, progress);
-            }
+            OnReadProgress?.Invoke(this, progress);
         }
 
         public override void Flush()

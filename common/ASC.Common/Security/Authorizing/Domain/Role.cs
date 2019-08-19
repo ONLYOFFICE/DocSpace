@@ -56,7 +56,7 @@ namespace ASC.Common.Security.Authorizing
         public Role(Guid id, string name)
         {
             if (id == Guid.Empty) throw new ArgumentException("id");
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             ID = id;
             Name = name;
@@ -70,8 +70,7 @@ namespace ASC.Common.Security.Authorizing
 
         public override bool Equals(object obj)
         {
-            var r = obj as Role;
-            return r != null && r.ID == ID;
+            return obj is Role r && r.ID == ID;
         }
 
         public override string ToString()

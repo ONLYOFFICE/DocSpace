@@ -38,7 +38,7 @@ namespace ASC.Core.Notify
     {
         public virtual IRecipient GetRecipient(int tenantId, string id)
         {
-            var recID = Guid.Empty;
+            Guid recID;
             if (TryParseGuid(id, out recID))
             {
                 var user = CoreContext.UserManager.GetUsers(tenantId, recID);
@@ -73,7 +73,7 @@ namespace ASC.Core.Notify
             if (recipient == null) throw new ArgumentNullException("recipient");
 
             var result = new List<IRecipientsGroup>();
-            var recID = Guid.Empty;
+            Guid recID;
             if (TryParseGuid(recipient.ID, out recID))
             {
                 if (recipient is IRecipientsGroup)

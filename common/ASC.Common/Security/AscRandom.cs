@@ -35,7 +35,7 @@ namespace ASC.Common.Security
         private const int MBIG = int.MaxValue;
         private const int MSEED = 161803398;
         private const int MZ = 0;
-        private int[] seeds;
+        private readonly int[] seeds;
 
 
         public AscRandom() : this(Environment.TickCount)
@@ -47,7 +47,7 @@ namespace ASC.Common.Security
             seeds = new int[56];
             var num4 = (seed == int.MinValue) ? int.MaxValue : Math.Abs(seed);
             var num2 = 161803398 - num4;
-            seeds[seeds.Length - 1] = num2;
+            seeds[^1] = num2;
             var num3 = 1;
             for (var i = 1; i < seeds.Length - 1; i++)
             {
@@ -73,21 +73,20 @@ namespace ASC.Common.Security
             }
             inext = 0;
             inextp = 21;
-            seed = 1;
         }
 
         public override int Next(int maxValue)
         {
             if (maxValue < 0)
             {
-                throw new ArgumentOutOfRangeException("maxValue");
+                throw new ArgumentOutOfRangeException(nameof(maxValue));
             }
             return (int)(InternalSample() * 4.6566128752457969E-10 * maxValue);
         }
 
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
             for (var i = 0; i < buffer.Length; i++)
             {

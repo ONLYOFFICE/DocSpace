@@ -107,8 +107,7 @@ namespace ASC.Web.Studio.Core.Quota
                 result.UserStorageSize = CoreContext.Configuration.PersonalMaxSpace;
 
                 var webItem = WebItemManager.Instance[WebItemManager.DocumentsProductID];
-                var spaceUsageManager = webItem.Context.SpaceUsageStatManager as IUserSpaceUsage;
-                if (spaceUsageManager != null)
+                if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
                     result.UserUsedSize = spaceUsageManager.GetUserSpaceUsage(SecurityContext.CurrentAccount.ID);
             }
 

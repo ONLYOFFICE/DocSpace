@@ -41,8 +41,7 @@ namespace ASC.Notify.Engine
         {
             get
             {
-                var storage = CallContext.GetData(CallContext_Prefix) as Dictionary<string, ISendInterceptor>;
-                if (storage == null)
+                if (!(CallContext.GetData(CallContext_Prefix) is Dictionary<string, ISendInterceptor> storage))
                 {
                     storage = new Dictionary<string, ISendInterceptor>(10);
                     CallContext.SetData(CallContext_Prefix, storage);
@@ -73,9 +72,7 @@ namespace ASC.Notify.Engine
         public ISendInterceptor Get(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
-
-            ISendInterceptor result = null;
-            result = GetInternal(name, callInterceptors);
+            var result = GetInternal(name, callInterceptors);
             if (result == null) result = GetInternal(name, globalInterceptors);
             return result;
         }

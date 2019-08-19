@@ -101,8 +101,10 @@ namespace ASC.Common.Security.Authorizing
 
         internal IEnumerable<ISubject> GetSubjects(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
-            var subjects = new List<ISubject>();
-            subjects.Add(subject);
+            var subjects = new List<ISubject>
+            {
+                subject
+            };
             subjects.AddRange(
                 roleProvider.GetRoles(tenant, subject)
                     .ConvertAll(r => { return (ISubject)r; })

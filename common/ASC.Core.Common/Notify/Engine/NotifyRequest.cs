@@ -122,13 +122,15 @@ namespace ASC.Notify.Engine
         internal NotifyRequest Split(IRecipient recipient)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
-            var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient);
-            newRequest.SenderNames = SenderNames;
-            newRequest.Patterns = Patterns;
-            newRequest.Arguments = new List<ITagValue>(Arguments);
-            newRequest.RequaredTags = RequaredTags;
-            newRequest.CurrentSender = CurrentSender;
-            newRequest.CurrentMessage = CurrentMessage;
+            var newRequest = new NotifyRequest(NotifySource, NotifyAction, ObjectID, recipient)
+            {
+                SenderNames = SenderNames,
+                Patterns = Patterns,
+                Arguments = new List<ITagValue>(Arguments),
+                RequaredTags = RequaredTags,
+                CurrentSender = CurrentSender,
+                CurrentMessage = CurrentMessage
+            };
             newRequest.Interceptors.AddRange(Interceptors);
             return newRequest;
         }

@@ -60,8 +60,7 @@ namespace ASC.Notify.Patterns
 
         public override bool Equals(object obj)
         {
-            var p = obj as IPattern;
-            return p != null && p.ID == ID;
+            return obj is IPattern p && p.ID == ID;
         }
 
         public override int GetHashCode()

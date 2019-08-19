@@ -8,6 +8,7 @@ import {
     toastr
 } from "asc-web-components";
 import { isAdmin } from '../../../store/auth/selectors';
+import { withTranslation } from 'react-i18next';
 
 class ArticleMainButtonContent extends React.Component {
     onDropDownItemClick = (link) => {
@@ -20,7 +21,7 @@ class ArticleMainButtonContent extends React.Component {
 
     render() {
         console.log("People ArticleMainButtonContent render");
-        const { isAdmin, settings } = this.props;
+        const { isAdmin, settings, t } = this.props;
         return (
             isAdmin ?
                 <MainButton
@@ -56,7 +57,7 @@ class ArticleMainButtonContent extends React.Component {
                     />
                     <DropDownItem
                         icon="ImportIcon"
-                        label="Import people"
+                        label={t('PeopleResource:ImportPeople')}
                         onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                     />
                 </MainButton>
@@ -78,4 +79,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+export default connect(mapStateToProps)(withRouter(withTranslation()(ArticleMainButtonContent)));

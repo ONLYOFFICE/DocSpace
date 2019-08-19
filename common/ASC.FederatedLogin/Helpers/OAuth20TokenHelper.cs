@@ -131,7 +131,7 @@ namespace ASC.FederatedLogin.Helpers
                 refreshed.ClientID = token.ClientID;
                 refreshed.ClientSecret = token.ClientSecret;
                 refreshed.RedirectUri = token.RedirectUri;
-                refreshed.RefreshToken = refreshed.RefreshToken ?? token.RefreshToken;
+                refreshed.RefreshToken ??= token.RefreshToken;
                 return refreshed;
             }
 

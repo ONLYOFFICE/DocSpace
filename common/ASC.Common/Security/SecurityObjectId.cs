@@ -41,7 +41,7 @@ namespace ASC.Common.Security
         public SecurityObjectId(object id, Type objType)
         {
             SecurityId = id;
-            ObjectType = objType ?? throw new ArgumentNullException("objType");
+            ObjectType = objType ?? throw new ArgumentNullException(nameof(objType));
         }
 
         public override int GetHashCode()
@@ -51,8 +51,7 @@ namespace ASC.Common.Security
 
         public override bool Equals(object obj)
         {
-            var other = obj as SecurityObjectId;
-            return other != null &&
+            return obj is SecurityObjectId other &&
                    Equals(AzObjectIdHelper.GetFullObjectId(other), AzObjectIdHelper.GetFullObjectId(this));
         }
     }

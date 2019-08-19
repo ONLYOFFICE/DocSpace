@@ -57,19 +57,17 @@ namespace ASC.Common.Utils
             {
                 var assembly = Assembly.GetExecutingAssembly();
 
-                using (var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.windowsZones.xml"))
-                {
-                    var xml = XElement.Load(stream);
-                    _mapZones = from row in xml.XPathSelectElements("*/mapTimezones/mapZone")
-                                let olsonTimeZones = row.Attribute("type").Value.Split(' ')
-                                from olsonTimeZone in olsonTimeZones
-                                select new MapZone
-                                {
-                                    OlsonTimeZoneId = olsonTimeZone,
-                                    WindowsTimeZoneId = row.Attribute("other").Value,
-                                    Territory = row.Attribute("territory").Value
-                                };
-                }
+                using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.windowsZones.xml");
+                var xml = XElement.Load(stream);
+                _mapZones = from row in xml.XPathSelectElements("*/mapTimezones/mapZone")
+                            let olsonTimeZones = row.Attribute("type").Value.Split(' ')
+                            from olsonTimeZone in olsonTimeZones
+                            select new MapZone
+                            {
+                                OlsonTimeZoneId = olsonTimeZone,
+                                WindowsTimeZoneId = row.Attribute("other").Value,
+                                Territory = row.Attribute("territory").Value
+                            };
             }
             catch (Exception error)
             {
@@ -203,13 +201,11 @@ namespace ASC.Common.Utils
 
                 var assembly = Assembly.GetExecutingAssembly();
 
-                using (var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.timeZoneNames.xml"))
-                {
-                    var xml = XElement.Load(stream);
-                    _translations = (from row in xml.XPathSelectElements("*/zone")
-                                     select new KeyValuePair<string, string>(row.Attribute("type").Value, row.Value)
-                                    ).ToDictionary(item => item.Key, item => item.Value);
-                }
+                using var stream = assembly.GetManifestResourceStream("ASC.Common.Utils.TimeZoneConverter.timeZoneNames.xml");
+                var xml = XElement.Load(stream);
+                _translations = (from row in xml.XPathSelectElements("*/zone")
+                                 select new KeyValuePair<string, string>(row.Attribute("type").Value, row.Value)
+                                ).ToDictionary(item => item.Key, item => item.Value);
             }
             catch (Exception error)
             {

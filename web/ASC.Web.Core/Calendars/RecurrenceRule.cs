@@ -91,26 +91,20 @@ namespace ASC.Web.Core.Calendars
     {
         public static RecurrenceRule Parse(EventRepeatType repeatType)
         {
-            switch (repeatType)
+            return repeatType switch
             {
-                case EventRepeatType.EveryDay:
-                    return new RecurrenceRule() { Freq = Frequency.Daily };
+                EventRepeatType.EveryDay => new RecurrenceRule() { Freq = Frequency.Daily },
 
-                case EventRepeatType.EveryMonth:
-                    return new RecurrenceRule() { Freq = Frequency.Monthly };
+                EventRepeatType.EveryMonth => new RecurrenceRule() { Freq = Frequency.Monthly },
 
-                case EventRepeatType.EveryWeek:
-                    return new RecurrenceRule() { Freq = Frequency.Weekly };
+                EventRepeatType.EveryWeek => new RecurrenceRule() { Freq = Frequency.Weekly },
 
-                case EventRepeatType.EveryYear:
-                    return new RecurrenceRule() { Freq = Frequency.Yearly };
+                EventRepeatType.EveryYear => new RecurrenceRule() { Freq = Frequency.Yearly },
 
-                case EventRepeatType.Never:
-                    return new RecurrenceRule() { Freq = Frequency.Never };
-            }
+                EventRepeatType.Never => new RecurrenceRule() { Freq = Frequency.Never },
 
-            return new RecurrenceRule() { Freq = Frequency.Never };
-
+                _ => new RecurrenceRule() { Freq = Frequency.Never },
+            };
         }
         public class WeekDay
         {
@@ -120,25 +114,17 @@ namespace ASC.Web.Core.Calendars
             {
                 get
                 {
-                    switch ((Id ?? "").ToLower())
+                    return ((Id ?? "").ToLower()) switch
                     {
-                        case "su":
-                            return DayOfWeek.Sunday;
-                        case "mo":
-                            return DayOfWeek.Monday;
-                        case "tu":
-                            return DayOfWeek.Tuesday;
-                        case "we":
-                            return DayOfWeek.Wednesday;
-                        case "th":
-                            return DayOfWeek.Thursday;
-                        case "fr":
-                            return DayOfWeek.Friday;
-                        case "sa":
-                            return DayOfWeek.Saturday;
-
-                    }
-                    return DayOfWeek.Monday;
+                        "su" => DayOfWeek.Sunday,
+                        "mo" => DayOfWeek.Monday,
+                        "tu" => DayOfWeek.Tuesday,
+                        "we" => DayOfWeek.Wednesday,
+                        "th" => DayOfWeek.Thursday,
+                        "fr" => DayOfWeek.Friday,
+                        "sa" => DayOfWeek.Saturday,
+                        _ => DayOfWeek.Monday,
+                    };
                 }
             }
 
@@ -175,7 +161,7 @@ namespace ASC.Web.Core.Calendars
                 if (iCalStrValue.Length > 2)
                 {
                     d.Id = iCalStrValue.Substring(iCalStrValue.Length - 2).ToLower();
-                    d.Number = Convert.ToInt32(iCalStrValue.Substring(0, iCalStrValue.Length - 2));
+                    d.Number = Convert.ToInt32(iCalStrValue[0..^2]);
                 }
                 else
                 {
@@ -845,32 +831,24 @@ namespace ASC.Web.Core.Calendars
 
         public static Frequency ParseFrequency(string frequency)
         {
-            switch (frequency.ToLower())
+            return (frequency.ToLower()) switch
             {
-                case "monthly":
-                    return Frequency.Monthly;
+                "monthly" => Frequency.Monthly,
 
-                case "secondly":
-                    return Frequency.Secondly;
+                "secondly" => Frequency.Secondly,
 
-                case "daily":
-                    return Frequency.Daily;
+                "daily" => Frequency.Daily,
 
-                case "hourly":
-                    return Frequency.Hourly;
+                "hourly" => Frequency.Hourly,
 
-                case "minutely":
-                    return Frequency.Minutely;
+                "minutely" => Frequency.Minutely,
 
-                case "weekly":
-                    return Frequency.Weekly;
+                "weekly" => Frequency.Weekly,
 
-                case "yearly":
-                    return Frequency.Yearly;
+                "yearly" => Frequency.Yearly,
 
-            }
-
-            return Frequency.Never;
+                _ => Frequency.Never,
+            };
         }
 
         public static RecurrenceRule Parse(string serializedString)

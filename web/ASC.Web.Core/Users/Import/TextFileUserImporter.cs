@@ -98,8 +98,10 @@ namespace ASC.Web.Core.Users.Import
 
         private UserInfo GetExportedUser(string line, IDictionary<int, PropertyInfo> mappedProperties, int fieldsCount)
         {
-            var exportedUser = new UserInfo();
-            exportedUser.ID = Guid.NewGuid();
+            var exportedUser = new UserInfo
+            {
+                ID = Guid.NewGuid()
+            };
 
             var dataFields = GetDataFields(line);
             for (var j = 0; j < Math.Min(fieldsCount, dataFields.Length); j++)
@@ -129,7 +131,7 @@ namespace ASC.Web.Core.Users.Import
                 original =>
                 {
                     if (original.StartsWith(TextDelmiter) && original.EndsWith(TextDelmiter))
-                        return original.Substring(1, original.Length - 2);
+                        return original[1..^1];
                     return original;
                 }
              );

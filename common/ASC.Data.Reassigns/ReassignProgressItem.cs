@@ -50,8 +50,6 @@ namespace ASC.Data.Reassigns
         private readonly Dictionary<string, string> _httpHeaders;
 
         private readonly int _tenantId;
-        private readonly Guid _fromUserId;
-        private readonly Guid _toUserId;
         private readonly Guid _currentUserId;
         private readonly bool _deleteProfile;
 
@@ -63,8 +61,8 @@ namespace ASC.Data.Reassigns
         public object Error { get; set; }
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
-        public Guid FromUser { get { return _fromUserId; } }
-        public Guid ToUser { get { return _toUserId; } }
+        public Guid FromUser { get; }
+        public Guid ToUser { get; }
 
         public MessageService MessageService { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
@@ -79,8 +77,8 @@ namespace ASC.Data.Reassigns
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
-            _fromUserId = fromUserId;
-            _toUserId = toUserId;
+            FromUser = fromUserId;
+            ToUser = toUserId;
             _currentUserId = currentUserId;
             _deleteProfile = deleteProfile;
 
@@ -106,7 +104,7 @@ namespace ASC.Data.Reassigns
                 var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
                 SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
-                logger.InfoFormat("reassignment of data from {0} to {1}", _fromUserId, _toUserId);
+                logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
                 logger.Info("reassignment of data from documents");
 
@@ -164,8 +162,8 @@ namespace ASC.Data.Reassigns
 
         private void SendSuccessNotify()
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, _toUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
+            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
 
             StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
 
@@ -173,22 +171,22 @@ namespace ASC.Data.Reassigns
             var toUserName = toUser.DisplayUserName(false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(_fromUserId), new[] { fromUserName, toUserName });
+                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
             else
-                MessageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(_fromUserId), fromUserName, toUserName);
+                MessageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), fromUserName, toUserName);
         }
 
         private void SendErrorNotify(string errorMessage)
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, _toUserId);
+            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
+            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
 
             StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
         }
 
         private void DeleteUserProfile(Tenant tenant)
         {
-            var user = CoreContext.UserManager.GetUsers(_tenantId, _fromUserId);
+            var user = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
             var userName = user.DisplayUserName(false);
 
             UserPhotoManager.RemovePhoto(tenant, user.ID);
@@ -196,9 +194,9 @@ namespace ASC.Data.Reassigns
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), new[] { userName });
+                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(FromUser), new[] { userName });
             else
-                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(_fromUserId), userName);
+                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(FromUser), userName);
         }
     }
 }

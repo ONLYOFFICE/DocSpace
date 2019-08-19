@@ -48,8 +48,7 @@ namespace ASC.Notify.Recipients
 
         public override bool Equals(object obj)
         {
-            var recGr = obj as IRecipientsGroup;
-            if (recGr == null) return false;
+            if (!(obj is IRecipientsGroup recGr)) return false;
             return Equals(recGr.ID, ID);
         }
 

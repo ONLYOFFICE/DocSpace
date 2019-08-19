@@ -7,15 +7,8 @@ import Checkbox from '../checkbox'
 import ContextMenuButton from '../context-menu-button'
 
 const StyledContentRow = styled.div`
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 16px;
-    color: #A3A9AE;
-    
     cursor: default;
-
+    
     min-height: 47px;
     width: 100%;
     border-bottom: 1px solid #ECEEF1;
@@ -27,53 +20,36 @@ const StyledContentRow = styled.div`
     justify-content: flex-start;
     align-items: center;
     align-content: center;
-    }
 `;
 
 const StyledContent = styled.div`
     display: flex;
     flex-basis: 100%;
 
-    & > a, p {
-        margin-left: 16px;
-    }
+    min-width: 160px;
 
-    &.no-gutters {
-        margin-right: 0;
-        margin-left: 0;
-
-        overflow:auto;
-        white-space:nowrap;
-      
-        > .col,
-        > [class*="col-"] {
-          padding-right: 0;
-          padding-left: 0;
-        }
-      }
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const StyledCheckbox = styled.div`
     flex-basis: 16px;
     display: flex;
-    margin-right: 16px;
 `;
 
 const StyledAvatar = styled.div`
     flex: 0 0 32px;
     display: flex;
-
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+    margin-left: 8px;
+    margin-right: 8px;
     user-select: none;
 `;
 
 const StyledOptionButton = styled.div`
-    flex: 0 0 auto;
+    flex: 0 0 16px;
     display: flex;
-    margin-left: 16px;
+    margin-left: 8px;
     margin-right: 16px;
 `;
 
@@ -121,25 +97,27 @@ class ContentRow extends React.PureComponent {
 
   render() {
     //console.log("ContentRow render");
-    const { avatarRole, avatarSource, avatarName, children } = this.props;
-    
+    const { checked, avatarRole, avatarSource, avatarName, children, contextOptions } = this.props;
+
 
     return (
       <StyledContentRow {...this.props}>
-        <StyledCheckbox>
-          <Checkbox isChecked={this.props.checked} onChange={this.changeCheckbox} />
-        </StyledCheckbox>
+        {this.props.hasOwnProperty("checked") &&
+          <StyledCheckbox>
+            <Checkbox isChecked={checked} onChange={this.changeCheckbox} />
+          </StyledCheckbox>
+        }
         {(avatarRole !== '' || avatarSource !== '' || avatarName !== '') &&
           <StyledAvatar>
             <Avatar size='small' role={avatarRole || ''} source={avatarSource || ''} userName={avatarName || ''} />
           </StyledAvatar>
         }
         <StyledContent>{children}</StyledContent>
-        {this.props.hasOwnProperty("contextOptions") &&
-          <StyledOptionButton>
+        <StyledOptionButton>
+          {this.props.hasOwnProperty("contextOptions") && contextOptions.length > 0 &&
             <ContextMenuButton directionX='right' getData={this.getOptions} />
-          </StyledOptionButton>
-        }
+          }
+        </StyledOptionButton>
       </StyledContentRow>
     );
   };

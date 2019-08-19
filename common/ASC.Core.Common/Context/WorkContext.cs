@@ -112,8 +112,10 @@ namespace ASC.Core
                 {
                     jabberSender = new JabberSender();
 
-                    var properties = new Dictionary<string, string>();
-                    properties["useCoreSettings"] = "true";
+                    var properties = new Dictionary<string, string>
+                    {
+                        ["useCoreSettings"] = "true"
+                    };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
                         emailSender = new AWSSender();
@@ -144,8 +146,7 @@ namespace ASC.Core
 
         private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request)
         {
-            var tenant = (request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) as Tenant;
-            if (tenant != null)
+            if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
             {
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
             }

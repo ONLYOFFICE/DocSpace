@@ -40,26 +40,20 @@ namespace ASC.Common.Data
     {
         public static List<object[]> ExecuteList(this DbConnection connection, string sql, params object[] parameters)
         {
-            using (var command = connection.CreateCommand())
-            {
-                return command.ExecuteList(sql, parameters);
-            }
+            using var command = connection.CreateCommand();
+            return command.ExecuteList(sql, parameters);
         }
 
         public static T ExecuteScalar<T>(this DbConnection connection, string sql, params object[] parameters)
         {
-            using (var command = connection.CreateCommand())
-            {
-                return command.ExecuteScalar<T>(sql, parameters);
-            }
+            using var command = connection.CreateCommand();
+            return command.ExecuteScalar<T>(sql, parameters);
         }
 
         public static int ExecuteNonQuery(this DbConnection connection, string sql, params object[] parameters)
         {
-            using (var command = connection.CreateCommand())
-            {
-                return command.ExecuteNonQuery(sql, parameters);
-            }
+            using var command = connection.CreateCommand();
+            return command.ExecuteNonQuery(sql, parameters);
         }
 
         public static DbCommand CreateCommand(this DbConnection connection, string sql, params object[] parameters)
@@ -92,15 +86,13 @@ namespace ASC.Common.Data
                 return DBNull.Value;
             }
 
-            var @enum = value as Enum;
-            if (@enum != null)
+            if (value is Enum @enum)
             {
                 return @enum.ToString("d");
             }
 
-            if (value is DateTime)
+            if (value is DateTime d)
             {
-                var d = (DateTime)value;
                 return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
             }
             return value;
@@ -148,18 +140,14 @@ namespace ASC.Common.Data
 
         private static List<object[]> ExecuteListReader(DbCommand command)
         {
-            using (var reader = command.ExecuteReader())
-            {
-                return ExecuteListReaderResult(reader);
-            }
+            using var reader = command.ExecuteReader();
+            return ExecuteListReaderResult(reader);
         }
 
         private static async Task<List<object[]>> ExecuteListReaderAsync(DbCommand command)
         {
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                return ExecuteListReaderResult(reader);
-            }
+            using var reader = await command.ExecuteReaderAsync();
+            return ExecuteListReaderResult(reader);
         }
 
         private static List<object[]> ExecuteListReaderResult(IDataReader reader)
@@ -292,7 +280,7 @@ namespace ASC.Common.Data
                 command.AddParameter(name, parameters[i]);
                 sqlBuilder.AppendFormat("{0}@{1}", sqlParts[i], name);
             }
-            sqlBuilder.Append(sqlParts[sqlParts.Length - 1]);
+            sqlBuilder.Append(sqlParts[^1]);
             command.CommandText = sqlBuilder.ToString();
         }
 

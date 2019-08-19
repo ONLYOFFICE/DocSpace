@@ -34,23 +34,23 @@ namespace ASC.Api.Settings
     [DataContract(Name = "settings", Namespace = "")]
     public class SettingsWrapper
     {
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public string Timezone { get; set; }
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public List<string> TrustedDomains { get; set; }
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public string Culture { get; set; }
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public TimeSpan UtcOffset { get; set; }
 
 
-        [DataMember]
+        [DataMember(EmitDefaultValue = false)]
         public double UtcHoursOffset { get; set; }
 
         public static SettingsWrapper GetSample()

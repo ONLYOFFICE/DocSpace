@@ -121,25 +121,23 @@ namespace ASC.Core
                     "&PORTALID=" + HttpUtility.UrlEncode(config.GetKey(tenant)) +
                     "&PRODUCTID=" + HttpUtility.UrlEncode(trial.AvangateId);
 
-                using (var webClient = new WebClient())
+                using var webClient = new WebClient();
+                var result = webClient.DownloadString(uri);
+                var element = XElement.Parse(result);
+                if (element.Value != null &&
+                    (element.Value.StartsWith("error:", StringComparison.InvariantCultureIgnoreCase) ||
+                    element.Value.StartsWith("warning:", StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    var result = webClient.DownloadString(uri);
-                    var element = XElement.Parse(result);
-                    if (element.Value != null &&
-                        (element.Value.StartsWith("error:", StringComparison.InvariantCultureIgnoreCase) ||
-                        element.Value.StartsWith("warning:", StringComparison.InvariantCultureIgnoreCase)))
-                    {
-                        throw new BillingException(element.Value, new { Tenant = tenant, User = user.ID });
-                    }
-                    var tariff = new Tariff
-                    {
-                        QuotaId = trial.Id,
-                        State = TariffState.Trial,
-                        DueDate = DateTime.UtcNow.Date.AddMonths(1),
-                    };
-                    tariffService.SetTariff(tenant, tariff);
-                    tariffService.GetTariff(tenant);
+                    throw new BillingException(element.Value, new { Tenant = tenant, User = user.ID });
                 }
+                var tariff = new Tariff
+                {
+                    QuotaId = trial.Id,
+                    State = TariffState.Trial,
+                    DueDate = DateTime.UtcNow.Date.AddMonths(1),
+                };
+                tariffService.SetTariff(tenant, tariff);
+                tariffService.GetTariff(tenant);
             }
         }
 
@@ -154,43 +152,39 @@ namespace ASC.Core
 
             var now = DateTime.UtcNow;
             var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(CoreContext.TenantManager.GetCurrentTenant().TenantAlias);
-            using (var webClient = new WebClient())
+            using var webClient = new WebClient();
+            webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
+            try
             {
-                webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
-                try
-                {
-                    webClient.DownloadData(partnerUrl + actionUrl);
-                }
-                catch (WebException we)
-                {
-                    var error = GetException(we);
-                    if (error != null)
-                    {
-                        throw error;
-                    }
-                    throw;
-                }
-                tariffService.ClearCache(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-
-                var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
-                if (TimeSpan.Zero < timeout)
-                {
-                    // clear tenant cache
-                    Thread.Sleep(timeout);
-                }
-                CoreContext.TenantManager.GetTenant(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+                webClient.DownloadData(partnerUrl + actionUrl);
             }
+            catch (WebException we)
+            {
+                var error = GetException(we);
+                if (error != null)
+                {
+                    throw error;
+                }
+                throw;
+            }
+            tariffService.ClearCache(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+
+            var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
+            if (TimeSpan.Zero < timeout)
+            {
+                // clear tenant cache
+                Thread.Sleep(timeout);
+            }
+            CoreContext.TenantManager.GetTenant(CoreContext.TenantManager.GetCurrentTenant().TenantId);
         }
 
         private string GetPartnerAuthHeader(string url)
         {
-            using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(partnerKey)))
-            {
-                var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-                var data = string.Join("\n", now, "/api/" + url.TrimStart('/')); //data: UTC DateTime (yyyy:MM:dd HH:mm:ss) + \n + url
-                var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(data)));
-                return string.Format("ASC :{0}:{1}", now, hash);
-            }
+            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(partnerKey));
+            var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            var data = string.Join("\n", now, "/api/" + url.TrimStart('/')); //data: UTC DateTime (yyyy:MM:dd HH:mm:ss) + \n + url
+            var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(data)));
+            return string.Format("ASC :{0}:{1}", now, hash);
         }
 
         private static Exception GetException(WebException we)
@@ -198,13 +192,11 @@ namespace ASC.Core
             var response = (HttpWebResponse)we.Response;
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                using (var stream = response.GetResponseStream())
-                using (var reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    var result = reader.ReadToEnd();
-                    var excInfo = JsonConvert.DeserializeObject<ExceptionJson>(result);
-                    return (Exception)Activator.CreateInstance(Type.GetType(excInfo.exceptionType, true), excInfo.exceptionMessage);
-                }
+                using var stream = response.GetResponseStream();
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                var result = reader.ReadToEnd();
+                var excInfo = JsonConvert.DeserializeObject<ExceptionJson>(result);
+                return (Exception)Activator.CreateInstance(Type.GetType(excInfo.exceptionType, true), excInfo.exceptionMessage);
             }
             return null;
         }

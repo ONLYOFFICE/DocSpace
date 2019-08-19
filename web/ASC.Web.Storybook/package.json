@@ -5,7 +5,7 @@
   "dependencies": {
     "@emotion/core": "10.0.14",
     "@emotion/styled": "10.0.14",
-    "asc-web-components": "file:../npm-local/asc-web-components",
+    "asc-web-components": "file:../../packages/asc-web-components",
     "bootstrap": "^4.3.1",
     "lodash": "4.17.14",
     "lodash-es": "4.17.14",

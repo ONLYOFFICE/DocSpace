@@ -40,9 +40,8 @@ namespace ASC.MessagingSystem
             try
             {
                 var res = new List<string>();
-                var ids = value as System.Collections.IEnumerable;
 
-                if (ids != null)
+                if (value is System.Collections.IEnumerable ids)
                 {
                     res.AddRange(from object id in ids select id.ToString());
                 }

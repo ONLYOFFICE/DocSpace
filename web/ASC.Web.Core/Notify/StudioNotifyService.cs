@@ -126,7 +126,7 @@ namespace ASC.Web.Studio.Core.Notify
             var hash = Hasher.Base64Hash(CoreContext.Authentication.GetUserPasswordHash(tenantId, userInfo.ID));
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonChangePassword;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
             var action = CoreContext.Configuration.Personal
                              ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
@@ -147,7 +147,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailChange, SecurityContext.CurrentAccount.ID);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonChangeEmail;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
             var action = CoreContext.Configuration.Personal
                              ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeEmailChange : Actions.PersonalEmailChange)
@@ -165,7 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonActivateEmail;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
             client.SendNoticeToAsync(
                         Actions.ActivateEmail,
@@ -240,7 +240,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonChangePhone;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
             client.SendNoticeToAsync(
                 Actions.PhoneChange,
@@ -253,7 +253,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonChangeTfa;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
             client.SendNoticeToAsync(
                 Actions.TfaChange,
@@ -273,7 +273,7 @@ namespace ASC.Web.Studio.Core.Notify
             var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType, SecurityContext.CurrentAccount.ID)
                             + string.Format("&emplType={0}", emplType);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonJoin;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
 
             client.SendNoticeToAsync(
                         Actions.JoinUsers,
@@ -321,7 +321,7 @@ namespace ASC.Web.Studio.Core.Notify
                 analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, true, false);
             }
 
-            Func<string> greenButtonText = () => TenantExtra.Enterprise
+            static string greenButtonText() => TenantExtra.Enterprise
                                       ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
                                       : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
 
@@ -358,7 +358,7 @@ namespace ASC.Web.Studio.Core.Notify
                 analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, false, false, true);
             }
 
-            Func<string> greenButtonText = () => TenantExtra.Enterprise
+            static string greenButtonText() => TenantExtra.Enterprise
                                       ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
                                       : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
 
@@ -396,7 +396,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccept;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -432,7 +432,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccept;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -449,7 +449,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.ProfileRemove);
 
-            Func<string> greenButtonText = () => CoreContext.Configuration.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
+            static string greenButtonText() => CoreContext.Configuration.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
             var action = CoreContext.Configuration.Personal
                              ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeProfileDelete : Actions.PersonalProfileDelete)
@@ -616,7 +616,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
 
             client.SendNoticeToAsync(
                         Actions.PortalDeactivate,
@@ -631,7 +631,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonDeletePortal;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
 
             client.SendNoticeToAsync(
                         Actions.PortalDelete,
@@ -644,7 +644,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
         {
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
             client.SendNoticeToAsync(
                         Actions.PortalDeleteSuccessV10,
@@ -660,7 +660,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
 
             client.SendNoticeToAsync(
                         Actions.DnsChange,
@@ -677,7 +677,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var u = CoreContext.UserManager.GetUsers(t.TenantId, t.OwnerId);
 
-            Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
 
             client.SendNoticeToAsync(
                         Actions.ConfirmOwnerChange,
@@ -718,7 +718,7 @@ namespace ASC.Web.Studio.Core.Notify
                 var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
                 confirmationUrl += "&first=true";
 
-                Func<string> greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfirm;
+                static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
 
                 client.SendNoticeToAsync(
                     notifyAction,

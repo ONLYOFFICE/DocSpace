@@ -166,11 +166,9 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             var store = StorageFactory.GetStorage(
                 TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);
 
-            using (var stream = new MemoryStream(data))
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                return store.Save(fileName, stream).ToString();
-            }
+            using var stream = new MemoryStream(data);
+            stream.Seek(0, SeekOrigin.Begin);
+            return store.Save(fileName, stream).ToString();
         }
     }
 }

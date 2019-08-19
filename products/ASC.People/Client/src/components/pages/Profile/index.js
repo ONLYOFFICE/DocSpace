@@ -9,12 +9,6 @@ import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/a
 class Profile extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false
-    }
   }
 
   componentDidMount() {

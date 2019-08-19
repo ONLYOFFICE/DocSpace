@@ -52,36 +52,36 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static ITagValue BlueButton(Func<string> btnTextFunc, string btnUrl)
         {
-            Func<string> action = () =>
-                {
-                    var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
+            string action()
+            {
+                var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
 
-                    return
-                        string.Format(
-                            @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
-                            btnUrl,
-                            btnText,
-                            "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
-                            "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
-                };
+                return
+                    string.Format(
+                        @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
+                        btnUrl,
+                        btnText,
+                        "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
+                        "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
+            }
 
             return new ASC.Notify.Patterns.TagActionValue("BlueButton", action);
         }
 
         public static ITagValue GreenButton(Func<string> btnTextFunc, string btnUrl)
         {
-            Func<string> action = () =>
-                {
-                    var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
+            string action()
+            {
+                var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
 
-                    return
-                        string.Format(
-                            @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
-                            btnUrl,
-                            btnText,
-                            "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
-                            "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
-                };
+                return
+                    string.Format(
+                        @"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{2}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{3}"" target=""_blank"" href=""{0}"">{1}</a></td>{2}</tr></tbody></table>",
+                        btnUrl,
+                        btnText,
+                        "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>",
+                        "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;");
+            }
 
             return new TagActionValue("GreenButton", action);
         }
@@ -106,53 +106,53 @@ namespace ASC.Web.Studio.Core.Notify
             Func<string> bottomlinkTextFunc,
             string bottomlinkUrl)
         {
-            Func<string> action = () =>
+            string action()
+            {
+                var linkText = linkTextFunc != null ? linkTextFunc() ?? string.Empty : string.Empty;
+                var comment = commentFunc != null ? commentFunc() ?? string.Empty : string.Empty;
+                var bottomlinkText = bottomlinkTextFunc != null
+                                         ? bottomlinkTextFunc() ?? string.Empty
+                                         : string.Empty;
+
+                var imgHtml = string.Format(
+                    "<img style=\"border: 0; padding: 0 15px 0 5px; width: auto; height: auto;\" alt=\"{1}\" src=\"{0}\"/>",
+                    imgSrc ?? string.Empty,
+                    linkText);
+
+                var linkHtml = string.Empty;
+
+                if (!string.IsNullOrEmpty(linkText))
                 {
-                    var linkText = linkTextFunc != null ? linkTextFunc() ?? string.Empty : string.Empty;
-                    var comment = commentFunc != null ? commentFunc() ?? string.Empty : string.Empty;
-                    var bottomlinkText = bottomlinkTextFunc != null
-                                             ? bottomlinkTextFunc() ?? string.Empty
-                                             : string.Empty;
-
-                    var imgHtml = string.Format(
-                        "<img style=\"border: 0; padding: 0 15px 0 5px; width: auto; height: auto;\" alt=\"{1}\" src=\"{0}\"/>",
-                        imgSrc ?? string.Empty,
-                        linkText);
-
-                    var linkHtml = string.Empty;
-
-                    if (!string.IsNullOrEmpty(linkText))
-                    {
-                        linkHtml =
-                            !string.IsNullOrEmpty(linkUrl)
-                                ? string.Format(
-                                    "<a target=\"_blank\" style=\"color:#0078bd; font-family: Arial; font-size: 14px; font-weight: bold;\" href=\"{0}\">{1}</a><br/>",
-                                    linkUrl,
-                                    linkText)
-                                : string.Format(
-                                    "<div style=\"display:block; color:#333333; font-family: Arial; font-size: 14px; font-weight: bold;margin-bottom: 10px;\">{0}</div>",
-                                    linkText);
-                    }
-
-                    var underCommentLinkHtml =
-                        string.IsNullOrEmpty(bottomlinkUrl)
-                            ? string.Empty
+                    linkHtml =
+                        !string.IsNullOrEmpty(linkUrl)
+                            ? string.Format(
+                                "<a target=\"_blank\" style=\"color:#0078bd; font-family: Arial; font-size: 14px; font-weight: bold;\" href=\"{0}\">{1}</a><br/>",
+                                linkUrl,
+                                linkText)
                             : string.Format(
-                                "<br/><a target=\"_blank\" style=\"color: #0078bd; font-family: Arial; font-size: 14px;\" href=\"{0}\">{1}</a>",
-                                bottomlinkUrl,
-                                bottomlinkText);
+                                "<div style=\"display:block; color:#333333; font-family: Arial; font-size: 14px; font-weight: bold;margin-bottom: 10px;\">{0}</div>",
+                                linkText);
+                }
 
-                    var html =
-                        "<tr><td style=\"vertical-align: top; padding: 5px 10px; width: 70px;\">" +
-                        imgHtml +
-                        "</td><td style=\" vertical-align: middle; padding: 5px 10px; font-size: 14px; width: 470px; color: #333333;\">" +
-                        linkHtml +
-                        comment +
-                        underCommentLinkHtml +
-                        "</td></tr>";
+                var underCommentLinkHtml =
+                    string.IsNullOrEmpty(bottomlinkUrl)
+                        ? string.Empty
+                        : string.Format(
+                            "<br/><a target=\"_blank\" style=\"color: #0078bd; font-family: Arial; font-size: 14px;\" href=\"{0}\">{1}</a>",
+                            bottomlinkUrl,
+                            bottomlinkText);
 
-                    return html;
-                };
+                var html =
+                    "<tr><td style=\"vertical-align: top; padding: 5px 10px; width: 70px;\">" +
+                    imgHtml +
+                    "</td><td style=\" vertical-align: middle; padding: 5px 10px; font-size: 14px; width: 470px; color: #333333;\">" +
+                    linkHtml +
+                    comment +
+                    underCommentLinkHtml +
+                    "</td></tr>";
+
+                return html;
+            }
 
             return new TagActionValue("TableItem" + number, action);
         }

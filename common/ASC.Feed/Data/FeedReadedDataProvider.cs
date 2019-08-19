@@ -56,10 +56,8 @@ namespace ASC.Feed.Data
                 .Where("user_id", user.ToString())
                 .Where("module", module);
 
-            using (var db = GetDb())
-            {
-                return db.ExecuteScalar<DateTime>(query);
-            }
+            using var db = GetDb();
+            return db.ExecuteScalar<DateTime>(query);
         }
 
         public void SetTimeReaded()
@@ -85,10 +83,8 @@ namespace ASC.Feed.Data
                 .InColumns("user_id", "timestamp", "module", "tenant_id")
                 .Values(user.ToString(), time, module, tenant);
 
-            using (var db = GetDb())
-            {
-                db.ExecuteNonQuery(query);
-            }
+            using var db = GetDb();
+            db.ExecuteNonQuery(query);
         }
 
         public IEnumerable<string> GetReadedModules(DateTime fromTime)
@@ -104,10 +100,8 @@ namespace ASC.Feed.Data
                 .Where("user_id", user)
                 .Where(Exp.Gt("timestamp", fromTime));
 
-            using (var db = GetDb())
-            {
-                return db.ExecuteList(query).ConvertAll(r => (string)r[0]);
-            }
+            using var db = GetDb();
+            return db.ExecuteList(query).ConvertAll(r => (string)r[0]);
         }
 
 

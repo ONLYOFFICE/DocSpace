@@ -91,7 +91,7 @@ namespace ASC.Common.Data
 
         public DbManager(string databaseId, bool shared, int? commandTimeout = null)
         {
-            DatabaseId = databaseId ?? throw new ArgumentNullException("databaseId");
+            DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
             this.shared = shared;
 
             if (logger.IsDebugEnabled)
@@ -128,8 +128,7 @@ namespace ASC.Common.Data
         {
             if (HttpContext.Current != null)
             {
-                var dbManager = DisposableHttpContext.Current[databaseId] as DbManager;
-                if (dbManager == null || dbManager.disposed)
+                if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
                 {
                     var localDbManager = new DbManager(databaseId);
                     var dbManagerAdapter = new DbManagerProxy(localDbManager);
@@ -151,8 +150,8 @@ namespace ASC.Common.Data
         private DbConnection GetConnection()
         {
             CheckDispose();
-            DbConnection connection = null;
             string key = null;
+            DbConnection connection;
             if (shared && HttpContext.Current != null)
             {
                 key = string.Format("Connection {0}|{1}", GetDialect(), DbRegistry.GetConnectionString(DatabaseId));
@@ -268,7 +267,7 @@ namespace ASC.Common.Data
 
         public int ExecuteBatch(IEnumerable<ISqlInstruction> batch)
         {
-            if (batch == null) throw new ArgumentNullException("batch");
+            if (batch == null) throw new ArgumentNullException(nameof(batch));
 
             var affected = 0;
             using (var tx = BeginTransaction())

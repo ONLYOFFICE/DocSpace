@@ -182,8 +182,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             var client = GetClient();
 
             var accounMetaData = client.GetAccountMetaData(_region);
-            var secretKey = string.Empty;
-
+            string secretKey;
             if (accounMetaData.ContainsKey("Temp-Url-Key"))
             {
                 secretKey = accounMetaData["Temp-Url-Key"];
@@ -319,9 +318,10 @@ namespace ASC.Data.Storage.RackspaceCloud
                     using (var emptyStream = TempStream.Create())
                     {
 
-                        var headers = new Dictionary<string, string>();
-
-                        headers.Add("X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)));
+                        var headers = new Dictionary<string, string>
+                        {
+                            { "X-Object-Manifest", string.Format("{0}/{1}", _private_container, MakePath(domain, path)) }
+                        };
                         // create symlink
                         client.CreateObject(_public_container,
                                    emptyStream,
@@ -377,7 +377,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override void Delete(string domain, string path)
         {
             var client = GetClient();
-            var key = MakePath(domain, path);
+            _ = MakePath(domain, path);
             var size = GetFileSize(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));

@@ -280,8 +280,7 @@ namespace ASC.Core
 
             var refs = GetRefsInternal(tenant.TenantId);
             IEnumerable<UserGroupRef> userRefs = null;
-            var store = refs as UserGroupRefStore;
-            if (store != null)
+            if (refs is UserGroupRefStore store)
             {
                 userRefs = store.GetRefsByUser(userID);
             }
@@ -313,8 +312,7 @@ namespace ASC.Core
 
             var refs = GetRefsInternal(tenantId);
 
-            var store = refs as UserGroupRefStore;
-            if (store != null)
+            if (refs is UserGroupRefStore store)
             {
                 var userRefs = store.GetRefsByUser(userID);
 

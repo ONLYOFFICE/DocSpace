@@ -6,7 +6,15 @@ import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../store/auth/actions';
 import { withTranslation } from 'react-i18next';
 
-class PeopleLayout extends React.PureComponent {
+class PeopleLayout extends React.Component {
+    shouldComponentUpdate(nextProps) {
+        if(this.props.hasChanges !== nextProps.hasChanges) {
+            return true;
+        }
+
+        return false;
+    }
+
     onProfileClick = () => {
         console.log('ProfileBtn');
         const { history, settings } = this.props;
@@ -24,21 +32,21 @@ class PeopleLayout extends React.PureComponent {
     onLogoClick = () => window.open("/", '_self');
 
     render() {
-        const { auth, children, t } = this.props;
+        const { hasChanges, children, t } = this.props;
 
         const currentUserActions = [
             {
-                key: 'ProfileBtn', label: t('Resource:Profile'), onClick: this.onProfileClick
+                    key: 'ProfileBtn', label: t('Resource:Profile'), onClick: this.onProfileClick
             },
             {
-                key: 'AboutBtn', label: t('Resource:AboutCompanyTitle'), onClick: this.onAboutClick
+                    key: 'AboutBtn', label: t('Resource:AboutCompanyTitle'), onClick: this.onAboutClick
             },
             {
-                key: 'LogoutBtn', label: t('Resource:LogoutButton'), onClick: this.onLogoutClick
+                    key: 'LogoutBtn', label: t('Resource:LogoutButton'), onClick: this.onLogoutClick
             },
         ];
 
-        const newProps = auth.isAuthenticated && auth.isLoaded
+        const newProps = hasChanges
             ? {
                 currentUserActions: currentUserActions,
                 onLogoClick: this.onLogoClick,
@@ -46,7 +54,7 @@ class PeopleLayout extends React.PureComponent {
             }
             : {};
 
-        console.log("PeopleLayout render");
+        console.log("PeopleLayout render", newProps);
         return (
             <>
                 <Toast />
@@ -57,7 +65,6 @@ class PeopleLayout extends React.PureComponent {
 };
 
 PeopleLayout.propTypes = {
-    auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired
 };
 
@@ -80,7 +87,7 @@ const getAvailableModules = (modules) => {
 
 function mapStateToProps(state) {
     return {
-        auth: state.auth,
+        hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
         availableModules: getAvailableModules(state.auth.modules),
         currentUser: state.auth.user,
         currentModuleId: state.auth.settings.currentProductId,

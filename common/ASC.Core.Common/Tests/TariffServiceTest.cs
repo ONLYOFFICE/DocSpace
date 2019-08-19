@@ -49,7 +49,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void TestShoppingUriBatch()
         {
-            var bc = new BillingClient(true);
+            using var bc = new BillingClient(true);
             var result = bc.GetPaymentUrls("0", new[] { "12", "13", "14", "0", "-2" });
             Assert.AreEqual(5, result.Count);
         }

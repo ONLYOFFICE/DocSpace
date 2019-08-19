@@ -37,7 +37,7 @@ namespace ASC.Common.Data.AdoProxy
 
         public ProxyContext(Action<ExecutedEventArgs> executedEvent)
         {
-            this.executedEvent = executedEvent ?? throw new ArgumentNullException("executedEvent");
+            this.executedEvent = executedEvent ?? throw new ArgumentNullException(nameof(executedEvent));
         }
 
 

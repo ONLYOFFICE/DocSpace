@@ -76,9 +76,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get
             {
-                var defaultSettings = GetDefault() as AdditionalWhiteLabelSettings;
-
-                if (defaultSettings == null) return false;
+                if (!(GetDefault() is AdditionalWhiteLabelSettings defaultSettings)) return false;
 
                 return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
                        HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&

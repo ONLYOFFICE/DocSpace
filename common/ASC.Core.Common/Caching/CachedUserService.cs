@@ -221,8 +221,7 @@ namespace ASC.Core.Caching
             GetChangesFromDb();
 
             var key = GetRefCacheKey(tenant);
-            var refs = cache.Get<UserGroupRefStore>(key) as IDictionary<string, UserGroupRef>;
-            if (refs == null)
+            if (!(cache.Get<UserGroupRefStore>(key) is IDictionary<string, UserGroupRef> refs))
             {
                 refs = service.GetUserGroupRefs(tenant, default);
                 cache.Insert(key, new UserGroupRefStore(refs), CacheExpiration);

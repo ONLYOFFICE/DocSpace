@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, NewPageLayout as NPL, Loader } from "asc-web-components";
+import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
@@ -9,49 +9,6 @@ import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/a
 class ProfileAction extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false
-    }
-
-    this.onBackdropClick = this.onBackdropClick.bind(this);
-    this.onPinArticle = this.onPinArticle.bind(this);
-    this.onUnpinArticle = this.onUnpinArticle.bind(this);
-    this.onShowArticle = this.onShowArticle.bind(this);
-  }
-
-  onBackdropClick() {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false
-    });
-  }
-
-  onPinArticle() {
-    this.setState({
-      isBackdropVisible: false,
-      isArticleVisible: true,
-      isArticlePinned: true
-    });
-  }
-
-  onUnpinArticle() {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false
-    });
-  }
-
-  onShowArticle() {
-    this.setState({
-      isBackdropVisible: true,
-      isArticleVisible: true,
-      isArticlePinned: false
-    });
   }
 
   componentDidMount() {
@@ -87,43 +44,24 @@ class ProfileAction extends React.Component {
   render() {
     console.log("ProfileAction render")
 
-    const { isBackdropVisible, isArticleVisible, isArticlePinned } = this.state;
     const { profile, match } = this.props;
     const { type } = match.params;
 
     return (
       profile
-        ? <>
-          <Backdrop visible={isBackdropVisible} onClick={this.onBackdropClick} />
-          <NPL.Article visible={isArticleVisible} pinned={isArticlePinned}>
-            <NPL.ArticleHeader visible={isArticlePinned}>
-              <ArticleHeaderContent />
-            </NPL.ArticleHeader>
-            <NPL.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </NPL.ArticleMainButton>
-            <NPL.ArticleBody>
-              <ArticleBodyContent />
-            </NPL.ArticleBody>
-            <NPL.ArticlePinPanel pinned={isArticlePinned} pinText="Pin this panel" onPin={this.onPinArticle} unpinText="Unpin this panel" onUnpin={this.onUnpinArticle} />
-          </NPL.Article>
-          <NPL.Section>
-            <NPL.SectionHeader>
-              <SectionHeaderContent profile={profile} userType={type} />
-            </NPL.SectionHeader>
-            <NPL.SectionBody>
-              <SectionBodyContent profile={profile} userType={type} />
-            </NPL.SectionBody>
-            <NPL.SectionToggler visible={!isArticlePinned} onClick={this.onShowArticle} />
-          </NPL.Section>
-        </>
-        : <>
-          <NPL.Section>
-            <NPL.SectionBody>
-              <Loader className="pageLoader" type="rombs" size={40} />
-            </NPL.SectionBody>
-          </NPL.Section>
-        </>
+        ? <PageLayout
+          articleHeaderContent={<ArticleHeaderContent />}
+          articleMainButtonContent={<ArticleMainButtonContent />}
+          articleBodyContent={<ArticleBodyContent />}
+          sectionHeaderContent={<SectionHeaderContent profile={profile} userType={type} />}
+          sectionBodyContent={<SectionBodyContent profile={profile} userType={type} />}
+        />
+        : <PageLayout
+          articleHeaderContent={<ArticleHeaderContent />}
+          articleMainButtonContent={<ArticleMainButtonContent />}
+          articleBodyContent={<ArticleBodyContent />}
+          sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
+        />
     );
   }
 }

@@ -229,8 +229,7 @@ namespace ASC.Web.Core
 
         public Guid GetParentItemID(Guid itemID)
         {
-            var m = this[itemID] as IModule;
-            return m != null ? m.ProjectId : Guid.Empty;
+            return this[itemID] is IModule m ? m.ProjectId : Guid.Empty;
         }
 
         public static int GetSortOrder(IWebItem item)

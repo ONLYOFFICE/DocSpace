@@ -64,7 +64,7 @@ namespace ASC.Common.Data.Sql
 
         public SqlDelete Where(Exp where)
         {
-            this.where = this.where & where;
+            this.where &= where;
             return this;
         }
 

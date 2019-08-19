@@ -90,18 +90,16 @@ namespace ASC.Core.Common.Billing
         {
             try
             {
-                using (var httpClient = PrepaireClient())
-                using (var content = new StringContent(await Promotion.GeneratePromotion(Percent, Schedule), Encoding.Default, "application/json"))
-                using (var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content))
-                {
-                    if (!response.IsSuccessStatusCode)
-                        throw new Exception(response.ReasonPhrase);
+                using var httpClient = PrepaireClient();
+                using var content = new StringContent(await Promotion.GeneratePromotion(Percent, Schedule), Encoding.Default, "application/json");
+                using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception(response.ReasonPhrase);
 
-                    var result = await response.Content.ReadAsStringAsync();
-                    await Task.Delay(1000 - DateTime.UtcNow.Millisecond); // otherwise authorize exception
-                    var createdPromotion = JsonConvert.DeserializeObject<Promotion>(result);
-                    return createdPromotion.Coupon.Code;
-                }
+                var result = await response.Content.ReadAsStringAsync();
+                await Task.Delay(1000 - DateTime.UtcNow.Millisecond); // otherwise authorize exception
+                var createdPromotion = JsonConvert.DeserializeObject<Promotion>(result);
+                return createdPromotion.Coupon.Code;
             }
             catch (Exception ex)
             {
@@ -124,19 +122,17 @@ namespace ASC.Core.Common.Billing
 
             try
             {
-                using (var httpClient = PrepaireClient())
-                using (var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", ApiVersion)))
-                {
-                    if (!response.IsSuccessStatusCode)
-                        throw new Exception(response.ReasonPhrase);
+                using var httpClient = PrepaireClient();
+                using var response = await httpClient.GetAsync(string.Format("{0}/products/?Limit=1000&Enabled=true", ApiVersion));
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception(response.ReasonPhrase);
 
-                    var result = await response.Content.ReadAsStringAsync();
-                    Log.Debug(result);
+                var result = await response.Content.ReadAsStringAsync();
+                Log.Debug(result);
 
-                    var products = JsonConvert.DeserializeObject<List<AvangateProduct>>(result);
-                    products = products.Where(r => r.ProductGroup != null && Groups.Contains(r.ProductGroup.Code)).ToList();
-                    return Products = products;
-                }
+                var products = JsonConvert.DeserializeObject<List<AvangateProduct>>(result);
+                products = products.Where(r => r.ProductGroup != null && Groups.Contains(r.ProductGroup.Code)).ToList();
+                return Products = products;
             }
             catch (Exception ex)
             {
@@ -162,24 +158,22 @@ namespace ASC.Core.Common.Billing
 
         private static string CreateAuthHeader()
         {
-            using (var hmac = new HMACMD5(Secret))
+            using var hmac = new HMACMD5(Secret);
+            var date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
+            var hash = VendorCode.Length + VendorCode + date.Length + date;
+            var data = hmac.ComputeHash(Encoding.UTF8.GetBytes(hash));
+
+            var sBuilder = new StringBuilder();
+            foreach (var t in data)
             {
-                var date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
-                var hash = VendorCode.Length + VendorCode + date.Length + date;
-                var data = hmac.ComputeHash(Encoding.UTF8.GetBytes(hash));
-
-                var sBuilder = new StringBuilder();
-                foreach (var t in data)
-                {
-                    sBuilder.Append(t.ToString("x2"));
-                }
-
-                var stringBuilder = new StringBuilder();
-                stringBuilder.AppendFormat("code='{0}' ", VendorCode);
-                stringBuilder.AppendFormat("date='{0}' ", date);
-                stringBuilder.AppendFormat("hash='{0}'", sBuilder);
-                return stringBuilder.ToString();
+                sBuilder.Append(t.ToString("x2"));
             }
+
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendFormat("code='{0}' ", VendorCode);
+            stringBuilder.AppendFormat("date='{0}' ", date);
+            stringBuilder.AppendFormat("hash='{0}'", sBuilder);
+            return stringBuilder.ToString();
         }
     }
 

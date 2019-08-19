@@ -48,10 +48,10 @@ namespace ASC.Web.Core.Helpers
     public class ResourceEnumConverter : System.ComponentModel.EnumConverter
     {
         private class LookupTable : Dictionary<string, object> { }
-        private Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
-        private System.Resources.ResourceManager _resourceManager;
-        private bool _isFlagEnum = false;
-        private Array _flagValues;
+        private readonly Dictionary<CultureInfo, LookupTable> _lookupTables = new Dictionary<CultureInfo, LookupTable>();
+        private readonly System.Resources.ResourceManager _resourceManager;
+        private readonly bool _isFlagEnum = false;
+        private readonly Array _flagValues;
 
         /// <summary>
         /// Get the lookup table for the given culture (creating if necessary)
@@ -102,14 +102,12 @@ namespace ASC.Web.Core.Helpers
         /// <returns></returns>
         private bool IsSingleBitValue(ulong value)
         {
-            switch (value)
+            return value switch
             {
-                case 0:
-                    return false;
-                case 1:
-                    return true;
-            }
-            return ((value & (value - 1)) == 0);
+                0 => false,
+                1 => true,
+                _ => ((value & (value - 1)) == 0),
+            };
         }
 
         /// <summary>

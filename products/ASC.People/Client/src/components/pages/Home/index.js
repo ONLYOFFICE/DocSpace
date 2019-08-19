@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { PageLayout, RequestLoader } from "asc-web-components";
+import { withTranslation } from 'react-i18next';
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -24,9 +25,6 @@ class Home extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isBackdropVisible: false,
-      isArticleVisible: false,
-      isArticlePinned: false,
       isLoading: false
     };
   }
@@ -98,6 +96,7 @@ class Home extends React.Component {
       isHeaderChecked,
       selected
     } = this.state;
+    const t = this.props.t;
     return (
       <>
         <RequestLoader
@@ -105,7 +104,7 @@ class Home extends React.Component {
           zIndex={256}
           loaderSize={16}
           loaderColor={"#999"}
-          label={"Loading... Please wait..."}
+          label={`${t('Resource:LoadingProcessing')} ${t('Resource:LoadingDescription')}`}
           fontSize={12}
           fontColor={"#999"}
         />
@@ -159,4 +158,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { setSelected }
-)(withRouter(Home));
+)(withRouter(withTranslation()(Home)));

@@ -62,7 +62,6 @@ namespace ASC.Notify.Cron
         protected const int NoSpec = NoSpecInt;
         private static readonly Hashtable monthMap = new Hashtable(20);
         private static readonly Hashtable dayMap = new Hashtable(60);
-        private readonly string cronExpressionString;
         [NonSerialized] protected bool calendardayOfMonth;
         [NonSerialized] protected bool calendardayOfWeek;
 
@@ -112,7 +111,7 @@ namespace ASC.Notify.Cron
             {
                 throw new ArgumentException("cronExpression cannot be null");
             }
-            cronExpressionString = cronExpression.ToUpper(CultureInfo.InvariantCulture);
+            CronExpressionString = cronExpression.ToUpper(CultureInfo.InvariantCulture);
             BuildExpression(cronExpression);
         }
 
@@ -129,10 +128,7 @@ namespace ASC.Notify.Cron
             }
         }
 
-        public string CronExpressionString
-        {
-            get { return cronExpressionString; }
-        }
+        public string CronExpressionString { get; }
 
         public TimeSpan? Period()
         {
@@ -150,8 +146,10 @@ namespace ASC.Notify.Cron
             CronExpression copy;
             try
             {
-                copy = new CronExpression(CronExpressionString);
-                copy.TimeZone = TimeZone;
+                copy = new CronExpression(CronExpressionString)
+                {
+                    TimeZone = TimeZone
+                };
             }
             catch (FormatException)
             {
@@ -166,7 +164,7 @@ namespace ASC.Notify.Cron
 
         public void OnDeserialization(object sender)
         {
-            BuildExpression(cronExpressionString);
+            BuildExpression(CronExpressionString);
         }
 
         #endregion
@@ -213,7 +211,7 @@ namespace ASC.Notify.Cron
 
         public override string ToString()
         {
-            return cronExpressionString;
+            return CronExpressionString;
         }
 
         public static bool IsValidExpression(string cronExpression)
@@ -676,7 +674,7 @@ namespace ASC.Notify.Cron
                     end = v1;
                     i = vs.pos;
                 }
-                if (i < s.Length && ((c = s[i]) == '/'))
+                if (i < s.Length && ((_ = s[i]) == '/'))
                 {
                     i++;
                     c = s[i];
@@ -961,31 +959,17 @@ namespace ASC.Notify.Cron
             var max = -1;
             if (stopAt < startAt)
             {
-                switch (type)
+                max = type switch
                 {
-                    case Second:
-                        max = 60;
-                        break;
-                    case Minute:
-                        max = 60;
-                        break;
-                    case Hour:
-                        max = 24;
-                        break;
-                    case Month:
-                        max = 12;
-                        break;
-                    case DayOfWeek:
-                        max = 7;
-                        break;
-                    case DayOfMonth:
-                        max = 31;
-                        break;
-                    case Year:
-                        throw new ArgumentException("Start year must be less than stop year");
-                    default:
-                        throw new ArgumentException("Unexpected type encountered");
-                }
+                    Second => 60,
+                    Minute => 60,
+                    Hour => 24,
+                    Month => 12,
+                    DayOfWeek => 7,
+                    DayOfMonth => 31,
+                    Year => throw new ArgumentException("Start year must be less than stop year"),
+                    _ => throw new ArgumentException("Unexpected type encountered"),
+                };
                 stopAt += max;
             }
             for (var i = startAt; i <= stopAt; i += incr)
@@ -1009,25 +993,17 @@ namespace ASC.Notify.Cron
 
         protected virtual TreeSet GetSet(int type)
         {
-            switch (type)
+            return type switch
             {
-                case Second:
-                    return seconds;
-                case Minute:
-                    return minutes;
-                case Hour:
-                    return hours;
-                case DayOfMonth:
-                    return daysOfMonth;
-                case Month:
-                    return months;
-                case DayOfWeek:
-                    return daysOfWeek;
-                case Year:
-                    return years;
-                default:
-                    return null;
-            }
+                Second => seconds,
+                Minute => minutes,
+                Hour => hours,
+                DayOfMonth => daysOfMonth,
+                Month => months,
+                DayOfWeek => daysOfWeek,
+                Year => years,
+                _ => null,
+            };
         }
 
         protected virtual ValueSet GetValue(int v, string s, int i)
@@ -1060,7 +1036,7 @@ namespace ASC.Notify.Cron
         protected virtual int GetNumericValue(string s, int i)
         {
             var endOfVal = FindNextWhiteSpace(i, s);
-            var val = s.Substring(i, endOfVal - i);
+            var val = s[i..endOfVal];
             return Convert.ToInt32(val, CultureInfo.InvariantCulture);
         }
 
@@ -1479,8 +1455,6 @@ namespace ASC.Notify.Cron
                 }
                 d = new DateTime(d.Year, mon, d.Day, d.Hour, d.Minute, d.Second);
                 year = d.Year;
-                t = -1;
-
                 st = years.TailSet((year));
                 if (st != null && st.Count != 0)
                 {

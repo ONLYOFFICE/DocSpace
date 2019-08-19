@@ -123,17 +123,15 @@ namespace ASC.Core.Billing
         {
             try
             {
-                using (var reader = new StreamReader(licenseStream))
-                {
-                    var licenseJsonString = reader.ReadToEnd();
-                    var license = License.Parse(licenseJsonString);
+                using var reader = new StreamReader(licenseStream);
+                var licenseJsonString = reader.ReadToEnd();
+                var license = License.Parse(licenseJsonString);
 
-                    var dueDate = Validate(license);
+                var dueDate = Validate(license);
 
-                    SaveLicense(licenseStream, LicensePathTemp);
+                SaveLicense(licenseStream, LicensePathTemp);
 
-                    return dueDate;
-                }
+                return dueDate;
             }
             catch (Exception ex)
             {
@@ -152,14 +150,12 @@ namespace ASC.Core.Billing
             }
 
             const int bufferSize = 4096;
-            using (var fs = File.Open(path, FileMode.Create))
+            using var fs = File.Open(path, FileMode.Create);
+            var buffer = new byte[bufferSize];
+            int readed;
+            while ((readed = licenseStream.Read(buffer, 0, bufferSize)) != 0)
             {
-                var buffer = new byte[bufferSize];
-                int readed;
-                while ((readed = licenseStream.Read(buffer, 0, bufferSize)) != 0)
-                {
-                    fs.Write(buffer, 0, readed);
-                }
+                fs.Write(buffer, 0, readed);
             }
         }
 

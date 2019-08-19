@@ -4,6 +4,7 @@ import setAuthorizationToken from '../services/setAuthorizationToken';
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SET_MODULES = 'SET_MODULES';
+export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 
@@ -18,6 +19,13 @@ export function setModules(modules) {
     return {
         type: SET_MODULES,
         modules
+    };
+};
+
+export function setSettings(settings) {
+    return {
+        type: SET_SETTINGS,
+        settings
     };
 };
 
@@ -38,6 +46,8 @@ export function setLogout() {
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
+        .then(() => api.getSettings())
+        .then(res => dispatch(setSettings(res.data.response)))
         .then(api.getModulesList)
         .then((res) => dispatch(setModules(res.data.response)))
         .then(() => dispatch(setIsLoaded(true)));

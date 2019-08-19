@@ -70,40 +70,32 @@ namespace ASC.Web.Core
 
                 var rect = new Rectangle(locationX, locationY, finalWidth, finalHeigth);
 
-                using (var graphic = Graphics.FromImage(thumbnail))
+                using var graphic = Graphics.FromImage(thumbnail);
+                if (!transparent)
                 {
-                    if (!transparent)
-                    {
-                        graphic.Clear(Color.White);
-                        graphic.SmoothingMode = SmoothingMode.HighQuality;
-                    }
-                    graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                    using (var wrapMode = new ImageAttributes())
-                    {
-                        wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                        graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                    }
-
-                    //graphic.DrawImage(image, rect);
+                    graphic.Clear(Color.White);
+                    graphic.SmoothingMode = SmoothingMode.HighQuality;
                 }
+                graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using var wrapMode = new ImageAttributes();
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                graphic.DrawImage(image, rect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
             }
             else
             {
                 thumbnail = new Bitmap(finalWidth, finalHeigth);
 
-                using (var graphic = Graphics.FromImage(thumbnail))
+                using var graphic = Graphics.FromImage(thumbnail);
+                if (!transparent)
                 {
-                    if (!transparent)
-                    {
-                        graphic.Clear(Color.White);
-                        graphic.SmoothingMode = SmoothingMode.HighQuality;
-                    }
-                    graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                    graphic.DrawImage(image, 0, 0, finalWidth, finalHeigth);
+                    graphic.Clear(Color.White);
+                    graphic.SmoothingMode = SmoothingMode.HighQuality;
                 }
+                graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphic.DrawImage(image, 0, 0, finalWidth, finalHeigth);
             }
 
             return thumbnail;
@@ -111,11 +103,9 @@ namespace ASC.Web.Core
 
         public static byte[] SaveToBytes(Image img)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                img.Save(memoryStream, ImageFormat.Png);
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            img.Save(memoryStream, ImageFormat.Png);
+            return memoryStream.ToArray();
         }
 
         public static byte[] SaveToBytes(Image img, string formatName)

@@ -126,9 +126,7 @@ namespace ASC.Core
         public Tenant SaveTenant(Tenant tenant)
         {
             var newTenant = tenantService.SaveTenant(tenant);
-
-            var oldTenant = CallContext.GetData(CURRENT_TENANT) as Tenant;
-            if (oldTenant != null) SetCurrentTenant(newTenant);
+            if (CallContext.GetData(CURRENT_TENANT) is Tenant) SetCurrentTenant(newTenant);
 
             return newTenant;
         }

@@ -63,7 +63,7 @@ namespace ASC.Common.Threading
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             key = name + GetType().Name;
@@ -177,7 +177,8 @@ namespace ASC.Common.Threading
                 {
                     distributedTask.Status = DistributedTaskStatus.Canceled;
                 }
-                cancelations.TryRemove(id, out var s);
+
+                cancelations.TryRemove(id, out _);
 
                 distributedTask.PublishChanges();
             }

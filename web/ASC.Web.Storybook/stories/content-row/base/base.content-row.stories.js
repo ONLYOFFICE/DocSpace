@@ -17,11 +17,15 @@ storiesOf('Components|ContentRow', module)
 
     const avatar = boolean('avatar', true);
     const contextButton = boolean('contextButton', true);
+    const checked = boolean('checkbox', true);
+
+    const checkedProps = checked ? {checked: false} : {};
 
 
     return(
       <Section>
         <ContentRow key='1'
+                    {...checkedProps}
                     avatarName={avatar ? 'Demo Avatar' : ''}
                     avatarRole={avatar ? 'user' : ''}
                     avatarSource={avatar ? '' : ''}

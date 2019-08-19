@@ -35,7 +35,7 @@ namespace ASC.Web.Core.Helpers
     {
         public static bool ProcessBasicAuthorization(HttpContext context)
         {
-            return ProcessBasicAuthorization(context, out var authCookie);
+            return ProcessBasicAuthorization(context, out _);
         }
 
         public static bool ProcessBasicAuthorization(HttpContext context, out string authCookie)
