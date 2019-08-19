@@ -1,6 +1,5 @@
 **/obj/
 **/bin/
-/packages/
 *.suo
 *.user
 .vs/
@@ -12,5 +11,5 @@
 /web/ASC.Web.Components/dist
 /build/deploy
 *.log
-/web/npm-local
+/packages/asc-web-components
 /products/ASC.People/Data/

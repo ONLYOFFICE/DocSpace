@@ -40,7 +40,8 @@
     "react-lifecycles-compat": "^3.0.4",
     "react-toastify": "^5.3.2",
     "react-window": "^1.8.5",
-    "reactstrap": "^8.0.0"
+    "reactstrap": "^8.0.0",
+    "react-calendar": "file:../../packages/react-calendar/react-calendar-v2.13.2.tgz"
   },
   "devDependencies": {
     "@babel/core": "7.4.4",

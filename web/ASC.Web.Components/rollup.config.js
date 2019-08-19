@@ -98,9 +98,9 @@ const config = [
       ...configureRollupPlugins(),
       copy({
       targets: [
-        { src: 'dist', dest: '../npm-local/asc-web-components' },
-        { src: 'package.json', dest: '../npm-local/asc-web-components' },
-        { src: 'README.md', dest: '../npm-local/asc-web-components' },
+        { src: 'dist', dest: '../../packages/asc-web-components' },
+        { src: 'dist.package.json', dest: '../../packages/asc-web-components', rename: "package.json" },
+        { src: 'README.md', dest: '../../packages/asc-web-components' },
       ],
       verbose: true
     })]
