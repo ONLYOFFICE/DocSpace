@@ -9,7 +9,7 @@ const hoverColor = disableColor;
 const internalCircleDisabledColor = '#D0D5DA';
 const externalCircleDisabledColor = '#eceef1';
 
-const ClearLabel = ({ spacing, ...props }) => <label {...props} />
+const ClearLabel = ({ spacing, isDisabled, ...props }) => <label {...props} />
 const Label = styled(ClearLabel)`
   display: flex;
   align-items: center;
