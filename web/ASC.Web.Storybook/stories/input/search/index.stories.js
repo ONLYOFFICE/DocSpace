@@ -17,13 +17,11 @@ function getData() {
         { key: '1', group: 'filter-status', label: 'Disabled' },
       { key: 'filter-type', group: 'filter-type', label: 'Type', isHeader: true },
         { key: '0', group: 'filter-type', label: 'Folders' },
-        { key: '1', group: 'filter-type', label: 'Employee' },
-
       { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
-        { key: '0', group: 'filter-other', subgroup: 'filter-groups', label: 'Groups' },
+        { key: '0', group: 'filter-other', subgroup: 'filter-groups', defaultSelectLabel: 'Select', label: 'Groups' },
           { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
-          { key: '1', inSubgroup: true, group: 'filter-groups', label: 'Public Relations'},
-        { key: '1', group: 'filter-other', subgroup: 'filter-test', label: 'Test' },
+        { key: '1', group: 'filter-other', subgroup: 'filter-empty', defaultSelectLabel: 'Select', label: 'Empty' },
+        { key: '2', group: 'filter-other', subgroup: 'filter-test', defaultSelectLabel: 'Select', label: 'Test' },
           { key: '0', inSubgroup: true, group: 'filter-test', label: 'test1'},
           { key: '1', inSubgroup: true, group: 'filter-test', label: 'test2'},
 
@@ -33,17 +31,14 @@ class SearchStory extends React.Component  {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterData: [
-          {key: "0", group: "filter-status"},
-          {key: "0", group: "filter-groups"}
-        ]
+      selectedFilterData: []
     };
     this.buttonClick = this.buttonClick.bind(this);
   }
   buttonClick(){
     this.setState({ selectedFilterData:[
         {key: "1", group: "filter-status"},
-        {key: "1", group: "filter-type"}
+        {key: "-1", group: "filter-groups"}
       ]
     });   
   }
