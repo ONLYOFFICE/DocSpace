@@ -2,15 +2,19 @@ function validate (values) {
     const errors = {};
 
     if (!values.firstName) {
-      errors.firstName = 'required field';
+      errors.firstName = 'first name is required field';
     }
 
     if (!values.lastName) {
-      errors.lastName = 'required field';
+      errors.lastName = 'last name is required field';
     }
 
     if (!values.email) {
-      errors.email = 'required field';
+      errors.email = 'email is required field';
+    }
+
+    if (!values.password) {
+      errors.password = 'password is required field';
     }
 
     return errors
