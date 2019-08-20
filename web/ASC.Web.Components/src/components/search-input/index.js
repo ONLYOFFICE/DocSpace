@@ -31,7 +31,7 @@ const StyledFilterItem = styled.div`
 
   font-weight: 600;
   font-size: 13px;
-  line-height: 18px;
+  line-height: 15px;
 
   &:last-child{
     margin-bottom: 0;
@@ -51,8 +51,12 @@ const StyledComboBox = styled(ComboBox)`
   display: inline-block;
   background: transparent;
   cursor: pointer;
-  vertical-align: top;
+  vertical-align: middle;
   margin-left: -10px;
+`;
+const StyledFilterName = styled.span`
+  line-height: 18px;
+  margin-left: 5px;
 `;
 
 class FilterItem extends React.Component {
@@ -79,19 +83,23 @@ class FilterItem extends React.Component {
     return(
       <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} >
         {this.props.groupLabel}: 
-          <StyledComboBox
-            options={this.props.groupItems}
-            isDisabled={this.props.isDisabled}
-            onSelect={this.onSelect}
-            selectedOption={{
-              key: this.state.id,
-              label: this.state.id.indexOf('_-1') == -1 ? this.props.label : 'Select'
-            }}
-            size='content'
-            scaled={false}
-            noBorder={true}
-          ></StyledComboBox>
-          
+          {this.props.groupItems.length > 1 ? 
+            <StyledComboBox
+              options={this.props.groupItems}
+              isDisabled={this.props.isDisabled}
+              onSelect={this.onSelect}
+              selectedOption={{
+                key: this.state.id,
+                label: this.props.label
+              }}
+              size='content'
+              scaled={false}
+              noBorder={true}
+              opened={this.props.opened}
+            ></StyledComboBox>
+            : <StyledFilterName>{this.props.label}</StyledFilterName> 
+          }
+
         <StyledCloseButtonBlock>
           <CloseButton
             isDisabled={this.props.isDisabled}
@@ -185,16 +193,50 @@ class SearchInput extends React.Component  {
       if(indexFilterItem != -1){
         curentFilterItems.splice(indexFilterItem, 1);
       }
-      let selectFilterItem = {
-        key:  filterItem.subgroup + "_-1",
-        group: filterItem.subgroup,
-        label:  null,
-        groupLabel: filterItem.label,
-        inSubgroup: true
-      };
-      curentFilterItems.push(selectFilterItem);
-      this.setState({ filterItems: curentFilterItems}); 
-      this.isUpdateFilter = false;
+      let subgroupItems = this.props.getFilterData().filter(function(t) {
+        return (t.group == filterItem.subgroup);
+      });
+      if(subgroupItems.length > 1){
+        let selectFilterItem = {
+          key:  filterItem.subgroup + "_-1",
+          group: filterItem.subgroup,
+          label:  filterItem.defaultSelectLabel,
+          groupLabel: filterItem.label,
+          inSubgroup: true
+        };
+        curentFilterItems.push(selectFilterItem);
+        this.setState({ filterItems: curentFilterItems}); 
+        this.isUpdateFilter = false;
+      }else if(subgroupItems.length == 1){
+       
+        let selectFilterItem = {
+          key:  subgroupItems[0].group + "_" + subgroupItems[0].key,
+          group: subgroupItems[0].group,
+          label:  subgroupItems[0].label,
+          groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
+          inSubgroup: true
+        };
+        curentFilterItems.push(selectFilterItem);
+        let clone = cloneProperty(curentFilterItems.filter(function(item) {
+          return item.key != '-1';
+        }));
+        clone.map(function(item){
+          item.key = item.key.replace(item.group + "_" ,'');
+          return item;
+        })
+        if(typeof this.props.onChangeFilter === "function")
+          this.props.onChangeFilter({
+            inputValue: this.state.inputValue,
+            filterValue: this.props.isNeedFilter ? 
+                          clone.filter(function(item) {
+                            return item.key != '-1';
+                          }) : 
+                          null
+          });
+        this.setState({ filterItems: curentFilterItems}); 
+        this.isUpdateFilter = false;
+      }
+      
 
     }else{
       let filterItems = this.getData();
@@ -242,6 +284,9 @@ class SearchInput extends React.Component  {
       if(!element.inSubgroup){
         element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e) => _this.onClickDropDownItem(e, element)) : undefined;
         element.key = element.group != element.key ? element.group +"_"+ element.key : element.key;
+        if(element.subgroup != undefined){
+          if(d.findIndex(x => x.group === element.subgroup) == -1) element.disabled = true;
+        }
         result.push(element);
       } 
     });
@@ -303,6 +348,7 @@ class SearchInput extends React.Component  {
               id={item.key} 
               groupLabel={item.groupLabel} 
               label={item.label} 
+              opened={item.key.indexOf('_-1') == -1 ? false : true}
               onClose={_this.onDeleteFilterItem}>
             </FilterItem>
           });
@@ -322,6 +368,7 @@ class SearchInput extends React.Component  {
                 onSelectFilterItem={_this.onClickDropDownItem}
                 id={item.key} 
                 groupLabel={item.groupLabel} 
+                opened={false}
                 label={item.label} 
                 onClose={_this.onDeleteFilterItem}>
               </FilterItem>
@@ -341,6 +388,7 @@ class SearchInput extends React.Component  {
               onSelectFilterItem={_this.onClickDropDownItem}
               id={item.key} 
               groupLabel={item.groupLabel} 
+              opened={item.key.indexOf('_-1') == -1 ? false : true}
               label={item.label} 
               onClose={_this.onDeleteFilterItem}>
             </FilterItem>
@@ -414,10 +462,35 @@ class SearchInput extends React.Component  {
             filterItems.push(curentFilterItems[i]);
           }else{
             filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group && x.inSubgroup));
-            curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
-            curentFilterItems[i].label = filterValue.label; 
-            curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
-            filterItems.push(curentFilterItems[i]);
+            if(filterValue){
+              curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
+              curentFilterItems[i].label = filterValue.label; 
+              curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
+              filterItems.push(curentFilterItems[i]);
+            }else{
+              filterValue = filterData.find(x => ((x.subgroup === curentFilterItems[i].group)));
+              if(filterValue){
+                let subgroupItems = this.props.getFilterData().filter(function(t) {
+                  return (t.group == filterValue.subgroup);
+                });
+                if(subgroupItems.length > 1){
+                  curentFilterItems[i].key = curentFilterItems[i].group + "_-1";
+                  curentFilterItems[i].label = filterValue.defaultSelectLabel; 
+                  curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
+                  filterItems.push(curentFilterItems[i]);
+                }else if(subgroupItems.length == 1){
+
+                  let selectFilterItem = {
+                    key:  subgroupItems[0].group + "_" + subgroupItems[0].key,
+                    group: subgroupItems[0].group,
+                    label:  subgroupItems[0].label,
+                    groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
+                    inSubgroup: true
+                  };
+                  curentFilterItems.push(selectFilterItem);
+                }
+              }
+            }
           }
       }
       this.isNewProps= false;

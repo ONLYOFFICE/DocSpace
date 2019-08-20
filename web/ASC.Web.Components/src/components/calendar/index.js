@@ -63,9 +63,9 @@ const CalendarStyle = styled.div`
         /*flex-basis: 11.2857% !important;*/
         
         ${props => props.size === 'base' ?
-        'margin-left: 9px;' :
-        'margin 10px 7px 0 7px;'
-    }
+            'margin-left: 9px;' :
+            'margin 10px 7px 0 7px;'
+        }
     }
 
     .react-calendar__tile:disabled {
@@ -133,7 +133,7 @@ class Calendar extends Component {
         let date2 = this.props.maxDate.getFullYear();
         const yearList = [];
         for (let i = date1; i <= date2; i++) {
-            yearList.push({ key: `${i}`, label: `${String(i).toLocaleString(this.props.language)}` });
+            yearList.push({ key: `${i}`, label: `${moment(String(i)).format('YYYY')}` });
         }
         return yearList;
     }
@@ -189,13 +189,15 @@ class Calendar extends Component {
         moment.locale(this.props.language);
         this.state.months = moment.months();
         const disabled = this.props.disabled;
+        
+        const dropDownSize = this.getArrayYears().length > 6 ? 200 : undefined;
 
         return (
             <CalendarStyle color={this.props.themeColor} size={this.props.size} >
                 <ComboBoxStyle>
-                    <ComboBox scaled={true} onSelect={this.selectedMonth.bind(this)} selectedOption={this.getCurrentMonth()} options={this.getArrayMonth()} isDisabled={this.props.disabled} />
+                    <ComboBox scaled={true} dropDownMaxHeight={200} onSelect={this.selectedMonth.bind(this)} selectedOption={this.getCurrentMonth()} options={this.getArrayMonth()} isDisabled={this.props.disabled} />
                     <ComboBoxDateStyle>
-                        <ComboBox scaled={true} onSelect={this.selectedYear.bind(this)} selectedOption={this.getCurrentYear()} options={this.getArrayYears()} isDisabled={this.props.disabled} />
+                        <ComboBox scaled={true} dropDownMaxHeight={dropDownSize} onSelect={this.selectedYear.bind(this)} selectedOption={this.getCurrentYear()} options={this.getArrayYears()} isDisabled={this.props.disabled} />
                     </ComboBoxDateStyle>
                 </ComboBoxStyle>
                 <ReactCalendar

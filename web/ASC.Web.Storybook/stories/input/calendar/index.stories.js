@@ -32,7 +32,7 @@ storiesOf('Components|Input', module)
         themeColor={color('themeColor', '#ED7309')}
         selectedDate={myDateKnob('selectedDate', new Date())}
         openToDate={myDateKnob('openToDate', new Date())}
-        minDate={myDateKnob('minDate', new Date("2018/02/01"))}
+        minDate={myDateKnob('minDate', new Date("2010/02/01"))}
         maxDate={myDateKnob('maxDate', new Date("2019/09/01"))}
         language={select('location', locales, 'en')}
         size={select('size', arraySize, 'base')}
