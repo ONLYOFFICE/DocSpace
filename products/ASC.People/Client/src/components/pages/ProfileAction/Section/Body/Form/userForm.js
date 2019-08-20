@@ -88,7 +88,7 @@ const renderField = ({ input, label, type, meta: { touched, error } }) => (
 )
 
 const UserForm = props => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { error, handleSubmit, submitting, initialValues, userType, history } = props;
 
   const onCancel = useCallback(() => {

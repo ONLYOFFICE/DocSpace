@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components';
-//import ReactCalendar from 'react-calendar'
-import ReactCalendar from 'react-calendar';
-//import Calendar from 'react-calendar/dist/entry.nostyle';
+import ReactCalendar from 'react-calendar'
 import ComboBox from '../combobox';
 import moment from 'moment/min/moment-with-locales';
-//import moment from 'moment';
 
 const WeekdayStyle = css`
     font-family: Open Sans;
@@ -15,24 +12,35 @@ const WeekdayStyle = css`
     font-size: 13px;
 `;
 
-const CalendarStyle = styled.div`
-    max-width: 325px;
+const HoverStyle = css`
+    max-width: 32px;
+    max-height: 32px;
+    border-radius: 16px;
+`;
 
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);   
+const CalendarStyle = styled.div`
+    min-width:293px;
+    ${props => props.size === 'base' ?
+        `max-width: 293px;
+        border-radius: 6px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+        -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+        -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);`
+        :
+        'max-width: 325px;'
+    }
+
     padding: 16px 16px 16px 17px;
+    box-sizing: content-box;
 
     .custom-tile-calendar {
         color: #333;
         ${WeekdayStyle}
         &:hover {
-            border-radius: 16px;
-            background-color: ${props => props.color ? `${props.color} !important` : `none !important`};
-            color: #fff !important;
+            ${HoverStyle}
+            background-color: #F8F9F9 !important;
         }
     }
 
@@ -40,28 +48,39 @@ const CalendarStyle = styled.div`
         border: none;
     }
 
+    .react-calendar__month-view__weekdays :nth-child(6)  { color: #A3A9AE !important; }
+    .react-calendar__month-view__weekdays :nth-child(7)  { color: #A3A9AE !important; }
+
     .react-calendar__month-view__weekdays {
         text-transform: none;
-    }
-
-    .react-calendar__month-view__weekdays__weekday {     
-        abbr {
-            text-decoration: none;
-            ${WeekdayStyle}
-            cursor: auto;
-       }
+        ${WeekdayStyle}
     }
 
     .react-calendar__tile {
-        height: 32px;
-        width: 32px;
+        ${HoverStyle}
         margin-top: 10px;
+        background-color: none !important;
+        /*flex-basis: 11.2857% !important;*/
+        
+        ${props => props.size === 'base' ?
+        'margin-left: 9px;' :
+        'margin 10px 7px 0 7px;'
+    }
     }
 
+    .react-calendar__tile:disabled {
+        background-color: #fff;
+    }
 
     .react-calendar__tile--active {
-        background-color: #F8F9F9 !important;
+        background-color: ${props => props.color ? `${props.color} !important;` : `none !important;`}
+        color: #fff !important;
         border-radius: 16px;
+
+        &:hover {
+            ${HoverStyle}
+            color: #333 !important;
+        }
     }
 
     .react-calendar__month-view__days__day--weekend {
@@ -69,7 +88,9 @@ const CalendarStyle = styled.div`
     }
 
     .react-calendar__month-view__days__day--neighboringMonth {
-        color: #ECEEF1;
+        color: #ECEEF1 !important;
+        cursor: default !important;
+        pointer-events: none;
     }
 `;
 
@@ -89,10 +110,10 @@ class Calendar extends Component {
     constructor(props) {
         super(props);
 
-        moment.locale(props.location);
+        moment.locale(props.language);
         this.state = {
             selectedDate: props.selectedDate,
-            openToDate: props.minDate,
+            openToDate: props.openToDate,
             minDate: props.minDate,
             maxDate: props.maxDate,
             months: moment.months()
@@ -112,18 +133,18 @@ class Calendar extends Component {
         let date2 = this.props.maxDate.getFullYear();
         const yearList = [];
         for (let i = date1; i <= date2; i++) {
-            yearList.push({ key: `${i}`, label: `${String(i).toLocaleString(this.props.location)}` });
+            yearList.push({ key: `${i}`, label: `${String(i).toLocaleString(this.props.language)}` });
         }
         return yearList;
     }
 
     getCurrentYear = () => {
         let year = this.getArrayYears();
-        year = year.find(x => x.key == this.state.selectedDate.getFullYear());
-        return (year.key);
+        year = year.find(x => x.key == this.state.openToDate.getFullYear());
+        return (year);
     }
 
-    getListMonth (date1, date2) {
+    getListMonth(date1, date2) {
         let monthList = new Array();
         for (let i = date1; i <= date2; i++) {
             monthList.push({ key: `${i}`, label: `${this.state.months[i]}` });
@@ -143,12 +164,12 @@ class Calendar extends Component {
 
     getCurrentMonth = () => {
         let month = this.getArrayMonth();
-        let selectedmonth = month.find(x => x.key == this.state.selectedDate.getMonth());
-        return (selectedmonth.key);
+        let selected_month = month.find(x => x.key == this.state.openToDate.getMonth());
+        return (selected_month);
     }
 
     onChange = (date) => {
-        if (this.formatDate(this.state.selectedDate) !== this.formatDate(date)) {
+        if (!this.props.disabled && this.formatDate(this.state.selectedDate) !== this.formatDate(date)) {
             this.setState({ selectedDate: date });
             this.props.onChange && this.props.onChange(date);
         }
@@ -158,18 +179,19 @@ class Calendar extends Component {
         return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
     }
 
-    formatWeekday = (locale, date) => {
-        return moment(date).locale(locale).format('dd');
-        //console.log(new Date().toLocaleString('en-us', {  weekday: 'short' }));
+    formatWeekday = (language, date) => {
+        //console.log(date.toLocaleString(locale, {  weekday: 'short' }));
+        return moment(date).locale(language).format('dd');
     }
 
     render() {
-
-        const location = this.props.location;
+        const language = this.props.language;
+        moment.locale(this.props.language);
         this.state.months = moment.months();
+        const disabled = this.props.disabled;
 
         return (
-            <CalendarStyle color={this.props.themeColor}>
+            <CalendarStyle color={this.props.themeColor} size={this.props.size} >
                 <ComboBoxStyle>
                     <ComboBox scaled={true} onSelect={this.selectedMonth.bind(this)} selectedOption={this.getCurrentMonth()} options={this.getArrayMonth()} isDisabled={this.props.disabled} />
                     <ComboBoxDateStyle>
@@ -177,19 +199,17 @@ class Calendar extends Component {
                     </ComboBoxDateStyle>
                 </ComboBoxStyle>
                 <ReactCalendar
-                    onClickDay={this.onChange.bind(this)}
+                    onChange={this.onChange.bind(this)}
                     activeStartDate={this.state.openToDate}
                     value={this.state.selectedDate}
-                    locale={location}
+                    showNavigation={false}
+                    locale={language}
                     minDate={this.minDate}
                     maxDate={this.maxDate}
-
-                    
-
-                    //showNavigation={false}
-                    className={"custom-calendar"}
+                    tileDisabled={disabled ? ({ date }) => date.getDate() : undefined}
                     tileClassName={"custom-tile-calendar"}
-                    //formatShortWeekday={(locale, value) => this.formatWeekday(locale, value)}
+                    formatShortWeekday={(value) => this.formatWeekday(language, value)}
+                    //formatShortWeekday={(language, value) => this.formatWeekday(language, value)} // function to react-calendar v2.19.1
                 />
             </CalendarStyle>
         );
@@ -201,10 +221,11 @@ Calendar.propTypes = {
     disabled: PropTypes.bool,
     themeColor: PropTypes.string,
     selectedDate: PropTypes.instanceOf(Date),
-    //openToDate: PropTypes.instanceOf(Date),
+    openToDate: PropTypes.instanceOf(Date),
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
-    location: PropTypes.string
+    language: PropTypes.string,
+    size: PropTypes.string
 }
 
 Calendar.defaultProps = {
@@ -212,7 +233,9 @@ Calendar.defaultProps = {
     openToDate: new Date(),
     minDate: new Date("1970/01/01"),
     maxDate: new Date("3000/01/01"),
-    themeColor: '#ED7309'
+    themeColor: '#ED7309',
+    language: moment.locale(),
+    size: 'base'
 }
 
 export default Calendar;
