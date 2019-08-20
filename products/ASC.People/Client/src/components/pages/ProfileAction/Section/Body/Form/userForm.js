@@ -109,7 +109,7 @@ const renderDateField = ({ input, label, isRequired, meta: { touched, error } })
   <FieldContainer>
     <Label isRequired={isRequired} error={!!(touched && error)} text={label} className="field-label"/>
     <FieldBody>
-      <DateInput {...input}/>
+      <DateInput {...input} selected={input.value instanceof Date ? input.value : undefined}/>
     </FieldBody>
   </FieldContainer>
 )
@@ -253,25 +253,6 @@ UserForm = connect(
       state.form.userForm.fields.password &&
       state.form.userForm.fields.password.touched && 
       !passwordValue;
-
-    const fixDate = (name) => {
-      const workFromIsDate = state &&
-          state.form &&
-          state.form.userForm &&
-          state.form.userForm.values &&
-          state.form.userForm.values[name] &&
-          state.form.userForm.values[name] instanceof Date;
-
-        if(workFromIsDate)
-        {
-          let date = state.form.userForm.values[name];
-          let str = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toJSON()
-          state.form.userForm.values[name] = str;
-        }
-    }
-
-    fixDate("workFrom");
-    fixDate("birthDate");
 
     return {
       sexIsMale,
