@@ -51,7 +51,7 @@ const StyledComboBox = styled(ComboBox)`
   display: inline-block;
   background: transparent;
   cursor: pointer;
-  vertical-align: top;
+  vertical-align: middle;
   margin-left: -10px;
 `;
 
@@ -85,7 +85,7 @@ class FilterItem extends React.Component {
             onSelect={this.onSelect}
             selectedOption={{
               key: this.state.id,
-              label: this.state.id.indexOf('_-1') == -1 ? this.props.label : 'Select'
+              label: this.props.label
             }}
             size='content'
             scaled={false}
@@ -188,7 +188,7 @@ class SearchInput extends React.Component  {
       let selectFilterItem = {
         key:  filterItem.subgroup + "_-1",
         group: filterItem.subgroup,
-        label:  null,
+        label:  filterItem.defaultSelectLabel,
         groupLabel: filterItem.label,
         inSubgroup: true
       };
@@ -414,10 +414,20 @@ class SearchInput extends React.Component  {
             filterItems.push(curentFilterItems[i]);
           }else{
             filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group && x.inSubgroup));
-            curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
-            curentFilterItems[i].label = filterValue.label; 
-            curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
-            filterItems.push(curentFilterItems[i]);
+            if(filterValue){
+              curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
+              curentFilterItems[i].label = filterValue.label; 
+              curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
+              filterItems.push(curentFilterItems[i]);
+            }else{
+              filterValue = filterData.find(x => ((x.subgroup === curentFilterItems[i].group)));
+              if(filterValue){
+                curentFilterItems[i].key = curentFilterItems[i].group + "_-1";
+                curentFilterItems[i].label = filterValue.defaultSelectLabel; 
+                curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
+                filterItems.push(curentFilterItems[i]);
+              }
+            }
           }
       }
       this.isNewProps= false;
