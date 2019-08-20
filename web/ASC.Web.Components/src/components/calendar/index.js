@@ -40,7 +40,7 @@ const CalendarStyle = styled.div`
         ${WeekdayStyle}
         &:hover {
             ${HoverStyle}
-            background-color: #F8F9F9 !important;
+            background-color: #F8F9F9;
         }
     }
 
@@ -79,7 +79,7 @@ const CalendarStyle = styled.div`
 
         &:hover {
             ${HoverStyle}
-            color: #333 !important;
+            color: #333;
         }
     }
 
@@ -133,7 +133,8 @@ class Calendar extends Component {
         let date2 = this.props.maxDate.getFullYear();
         const yearList = [];
         for (let i = date1; i <= date2; i++) {
-            yearList.push({ key: `${i}`, label: `${moment(String(i)).format('YYYY')}` });
+            let newDate = new Date(i, 0, 1);
+            yearList.push({ key: `${i}`, label: `${moment(newDate).format('YYYY')}` });
         }
         return yearList;
     }
@@ -189,7 +190,7 @@ class Calendar extends Component {
         moment.locale(this.props.language);
         this.state.months = moment.months();
         const disabled = this.props.disabled;
-        
+
         const dropDownSize = this.getArrayYears().length > 6 ? 200 : undefined;
 
         return (
