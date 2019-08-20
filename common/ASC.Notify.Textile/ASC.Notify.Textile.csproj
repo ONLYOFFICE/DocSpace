@@ -1,16 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web" ToolsVersion="Current">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <ProductVersion>9.0.30729</ProductVersion>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <AssemblyTitle>ASC.Notify.Textile</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Notify.Textile</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
@@ -27,4 +22,35 @@
     <ProjectReference Include="..\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\ASC.Textile\ASC.Textile.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\NotifyTemplateResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>NotifyTemplateResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.ru.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.de.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.es.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.fr.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\NotifyTemplateResource.it.resx">
+      <DependentUpon>NotifyTemplateResource.resx</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  
 </Project>

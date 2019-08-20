@@ -98,7 +98,7 @@ namespace ASC.Common.Data
         {
             try
             {
-                if (Unavailable != null) Unavailable(this, EventArgs.Empty);
+                Unavailable?.Invoke(this, EventArgs.Empty);
             }
             catch
             {

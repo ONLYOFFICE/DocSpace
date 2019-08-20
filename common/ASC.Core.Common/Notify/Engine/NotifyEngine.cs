@@ -82,10 +82,7 @@ namespace ASC.Notify.Engine
 
         public virtual void QueueRequest(NotifyRequest request)
         {
-            if (BeforeTransferRequest != null)
-            {
-                BeforeTransferRequest(this, request);
-            }
+            BeforeTransferRequest?.Invoke(this, request);
             lock (requests)
             {
                 if (!notifySender.IsAlive)
@@ -211,10 +208,7 @@ namespace ASC.Notify.Engine
                     }
                     if (request != null)
                     {
-                        if (AfterTransferRequest != null)
-                        {
-                            AfterTransferRequest(this, request);
-                        }
+                        AfterTransferRequest?.Invoke(this, request);
                         try
                         {
                             SendNotify(CoreContext.TenantManager.GetCurrentTenant(), request);
