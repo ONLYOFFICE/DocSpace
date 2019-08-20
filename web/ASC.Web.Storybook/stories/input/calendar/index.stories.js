@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, text, color, select, date } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, color, select, date } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { Calendar } from 'asc-web-components';
@@ -16,6 +16,8 @@ function myDateKnob(name, defaultValue) {
 }
 
 const locales = moment.locales();
+
+const arraySize = ['base', 'big'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
@@ -32,7 +34,8 @@ storiesOf('Components|Input', module)
         openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("2018/02/01"))}
         maxDate={myDateKnob('maxDate', new Date("2019/09/01"))}
-        location={select('location', locales, 'en')}
+        language={select('location', locales, 'en')}
+        size={select('size', arraySize, 'base')}
       />
     </Section>
   ));
