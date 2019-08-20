@@ -20,7 +20,8 @@ function getData() {
       { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
         { key: '0', group: 'filter-other', subgroup: 'filter-groups', defaultSelectLabel: 'Select', label: 'Groups' },
           { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
-        { key: '1', group: 'filter-other', subgroup: 'filter-test', defaultSelectLabel: 'Wählen', label: 'Test' },
+        { key: '1', group: 'filter-other', subgroup: 'filter-empty', defaultSelectLabel: 'Select', label: 'Empty' },
+        { key: '2', group: 'filter-other', subgroup: 'filter-test', defaultSelectLabel: 'Select', label: 'Test' },
           { key: '0', inSubgroup: true, group: 'filter-test', label: 'test1'},
           { key: '1', inSubgroup: true, group: 'filter-test', label: 'test2'},
 
@@ -30,9 +31,7 @@ class SearchStory extends React.Component  {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterData: [
-          
-        ]
+      selectedFilterData: []
     };
     this.buttonClick = this.buttonClick.bind(this);
   }

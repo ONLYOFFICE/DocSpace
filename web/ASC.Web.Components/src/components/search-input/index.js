@@ -284,6 +284,9 @@ class SearchInput extends React.Component  {
       if(!element.inSubgroup){
         element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e) => _this.onClickDropDownItem(e, element)) : undefined;
         element.key = element.group != element.key ? element.group +"_"+ element.key : element.key;
+        if(element.subgroup != undefined){
+          if(d.findIndex(x => x.group === element.subgroup) == -1) element.disabled = true;
+        }
         result.push(element);
       } 
     });
