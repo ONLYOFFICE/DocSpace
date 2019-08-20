@@ -33,6 +33,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
+using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
@@ -45,7 +46,7 @@ namespace ASC.Web.Core.WhiteLabel
     [DataContract]
     public class TenantWhiteLabelSettings : BaseSettings<TenantWhiteLabelSettings>
     {
-        public const string DefaultLogoText = "ONLYOFFICE";
+        public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
 
         #region Logos information: extension, isDefault, text for img auto generating
 

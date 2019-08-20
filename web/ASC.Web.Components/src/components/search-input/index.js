@@ -67,11 +67,11 @@ class FilterItem extends React.Component {
   }
 
   onSelect(option){
-
     this.props.onSelectFilterItem(null, {
       key: option.group + "_" + option.key,
       label: option.label,
-      group: option.group
+      group: option.group,
+      inSubgroup: !!option.inSubgroup
     });
   }
 
@@ -84,8 +84,8 @@ class FilterItem extends React.Component {
             isDisabled={this.props.isDisabled}
             onSelect={this.onSelect}
             selectedOption={{
-              key:this.state.id,
-              label: this.props.label
+              key: this.state.id,
+              label: this.state.id.indexOf('_-1') == -1 ? this.props.label : 'Select'
             }}
             size='content'
             scaled={false}
@@ -128,10 +128,22 @@ class SearchInput extends React.Component  {
       let selectedFilterData = cloneProperty(props.selectedFilterData);
       selectedFilterData.forEach(defaultfilterValue => {
           let filterValue = filterData.find(x => ((x.key === defaultfilterValue.key.replace(defaultfilterValue.group + "_",'')) && x.group === defaultfilterValue.group));
+          let groupLabel = '';
+
+          let groupFilterItem = filterData.find(x => (x.key === defaultfilterValue.group));
+          if(groupFilterItem != undefined){
+            groupLabel = groupFilterItem.label;
+          }else{
+            let subgroupFilterItem = filterData.find(x => (x.subgroup === defaultfilterValue.group))
+            if(subgroupFilterItem != undefined){
+              groupLabel = subgroupFilterItem.label;
+            }
+          }
+
           if(filterValue != undefined){
               defaultfilterValue.key = defaultfilterValue.group + "_" + defaultfilterValue.key;
               defaultfilterValue.label = filterValue.label; 
-              defaultfilterValue.groupLabel = filterData.find(x => (x.key === defaultfilterValue.group)).label;
+              defaultfilterValue.groupLabel = groupLabel;
               filterItems.push(defaultfilterValue);
           }
       });
@@ -167,46 +179,73 @@ class SearchInput extends React.Component  {
 
   onClickDropDownItem(event, filterItem){
     let curentFilterItems =  cloneProperty(this.state.filterItems);
-    let filterItems = this.getData();
 
-    let indexFilterItem = curentFilterItems.findIndex(x => x.group === filterItem.group);
-    if(indexFilterItem != -1){
-      curentFilterItems.splice(indexFilterItem, 1);
+    if(filterItem.subgroup != undefined){
+      let indexFilterItem = curentFilterItems.findIndex(x => x.group === filterItem.subgroup);
+      if(indexFilterItem != -1){
+        curentFilterItems.splice(indexFilterItem, 1);
+      }
+      let selectFilterItem = {
+        key:  filterItem.subgroup + "_-1",
+        group: filterItem.subgroup,
+        label:  null,
+        groupLabel: filterItem.label,
+        inSubgroup: true
+      };
+      curentFilterItems.push(selectFilterItem);
+      this.setState({ filterItems: curentFilterItems}); 
+      this.isUpdateFilter = false;
+
+    }else{
+      let filterItems = this.getData();
+
+      let indexFilterItem = curentFilterItems.findIndex(x => x.group === filterItem.group);
+      if(indexFilterItem != -1){
+        curentFilterItems.splice(indexFilterItem, 1);
+      }
+
+      let selectFilterItem = {
+        key:  filterItem.key,
+        group: filterItem.group,
+        label:  filterItem.label,
+        groupLabel: filterItem.inSubgroup ? filterItems.find(x => x.subgroup === filterItem.group).label : filterItems.find(x => x.key === filterItem.group).label
+      };
+      curentFilterItems.push(selectFilterItem);
+      this.setState({ filterItems: curentFilterItems}); 
+
+      let clone = cloneProperty(curentFilterItems.filter(function(item) {
+        return item.key != '-1';
+      }));
+      clone.map(function(item){
+        item.key = item.key.replace(item.group + "_" ,'');
+        return item;
+      })
+      if(typeof this.props.onChangeFilter === "function")
+        this.props.onChangeFilter({
+          inputValue: this.state.inputValue,
+          filterValue: this.props.isNeedFilter ? 
+                        clone.filter(function(item) {
+                          return item.key != '-1';
+                        }) : 
+                        null
+        });
+      this.isUpdateFilter = false;
     }
-
-    let selectFilterItem = {
-      key:  filterItem.key,
-      group: filterItem.group,
-      label:  filterItem.label,
-      groupLabel: filterItems.find(x => x.key === filterItem.group).label
-    };
-    curentFilterItems.push(selectFilterItem);
-    this.setState({ filterItems: curentFilterItems}); 
-
-    let clone = cloneProperty(curentFilterItems);
-    clone.map(function(item){
-      item.key = item.key.replace(item.group + "_" ,'');
-      return item;
-    })
-    if(typeof this.props.onChangeFilter === "function")
-      this.props.onChangeFilter({
-        inputValue: this.state.inputValue,
-        filterValue: this.props.isNeedFilter ? 
-                      clone : 
-                      null
-      });
-    this.isUpdateFilter = false;
+    
   }
 
   getData(){
     let _this = this;
     let d = this.props.getFilterData();
-    d.map(function(item){
-      item.onClick = !item.isSeparator && !item.isHeader && !item.disabled ? ((e) => _this.onClickDropDownItem(e, item)) : undefined;
-      item.key = item.group != item.key ? item.group +"_"+ item.key : item.key;
-      return item;
+    let result = [];
+    d.forEach(element => {
+      if(!element.inSubgroup){
+        element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e) => _this.onClickDropDownItem(e, element)) : undefined;
+        element.key = element.group != element.key ? element.group +"_"+ element.key : element.key;
+        result.push(element);
+      } 
     });
-    return d;
+    return result;
   }
   
   clearFilter(){
@@ -231,14 +270,17 @@ class SearchInput extends React.Component  {
       curentFilterItems.splice(indexFilterItem, 1);
     }
     this.setState({ filterItems: curentFilterItems});
-    
+    let filterValues = cloneProperty(curentFilterItems);
+    filterValues = filterValues.map(function(item){
+      item.key = item.key.replace(item.group + "_",'');
+      return item;
+    })
     if(typeof this.props.onChangeFilter === "function")
       this.props.onChangeFilter({
         inputValue: this.state.inputValue,
         filterValue: this.props.isNeedFilter ? 
-                    curentFilterItems.map(function(item){
-                      item.key = item.key.replace(item.group + "_",'');
-                      return item;
+                    filterValues.filter(function(item) {
+                      return item.key != '-1';
                     }) : null
       });
     this.isUpdateFilter = false;
@@ -364,11 +406,17 @@ class SearchInput extends React.Component  {
       let curentFilterItems = cloneProperty(this.props.selectedFilterData);
 
       for(let i=0; i < curentFilterItems.length; i++){
-        let filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group));
-          if(filterValue != undefined){
+        let filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group && !x.inSubgroup));
+          if(filterValue){
             curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
             curentFilterItems[i].label = filterValue.label; 
-            curentFilterItems[i].groupLabel = filterData.find(x => (x.group === curentFilterItems[i].group)).label;
+            curentFilterItems[i].groupLabel = !filterData.inSubgroup ? filterData.find(x => (x.group === curentFilterItems[i].group)).label : curentFilterItems[i].groupLabel;
+            filterItems.push(curentFilterItems[i]);
+          }else{
+            filterValue = filterData.find(x => ((x.key === curentFilterItems[i].key.replace(curentFilterItems[i].group + "_",'')) && x.group === curentFilterItems[i].group && x.inSubgroup));
+            curentFilterItems[i].key = curentFilterItems[i].group + "_" + curentFilterItems[i].key;
+            curentFilterItems[i].label = filterValue.label; 
+            curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
             filterItems.push(curentFilterItems[i]);
           }
       }
@@ -405,14 +453,14 @@ class SearchInput extends React.Component  {
           }
         }
       }
-      if(!isNeedUpdate){
-        for (let propsKey in this.props) {
-          if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
-            isNeedUpdate = true;
-            break;
-          }
+      for (let propsKey in this.props) {
+        if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
+          if(propsKey=='value') this.setState({inputValue: nextProps[propsKey]})
+          isNeedUpdate = true;
+          break;
         }
       }
+
       if(!isNeedUpdate){
         for (let key in this.state) {
           if(this.state[key].length != nextState[key].length){
@@ -467,7 +515,6 @@ class SearchInput extends React.Component  {
       default:
         break;
     }
-
     return (
       <StyledSearchInput ref={this.searchWrapper}> 
         <InputBlock 

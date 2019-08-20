@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\common\ASC.Feed\ASC.Feed.csproj" />
     <ProjectReference Include="..\..\common\ASC.IPSecurity\ASC.IPSecurity.csproj" />
     <ProjectReference Include="..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Notify.Textile\ASC.Notify.Textile.csproj" />
     <ProjectReference Include="..\..\common\ASC.VoipService\ASC.VoipService.csproj" />
   </ItemGroup>
 

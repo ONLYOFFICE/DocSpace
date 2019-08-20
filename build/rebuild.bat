@@ -7,7 +7,9 @@ del /s /q packages\asc-web-components
 
 echo "ASC.Web.Components"
 call yarn install --cwd web/ASC.Web.Components > build\ASC.Web.Components.log
-xcopy web\ASC.Web.Components\node_modules packages\asc-web-components\node_modules\ /E /R /Y >> build\ASC.Web.Components.log
+REM xcopy web\ASC.Web.Components\node_modules packages\asc-web-components\node_modules\ /E /R /Y >> build\ASC.Web.Components.log
+call yarn install --cwd packages/asc-web-components >> build\ASC.Web.Components.log
+
 call yarn link --cwd packages/asc-web-components
 
 echo "ASC.Web.Storybook"

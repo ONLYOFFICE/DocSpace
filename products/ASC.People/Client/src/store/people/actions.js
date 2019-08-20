@@ -86,3 +86,9 @@ export async function fetchPeopleAsync(dispatch, filter = null) {
   dispatch(setFilter(filterData));
   dispatch(setUsers(usersResp.data.response));
 }
+
+export function updateUserStatus(status, userIds) {
+  return dispatch => {
+    return api.updateUserStatus(status, userIds);
+  };
+}
