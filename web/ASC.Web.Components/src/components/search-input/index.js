@@ -31,7 +31,7 @@ const StyledFilterItem = styled.div`
 
   font-weight: 600;
   font-size: 13px;
-  line-height: 18px;
+  line-height: 15px;
 
   &:last-child{
     margin-bottom: 0;
@@ -90,6 +90,7 @@ class FilterItem extends React.Component {
             size='content'
             scaled={false}
             noBorder={true}
+            opened={this.props.opened}
           ></StyledComboBox>
           
         <StyledCloseButtonBlock>
@@ -303,6 +304,7 @@ class SearchInput extends React.Component  {
               id={item.key} 
               groupLabel={item.groupLabel} 
               label={item.label} 
+              opened={item.key.indexOf('_-1') == -1 ? false : true}
               onClose={_this.onDeleteFilterItem}>
             </FilterItem>
           });
@@ -322,6 +324,7 @@ class SearchInput extends React.Component  {
                 onSelectFilterItem={_this.onClickDropDownItem}
                 id={item.key} 
                 groupLabel={item.groupLabel} 
+                opened={item.key.indexOf('_-1') == -1 ? false : true}
                 label={item.label} 
                 onClose={_this.onDeleteFilterItem}>
               </FilterItem>
@@ -341,6 +344,7 @@ class SearchInput extends React.Component  {
               onSelectFilterItem={_this.onClickDropDownItem}
               id={item.key} 
               groupLabel={item.groupLabel} 
+              opened={item.key.indexOf('_-1') == -1 ? false : true}
               label={item.label} 
               onClose={_this.onDeleteFilterItem}>
             </FilterItem>
