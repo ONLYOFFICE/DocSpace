@@ -54,6 +54,10 @@ const StyledComboBox = styled(ComboBox)`
   vertical-align: middle;
   margin-left: -10px;
 `;
+const StyledFilterName = styled.span`
+  line-height: 18px;
+  margin-left: 5px;
+`;
 
 class FilterItem extends React.Component {
   constructor(props) {
@@ -79,20 +83,23 @@ class FilterItem extends React.Component {
     return(
       <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} >
         {this.props.groupLabel}: 
-          <StyledComboBox
-            options={this.props.groupItems}
-            isDisabled={this.props.isDisabled}
-            onSelect={this.onSelect}
-            selectedOption={{
-              key: this.state.id,
-              label: this.props.label
-            }}
-            size='content'
-            scaled={false}
-            noBorder={true}
-            opened={this.props.opened}
-          ></StyledComboBox>
-          
+          {this.props.groupItems.length > 1 ? 
+            <StyledComboBox
+              options={this.props.groupItems}
+              isDisabled={this.props.isDisabled}
+              onSelect={this.onSelect}
+              selectedOption={{
+                key: this.state.id,
+                label: this.props.label
+              }}
+              size='content'
+              scaled={false}
+              noBorder={true}
+              opened={this.props.opened}
+            ></StyledComboBox>
+            : <StyledFilterName>{this.props.label}</StyledFilterName> 
+          }
+
         <StyledCloseButtonBlock>
           <CloseButton
             isDisabled={this.props.isDisabled}
@@ -186,16 +193,50 @@ class SearchInput extends React.Component  {
       if(indexFilterItem != -1){
         curentFilterItems.splice(indexFilterItem, 1);
       }
-      let selectFilterItem = {
-        key:  filterItem.subgroup + "_-1",
-        group: filterItem.subgroup,
-        label:  filterItem.defaultSelectLabel,
-        groupLabel: filterItem.label,
-        inSubgroup: true
-      };
-      curentFilterItems.push(selectFilterItem);
-      this.setState({ filterItems: curentFilterItems}); 
-      this.isUpdateFilter = false;
+      let subgroupItems = this.props.getFilterData().filter(function(t) {
+        return (t.group == filterItem.subgroup);
+      });
+      if(subgroupItems.length > 1){
+        let selectFilterItem = {
+          key:  filterItem.subgroup + "_-1",
+          group: filterItem.subgroup,
+          label:  filterItem.defaultSelectLabel,
+          groupLabel: filterItem.label,
+          inSubgroup: true
+        };
+        curentFilterItems.push(selectFilterItem);
+        this.setState({ filterItems: curentFilterItems}); 
+        this.isUpdateFilter = false;
+      }else if(subgroupItems.length == 1){
+       
+        let selectFilterItem = {
+          key:  subgroupItems[0].group + "_" + subgroupItems[0].key,
+          group: subgroupItems[0].group,
+          label:  subgroupItems[0].label,
+          groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
+          inSubgroup: true
+        };
+        curentFilterItems.push(selectFilterItem);
+        let clone = cloneProperty(curentFilterItems.filter(function(item) {
+          return item.key != '-1';
+        }));
+        clone.map(function(item){
+          item.key = item.key.replace(item.group + "_" ,'');
+          return item;
+        })
+        if(typeof this.props.onChangeFilter === "function")
+          this.props.onChangeFilter({
+            inputValue: this.state.inputValue,
+            filterValue: this.props.isNeedFilter ? 
+                          clone.filter(function(item) {
+                            return item.key != '-1';
+                          }) : 
+                          null
+          });
+        this.setState({ filterItems: curentFilterItems}); 
+        this.isUpdateFilter = false;
+      }
+      
 
     }else{
       let filterItems = this.getData();
@@ -324,7 +365,7 @@ class SearchInput extends React.Component  {
                 onSelectFilterItem={_this.onClickDropDownItem}
                 id={item.key} 
                 groupLabel={item.groupLabel} 
-                opened={item.key.indexOf('_-1') == -1 ? false : true}
+                opened={false}
                 label={item.label} 
                 onClose={_this.onDeleteFilterItem}>
               </FilterItem>
@@ -426,10 +467,25 @@ class SearchInput extends React.Component  {
             }else{
               filterValue = filterData.find(x => ((x.subgroup === curentFilterItems[i].group)));
               if(filterValue){
-                curentFilterItems[i].key = curentFilterItems[i].group + "_-1";
-                curentFilterItems[i].label = filterValue.defaultSelectLabel; 
-                curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
-                filterItems.push(curentFilterItems[i]);
+                let subgroupItems = this.props.getFilterData().filter(function(t) {
+                  return (t.group == filterValue.subgroup);
+                });
+                if(subgroupItems.length > 1){
+                  curentFilterItems[i].key = curentFilterItems[i].group + "_-1";
+                  curentFilterItems[i].label = filterValue.defaultSelectLabel; 
+                  curentFilterItems[i].groupLabel = filterData.find(x => (x.subgroup === curentFilterItems[i].group)).label;
+                  filterItems.push(curentFilterItems[i]);
+                }else if(subgroupItems.length == 1){
+
+                  let selectFilterItem = {
+                    key:  subgroupItems[0].group + "_" + subgroupItems[0].key,
+                    group: subgroupItems[0].group,
+                    label:  subgroupItems[0].label,
+                    groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
+                    inSubgroup: true
+                  };
+                  curentFilterItems.push(selectFilterItem);
+                }
               }
             }
           }
