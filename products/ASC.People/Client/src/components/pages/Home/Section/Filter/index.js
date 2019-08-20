@@ -48,7 +48,7 @@ const getRole = filterValues => {
 };
 
 const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const selectedFilterData = {
     filterValue: [],
     sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -119,7 +119,7 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
       },
       { key: "filter-type-group", group: "filter-group", label: "Group" }
     ];
-  }, [user]);
+  }, [user, t]);
 
   const onFilter = useCallback((data) => {
     console.log(data);
