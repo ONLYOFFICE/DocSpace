@@ -35,7 +35,7 @@ const FormContainer = styled(Container)`
 const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const [identifier, setIdentifier] = useState('');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
