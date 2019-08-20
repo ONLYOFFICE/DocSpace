@@ -119,7 +119,7 @@ const renderRadioField = ({ input, label, isChecked }) => (
 )
 
 let UserForm = props => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { error, handleSubmit, submitting, initialValues, sexIsMale, passwordTypeIsLink, passwordError, userType, history } = props;
 
   const onCancel = useCallback(() => {

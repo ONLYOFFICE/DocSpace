@@ -5,7 +5,7 @@ import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { isAdmin } from "../../../../../store/auth/selectors";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const getSortData = () => {
   return [
@@ -47,8 +47,25 @@ const getRole = filterValues => {
   return employeeStatus || null;
 };
 
-const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
-  const { t, i18n } = useTranslation();
+const getGroup = filterValues => {
+  const groupId = result(
+    find(filterValues, value => {
+      return value.group === "filter-group";
+    }),
+    "key"
+  );
+
+  return groupId || null;
+};
+
+const SectionFilterContent = ({
+  fetchPeople,
+  filter,
+  onLoading,
+  user,
+  groups
+}) => {
+  const { t } = useTranslation();
   const selectedFilterData = {
     filterValue: [],
     sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -78,6 +95,13 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
     });
   }
 
+  if (filter.group) {
+    selectedFilterData.filterValue.push({
+      key: filter.group,
+      group: "filter-group"
+    });
+  }
+
   const getData = useCallback(() => {
     const options = !isAdmin(user)
       ? []
@@ -85,27 +109,43 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
           {
             key: "filter-status",
             group: "filter-status",
-            label: t('PeopleResource:LblStatus'),
+            label: t("PeopleResource:LblStatus"),
             isHeader: true
           },
-          { key: "1", group: "filter-status", label: t('PeopleResource:LblActive') },
-          { key: "2", group: "filter-status", label: t('PeopleResource:LblTerminated') }
+          {
+            key: "1",
+            group: "filter-status",
+            label: t("PeopleResource:LblActive")
+          },
+          {
+            key: "2",
+            group: "filter-status",
+            label: t("PeopleResource:LblTerminated")
+          }
         ];
 
-    return [
+    const groupOptions = groups.map(group => {
+      return { key: group.id, inSubgroup: true, group: "filter-group", label: group.name };
+    });
+
+    const filterOptions = [
       ...options,
       {
         key: "filter-email",
         group: "filter-email",
-        label: t('PeopleResource:Email'),
+        label: t("PeopleResource:Email"),
         isHeader: true
       },
-      { key: "1", group: "filter-email", label: t('PeopleResource:LblActive') },
-      { key: "2", group: "filter-email", label: t('PeopleResource:LblPending') },
+      { key: "1", group: "filter-email", label: t("PeopleResource:LblActive") },
+      {
+        key: "2",
+        group: "filter-email",
+        label: t("PeopleResource:LblPending")
+      },
       {
         key: "filter-type",
         group: "filter-type",
-        label: t('PeopleResource:LblByType'),
+        label: t("PeopleResource:LblByType"),
         isHeader: true
       },
       { key: "admin", group: "filter-type", label: "Administrator"},
@@ -113,15 +153,22 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
       { key: "guest", group: "filter-type", label: "Guest" },
       {
         key: "filter-group",
-        group: "filter-group",
-        label: t('PeopleResource:LblOther'),
+        group: "filter-other",
+        label: t("PeopleResource:LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-group", label: "Group" }
+      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: "Group" },
+      ...groupOptions
     ];
-  }, [user]);
 
-  const onFilter = useCallback((data) => {
+    //console.log("getData (filterOptions)", filterOptions);
+
+    return filterOptions;
+
+  }, [user, t, groups]);
+
+  const onFilter = useCallback(
+    data => {
     console.log(data);
 
     const newFilter = filter.clone();
@@ -133,11 +180,13 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
     newFilter.activationStatus = getActivationStatus(data.filterValue);
     newFilter.role = getRole(data.filterValue);
     newFilter.search = data.inputValue || null;
+    newFilter.group = getGroup(data.filterValue);
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
-
-  }, [onLoading,fetchPeople,filter])
+    },
+    [onLoading, fetchPeople, filter]
+  );
 
   return (
     <FilterInput
@@ -152,6 +201,7 @@ const SectionFilterContent = ({ fetchPeople, filter, onLoading, user }) => {
 function mapStateToProps(state) {
   return {
     user: state.auth.user,
+    groups: state.people.groups,
     filter: state.people.filter
   };
 }

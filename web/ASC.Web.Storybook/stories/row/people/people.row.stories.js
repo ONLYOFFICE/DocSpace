@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ContentRow, Row } from 'asc-web-components';
+import { Row, RowContent, Avatar, Link, Icons } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 
-const users = [
+const fakeUsers = [
   {
     id: '1',
     userName: 'Helen Walton',
@@ -94,7 +94,7 @@ const users = [
   },
   {
     id: '6',
-    displayName: 'Timothy Morphis',
+    userName1: 'Timothy Morphis',
     avatar: '',
     role: 'user',
     status: 'disabled',
@@ -111,31 +111,40 @@ const users = [
   }
 ];
 
-storiesOf('EXAMPLES|ContentRow', module)
-  .add('people row', () => {
+storiesOf('EXAMPLES|Row', module)
+  .add('people', () => {
 
     return (
       <Section>
-        {users.map(user => {
+        {fakeUsers.map(user => {
+          const element = <Avatar size='small' role={user.role} userName={user.userName} source={user.avatar} />
+          const nameColor = user.status === 'pending' ? '#A3A9AE' : '#333333';
+          const sideInfoColor = user.status === 'pending' ? '#D0D5DA' : '#A3A9AE';
+
           return (
-            <ContentRow 
+            <Row 
               key={user.id}
               status={user.status}
               checked={false}
               data={user}
-              avatarRole={user.role}
-              avatarSource={user.avatar}
-              avatarName={user.userName}
+              element={element}
               contextOptions={user.contextOptions}
             >
-              <Row.People
-                status={user.status}
-                displayName={user.userName}
-                department={user.department}
-                phone={user.mobilePhone}
-                email={user.email}
-              />
-            </ContentRow>
+              <RowContent>
+                <Link type='page' title={user.userName} isBold={true} fontSize={15} color={nameColor} >{user.userName}</Link>
+                <>
+                  {user.status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
+                  {user.status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
+                </>
+                {user.isHead 
+                  ? <Link type='page' title='Head of department' fontSize={12} color={sideInfoColor} >Head of department</Link> 
+                  : <></>
+                }
+                <Link type='action' title={user.department} fontSize={12} color={sideInfoColor} >{user.department}</Link>
+                <Link type='page' title={user.mobilePhone} fontSize={12} color={sideInfoColor} >{user.mobilePhone}</Link>
+                <Link type='page' title={user.email} fontSize={12} color={sideInfoColor} >{user.email}</Link>
+              </RowContent>
+            </Row>
           );
         })}
       </Section>

@@ -102,10 +102,7 @@ namespace ASC.Notify
         {
             //ValidateNotifySource(source);
             var client = new NotifyClientImpl(this, source);
-            if (NotifyClientRegistration != null)
-            {
-                NotifyClientRegistration(this, client);
-            }
+            NotifyClientRegistration?.Invoke(this, client);
             return client;
         }
 
