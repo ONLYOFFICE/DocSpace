@@ -12,6 +12,12 @@ const WeekdayStyle = css`
     font-size: 13px;
 `;
 
+const HoverStyle = css`
+    max-width: 32px;
+    max-height: 32px;
+    border-radius: 16px;
+`;
+
 const CalendarStyle = styled.div`
     min-width:293px;
     ${props => props.size === 'base' ?
@@ -33,9 +39,7 @@ const CalendarStyle = styled.div`
         color: #333;
         ${WeekdayStyle}
         &:hover {
-            max-width: 32px;
-            max-height: 32px;
-            border-radius: 16px;
+            ${HoverStyle}
             background-color: #F8F9F9 !important;
         }
     }
@@ -53,9 +57,9 @@ const CalendarStyle = styled.div`
     }
 
     .react-calendar__tile {
-        max-height: 32px;
-        max-width: 32px;
+        ${HoverStyle}
         margin-top: 10px;
+        background-color: none !important;
         /*flex-basis: 11.2857% !important;*/
         
         ${props => props.size === 'base' ?
@@ -64,15 +68,17 @@ const CalendarStyle = styled.div`
     }
     }
 
+    .react-calendar__tile:disabled {
+        background-color: #fff;
+    }
+
     .react-calendar__tile--active {
         background-color: ${props => props.color ? `${props.color} !important;` : `none !important;`}
         color: #fff !important;
         border-radius: 16px;
 
         &:hover {
-            max-width: 32px;
-            max-height: 32px;
-            border-radius: 16px;
+            ${HoverStyle}
             color: #333 !important;
         }
     }
@@ -180,11 +186,12 @@ class Calendar extends Component {
 
     render() {
         const language = this.props.language;
-        moment.locale(this.props.language);        
+        moment.locale(this.props.language);
         this.state.months = moment.months();
-        
+        const disabled = this.props.disabled;
+
         return (
-            <CalendarStyle color={this.props.themeColor} size={this.props.size}>
+            <CalendarStyle color={this.props.themeColor} size={this.props.size} >
                 <ComboBoxStyle>
                     <ComboBox scaled={true} onSelect={this.selectedMonth.bind(this)} selectedOption={this.getCurrentMonth()} options={this.getArrayMonth()} isDisabled={this.props.disabled} />
                     <ComboBoxDateStyle>
@@ -199,7 +206,7 @@ class Calendar extends Component {
                     locale={language}
                     minDate={this.minDate}
                     maxDate={this.maxDate}
-                    //tileDisabled	
+                    tileDisabled={disabled ? ({ date }) => date.getDate() : undefined}
                     tileClassName={"custom-tile-calendar"}
                     formatShortWeekday={(value) => this.formatWeekday(language, value)}
                     //formatShortWeekday={(language, value) => this.formatWeekday(language, value)} // function to react-calendar v2.19.1
