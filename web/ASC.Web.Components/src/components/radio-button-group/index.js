@@ -34,7 +34,7 @@ class RadioButtonGroup extends React.Component {
   render() {
     const options = this.props.options;
     return (
-      <StyledDiv>
+      <StyledDiv className={this.props.className}>
         {options.map(option => {
           return (
             <RadioButton
