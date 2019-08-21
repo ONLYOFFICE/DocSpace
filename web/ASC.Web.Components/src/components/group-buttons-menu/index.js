@@ -76,6 +76,7 @@ class GroupButtonsMenu extends React.PureComponent {
   };
 
   groupButtonClick = (item) => {
+    if (item.disabled) return;
     item.onClick();
     this.closeMenu();
   };
@@ -135,6 +136,7 @@ class GroupButtonsMenu extends React.PureComponent {
               isSelect={item.isSelect}
               onSelect={item.onSelect}
               fontWeight={item.fontWeight}
+              disabled={item.disabled}
               onClick={this.groupButtonClick.bind(this, item)}
               {...this.props}
             >
@@ -148,6 +150,7 @@ class GroupButtonsMenu extends React.PureComponent {
               <DropDownItem
                 key={`moreNavItem-${i}`}
                 label={item.label}
+                disabled={item.disabled}
                 onClick={this.groupButtonClick.bind(this, item)}
               />
             )}

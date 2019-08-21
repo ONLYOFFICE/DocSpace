@@ -39,6 +39,7 @@ const groupItems = [
   },
   {
     label: 'Menu item',
+    disabled: true,
     onClick: () => console.log('Menu item action')
   },
   {
@@ -83,6 +84,7 @@ const groupItems = [
   },
   {
     label: 'Menu item',
+    disabled: true,
     onClick: () => console.log('Menu item action')
   },
   {
