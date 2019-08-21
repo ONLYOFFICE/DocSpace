@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { device, Avatar, Button, TextInput, Textarea, DateInput, Label, RadioButton, Text, toastr } from 'asc-web-components'
+import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form'
+import { device, Avatar, Button, TextInput, Textarea, DateInput, Label, RadioButton, Text, toastr, SelectedItem } from 'asc-web-components'
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { createProfile, updateProfile } from '../../../../../../store/profile/actions';
@@ -88,11 +88,11 @@ const renderTextField = ({ input, label, isRequired, meta: { touched, error } })
       <TextInput {...input} type="text" className="field-input"/>
     </FieldBody>
   </FieldContainer>
-)
+);
 
 const renderPasswordField = ({ input, isDisabled }) => (
   <TextInput {...input} type="password" autoComplete="new-password" className="field-input" isDisabled={isDisabled} />
-)
+);
 
 const renderDateField = ({ input, label, isRequired, meta: { touched, error } }) => (
   <FieldContainer>
@@ -101,15 +101,42 @@ const renderDateField = ({ input, label, isRequired, meta: { touched, error } })
       <DateInput {...input} selected={input.value instanceof Date ? input.value : undefined}/>
     </FieldBody>
   </FieldContainer>
-)
+);
 
 const renderRadioField = ({ input, label, isChecked }) => (
   <RadioButton {...input} label={label} isChecked={isChecked}/> 
-)
+);
+
+const renderDepartmentField = ({ input, onClick }) => (
+  <SelectedItem
+    text={input.value}
+    onClose={onClick}
+    isInline={true}
+    style={{ marginRight: "8px", marginBottom: "8px" }}
+  />
+);
+
+const renderDepartmentsField = ({ fields, label }) => {
+  return (
+    <FieldContainer>
+      <Label text={label} className="field-label"/>
+      <FieldBody>
+        {fields.map((member, index) => (      
+          <Field
+            key={`${member}${index}`}  
+            name={`${member}.name`}
+            component={renderDepartmentField}
+            onClick={() => fields.remove(index)}
+          />
+        ))}
+      </FieldBody>
+    </FieldContainer>
+  )
+};
 
 const renderTextareaField = ({ input }) => (
   <Textarea {...input} /> 
-)
+);
 
 let UserForm = (props) => {
   const { t } = useTranslation();
@@ -141,7 +168,8 @@ let UserForm = (props) => {
         toastr.success("Success");
         history.goBack();
       } catch(error) {
-        toastr.error(error);
+        console.error(error);
+        toastr.error(error.message);
       }
   }, [history, updateProfile, createProfile]);
 
@@ -264,6 +292,11 @@ let UserForm = (props) => {
             name="title"
             component={renderTextField}
             label={`${t("Resource:Position")}:`}
+          />
+          <FieldArray
+            name="groups"
+            component={renderDepartmentsField}
+            label={`${t("Resource:Departments")}:`}
           />
         </MainFieldsContainer>
       </MainContainer>
