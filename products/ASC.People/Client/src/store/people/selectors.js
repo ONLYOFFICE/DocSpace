@@ -116,3 +116,7 @@ export function isUserDisabled(user) {
 export function getSelectedGroup(groups, selectedGroupId) {
     return find(groups, (group) => group.id === selectedGroupId);
 }
+
+export function getSelectionIds(selections) {
+    return selections.map((user) => { return user.id });
+}
