@@ -72,29 +72,32 @@ const StyledOptionalItem = styled.div`
 `;
 
 const StyledLabel = styled.div`
-font-family: Open Sans;
-font-style: normal;
-font-weight: 600;
-font-size: 13px;
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
 
-white-space: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-margin-right: 8px;
+  margin-right: 8px;
 
-${props => props.noBorder && `
-  line-height: 11px;
-  border-bottom: 1px dashed transparent;
+  ${props => props.noBorder && `
+    line-height: 11px;
+    border-bottom: 1px dashed transparent;
 
-  :hover{
-    border-bottom: 1px dashed;
-  }
-`};
+    :hover{
+      border-bottom: 1px dashed;
+    }
+  `};
 `;
 
 const StyledArrowIcon = styled.div`
-display: flex;
-align-self: start;
+  display: flex;
+  align-self: start;
   width: 8px;
+  flex: 0 0 8px;
   margin-top: ${props => props.noBorder ? `5px` : `12px`};
   margin-right: ${props => props.options.length ?  '8px' : '0px'};
   margin-left: ${props => props.options.length ?  'auto' : '0px'};
