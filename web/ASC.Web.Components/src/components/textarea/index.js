@@ -33,6 +33,8 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
   resize: none;
   overflow: hidden;
   padding: 5px 8px 2px 8px;
+  font-size: 13px;
+  font-family: 'Open Sans', sans-serif;
 
     :focus-within {
       border-color: #2DA7DB;
