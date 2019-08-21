@@ -3,7 +3,8 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
-  ContentRow,
+  Row,
+  Avatar,
   toastr,
   CustomScrollbarsVirtualList,
   EmptyScreenContainer,
@@ -28,7 +29,7 @@ import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 
-const Row = memo(
+const PeopleRow = memo(
   ({
     data,
     index,
@@ -48,22 +49,21 @@ const Row = memo(
       : { contextOptions };
     const checked = isUserSelected(selection, user.id);
     const checkedProps = isAdmin(viewer) ? { checked } : {};
+    const element = <Avatar size='small' role={getUserRole(user)} userName={user.displayName} source={user.avatar} />;
 
     return (
-      <ContentRow
+      <Row
         key={user.id}
         status={getUserStatus(user)}
         data={user}
-        avatarRole={getUserRole(user)}
-        avatarSource={user.avatar}
-        avatarName={user.displayName}
+        element={element}
         onSelect={onContentRowSelect}
         style={style}
         {...checkedProps}
         {...contextOptionsProps}
       >
         <UserContent user={user} history={history} settings={settings} />
-      </ContentRow>
+      </Row>
     );
   },
   areEqual
@@ -265,7 +265,7 @@ class SectionBodyContent extends React.PureComponent {
             outerElementType={CustomScrollbarsVirtualList}
           >
             {({ data, index, style }) => (
-              <Row
+              <PeopleRow
                 data={data}
                 index={index}
                 style={style}

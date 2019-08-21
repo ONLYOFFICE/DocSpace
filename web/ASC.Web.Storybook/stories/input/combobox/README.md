@@ -54,7 +54,7 @@ const options = [
             key: 0,
             label: 'Select'
           }}
-    dropDownMaxHeight='200px' 
+    dropDownMaxHeight={200}
     noBorder={false}
     scale={true} 
     size='content' 
@@ -71,6 +71,6 @@ const options = [
 | `noBorder`             | `bool`            |    -     | -                            | `false` | Indicates that component is displayed without borders |
 | `selectedOption`       | `object`          |    ✅    | -                            | -       | Selected option                              |
 | `onSelect`             | `func`            |    -     | -                            | -       | Will be triggered whenever an ComboBox is selected option |
-| `dropDownMaxHeight`    | `string`          |    -     | -                            | -       | Height of Dropdown                           |
+| `dropDownMaxHeight`    | `number`          |    -     | -                            | -       | Height of Dropdown                           |
 | `scaled`               | `bool`            |    -     | -                            | `true`  | Indicates that component is scaled by parent |
 | `size`                 | `oneOf`           |    -     | `base`, `middle`, `big`, `huge`, `content` | `base`  | Select component width, one of default |

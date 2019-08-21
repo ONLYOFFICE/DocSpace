@@ -9,6 +9,7 @@ const DEFAULT_EMPLOYEE_STATUS = null;
 const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = null;
+const DEFAULT_GROUP = null;
 
 class Filter {
   static getDefault(total = DEFAULT_TOTAL) {
@@ -24,7 +25,8 @@ class Filter {
     employeeStatus = DEFAULT_EMPLOYEE_STATUS,
     activationStatus = DEFAULT_ACTIVATION_STATUS,
     role = DEFAULT_ROLE,
-    search = DEFAULT_SEARCH
+    search = DEFAULT_SEARCH,
+    group = DEFAULT_GROUP
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -35,6 +37,7 @@ class Filter {
     this.role = role;
     this.search = search;
     this.total = total;
+    this.group = group;
   }
 
   getStartIndex = () => {
@@ -57,7 +60,8 @@ class Filter {
       employeeStatus,
       activationStatus,
       role,
-      search
+      search,
+      group,
     } = this;
 
     let dtoFilter = {
@@ -67,8 +71,10 @@ class Filter {
       sortorder: sortOrder,
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
-      filtervalue: search
-      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,listAdminModules,birthday,title,location,isLDAP,isSSO"
+      filtervalue: search,
+      groupId: group
+      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,
+      //listAdminModules,birthday,title,location,isLDAP,isSSO"
     };
 
     switch (role) {
@@ -113,7 +119,7 @@ class Filter {
           this.activationStatus,
           this.role,
           this.search,
-          this.total
+          this.group
         );
   }
 }

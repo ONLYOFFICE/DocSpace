@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 import { withRouter } from 'react-router'
-import { Field, reduxForm } from 'redux-form'
-import { Avatar, Button, TextInput, Textarea, Label } from 'asc-web-components'
+import { connect } from 'react-redux'
+import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Avatar, Button, TextInput, Textarea, DateInput, Label, RadioButton, Text } from 'asc-web-components'
 import submit from './submit'
 import validate from './validate'
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-
 
 const getUserRole = user => {
   if(user.isOwner) return "owner";
@@ -52,17 +52,30 @@ const FieldContainer = styled.div`
   flex-direction: row;
   margin: 0 0 16px 0;
 
-  .label {
+  .field-label {
     line-height: 32px;
     margin: 0;
     width: 110px;
+  }
+
+  .field-input {
+    width: 320px;
+  }
+
+  .radio-group {
+    line-height: 32px;
+    display: flex;
+
+    label:not(:first-child) {
+        margin-left: 33px;
+    }
   }
 
   @media ${device.tablet} {
     flex-direction: column;
     align-items: start;
 
-    .label {
+    .field-label {
       line-height: unset;
       margin: 0 0 4px 0;
       width: auto;
@@ -71,25 +84,43 @@ const FieldContainer = styled.div`
   }
 `;
 
-
-
 const FieldBody = styled.div`
   flex-grow: 1;
 `;
 
-const renderField = ({ input, label, type, meta: { touched, error } }) => (
+const RadioGroupFieldBody = styled(FieldBody).attrs({
+  className: "radio-group"
+})``;
+
+const renderTextField = ({ input, label, isRequired, meta: { touched, error } }) => (
   <FieldContainer>
-    <Label isRequired={true} error={!!(touched && error)} text={label} className="label"/>
+    <Label isRequired={isRequired} error={!!(touched && error)} text={label} className="field-label"/>
     <FieldBody>
-      <TextInput {...input} type={type} />
-      {/* {touched && error && <span>{error}</span>} */}
+      <TextInput {...input} type="text" className="field-input"/>
     </FieldBody>
   </FieldContainer>
 )
 
-const UserForm = props => {
+const renderPasswordField = ({ input, isDisabled }) => (
+  <TextInput {...input} type="password" autoComplete="new-password" className="field-input" isDisabled={isDisabled} />
+)
+
+const renderDateField = ({ input, label, isRequired, meta: { touched, error } }) => (
+  <FieldContainer>
+    <Label isRequired={isRequired} error={!!(touched && error)} text={label} className="field-label"/>
+    <FieldBody>
+      <DateInput {...input} selected={input.value instanceof Date ? input.value : undefined}/>
+    </FieldBody>
+  </FieldContainer>
+)
+
+const renderRadioField = ({ input, label, isChecked }) => (
+  <RadioButton {...input} label={label} isChecked={isChecked}/> 
+)
+
+let UserForm = props => {
   const { t } = useTranslation();
-  const { error, handleSubmit, submitting, initialValues, userType, history } = props;
+  const { error, handleSubmit, submitting, initialValues, sexIsMale, passwordTypeIsLink, passwordError, userType, history } = props;
 
   const onCancel = useCallback(() => {
     history.goBack();
@@ -100,7 +131,7 @@ const UserForm = props => {
       <MainContainer>
         <AvatarContainer>
           {
-            initialValues
+            initialValues.id
             ? <Avatar
                 size="max"
                 role={getUserRole(initialValues)}
@@ -114,7 +145,7 @@ const UserForm = props => {
                 size="max"
                 role={userType}
                 editing={true}
-                editLabel={"Add photo"}
+                editLabel={t('Resource:AddPhoto')}
                 editAction={onEditAvatar}
               />
           }
@@ -122,27 +153,70 @@ const UserForm = props => {
         <MainFieldsContainer>
           <Field
             name="firstName"
-            type="text"
-            component={renderField}
+            component={renderTextField}
             label={`${t('Resource:FirstName')}:`}
+            isRequired={true}
           />
           <Field
             name="lastName"
-            type="text"
-            component={renderField}
+            component={renderTextField}
             label={`${t('Resource:LastName')}:`}
+            isRequired={true}
           />
           <Field
             name="email"
-            type="text"
-            component={renderField}
+            component={renderTextField}
             label={`${t('Resource:Email')}:`}
+            isRequired={true}
+          />
+
+          <FieldContainer>
+            <Label text={`${t('Resource:Password')}:`} isRequired={true} error={passwordError} className="field-label"/>
+            <FieldBody>
+              <RadioGroupFieldBody>
+                <Field component={renderRadioField} type="radio" name="passwordType" value="link" label={t('Resource:ActivationLink')} isChecked={passwordTypeIsLink}/>
+                <Field component={renderRadioField} type="radio" name="passwordType" value="temp" label={t('Resource:TemporaryPassword')} isChecked={!passwordTypeIsLink}/>
+              </RadioGroupFieldBody>
+              <Field
+                name="password"
+                component={renderPasswordField}
+                isDisabled={passwordTypeIsLink}
+              />
+            </FieldBody>
+          </FieldContainer>
+
+          <Field
+            name="birthDate"
+            component={renderDateField}
+            label={`${t('Resource:Birthdate')}:`}
+          />
+          <FieldContainer>
+            <Label text={`${t('Resource:Sex')}:`} className="field-label"/>
+            <RadioGroupFieldBody>
+              <Field component={renderRadioField} type="radio" name="sex" value="male" label={t('Resource:SexMale')} isChecked={sexIsMale}/>
+              <Field component={renderRadioField} type="radio" name="sex" value="female" label={t('Resource:SexFemale')} isChecked={!sexIsMale}/>
+            </RadioGroupFieldBody>
+          </FieldContainer>
+          <Field
+            name="workFrom"
+            component={renderDateField}
+            label={`${t('Resource:EmployedSinceDate')}:`}
+          />
+          <Field
+            name="location"
+            component={renderTextField}
+            label={`${t('Resource:Location')}:`}
+          />
+          <Field
+            name="position"
+            component={renderTextField}
+            label={`${t('Resource:Position')}:`}
           />
         </MainFieldsContainer>
       </MainContainer>
       <div>
-        <Label text={t('Resource:Comments')} />
-        <Textarea />
+        <Text.ContentHeader>{t('Resource:Comments')}</Text.ContentHeader>
+        <Field component={Textarea} name="comments" />
       </div>
       <div>
         {error && <strong>{error}</strong>}
@@ -155,8 +229,37 @@ const UserForm = props => {
   )
 }
 
-export default reduxForm({
+UserForm = reduxForm({
   validate,
   form: 'userForm',
   enableReinitialize: true
 })(withRouter(UserForm))
+
+const selector = formValueSelector('userForm')
+
+UserForm = connect(
+  state => {
+
+    const sexIsMale = selector(state, 'sex') == 'male';
+
+    const passwordTypeIsLink = selector(state, 'passwordType') == 'link';
+
+    const passwordValue = selector(state, 'password');
+    
+    const passwordError = state &&
+      state.form &&
+      state.form.userForm &&
+      state.form.userForm.fields &&
+      state.form.userForm.fields.password &&
+      state.form.userForm.fields.password.touched && 
+      !passwordValue;
+
+    return {
+      sexIsMale,
+      passwordTypeIsLink,
+      passwordError
+    }
+  }
+)(UserForm)
+
+export default UserForm
