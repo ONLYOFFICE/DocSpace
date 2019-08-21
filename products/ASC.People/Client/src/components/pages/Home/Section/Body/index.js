@@ -16,8 +16,8 @@ import {
   selectUser,
   deselectUser,
   setSelection,
-  fetchPeople,
-  updateUserStatus
+  updateUserStatus,
+  resetFilter
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
@@ -92,27 +92,23 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDisableClick = user => {
-    const { updateUserStatus, filter, fetchPeople, onLoading } = this.props;
+    const { updateUserStatus, onLoading } = this.props;
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id])
-      .then(fetchPeople(filter))
-      .finally(() => {
-        onLoading(false);
-        toastr.success("Context action: Enable");
-      });
+      .then(() => toastr.success("SUCCESS Context action: Disable"))
+      .catch((e) => toastr.error("FAILED Context action: Disable", e))
+      .finally(() => onLoading(false));
   };
 
   onEnableClick = user => {
-    const { updateUserStatus, filter, fetchPeople, onLoading } = this.props;
+    const { updateUserStatus, onLoading } = this.props;
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id])
-      .then(fetchPeople(filter))
-      .finally(() => {
-        onLoading(false);
-        toastr.success("Context action: Enable");
-      });
+      .then(() => toastr.success("SUCCESS Context action: Enable"))
+      .catch((e) => toastr.error("FAILED Context action: Enable", e))
+      .finally(() => onLoading(false));
   };
 
   onReassignDataClick = () => {
@@ -242,10 +238,9 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onResetFilter = () => {
-    const { filter, fetchPeople, onLoading } = this.props;
-    const newFilter = filter.clone(true);
+    const { onLoading } = this.props;
     onLoading(true);
-    fetchPeople(newFilter).finally(() => onLoading(false));
+    resetFilter().finally(() => onLoading(false));
   };
 
   render() {
@@ -309,12 +304,11 @@ const mapStateToProps = state => {
     selected: state.people.selected,
     users: state.people.users,
     viewer: state.auth.user,
-    settings: state.auth.settings,
-    filter: state.people.filter
+    settings: state.auth.settings
   };
 };
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, fetchPeople, updateUserStatus }
+  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter }
 )(withRouter(withTranslation()(SectionBodyContent)));
