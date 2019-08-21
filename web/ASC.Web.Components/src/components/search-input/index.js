@@ -204,7 +204,10 @@ class SearchInput extends React.Component  {
           groupLabel: filterItem.label,
           inSubgroup: true
         };
-        curentFilterItems.push(selectFilterItem);
+        if(indexFilterItem != -1)
+          curentFilterItems.splice(indexFilterItem, 0, selectFilterItem );
+        else
+          curentFilterItems.push(selectFilterItem);
         this.setState({ filterItems: curentFilterItems}); 
         this.isUpdateFilter = false;
       }else if(subgroupItems.length == 1){
@@ -216,7 +219,10 @@ class SearchInput extends React.Component  {
           groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
           inSubgroup: true
         };
-        curentFilterItems.push(selectFilterItem);
+        if(indexFilterItem != -1)
+          curentFilterItems.splice(indexFilterItem, 0, selectFilterItem );
+        else
+          curentFilterItems.push(selectFilterItem);
         let clone = cloneProperty(curentFilterItems.filter(function(item) {
           return item.key != '-1';
         }));
@@ -252,7 +258,10 @@ class SearchInput extends React.Component  {
         label:  filterItem.label,
         groupLabel: filterItem.inSubgroup ? filterItems.find(x => x.subgroup === filterItem.group).label : filterItems.find(x => x.key === filterItem.group).label
       };
-      curentFilterItems.push(selectFilterItem);
+      if(indexFilterItem != -1)
+          curentFilterItems.splice(indexFilterItem, 0, selectFilterItem );
+        else
+          curentFilterItems.push(selectFilterItem);
       this.setState({ filterItems: curentFilterItems}); 
 
       let clone = cloneProperty(curentFilterItems.filter(function(item) {
@@ -406,21 +415,25 @@ class SearchInput extends React.Component  {
       this.setState({ openFilterItems: []});
       this.setState({ hideFilterItems: this.state.filterItems.slice()});
     }else if(filterWidth > fullWidth/2){
-      let newOpenFilterItems = [];
+      let newOpenFilterItems = cloneProperty(this.state.filterItems);
       let newHideFilterItems = [];
-      let openFilterWidth = 0;
 
-      let sortArr = Array.from(this.filterWrapper.current.children).sort(function(a,b) {
-        return a.getBoundingClientRect().width - b.getBoundingClientRect().width;
+      let elementsWidth = 0;
+      Array.from(this.filterWrapper.current.children).forEach(element => {
+        elementsWidth = elementsWidth + element.getBoundingClientRect().width;
       });
-      sortArr.forEach(element => {
-        openFilterWidth = openFilterWidth + element.getBoundingClientRect().width;
-        if(openFilterWidth < fullWidth/3){
-          newOpenFilterItems.push(this.state.filterItems.find(x => x.key === element.getAttribute('id')));
-        }else{
-          newHideFilterItems.push(this.state.filterItems.find(x => x.key === element.getAttribute('id')));
-        }
-      });
+      
+      if(elementsWidth >= fullWidth/3){
+        let filterArr = Array.from(this.filterWrapper.current.children);
+        for(let i = 0; i < filterArr.length; i++){
+          if(elementsWidth > fullWidth/3){
+            elementsWidth = elementsWidth - filterArr[i].getBoundingClientRect().width;
+            newHideFilterItems.push(this.state.filterItems.find(x => x.key === filterArr[i].getAttribute('id')));
+            newOpenFilterItems.splice(newOpenFilterItems.findIndex(x => x.key === filterArr[i].getAttribute('id')), 1);
+          }
+        };
+      }
+
       this.setState({ openFilterItems: newOpenFilterItems});
       this.setState({ hideFilterItems: newHideFilterItems});
     }else{
