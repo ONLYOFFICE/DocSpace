@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Field, reduxForm, formValueSelector } from 'redux-form'
-import { Avatar, Button, TextInput, Textarea, DateInput, Label, RadioButton, Text } from 'asc-web-components'
+import { device, Avatar, Button, TextInput, Textarea, DateInput, Label, RadioButton, Text } from 'asc-web-components'
 import submit from './submit'
 import validate from './validate'
 import styled from 'styled-components';
@@ -16,18 +16,6 @@ const getUserRole = user => {
 };
 
 const onEditAvatar = () => {};
-
-const size = {
-  mobile: "375px",
-  tablet: "768px",
-  desktop: "1024px"
-};
-
-const device = {
-  mobile: `(max-width: ${size.mobile})`,
-  tablet: `(max-width: ${size.tablet})`,
-  desktop: `(max-width: ${size.desktop})`
-};
 
 const MainContainer = styled.div`
   display: flex;
@@ -118,9 +106,13 @@ const renderRadioField = ({ input, label, isChecked }) => (
   <RadioButton {...input} label={label} isChecked={isChecked}/> 
 )
 
+const renderTextareaField = ({ input }) => (
+  <Textarea {...input} /> 
+)
+
 let UserForm = props => {
   const { t } = useTranslation();
-  const { error, handleSubmit, submitting, initialValues, sexIsMale, passwordTypeIsLink, passwordError, userType, history } = props;
+  const { error, handleSubmit, submitting, initialValues, sexValue, passwordTypeValue, passwordError, userType, history } = props;
 
   const onCancel = useCallback(() => {
     history.goBack();
@@ -174,27 +166,27 @@ let UserForm = props => {
             <Label text={`${t('Resource:Password')}:`} isRequired={true} error={passwordError} className="field-label"/>
             <FieldBody>
               <RadioGroupFieldBody>
-                <Field component={renderRadioField} type="radio" name="passwordType" value="link" label={t('Resource:ActivationLink')} isChecked={passwordTypeIsLink}/>
-                <Field component={renderRadioField} type="radio" name="passwordType" value="temp" label={t('Resource:TemporaryPassword')} isChecked={!passwordTypeIsLink}/>
+                <Field component={renderRadioField} type="radio" name="passwordType" value="link" label={t('Resource:ActivationLink')} isChecked={passwordTypeValue == "link"} />
+                <Field component={renderRadioField} type="radio" name="passwordType" value="temp" label={t('Resource:TemporaryPassword')} isChecked={passwordTypeValue == "temp"} />
               </RadioGroupFieldBody>
               <Field
                 name="password"
                 component={renderPasswordField}
-                isDisabled={passwordTypeIsLink}
+                isDisabled={passwordTypeValue == "link"}
               />
             </FieldBody>
           </FieldContainer>
 
           <Field
-            name="birthDate"
+            name="birthday"
             component={renderDateField}
             label={`${t('Resource:Birthdate')}:`}
           />
           <FieldContainer>
             <Label text={`${t('Resource:Sex')}:`} className="field-label"/>
             <RadioGroupFieldBody>
-              <Field component={renderRadioField} type="radio" name="sex" value="male" label={t('Resource:SexMale')} isChecked={sexIsMale}/>
-              <Field component={renderRadioField} type="radio" name="sex" value="female" label={t('Resource:SexFemale')} isChecked={!sexIsMale}/>
+              <Field component={renderRadioField} type="radio" name="sex" value="male" label={t('Resource:SexMale')} isChecked={sexValue == "male"}/>
+              <Field component={renderRadioField} type="radio" name="sex" value="female" label={t('Resource:SexFemale')} isChecked={sexValue == "female"}/>
             </RadioGroupFieldBody>
           </FieldContainer>
           <Field
@@ -208,7 +200,7 @@ let UserForm = props => {
             label={`${t('Resource:Location')}:`}
           />
           <Field
-            name="position"
+            name="title"
             component={renderTextField}
             label={`${t('Resource:Position')}:`}
           />
@@ -216,7 +208,10 @@ let UserForm = props => {
       </MainContainer>
       <div>
         <Text.ContentHeader>{t('Resource:Comments')}</Text.ContentHeader>
-        <Field component={Textarea} name="comments" />
+        <Field 
+          name="notes"
+          component={renderTextareaField}
+        />
       </div>
       <div>
         {error && <strong>{error}</strong>}
@@ -240,23 +235,23 @@ const selector = formValueSelector('userForm')
 UserForm = connect(
   state => {
 
-    const sexIsMale = selector(state, 'sex') == 'male';
+    const sexValue = selector(state, 'sex') || 'male';
 
-    const passwordTypeIsLink = selector(state, 'passwordType') == 'link';
+    const passwordTypeValue = selector(state, 'passwordType') || 'link';
 
-    const passwordValue = selector(state, 'password');
-    
-    const passwordError = state &&
+    const passwordError = 
+      passwordTypeValue != "link" &&
+      state &&
       state.form &&
       state.form.userForm &&
       state.form.userForm.fields &&
       state.form.userForm.fields.password &&
       state.form.userForm.fields.password.touched && 
-      !passwordValue;
+      !selector(state, 'password');
 
     return {
-      sexIsMale,
-      passwordTypeIsLink,
+      sexValue,
+      passwordTypeValue,
       passwordError
     }
   }

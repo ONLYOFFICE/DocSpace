@@ -1,3 +1,4 @@
+export { default as device } from './components/device'
 export { default as Button } from './components/button'
 export { default as TextInput } from './components/text-input'
 export { default as DateInput } from './components/date-input'
