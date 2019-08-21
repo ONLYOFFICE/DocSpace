@@ -308,7 +308,7 @@ const validate = (values) => {
   if (!values.email)
     errors.email = requiredFieldText;
 
-  if (!values.password)
+  if (values.passwordType == "temp" && !values.password)
     errors.password = requiredFieldText;
 
   return errors
