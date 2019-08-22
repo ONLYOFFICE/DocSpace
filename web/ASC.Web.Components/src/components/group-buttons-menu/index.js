@@ -65,11 +65,11 @@ class GroupButtonsMenu extends React.PureComponent {
       visible: true
     }
   
-    this.throttledResize = _.throttle(this.updateMenu, 300);
+    this.throttledResize = throttle(this.updateMenu, 300);
   }
 
   isArrayEqual = (x, y) => {
-    return _(x).differenceWith(y, _.isEqual).isEmpty();
+    return isEmpty(differenceWith(x, y, isEqual));
   };
 
   closeMenu = (e) => {
