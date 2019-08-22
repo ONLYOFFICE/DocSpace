@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, text } from '@storybook/addon-knobs/react';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
 import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme'
 import styled from '@emotion/styled';
@@ -11,100 +11,119 @@ const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
 `;
 
-const groupItems = [
-  {
-    label: 'Select',
-    isDropdown: true,
-    isSeparator: true,
-    isSelect: true,
-    fontWeight: 'bold',
-    children: [
-      <DropDownItem key='aaa' label='aaa' />,
-      <DropDownItem key='bbb' label='bbb' />,
-      <DropDownItem key='ccc' label='ccc' />,
-    ],
-    onSelect: (a) => console.log(a)
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    disabled: true,
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    disabled: true,
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  },
-  {
-    label: 'Menu item',
-    onClick: () => console.log('Menu item action')
-  }
-];
-
 storiesOf('Components|GroupButtonsMenu', module)
   .addDecorator(withReadme(Readme))
   .addDecorator(withKnobs)
   .add('base', () => {
+    const disableEven = boolean('disable even', false);
+    const disableOdd = boolean('disable odd', false);
+
+    const groupItems = [
+      {
+        label: 'Select',
+        isDropdown: true,
+        isSeparator: true,
+        isSelect: true,
+        fontWeight: 'bold',
+        children: [
+          <DropDownItem key='aaa' label='aaa' />,
+          <DropDownItem key='bbb' label='bbb' />,
+          <DropDownItem key='ccc' label='ccc' />,
+        ],
+        onSelect: (a) => console.log(a)
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableEven,
+        onClick: () => console.log('Menu item action')
+      },
+      {
+        label: 'Menu item',
+        disabled: disableOdd,
+        onClick: () => console.log('Menu item action')
+      }
+    ];
+
     return (
       <BooleanValue>
         {({ value: visible, toggle }) => (
