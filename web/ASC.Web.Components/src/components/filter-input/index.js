@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import SearchInput from '../search-input';
 import ComboBox from '../combobox'
 import IconButton from '../icon-button';
+import isEqual from 'lodash/isEqual';
 
 const StyledFilterInput = styled.div`
     min-width: 380px;
@@ -12,56 +13,36 @@ const StyledIconButton = styled.div`
     transform: ${state => state.sortDirection ? 'scale(1, -1)' : 'scale(1)'};
 `;
 const StyledSearchInput = styled.div`
-  display: inline-block;
+  display: block;
   float: left;
   width: calc(80% - 8px);
 `;
 
 const StyledComboBox = styled(ComboBox)`
-  display: inline-block;
-  float left;
+  display: block;
+  float: left;
   width: 20%;
   margin-left: 8px;
 `;
 
-class PureComboBox extends React.Component {
+class SortComboBox extends React.Component {
     constructor(props) {
         super(props);
         this.onSelect = this.onSelect.bind(this);
     }
-    onSelect(item){
-        this.props.onSelect(item); 
+    onSelect(item) {
+        this.props.onSelect(item);
     }
-    shouldComponentUpdate(nextProps, nextState) { 
-        let isNeedUpdate = false;
-        for (let propsKey in this.props) {
-            if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
-                isNeedUpdate = true;
-                break;
-            }else if(typeof this.props[propsKey] == "object" && propsKey == 'options'){
-                if(this.props[propsKey].length != nextProps[propsKey].length){
-                    isNeedUpdate = true;
-                    break;
-                }else{
-                    for(let i=0; i < this.props[propsKey].length; i++){
-                        if(nextProps[propsKey].findIndex(x => x.key === this.props[propsKey][i].key) == -1){
-                            isNeedUpdate = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        if(isNeedUpdate) return true;
-        else return false;
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(this.props, nextProps);
     }
     render() {
-        return(
+        return (
             <StyledComboBox
-                    options={this.props.options}
-                    isDisabled={this.props.isDisabled}
-                    onSelect={this.onSelect}
-                    selectedOption={this.props.selectedOption}
+                options={this.props.options}
+                isDisabled={this.props.isDisabled}
+                onSelect={this.onSelect}
+                selectedOption={this.props.selectedOption}
             >
                 <StyledIconButton sortDirection={this.props.sortDirection}>
                     <IconButton
@@ -84,22 +65,13 @@ class FilterInput extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sortDirection: props.selectedFilterData ? props.selectedFilterData.sortDirection == "asc" ? true : false : false,
-            sortId: props.selectedFilterData && this.props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : this.props.getSortData().length > 0 ? this.props.getSortData()[0].key : "",
-            filterValue: props.selectedFilterData ? props.selectedFilterData.filterValue :  [],
-            searchText: props.selectedFilterData ? props.selectedFilterData.inputValue : this.props.value
+            sortDirection: props.selectedFilterData.sortDirection == "asc" ? true : false,
+            sortId: props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : props.getSortData().length > 0 ? props.getSortData()[0].key : "",
+            filterValue: props.selectedFilterData.filterValue,
+            searchText: props.selectedFilterData.inputValue || props.value
         };
 
         this.timerId = null;
-        this.isNew = true;
-        this.isNeedUpdate = false;
-
-        this.updatedProps = {
-            sortDirection: false,
-            sortId:  false,
-            filterValue: false,
-            searchText: false
-        };
 
         this.onClickSortItem = this.onClickSortItem.bind(this);
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
@@ -107,13 +79,13 @@ class FilterInput extends React.Component {
         this.onChangeFilter = this.onChangeFilter.bind(this);
         this.setFilterTimer = this.setFilterTimer.bind(this);
         this.onSearchChanged = this.onSearchChanged.bind(this);
-        
+
         this.getDefaultSelectedIndex = this.getDefaultSelectedIndex.bind(this);
 
     }
-    getDefaultSelectedIndex(){
+    getDefaultSelectedIndex() {
         const sortData = this.props.getSortData();
-        if(sortData.length > 0){
+        if (sortData.length > 0) {
             let defaultIndex = sortData.findIndex(x => x.key === this.state.sortId);
             return defaultIndex != -1 ? defaultIndex : 0;
         }
@@ -124,12 +96,11 @@ class FilterInput extends React.Component {
         this.onFilter(this.state.filterValue, item.key, this.state.sortDirection ? "asc" : "desc");
     }
     onSortDirectionClick(e) {
-        this.isNeedUpdate = true;
         this.onFilter(this.state.filterValue, this.state.sortId, !this.state.sortDirection ? "asc" : "desc");
         this.setState({ sortDirection: !this.state.sortDirection });
     }
     onChangeFilter(result) {
-        this.setState({ 
+        this.setState({
             searchText: result.inputValue,
             filterValue: result.filterValue,
         });
@@ -160,77 +131,32 @@ class FilterInput extends React.Component {
     }
 
     onSearchChanged(e) {
-        this.isNeedUpdate = true;
         this.setState({ searchText: e.target.value });
 
         if (this.props.autoRefresh)
             this.setFilterTimer();
     }
-    componentDidUpdate(){
-        if(this.isNeedUpdate){
+    shouldComponentUpdate(nextProps, nextState) {
+        if (!isEqual(this.props.selectedFilterData, nextProps.selectedFilterData)) {
             this.setState(
                 {
-                    sortDirection: this.updatedProps.sortDirection ? this.props.selectedFilterData.sortDirection == "asc" ? true : false : this.state.sortDirection,
-                    sortId: this.updatedProps.sortId ? this.props.getSortData().findIndex(x => x.key === this.props.selectedFilterData.sortId) != -1 ? this.props.selectedFilterData.sortId : "" : this.state.sortId,
-                    filterValue: this.updatedProps.filterValue && this.props.selectedFilterData.filterValue ? this.props.selectedFilterData.filterValue : this.state.filterValue,
-                    searchText: this.updatedProps.searchText ? this.props.selectedFilterData.inputValue ? this.props.selectedFilterData.inputValue : this.props.value : this.state.searchText
+                    sortDirection: nextProps.selectedFilterData.sortDirection === "asc" ? true : false,
+                    sortId: this.props.getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
+                    filterValue: nextProps.selectedFilterData.filterValue || this.state.filterValue,
+                    searchText: nextProps.selectedFilterData.inputValue || this.props.value
                 }
             );
-            this.updatedProps = {
-                sortDirection: false,
-                sortId:  false,
-                filterValue: false,
-                searchText: false
-            };
+            return true;
         }
-    }
-    shouldComponentUpdate(nextProps, nextState){
-        if(!this.isNeedUpdate){
-            for (let propsKey in this.props) {
-                if(typeof this.props[propsKey] != "function" && typeof this.props[propsKey] != "object" && this.props[propsKey] != nextProps[propsKey]){
-                  this.isNeedUpdate = true;
-                  break;
-                }
-            }
-            if(nextProps.selectedFilterData && this.props.selectedFilterData){
-                if(!this.props.selectedFilterData.filterValue || !nextProps.selectedFilterData.filterValue){
-                    this.updatedProps.filterValue = true;
-                    this.isNeedUpdate = true;
-                }else{
-                    if(this.props.selectedFilterData.filterValue.length != nextProps.selectedFilterData.filterValue.length){
-                        this.updatedProps.filterValue = true;
-                        this.isNeedUpdate = true;
-                    }else{
-                      let newFilterItems = nextProps.selectedFilterData.filterValue;
-                      let oldFilterItems = this.props.selectedFilterData.filterValue;
+        if (this.props.id != nextProps.id ||
+            this.props.isDisabled != nextProps.isDisabled ||
+            this.props.size != nextProps.size ||
+            this.props.placeholder != nextProps.placeholder ||
+            this.props.value != nextProps.value)
 
-                      for(let i = 0; i < newFilterItems.length; i++){
-                        if(oldFilterItems.find(x => (x.key === newFilterItems[i].key && x.group === newFilterItems[i].group)) == undefined){
-                            this.updatedProps.filterValue = true;
-                            this.isNeedUpdate = true;
-                            break;
-                        }
-                      }
-                    }
-                }
-            }
-            if(nextProps.selectedFilterData.inputValue != this.props.selectedFilterData.inputValue){
-                this.updatedProps.searchText = true;
-                this.isNeedUpdate = true;
-            }
-            if(nextProps.selectedFilterData.sortDirection != this.props.selectedFilterData.sortDirection){
-                this.updatedProps.sortDirection = true;
-                this.isNeedUpdate = true;
-            }
-            if(nextProps.selectedFilterData.sortId != this.props.selectedFilterData.sortId){
-                this.updatedProps.sortId = true;
-                this.isNeedUpdate = true;
-            }
-            if(!this.isNeedUpdate) return false;
-            else return true;
-        }
-        this.isNeedUpdate = false;
-        return true;
+            return true;
+
+        return !isEqual(this.state, nextState);
     }
 
     render() {
@@ -254,7 +180,7 @@ class FilterInput extends React.Component {
                     />
                 </StyledSearchInput>
 
-                <PureComboBox
+                <SortComboBox
                     options={this.props.getSortData()}
                     isDisabled={this.props.isDisabled}
                     onSelect={this.onClickSortItem}
@@ -271,13 +197,18 @@ class FilterInput extends React.Component {
 FilterInput.protoTypes = {
     autoRefresh: PropTypes.bool,
     refreshTimeout: PropTypes.number,
-    selectedFilterData:  PropTypes.object,
+    selectedFilterData: PropTypes.object,
 };
 
 FilterInput.defaultProps = {
     autoRefresh: true,
     refreshTimeout: 1000,
-    selectedFilterData: {}
+    selectedFilterData: {
+        sortDirection: false,
+        sortId: '',
+        filterValue: [],
+        searchText: ''
+    }
 };
 
 export default FilterInput;

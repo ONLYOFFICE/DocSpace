@@ -36,6 +36,7 @@ class FilterStory extends React.Component  {
     super(props);
     this.state = {
       selectedFilterData: {
+        inputValue: "text"
       }
     };
     this.buttonClick = this.buttonClick.bind(this);
