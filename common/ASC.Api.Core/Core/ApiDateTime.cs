@@ -328,7 +328,20 @@ namespace ASC.Api.Core
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (reader.ValueType != null)
+            {
+                if (reader.ValueType.Name == "String")
+                {
+                    DateTime.TryParseExact(reader.Value?.ToString(), "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var result);
+                    return new ApiDateTime(result, TimeSpan.Zero);
+                }
+                else if (reader.ValueType.Name == "DateTime")
+                {
+                    return new ApiDateTime((DateTime)reader.Value, TimeSpan.Zero);
+                }
+            }
+
+            return DateTime.MinValue;
         }
 
         public override bool CanConvert(Type objectType)
