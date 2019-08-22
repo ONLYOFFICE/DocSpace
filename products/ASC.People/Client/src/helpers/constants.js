@@ -19,3 +19,12 @@ export const EmployeeStatus = Object.freeze({
     Active: 1,
     Disabled: 2
   });
+
+/**
+ * Enum for employee status.
+ * @readonly
+ */
+export const EmployeeType = Object.freeze({
+  User: 1,
+  Guest: 2
+});

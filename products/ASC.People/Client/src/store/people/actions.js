@@ -120,6 +120,21 @@ export function updateUserStatus(status, userIds) {
   };
 }
 
+export function updateUserType(type, userIds) {
+  return dispatch => {
+    return api.updateUserType(type, userIds).then(res => {
+      if (res && res.data && res.data.error && res.data.error.message)
+        throw res.data.error.message;
+
+      const users = res.data.response;
+
+      users.forEach(user => {
+        dispatch(setUser(user));
+      });
+    });
+  };
+}
+
 export function resetFilter() {
   return (dispatch, getState) => {
     const { people } = getState();
