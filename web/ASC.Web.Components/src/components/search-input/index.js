@@ -167,6 +167,7 @@ class SearchInput extends React.Component  {
     this.isNew = true;
 
     this.state = {
+      inputValue: props.value,
       filterItems: props.selectedFilterData ? getDefaultFilterData() : [],
       openFilterItems: [],
       hideFilterItems: []
