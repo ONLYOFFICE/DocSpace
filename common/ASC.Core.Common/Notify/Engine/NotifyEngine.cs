@@ -529,7 +529,7 @@ namespace ASC.Notify.Engine
                         pattern = apProvider.GetPattern(request.NotifyAction, senderName);
                     }
 
-                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.Name, senderName));
+                    request.Patterns[i] = pattern ?? throw new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction.ID, senderName));
                 }
             }
         }

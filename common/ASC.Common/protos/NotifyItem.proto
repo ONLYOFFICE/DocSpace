@@ -15,7 +15,6 @@ message NotifyItem {
 
 message NotifyActionItem {
     string ID = 1;
-    string Name = 2;
 }
 
 message Recipient {
