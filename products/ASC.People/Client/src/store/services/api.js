@@ -80,3 +80,9 @@ export function updateUserStatus(status, userIds) {
     ? fakeApi.updateUserStatus(status, userIds)
     : axios.put(`${API_URL}/people/status/${status}`, { userIds });
 }
+
+export function updateUserType(type, userIds) {
+  return IS_FAKE
+    ? fakeApi.updateUserType(type, userIds)
+    : axios.put(`${API_URL}/people/type/${type}`, { userIds });
+}

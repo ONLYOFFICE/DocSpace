@@ -1133,7 +1133,7 @@ namespace ASC.Web.Studio.Core.Notify
                         if (action == null) continue;
 
                         log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
-                              user.Email, action.Name, culture, tenant.TenantId, user.GetCulture(), user.CreateDate, scheduleDate.Date);
+                              user.Email, action.ID, culture, tenant.TenantId, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                         sendCount++;
 

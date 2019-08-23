@@ -312,3 +312,50 @@ export function updateUserStatus(status, userIds) {
     }
   ]);
 }
+
+export function updateUserType(type, userIds) {
+  return fakeResponse([
+    {
+      id: userIds[0],
+      userName: "Mike.Zanyatski",
+      isVisitor: type === 1 ? false : true,
+      firstName: "Mike",
+      lastName: "Zanyatski",
+      email: "my@gmail.com",
+      birthday: "2019-08-19T01:39:25.3240031Z",
+      sex: "male",
+      status: 1,
+      activationStatus: 0,
+      terminated: "2019-08-19T01:39:25.3240031Z",
+      department: "Marketing",
+      workFrom: "2019-08-19T01:39:25.3240031Z",
+      location: "Palo Alto",
+      notes: "Notes to worker",
+      displayName: null,
+      title: "Manager",
+      contacts: [
+        {
+          type: "GTalk",
+          value: "my@gmail.com"
+        }
+      ],
+      groups: [
+        {
+          id: "00000000-0000-0000-0000-000000000000",
+          name: "Group Name",
+          manager: "Jake.Zazhitski"
+        }
+      ],
+      avatarMedium: "url to medium avatar",
+      avatar: "url to big avatar",
+      isAdmin: false,
+      isLDAP: false,
+      listAdminModules: ["projects", "crm"],
+      isOwner: false,
+      cultureName: "en-EN",
+      isSSO: false,
+      avatarSmall: "url to small avatar",
+      profileUrl: ""
+    }
+  ]);
+}

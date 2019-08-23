@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { getSelectedGroup, getSelectionIds } from '../../../../../store/people/selectors';
 import { isAdmin } from '../../../../../store/auth/selectors';
 import { withTranslation } from 'react-i18next';
-import { updateUserStatus } from '../../../../../store/people/actions';
-import { EmployeeStatus } from '../../../../../helpers/constants';
+import { updateUserStatus, updateUserType } from '../../../../../store/people/actions';
+import { EmployeeStatus, EmployeeType } from '../../../../../helpers/constants';
 
 const contextOptions = () => {
   return [
@@ -38,7 +38,8 @@ const SectionHeaderContent = ({
     isAdmin,
     t,
     selection,
-    updateUserStatus
+    updateUserStatus,
+    updateUserType
   }) => {
     const selectedUserIds = getSelectionIds(selection);
     console.log("SectionHeaderContent render", selection, selectedUserIds);
@@ -52,6 +53,16 @@ const SectionHeaderContent = ({
       updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
           toastr.success("Set disabled action"); 
     }, [selectedUserIds, updateUserStatus]);
+
+    const onSetEmployee = useCallback(() => { 
+      updateUserType(EmployeeType.User, selectedUserIds);
+      toastr.success("Set user(s) as employees"); 
+    }, [selectedUserIds, updateUserType]);
+
+    const onSetGuest = useCallback(() => { 
+      updateUserType(EmployeeType.Guest, selectedUserIds);
+          toastr.success("Set user(s) as guests"); 
+    }, [selectedUserIds, updateUserType]);
 
     const menuItems = [
       {
@@ -70,12 +81,12 @@ const SectionHeaderContent = ({
       {
         label: "Make employee",
         disabled: !selection.length,
-        onClick: toastr.success.bind(this, "Make employee action")
+        onClick: onSetEmployee
       },
       {
         label: "Make guest",
         disabled: !selection.length,
-        onClick: toastr.success.bind(this, "Make guest action")
+        onClick: onSetGuest
       },
       {
         label: "Set active",
@@ -147,4 +158,4 @@ const SectionHeaderContent = ({
     }
   }
 
-export default connect(mapStateToProps, { updateUserStatus })(withTranslation()(SectionHeaderContent));
+export default connect(mapStateToProps, { updateUserStatus, updateUserType })(withTranslation()(SectionHeaderContent));

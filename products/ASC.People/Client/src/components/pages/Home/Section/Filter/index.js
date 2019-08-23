@@ -152,7 +152,7 @@ const SectionFilterContent = ({
       { key: "user", group: "filter-type", label: "User" },
       { key: "guest", group: "filter-type", label: "Guest" },
       {
-        key: "filter-group",
+        key: "filter-other",
         group: "filter-other",
         label: t("PeopleResource:LblOther"),
         isHeader: true

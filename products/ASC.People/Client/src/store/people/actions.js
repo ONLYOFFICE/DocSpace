@@ -47,9 +47,19 @@ export function setSelected(selected) {
 }
 
 export function selectGroup(groupId) {
-  return {
-    type: SELECT_GROUP,
-    groupId
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { filter } = people;
+
+    let newFilter = filter.clone();
+    newFilter.group = groupId;
+
+    fetchPeopleAsync(dispatch, newFilter);
+
+    return dispatch({
+      type: SELECT_GROUP,
+      groupId
+    });
   };
 }
 
@@ -96,19 +106,32 @@ export async function fetchPeopleAsync(dispatch, filter = null) {
 }
 
 export function updateUserStatus(status, userIds) {
-  return (dispatch) => {
-    return api
-      .updateUserStatus(status, userIds)
-      .then(res => {
-        if (res && res.data && res.data.error && res.data.error.message)
-          throw res.data.error.message;
+  return dispatch => {
+    return api.updateUserStatus(status, userIds).then(res => {
+      if (res && res.data && res.data.error && res.data.error.message)
+        throw res.data.error.message;
 
-        const users = res.data.response;
+      const users = res.data.response;
 
-        users.forEach(user => {
-          dispatch(setUser(user));
-        });
+      users.forEach(user => {
+        dispatch(setUser(user));
       });
+    });
+  };
+}
+
+export function updateUserType(type, userIds) {
+  return dispatch => {
+    return api.updateUserType(type, userIds).then(res => {
+      if (res && res.data && res.data.error && res.data.error.message)
+        throw res.data.error.message;
+
+      const users = res.data.response;
+
+      users.forEach(user => {
+        dispatch(setUser(user));
+      });
+    });
   };
 }
 
