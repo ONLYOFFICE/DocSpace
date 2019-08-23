@@ -96,7 +96,7 @@ const renderPasswordField = ({ input, isDisabled }) => (
 
 const renderDateField = ({ input, label, isRequired, meta: { touched, error } }) => (
   <FieldContainer>
-    <Label isRequired={isRequired} error={!!(touched && error)} text={label} className="field-label"/>
+    <Label isRequired={isRequired} error={touched && !!error} text={label} className="field-label"/>
     <FieldBody>
       <DateInput {...input} selected={input.value instanceof Date ? input.value : undefined}/>
     </FieldBody>
@@ -154,21 +154,31 @@ let UserForm = (props) => {
     createProfile
   } = props;
 
+  const employeeWrapperToMemberModel = (profile) => {
+    const comment = profile.notes;
+    const department = profile.groups ? profile.groups.map(group => group.id) : [];
+    const worksFrom = profile.workFrom;
+
+    return {...profile, comment, department, worksFrom};
+  }
+
   const onCancel = useCallback(() => {
     history.goBack();
   }, [history]);
 
   const onSubmit = useCallback(async (values) => {
       try {
+        const member = employeeWrapperToMemberModel(values);
+
         if (values.id) {
-          await updateProfile(values);
+          await updateProfile(member);
         } else {
-          await createProfile(values);
+          await createProfile(member);
         }
+
         toastr.success("Success");
         history.goBack();
       } catch(error) {
-        console.error(error);
         toastr.error(error.message);
       }
   }, [history, updateProfile, createProfile]);
@@ -231,7 +241,7 @@ let UserForm = (props) => {
                   name="passwordType"
                   value="link"
                   label={t("Resource:ActivationLink")}
-                  isChecked={passwordTypeValue == "link"}
+                  isChecked={passwordTypeValue === "link"}
                 />
                 <Field
                   component={renderRadioField}
@@ -239,13 +249,13 @@ let UserForm = (props) => {
                   name="passwordType"
                   value="temp"
                   label={t("Resource:TemporaryPassword")}
-                  isChecked={passwordTypeValue == "temp"}
+                  isChecked={passwordTypeValue === "temp"}
                 />
               </RadioGroupFieldBody>
               <Field
                 name="password"
                 component={renderPasswordField}
-                isDisabled={passwordTypeValue == "link"}
+                isDisabled={passwordTypeValue === "link"}
               />
             </FieldBody>
           </FieldContainer>
@@ -266,7 +276,7 @@ let UserForm = (props) => {
                 name="sex"
                 value="male"
                 label={t("Resource:SexMale")}
-                isChecked={sexValue == "male"}
+                isChecked={sexValue === "male"}
               />
               <Field
                 component={renderRadioField}
@@ -274,7 +284,7 @@ let UserForm = (props) => {
                 name="sex"
                 value="female"
                 label={t("Resource:SexFemale")}
-                isChecked={sexValue == "female"}
+                isChecked={sexValue === "female"}
               />
             </RadioGroupFieldBody>
           </FieldContainer>
@@ -341,7 +351,7 @@ const validate = (values) => {
   if (!values.email)
     errors.email = requiredFieldText;
 
-  if (values.passwordType == "temp" && !values.password)
+  if (values.passwordType === "temp" && !values.password)
     errors.password = requiredFieldText;
 
   return errors
@@ -359,7 +369,7 @@ const mapStateToProps = (state) => {
     const sexValue = selector(state, "sex") || "male";
     const passwordTypeValue = selector(state, "passwordType") || "link";
     const passwordError = 
-      passwordTypeValue != "link" &&
+      passwordTypeValue !== "link" &&
       state &&
       state.form &&
       state.form.userForm &&

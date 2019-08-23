@@ -22,7 +22,7 @@ export function resetProfile() {
 function checkResponseError(res) {
     if(res && res.data && res.data.error){
         console.error(res.data.error);
-        throw res.data.error.message;
+        throw new Error(res.data.error.message);
     }
 }
 
