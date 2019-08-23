@@ -1,5 +1,5 @@
 ﻿syntax = "proto3";
-
+import "google/protobuf/wrappers.proto";
 package ASC.Notify.Model;
 
 message NotifyItem {
@@ -19,7 +19,7 @@ message NotifyActionItem {
 
 message Recipient {
     string ID = 1;
-    string Name = 2;
+    google.protobuf.StringValue Name = 2;
     bool CheckActivation = 3;
     repeated string Addresses = 4;
 	bool IsGroup = 5;
