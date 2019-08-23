@@ -67,7 +67,7 @@ const SectionFilterContent = ({
 }) => {
   const { t } = useTranslation();
   const selectedFilterData = {
-    filterValue: [],
+    filterValues: [],
     sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
     sortId: filter.sortBy
   };
@@ -75,28 +75,28 @@ const SectionFilterContent = ({
   selectedFilterData.inputValue = filter.search;
 
   if (filter.employeeStatus) {
-    selectedFilterData.filterValue.push({
+    selectedFilterData.filterValues.push({
       key: `${filter.employeeStatus}`,
       group: "filter-status"
     });
   }
 
   if (filter.activationStatus) {
-    selectedFilterData.filterValue.push({
+    selectedFilterData.filterValues.push({
       key: `${filter.activationStatus}`,
       group: "filter-email"
     });
   }
 
   if (filter.role) {
-    selectedFilterData.filterValue.push({
+    selectedFilterData.filterValues.push({
       key: filter.role,
       group: "filter-type"
     });
   }
 
   if (filter.group) {
-    selectedFilterData.filterValue.push({
+    selectedFilterData.filterValues.push({
       key: filter.group,
       group: "filter-group"
     });
@@ -152,7 +152,7 @@ const SectionFilterContent = ({
       { key: "user", group: "filter-type", label: "User" },
       { key: "guest", group: "filter-type", label: "Guest" },
       {
-        key: "filter-group",
+        key: "filter-other",
         group: "filter-other",
         label: t("PeopleResource:LblOther"),
         isHeader: true
@@ -176,11 +176,11 @@ const SectionFilterContent = ({
     newFilter.sortBy = data.sortId;
     newFilter.sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
-    newFilter.employeeStatus = getEmployeeStatus(data.filterValue);
-    newFilter.activationStatus = getActivationStatus(data.filterValue);
-    newFilter.role = getRole(data.filterValue);
+    newFilter.employeeStatus = getEmployeeStatus(data.filterValues);
+    newFilter.activationStatus = getActivationStatus(data.filterValues);
+    newFilter.role = getRole(data.filterValues);
     newFilter.search = data.inputValue || null;
-    newFilter.group = getGroup(data.filterValue);
+    newFilter.group = getGroup(data.filterValues);
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));

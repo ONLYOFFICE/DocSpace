@@ -36,6 +36,7 @@ class FilterStory extends React.Component  {
     super(props);
     this.state = {
       selectedFilterData: {
+        inputValue: "text"
       }
     };
     this.buttonClick = this.buttonClick.bind(this);
@@ -43,7 +44,7 @@ class FilterStory extends React.Component  {
   buttonClick(){
     this.setState({ 
       selectedFilterData: {
-        filterValue: [
+        filterValues: [
           {key: "-1", group: "filter-groups"}
         ],
         sortDirection: "asc",

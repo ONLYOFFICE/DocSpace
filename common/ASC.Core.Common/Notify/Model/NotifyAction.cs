@@ -49,12 +49,12 @@ namespace ASC.Notify.Model
 
         public static implicit operator NotifyActionItem(NotifyAction cache)
         {
-            return new NotifyActionItem() { ID = cache.ID, Name = cache.Name };
+            return new NotifyActionItem() { ID = cache.ID };
         }
 
         public static explicit operator NotifyAction(NotifyActionItem cache)
         {
-            return new NotifyAction(cache.ID, cache.Name);
+            return new NotifyAction(cache.ID);
         }
 
         public override bool Equals(object obj)

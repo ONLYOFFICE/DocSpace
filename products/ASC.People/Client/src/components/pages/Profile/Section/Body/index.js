@@ -10,99 +10,86 @@ import {
   Link
 } from "asc-web-components";
 import { connect } from "react-redux";
+import styled from 'styled-components';
 import {
   getUserRole,
   getUserContacts
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 
-const profileWrapper = {
-  display: "flex",
-  alignItems: "flex-start",
-  flexDirection: "row",
-  flexWrap: "wrap"
-};
+const ProfileWrapper = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
 
-const avatarWrapper = {
-  marginRight: "32px",
-  marginBottom: "24px"
-};
+const AvatarWrapper = styled.div`
+  margin-right: 32px;
+  margin-bottom: 24px;
+`;
 
-const editButtonWrapper = {
-  marginTop: "16px",
-  width: "160px"
-};
+const EditButtonWrapper = styled.div`
+  margin-top: 16px;
+  width: 160px;
+`;
 
-const infoWrapper = {
-  display: "inline-flex",
-  marginBottom: "24px"
-};
+const ContactTextTruncate = styled.div`
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
-const textTruncate = {
-  padding: "0 8px",
-  whiteSpace: "nowrap",
-  overflow: "hidden",
-  textOverflow: "ellipsis"
-};
+const ToggleWrapper = styled.div`
+  width: 100%;
+  ${props => props.isSelf && `margin-bottom: 24px;`}
+  ${props => props.isContacts && `margin-top: 24px;`}
+`;
 
-const titlesWrapper = {
-  marginRight: "8px"
-};
+const ContactWrapper = styled.div`
+  display: inline-flex;
+  width: 300px;
+`;
 
-const restMargins = {
-  marginBottom: "0",
-  marginBlockStart: "5px",
-  marginBlockEnd: "0px"
-};
+const InfoContainer = styled.div`
+  margin-bottom: 24px;
+`;
 
-const notesWrapper = {
-  display: "block",
-  marginTop: "24px",
-  width: "100%"
-};
+const InfoItem = styled.div`
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 24px;
+  display: flex;
+  width: 400px;
+`;
 
-/*
-const marginTop24 = {
-  marginTop: "24px"
-};
+const InfoItemLabel = styled.div`
+  width: 120px;
+  white-space: nowrap;
+  color: #A3A9AE;
+`;
 
-const marginTop22 = {
-  marginTop: "22px"
-};
+const InfoItemValue = styled.div`
+  width: 220px;
+`;
 
-const marginTop10 = {
-  marginTop: "10px"
-};
+const IconButtonWrapper = styled.div`
+  ${props => props.isBefore 
+    ? `margin-right: 8px;` 
+    : `margin-left: 8px;`
+  }
 
-const marginLeft18 = {
-  marginLeft: "18px"
-};
-*/
+  display: inline-flex;
 
-const selfToggleWrapper = {
-  width: "100%",
-  marginBottom: "24px"
-};
-
-const contactsToggleWrapper = {
-  width: "100%",
-  marginTop: "24px"
-};
-
-const notesToggleWrapper = {
-  width: "100%"
-};
-
-const contactWrapper = {
-  display: "inline-flex",
-  width: "300px"
-};
-
-const getFormattedDate = date => {
-  if (!date) return;
-  let d = date.slice(0, 10).split("-");
-  return d[1] + "." + d[2] + "." + d[0];
-};
+  :hover {
+    & > div > svg > path {
+      fill: #3B72A7;
+    }
+  }
+`;
 
 const getFormattedDepartments = departments => {
   const splittedDepartments = departments.split(",");
@@ -122,56 +109,186 @@ const getFormattedDepartments = departments => {
 };
 
 const capitalizeFirstLetter = string => {
-  if (!string) return;
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  return string && string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 const createContacts = contacts => {
-  return contacts.map((contact, index) => {
+  const styledContacts = contacts.map((contact, index) => {
     return (
-      <div key={index} style={contactWrapper}>
-        <IconButton
-          color="#333333"
-          size={16}
-          iconName={contact.icon}
-          isFill={true}
-        />
-        <div style={textTruncate}>{contact.value}</div>
-      </div>
+      <ContactWrapper key={index}>
+        <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} />
+        <ContactTextTruncate>{contact.value}</ContactTextTruncate>
+      </ContactWrapper>
     );
   });
+
+  return styledContacts;
+};
+
+const ProfileInfo = (props) => {
+  const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = props.profile;
+  const isAdmin = props.isAdmin;
+  const isSelf = props.isSelf;
+  const { t, i18n } = useTranslation();
+
+  const type = isVisitor ? "Guest" : "Employee";
+  const language = cultureName || currentCulture;
+  const workFromDate = new Date(workFrom).toLocaleDateString(language);
+  const birthDayDate = new Date(birthday).toLocaleDateString(language);
+  const formatedSex = capitalizeFirstLetter(sex);
+  const formatedDepartments = getFormattedDepartments(department);
+
+  const onEmailClick = useCallback(
+    () => window.open("mailto:" + email),
+    [email]
+  );
+
+  return (
+    <InfoContainer>
+      <InfoItem>
+        <InfoItemLabel>
+          {t('Resource:UserType')}:
+        </InfoItemLabel>
+        <InfoItemValue>
+          {type}
+        </InfoItemValue>
+      </InfoItem>
+      {email &&
+        <InfoItem>
+          <InfoItemLabel>
+            {t('Resource:Email')}:
+          </InfoItemLabel>
+          <InfoItemValue>
+            <Link
+              type="page"
+              fontSize={13}
+              isHovered={true}
+              title={email}
+              onClick={onEmailClick}
+            >
+              {activationStatus === 2 && (isAdmin || isSelf) &&
+                <IconButtonWrapper isBefore={true} title='Pending'>
+                  <IconButton color='#C96C27' size={16} iconName='DangerIcon' isFill={true} />
+                </IconButtonWrapper>
+              }
+              {email}
+              {(isAdmin || isSelf) &&
+                <IconButtonWrapper title='Change e-mail' >
+                  <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
+                </IconButtonWrapper>
+              }
+              {activationStatus === 2 && (isAdmin || isSelf) &&
+                <IconButtonWrapper title='Send invitation once again'>
+                  <IconButton color="#A3A9AE" size={16} iconName='FileActionsConvertIcon' isFill={true} />
+                </IconButtonWrapper>
+              }
+            </Link>
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {department &&
+        <InfoItem>
+          <InfoItemLabel>
+            Department:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {formatedDepartments}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {title &&
+        <InfoItem>
+          <InfoItemLabel>
+            Position:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {title}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {(mobilePhone || isSelf) &&
+        <InfoItem>
+          <InfoItemLabel>
+            Phone:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {mobilePhone}
+            {(isAdmin || isSelf) &&
+            <IconButtonWrapper title='Change phone' >
+              <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
+            </IconButtonWrapper>
+            }
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {sex &&
+        <InfoItem>
+          <InfoItemLabel>
+            {t('Resource:Sex')}:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {formatedSex}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {workFrom &&
+        <InfoItem>
+          <InfoItemLabel>
+            Employed since:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {workFromDate}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {birthday &&
+        <InfoItem>
+          <InfoItemLabel>
+            {t('Resource:Birthdate')}:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {birthDayDate}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {location &&
+        <InfoItem>
+          <InfoItemLabel>
+            {t('Resource:Location')}:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {location}
+          </InfoItemValue>
+        </InfoItem>
+      }
+      {isSelf &&
+        <InfoItem>
+          <InfoItemLabel>
+            {t('Resource:Language')}:
+          </InfoItemLabel>
+          <InfoItemValue>
+            {language}
+          </InfoItemValue>
+        </InfoItem>
+      }
+    </InfoContainer>
+  );
 };
 
 const SectionBodyContent = props => {
   const { t, i18n } = useTranslation();
   const { profile, history, settings, isAdmin, viewer } = props;
-  //console.log(props);
+
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
-  const workFrom = getFormattedDate(profile.workFrom);
-  const birthDay = getFormattedDate(profile.birthday);
-  const formatedSex = capitalizeFirstLetter(profile.sex);
-  const formatedDepartments = getFormattedDepartments(profile.department);
   const socialContacts = contacts && createContacts(contacts.social);
   const infoContacts = contacts && createContacts(contacts.contact);
   const isSelf = isMe(viewer, profile.userName);
-
-  const onEmailClick = useCallback(
-    () => window.open("mailto:" + profile.email),
-    [profile.email]
-  );
 
   const onEditSubscriptionsClick = useCallback(
     () => console.log("Edit subscriptions onClick()"),
     []
   );
-
-  /*
-  const onBecomeAffiliateClick = useCallback(
-    () => console.log('Become our Affiliate onClick()'),
-    []
-  );
-  */
 
   const onEditProfileClick = useCallback(
     () => history.push(`${settings.homepage}/edit/${profile.userName}`),
@@ -179,8 +296,8 @@ const SectionBodyContent = props => {
   );
 
   return (
-    <div style={profileWrapper}>
-      <div style={avatarWrapper}>
+    <ProfileWrapper>
+      <AvatarWrapper>
         <Avatar
           size="max"
           role={role}
@@ -188,124 +305,19 @@ const SectionBodyContent = props => {
           userName={profile.displayName}
         />
         {(isAdmin || isSelf) && (
-          <Button
-            style={editButtonWrapper}
-            size="big"
-            label={t("Resource:EditUserDialogTitle")}
-            onClick={onEditProfileClick}
-          />
+          <EditButtonWrapper>
+            <Button
+              size="big"
+              label={t("Resource:EditUserDialogTitle")}
+              onClick={onEditProfileClick}
+            />
+          </EditButtonWrapper>
         )}
-      </div>
-      <div style={infoWrapper}>
-        <div style={titlesWrapper}>
-          <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:UserType')}>
-          {t('Resource:UserType')}:
-          </Text.Body>
-          {profile.email && (
-            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Email')}>
-              {t('Resource:Email')}:
-            </Text.Body>
-          )}
-          {profile.department && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Department">
-              Department:
-            </Text.Body>
-          )}
-          {profile.title && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Position">
-              Position:
-            </Text.Body>
-          )}
-          {profile.mobilePhone && (
-            <Text.Body style={restMargins} color="#A3A9AE" title="Phone">
-              Phone:
-            </Text.Body>
-          )}
-          {profile.sex && (
-            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Sex')}>
-              {t('Resource:Sex')}:
-            </Text.Body>
-          )}
-          {profile.workFrom && (
-            <Text.Body
-              style={restMargins}
-              color="#A3A9AE"
-              title="Employed since"
-            >
-              Employed since:
-            </Text.Body>
-          )}
-          {profile.birthday && (
-            <Text.Body
-              style={restMargins}
-              color="#A3A9AE"
-              title={t('Resource:Birthdate')}
-            >
-              {t('Resource:Birthdate')}:
-            </Text.Body>
-          )}
-          {profile.location && (
-            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Location')}>
-              {t('Resource:Location')}:
-            </Text.Body>
-          )}
-          {isSelf && (
-            <Text.Body style={restMargins} color="#A3A9AE" title={t('Resource:Language')}>
-              {t('Resource:Language')}:
-            </Text.Body>
-          )}
-          {/*{isSelf && <Text.Body style={marginTop24} color='#A3A9AE' title='Affiliate status'>Affiliate status:</Text.Body>}*/}
-        </div>
-        <div>
-          <Text.Body style={restMargins}>
-            {profile.isVisitor ? "Guest" : "Employee"}
-          </Text.Body>
-          <Text.Body style={restMargins}>
-            <Link
-              type="page"
-              fontSize={13}
-              isHovered={true}
-              onClick={onEmailClick}
-            >
-              {profile.email}
-            </Link>
-            {profile.activationStatus === 2 && ` (${t("Resource:PendingTitle")})`}
-          </Text.Body>
-          <Text.Body as="div" style={restMargins}>{formatedDepartments}</Text.Body>
-          <Text.Body style={restMargins}>{profile.title}</Text.Body>
-          <Text.Body style={restMargins}>{profile.mobilePhone}</Text.Body>
-          <Text.Body style={restMargins}>{formatedSex}</Text.Body>
-          <Text.Body style={restMargins}>{workFrom}</Text.Body>
-          <Text.Body style={restMargins}>{birthDay}</Text.Body>
-          <Text.Body style={restMargins}>{profile.location}</Text.Body>
-          {isSelf && (
-            <Text.Body style={restMargins}>
-              {profile.cultureName || settings.currentCulture}
-            </Text.Body>
-          )}
-          {/*{isSelf && <Button style={marginTop22} size="base" label="Become our Affiliate" onClick={onBecomeAffiliateClick} />}*/}
-        </div>
-      </div>
-      {/*{isSelf &&
-        <div style={selfToggleWrapper}>
-          <ToggleContent label="Login settings" style={notesWrapper} isOpen={true}>
-            <Text.Body as="span">
-              Two-factor authentication via code generating application was enabled for all users by cloud service administrator.
-              <div style={marginTop10}>
-                <Link type="action" isBold={true} isHovered={true} fontSize={13} >{'Reset application'}</Link>
-                <Link style={marginLeft18} type="action" isBold={true} isHovered={true} fontSize={13} >{'Show backup codes'}</Link>
-              </div>
-            </Text.Body>
-          </ToggleContent>
-        </div>
-      }*/}
+      </AvatarWrapper>
+      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} />
       {isSelf && (
-        <div style={selfToggleWrapper}>
-          <ToggleContent
-            label={t('Resource:Subscriptions')}
-            style={notesWrapper}
-            isOpen={true}
-          >
+        <ToggleWrapper isSelf={true} >
+          <ToggleContent label={t('Resource:Subscriptions')} isOpen={true} >
             <Text.Body as="span">
               <Button
                 size="big"
@@ -315,38 +327,30 @@ const SectionBodyContent = props => {
               />
             </Text.Body>
           </ToggleContent>
-        </div>
+        </ToggleWrapper>
       )}
       {profile.notes && (
-        <div style={notesToggleWrapper}>
-          <ToggleContent label={t('Resource:Comments')} style={notesWrapper} isOpen={true}>
+        <ToggleWrapper>
+          <ToggleContent label={t('Resource:Comments')} isOpen={true} >
             <Text.Body as="span">{profile.notes}</Text.Body>
           </ToggleContent>
-        </div>
+        </ToggleWrapper>
       )}
       {profile.contacts && (
-        <div style={contactsToggleWrapper}>
-          <ToggleContent
-            label={t('Resource:ContactInformation')}
-            style={notesWrapper}
-            isOpen={true}
-          >
+        <ToggleWrapper isContacts={true} >
+          <ToggleContent label={t('Resource:ContactInformation')} isOpen={true} >
             <Text.Body as="span">{infoContacts}</Text.Body>
           </ToggleContent>
-        </div>
+        </ToggleWrapper>
       )}
       {profile.contacts && (
-        <div style={contactsToggleWrapper}>
-          <ToggleContent
-            label={t('Resource:SocialProfiles')}
-            style={notesWrapper}
-            isOpen={true}
-          >
+        <ToggleWrapper isContacts={true} >
+          <ToggleContent label={t('Resource:SocialProfiles')} isOpen={true} >
             <Text.Body as="span">{socialContacts}</Text.Body>
           </ToggleContent>
-        </div>
+        </ToggleWrapper>
       )}
-    </div>
+    </ProfileWrapper>
   );
 };
 

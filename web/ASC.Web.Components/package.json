@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.cjs.js",
@@ -15,8 +15,7 @@
     "build": "rimraf dist && cross-env NODE_ENV=production rollup -c",
     "start": "rimraf dist && cross-env NODE_ENV=development rollup -c -w",
     "prepare": "npm run build",
-    "predeploy": "cd example && npm install && npm run build",
-    "deploy": "gh-pages -d example/build"
+    "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: components: bump version\""
   },
   "peerDependencies": {
     "react": "16.x",

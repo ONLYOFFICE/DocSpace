@@ -22,7 +22,7 @@ namespace ASC.Web.Core.PublicResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class NamingPeopleResource {
+    public class NamingPeopleResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ASC.Web.Core.PublicResources.NamingPeopleResource", typeof(NamingPeopleResource).Assembly);
@@ -51,7 +51,7 @@ namespace ASC.Web.Core.PublicResources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Users.
         /// </summary>
-        internal static string CommonAddUsers {
+        public static string CommonAddUsers {
             get {
                 return ResourceManager.GetString("CommonAddUsers", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
-        internal static string CommonGroup {
+        public static string CommonGroup {
             get {
                 return ResourceManager.GetString("CommonGroup", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Head.
         /// </summary>
-        internal static string CommonGroupHead {
+        public static string CommonGroupHead {
             get {
                 return ResourceManager.GetString("CommonGroupHead", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
-        internal static string CommonGroups {
+        public static string CommonGroups {
             get {
                 return ResourceManager.GetString("CommonGroups", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guest.
         /// </summary>
-        internal static string CommonGuest {
+        public static string CommonGuest {
             get {
                 return ResourceManager.GetString("CommonGuest", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guests.
         /// </summary>
-        internal static string CommonGuests {
+        public static string CommonGuests {
             get {
                 return ResourceManager.GetString("CommonGuests", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Registration Date.
         /// </summary>
-        internal static string CommonRegDate {
+        public static string CommonRegDate {
             get {
                 return ResourceManager.GetString("CommonRegDate", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Common.
         /// </summary>
-        internal static string CommonSchemaName {
+        public static string CommonSchemaName {
             get {
                 return ResourceManager.GetString("CommonSchemaName", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
-        internal static string CommonUser {
+        public static string CommonUser {
             get {
                 return ResourceManager.GetString("CommonUser", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
-        internal static string CommonUsers {
+        public static string CommonUsers {
             get {
                 return ResourceManager.GetString("CommonUsers", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string CommonUserTitle {
+        public static string CommonUserTitle {
             get {
                 return ResourceManager.GetString("CommonUserTitle", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Employees.
         /// </summary>
-        internal static string DefaultAddUsers {
+        public static string DefaultAddUsers {
             get {
                 return ResourceManager.GetString("DefaultAddUsers", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Department.
         /// </summary>
-        internal static string DefaultGroup {
+        public static string DefaultGroup {
             get {
                 return ResourceManager.GetString("DefaultGroup", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Head.
         /// </summary>
-        internal static string DefaultGroupHead {
+        public static string DefaultGroupHead {
             get {
                 return ResourceManager.GetString("DefaultGroupHead", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Departments.
         /// </summary>
-        internal static string DefaultGroups {
+        public static string DefaultGroups {
             get {
                 return ResourceManager.GetString("DefaultGroups", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guest.
         /// </summary>
-        internal static string DefaultGuest {
+        public static string DefaultGuest {
             get {
                 return ResourceManager.GetString("DefaultGuest", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guests.
         /// </summary>
-        internal static string DefaultGuests {
+        public static string DefaultGuests {
             get {
                 return ResourceManager.GetString("DefaultGuests", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Employed since.
         /// </summary>
-        internal static string DefaultRegDate {
+        public static string DefaultRegDate {
             get {
                 return ResourceManager.GetString("DefaultRegDate", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Corporate.
         /// </summary>
-        internal static string DefaultSchemaName {
+        public static string DefaultSchemaName {
             get {
                 return ResourceManager.GetString("DefaultSchemaName", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Employee.
         /// </summary>
-        internal static string DefaultUser {
+        public static string DefaultUser {
             get {
                 return ResourceManager.GetString("DefaultUser", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Employees.
         /// </summary>
-        internal static string DefaultUsers {
+        public static string DefaultUsers {
             get {
                 return ResourceManager.GetString("DefaultUsers", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Position.
         /// </summary>
-        internal static string DefaultUserTitle {
+        public static string DefaultUserTitle {
             get {
                 return ResourceManager.GetString("DefaultUserTitle", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Add Teachers/Students.
         /// </summary>
-        internal static string EducationAddUsers {
+        public static string EducationAddUsers {
             get {
                 return ResourceManager.GetString("EducationAddUsers", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group.
         /// </summary>
-        internal static string EducationGroup {
+        public static string EducationGroup {
             get {
                 return ResourceManager.GetString("EducationGroup", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Group Lead.
         /// </summary>
-        internal static string EducationGroupHead {
+        public static string EducationGroupHead {
             get {
                 return ResourceManager.GetString("EducationGroupHead", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Groups.
         /// </summary>
-        internal static string EducationGroups {
+        public static string EducationGroups {
             get {
                 return ResourceManager.GetString("EducationGroups", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guest.
         /// </summary>
-        internal static string EducationGuest {
+        public static string EducationGuest {
             get {
                 return ResourceManager.GetString("EducationGuest", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Guests.
         /// </summary>
-        internal static string EducationGuests {
+        public static string EducationGuests {
             get {
                 return ResourceManager.GetString("EducationGuests", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Registration Date.
         /// </summary>
-        internal static string EducationRegDate {
+        public static string EducationRegDate {
             get {
                 return ResourceManager.GetString("EducationRegDate", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Educational Institution.
         /// </summary>
-        internal static string EducationSchemaName {
+        public static string EducationSchemaName {
             get {
                 return ResourceManager.GetString("EducationSchemaName", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Teacher/Student.
         /// </summary>
-        internal static string EducationUser {
+        public static string EducationUser {
             get {
                 return ResourceManager.GetString("EducationUser", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Teachers/Students.
         /// </summary>
-        internal static string EducationUsers {
+        public static string EducationUsers {
             get {
                 return ResourceManager.GetString("EducationUsers", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string EducationUserTitle {
+        public static string EducationUserTitle {
             get {
                 return ResourceManager.GetString("EducationUserTitle", resourceCulture);
             }
@@ -375,7 +375,7 @@ namespace ASC.Web.Core.PublicResources {
         ///      &lt;guest&gt;CommonGuest&lt;/guest&gt;
         ///      &lt;guests&gt;CommonGuests&lt; [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string PeopleNames {
+        public static string PeopleNames {
             get {
                 return ResourceManager.GetString("PeopleNames", resourceCulture);
             }

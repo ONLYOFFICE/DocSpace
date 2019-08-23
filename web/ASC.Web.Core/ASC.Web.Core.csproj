@@ -51,7 +51,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>NamingPeopleResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="PublicResources\NamingPeopleResource.ru.resx">

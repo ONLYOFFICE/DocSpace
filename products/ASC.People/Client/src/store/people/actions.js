@@ -3,12 +3,20 @@ import Filter from "./filter";
 
 export const SET_GROUPS = "SET_GROUPS";
 export const SET_USERS = "SET_USERS";
+export const SET_USER = "SET_USER";
 export const SET_SELECTION = "SET_SELECTION";
 export const SELECT_USER = "SELECT_USER";
 export const DESELECT_USER = "DESELECT_USER";
 export const SET_SELECTED = "SET_SELECTED";
 export const SET_FILTER = "SET_FILTER";
 export const SELECT_GROUP = "SELECT_GROUP";
+
+export function setUser(user) {
+  return {
+    type: SET_USER,
+    user
+  };
+}
 
 export function setUsers(users) {
   return {
@@ -39,9 +47,19 @@ export function setSelected(selected) {
 }
 
 export function selectGroup(groupId) {
-  return {
-    type: SELECT_GROUP,
-    groupId
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { filter } = people;
+
+    let newFilter = filter.clone();
+    newFilter.group = groupId;
+
+    fetchPeopleAsync(dispatch, newFilter);
+
+    return dispatch({
+      type: SELECT_GROUP,
+      groupId
+    });
   };
 }
 
@@ -89,6 +107,39 @@ export async function fetchPeopleAsync(dispatch, filter = null) {
 
 export function updateUserStatus(status, userIds) {
   return dispatch => {
-    return api.updateUserStatus(status, userIds);
+    return api.updateUserStatus(status, userIds).then(res => {
+      if (res && res.data && res.data.error && res.data.error.message)
+        throw res.data.error.message;
+
+      const users = res.data.response;
+
+      users.forEach(user => {
+        dispatch(setUser(user));
+      });
+    });
+  };
+}
+
+export function updateUserType(type, userIds) {
+  return dispatch => {
+    return api.updateUserType(type, userIds).then(res => {
+      if (res && res.data && res.data.error && res.data.error.message)
+        throw res.data.error.message;
+
+      const users = res.data.response;
+
+      users.forEach(user => {
+        dispatch(setUser(user));
+      });
+    });
+  };
+}
+
+export function resetFilter() {
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { filter } = people;
+
+    return fetchPeople(filter);
   };
 }

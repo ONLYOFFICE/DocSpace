@@ -37,7 +37,7 @@ const StyledDropdownToggle = styled.div`
 
   float: left;
   height: 19px;
-  margin: 18px 12px 19px 12px;
+  margin: 18px 12px 19px ${props => props.isSelect ? '0px' : '12px'};
   overflow: hidden;
   padding: 0px;
 
@@ -71,9 +71,15 @@ const StyledDropdownToggle = styled.div`
         `)}
 `;
 
-const Caret = styled(Icons.ExpanderDownIcon)`
-  width: 10px;
-  margin-left: 4px;
+const Caret = styled.div`
+  display: inline-block;
+  width: 8px;
+  margin-left: 6px;
+
+  ${props => props.isOpen && `
+    padding-bottom: 2px;
+    transform: scale(1, -1);
+  `}
 `;
 
 const Separator = styled.div`
@@ -81,7 +87,7 @@ const Separator = styled.div`
   border: 0.5px solid #eceef1;
   width: 1px;
   height: 24px;
-  margin-top: 16px;
+  margin: 16px 16px 0 16px;
 `;
 
 const StyledCheckbox = styled.div`
@@ -104,36 +110,30 @@ class GroupButton extends React.PureComponent {
       selected: props.selected
     };
 
-    this.handleClick = this.handleClick.bind(this);
-    this.stopAction = this.stopAction.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.checkboxChange = this.checkboxChange.bind(this);
-    this.dropDownItemClick = this.dropDownItemClick.bind(this);
-
-    if(props.opened)
-       handleAnyClick(true, this.handleClick);
+    if (props.opened)
+      handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = e =>
+  handleClick = (e) =>
     this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
 
-  stopAction = e => e.preventDefault();
+  stopAction = (e) => e.preventDefault();
 
-  toggle = isOpen => this.setState({ isOpen: isOpen });
+  toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
-  checkboxChange = e => {
+  checkboxChange = (e) => {
     this.props.onChange && this.props.onChange(e.target.checked);
     this.setState({ selected: this.props.selected });
   };
 
-    dropDownItemClick = child => {
+  dropDownItemClick = (child) => {
     child.props.onClick && child.props.onClick();
     this.props.onSelect && this.props.onSelect(child);
     this.setState({ selected: child.props.label });
     this.toggle(!this.state.isOpen);
   };
 
-  dropDownToggleClick = e => {
+  dropDownToggleClick = (e) => {
     this.props.disabled ? this.stopAction(e) : this.toggle(!this.state.isOpen);
   };
 
@@ -142,13 +142,11 @@ class GroupButton extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Store prevId in state so we can compare when props change.
-    // Clear out previously-loaded data (so we don't render stale stuff).
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
 
-    if(this.state.isOpen !== prevState.isOpen) {
+    if (this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
     }
   }
@@ -156,9 +154,10 @@ class GroupButton extends React.PureComponent {
   render() {
     //console.log("GroupButton render");
     const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked, dropDownMaxHeight } = this.props;
+
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
-    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight} : {};
+    const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
 
     return (
       <StyledGroupButton ref={this.ref}>
@@ -172,16 +171,36 @@ class GroupButton extends React.PureComponent {
                   onChange={this.checkboxChange} />
               </StyledCheckbox>
             }
-            <StyledDropdownToggle {...this.props} onClick={this.dropDownToggleClick} >
+            <StyledDropdownToggle
+              {...this.props}
+              onClick={this.dropDownToggleClick}
+            >
               {itemLabel}
-              <Caret size="small" color={color} />
+              <Caret
+                isOpen={this.state.isOpen}
+              >
+                <Icons.ExpanderDownIcon
+                  size="scale"
+                  color={color}
+                />
+              </Caret>
             </StyledDropdownToggle>
-            <DropDown {...dropDownMaxHeightProp} isOpen={this.state.isOpen}>
+            <DropDown
+              {...dropDownMaxHeightProp}
+              isOpen={this.state.isOpen}
+            >
               {React.Children.map(children, (child) =>
-                <DropDownItem {...child.props} onClick={this.dropDownItemClick.bind(this, child)} />)}
+                <DropDownItem
+                  {...child.props}
+                  onClick={this.dropDownItemClick.bind(this, child)}
+                />
+              )}
             </DropDown>
           </>
-          : <StyledDropdownToggle {...this.props}>{label}</StyledDropdownToggle>
+          : <StyledDropdownToggle
+            {...this.props}>
+            {label}
+          </StyledDropdownToggle>
         }
         {isSeparator && <Separator />}
       </StyledGroupButton>
