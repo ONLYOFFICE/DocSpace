@@ -67,7 +67,7 @@ class FilterInput extends React.Component {
         this.state = {
             sortDirection: props.selectedFilterData.sortDirection == "asc" ? true : false,
             sortId: props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : props.getSortData().length > 0 ? props.getSortData()[0].key : "",
-            filterValue: props.selectedFilterData.filterValue,
+            filterValues: props.selectedFilterData.filterValues,
             searchText: props.selectedFilterData.inputValue || props.value
         };
 
@@ -93,27 +93,27 @@ class FilterInput extends React.Component {
     }
     onClickSortItem(item) {
         this.setState({ sortId: item.key });
-        this.onFilter(this.state.filterValue, item.key, this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(this.state.filterValues, item.key, this.state.sortDirection ? "asc" : "desc");
     }
     onSortDirectionClick(e) {
-        this.onFilter(this.state.filterValue, this.state.sortId, !this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(this.state.filterValues, this.state.sortId, !this.state.sortDirection ? "asc" : "desc");
         this.setState({ sortDirection: !this.state.sortDirection });
     }
     onChangeFilter(result) {
         this.setState({
             searchText: result.inputValue,
-            filterValue: result.filterValue,
+            filterValues: result.filterValues,
         });
-        this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc", result.inputValue);
+        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc", result.inputValue);
     }
     onSearch(result) {
-        this.onFilter(result.filterValue, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
     }
 
-    onFilter(filterValue, sortId, sortDirection, searchText) {
+    onFilter(filterValues, sortId, sortDirection, searchText) {
         let result = {
             inputValue: searchText != undefined ? searchText : this.state.searchText,
-            filterValue: filterValue,
+            filterValues: filterValues,
             sortId: sortId,
             sortDirection: sortDirection
         };
@@ -124,7 +124,7 @@ class FilterInput extends React.Component {
         this.timerId && clearTimeout(this.timerId);
         this.timerId = null;
         this.timerId = setTimeout(() => {
-            this.onSearch({ filterValue: this.state.filterValue });
+            this.onSearch({ filterValues: this.state.filterValues });
             clearTimeout(this.timerId);
             this.timerId = null;
         }, this.props.refreshTimeout);
@@ -142,7 +142,7 @@ class FilterInput extends React.Component {
                 {
                     sortDirection: nextProps.selectedFilterData.sortDirection === "asc" ? true : false,
                     sortId: this.props.getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
-                    filterValue: nextProps.selectedFilterData.filterValue || this.state.filterValue,
+                    filterValues: nextProps.selectedFilterData.filterValues || this.state.filterValues,
                     searchText: nextProps.selectedFilterData.inputValue || this.props.value
                 }
             );
@@ -175,7 +175,7 @@ class FilterInput extends React.Component {
                         onSearchClick={this.onSearch}
                         onChangeFilter={this.onChangeFilter}
                         value={this.state.searchText}
-                        selectedFilterData={this.state.filterValue}
+                        selectedFilterData={this.state.filterValues}
                         onChange={this.onSearchChanged}
                     />
                 </StyledSearchInput>
@@ -206,7 +206,7 @@ FilterInput.defaultProps = {
     selectedFilterData: {
         sortDirection: false,
         sortId: '',
-        filterValue: [],
+        filterValues: [],
         searchText: ''
     }
 };
