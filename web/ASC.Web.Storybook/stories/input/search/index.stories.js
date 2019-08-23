@@ -68,7 +68,6 @@ class SearchStory extends React.Component  {
                 getFilterData={getData}
                 selectedFilterData={this.state.selectedFilterData}
                 placeholder={text('placeholder', 'Search')}
-                onSearchClick={(result) => {console.log(result)}}
                 onChangeFilter={(result) => {console.log(result)}}
                 value={value}
                 onChange={e => { 
