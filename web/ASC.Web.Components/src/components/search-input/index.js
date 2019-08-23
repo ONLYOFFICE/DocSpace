@@ -542,7 +542,7 @@ class SearchInput extends React.Component {
         break;
     }
     return (
-      <StyledSearchInput ref={this.searchWrapper}>
+      <StyledSearchInput className={this.props.className} ref={this.searchWrapper}>
         <InputBlock
           ref={this.input}
           id={this.props.id}
