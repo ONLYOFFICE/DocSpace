@@ -32,7 +32,8 @@ namespace ASC.Web.Studio
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json");
+                        .AddJsonFile("kafka.json")
+                        .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true);
                 });
     }
 }
