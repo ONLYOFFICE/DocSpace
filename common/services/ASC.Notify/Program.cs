@@ -30,7 +30,8 @@ namespace ASC.Notify
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
-                        .AddJsonFile("kafka.json");
+                        .AddJsonFile("kafka.json")
+                        .AddJsonFile($"kafka.{hostContext.HostingEnvironment.EnvironmentName}.json", true);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
