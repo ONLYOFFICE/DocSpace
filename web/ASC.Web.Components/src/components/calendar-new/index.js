@@ -40,15 +40,14 @@ const CalendarStyle = styled.div`
     font-weight: bold;
     font-size: 13px;
     text-align: center;
-    /*cursor: default;*/
-
+    ${props => props.disabled ? "pointer-events: none;" : "pointer-events: auto;"}
+    
     .calendar-month {
         ${HoverStyle}
     }
 
     .calendar-month_neighboringMonth {
         color: #ECEEF1;
-        pointer-events: none;
     }
 
     .calendar-month_weekend {
@@ -61,20 +60,17 @@ const CalendarStyle = styled.div`
     }
 
     .calendar-month_selected-day {
-
-
         background-color: ${props => props.color};
         border-radius: 16px;
         cursor: pointer;
         color: #fff;
-
     }
 `;
 
 const Weekday = styled.div`
     overflow: hidden;
+    flex-basis: 15%;
     /*flex-basis: 100%;*/
-    flex-basis: 14.2857%;
     /*min-height: 32px;*/
     /*min-width: 32px;*/
 `;
@@ -207,15 +203,23 @@ class Calendar extends Component {
     firstDayOfMonth = () => {
         const selectedDate = this.state.openToDate;
         const firstDay = moment(selectedDate).locale("en").startOf("month").format("d");
-        return firstDay;
+        let day;
+        !this.props.swapWeekdays ? day = firstDay : day = firstDay - 1;
+
+        if (day < 0) { day = 6; }
+        return day;
     };
 
     getWeekDays = () => {
         let arrayWeekDays = [];
-        const weekdays = moment.weekdaysMin(true);
+        const weekdays = moment.weekdaysMin();
+        if (this.props.swapWeekdays) { weekdays.push(weekdays.shift()); }
+
+        let className = "";
         for (let i = 0; i < weekdays.length; i++) {
-            let className = "";
-            (i === 6 || i === 5) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays";
+            !this.props.swapWeekdays ?
+                (i === 0 || i === 6) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays"
+                : (i >= 5) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays";
             arrayWeekDays.push(<Weekday className={className} key={weekdays[i]}>{weekdays[i]}</Weekday>)
         }
         return arrayWeekDays;
@@ -230,23 +234,6 @@ class Calendar extends Component {
         let prevDays = new Date(year, month - 1, 0).getDate();
         const arrayDays = [];
 
-        // Days + Weekend days 
-        let seven = 7;
-        let className = "";
-        const dateNow = this.state.selectedDate.getDate();
-        const isEqual = this.compareDays();
-        for (let i = 1; i <= days; i++) {
-            if (i === (seven - prevMonthDays - 1)) { className = "calendar-month_weekend"; }
-            else if (i === (seven - prevMonthDays)) { seven += 7; className = "calendar-month_weekend"; }
-            else { className = "calendar-month"; }
-            if (i === dateNow && isEqual) { className = "calendar-month_selected-day" }
-            arrayDays.push(
-                <Day key={keys++}>
-                    <AbbrDay onClick={this.onDayClick.bind(this, i)} className={className}>{i}</AbbrDay>
-                </Day>
-            );
-        }
-
         // Neighboring Month Days (Prev month)
         while (prevMonthDays != 0) {
             arrayDays.unshift(
@@ -260,11 +247,37 @@ class Calendar extends Component {
             //console.log("loop");
         }
 
+
+
+
+        // Days + Weekend days 
+        let seven = 7;
+        let className = "";
+        const dateNow = this.state.selectedDate.getDate();
+        const isEqual = this.compareDays();
+        let temp = 0; this.props.swapWeekdays ? temp = 1 : temp = 6;
+
+        prevMonthDays = this.firstDayOfMonth();
+
+        for (let i = 1; i <= days; i++) {
+            if (i === (seven - prevMonthDays - temp)) { className = "calendar-month_weekend"; }
+            else if (i === (seven - prevMonthDays)) { seven += 7; className = "calendar-month_weekend"; }
+            else { className = "calendar-month"; }
+            if (i === dateNow && isEqual) { className = "calendar-month_selected-day" }
+            arrayDays.push(
+                <Day key={keys++}>
+                    <AbbrDay onClick={this.onDayClick.bind(this, i)} className={className}>{i}</AbbrDay>
+                </Day>
+            );
+        }
+
+
+
         //Calculating Neighboring Month Days
         let maxDays = 35; // max days in month table (no)
         const firstDay = this.firstDayOfMonth();
         if (firstDay > 5 && days >= 30) { maxDays += 7; }
-        else if (firstDay >= 5 && days > 30) { maxDays += 7; }        
+        else if (firstDay >= 5 && days > 30) { maxDays += 7; }
 
         //Neighboring Month Days (Next month)
         let nextDay = 1;
@@ -284,17 +297,19 @@ class Calendar extends Component {
     render() {
         //console.log("render");
 
-        moment.locale(this.props.language);
+        moment.locale(this.props.locale);
         this.state.months = moment.months();
         const disabled = this.props.disabled;
-        const dropDownSize = this.getArrayYears().length > 6 ? 180 : undefined;
+
+        let dropDownSize = this.getArrayYears().length > 4 ? 180 : undefined;
+        let dropDownSize2 = this.getArrayMonth().length > 4 ? 180 : undefined;
 
         return (
-            <CalendarStyle color={this.props.themeColor}>
+            <CalendarStyle color={this.props.themeColor} disabled={disabled}>
                 <ComboBoxStyle>
                     <ComboBox
                         scaled={true}
-                        dropDownMaxHeight={180}
+                        dropDownMaxHeight={dropDownSize2}
                         onSelect={this.selectedMonth.bind(this)}
                         selectedOption={this.getCurrentMonth()}
                         options={this.getArrayMonth()}
@@ -331,8 +346,8 @@ Calendar.propTypes = {
     openToDate: PropTypes.instanceOf(Date),
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
-    language: PropTypes.string,
-    //disabled: PropTypes.bool,
+    locale: PropTypes.string,
+    disabled: PropTypes.bool,
     //size: PropTypes.string
 }
 
@@ -342,7 +357,7 @@ Calendar.defaultProps = {
     minDate: new Date("1970/01/01"),
     maxDate: new Date("3000/01/01"),
     themeColor: '#ED7309',
-    language: moment.locale(),
+    locale: moment.locale(),
     //size: 'base'
 }
 

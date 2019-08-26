@@ -17,7 +17,7 @@ function myDateKnob(name, defaultValue) {
 
 const locales = moment.locales();
 
-const arraySize = ['base', 'big'];
+//const arraySize = ['base', 'big'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
@@ -28,13 +28,14 @@ storiesOf('Components|Input', module)
         onChange={date => {
           action('Selected date')(date);
         }}
-        //disabled={boolean('disabled', false)}
+        disabled={boolean('disabled', false)}
         themeColor={color('themeColor', '#ED7309')}
         selectedDate={myDateKnob('selectedDate', new Date())}
         openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("2010/02/01"))}
         maxDate={myDateKnob('maxDate', new Date("2019/09/01"))}
-        language={select('location', locales, 'en')}
+        locale={select('location', locales, 'en')}
+        swapWeekdays = {boolean('swapWeekdays', false) }
         //size={select('size', arraySize, 'base')}
       />
     </Section>
