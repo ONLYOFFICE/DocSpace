@@ -33,6 +33,11 @@ const StyledContainer = styled(Container)`
     margin-bottom: 12px;
   }
 
+  .option_select_all_checkbox {
+    margin-bottom: 12px;
+    margin-left: 8px;
+  }
+
   .options_list {
     .option {
       line-height: 32px;
@@ -74,7 +79,8 @@ class AdvancedSelector extends React.Component {
     super(props);
 
     this.state = {
-      selectedOptions: this.props.selectedOptions || []
+      selectedOptions: this.props.selectedOptions || [],
+      selectedAll: this.props.selectedAll || false
     };
   }
 
@@ -86,10 +92,14 @@ class AdvancedSelector extends React.Component {
     if(this.props.isMultiSelect !== prevProps.isMultiSelect) {
       this.setState({ selectedOptions: [] });
     }
+    
+    if(this.props.selectedAll !== prevProps.selectedAll) {
+      this.setState({ selectedAll: this.props.selectedAll });
+    }
   }
 
   onButtonClick = () => {
-    this.props.onSelect && this.props.onSelect(this.state.selectedOptions);
+    this.props.onSelect && this.props.onSelect(this.state.selectedAll ? this.props.options : this.state.selectedOptions);
   };
 
   onSelect = option => {
@@ -97,20 +107,29 @@ class AdvancedSelector extends React.Component {
   };
 
   onChange = (option, e) => {
+    const { selectedOptions } = this.state;
     const newSelectedOptions = e.target.checked
-              ? [...this.state.selectedOptions, option] 
-              : filter(this.state.selectedOptions, (obj) => obj.key !== option.key);
+              ? [...selectedOptions, option] 
+              : filter(selectedOptions, (obj) => obj.key !== option.key);
 
     //console.log("onChange", option, e.target.checked, newSelectedOptions);
 
     this.setState({
-      selectedOptions: newSelectedOptions
+      selectedOptions: newSelectedOptions,
+      selectedAll: newSelectedOptions.length === this.props.options.length
     });
   };
 
+  onSelectedAllChange = (e) => {
+    this.setState({
+      selectedAll: e.target.checked,
+      selectedOptions: e.target.checked ? this.props.options : []
+    });
+  }
+
   renderRow = ({ data, index, style }) => {
     const option = data[index];
-    var isChecked = findIndex(this.state.selectedOptions, { key: option.key }) > -1;
+    var isChecked = this.state.selectedAll || findIndex(this.state.selectedOptions, { key: option.key }) > -1;
 
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
     return (
@@ -145,8 +164,11 @@ class AdvancedSelector extends React.Component {
       onSearchChanged,
       options,
       isMultiSelect,
-      buttonLabel
+      buttonLabel,
+      selectAllLabel
     } = this.props;
+
+    const { selectedOptions, selectedAll } = this.state;
 
     return (
       <StyledContainer {...this.props}>
@@ -160,6 +182,14 @@ class AdvancedSelector extends React.Component {
           value={value}
           onChange={onSearchChanged}
         />
+        {isMultiSelect && 
+        <Checkbox
+          label={selectAllLabel}
+          isChecked={selectedAll || selectedOptions.length === options.length}
+          isIndeterminate={!selectedAll && selectedOptions.length > 0}
+          className="option_select_all_checkbox"
+          onChange={this.onSelectedAllChange}
+         />}
         <FixedSizeList
           className="options_list"
           height={maxHeight}
@@ -197,6 +227,9 @@ AdvancedSelector.propTypes = {
   onSearchChanged: PropTypes.func,
   options: PropTypes.array.isRequired,
   selectedOptions: PropTypes.array,
+  groups: PropTypes.array,
+  selectedGroups: PropTypes.array,
+  selectedAll: PropTypes.bool,
   buttonLabel: PropTypes.string,
   onSelect: PropTypes.func
 };
@@ -206,7 +239,8 @@ AdvancedSelector.defaultProps = {
   width: 325,
   maxHeight: 545,
   mode: "base",
-  buttonLabel: "Add members"
+  buttonLabel: "Add members",
+  selectAllLabel: "Select all"
 };
 
 export default AdvancedSelector;
