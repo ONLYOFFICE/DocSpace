@@ -5,7 +5,11 @@ import SearchInput from "../search-input";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList } from "react-window";
 import Link from "../link";
+import Checkbox from "../checkbox";
 import Button from "../button";
+import { isArrayEqual } from "../../utils/array";
+import findIndex from "lodash/findIndex";
+import filter from "lodash/filter";
 
 const Container = ({
   value,
@@ -18,6 +22,7 @@ const Container = ({
   onSearchChanged,
   options,
   selectedOptions,
+  buttonLabel,
   ...props
 }) => <div {...props} />;
 
@@ -32,6 +37,14 @@ const StyledContainer = styled(Container)`
     .option {
       line-height: 32px;
       cursor: pointer;
+
+      .option_checkbox {
+        margin-left: 8px;
+      }
+
+      .option_link {
+        padding-left: 8px;
+      }
 
       &:hover {
         background-color: #eceef1;
@@ -60,23 +73,65 @@ class AdvancedSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      selectedOptions: this.props.selectedOptions || []
+    };
   }
 
-  onButtonClick = () => {};
+  componentDidUpdate(prevProps) {
+    if (!isArrayEqual(this.props.selectedOptions, prevProps.selectedOptions)) {
+      this.setState({ selectedOptions: this.props.selectedOptions });
+    }
+
+    if(this.props.isMultiSelect !== prevProps.isMultiSelect) {
+      this.setState({ selectedOptions: [] });
+    }
+  }
+
+  onButtonClick = () => {
+    this.props.onSelect && this.props.onSelect(this.state.selectedOptions);
+  };
 
   onSelect = option => {
-    if (!this.props.isMultiSelect) this.props.onSelect(option);
+    this.props.onSelect && this.props.onSelect(option);
+  };
+
+  onChange = (option, e) => {
+    const newSelectedOptions = e.target.checked
+              ? [...this.state.selectedOptions, option] 
+              : filter(this.state.selectedOptions, (obj) => obj.key !== option.key);
+
+    //console.log("onChange", option, e.target.checked, newSelectedOptions);
+
+    this.setState({
+      selectedOptions: newSelectedOptions
+    });
   };
 
   renderRow = ({ data, index, style }) => {
     const option = data[index];
+    var isChecked = findIndex(this.state.selectedOptions, { key: option.key }) > -1;
 
+    //console.log("renderRow", option, isChecked, this.state.selectedOptions);
     return (
-      <div class="option" style={style}>
-        <Link as="span" truncate={true} onClick={this.onSelect.bind(this, option)}>
-          {option.label}
-        </Link>
+      <div className="option" style={style} key={option.key}>
+        {this.props.isMultiSelect ? (
+          <Checkbox
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            onChange={this.onChange.bind(this, option)}
+          />
+        ) : (
+          <Link
+            as="span"
+            truncate={true}
+            className="option_link"
+            onClick={this.onSelect.bind(this, option)}
+          >
+            {option.label}
+          </Link>
+        )}
       </div>
     );
   };
@@ -89,7 +144,6 @@ class AdvancedSelector extends React.Component {
       isDisabled,
       onSearchChanged,
       options,
-      selectedOptions,
       isMultiSelect,
       buttonLabel
     } = this.props;
@@ -108,14 +162,13 @@ class AdvancedSelector extends React.Component {
         />
         <FixedSizeList
           className="options_list"
-          stype="smallBlack"
           height={maxHeight}
           itemSize={32}
           itemCount={options.length}
           itemData={options}
           outerElementType={CustomScrollbarsVirtualList}
         >
-          {this.renderRow}
+          {this.renderRow.bind(this)}
         </FixedSizeList>
         {isMultiSelect && (
           <Button
@@ -124,6 +177,7 @@ class AdvancedSelector extends React.Component {
             size="big"
             label={buttonLabel}
             scale={true}
+            isDisabled={!this.state.selectedOptions || !this.state.selectedOptions.length}
             onClick={this.onButtonClick}
           />
         )}
