@@ -129,7 +129,7 @@ const ProfileInfo = (props) => {
   const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = props.profile;
   const isAdmin = props.isAdmin;
   const isSelf = props.isSelf;
-  const { t, i18n } = useTranslation();
+  const t = props.t;
 
   const type = isVisitor ? "Guest" : "Employee";
   const language = cultureName || currentCulture;
@@ -147,7 +147,7 @@ const ProfileInfo = (props) => {
     <InfoContainer>
       <InfoItem>
         <InfoItemLabel>
-          {t('Resource:UserType')}:
+          {t('UserType')}:
         </InfoItemLabel>
         <InfoItemValue>
           {type}
@@ -156,7 +156,7 @@ const ProfileInfo = (props) => {
       {email &&
         <InfoItem>
           <InfoItemLabel>
-            {t('Resource:Email')}:
+            {t('Email')}:
           </InfoItemLabel>
           <InfoItemValue>
             <Link
@@ -167,18 +167,18 @@ const ProfileInfo = (props) => {
               onClick={onEmailClick}
             >
               {activationStatus === 2 && (isAdmin || isSelf) &&
-                <IconButtonWrapper isBefore={true} title='Pending'>
+                <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
                   <IconButton color='#C96C27' size={16} iconName='DangerIcon' isFill={true} />
                 </IconButtonWrapper>
               }
               {email}
               {(isAdmin || isSelf) &&
-                <IconButtonWrapper title='Change e-mail' >
+                <IconButtonWrapper title={t('EmailChangeButton')} >
                   <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
                 </IconButtonWrapper>
               }
               {activationStatus === 2 && (isAdmin || isSelf) &&
-                <IconButtonWrapper title='Send invitation once again'>
+                <IconButtonWrapper title={t('SendInviteAgain')}>
                   <IconButton color="#A3A9AE" size={16} iconName='FileActionsConvertIcon' isFill={true} />
                 </IconButtonWrapper>
               }
@@ -209,12 +209,12 @@ const ProfileInfo = (props) => {
       {(mobilePhone || isSelf) &&
         <InfoItem>
           <InfoItemLabel>
-            Phone:
+          {t('PhoneLbl')}:
           </InfoItemLabel>
           <InfoItemValue>
             {mobilePhone}
             {(isAdmin || isSelf) &&
-            <IconButtonWrapper title='Change phone' >
+            <IconButtonWrapper title={t('PhoneChange')} >
               <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
             </IconButtonWrapper>
             }
@@ -224,7 +224,7 @@ const ProfileInfo = (props) => {
       {sex &&
         <InfoItem>
           <InfoItemLabel>
-            {t('Resource:Sex')}:
+            {t('Sex')}:
           </InfoItemLabel>
           <InfoItemValue>
             {formatedSex}
@@ -244,7 +244,7 @@ const ProfileInfo = (props) => {
       {birthday &&
         <InfoItem>
           <InfoItemLabel>
-            {t('Resource:Birthdate')}:
+            {t('Birthdate')}:
           </InfoItemLabel>
           <InfoItemValue>
             {birthDayDate}
@@ -254,7 +254,7 @@ const ProfileInfo = (props) => {
       {location &&
         <InfoItem>
           <InfoItemLabel>
-            {t('Resource:Location')}:
+            {t('Location')}:
           </InfoItemLabel>
           <InfoItemValue>
             {location}
@@ -264,7 +264,7 @@ const ProfileInfo = (props) => {
       {isSelf &&
         <InfoItem>
           <InfoItemLabel>
-            {t('Resource:Language')}:
+            {t('Language')}:
           </InfoItemLabel>
           <InfoItemValue>
             {language}
@@ -276,7 +276,7 @@ const ProfileInfo = (props) => {
 };
 
 const SectionBodyContent = props => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { profile, history, settings, isAdmin, viewer } = props;
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
@@ -308,20 +308,20 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
-              label={t("Resource:EditUserDialogTitle")}
+              label={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} />
+      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t}/>
       {isSelf && (
         <ToggleWrapper isSelf={true} >
-          <ToggleContent label={t('Resource:Subscriptions')} isOpen={true} >
+          <ToggleContent label={t('Subscriptions')} isOpen={true} >
             <Text.Body as="span">
               <Button
                 size="big"
-                label="Edit subscriptions"
+                label={t('EditSubscriptionsBtn')}
                 primary={true}
                 onClick={onEditSubscriptionsClick}
               />
@@ -331,21 +331,21 @@ const SectionBodyContent = props => {
       )}
       {profile.notes && (
         <ToggleWrapper>
-          <ToggleContent label={t('Resource:Comments')} isOpen={true} >
+          <ToggleContent label={t('Comments')} isOpen={true} >
             <Text.Body as="span">{profile.notes}</Text.Body>
           </ToggleContent>
         </ToggleWrapper>
       )}
       {profile.contacts && (
         <ToggleWrapper isContacts={true} >
-          <ToggleContent label={t('Resource:ContactInformation')} isOpen={true} >
+          <ToggleContent label={t('ContactInformation')} isOpen={true} >
             <Text.Body as="span">{infoContacts}</Text.Body>
           </ToggleContent>
         </ToggleWrapper>
       )}
       {profile.contacts && (
         <ToggleWrapper isContacts={true} >
-          <ToggleContent label={t('Resource:SocialProfiles')} isOpen={true} >
+          <ToggleContent label={t('SocialProfiles')} isOpen={true} >
             <Text.Body as="span">{socialContacts}</Text.Body>
           </ToggleContent>
         </ToggleWrapper>

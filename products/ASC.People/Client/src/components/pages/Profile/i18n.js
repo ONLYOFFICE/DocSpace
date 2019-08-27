@@ -1,17 +1,16 @@
 import i18n from 'i18next';
 import Backend from 'i18next-xhr-backend';
+import config from '../../../../package.json';
 
 const newInstance = i18n.createInstance();
 
 newInstance
   .use(Backend)
   .init({
-    lng: 'ru',
     fallbackLng: 'en',
     debug: true,
-    ns: ['Resource', 'translation'],
     backend: {
-      loadPath: `/products/people/locales/Profile/{{lng}}/{{ns}}.json`,
+      loadPath: `${config.homepage}/locales/Profile/{{lng}}/{{ns}}.json`,
     },
 
     interpolation: {
