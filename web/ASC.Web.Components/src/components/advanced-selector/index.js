@@ -24,6 +24,9 @@ const Container = ({
   options,
   selectedOptions,
   buttonLabel,
+  selectAllLabel,
+  groups,
+  selectedGroups,
   ...props
 }) => <div {...props} />;
 
@@ -73,7 +76,11 @@ class AdvancedSelector extends React.Component {
 
     this.state = {
       selectedOptions: this.props.selectedOptions || [],
-      selectedAll: this.props.selectedAll || false
+      selectedAll: this.props.selectedAll || false,
+      currentGroup:
+        this.props.groups && this.props.groups.length > 0
+          ? this.props.groups[0]
+          : "No groups"
     };
   }
 
@@ -82,17 +89,20 @@ class AdvancedSelector extends React.Component {
       this.setState({ selectedOptions: this.props.selectedOptions });
     }
 
-    if(this.props.isMultiSelect !== prevProps.isMultiSelect) {
+    if (this.props.isMultiSelect !== prevProps.isMultiSelect) {
       this.setState({ selectedOptions: [] });
     }
-    
-    if(this.props.selectedAll !== prevProps.selectedAll) {
+
+    if (this.props.selectedAll !== prevProps.selectedAll) {
       this.setState({ selectedAll: this.props.selectedAll });
     }
   }
 
   onButtonClick = () => {
-    this.props.onSelect && this.props.onSelect(this.state.selectedAll ? this.props.options : this.state.selectedOptions);
+    this.props.onSelect &&
+      this.props.onSelect(
+        this.state.selectedAll ? this.props.options : this.state.selectedOptions
+      );
   };
 
   onSelect = option => {
@@ -102,8 +112,8 @@ class AdvancedSelector extends React.Component {
   onChange = (option, e) => {
     const { selectedOptions } = this.state;
     const newSelectedOptions = e.target.checked
-              ? [...selectedOptions, option] 
-              : filter(selectedOptions, (obj) => obj.key !== option.key);
+      ? [...selectedOptions, option]
+      : filter(selectedOptions, obj => obj.key !== option.key);
 
     //console.log("onChange", option, e.target.checked, newSelectedOptions);
 
@@ -113,16 +123,24 @@ class AdvancedSelector extends React.Component {
     });
   };
 
-  onSelectedAllChange = (e) => {
+  onSelectedAllChange = e => {
     this.setState({
       selectedAll: e.target.checked,
       selectedOptions: e.target.checked ? this.props.options : []
     });
-  }
+  };
+
+  onCurrentGroupChange = option => {
+    this.setState({
+      currentGroup: option
+    });
+  };
 
   renderRow = ({ data, index, style }) => {
     const option = data[index];
-    var isChecked = this.state.selectedAll || findIndex(this.state.selectedOptions, { key: option.key }) > -1;
+    var isChecked =
+      this.state.selectedAll ||
+      findIndex(this.state.selectedOptions, { key: option.key }) > -1;
 
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
     return (
@@ -160,10 +178,20 @@ class AdvancedSelector extends React.Component {
       buttonLabel,
       selectAllLabel,
       groups,
-      selectedGroups,
+      selectedGroups
     } = this.props;
 
-    const { selectedOptions, selectedAll } = this.state;
+    const { selectedOptions, selectedAll, currentGroup } = this.state;
+
+    const filtered = filter(options, option => {
+      return (
+        option.groups &&
+        option.groups.length > 0 &&
+        option.groups.indexOf(currentGroup.key) > -1
+      );
+    });
+
+    console.log("AdvancedSelector render()", currentGroup, filtered);
 
     return (
       <StyledContainer {...this.props}>
@@ -177,31 +205,34 @@ class AdvancedSelector extends React.Component {
           value={value}
           onChange={onSearchChanged}
         />
-        {groups && groups.length > 0 && 
-        <ComboBox
-          className="options_group_selector"
-          isDisabled={isDisabled}
-          options={groups}
-          onSelect={group => console.log('Selected group', group)}
-          selectedOption={selectedGroups[0]}
-          dropDownMaxHeight={200}
-          scaled={true}
-          size='content'
-        />}
-        {isMultiSelect && 
-        <Checkbox
-          label={selectAllLabel}
-          isChecked={selectedAll || selectedOptions.length === options.length}
-          isIndeterminate={!selectedAll && selectedOptions.length > 0}
-          className="option_select_all_checkbox"
-          onChange={this.onSelectedAllChange}
-         />}
+        {groups && groups.length > 0 && (
+          <ComboBox
+            className="options_group_selector"
+            isDisabled={isDisabled}
+            options={groups}
+            onSelect={group => console.log("Selected group", group)}
+            selectedOption={currentGroup}
+            dropDownMaxHeight={200}
+            scaled={true}
+            size="content"
+            onSelect={this.onCurrentGroupChange}
+          />
+        )}
+        {isMultiSelect && (
+          <Checkbox
+            label={selectAllLabel}
+            isChecked={selectedAll || selectedOptions.length === options.length}
+            isIndeterminate={!selectedAll && selectedOptions.length > 0}
+            className="option_select_all_checkbox"
+            onChange={this.onSelectedAllChange}
+          />
+        )}
         <FixedSizeList
           className="options_list"
           height={maxHeight}
           itemSize={32}
-          itemCount={options.length}
-          itemData={options}
+          itemCount={filtered.length}
+          itemData={filtered}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {this.renderRow.bind(this)}
@@ -213,7 +244,9 @@ class AdvancedSelector extends React.Component {
             size="big"
             label={buttonLabel}
             scale={true}
-            isDisabled={!this.state.selectedOptions || !this.state.selectedOptions.length}
+            isDisabled={
+              !this.state.selectedOptions || !this.state.selectedOptions.length
+            }
             onClick={this.onButtonClick}
           />
         )}

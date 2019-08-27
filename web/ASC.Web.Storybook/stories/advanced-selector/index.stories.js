@@ -53,7 +53,7 @@ storiesOf("Components|AdvancedSelector", module)
       const additional_group = groups[getRandomInt(1, 6)];
       return {
         key: `user${index}`,
-        groups: ["group-all", additional_group],
+        groups: ["group-all", additional_group.key],
         label: `User${index + 1} (All groups, ${additional_group.label})`
       };
     });
