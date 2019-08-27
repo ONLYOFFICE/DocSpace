@@ -112,13 +112,11 @@ class FilterInput extends React.Component {
         this.searchWrapper = React.createRef();
         this.filterWrapper = React.createRef();
 
-        this.timerId = null;
-
         this.onClickSortItem = this.onClickSortItem.bind(this);
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.onChangeFilter = this.onChangeFilter.bind(this);
-        this.setFilterTimer = this.setFilterTimer.bind(this);
+        
         this.onSearchChanged = this.onSearchChanged.bind(this);
 
         this.getDefaultSelectedIndex = this.getDefaultSelectedIndex.bind(this);
@@ -159,11 +157,8 @@ class FilterInput extends React.Component {
         this.setState({ sortDirection: !this.state.sortDirection });
     }
     onSearchChanged(value) {
-
         this.setState({ searchText: value });
-
-        if (this.props.autoRefresh)
-            this.setFilterTimer();
+        this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc",value);
     }
     onSearch(result) {
         this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
@@ -366,15 +361,7 @@ class FilterInput extends React.Component {
         }
 
     }
-    setFilterTimer() {
-        this.timerId && clearTimeout(this.timerId);
-        this.timerId = null;
-        this.timerId = setTimeout(() => {
-            this.onSearch({ filterValues: this.state.filterValues });
-            clearTimeout(this.timerId);
-            this.timerId = null;
-        }, this.props.refreshTimeout);
-    }
+    
     componentDidMount() {
         window.addEventListener('resize', this.throttledResize);
     }
@@ -477,13 +464,11 @@ class FilterInput extends React.Component {
 
 FilterInput.protoTypes = {
     autoRefresh: PropTypes.bool,
-    refreshTimeout: PropTypes.number,
     selectedFilterData: PropTypes.object,
 };
 
 FilterInput.defaultProps = {
     autoRefresh: true,
-    refreshTimeout: 1000,
     selectedFilterData: {
         sortDirection: false,
         sortId: '',
