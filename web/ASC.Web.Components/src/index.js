@@ -50,3 +50,4 @@ export { default as EmptyScreenContainer} from './components/empty-screen-contai
 export { default as CustomScrollbarsVirtualList } from './components/scrollbar/custom-scrollbars-virtual-list'
 export { default as RowContent } from './components/row-content'
 export { default as NewCalendar } from './components/calendar-new'
+export { default as FieldContainer } from './components/field-container'

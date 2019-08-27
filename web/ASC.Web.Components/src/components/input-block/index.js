@@ -82,6 +82,8 @@ const InputBlock = React.forwardRef((props, ref) => {
         </StyledChildrenBlock>
       </InputGroupAddon>
       <TextInput
+        id={props.id}
+        name={props.name}
         value={value}
         isDisabled={props.isDisabled}
         hasError={props.hasError}
