@@ -212,14 +212,6 @@ class AdvancedSelector extends React.Component {
 
     const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
 
-    /*const filtered = filter(options, option => {
-      return (
-        option.groups &&
-        option.groups.length > 0 &&
-        option.groups.indexOf(currentGroup.key) > -1
-      );
-    });*/
-
     console.log("AdvancedSelector render()", currentGroup, options);
 
     return (
@@ -259,7 +251,7 @@ class AdvancedSelector extends React.Component {
           className="options_list"
           height={maxHeight}
           itemSize={32}
-          itemCount={currentGroup.total}
+          itemCount={options.length}
           itemData={options}
           outerElementType={CustomScrollbarsVirtualList}
         >

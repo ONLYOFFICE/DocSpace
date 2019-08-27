@@ -16,7 +16,7 @@ storiesOf("Components|AdvancedSelector", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => {
-    const optionsCount = number("Users count", 10000);
+    const optionsCount = number("Users count", 1000);
 
     const groups = [
       {
@@ -76,15 +76,21 @@ storiesOf("Components|AdvancedSelector", module)
           {({ value, set }) => (
             <AdvancedSelector
               placeholder={text("placeholder", "Search users")}
-              onSearchChanged={e => console.log(e.target.value)}
+              onSearchChanged={e => {
+                set(options.filter(option => {
+                  return (
+                    option.label.indexOf(e.target.value) > -1
+                  );
+                }));
+              }}
               options={value}
               groups={groups}
               selectedGroups={[groups[0]]}
               isMultiSelect={boolean("isMultiSelect", true)}
               buttonLabel={text("buttonLabel", "Add members")}
-              onSelect={selectedOptions =>
-                console.log("onSelect", selectedOptions)
-              }
+              onSelect={selectedOptions => {
+                console.log("onSelect", selectedOptions);
+              }}
               onChangeGroup={group => { 
                 set(options.filter(option => {
                   return (
