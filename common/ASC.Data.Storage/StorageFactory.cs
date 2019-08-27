@@ -42,11 +42,13 @@ namespace ASC.Data.Storage
     {
         private const string DefaultTenantName = "default";
         private static readonly ICacheNotify<DataStoreCacheItem> Cache;
+        private static readonly Lazy<Configuration.Storage> Section;
 
         static StorageFactory()
         {
             Cache = new KafkaCache<DataStoreCacheItem>();
             Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            Section = new Lazy<Configuration.Storage>(() => CommonServiceProvider.GetService<Configuration.Storage>(), true);
         }
 
         public static IDataStore GetStorage(string tenant, string module)
@@ -78,7 +80,7 @@ namespace ASC.Data.Storage
             var store = DataStoreCache.Get(tenant, module);
             if (store == null)
             {
-                var section = CommonServiceProvider.GetService<Configuration.Storage>();
+                var section = Section.Value;
                 if (section == null)
                 {
                     throw new InvalidOperationException("config section not found");
@@ -98,7 +100,7 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TennantPath.CreatePath(tenant);
 
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            var section = Section.Value;
             if (section == null)
             {
                 throw new InvalidOperationException("config section not found");
@@ -110,7 +112,7 @@ namespace ASC.Data.Storage
 
         public static IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
         {
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            var section = Section.Value;
             return section.Module
                 .Where(x => x.Visible)
                 .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
@@ -119,7 +121,7 @@ namespace ASC.Data.Storage
 
         public static IEnumerable<string> GetDomainList(string configpath, string modulename)
         {
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            var section = Section.Value;
             if (section == null)
             {
                 throw new ArgumentException("config section not found");
@@ -218,7 +220,7 @@ namespace ASC.Data.Storage
 
         private static IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
         {
-            var storage = CommonServiceProvider.GetService<Configuration.Storage>();
+            var storage = Section.Value;
             var moduleElement = storage.GetModuleElement(module);
             if (moduleElement == null)
             {
