@@ -7,9 +7,11 @@ import { FixedSizeList } from "react-window";
 import Link from "../link";
 import Checkbox from "../checkbox";
 import Button from "../button";
+import ComboBox from "../combobox";
 import { isArrayEqual } from "../../utils/array";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
+import countBy from "lodash/countBy";
 
 const Container = ({
   value,
@@ -30,6 +32,10 @@ const StyledContainer = styled(Container)`
   ${props => (props.width ? `width: ${props.width}px;` : "")}
 
   .options_searcher {
+    margin-bottom: 12px;
+  }
+
+  .options_group_selector {
     margin-bottom: 12px;
   }
 
@@ -165,10 +171,20 @@ class AdvancedSelector extends React.Component {
       options,
       isMultiSelect,
       buttonLabel,
-      selectAllLabel
+      selectAllLabel,
+      groups,
+      selectedGroups,
     } = this.props;
 
     const { selectedOptions, selectedAll } = this.state;
+
+    /*const groupsWithCount = groups.map((group) => {
+      const count = countBy(options, (option) => option.groups.indexOf(group.key) > -1);
+      return {
+        key: group.key,
+        label: `${group.label} (0/${count})`
+      }
+    });*/
 
     return (
       <StyledContainer {...this.props}>
@@ -182,6 +198,17 @@ class AdvancedSelector extends React.Component {
           value={value}
           onChange={onSearchChanged}
         />
+        {groups && groups.length > 0 && 
+        <ComboBox
+          className="options_group_selector"
+          isDisabled={isDisabled}
+          options={groups}
+          onSelect={group => console.log('Selected group', group)}
+          selectedOption={selectedGroups[0]}
+          dropDownMaxHeight={200}
+          scaled={true}
+          size='content'
+        />}
         {isMultiSelect && 
         <Checkbox
           label={selectAllLabel}
