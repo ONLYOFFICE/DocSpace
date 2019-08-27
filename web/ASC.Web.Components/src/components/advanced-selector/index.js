@@ -11,7 +11,6 @@ import ComboBox from "../combobox";
 import { isArrayEqual } from "../../utils/array";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
-import countBy from "lodash/countBy";
 
 const Container = ({
   value,
@@ -67,18 +66,6 @@ const StyledContainer = styled(Container)`
     margin: 16px 0;
   }
 `;
-
-/*const Row = memo(({ data, index, style }) => {
-  const option = data[index];
-
-  return (
-    <div class="option" style={style}>
-      <Link as="span" truncate={true}>
-        {option.label}
-      </Link>
-    </div>
-  );
-});*/
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
@@ -177,14 +164,6 @@ class AdvancedSelector extends React.Component {
     } = this.props;
 
     const { selectedOptions, selectedAll } = this.state;
-
-    /*const groupsWithCount = groups.map((group) => {
-      const count = countBy(options, (option) => option.groups.indexOf(group.key) > -1);
-      return {
-        key: group.key,
-        label: `${group.label} (0/${count})`
-      }
-    });*/
 
     return (
       <StyledContainer {...this.props}>
