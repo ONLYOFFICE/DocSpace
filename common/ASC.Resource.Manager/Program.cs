@@ -173,7 +173,8 @@ namespace ASC.Resource.Manager
                 }
             }
 
-            _ = Parallel.ForEach(csFiles, localInit, func(@$"{resName}\.(\w*)"), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"\W+{resName}\.(\w*)"), localFinally);
+            _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
 
             return string.Join(',', bag.ToArray());
