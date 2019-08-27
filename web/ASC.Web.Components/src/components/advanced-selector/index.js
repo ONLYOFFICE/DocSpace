@@ -27,6 +27,7 @@ const Container = ({
   selectAllLabel,
   groups,
   selectedGroups,
+  onChangeGroup,
   ...props
 }) => <div {...props} />;
 
@@ -74,13 +75,14 @@ class AdvancedSelector extends React.Component {
   constructor(props) {
     super(props);
 
+    const groups = this.convertGroups(this.props.groups);
+    const currentGroup = this.getCurrentGroup(groups);
+
     this.state = {
       selectedOptions: this.props.selectedOptions || [],
       selectedAll: this.props.selectedAll || false,
-      currentGroup:
-        this.props.groups && this.props.groups.length > 0
-          ? this.props.groups[0]
-          : "No groups"
+      groups: groups,
+      currentGroup: currentGroup
     };
   }
 
@@ -96,6 +98,33 @@ class AdvancedSelector extends React.Component {
     if (this.props.selectedAll !== prevProps.selectedAll) {
       this.setState({ selectedAll: this.props.selectedAll });
     }
+
+    if (!isArrayEqual(this.props.groups, prevProps.groups)) {
+      const groups = this.convertGroups(this.props.groups);
+      const currentGroup = this.getCurrentGroup(groups);
+      this.setState({ groups, currentGroup });
+    }
+  }
+
+  convertGroups = groups => {
+    if (!groups) return [];
+
+    const wrappedGroups = groups.map(this.convertGroup);
+
+    return wrappedGroups;
+  };
+
+  convertGroup = group => {
+    return {
+      key: group.key,
+      label: `${group.label} (${group.total})`,
+      total: group.total
+    };
+  };
+
+  getCurrentGroup = (groups) => {
+    const currentGroup = groups.length > 0 ? groups[0] : "No groups";
+    return currentGroup;
   }
 
   onButtonClick = () => {
@@ -130,10 +159,12 @@ class AdvancedSelector extends React.Component {
     });
   };
 
-  onCurrentGroupChange = option => {
+  onCurrentGroupChange = group => {
     this.setState({
-      currentGroup: option
+      currentGroup: group
     });
+
+    this.props.onChangeGroup && this.props.onChangeGroup(group);
   };
 
   renderRow = ({ data, index, style }) => {
@@ -176,22 +207,20 @@ class AdvancedSelector extends React.Component {
       options,
       isMultiSelect,
       buttonLabel,
-      selectAllLabel,
-      groups,
-      selectedGroups
+      selectAllLabel
     } = this.props;
 
-    const { selectedOptions, selectedAll, currentGroup } = this.state;
+    const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
 
-    const filtered = filter(options, option => {
+    /*const filtered = filter(options, option => {
       return (
         option.groups &&
         option.groups.length > 0 &&
         option.groups.indexOf(currentGroup.key) > -1
       );
-    });
+    });*/
 
-    console.log("AdvancedSelector render()", currentGroup, filtered);
+    console.log("AdvancedSelector render()", currentGroup, options);
 
     return (
       <StyledContainer {...this.props}>
@@ -210,7 +239,6 @@ class AdvancedSelector extends React.Component {
             className="options_group_selector"
             isDisabled={isDisabled}
             options={groups}
-            onSelect={group => console.log("Selected group", group)}
             selectedOption={currentGroup}
             dropDownMaxHeight={200}
             scaled={true}
@@ -231,8 +259,8 @@ class AdvancedSelector extends React.Component {
           className="options_list"
           height={maxHeight}
           itemSize={32}
-          itemCount={filtered.length}
-          itemData={filtered}
+          itemCount={currentGroup.total}
+          itemData={options}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {this.renderRow.bind(this)}
@@ -270,7 +298,8 @@ AdvancedSelector.propTypes = {
   selectedGroups: PropTypes.array,
   selectedAll: PropTypes.bool,
   buttonLabel: PropTypes.string,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  onChangeGroup: PropTypes.func,
 };
 
 AdvancedSelector.defaultProps = {
