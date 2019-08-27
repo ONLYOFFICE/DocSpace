@@ -7,7 +7,8 @@ import { AUTH_KEY } from "./helpers/constants";
 import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
-import "./i18n";
+import i18n from "./i18n";
+import {I18nextProvider} from "react-i18next";
 
 import * as serviceWorker from "./serviceWorker";
 import { setIsLoaded, getUserInfo } from "./store/auth/actions";
@@ -23,9 +24,11 @@ else {
 }
 
 ReactDOM.render(
+  <I18nextProvider i18n={i18n}>
   <Provider store={store}>
     <App />
-  </Provider>,
+  </Provider>
+  </I18nextProvider>,
   document.getElementById("root")
 );
 
