@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
+using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
@@ -143,7 +144,7 @@ namespace ASC.Common.Caching
 
         public void ClearCache()
         {
-            KafkaNotify.Publish(new AscCacheItem() { Id = Guid.NewGuid().ToString() }, CacheNotifyAction.Any);
+            KafkaNotify.Publish(new AscCacheItem() { Id = ByteString.CopyFrom(Guid.NewGuid().ToByteArray()) }, CacheNotifyAction.Any);
         }
 
         private MemoryCache GetCache()
