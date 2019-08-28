@@ -52,6 +52,7 @@ const CalendarStyle = styled.div`
     .calendar-month_neighboringMonth {
         color: #ECEEF1;
         ${HoverStyle}
+        &:hover {color: #333;}
     }
 
     .calendar-month_weekend {
@@ -177,10 +178,22 @@ class Calendar extends Component {
     }
 
     getCurrentMonth = () => {
+        const openToDate = this.state.openToDate;
         const month = this.getArrayMonth();
-        const selectedMonth = month.find(x => x.key == this.state.openToDate.getMonth());
-        return (selectedMonth === undefined) ? month[0] : selectedMonth;
+        const selectedMonth = month.find(x => x.key == openToDate.getMonth());
+
+        if (!selectedMonth) {
+            const key = month[0].key;
+            const key2 = Number(key) + 1;
+            const date = new Date(openToDate.getFullYear() + "/" + key2 + "/" + "01");
+            this.state.openToDate = date;
+        }
+
+        return selectedMonth ? selectedMonth : month[0];
     }
+
+
+
 
     getArrayYears = () => {
         const minDate = this.props.minDate.getFullYear();
