@@ -290,6 +290,7 @@ AdvancedSelector.propTypes = {
   groups: PropTypes.array,
   selectedGroups: PropTypes.array,
   selectedAll: PropTypes.bool,
+  selectAllLabel: PropTypes.string,
   buttonLabel: PropTypes.string,
   onSelect: PropTypes.func,
   onChangeGroup: PropTypes.func,

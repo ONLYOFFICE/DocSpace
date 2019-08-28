@@ -88,6 +88,7 @@ storiesOf("Components|AdvancedSelector", module)
               selectedGroups={[groups[0]]}
               isMultiSelect={boolean("isMultiSelect", true)}
               buttonLabel={text("buttonLabel", "Add members")}
+              selectAllLabel={text("selectAllLabel", "Select all")}
               onSelect={selectedOptions => {
                 console.log("onSelect", selectedOptions);
               }}
