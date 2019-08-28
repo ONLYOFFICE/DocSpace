@@ -133,13 +133,20 @@ class Calendar extends Component {
     }
 
     getArrayMonth = () => {
-        let date1 = this.props.minDate.getMonth();
-        let date2 = this.props.maxDate.getMonth();
-        let monthList = new Array();
-        if (this.props.minDate.getFullYear() !== this.props.maxDate.getFullYear()) {
-            monthList = this.getListMonth(0, 11);
-        } else { monthList = this.getListMonth(date1, date2); }
-        return monthList;
+        const minDate = this.props.minDate;
+        const maxDate = this.props.maxDate;
+
+        if (this.state.openToDate.getFullYear() === minDate.getFullYear()) {
+            return this.getListMonth(minDate.getMonth(), 11);
+        }
+
+        else if (this.state.openToDate.getFullYear() === maxDate.getFullYear()) {
+            return this.getListMonth(0, maxDate.getMonth());
+        }
+
+        else if (minDate.getFullYear() !== maxDate.getFullYear()) {
+            return this.getListMonth(0, 11);
+        } else { return this.getListMonth(minDate.getMonth(), maxDate.getMonth()); }
     }
 
     getCurrentMonth = () => {
