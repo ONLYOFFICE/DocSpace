@@ -3,10 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import GroupButton from '../group-button';
 import DropDownItem from '../drop-down-item';
-import differenceWith from 'lodash/differenceWith';
-import isEqual from 'lodash/isEqual';
-import isEmpty from 'lodash/isEmpty';
 import throttle from 'lodash/throttle';
+import { isArrayEqual } from '../../utils/array';
 
 const StyledGroupButtonsMenu = styled.div`
     position: sticky;
@@ -68,10 +66,6 @@ class GroupButtonsMenu extends React.PureComponent {
     this.throttledResize = throttle(this.updateMenu, 300);
   }
 
-  isArrayEqual = (x, y) => {
-    return isEmpty(differenceWith(x, y, isEqual));
-  };
-
   closeMenu = (e) => {
     this.setState({ visible: false });
     this.props.onClose && this.props.onClose(e);
@@ -96,7 +90,7 @@ class GroupButtonsMenu extends React.PureComponent {
       this.setState({ visible: this.props.visible });
     }
 
-    if(!this.isArrayEqual(this.props.menuItems, prevProps.menuItems)){
+    if(!isArrayEqual(this.props.menuItems, prevProps.menuItems)){
       this.setState({ priorityItems: this.props.menuItems, });
       this.updateMenu();
     }

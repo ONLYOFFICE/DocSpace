@@ -9,6 +9,7 @@ import {
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
+import { useTranslation } from 'react-i18next';
 
 const wrapperStyle = {
   display: "flex",
@@ -67,7 +68,7 @@ const SectionHeaderContent = props => {
     toastr.success("Context action: Invite again");
   };
 
-  const getUserContextOptions = (user, viewer) => {
+  const getUserContextOptions = (user, viewer, t) => {
 
     let status = "";
 
@@ -81,32 +82,32 @@ const SectionHeaderContent = props => {
         return [
           {
             key: "edit",
-            label: "Edit profile",
+            label: t('EditUserDialogTitle'),
             onClick: onEditClick.bind(this, user)
           },
           {
             key: "edit-photo",
-            label: "Edit Photo",
+            label: t('EditPhoto'),
             onClick: onEditPhoto
           },
           {
             key: "change-email",
-            label: "Change e-mail",
+            label: t('EmailChangeButton'),
             onClick: onChangeEmailClick
           },
           {
             key: "change-phone",
-            label: "Change phone",
+            label: t('PhoneChange'),
             onClick: onChangePhoneClick
           },
           {
             key: "change-password",
-            label: "Change password",
+            label: t('PasswordChangeButton'),
             onClick: onChangePasswordClick
           },
           {
             key: "disable",
-            label: "Disable",
+            label: t('DisableUserButton'),
             onClick: onDisableClick
           }
         ];
@@ -114,27 +115,27 @@ const SectionHeaderContent = props => {
         return [
           {
             key: "enable",
-            label: "Enable",
+            label: t('EnableUserButton'),
             onClick: onEnableClick
           },
           {
             key: "edit-photo",
-            label: "Edit photo",
+            label: t('EditPhoto'),
             onClick: onEditPhoto
           },
           {
             key: "reassign-data",
-            label: "Reassign data",
+            label: t('ReassignData'),
             onClick: onReassignDataClick
           },
           {
             key: "delete-personal-data",
-            label: "Delete personal data",
+            label: t('RemoveData'),
             onClick: onDeletePersonalDataClick.bind(this, user)
           },
           {
             key: "delete-profile",
-            label: "Delete profile",
+            label: t('DeleteSelfProfile'),
             onClick: onDeleteProfileClick
           }
         ];
@@ -142,22 +143,22 @@ const SectionHeaderContent = props => {
         return [
           {
             key: "edit",
-            label: "Edit",
+            label: t('EditButton'),
             onClick: onEditClick.bind(this, user)
           },
           {
             key: "edit-photo",
-            label: "Edit Photo",
+            label: t('EditPhoto'),
             onClick: onEditPhoto
           },
           {
             key: "invite-again",
-            label: "Invite again",
+            label: t('InviteAgainLbl'),
             onClick: onInviteAgainClick
           },
           {
             key: "key5",
-            label: "Disable",
+            label: t('DisableUserButton'),
             onClick: onDisableClick
           }
         ];
@@ -166,7 +167,8 @@ const SectionHeaderContent = props => {
     }
   };
 
-  const contextOptions = () => getUserContextOptions(profile, viewer);
+  const { t } = useTranslation();
+  const contextOptions = () => getUserContextOptions(profile, viewer, t);
 
   return (
     <div style={wrapperStyle}>
@@ -180,12 +182,12 @@ const SectionHeaderContent = props => {
       </div>
       <Text.ContentHeader truncate={true} style={textStyle}>
         {profile.displayName}
-        {profile.isLDAP && " (LDAP)"}
+        {profile.isLDAP && ` (${t('LDAPLbl')})`}
       </Text.ContentHeader>
       {(isAdmin || isMe(viewer, profile.userName)) && (
         <ContextMenuButton
           directionX="right"
-          title="Actions"
+          title={t('Actions')}
           iconName="VerticalDotsIcon"
           size={16}
           color="#A3A9AE"

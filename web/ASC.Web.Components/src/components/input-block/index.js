@@ -45,9 +45,9 @@ const StyledInputGroup = styled(CustomInputGroup)`
 const InputBlock = React.forwardRef((props, ref) => {
   //console.log("InputBlock render");
   const { onChange, value, children, size } = props;
-  
+
   let iconButtonSize = 0;
-  
+
   if (typeof props.iconSize == "number" && props.iconSize > 0) {
     iconButtonSize = props.iconSize;
   } else {
@@ -84,6 +84,7 @@ const InputBlock = React.forwardRef((props, ref) => {
       <TextInput
         id={props.id}
         name={props.name}
+        type={props.type}
         value={value}
         isDisabled={props.isDisabled}
         hasError={props.hasError}
@@ -107,13 +108,13 @@ const InputBlock = React.forwardRef((props, ref) => {
         &&
         <InputGroupAddon addonType="append">
           <StyledIconBlock>
-            <IconButton 
-              size={iconButtonSize} 
-              color={props.iconColor} 
-              iconName={props.iconName} 
-              isFill={props.isIconFill} 
-              isDisabled={props.isDisabled} 
-              onClick={typeof props.onIconClick == 'function' ? onIconClick : undefined } />
+            <IconButton
+              size={iconButtonSize}
+              color={props.iconColor}
+              iconName={props.iconName}
+              isFill={props.isIconFill}
+              isDisabled={props.isDisabled}
+              onClick={typeof props.onIconClick == 'function' ? onIconClick : undefined} />
           </StyledIconBlock>
         </InputGroupAddon>
       }

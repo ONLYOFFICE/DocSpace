@@ -160,7 +160,7 @@ namespace ASC.Web.Core.Users
             foreach (var item in bitmaps)
             {
                 using var mainImgBitmap = MainImgBitmap(tenantId);
-                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
+                UserPhotoManager.SaveThumbnail(tenantId, UserId, item.Bitmap, mainImgBitmap.RawFormat);
             }
         }
     }

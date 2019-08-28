@@ -1,0 +1,22 @@
+{
+  "EditPhoto": "Edit Photo",
+  "FirstName": "First Name",
+  "LastName": "Last Name",
+  "Email": "Email",
+  "Password": "Password",
+  "Birthdate": "Date of Birth",
+  "Sex": "Sex",
+  "Location": "Location",
+  "Comments": "Comments",
+  "SaveButton": "Save",
+  "CancelButton": "Cancel",
+  
+  "ActivationLink": "Activation link",
+  "AddPhoto": "Add photo",
+  "TemporaryPassword": "Temporary password",
+  "SexMale": "Male",
+  "SexFemale": "Female",
+  "RequiredField": "Required field",
+  "NewEmployee": "New employee",
+  "NewGuest": "New guest"
+}

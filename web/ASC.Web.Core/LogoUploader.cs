@@ -109,7 +109,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         private const string Base64Start = "data:image/png;base64,";
 
-        public static string SaveTmpLogo(string tmpLogoPath)
+        public static string SaveTmpLogo(int tenantId, string tmpLogoPath)
         {
             if (string.IsNullOrEmpty(tmpLogoPath)) return null;
 
@@ -126,9 +126,9 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
                 var fileName = Path.GetFileName(tmpLogoPath);
 
-                data = UserPhotoManager.GetTempPhotoData(fileName);
+                data = UserPhotoManager.GetTempPhotoData(tenantId, fileName);
 
-                UserPhotoManager.RemoveTempPhoto(fileName);
+                UserPhotoManager.RemoveTempPhoto(tenantId, fileName);
 
                 return SaveLogo(fileName, data);
             }

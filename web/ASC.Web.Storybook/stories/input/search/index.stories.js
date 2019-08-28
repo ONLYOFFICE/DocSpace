@@ -46,8 +46,8 @@ class SearchStory extends React.Component  {
     return(
       <Section>
         <StringValue
-          onChange={e => {
-              action('onChange')(e);
+          onChange={value => {
+              action('onChange')(value);
             }
           }
         >
@@ -64,14 +64,10 @@ class SearchStory extends React.Component  {
                 isDisabled={boolean('isDisabled', false)}
                 size={select('size', sizeOptions, 'base')}
                 scale={boolean('scale', false)}
-                isNeedFilter={boolean('isNeedFilter', true)}
-                getFilterData={getData}
-                selectedFilterData={this.state.selectedFilterData}
                 placeholder={text('placeholder', 'Search')}
-                onChangeFilter={(result) => {console.log(result)}}
                 value={value}
-                onChange={e => { 
-                    set(e.target.value);
+                onChange={value => { 
+                    set(value);
                 }}
             />
             </Section>

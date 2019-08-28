@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import { IconButton, Text } from 'asc-web-components';
+import { useTranslation } from 'react-i18next';
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,12 +16,13 @@ const Header = styled(Text.ContentHeader)`
 
 const SectionHeaderContent = (props) => {
   const {profile, history, settings} = props;
+  const { t } = useTranslation();
 
   const headerText = profile && profile.displayName
     ? profile.displayName
-    : profile.isVisitor 
-      ? "New guest"
-      : "New employee";
+    : profile.isVisitor
+      ? t('NewGuest')
+      : t('NewEmployee');
 
   const onClick = useCallback(() => {
     history.push(settings.homepage)

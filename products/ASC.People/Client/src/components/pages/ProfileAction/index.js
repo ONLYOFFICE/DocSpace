@@ -5,6 +5,8 @@ import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, CreateUserForm, UpdateUserForm } from './Section';
 import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -37,7 +39,8 @@ class ProfileAction extends React.Component {
     const { profile } = this.props;
 
     return (
-      profile
+      <I18nextProvider i18n={i18n}>
+        {profile
         ? <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
@@ -50,7 +53,8 @@ class ProfileAction extends React.Component {
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
           sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
-        />
+          />}
+      </I18nextProvider>
     );
   }
 }

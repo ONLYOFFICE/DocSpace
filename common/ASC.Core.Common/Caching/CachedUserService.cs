@@ -145,14 +145,14 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = service.SaveUser(tenant, user);
-            cacheUserInfoItem.Publish(new UserInfoCacheItem() { ID = user.ID.ToString(), Tenant = tenant }, CacheNotifyAction.InsertOrUpdate);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem() { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.InsertOrUpdate);
             return user;
         }
 
         public void RemoveUser(int tenant, Guid id)
         {
             service.RemoveUser(tenant, id);
-            cacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, ID = id.ToString() }, CacheNotifyAction.Any);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem { Tenant = tenant, ID = id.ToByteString() }, CacheNotifyAction.Any);
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -256,7 +256,7 @@ namespace ASC.Core.Caching
         {
             if (CoreContext.Configuration.Personal && userInfo != null)
             {
-                var key = GetUserCacheKeyForPersonal(userInfo.Tenant, Guid.Parse(userInfo.ID));
+                var key = GetUserCacheKeyForPersonal(userInfo.Tenant, userInfo.ID.FromByteString());
                 cache.Remove(key);
             }
 
