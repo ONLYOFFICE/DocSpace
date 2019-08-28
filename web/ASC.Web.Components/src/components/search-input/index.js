@@ -34,7 +34,6 @@ class SearchInput extends React.Component {
       inputValue: ''
     });
     if(typeof this.props.onClearSearch === 'function') this.props.onClearSearch();
-    this.props.onChange('')
   };
   onInputChange(e) {
     this.setState({

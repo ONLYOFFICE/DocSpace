@@ -181,11 +181,12 @@ class FilterInput extends React.Component {
     }
     clearFilter() {
         this.setState({
-            inputValue: '',
+            searchText:'',
             filterValues: [],
             openFilterItems: [],
             hideFilterItems: []
         });
+        this.onFilter([], this.state.sortId, this.state.sortDirection ? "asc" : "desc", '');
     }
     updateFilter(inputFilterItems) {
         const currentFilterItems = inputFilterItems || cloneObjectsArray(this.state.filterValues);
