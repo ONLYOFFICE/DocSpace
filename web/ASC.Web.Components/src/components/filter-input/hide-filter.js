@@ -35,6 +35,7 @@ const StyledHideFilterButton = styled.div`
 `;
 const StyledHideFilter = styled.div`
   display: inline-block;
+  height: 100%;
 `;
 const StyledPopoverBody = styled(PopoverBody)`
   border-radius: 6px;

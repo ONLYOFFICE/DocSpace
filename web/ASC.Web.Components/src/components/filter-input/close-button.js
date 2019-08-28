@@ -9,7 +9,7 @@ const StyledCloseButton = styled.div`
 const CloseButton = props => {
   //console.log("CloseButton render");
   return (
-      <StyledCloseButton>
+      <StyledCloseButton className={props.className}>
           <IconButton
             color={"#D8D8D8"}
             hoverColor={"#333"}
@@ -21,7 +21,6 @@ const CloseButton = props => {
             onClick={!props.isDisabled ? ((e) => props.onClick()) : undefined}
         />
       </StyledCloseButton>
-    
   );
 };
 
