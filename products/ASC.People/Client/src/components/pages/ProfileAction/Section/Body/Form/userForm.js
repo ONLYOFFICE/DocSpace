@@ -195,14 +195,14 @@ let UserForm = (props) => {
                 source={initialValues.avatarMax}
                 userName={initialValues.displayName}
                 editing={true}
-                editLabel={t("Resource:EditPhoto")}
+                editLabel={t("Edit Photo")}
                 editAction={onEditAvatar}
               />
             : <Avatar
                 size="max"
                 role={userType}
                 editing={true}
-                editLabel={t("Resource:AddPhoto")}
+                editLabel={t("AddPhoto")}
                 editAction={onEditAvatar}
               />
           }
@@ -211,24 +211,24 @@ let UserForm = (props) => {
           <Field
             name="firstName"
             component={renderTextField}
-            label={`${t("Resource:FirstName")}:`}
+            label={`${t("FirstName")}:`}
             isRequired={true}
           />
           <Field
             name="lastName"
             component={renderTextField}
-            label={`${t("Resource:LastName")}:`}
+            label={`${t("LastName")}:`}
             isRequired={true}
           />
           <Field
             name="email"
             component={renderTextField}
-            label={`${t("Resource:Email")}:`}
+            label={`${t("Email")}:`}
             isRequired={true}
           />
           <FieldContainer>
             <Label
-              text={`${t("Resource:Password")}:`}
+              text={`${t("Password")}:`}
               isRequired={true}
               error={passwordError}
               className="field-label"
@@ -240,7 +240,7 @@ let UserForm = (props) => {
                   type="radio"
                   name="passwordType"
                   value="link"
-                  label={t("Resource:ActivationLink")}
+                  label={t("ActivationLink")}
                   isChecked={passwordTypeValue === "link"}
                 />
                 <Field
@@ -248,7 +248,7 @@ let UserForm = (props) => {
                   type="radio"
                   name="passwordType"
                   value="temp"
-                  label={t("Resource:TemporaryPassword")}
+                  label={t("TemporaryPassword")}
                   isChecked={passwordTypeValue === "temp"}
                 />
               </RadioGroupFieldBody>
@@ -262,11 +262,11 @@ let UserForm = (props) => {
           <Field
             name="birthday"
             component={renderDateField}
-            label={`${t("Resource:Birthdate")}:`}
+            label={`${t("Birthdate")}:`}
           />
           <FieldContainer>
             <Label
-              text={`${t("Resource:Sex")}:`}
+              text={`${t("Sex")}:`}
               className="field-label"
             />
             <RadioGroupFieldBody>
@@ -275,7 +275,7 @@ let UserForm = (props) => {
                 type="radio"
                 name="sex"
                 value="male"
-                label={t("Resource:SexMale")}
+                label={t("SexMale")}
                 isChecked={sexValue === "male"}
               />
               <Field
@@ -283,7 +283,7 @@ let UserForm = (props) => {
                 type="radio"
                 name="sex"
                 value="female"
-                label={t("Resource:SexFemale")}
+                label={t("SexFemale")}
                 isChecked={sexValue === "female"}
               />
             </RadioGroupFieldBody>
@@ -291,27 +291,27 @@ let UserForm = (props) => {
           <Field
             name="workFrom"
             component={renderDateField}
-            label={`${t("Resource:EmployedSinceDate")}:`}
+            label={`EmployedSinceDate:`}
           />
           <Field
             name="location"
             component={renderTextField}
-            label={`${t("Resource:Location")}:`}
+            label={`${t("Location")}:`}
           />
           <Field
             name="title"
             component={renderTextField}
-            label={`${t("Resource:Position")}:`}
+            label={`Position:`}
           />
           <FieldArray
             name="groups"
             component={renderDepartmentsField}
-            label={`${t("Resource:Departments")}:`}
+            label={`Departments`}
           />
         </MainFieldsContainer>
       </MainContainer>
       <div>
-        <Text.ContentHeader>{t("Resource:Comments")}</Text.ContentHeader>
+        <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
         <Field 
           name="notes"
           component={renderTextareaField}
@@ -322,13 +322,13 @@ let UserForm = (props) => {
       </div>
       <div style={{marginTop: "60px"}}>
         <Button
-          label={t("UserControlsCommonResource:SaveButton")}
+          label={t("SaveButton")}
           primary
           type="submit"
           isDisabled={submitting}
         />
         <Button
-          label={t("UserControlsCommonResource:CancelButton")}
+          label={t("CancelButton")}
           style={{ marginLeft: "8px" }}
           isDisabled={submitting}
           onClick={onCancel}
@@ -339,7 +339,7 @@ let UserForm = (props) => {
 }
 
 const validate = (values) => {
-  const requiredFieldText = "Required field";
+  const requiredFieldText = "RequiredField";
   const errors = {};
 
   if (!values.firstName)
