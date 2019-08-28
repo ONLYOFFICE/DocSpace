@@ -54,32 +54,39 @@ namespace System.Web
 
         public static Uri GetUrlRewriter(IHeaderDictionary headers, HttpRequest request)
         {
-            if (request.Query != null && request.Query.Count > 0)
+            if (headers != null)
             {
-                var rewriterUri = ParseRewriterUrl(request.Query[UrlRewriterHeader]);
-                if (rewriterUri != null)
+                var h = headers[UrlRewriterHeader];
+                var rewriterUri = !string.IsNullOrEmpty(h) ? ParseRewriterUrl(h) : null;
+                if (request != null && rewriterUri != null)
                 {
-                    var result = new UriBuilder(request.GetDisplayUrl())
+                    var result = new UriBuilder()
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
                         Port = rewriterUri.Port
                     };
+                    result.Query = request.QueryString.Value;
+                    result.Path = request.Path.Value;
                     return result.Uri;
                 }
             }
 
-            if (headers != null && !string.IsNullOrEmpty(headers[UrlRewriterHeader]))
+            if (request != null && request.Query != null)
             {
-                var rewriterUri = ParseRewriterUrl(headers[UrlRewriterHeader]);
+                var h = request.Query[UrlRewriterHeader];
+                var rewriterUri = !string.IsNullOrEmpty(h) ? ParseRewriterUrl(h) : null;
                 if (rewriterUri != null)
                 {
-                    var result = new UriBuilder(request.GetDisplayUrl())
+                    var result = new UriBuilder()
                     {
                         Scheme = rewriterUri.Scheme,
                         Host = rewriterUri.Host,
                         Port = rewriterUri.Port
                     };
+                    result.Query = request.QueryString.Value;
+                    result.Path = request.Path.Value;
+
                     return result.Uri;
                 }
             }

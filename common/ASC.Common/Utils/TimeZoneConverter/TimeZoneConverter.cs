@@ -68,6 +68,7 @@ namespace ASC.Common.Utils
                                 WindowsTimeZoneId = row.Attribute("other").Value,
                                 Territory = row.Attribute("territory").Value
                             };
+                _mapZones = _mapZones.ToList();
             }
             catch (Exception error)
             {

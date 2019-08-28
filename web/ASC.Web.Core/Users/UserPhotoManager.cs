@@ -97,7 +97,7 @@ namespace ASC.Web.Core.Users
 
     public class UserPhotoManager
     {
-        private static readonly ConcurrentDictionary<Guid, IDictionary<CacheSize, string>> Photofiles = new ConcurrentDictionary<Guid, IDictionary<CacheSize, string>>();
+        private static readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
         private static readonly ICacheNotify<UserPhotoManagerCacheItem> CacheNotify;
 
         static UserPhotoManager()
@@ -109,7 +109,7 @@ namespace ASC.Web.Core.Users
                 CacheNotify.Subscribe((data) =>
                 {
                     var userId = new Guid(data.UserID.ToByteArray());
-                    Photofiles.GetOrAdd(userId, (r) => new ConcurrentDictionary<CacheSize, string>())[data.Size] = data.FileName;
+                    Photofiles.GetOrAdd(data.Size, (r) => new ConcurrentDictionary<Guid, string>())[userId] = data.FileName;
                 }, CacheNotifyAction.InsertOrUpdate);
 
                 CacheNotify.Subscribe((data) =>
@@ -119,7 +119,8 @@ namespace ASC.Web.Core.Users
 
                     try
                     {
-                        Photofiles.TryRemove(userId, out _);
+                        Photofiles.TryGetValue(CacheSize.Big, out var dict);
+                        dict?.TryRemove(userId, out _);
                         //var storage = GetDataStore();
                         //storage.DeleteFiles("", data.UserID + "*.*", false);
                         //SetCacheLoadedForTenant(false);
@@ -370,11 +371,11 @@ namespace ASC.Web.Core.Users
             isDef = false;
 
             string fileName = null;
-            Photofiles.TryGetValue(userId, out var photo);
+            Photofiles.TryGetValue(ToCache(size), out var photo);
 
             if (size != Size.Empty)
             {
-                photo?.TryGetValue(ToCache(size), out fileName);
+                photo?.TryGetValue(userId, out fileName);
             }
             else
             {
