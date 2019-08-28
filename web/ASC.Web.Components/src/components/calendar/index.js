@@ -160,9 +160,9 @@ class Calendar extends Component {
     }
 
     getCurrentMonth = () => {
-        let month = this.getArrayMonth();
-        let selected_month = month.find(x => x.key == this.state.openToDate.getMonth());
-        return (selected_month);
+        const month = this.getArrayMonth();
+        const selectedMonth = month.find(x => x.key == this.state.openToDate.getMonth());
+        return (selectedMonth === undefined) ? month[0] : selectedMonth ;
     }
 
     onChange = (date) => {

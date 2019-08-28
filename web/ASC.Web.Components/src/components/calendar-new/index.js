@@ -26,7 +26,10 @@ const ComboBoxDateStyle = styled.div`
 
 const CalendarStyle = styled.div`
     min-width: 280px;
-    max-width: 293px;
+
+    /*width: 100%;*/
+    width: 325px;
+
     border-radius: 6px;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
@@ -48,6 +51,7 @@ const CalendarStyle = styled.div`
 
     .calendar-month_neighboringMonth {
         color: #ECEEF1;
+        ${HoverStyle}
     }
 
     .calendar-month_weekend {
@@ -65,19 +69,21 @@ const CalendarStyle = styled.div`
         cursor: pointer;
         color: #fff;
     }
+
+    .calendar-month_disabled {
+        pointer-events: none;
+    }
 `;
 
 const Weekday = styled.div`
+    display: flex;
     overflow: hidden;
-    flex-basis: 15%;
-    /*flex-basis: 100%;*/
-    /*min-height: 32px;*/
-    /*min-width: 32px;*/
+    flex-basis: 14.2857%;
+    padding-left: 4px;
 `;
 
 const Weekdays = styled.div`
     display: flex;
-    margin-bottom: 15px;
 `;
 
 const Month = styled.div`
@@ -95,8 +101,6 @@ const Day = styled.div`
     padding: 4px;
     text-align: center;
     line-height: 2.5em;
-    /*min-height: 32px;*/
-    /*min-width: 32px;*/
 `;
 
 const AbbrDay = styled.abbr`
@@ -116,17 +120,40 @@ class Calendar extends Component {
 
     };
 
-    selectedYear = (value) => {
+    onSelectYear = (value) => {
         this.setState({ openToDate: new Date(value.key, this.state.openToDate.getMonth()) });
     }
 
-    selectedMonth = (value) => {
+    onSelectMonth = (value) => {
         this.setState({ openToDate: new Date(this.state.openToDate.getFullYear(), value.key) });
     }
 
-    getListMonth = (date1, date2) => {
-        const monthList = new Array();
-        for (let i = date1; i <= date2; i++) {
+    onDayClick = (day) => {
+        let month = this.state.openToDate.getMonth() + 1;
+        let year = this.state.openToDate.getFullYear();
+        const date = new Date(month + "/" + day + "/" + year);
+        const days = new Date(year, month, 0).getDate();
+
+        if (day < 0) {
+            if (month === 1) { month = 13, year -= 1 }
+            const prevDays = new Date(year, (month - 1), 0).getDate();
+            const prevDate = new Date((month - 1) + "/" + (prevDays + day + 1) + "/" + year);
+            this.setState({ selectedDate: prevDate, openToDate: prevDate });
+        }
+        else if (day > days) {
+            if (month === 12) { month = 0, year += 1 }
+            const nextDate = new Date(month + 1 + "/" + (day - days) + "/" + year);
+            this.setState({ selectedDate: nextDate, openToDate: nextDate });
+        }
+        else if (this.formatSelectedDate(date) != this.formatSelectedDate(this.state.selectedDate)) {
+            this.setState({ selectedDate: date });
+            this.props.onChange && this.props.onChange(date);
+        }
+    }
+
+    getListMonth = (minMonth, maxMonth) => {
+        const monthList = [];
+        for (let i = minMonth; i <= maxMonth; i++) {
             monthList.push({ key: `${i}`, label: `${this.state.months[i]}` });
         }
         return monthList;
@@ -150,16 +177,16 @@ class Calendar extends Component {
     }
 
     getCurrentMonth = () => {
-        let month = this.getArrayMonth();
-        let selectedMonth = month.find(x => x.key == this.state.openToDate.getMonth());
-        return (selectedMonth);
+        const month = this.getArrayMonth();
+        const selectedMonth = month.find(x => x.key == this.state.openToDate.getMonth());
+        return (selectedMonth === undefined) ? month[0] : selectedMonth;
     }
 
     getArrayYears = () => {
-        let date1 = this.props.minDate.getFullYear();
-        let date2 = this.props.maxDate.getFullYear();
+        const minDate = this.props.minDate.getFullYear();
+        const maxDate = this.props.maxDate.getFullYear();
         const yearList = [];
-        for (let i = date1; i <= date2; i++) {
+        for (let i = minDate; i <= maxDate; i++) {
             let newDate = new Date(i, 0, 1);
             yearList.push({ key: `${i}`, label: `${moment(newDate).format('YYYY')}` });
         }
@@ -167,52 +194,27 @@ class Calendar extends Component {
     }
 
     getCurrentYear = () => {
-        let year = this.getArrayYears();
-        year = year.find(x => x.key == this.state.openToDate.getFullYear());
-        return (year);
-    }
-
-    selectedYear = (value) => {
-        this.setState({ openToDate: new Date(value.key, this.state.openToDate.getMonth()) });
-    }
-
-    selectedMonth = (value) => {
-        this.setState({ openToDate: new Date(this.state.openToDate.getFullYear(), value.key) });
+        return this.getArrayYears().find(x => x.key == this.state.openToDate.getFullYear());
     }
 
     formatSelectedDate = (date) => {
         return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
     }
 
-    onDayClick = (day) => {
-        let year = this.state.openToDate.getFullYear();
-        let month = this.state.openToDate.getMonth() + 1;
-        let date = new Date(month + "/" + day + "/" + year);
-        if (this.formatSelectedDate(date) != this.formatSelectedDate(this.state.selectedDate)) {
-            this.setState({ selectedDate: date })
-            this.props.onChange && this.props.onChange(date);
-        }
-    }
-
-
-
-
     formatDate = (date) => {
         return (date.getMonth() + 1) + "/" + 1 + "/" + date.getFullYear();
     }
 
     compareDays = () => {
-        var date1 = this.formatDate(this.state.openToDate);
-        var date2 = this.formatDate(this.state.selectedDate);
-        return (date1 === date2) ? true : false;
+        const openDate = this.formatDate(this.state.openToDate);
+        const selectedDate = this.formatDate(this.state.selectedDate);
+        return (openDate === selectedDate) ? true : false;
     }
 
     firstDayOfMonth = () => {
         const selectedDate = this.state.openToDate;
         const firstDay = moment(selectedDate).locale("en").startOf("month").format("d");
-        let day;
-        !this.props.swapWeekdays ? day = firstDay : day = firstDay - 1;
-
+        let day = firstDay - 1;
         if (day < 0) { day = 6; }
         return day;
     };
@@ -220,17 +222,16 @@ class Calendar extends Component {
     getWeekDays = () => {
         let arrayWeekDays = [];
         const weekdays = moment.weekdaysMin();
-        if (this.props.swapWeekdays) { weekdays.push(weekdays.shift()); }
-
+        weekdays.push(weekdays.shift());
         let className = "";
         for (let i = 0; i < weekdays.length; i++) {
-            !this.props.swapWeekdays ?
-                (i === 0 || i === 6) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays"
-                : (i >= 5) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays";
-            arrayWeekDays.push(<Weekday className={className} key={weekdays[i]}>{weekdays[i]}</Weekday>)
+            (i >= 5) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays";
+            arrayWeekDays.push(<Weekday className={className} key={weekdays[i]}><AbbrDay>{weekdays[i]}</AbbrDay></Weekday>)
         }
         return arrayWeekDays;
     }
+
+
 
     getDays = () => {
         let keys = 0;
@@ -240,59 +241,92 @@ class Calendar extends Component {
         const days = new Date(year, month, 0).getDate();
         let prevDays = new Date(year, month - 1, 0).getDate();
         const arrayDays = [];
+        let className = "calendar-month_neighboringMonth";
 
-        // Neighboring Month Days (Prev month)
+        const open = this.state.openToDate;
+        const max = this.props.maxDate;
+        const min = this.props.minDate;
+
+
+        //Disable preview month
+        let disablePrevMonth = null;
+        if (open.getFullYear() === min.getFullYear() && open.getMonth() === min.getMonth()) {
+            disablePrevMonth = "calendar-month_disabled";
+        }
+
+        // Show neighboring days in prev month
         while (prevMonthDays != 0) {
             arrayDays.unshift(
-                <Day key={keys++}>
-                    <AbbrDay className="calendar-month_neighboringMonth" >
+                <Day key={--keys} className={disablePrevMonth} >
+                    <AbbrDay
+                        onClick={this.onDayClick.bind(this, keys)}
+                        className={className} >
                         {prevDays--}
                     </AbbrDay>
                 </Day>
             );
-            prevMonthDays--;
             //console.log("loop");
+            prevMonthDays--;
+        }
+        keys = 0;
+
+
+        //Disable max days in month
+        let disableClass, maxDay, minDay;
+        if (open.getFullYear() === max.getFullYear() && open.getMonth() >= max.getMonth()) {
+            if (open.getMonth() === max.getMonth()) { maxDay = max.getDate(); }
+            else { maxDay = null; }
         }
 
+        //Disable min days in month
+        else if (open.getFullYear() === min.getFullYear() && open.getMonth() >= min.getMonth()) {
+            if (open.getMonth() === min.getMonth()) { minDay = min.getDate(); }
+            else { minDay = null; }
+        }
 
-
-
-        // Days + Weekend days 
+        // Show days in month and weekend days
         let seven = 7;
-        let className = "";
         const dateNow = this.state.selectedDate.getDate();
-        const isEqual = this.compareDays();
-        let temp = 0; this.props.swapWeekdays ? temp = 1 : temp = 6;
-
+        const temp = 1;
         prevMonthDays = this.firstDayOfMonth();
 
         for (let i = 1; i <= days; i++) {
             if (i === (seven - prevMonthDays - temp)) { className = "calendar-month_weekend"; }
             else if (i === (seven - prevMonthDays)) { seven += 7; className = "calendar-month_weekend"; }
             else { className = "calendar-month"; }
-            if (i === dateNow && isEqual) { className = "calendar-month_selected-day" }
+            if (i === dateNow && this.compareDays()) { className = "calendar-month_selected-day" }
+            if (i > maxDay || i < minDay) { disableClass = "calendar-month_disabled"; }
+            else { disableClass = null; }
+
             arrayDays.push(
-                <Day key={keys++}>
+                <Day key={keys++} className={disableClass} >
                     <AbbrDay onClick={this.onDayClick.bind(this, i)} className={className}>{i}</AbbrDay>
                 </Day>
             );
         }
 
-
-
-        //Calculating Neighboring Month Days
-        let maxDays = 35; // max days in month table (no)
+        //Calculating neighboring days in next month
+        let maxDays = 42; // max days in month table
         const firstDay = this.firstDayOfMonth();
         if (firstDay > 5 && days >= 30) { maxDays += 7; }
         else if (firstDay >= 5 && days > 30) { maxDays += 7; }
+        if (maxDays > 42) { maxDays -= 7; }
 
-        //Neighboring Month Days (Next month)
+
+        //Disable next month days
+        let disableClass2 = null;
+        if (open.getFullYear() === max.getFullYear() && open.getMonth() >= max.getMonth()) {
+            disableClass2 = "calendar-month_disabled";
+        }
+
+        //Show neighboring days in next month
         let nextDay = 1;
         for (let i = days; i < maxDays - firstDay; i++) {
-            if (firstDay == 0 && days == 28) { break; }
             arrayDays.push(
-                <Day key={keys++}>
-                    <AbbrDay className="calendar-month_neighboringMonth" >
+                <Day key={keys++} className={disableClass2} >
+                    <AbbrDay
+                        onClick={this.onDayClick.bind(this, i + 1)}
+                        className="calendar-month_neighboringMonth" >
                         {nextDay++}
                     </AbbrDay>
                 </Day>
@@ -301,23 +335,23 @@ class Calendar extends Component {
         return arrayDays;
     }
 
+
     render() {
         //console.log("render");
 
         moment.locale(this.props.locale);
         this.state.months = moment.months();
         const disabled = this.props.disabled;
-
-        let dropDownSize = this.getArrayYears().length > 4 ? 180 : undefined;
-        let dropDownSize2 = this.getArrayMonth().length > 4 ? 180 : undefined;
+        const dropDownSizeMonth = this.getArrayMonth().length > 4 ? 180 : undefined;
+        const dropDownSizeYear = this.getArrayYears().length > 4 ? 180 : undefined;
 
         return (
             <CalendarStyle color={this.props.themeColor} disabled={disabled}>
                 <ComboBoxStyle>
                     <ComboBox
                         scaled={true}
-                        dropDownMaxHeight={dropDownSize2}
-                        onSelect={this.selectedMonth.bind(this)}
+                        dropDownMaxHeight={dropDownSizeMonth}
+                        onSelect={this.onSelectMonth.bind(this)}
                         selectedOption={this.getCurrentMonth()}
                         options={this.getArrayMonth()}
                         isDisabled={disabled}
@@ -325,8 +359,8 @@ class Calendar extends Component {
                     <ComboBoxDateStyle>
                         <ComboBox
                             scaled={true}
-                            dropDownMaxHeight={dropDownSize}
-                            onSelect={this.selectedYear.bind(this)}
+                            dropDownMaxHeight={dropDownSizeYear}
+                            onSelect={this.onSelectYear.bind(this)}
                             selectedOption={this.getCurrentYear()}
                             options={this.getArrayYears()}
                             isDisabled={disabled}
