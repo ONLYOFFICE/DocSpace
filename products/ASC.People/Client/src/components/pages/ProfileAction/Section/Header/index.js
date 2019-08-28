@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton, Text } from 'asc-web-components';
-
+import { useTranslation } from 'react-i18next';
 
 const wrapperStyle = {
   display: "flex",
@@ -16,12 +16,13 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const {profile, history, userType, settings} = props;
+  const { t } = useTranslation();
 
   const headerText = profile && profile.displayName
     ? profile.displayName
     : userType === "user"
-      ? "New employee"
-      : "New guest";
+      ? t('NewEmployee')
+      : t('NewGuest');
 
   return (
     <div style={wrapperStyle}>
