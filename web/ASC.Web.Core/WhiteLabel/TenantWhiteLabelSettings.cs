@@ -211,7 +211,7 @@ namespace ASC.Web.Core.WhiteLabel
             ResizeLogo(type, generalFileName, data, -1, generalSize, store);
         }
 
-        public void SetLogo(Dictionary<int, string> logo)
+        public void SetLogo(int tenantId, Dictionary<int, string> logo)
         {
             var xStart = @"data:image/png;base64,";
 
@@ -229,10 +229,10 @@ namespace ASC.Web.Core.WhiteLabel
                     {
                         var fileName = Path.GetFileName(currentLogoPath);
                         fileExt = fileName.Split('.').Last();
-                        data = UserPhotoManager.GetTempPhotoData(fileName);
+                        data = UserPhotoManager.GetTempPhotoData(tenantId, fileName);
                         try
                         {
-                            UserPhotoManager.RemoveTempPhoto(fileName);
+                            UserPhotoManager.RemoveTempPhoto(tenantId, fileName);
                         }
                         catch (Exception ex)
                         {

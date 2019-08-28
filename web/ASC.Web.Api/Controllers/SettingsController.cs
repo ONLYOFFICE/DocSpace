@@ -32,6 +32,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel.Security;
 using System.Web;
+
 using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -391,7 +392,7 @@ namespace ASC.Api.Settings
                 var logoDict = new Dictionary<int, string>();
                 model.Logo.ToList().ForEach(n => logoDict.Add(n.Key, n.Value));
 
-                _tenantWhiteLabelSettings.SetLogo(logoDict);
+                _tenantWhiteLabelSettings.SetLogo(Tenant.TenantId, logoDict);
             }
 
             _tenantWhiteLabelSettings.LogoText = model.LogoText;
@@ -849,13 +850,13 @@ namespace ASC.Api.Settings
                 if (existItem.SmallImg != item.SmallImg)
                 {
                     StorageHelper.DeleteLogo(existItem.SmallImg);
-                    existItem.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
+                    existItem.SmallImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.SmallImg);
                 }
 
                 if (existItem.BigImg != item.BigImg)
                 {
                     StorageHelper.DeleteLogo(existItem.BigImg);
-                    existItem.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
+                    existItem.BigImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.BigImg);
                 }
 
                 exist = true;
@@ -865,8 +866,8 @@ namespace ASC.Api.Settings
             if (!exist)
             {
                 item.Id = Guid.NewGuid();
-                item.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
-                item.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
+                item.SmallImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.SmallImg);
+                item.BigImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.BigImg);
 
                 settings.Items.Add(item);
             }
