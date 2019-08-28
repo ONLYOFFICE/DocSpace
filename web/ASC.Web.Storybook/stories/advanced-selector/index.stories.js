@@ -76,10 +76,10 @@ storiesOf("Components|AdvancedSelector", module)
           {({ value, set }) => (
             <AdvancedSelector
               placeholder={text("placeholder", "Search users")}
-              onSearchChanged={e => {
+              onSearchChanged={value => {
                 set(options.filter(option => {
                   return (
-                    option.label.indexOf(e.target.value) > -1
+                    option.label.indexOf(value) > -1
                   );
                 }));
               }}

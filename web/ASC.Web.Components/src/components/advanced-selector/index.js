@@ -225,6 +225,7 @@ class AdvancedSelector extends React.Component {
           placeholder={placeholder}
           value={value}
           onChange={onSearchChanged}
+          onClearSearch={onSearchChanged.bind(this, "")}
         />
         {groups && groups.length > 0 && (
           <ComboBox
