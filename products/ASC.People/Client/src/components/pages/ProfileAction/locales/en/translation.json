@@ -18,5 +18,9 @@
   "SexFemale": "Female",
   "RequiredField": "Required field",
   "NewEmployee": "New employee",
-  "NewGuest": "New guest"
+  "NewGuest": "New guest",
+
+  "EmployedSinceDate": "EmployedSinceDate",
+  "Position": "Position",
+  "Departments": "Departments"
 }

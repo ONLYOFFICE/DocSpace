@@ -112,14 +112,14 @@ class UpdateUserForm extends React.Component {
               source={this.state.profile.avatarMax}
               userName={this.state.profile.displayName}
               editing={true}
-              editLabel={this.props.t("Resource:EditPhoto")}
+              editLabel={this.props.t("EditPhoto")}
             />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextField
               isRequired={true}
               hasError={this.state.errors.firstName}
-              labelText={`${this.props.t("Resource:FirstName")}:`}
+              labelText={`${this.props.t("FirstName")}:`}
               inputName="firstName"
               inputValue={this.state.profile.firstName}
               isDisabled={this.state.isLoading}
@@ -128,7 +128,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={this.state.errors.lastName}
-              labelText={`${this.props.t("Resource:LastName")}:`}
+              labelText={`${this.props.t("LastName")}:`}
               inputName="lastName"
               inputValue={this.state.profile.lastName}
               isDisabled={this.state.isLoading}
@@ -137,7 +137,7 @@ class UpdateUserForm extends React.Component {
             <TextField
               isRequired={true}
               hasError={this.state.errors.email}
-              labelText={`${this.props.t("Resource:Email")}:`}
+              labelText={`${this.props.t("Email")}:`}
               inputName="email"
               inputValue={this.state.profile.email}
               isDisabled={this.state.isLoading}
@@ -146,12 +146,12 @@ class UpdateUserForm extends React.Component {
             <PasswordField
               isRequired={true}
               hasError={this.state.errors.password}
-              labelText={`${this.props.t("Resource:Password")}:`}
+              labelText={`${this.props.t("Password")}:`}
               radioName="passwordType"
               radioValue={this.state.profile.passwordType}
               radioOptions={[
-                { value: 'link', label: this.props.t("Resource:ActivationLink")},
-                { value: 'temp', label: this.props.t("Resource:TemporaryPassword")}
+                { value: 'link', label: this.props.t("ActivationLink")},
+                { value: 'temp', label: this.props.t("TemporaryPassword")}
               ]}
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
@@ -161,58 +161,58 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("Resource:Birthdate")}:`}
+              labelText={`${this.props.t("Birthdate")}:`}
               inputName="birthday"
               inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onBirthdayDateChange}
             />
             <RadioField
-              labelText={`${this.props.t("Resource:Sex")}:`}
+              labelText={`${this.props.t("Sex")}:`}
               radioName="sex"
               radioValue={this.state.profile.sex}
               radioOptions={[
-                { value: 'male', label: this.props.t("Resource:SexMale")},
-                { value: 'female', label: this.props.t("Resource:SexFemale")}
+                { value: 'male', label: this.props.t("SexMale")},
+                { value: 'female', label: this.props.t("SexFemale")}
               ]}
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("Resource:EmployedSinceDate")}:`}
+              labelText={`${this.props.t("EmployedSinceDate")}:`}
               inputName="workFrom"
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onWorkFromDateChange}
             />
             <TextField
-              labelText={`${this.props.t("Resource:Location")}:`}
+              labelText={`${this.props.t("Location")}:`}
               inputName="location"
               inputValue={this.state.profile.location}
               isDisabled={this.state.isLoading}
               onChange={this.onTextChange}
             />
             <TextField
-              labelText={`${this.props.t("Resource:Position")}:`}
+              labelText={`${this.props.t("Position")}:`}
               inputName="title"
               inputValue={this.state.profile.title}
               isDisabled={this.state.isLoading}
               onChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("Resource:Departments")}:`}
+              labelText={`${this.props.t("Departments")}:`}
               departments={this.state.profile.groups}
               onClose={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>
         <div>
-          <Text.ContentHeader>{this.props.t("Resource:Comments")}</Text.ContentHeader>
+          <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
           <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange}/> 
         </div>
         <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("UserControlsCommonResource:SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
-          <Button label={this.props.t("UserControlsCommonResource:CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
+          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
+          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
         </div>
       </>
     );
