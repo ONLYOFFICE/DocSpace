@@ -12,29 +12,40 @@ using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
-    public class KafkaCache<T> : ICacheNotify<T> where T : IMessage<T>, new()
+    public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }
         private ILog Log { get; set; }
-        private ConcurrentDictionary<CacheNotifyAction, CancellationTokenSource> Cts { get; set; }
+        private ConcurrentDictionary<string, CancellationTokenSource> Cts { get; set; }
         private MemoryCacheNotify<T> MemoryCacheNotify { get; set; }
+        private string ChannelName { get; } = $"ascchannel{typeof(T).Name}";
+        private ProtobufSerializer<T> Serializer { get; } = new ProtobufSerializer<T>();
+        private ProtobufDeserializer<T> Deserializer { get; } = new ProtobufDeserializer<T>();
+
+        private IProducer<Null, T> Producer { get; }
         public KafkaCache()
         {
             Log = LogManager.GetLogger("ASC");
-            Cts = new ConcurrentDictionary<CacheNotifyAction, CancellationTokenSource>();
+            Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
 
             var settings = ConfigurationManager.GetSetting<KafkaSettings>("kafka");
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
             {
                 ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
+                var config = new ProducerConfig(ClientConfig);
+                Producer = new ProducerBuilder<Null, T>(config)
+                .SetErrorHandler((_, e) => Log.Error(e))
+                .SetValueSerializer(Serializer)
+                .Build();
             }
             else
             {
                 MemoryCacheNotify = new MemoryCacheNotify<T>();
             }
+
         }
 
-        public async void Publish(T obj, CacheNotifyAction cacheNotifyAction)
+        public void Publish(T obj, CacheNotifyAction cacheNotifyAction)
         {
             if (ClientConfig == null)
             {
@@ -42,16 +53,9 @@ namespace ASC.Common.Caching
                 return;
             }
 
-            var config = new ProducerConfig(ClientConfig);
-
-            using var p = new ProducerBuilder<Null, T>(config)
-                .SetErrorHandler((_, e) => Log.Error(e))
-                .SetValueSerializer(new ProtobufSerializer<T>())
-                .Build();
-
             try
             {
-                var dr = await p.ProduceAsync(GetChannelName(cacheNotifyAction), new Message<Null, T>() { Value = obj });
+                Producer.ProduceAsync(GetChannelName(cacheNotifyAction), new Message<Null, T>() { Value = obj });
             }
             catch (ProduceException<Null, string> e)
             {
@@ -71,19 +75,18 @@ namespace ASC.Common.Caching
                 return;
             }
 
-            Cts[cacheNotifyAction] = new CancellationTokenSource();
+            Cts[GetChannelName(cacheNotifyAction)] = new CancellationTokenSource();
 
             void action()
             {
                 var conf = new ConsumerConfig(ClientConfig)
                 {
-                    GroupId = Guid.NewGuid().ToString(),
-                    EnableAutoCommit = true
+                    GroupId = Guid.NewGuid().ToString()
                 };
 
                 using var c = new ConsumerBuilder<Ignore, T>(conf)
                     .SetErrorHandler((_, e) => Log.Error(e))
-                    .SetValueDeserializer(new ProtobufDeserializer<T>())
+                    .SetValueDeserializer(Deserializer)
                     .Build();
 
                 c.Assign(new TopicPartition(GetChannelName(cacheNotifyAction), new Partition()));
@@ -94,7 +97,7 @@ namespace ASC.Common.Caching
                     {
                         try
                         {
-                            var cr = c.Consume(Cts[cacheNotifyAction].Token);
+                            var cr = c.Consume(Cts[GetChannelName(cacheNotifyAction)].Token);
                             if (cr != null && cr.Value != null)
                             {
                                 onchange(cr.Value);
@@ -118,16 +121,41 @@ namespace ASC.Common.Caching
 
         private string GetChannelName(CacheNotifyAction cacheNotifyAction)
         {
-            return $"ascchannel{typeof(T).Name}{cacheNotifyAction}";
+            return $"{ChannelName}{cacheNotifyAction}";
         }
 
         public void Unsubscribe(CacheNotifyAction action)
         {
-            Cts.TryGetValue(action, out var source);
+            Cts.TryGetValue(GetChannelName(action), out var source);
             if (source != null)
             {
                 source.Cancel();
             }
+        }
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Producer.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+        ~KafkaCache()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 

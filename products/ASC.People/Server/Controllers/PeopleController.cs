@@ -646,7 +646,7 @@ namespace ASC.Employee.Core.Controllers
                     }
                     else
                     {
-                        result.Data = UserPhotoManager.SaveTempPhoto(data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                        result.Data = UserPhotoManager.SaveTempPhoto(Tenant.TenantId, data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
                     }
 
                     result.Success = true;
@@ -733,13 +733,13 @@ namespace ASC.Employee.Core.Controllers
             if (!string.IsNullOrEmpty(thumbnailsModel.TmpFile))
             {
                 var fileName = Path.GetFileName(thumbnailsModel.TmpFile);
-                var data = UserPhotoManager.GetTempPhotoData(fileName);
+                var data = UserPhotoManager.GetTempPhotoData(Tenant.TenantId, fileName);
 
                 var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
                 settings.SaveForUser(user.ID);
 
                 UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, data);
-                UserPhotoManager.RemoveTempPhoto(fileName);
+                UserPhotoManager.RemoveTempPhoto(Tenant.TenantId, fileName);
             }
             else
             {
