@@ -26,5 +26,10 @@
   "PhoneLbl": "Phone",
   "EditSubscriptionsBtn": "Edit subscriptions",
   "InviteAgainLbl": "Invite again",
-  "LDAPLbl": "LDAP"
+  "LDAPLbl": "LDAP",
+
+  "CustomEmployedSinceDate": "{{employedSinceDate}}",
+  "CustomPosition": "{{position}}",
+  "CustomDepartmentName": "{{departmentName}}",
+  "CustomDepartmentsName": "{{departmentsName}}"
 }
