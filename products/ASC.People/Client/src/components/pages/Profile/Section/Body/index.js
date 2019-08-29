@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
-import { departmentName, departmentsName, position, employedSinceDate } from '../../../../customNames';
+import { departmentName, position, employedSinceDate } from '../../../../customNames';
 import {
   Text,
   Avatar,
@@ -138,7 +138,6 @@ const ProfileInfo = (props) => {
   const birthDayDate = new Date(birthday).toLocaleDateString(language);
   const formatedSex = capitalizeFirstLetter(sex);
   const formatedDepartments = getFormattedDepartments(department);
-  const departmentsCount = formatedDepartments.length;
 
   const onEmailClick = useCallback(
     () => window.open("mailto:" + email),
@@ -191,10 +190,7 @@ const ProfileInfo = (props) => {
       {department &&
         <InfoItem>
           <InfoItemLabel>
-            {departmentsCount === 1 ?
-              t("CustomDepartmentName", { departmentName }) :
-              t("CustomDepartmentsName", { departmentsName })}
-            :
+            {t("CustomDepartmentName", { departmentName })}:
           </InfoItemLabel>
           <InfoItemValue>
             {formatedDepartments}

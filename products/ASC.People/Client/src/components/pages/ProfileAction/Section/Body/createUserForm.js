@@ -5,7 +5,7 @@ import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, profileEqual, createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer, TextField, PasswordField, DateField, RadioField, DepartmentField } from './userFormFields'
-import { departmentsName, position, employedSinceDate } from '../../../../customNames';
+import { departmentName, position, employedSinceDate } from '../../../../customNames';
 
 class CreateUserForm extends React.Component {
 
@@ -199,7 +199,7 @@ class CreateUserForm extends React.Component {
               onChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartmentsName", { departmentsName })}:`}
+              labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
               departments={this.state.profile.groups}
               onClose={this.onGroupClose}
             />

@@ -30,6 +30,5 @@
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
-  "CustomDepartmentName": "{{departmentName}}",
-  "CustomDepartmentsName": "{{departmentsName}}"
+  "CustomDepartmentName": "{{departmentName}}"
 }
