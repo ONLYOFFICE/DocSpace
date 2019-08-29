@@ -10,6 +10,7 @@ import PasswordField from './FormFields/PasswordField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
+import { departmentName, position, employedSinceDate } from '../../../../customNames';
 
 class CreateUserForm extends React.Component {
 
@@ -193,7 +194,7 @@ class CreateUserForm extends React.Component {
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("EmployedSinceDate")}:`}
+              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
@@ -207,14 +208,14 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onTextChange}
             />
             <TextField
-              labelText={`${this.props.t("Position")}:`}
+              labelText={`${this.props.t("CustomPosition", { position })}:`}
               inputName="title"
               inputValue={this.state.profile.title}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("Departments")}:`}
+              labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
               departments={this.state.profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />

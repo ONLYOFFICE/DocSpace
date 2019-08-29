@@ -223,7 +223,7 @@ class ComboBox extends React.PureComponent {
         >
           {options.map((option) =>
             <DropDownItem {...option}
-              disabled={option.label === selectedOption.label}
+              disabled={option.disabled || (option.label === selectedOption.label)}
               onClick={this.optionClick.bind(this, option)}
             />
           )}

@@ -1,55 +1,76 @@
 {
-	"Article" :
-	{
-
-	},
-	"pages":
-	{
-		"Profile" :
-		{
-			"Resource.UserType" : "UserType",
-      "Resource.Email" : "Email",
-      "Resource.Sex" : "Sex",
-      "Resource.Birthdate" : "Birthdate",
-      "Resource.Location" : "Location",
-      "Resource.Language" : "Language",
-      "Resource.EditUserDialogTitle" : "EditUserDialogTitle",
-      "Resource.Subscriptions" : "Subscriptions",
-      "Resource.Comments" : "Comments",
-      "Resource.ContactInformation" : "ContactInformation",
-      "Resource.SocialProfiles" : "SocialProfiles",
-      "Resource.PendingTitle" : "PendingTitle",
-      "Resource.EmailChangeButton" : "EmailChangeButton",
-      "Resource.SendInviteAgain" : "SendInviteAgain",
-      "Resource.EditPhoto" : "EditPhoto",
-      "Resource.PasswordChangeButton" : "PasswordChangeButton",
-      "Resource.DisableUserButton" : "DisableUserButton",
-      "Resource.EnableUserButton" : "EnableUserButton",
-      "Resource.ReassignData" : "ReassignData",
-      "Resource.RemoveData" : "RemoveData",
-      "Resource.DeleteSelfProfile" : "DeleteSelfProfile",
-      "Resource.EditButton" : "EditButton",
-      "Resource.Actions" : "Actions"
+  "Article": {},
+  "pages": {
+    "Profile": {
+      "Resource": [
+        "UserType",
+        "Email",
+        "Sex",
+        "Birthdate",
+        "Location",
+        "Language",
+        "EditUserDialogTitle",
+        "Subscriptions",
+        "Comments",
+        "ContactInformation",
+        "SocialProfiles",
+        "PendingTitle",
+        "EmailChangeButton",
+        "SendInviteAgain",
+        "EditPhoto",
+        "PasswordChangeButton",
+        "DisableUserButton",
+        "EnableUserButton",
+        "ReassignData",
+        "RemoveData",
+        "DeleteSelfProfile",
+        "EditButton",
+        "Actions"
+      ]
     },
     "ProfileAction": {
-      "Resource.EditPhoto" : "EditPhoto",
-      "Resource.FirstName" : "FirstName",
-      "Resource.LastName" : "LastName",
-      "Resource.Email" : "Email",
-      "Resource.Password" : "Password",
-      "Resource.Birthdate" : "Birthdate",
-      "Resource.Sex" : "Sex",
-      "Resource.Location" : "Location",
-      "Resource.Comments" : "Comments",
-      "Resource.SaveButton" : "SaveButton",
-      "Resource.CancelButton" : "CancelButton"
-
+      "Resource": [
+        "EditPhoto",
+        "FirstName",
+        "LastName",
+        "Email",
+        "Password",
+        "Birthdate",
+        "Sex",
+        "Location",
+        "Comments",
+        "SaveButton",
+        "CancelButton"
+      ]
+    },
+    "Home": {
+      "Resource": [
+        "LoadingProcessing",
+        "LoadingDescription",
+        "PasswordChangeButton",
+        "EditButton",
+        "DisableUserButton",
+        "ReassignData",
+        "RemoveData",
+        "DeleteSelfProfile",
+        "EditButton",
+        "EnableUserButton"
+      ],
+      "PeopleResource": [
+        "LblSendEmail",
+        "LblSendMessage",
+        "NotFoundDescription",
+        "NotFoundTitle",
+        "ClearButton",
+        "LblChangeEmail"
+      ]
     }
-	},
-	"Layout":
-	{
-    "Resource.Profile" : "Profile",
-		"Resource.AboutCompanyTitle" : "AboutCompanyTitle",
-		"Resource.LogoutButton" : "LogoutButton"
-	}
+  },
+  "Layout": {
+    "Resource": [
+      "Profile",
+      "AboutCompanyTitle",
+      "LogoutButton"
+    ]
+  }
 }

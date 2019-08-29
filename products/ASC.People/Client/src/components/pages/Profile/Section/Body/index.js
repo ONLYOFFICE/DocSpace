@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
+import { departmentName, position, employedSinceDate } from '../../../../customNames';
 import {
   Text,
   Avatar,
@@ -77,8 +78,8 @@ const InfoItemValue = styled.div`
 `;
 
 const IconButtonWrapper = styled.div`
-  ${props => props.isBefore 
-    ? `margin-right: 8px;` 
+  ${props => props.isBefore
+    ? `margin-right: 8px;`
     : `margin-left: 8px;`
   }
 
@@ -189,7 +190,7 @@ const ProfileInfo = (props) => {
       {department &&
         <InfoItem>
           <InfoItemLabel>
-            Department:
+            {t("CustomDepartmentName", { departmentName })}:
           </InfoItemLabel>
           <InfoItemValue>
             {formatedDepartments}
@@ -199,7 +200,7 @@ const ProfileInfo = (props) => {
       {title &&
         <InfoItem>
           <InfoItemLabel>
-            Position:
+            {t("CustomPosition", { position })}:
           </InfoItemLabel>
           <InfoItemValue>
             {title}
@@ -209,14 +210,14 @@ const ProfileInfo = (props) => {
       {(mobilePhone || isSelf) &&
         <InfoItem>
           <InfoItemLabel>
-          {t('PhoneLbl')}:
+            {t('PhoneLbl')}:
           </InfoItemLabel>
           <InfoItemValue>
             {mobilePhone}
             {(isAdmin || isSelf) &&
-            <IconButtonWrapper title={t('PhoneChange')} >
-              <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
-            </IconButtonWrapper>
+              <IconButtonWrapper title={t('PhoneChange')} >
+                <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
+              </IconButtonWrapper>
             }
           </InfoItemValue>
         </InfoItem>
@@ -234,7 +235,7 @@ const ProfileInfo = (props) => {
       {workFrom &&
         <InfoItem>
           <InfoItemLabel>
-            Employed since:
+            {t("CustomEmployedSinceDate", { employedSinceDate })}:
           </InfoItemLabel>
           <InfoItemValue>
             {workFromDate}
@@ -314,7 +315,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t}/>
+      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >

@@ -10,6 +10,7 @@ import TextChangeField from './FormFields/TextChangeField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
+import { departmentName, position, employedSinceDate, guest, employee } from '../../../../customNames';
 
 class UpdateUserForm extends React.Component {
 
@@ -186,14 +187,14 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={this.state.profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: this.props.t("TypeGuest")},
-                { value: "false", label: this.props.t("TypeUser")}
+                { value: "true", label: this.props.t("TypeGuest", { guest })},
+                { value: "false", label: this.props.t("TypeUser", { employee })}
               ]}
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("EmployedSinceDate")}:`}
+              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
@@ -207,14 +208,14 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onTextChange}
             />
             <TextField
-              labelText={`${this.props.t("Position")}:`}
+              labelText={`${this.props.t("CustomPosition", { position })}:`}
               inputName="title"
               inputValue={this.state.profile.title}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("Departments")}:`}
+              labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
               departments={this.state.profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />

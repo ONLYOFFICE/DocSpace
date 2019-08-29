@@ -20,14 +20,14 @@
   "NewEmployee": "New employee",
   "NewGuest": "New guest",
 
-  "EmployedSinceDate": "Employed since",
-  "Position": "Position",
-  "Departments": "Departments",
+  "CustomEmployedSinceDate": "{{employedSinceDate}}",
+  "CustomPosition": "{{position}}",
+  "CustomDepartmentName": "{{departmentName}}"
 
   "CopyEmailAndPassword": "Copy e-mail & password",
   "ChangeButton": "Change",
   "Phone": "Phone",
   "Type": "Type",
-  "TypeGuest": "Guest",
-  "TypeUser": "Employee"
+  "CustomTypeGuest": "{{guest}}",
+  "CustomTypeUser": "{{employee}}"
 }
