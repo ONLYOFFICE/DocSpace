@@ -30,10 +30,6 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.resetProfile();
-  }
-
   render() {
     console.log("Profile render")
 

@@ -1,50 +1,44 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import PropTypes from "prop-types";
 import { IconButton, Text } from 'asc-web-components';
 import { useTranslation } from 'react-i18next';
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
+const Wrapper = styled.div`
+  display: flex;
+  align-Items: center;
+`;
 
-const textStyle = {
-  marginLeft: "16px"
-};
+const Header = styled(Text.ContentHeader)`
+  margin-left: 16px;
+`;
 
 const SectionHeaderContent = (props) => {
-  const {profile, history, userType, settings} = props;
+  const {profile, history, settings} = props;
   const { t } = useTranslation();
 
   const headerText = profile && profile.displayName
     ? profile.displayName
-    : userType === "user"
-      ? t('NewEmployee')
-      : t('NewGuest');
+    : profile.isVisitor
+      ? t('NewGuest')
+      : t('NewEmployee');
+
+  const onClick = useCallback(() => {
+    history.push(settings.homepage)
+  }, [history, settings]);
 
   return (
-    <div style={wrapperStyle}>
-      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={() => history.push(settings.homepage)}/>
-      <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
-    </div>
+    <Wrapper>
+      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={onClick}/>
+      <Header>{headerText}</Header>
+    </Wrapper>
   );
-};
-
-SectionHeaderContent.propTypes = {
-  profile: PropTypes.object,
-  history: PropTypes.object.isRequired,
-  userType: PropTypes.oneOf(["user", "guest"])
-};
-
-SectionHeaderContent.defaultProps = {
-  profile: null,
-  userType: "user"
 };
 
 function mapStateToProps(state) {
   return {
+    profile: state.profile.targetUser,
     settings: state.auth.settings
   };
 };
