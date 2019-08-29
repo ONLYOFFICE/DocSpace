@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
@@ -6,10 +6,10 @@ import {
   Row,
   Avatar,
   toastr,
-  CustomScrollbarsVirtualList,
   EmptyScreenContainer,
   Icons,
-  Link
+  Link,
+  RowContainer
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -25,49 +25,7 @@ import {
   getUserRole
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { EmployeeStatus } from "../../../../../helpers/constants";
-
-const PeopleRow = memo(
-  ({
-    data,
-    index,
-    style,
-    onContentRowSelect,
-    history,
-    settings,
-    selection,
-    viewer,
-    getUserContextOptions
-  }) => {
-    // Data passed to List as "itemData" is available as props.data
-    const user = data[index];
-    const contextOptions = getUserContextOptions(user, viewer);
-    const contextOptionsProps = !contextOptions.length
-      ? {}
-      : { contextOptions };
-    const checked = isUserSelected(selection, user.id);
-    const checkedProps = isAdmin(viewer) ? { checked } : {};
-    const element = <Avatar size='small' role={getUserRole(user)} userName={user.displayName} source={user.avatar} />;
-
-    return (
-      <Row
-        key={user.id}
-        status={getUserStatus(user)}
-        data={user}
-        element={element}
-        onSelect={onContentRowSelect}
-        style={style}
-        {...checkedProps}
-        {...contextOptionsProps}
-      >
-        <UserContent user={user} history={history} settings={settings} />
-      </Row>
-    );
-  },
-  areEqual
-);
 
 class SectionBodyContent extends React.PureComponent {
   onEmailSentClick = () => {
@@ -248,33 +206,31 @@ class SectionBodyContent extends React.PureComponent {
     const { users, viewer, selection, history, settings, t } = this.props;
 
     return users.length > 0 ? (
-      <AutoSizer>
-        {({ height, width }) => (
-          <List
-            className="List"
-            height={height}
-            width={width}
-            itemSize={50} // ContentRow height
-            itemCount={users.length}
-            itemData={users}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {({ data, index, style }) => (
-              <PeopleRow
-                data={data}
-                index={index}
-                style={style}
-                onContentRowSelect={this.onContentRowSelect}
-                history={history}
-                settings={settings}
-                selection={selection}
-                viewer={viewer}
-                getUserContextOptions={this.getUserContextOptions}
-              />
-            )}
-          </List>
-        )}
-      </AutoSizer>
+      <RowContainer>
+        {users.map(user => {
+          const contextOptions = this.getUserContextOptions(user, viewer);
+          const contextOptionsProps = !contextOptions.length
+            ? {}
+            : { contextOptions };
+          const checked = isUserSelected(selection, user.id);
+          const checkedProps = isAdmin(viewer) ? { checked } : {};
+          const element = <Avatar size='small' role={getUserRole(user)} userName={user.displayName} source={user.avatar} />;
+      
+          return (
+            <Row
+              key={user.id}
+              status={getUserStatus(user)}
+              data={user}
+              element={element}
+              onSelect={this.onContentRowSelect}
+              {...checkedProps}
+              {...contextOptionsProps}
+            >
+              <UserContent user={user} history={history} settings={settings} />
+            </Row>
+          );
+        })}
+      </RowContainer>
     ) : (
       <EmptyScreenContainer
         imageSrc="images/empty_screen_filter.png"
