@@ -22,7 +22,7 @@
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
-  "CustomDepartmentName": "{{departmentName}}"
+  "CustomDepartmentName": "{{departmentName}}",
 
   "CopyEmailAndPassword": "Copy e-mail & password",
   "ChangeButton": "Change",
