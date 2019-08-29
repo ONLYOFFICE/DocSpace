@@ -4,8 +4,13 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, profileEqual, updateProfile } from '../../../../../store/profile/actions';
-import { MainContainer, AvatarContainer, MainFieldsContainer, TextField, PasswordField, DateField, RadioField, DepartmentField } from './userFormFields'
-import { departmentName, position, employedSinceDate } from '../../../../customNames';
+import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
+import TextField from './FormFields/TextField'
+import TextChangeField from './FormFields/TextChangeField'
+import DateField from './FormFields/DateField'
+import RadioField from './FormFields/RadioField'
+import DepartmentField from './FormFields/DepartmentField'
+import { departmentName, position, employedSinceDate, guest, employee } from '../../../../customNames';
 
 class UpdateUserForm extends React.Component {
 
@@ -117,14 +122,38 @@ class UpdateUserForm extends React.Component {
             />
           </AvatarContainer>
           <MainFieldsContainer>
+            <TextChangeField
+              labelText={`${this.props.t("Email")}:`}
+              inputName="email"
+              inputValue={this.state.profile.email}
+              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonIsDisabled={this.state.isLoading}
+              buttonOnClick={()=>{}}
+            />
+            <TextChangeField
+              labelText={`${this.props.t("Password")}:`}
+              inputName="password"
+              inputValue={this.state.profile.password}
+              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonIsDisabled={this.state.isLoading}
+              buttonOnClick={()=>{}}
+            />
+            <TextChangeField
+              labelText={`${this.props.t("Phone")}:`}
+              inputName="phone"
+              inputValue={this.state.profile.phone}
+              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonIsDisabled={this.state.isLoading}
+              buttonOnClick={()=>{}}
+            />
             <TextField
               isRequired={true}
               hasError={this.state.errors.firstName}
               labelText={`${this.props.t("FirstName")}:`}
               inputName="firstName"
               inputValue={this.state.profile.firstName}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <TextField
               isRequired={true}
@@ -132,33 +161,7 @@ class UpdateUserForm extends React.Component {
               labelText={`${this.props.t("LastName")}:`}
               inputName="lastName"
               inputValue={this.state.profile.lastName}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
-            />
-            <TextField
-              isRequired={true}
-              hasError={this.state.errors.email}
-              labelText={`${this.props.t("Email")}:`}
-              inputName="email"
-              inputValue={this.state.profile.email}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
-            />
-            <PasswordField
-              isRequired={true}
-              hasError={this.state.errors.password}
-              labelText={`${this.props.t("Password")}:`}
-              radioName="passwordType"
-              radioValue={this.state.profile.passwordType}
-              radioOptions={[
-                { value: 'link', label: this.props.t("ActivationLink")},
-                { value: 'temp', label: this.props.t("TemporaryPassword")}
-              ]}
-              radioIsDisabled={this.state.isLoading}
-              radioOnChange={this.onTextChange}
-              inputName="password"
-              inputValue={this.state.profile.password}
-              inputIsDisabled={this.state.isLoading || this.state.profile.passwordType === "link"}
+              inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
             />
             <DateField
@@ -179,6 +182,17 @@ class UpdateUserForm extends React.Component {
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
             />
+            <RadioField
+              labelText={`${this.props.t("Type")}:`}
+              radioName="sex"
+              radioValue={this.state.profile.isVisitor.toString()}
+              radioOptions={[
+                { value: "true", label: this.props.t("TypeGuest", { guest })},
+                { value: "false", label: this.props.t("TypeUser", { employee })}
+              ]}
+              radioIsDisabled={this.state.isLoading}
+              radioOnChange={this.onTextChange}
+            />
             <DateField
               labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
@@ -190,20 +204,20 @@ class UpdateUserForm extends React.Component {
               labelText={`${this.props.t("Location")}:`}
               inputName="location"
               inputValue={this.state.profile.location}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <TextField
               labelText={`${this.props.t("CustomPosition", { position })}:`}
               inputName="title"
               inputValue={this.state.profile.title}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <DepartmentField
               labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
               departments={this.state.profile.groups}
-              onClose={this.onGroupClose}
+              onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>

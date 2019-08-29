@@ -4,7 +4,12 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, profileEqual, createProfile } from '../../../../../store/profile/actions';
-import { MainContainer, AvatarContainer, MainFieldsContainer, TextField, PasswordField, DateField, RadioField, DepartmentField } from './userFormFields'
+import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
+import TextField from './FormFields/TextField'
+import PasswordField from './FormFields/PasswordField'
+import DateField from './FormFields/DateField'
+import RadioField from './FormFields/RadioField'
+import DepartmentField from './FormFields/DepartmentField'
 import { departmentName, position, employedSinceDate } from '../../../../customNames';
 
 class CreateUserForm extends React.Component {
@@ -20,6 +25,7 @@ class CreateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
+    this.onShowPassword = this.onShowPassword.bind(this);
     this.onCancel = this.onCancel.bind(this);
   }
 
@@ -32,6 +38,7 @@ class CreateUserForm extends React.Component {
   mapPropsToState = (props) => {
     return {
       isLoading: false,
+      showPassword: false,
       errors: {
         firstName: false,
         lastName: false,
@@ -67,6 +74,10 @@ class CreateUserForm extends React.Component {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.groups = this.state.groups.filter((group) => group.id !== id);
     this.setState(stateCopy)
+  }
+
+  onShowPassword() {
+    this.setState({showPassword: !this.state.showPassword});
   }
 
   validate() {
@@ -121,8 +132,8 @@ class CreateUserForm extends React.Component {
               labelText={`${this.props.t("FirstName")}:`}
               inputName="firstName"
               inputValue={this.state.profile.firstName}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <TextField
               isRequired={true}
@@ -130,8 +141,8 @@ class CreateUserForm extends React.Component {
               labelText={`${this.props.t("LastName")}:`}
               inputName="lastName"
               inputValue={this.state.profile.lastName}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <TextField
               isRequired={true}
@@ -139,8 +150,8 @@ class CreateUserForm extends React.Component {
               labelText={`${this.props.t("Email")}:`}
               inputName="email"
               inputValue={this.state.profile.email}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <PasswordField
               isRequired={true}
@@ -158,6 +169,11 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.password}
               inputIsDisabled={this.state.isLoading || this.state.profile.passwordType === "link"}
               inputOnChange={this.onTextChange}
+              inputIconOnClick={this.onShowPassword}
+              inputShowPassword={this.state.showPassword}
+              refreshIconOnClick={()=>{}}
+              copyLinkText={this.props.t("CopyEmailAndPassword")}
+              copyLinkOnClick={()=>{}}
             />
             <DateField
               labelText={`${this.props.t("Birthdate")}:`}
@@ -188,20 +204,20 @@ class CreateUserForm extends React.Component {
               labelText={`${this.props.t("Location")}:`}
               inputName="location"
               inputValue={this.state.profile.location}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <TextField
               labelText={`${this.props.t("CustomPosition", { position })}:`}
               inputName="title"
               inputValue={this.state.profile.title}
-              isDisabled={this.state.isLoading}
-              onChange={this.onTextChange}
+              inputIsDisabled={this.state.isLoading}
+              inputOnChange={this.onTextChange}
             />
             <DepartmentField
               labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
               departments={this.state.profile.groups}
-              onClose={this.onGroupClose}
+              onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>
