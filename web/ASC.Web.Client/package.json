@@ -24,7 +24,6 @@
     "react-redux": "7.1.1",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
-    "react-scripts": "3.1.1",
     "reactstrap": "8.0.1",
     "redux": "4.0.4",
     "redux-thunk": "2.3.0",
@@ -32,21 +31,14 @@
     "universal-cookie": "^4.0.2"
   },
   "devDependencies": {
-    "ajv": "^6.10.2",
-    "babel-eslint": "10.0.2",
     "cross-env": "^5.2.0",
-    "eslint": "^6.2.2",
-    "eslint-config-react-app": "^5.0.1",
-    "eslint-plugin-flowtype": "^4.2.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.3",
+    "react-scripts": "3.1.1",
     "redux-devtools-extension": "^2.13.8",
-    "rimraf": "3.0.0"
+    "rimraf": "2.6.3"
   },
   "scripts": {
-    "start": "rimraf ./build && set PORT=5001 && react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts start",
+    "build": "rimraf ./build && react-scripts build",
     "test": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/"
