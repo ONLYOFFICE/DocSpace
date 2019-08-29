@@ -31,6 +31,7 @@ storiesOf('Components|Input', module)
       },
       {
         key: 3,
+        disabled: true,
         label: 'Option 3'
       },
       {

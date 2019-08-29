@@ -20,7 +20,7 @@
   "NewEmployee": "New employee",
   "NewGuest": "New guest",
 
-  "EmployedSinceDate": "EmployedSinceDate",
-  "Position": "Position",
-  "Departments": "Departments"
+  "CustomEmployedSinceDate": "{{employedSinceDate}}",
+  "CustomPosition": "{{position}}",
+  "CustomDepartmentName": "{{departmentName}}"
 }
