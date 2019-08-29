@@ -26,6 +26,7 @@
 
 using System;
 using System.Diagnostics;
+using ASC.Common.Caching;
 using ASC.Core.Caching;
 
 namespace ASC.Core
@@ -79,17 +80,11 @@ namespace ASC.Core
 
         public static implicit operator UserGroupRef(UserGroupRefCacheItem cache)
         {
-            var result = new UserGroupRef();
-
-            if (Guid.TryParse(cache.UserId, out var userId))
+            var result = new UserGroupRef
             {
-                result.UserId = userId;
-            }
-
-            if (Guid.TryParse(cache.GroupId, out var groupId))
-            {
-                result.GroupId = groupId;
-            }
+                UserId = cache.UserId.FromByteString(),
+                GroupId = cache.GroupId.FromByteString()
+            };
 
             if (Enum.TryParse<UserGroupRefType>(cache.RefType, out var refType))
             {
@@ -107,8 +102,8 @@ namespace ASC.Core
         {
             return new UserGroupRefCacheItem
             {
-                GroupId = cache.GroupId.ToString(),
-                UserId = cache.UserId.ToString(),
+                GroupId = cache.GroupId.ToByteString(),
+                UserId = cache.UserId.ToByteString(),
                 RefType = cache.RefType.ToString(),
                 LastModified = cache.LastModified.Ticks,
                 Removed = cache.Removed,

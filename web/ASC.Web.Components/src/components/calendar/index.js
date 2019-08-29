@@ -58,9 +58,9 @@ const CalendarStyle = styled.div`
         /*flex-basis: 11.2857% !important;*/
         
         ${props => props.size === 'base' ?
-	        'margin-left: 9px;' :
-	        'margin 10px 7px 0 7px;'
-        }
+        'margin-left: 9px;' :
+        'margin 10px 7px 0 7px;'
+    }
     }
 
     .react-calendar__tile:disabled { background-color: #fff; }
@@ -143,19 +143,35 @@ class Calendar extends Component {
     }
 
     getArrayMonth = () => {
-        let date1 = this.props.minDate.getMonth();
-        let date2 = this.props.maxDate.getMonth();
-        let monthList = new Array();
-        if (this.props.minDate.getFullYear() !== this.props.maxDate.getFullYear()) {
-            monthList = this.getListMonth(0, 11);
-        } else { monthList = this.getListMonth(date1, date2); }
-        return monthList;
+        const minDate = this.props.minDate;
+        const maxDate = this.props.maxDate;
+
+        if (this.state.openToDate.getFullYear() === minDate.getFullYear()) {
+            return this.getListMonth(minDate.getMonth(), 11);
+        }
+
+        else if (this.state.openToDate.getFullYear() === maxDate.getFullYear()) {
+            return this.getListMonth(0, maxDate.getMonth());
+        }
+
+        else if (minDate.getFullYear() !== maxDate.getFullYear()) {
+            return this.getListMonth(0, 11);
+        } else { return this.getListMonth(minDate.getMonth(), maxDate.getMonth()); }
     }
 
     getCurrentMonth = () => {
-        let month = this.getArrayMonth();
-        let selected_month = month.find(x => x.key == this.state.openToDate.getMonth());
-        return (selected_month);
+        const openToDate = this.state.openToDate;
+        const month = this.getArrayMonth();
+        const selectedMonth = month.find(x => x.key == openToDate.getMonth());
+
+        if (!selectedMonth) {
+            const key = month[0].key;
+            const key2 = Number(key) + 1;
+            const date = new Date(openToDate.getFullYear() + "/" + key2 + "/" + "01");
+            this.state.openToDate = date;
+        }
+
+        return selectedMonth ? selectedMonth : month[0];
     }
 
     onChange = (date) => {

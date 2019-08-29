@@ -22,4 +22,16 @@ namespace ASC.Common.Caching
         public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)
             => parser.ParseFrom(data.ToArray());
     }
+
+    public static class GuidExtension
+    {
+        public static ByteString ToByteString(this Guid id)
+        {
+            return ByteString.CopyFrom(id.ToByteArray());
+        }
+        public static Guid FromByteString(this ByteString id)
+        {
+            return new Guid(id.ToByteArray());
+        }
+    }
 }
