@@ -72,6 +72,7 @@ const CalendarStyle = styled.div`
     }
 
     .calendar-month_disabled {
+        /*color:red !important;*/
         pointer-events: none;
     }
 `;
@@ -182,18 +183,21 @@ class Calendar extends Component {
         const month = this.getArrayMonth();
         const selectedMonth = month.find(x => x.key == openToDate.getMonth());
 
+        const minMonth = month.find(x => x.key === "0");
+        const maxMonth = month.find(x => x.key === "11");
+        let nearMonth;
+
+        if (!minMonth) { nearMonth = month[0]; }
+        else if (!maxMonth) { nearMonth = month[month.length - 1]; }
+
         if (!selectedMonth) {
-            const key = month[0].key;
-            const key2 = Number(key) + 1;
-            const date = new Date(openToDate.getFullYear() + "/" + key2 + "/" + "01");
+            const key = nearMonth.key;
+            const currentMonth = Number(key) + 1;
+            const date = new Date(openToDate.getFullYear() + "/" + currentMonth + "/" + "01");
             this.state.openToDate = date;
         }
-
-        return selectedMonth ? selectedMonth : month[0];
+        return selectedMonth ? selectedMonth : nearMonth;
     }
-
-
-
 
     getArrayYears = () => {
         const minDate = this.props.minDate.getFullYear();
@@ -230,7 +234,7 @@ class Calendar extends Component {
         let day = firstDay - 1;
         if (day < 0) { day = 6; }
         return day;
-    };
+    }
 
     getWeekDays = () => {
         let arrayWeekDays = [];
@@ -244,8 +248,6 @@ class Calendar extends Component {
         return arrayWeekDays;
     }
 
-
-
     getDays = () => {
         let keys = 0;
         let prevMonthDays = this.firstDayOfMonth();
@@ -256,21 +258,21 @@ class Calendar extends Component {
         const arrayDays = [];
         let className = "calendar-month_neighboringMonth";
 
-        const open = this.state.openToDate;
-        const max = this.props.maxDate;
-        const min = this.props.minDate;
+        const openToDate = this.state.openToDate;
+        const maxDate = this.props.maxDate;
+        const minDate = this.props.minDate;
 
 
         //Disable preview month
-        let disablePrevMonth = null;
-        if (open.getFullYear() === min.getFullYear() && open.getMonth() === min.getMonth()) {
-            disablePrevMonth = "calendar-month_disabled";
+        let disableClass = null;
+        if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() === minDate.getMonth()) {
+            disableClass = "calendar-month_disabled";
         }
 
         // Show neighboring days in prev month
         while (prevMonthDays != 0) {
             arrayDays.unshift(
-                <Day key={--keys} className={disablePrevMonth} >
+                <Day key={--keys} className={disableClass} >
                     <AbbrDay
                         onClick={this.onDayClick.bind(this, keys)}
                         className={className} >
@@ -285,15 +287,16 @@ class Calendar extends Component {
 
 
         //Disable max days in month
-        let disableClass, maxDay, minDay;
-        if (open.getFullYear() === max.getFullYear() && open.getMonth() >= max.getMonth()) {
-            if (open.getMonth() === max.getMonth()) { maxDay = max.getDate(); }
+        let maxDay, minDay;
+        disableClass= null;
+        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
+            if (openToDate.getMonth() === maxDate.getMonth()) { maxDay = maxDate.getDate(); }
             else { maxDay = null; }
         }
 
         //Disable min days in month
-        else if (open.getFullYear() === min.getFullYear() && open.getMonth() >= min.getMonth()) {
-            if (open.getMonth() === min.getMonth()) { minDay = min.getDate(); }
+        else if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() >= minDate.getMonth()) {
+            if (openToDate.getMonth() === minDate.getMonth()) { minDay = minDate.getDate(); }
             else { minDay = null; }
         }
 
@@ -327,16 +330,16 @@ class Calendar extends Component {
 
 
         //Disable next month days
-        let disableClass2 = null;
-        if (open.getFullYear() === max.getFullYear() && open.getMonth() >= max.getMonth()) {
-            disableClass2 = "calendar-month_disabled";
+        disableClass = null;
+        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
+            disableClass = "calendar-month_disabled";
         }
 
         //Show neighboring days in next month
         let nextDay = 1;
         for (let i = days; i < maxDays - firstDay; i++) {
             arrayDays.push(
-                <Day key={keys++} className={disableClass2} >
+                <Day key={keys++} className={disableClass} >
                     <AbbrDay
                         onClick={this.onDayClick.bind(this, i + 1)}
                         className="calendar-month_neighboringMonth" >
@@ -347,7 +350,6 @@ class Calendar extends Component {
         }
         return arrayDays;
     }
-
 
     render() {
         //console.log("render");
