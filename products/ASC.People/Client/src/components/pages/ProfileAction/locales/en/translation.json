@@ -20,7 +20,14 @@
   "NewEmployee": "New employee",
   "NewGuest": "New guest",
 
-  "EmployedSinceDate": "EmployedSinceDate",
+  "EmployedSinceDate": "Employed since",
   "Position": "Position",
-  "Departments": "Departments"
+  "Departments": "Departments",
+
+  "CopyEmailAndPassword": "Copy e-mail & password",
+  "ChangeButton": "Change",
+  "Phone": "Phone",
+  "Type": "Type",
+  "TypeGuest": "Guest",
+  "TypeUser": "Employee"
 }
