@@ -187,8 +187,8 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={this.state.profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: this.props.t("TypeGuest", { guest })},
-                { value: "false", label: this.props.t("TypeUser", { employee })}
+                { value: "true", label: this.props.t("CustomTypeGuest", { guest })},
+                { value: "false", label: this.props.t("CustomTypeUser", { employee })}
               ]}
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
