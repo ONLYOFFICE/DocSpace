@@ -75,7 +75,7 @@ class Row extends React.PureComponent {
     const { checked, element, children, contextOptions } = this.props;
 
     return (
-      <StyledRow {...this.props}>
+      <StyledRow ref={this.rowRef} {...this.props}>
         {this.props.hasOwnProperty("checked") &&
           <StyledCheckbox>
             <Checkbox isChecked={checked} onChange={this.changeCheckbox} />
