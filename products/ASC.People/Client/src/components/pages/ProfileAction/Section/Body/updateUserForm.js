@@ -5,6 +5,7 @@ import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, profileEqual, updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer, TextField, PasswordField, DateField, RadioField, DepartmentField } from './userFormFields'
+import { departmentsName, position, employedSinceDate } from '../../../../customNames';
 
 class UpdateUserForm extends React.Component {
 
@@ -179,7 +180,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("EmployedSinceDate")}:`}
+              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
@@ -193,14 +194,14 @@ class UpdateUserForm extends React.Component {
               onChange={this.onTextChange}
             />
             <TextField
-              labelText={`${this.props.t("Position")}:`}
+              labelText={`${this.props.t("CustomPosition", { position })}:`}
               inputName="title"
               inputValue={this.state.profile.title}
               isDisabled={this.state.isLoading}
               onChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("Departments")}:`}
+              labelText={`${this.props.t("CustomDepartmentsName", { departmentsName })}:`}
               departments={this.state.profile.groups}
               onClose={this.onGroupClose}
             />
