@@ -28,8 +28,8 @@ import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 
 class SectionBodyContent extends React.PureComponent {
-  onEmailSentClick = () => {
-    toastr.success("Context action: Send e-mail");
+  onEmailSentClick = email => {
+    window.open("mailto:" + email);
   };
 
   onSendMessageClick = () => {
@@ -104,7 +104,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "send-email",
             label: t("PeopleResource:LblSendEmail"),
-            onClick: this.onEmailSentClick
+            onClick: this.onEmailSentClick.bind(this, user.email)
           },
           {
             key: "send-message",
