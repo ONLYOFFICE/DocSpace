@@ -273,9 +273,12 @@ class FilterInput extends React.Component {
         if (this.isResizeUpdate) {
             this.isResizeUpdate = false;
         }
-        const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
-        const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
-        if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2) this.updateFilter();
+
+        if(this.searchWrapper.current && this.filterWrapper.current){
+            const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
+            const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
+            if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2) this.updateFilter();
+        }
     }
     onClickFilterItem(event, filterItem) {
         const currentFilterItems = cloneObjectsArray(this.state.filterValues);
@@ -365,6 +368,7 @@ class FilterInput extends React.Component {
     
     componentDidMount() {
         window.addEventListener('resize', this.throttledResize);
+        if(this.state.filterValues.length > 0) this.updateFilter();
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.throttledResize);

@@ -99,7 +99,7 @@ class ArticleBodyContent extends React.Component {
         defaultExpandAll={true}
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
-        defaultSelectedKeys={selectedKeys}
+        selectedKeys={selectedKeys}
       >
         {getItems(data)}
       </TreeMenu>

@@ -39,7 +39,10 @@ class FilterStory extends React.Component  {
     super(props);
     this.state = {
       selectedFilterData: {
-        inputValue: "text"
+        inputValue: "text",
+        filterValues: [
+          {key: "1", group: "filter-status"}
+        ]
       }
     };
     this.buttonClick = this.buttonClick.bind(this);

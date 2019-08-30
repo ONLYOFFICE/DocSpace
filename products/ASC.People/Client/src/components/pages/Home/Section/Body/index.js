@@ -129,28 +129,28 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "send-email",
-            label: t("PeopleResource:LblSendEmail"),
+            label: t("LblSendEmail"),
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
           {
             key: "send-message",
-            label: t("PeopleResource:LblSendMessage"),
+            label: t("LblSendMessage"),
             onClick: this.onSendMessageClick
           },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
-            label: t("PeopleResource:LblEdit"),
+            label: t("EditButton"),
             onClick: this.onEditClick.bind(this, user)
           },
           {
             key: "change-password",
-            label: t("PeopleResource:LblChangePassword"),
+            label: t("PasswordChangeButton"),
             onClick: this.onChangePasswordClick.bind(this, user.email)
           },
           {
             key: "change-email",
-            label: t("PeopleResource:LblChangeEmail"),
+            label: t("EmailChangeButton"),
             onClick: this.onChangeEmailClick
           },
           isSelf
@@ -161,7 +161,7 @@ class SectionBodyContent extends React.PureComponent {
           }
           : {
             key: "disable",
-            label: t("PeopleResource:DisableUserButton"),
+            label: t("DisableUserButton"),
             onClick: this.onDisableClick.bind(this, user)
           }          
         ];
@@ -169,22 +169,22 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "enable",
-            label: t("PeopleResource:EnableUserButton"),
+            label: t("EnableUserButton"),
             onClick: this.onEnableClick.bind(this, user)
           },
           {
             key: "reassign-data",
-            label: t("PeopleResource:LblReassignData"),
+            label: t("ReassignData"),
             onClick: this.onReassignDataClick
           },
           {
             key: "delete-personal-data",
-            label: t("PeopleResource:LblRemoveData"),
+            label: t("RemoveData"),
             onClick: this.onDeletePersonalDataClick.bind(this, user)
           },
           {
             key: "delete-profile",
-            label: t("PeopleResource:LblDeleteProfile"),
+            label: t("DeleteSelfProfile"),
             onClick: this.onDeleteProfileClick
           }
         ];
@@ -192,28 +192,28 @@ class SectionBodyContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t("PeopleResource:LblEdit"),
+            label: t("EditButton"),
             onClick: this.onEditClick.bind(this, user)
           },
           {
             key: "invite-again",
-            label: "Invite again",
+            label: t("LblInviteAgain"),
             onClick: this.onInviteAgainClick
           },
           !isSelf && (user.status === EmployeeStatus.Active 
           ? {
             key: "disable",
-            label: t("PeopleResource:DisableUserButton"),
+            label: t("DisableUserButton"),
             onClick: this.onDisableClick.bind(this, user)
           } : {
             key: "enable",
-            label: t("PeopleResource:EnableUserButton"),
+            label: t("EnableUserButton"),
             onClick: this.onEnableClick.bind(this, user)
           }),
           isSelf &&
           {
             key: "delete-profile",
-            label: t("PeopleResource:LblDeleteProfile"),
+            label: t("DeleteSelfProfile"),
             onClick: this.onDeleteProfileClick
           }
         ];
@@ -288,13 +288,13 @@ class SectionBodyContent extends React.PureComponent {
       <EmptyScreenContainer
         imageSrc="images/empty_screen_filter.png"
         imageAlt="Empty Screen Filter image"
-        headerText={t("PeopleResource:NotFoundTitle")}
-        descriptionText={t("PeopleResource:NotFoundDescription")}
+        headerText={t("NotFoundTitle")}
+        descriptionText={t("NotFoundDescription")}
         buttons={
           <>
             <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
             <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-              {t("PeopleResource:ClearButton")}
+              {t("ClearButton")}
             </Link>
           </>
         }

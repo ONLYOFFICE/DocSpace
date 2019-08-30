@@ -50,7 +50,7 @@ namespace ASC.Core.Data
             return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
         }
 
-        public IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin,
+        public IEnumerable<UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
@@ -85,7 +85,7 @@ namespace ASC.Core.Data
                 q.SetFirstResult((int)offset);
             }
 
-            return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
+            return GetDb().ExecuteList(q, ToUser);
         }
 
         private SqlQuery GetUserQueryForFilter(SqlQuery q, bool isAdmin,

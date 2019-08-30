@@ -156,13 +156,7 @@ namespace ASC.Common.Data
             var fieldCount = reader.FieldCount;
             while (reader.Read())
             {
-                var row = new object[fieldCount];
-                for (var i = 0; i < fieldCount; i++)
-                {
-                    row[i] = reader[i];
-                    if (DBNull.Value.Equals(row[i])) row[i] = null;
-                }
-                result.Add(row);
+                result.Add(GetData(reader, fieldCount));
             }
             return result;
         }
@@ -253,6 +247,20 @@ namespace ASC.Common.Data
             }
             return result;
         }
+        public static List<T> ExecuteList<T>(this DbCommand command, ISqlInstruction sql, ISqlDialect dialect, Converter<object[], T> mapper)
+        {
+            ApplySqlInstruction(command, sql, dialect);
+            var result = new List<T>();
+            using (var reader = command.ExecuteReader())
+            {
+                var fieldCount = reader.FieldCount;
+                while (reader.Read())
+                {
+                    result.Add(mapper(GetData(reader, fieldCount)));
+                }
+            }
+            return result;
+        }
 
         public static T ExecuteScalar<T>(this DbCommand command, ISqlInstruction sql, ISqlDialect dialect)
         {
@@ -323,6 +331,18 @@ namespace ASC.Common.Data
                 command.AddParameters(parameters);
             }
             return command;
+        }
+
+        private static object[] GetData(IDataRecord reader, int fieldCount)
+        {
+            var row = new object[fieldCount];
+            for (var i = 0; i < fieldCount; i++)
+            {
+                row[i] = reader[i];
+                if (DBNull.Value.Equals(row[i])) row[i] = null;
+            }
+
+            return row;
         }
     }
 }

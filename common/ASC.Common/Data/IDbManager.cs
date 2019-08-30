@@ -53,6 +53,8 @@ namespace ASC.Common.Data
 
         List<T> ExecuteList<T>(ISqlInstruction sql, Converter<IDataRecord, T> converter);
 
+        List<T> ExecuteList<T>(ISqlInstruction sql, Converter<object[], T> converter);
+
         T ExecuteScalar<T>(string sql, params object[] parameters);
 
         T ExecuteScalar<T>(ISqlInstruction sql);
