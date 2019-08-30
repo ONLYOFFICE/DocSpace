@@ -103,8 +103,22 @@ class SectionBodyContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  onDeleteProfileClick = () => {
-    toastr.success("Context action: Delete profile");
+  onDeleteProfileEverClick = user => {
+    toastr.success("Context action: Delete profile data");
+  };
+
+  onDeleteProfileClick = email => {
+    this.setState({dialog: {
+      visible: true,
+      header: "Delete profile dialog",
+      body: <Text.Body>
+        Send the profile deletion instructions to the email address <Link type="page" href={`mailto:${email}`} isHovered title={email}>{email}</Link>
+      </Text.Body>,
+      successFunc: () => {
+        toastr.success("Context action: Delete profile");
+        this.onDialogClose();
+      }
+  }});
   };
 
   onInviteAgainClick = () => {
@@ -157,7 +171,7 @@ class SectionBodyContent extends React.PureComponent {
           ? {
             key: "delete-profile",
             label: t("PeopleResource:LblDeleteProfile"),
-            onClick: this.onDeleteProfileClick
+            onClick: this.onDeleteProfileClick.bind(this, user.email)
           }
           : {
             key: "disable",
@@ -185,7 +199,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick
+            onClick: this.onDeleteProfileEverClick.bind(this, user)
           }
         ];
       case "pending":
@@ -214,7 +228,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick
+            onClick: this.onDeleteProfileClick.bind(this, user.email)
           }
         ];
       default:
