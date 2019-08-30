@@ -39,7 +39,7 @@ class SectionBodyContent extends React.PureComponent {
         visible: false,
         header: "",
         body: "",
-        successFunc: null
+        buttons: []
       }
     };
   }
@@ -58,17 +58,39 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onChangePasswordClick = email => {
-    this.setState({dialog: {
+    this.setState({
+      dialog: {
         visible: true,
         header: "Password change",
-        body: <Text.Body>
-          Send the password change instructions to the <Link type="page" href={`mailto:${email}`} isHovered title={email}>{email}</Link> email address
-        </Text.Body>,
-        successFunc: () => {
-          toastr.success("Context action: Change password");
-          this.onDialogClose();
-        }
-    }});
+        body: (
+          <Text.Body>
+            Send the password change instructions to the{" "}
+            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
+              {email}
+            </Link>{" "}
+            email address
+          </Text.Body>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="Send"
+            primary={true}
+            onClick={() => {
+              toastr.success("Context action: Delete profile");
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
+      }
+    });
   };
 
   onChangeEmailClick = () => {
@@ -81,7 +103,7 @@ class SectionBodyContent extends React.PureComponent {
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id])
       .then(() => toastr.success("SUCCESS Context action: Disable"))
-      .catch((e) => toastr.error("FAILED Context action: Disable", e))
+      .catch(e => toastr.error("FAILED Context action: Disable", e))
       .finally(() => onLoading(false));
   };
 
@@ -91,7 +113,7 @@ class SectionBodyContent extends React.PureComponent {
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id])
       .then(() => toastr.success("SUCCESS Context action: Enable"))
-      .catch((e) => toastr.error("FAILED Context action: Enable", e))
+      .catch(e => toastr.error("FAILED Context action: Enable", e))
       .finally(() => onLoading(false));
   };
 
@@ -108,17 +130,38 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDeleteProfileClick = email => {
-    this.setState({dialog: {
-      visible: true,
-      header: "Delete profile dialog",
-      body: <Text.Body>
-        Send the profile deletion instructions to the email address <Link type="page" href={`mailto:${email}`} isHovered title={email}>{email}</Link>
-      </Text.Body>,
-      successFunc: () => {
-        toastr.success("Context action: Delete profile");
-        this.onDialogClose();
+    this.setState({
+      dialog: {
+        visible: true,
+        header: "Delete profile dialog",
+        body: (
+          <Text.Body>
+            Send the profile deletion instructions to the email address{" "}
+            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
+              {email}
+            </Link>
+          </Text.Body>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="Send"
+            primary={true}
+            onClick={() => {
+              toastr.success("Context action: Delete profile");
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
       }
-  }});
+    });
   };
 
   onInviteAgainClick = () => {
@@ -168,16 +211,16 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onChangeEmailClick
           },
           isSelf
-          ? {
-            key: "delete-profile",
-            label: t("PeopleResource:LblDeleteProfile"),
-            onClick: this.onDeleteProfileClick.bind(this, user.email)
-          }
-          : {
-            key: "disable",
-            label: t("DisableUserButton"),
-            onClick: this.onDisableClick.bind(this, user)
-          }          
+            ? {
+                key: "delete-profile",
+                label: t("PeopleResource:LblDeleteProfile"),
+                onClick: this.onDeleteProfileClick.bind(this, user.email)
+              }
+            : {
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick.bind(this, user)
+              }
         ];
       case "disabled":
         return [
@@ -214,18 +257,19 @@ class SectionBodyContent extends React.PureComponent {
             label: t("LblInviteAgain"),
             onClick: this.onInviteAgainClick
           },
-          !isSelf && (user.status === EmployeeStatus.Active 
-          ? {
-            key: "disable",
-            label: t("DisableUserButton"),
-            onClick: this.onDisableClick.bind(this, user)
-          } : {
-            key: "enable",
-            label: t("EnableUserButton"),
-            onClick: this.onEnableClick.bind(this, user)
-          }),
-          isSelf &&
-          {
+          !isSelf &&
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick.bind(this, user)
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick.bind(this, user)
+                }),
+          isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
             onClick: this.onDeleteProfileClick.bind(this, user.email)
@@ -252,8 +296,8 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDialogClose = () => {
-    this.setState({dialog: { visible: false }});
-  }
+    this.setState({ dialog: { visible: false } });
+  };
 
   render() {
     console.log("Home SectionBodyContent render()");
@@ -262,39 +306,47 @@ class SectionBodyContent extends React.PureComponent {
 
     return users.length > 0 ? (
       <>
-      <RowContainer>
-        {users.map(user => {
-          const contextOptions = this.getUserContextOptions(user, viewer);
-          const contextOptionsProps = !contextOptions.length
-            ? {}
-            : { contextOptions };
-          const checked = isUserSelected(selection, user.id);
-          const checkedProps = isAdmin(viewer) ? { checked } : {};
-          const element = <Avatar size='small' role={getUserRole(user)} userName={user.displayName} source={user.avatar} />;
-      
-          return (
-            <Row
-              key={user.id}
-              status={getUserStatus(user)}
-              data={user}
-              element={element}
-              onSelect={this.onContentRowSelect}
-              {...checkedProps}
-              {...contextOptionsProps}
-            >
-              <UserContent user={user} history={history} settings={settings} />
-            </Row>
-          );
-        })}
-      </RowContainer>
-      <ModalDialog
+        <RowContainer>
+          {users.map(user => {
+            const contextOptions = this.getUserContextOptions(user, viewer);
+            const contextOptionsProps = !contextOptions.length
+              ? {}
+              : { contextOptions };
+            const checked = isUserSelected(selection, user.id);
+            const checkedProps = isAdmin(viewer) ? { checked } : {};
+            const element = (
+              <Avatar
+                size="small"
+                role={getUserRole(user)}
+                userName={user.displayName}
+                source={user.avatar}
+              />
+            );
+
+            return (
+              <Row
+                key={user.id}
+                status={getUserStatus(user)}
+                data={user}
+                element={element}
+                onSelect={this.onContentRowSelect}
+                {...checkedProps}
+                {...contextOptionsProps}
+              >
+                <UserContent
+                  user={user}
+                  history={history}
+                  settings={settings}
+                />
+              </Row>
+            );
+          })}
+        </RowContainer>
+        <ModalDialog
           visible={dialog.visible}
           headerContent={dialog.header}
           bodyContent={dialog.body}
-          footerContent={[
-              <Button key="OkBtn" label="Send" primary={true} onClick={dialog.successFunc} />,
-              <Button key="CancelBtn" label="Cancel" primary={false} onClick={this.onDialogClose} style={{ marginLeft: '8px' }} />
-          ]}
+          footerContent={dialog.buttons}
           onClose={this.onDialogClose}
         />
       </>
