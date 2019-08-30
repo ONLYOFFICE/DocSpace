@@ -63,7 +63,11 @@ namespace ASC.Api.Core.Middleware
             Response = response;
             Total = total;
 
-            if (response is IEnumerable<object> collection)
+            if (response is List<object> list)
+            {
+                Count = list.Count;
+            }
+            else if (response is IEnumerable<object> collection)
             {
                 Count = collection.Count();
             }

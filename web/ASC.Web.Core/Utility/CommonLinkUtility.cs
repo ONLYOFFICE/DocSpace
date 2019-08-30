@@ -162,21 +162,20 @@ namespace ASC.Web.Studio.Utility
 
         #region user profile link
 
-        public static string GetUserProfile()
-        {
-            return GetUserProfile(CoreContext.TenantManager.GetCurrentTenant().TenantId);
-        }
-        public static string GetUserProfile(int tenantId)
-        {
-            return GetUserProfile(tenantId, null);
-        }
-
         public static string GetUserProfile(int tenantId, Guid userID)
         {
             if (!CoreContext.UserManager.UserExists(tenantId, userID))
                 return GetEmployees();
 
             return GetUserProfile(tenantId, userID.ToString());
+        }
+
+        public static string GetUserProfile(UserInfo user)
+        {
+            if (!CoreContext.UserManager.UserExists(user))
+                return GetEmployees();
+
+            return GetUserProfile(user, true);
         }
 
         public static string GetUserProfile(int tenantId, string user, bool absolute = true)
@@ -199,6 +198,17 @@ namespace ASC.Web.Studio.Utility
 
                 queryParams = guid != Guid.Empty ? GetUserParamsPair(tenantId, guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
+
+            var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+            url += "profile.aspx?";
+            url += queryParams;
+
+            return url;
+        }
+
+        public static string GetUserProfile(UserInfo user, bool absolute = true)
+        {
+            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -449,15 +459,12 @@ namespace ASC.Web.Studio.Utility
 
         public static string GetUserParamsPair(int tenantId, Guid userID)
         {
-            return
-                CoreContext.UserManager.UserExists(tenantId, userID)
-                    ? GetUserParamsPair(CoreContext.UserManager.GetUsers(tenantId, userID))
-                    : "";
+            return GetUserParamsPair(CoreContext.UserManager.GetUsers(tenantId, userID));
         }
 
         public static string GetUserParamsPair(UserInfo user)
         {
-            if (user == null || string.IsNullOrEmpty(user.UserName))
+            if (user == null || string.IsNullOrEmpty(user.UserName) || !CoreContext.UserManager.UserExists(user))
                 return "";
 
             return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));

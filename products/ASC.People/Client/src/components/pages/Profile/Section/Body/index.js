@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
-import { departmentName, position, employedSinceDate } from '../../../../customNames';
+import { departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
 import {
   Text,
   Avatar,

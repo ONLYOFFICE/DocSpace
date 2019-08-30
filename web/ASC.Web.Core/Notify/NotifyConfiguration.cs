@@ -236,9 +236,10 @@ namespace ASC.Web.Studio.Core.Notify
             if (SecurityContext.IsAuthenticated)
             {
                 aid = SecurityContext.CurrentAccount.ID;
-                if (CoreContext.UserManager.UserExists(tenant.TenantId, aid))
+                var user = CoreContext.UserManager.GetUsers(tenant.TenantId, aid);
+                if (CoreContext.UserManager.UserExists(user))
                 {
-                    aname = CoreContext.UserManager.GetUsers(tenant.TenantId, aid).DisplayUserName(false)
+                    aname = user.DisplayUserName(false)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }

@@ -33,6 +33,8 @@ namespace ASC.Web.Core.Utility.Skins
 {
     public static class WebImageSupplier
     {
+        private static string FolderName { get; } = ConfigurationManager.AppSettings["web:images"];
+
         public static string GetAbsoluteWebPath(string imgFileName)
         {
             return GetAbsoluteWebPath(imgFileName, Guid.Empty);
@@ -68,7 +70,7 @@ namespace ASC.Web.Core.Utility.Skins
 
         private static string GetPartImageFolderRel(Guid partID)
         {
-            var folderName = ConfigurationManager.AppSettings["web:images"];
+            var folderName = FolderName;
             string itemFolder = null;
             if (!Guid.Empty.Equals(partID))
             {

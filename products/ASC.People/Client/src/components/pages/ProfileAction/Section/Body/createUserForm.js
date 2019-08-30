@@ -10,7 +10,7 @@ import PasswordField from './FormFields/PasswordField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
-import { departmentName, position, employedSinceDate } from '../../../../customNames';
+import { departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
 
 class CreateUserForm extends React.Component {
 

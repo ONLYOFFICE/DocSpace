@@ -135,6 +135,11 @@ namespace ASC.Common.Data
             return databases.SelectMany(db => db.ExecuteList(sql, converter)).ToList();
         }
 
+        public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<object[], T> converter)
+        {
+            return databases.SelectMany(db => db.ExecuteList(sql, converter)).ToList();
+        }
+
         public T ExecuteScalar<T>(string sql, params object[] parameters)
         {
             return localDb.ExecuteScalar<T>(sql, parameters);

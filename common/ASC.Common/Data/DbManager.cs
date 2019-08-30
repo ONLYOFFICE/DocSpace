@@ -240,6 +240,11 @@ namespace ASC.Common.Data
             return Command.ExecuteList(sql, GetDialect(), converter);
         }
 
+        public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<object[], T> converter)
+        {
+            return Command.ExecuteList(sql, GetDialect(), converter);
+        }
+
         public T ExecuteScalar<T>(string sql, params object[] parameters)
         {
             return Command.ExecuteScalar<T>(sql, parameters);
@@ -368,6 +373,11 @@ namespace ASC.Common.Data
         }
 
         public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<IDataRecord, T> converter)
+        {
+            return dbManager.ExecuteList(sql, converter);
+        }
+
+        public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<object[], T> converter)
         {
             return dbManager.ExecuteList<T>(sql, converter);
         }

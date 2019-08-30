@@ -45,7 +45,6 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
         public Tenant Tenant { get { return ApiContext.Tenant; } }
-
         public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
         public QueueWorkerReassign QueueWorkerReassign { get; }
@@ -256,8 +255,7 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-
-            return users.Select(u => new EmployeeWraperFull(u, ApiContext)).ToList();
+            return users.Select(u => new EmployeeWraperFull(u, ApiContext));
         }
 
         [Read("simple/filter")]
@@ -767,9 +765,9 @@ namespace ASC.Employee.Core.Controllers
         {
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userid), Constants.Action_EditUser);
 
-            if (!CoreContext.UserManager.UserExists(Tenant.TenantId, userid)) return null;
-
             var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userid);
+
+            if (!CoreContext.UserManager.UserExists(user)) return null;
 
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
