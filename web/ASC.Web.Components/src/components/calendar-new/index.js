@@ -52,7 +52,8 @@ const CalendarStyle = styled.div`
     font-size: 13px;
     text-align: center;
     ${props => props.disabled ?
-        `${DisabledStyle}
+        `pointer-events: none;
+        ${DisabledStyle}
         `
         : "pointer-events: auto;"
     }
@@ -301,7 +302,6 @@ class Calendar extends Component {
         while (prevMonthDays != 0) {
             if (prevDays + 1 === prevMonthDay) { disableClass = "calendar-month_disabled"; }
             if (prevDays + 1 === prevYearDay) { disableClass = "calendar-month_disabled"; }
-            //console.log(prevDays);
             arrayDays.unshift(
                 <Day key={--keys} className={disableClass} >
                     <AbbrDay
@@ -359,11 +359,6 @@ class Calendar extends Component {
         else if (firstDay >= 5 && days > 30) { maxDays += 7; }
         if (maxDays > 42) { maxDays -= 7; }
 
-
-
-
-
-
         //Disable next month days
         disableClass = null;
         if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
@@ -414,7 +409,6 @@ class Calendar extends Component {
 
     render() {
         //console.log("render");
-
         const disabled = this.props.disabled;
         const scaled = this.props.scaled;
         const dropDownSizeMonth = this.getListMonth().length > 4 ? 180 : undefined;
