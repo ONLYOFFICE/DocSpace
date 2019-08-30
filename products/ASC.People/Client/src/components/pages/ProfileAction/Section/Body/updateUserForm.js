@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, profileEqual, updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
@@ -26,6 +26,9 @@ class UpdateUserForm extends React.Component {
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
+
+    this.onDialogShow = this.onDialogShow.bind(this);
+    this.onDialogClose = this.onDialogClose.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -37,6 +40,7 @@ class UpdateUserForm extends React.Component {
   mapPropsToState = (props) => {
     return {
       isLoading: false,
+      isDialogVisible: false,
       errors: {
         firstName: false,
         lastName: false,
@@ -107,6 +111,14 @@ class UpdateUserForm extends React.Component {
     this.props.history.goBack();
   }
 
+  onDialogShow() {
+    this.setState({isDialogVisible: true})
+  }
+
+  onDialogClose() {
+    this.setState({isDialogVisible: false})
+  }
+
   render() {
     return (
       <>
@@ -126,25 +138,25 @@ class UpdateUserForm extends React.Component {
               labelText={`${this.props.t("Email")}:`}
               inputName="email"
               inputValue={this.state.profile.email}
-              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={()=>{}}
+              buttonOnClick={this.onDialogShow}
             />
             <TextChangeField
               labelText={`${this.props.t("Password")}:`}
               inputName="password"
               inputValue={this.state.profile.password}
-              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={()=>{}}
+              buttonOnClick={this.onDialogShow}
             />
             <TextChangeField
               labelText={`${this.props.t("Phone")}:`}
               inputName="phone"
               inputValue={this.state.profile.phone}
-              buttonText={`${this.props.t("ChangeButton")}:`}
+              buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={()=>{}}
+              buttonOnClick={this.onDialogShow}
             />
             <TextField
               isRequired={true}
@@ -229,6 +241,14 @@ class UpdateUserForm extends React.Component {
           <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
           <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
         </div>
+
+        <ModalDialog
+          visible={this.state.isDialogVisible}
+          headerContent={"Change something"}
+          bodyContent={<p>Send the something instructions?</p>}
+          footerContent={<Button label="Send" primary={true} onClick={this.onDialogClose} />}
+          onClose={this.onDialogClose}
+        />
       </>
     );
   };
