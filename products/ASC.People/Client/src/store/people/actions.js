@@ -54,12 +54,7 @@ export function selectGroup(groupId) {
     let newFilter = filter.clone();
     newFilter.group = groupId;
 
-    fetchPeopleAsync(dispatch, newFilter);
-
-    return dispatch({
-      type: SELECT_GROUP,
-      groupId
-    });
+    return fetchPeopleByFilter(dispatch, newFilter);
   };
 }
 
@@ -86,12 +81,7 @@ export function setFilter(filter) {
 
 export function fetchPeople(filter) {
   return dispatch => {
-    let filterData = (filter && filter.clone()) || Filter.getDefault();
-    return api.getUserList(filterData).then(res => {
-      filterData.total = res.data.total;
-      dispatch(setFilter(filterData));
-      return dispatch(setUsers(res.data.response));
-    });
+    return fetchPeopleByFilter(dispatch, filter);
   };
 }
 
@@ -100,6 +90,10 @@ export function fetchPeopleByFilter(dispatch, filter) {
   return api.getUserList(filterData).then(res => {
     filterData.total = res.data.total;
     dispatch(setFilter(filterData));
+    dispatch({
+      type: SELECT_GROUP,
+      groupId: filterData.group
+    });
     return dispatch(setUsers(res.data.response));
   });
 }
@@ -112,6 +106,10 @@ export async function fetchPeopleAsync(dispatch, filter = null) {
   filterData.total = usersResp.data.total;
 
   dispatch(setFilter(filterData));
+  dispatch({
+    type: SELECT_GROUP,
+    groupId: filterData.group
+  });
   dispatch(setUsers(usersResp.data.response));
 }
 

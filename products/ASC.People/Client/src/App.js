@@ -32,6 +32,7 @@ const App = ({ settings }) => {
               path={`${homepage}/edit/:userId`}
               component={ProfileAction}
               restricted
+              allowForMe
             />
             <PrivateRoute
               path={`${homepage}/create/:type`}
