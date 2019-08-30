@@ -14,7 +14,7 @@ const fontStyle = css`
     font-style: normal;
 `;
 
-const StyledDropdownItem = styled.button`
+const StyledDropdownItem = styled.div`
     width: ${props => (props.isSeparator ? 'calc(100% - 32px)' : '100%')};
     height: ${props => (props.isSeparator && '1px')};
     line-height: ${props => (props.isSeparator ? '1px' : '36px')};
@@ -80,7 +80,7 @@ const IconWrapper = styled.span`
 
 const DropDownItem = props => {
   //console.log("DropDownItem render");
-  const { isSeparator, label, icon } = props;
+  const { isSeparator, label, icon, children } = props;
   const color = props.disabled ? '#A3A9AE' : '#333333';
   
   return (
@@ -90,7 +90,7 @@ const DropDownItem = props => {
           {React.createElement(Icons[icon], {size: "scale", color: color, isfill: true})}
         </IconWrapper>
       }
-      {isSeparator ? '\u00A0' : label}
+      {isSeparator ? '\u00A0' : label ? label : children && children}
     </StyledDropdownItem>
   );
 };
