@@ -33,6 +33,10 @@ class ProfileAction extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.resetProfile();
+  }
+
   render() {
     console.log("ProfileAction render")
 
