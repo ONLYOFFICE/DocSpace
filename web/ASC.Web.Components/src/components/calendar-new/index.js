@@ -409,6 +409,7 @@ class Calendar extends Component {
 
     render() {
         //console.log("render");
+
         const disabled = this.props.disabled;
         const scaled = this.props.scaled;
         const dropDownSizeMonth = this.getListMonth().length > 4 ? 180 : undefined;
