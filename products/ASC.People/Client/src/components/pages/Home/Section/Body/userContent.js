@@ -3,6 +3,8 @@ import { withRouter } from "react-router";
 import { RowContent, Link, Icons } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
+import { useTranslation } from 'react-i18next';
+import { headOfDepartment } from './../../../../../helpers/customNames';
 
 const UserContent = ({ user, history, settings }) => {
   const { userName, displayName, headDepartment, department, mobilePhone, email } = user;
@@ -35,6 +37,7 @@ const UserContent = ({ user, history, settings }) => {
 
   const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
   const sideInfoColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
+  const t = useTranslation();
 
   return (
     <RowContent>
@@ -44,7 +47,7 @@ const UserContent = ({ user, history, settings }) => {
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
       {headDepartment
-        ? <Link type='page' title='Head of department' fontSize={12} color={sideInfoColor} onClick={onHeadDepartmentClick} >Head of department</Link>
+        ? <Link type='page' title={t('CustomHeadOfDepartment', { headOfDepartment })} fontSize={12} color={sideInfoColor} onClick={onHeadDepartmentClick} >{t('CustomHeadOfDepartment', { headOfDepartment })}</Link>
         : <></>
       }
       <Link type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
