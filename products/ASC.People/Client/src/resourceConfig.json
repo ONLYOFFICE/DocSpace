@@ -40,6 +40,8 @@
         "Location",
         "Comments",
         "SaveButton",
+        "CopyEmailAndPassword",
+        "UserType",
         "CancelButton"
       ]
     },
