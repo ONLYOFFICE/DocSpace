@@ -10,6 +10,8 @@
   "Comments": "Comments",
   "SaveButton": "Save",
   "CancelButton": "Cancel",
+  "CopyEmailAndPassword": "Copy e-mail & password",
+  "Type": "Type",
   
   "ActivationLink": "Activation link",
   "AddPhoto": "Add photo",
@@ -19,8 +21,13 @@
   "RequiredField": "Required field",
   "NewEmployee": "New employee",
   "NewGuest": "New guest",
+  "ChangeButton": "Change",
+  "Phone": "Phone",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
-  "CustomDepartmentName": "{{departmentName}}"
+  "CustomDepartmentName": "{{departmentName}}",
+
+  "CustomTypeGuest": "{{guest}}",
+  "CustomTypeUser": "{{employee}}"
 }
