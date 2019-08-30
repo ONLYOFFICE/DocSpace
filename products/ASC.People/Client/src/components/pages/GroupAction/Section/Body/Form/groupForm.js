@@ -11,6 +11,8 @@ import {
 } from "asc-web-components";
 import submit from "./submit";
 import validate from "./validate";
+import { useTranslation } from 'react-i18next';
+import { department, headOfDepartment, typeUser } from './../../../../../../helpers/customNames';
 
 const generateItems = numItems =>
   Array(numItems)
@@ -22,6 +24,7 @@ const generateItems = numItems =>
 
 const GroupForm = props => {
   const { error, handleSubmit, submitting, initialValues, history } = props;
+  const { t } = useTranslation();
 
   const selectedList = generateItems(100);
   
@@ -35,7 +38,7 @@ const GroupForm = props => {
     <form onSubmit={handleSubmit(submit)}>
       <div>
         <label htmlFor="group-name">
-          <Text.Body as="span" isBold={true}>Department name:</Text.Body>
+          <Text.Body as="span" isBold={true}>{t('CustomDepartmentName', { department })}:</Text.Body>
         </label>
         <div style={{width: "320px"}}>
           <TextInput id="group-name" name="group-name" scale={true} />
@@ -43,11 +46,11 @@ const GroupForm = props => {
       </div>
       <div style={{ marginTop: "16px" }}>
         <label htmlFor="head-selector">
-          <Text.Body as="span" isBold={true}>Head of department:</Text.Body>
+          <Text.Body as="span" isBold={true}>{t('CustomHeadOfDepartment', { headOfDepartment })}:</Text.Body>
         </label>
         <InputBlock
           id="head-selector"
-          value="Add employee"
+          value={t('CustomAddEmployee', { typeUser })}
           iconName="ExpanderDownIcon"
           iconSize={8}
           isIconFill={true}
@@ -64,7 +67,7 @@ const GroupForm = props => {
         </label>
         <InputBlock
           id="employee-selector"
-          value="Add employee"
+          value={t('CustomAddEmployee', { typeUser })}
           iconName="ExpanderDownIcon"
           iconSize={8}
           isIconFill={true}
@@ -87,9 +90,9 @@ const GroupForm = props => {
       </div>
       <div>{error && <strong>{error}</strong>}</div>
       <div style={{ marginTop: "60px" }}>
-        <Button label="Save" primary type="submit" isDisabled={submitting} size="big" />
+        <Button label={t('SaveButton')} primary type="submit" isDisabled={submitting} size="big" />
         <Button
-          label="Cancel"
+          label={t('CancelButton')}
           style={{ marginLeft: "8px" }}
           size="big"
           isDisabled={submitting}

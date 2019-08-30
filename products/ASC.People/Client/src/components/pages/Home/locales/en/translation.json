@@ -45,7 +45,7 @@
   "CustomTypeUser": "{{typeUser}}",
   "CustomMakeUser": "Make {{typeUser, lowercase}}",
   "CustomMakeGuest": "Make {{typeGuest, lowercase}}",
-  "CustomDepartment": "{{department}}"  ,
+  "CustomDepartment": "{{department}}",
   "CountPerPage": "{{count}} per page",
   "PageOfTotalPage": "{{page}} of {{totalPage}}"
 }
