@@ -126,6 +126,53 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDeleteProfileEverClick = user => {
+    this.setState({
+      dialog: {
+        visible: true,
+        header: "Confirmation",
+        body: (
+          <>
+            <Text.Body>User <b>{user.displayName}</b> will be deleted.</Text.Body>
+            <Text.Body>Note: this action cannot be undone.</Text.Body>
+            <Text.Body color="#c30" fontSize="18" style={{margin: "20px 0"}}>Warning!</Text.Body>
+            <Text.Body>
+              User personal documents which are available to others will be
+              deleted. To avoid this, you must start the data reassign process
+              before deleting.
+            </Text.Body>
+          </>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="OK"
+            primary={true}
+            onClick={() => {
+              toastr.success("Context action: Delete profile");
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="ReassignBtn"
+            label="Reassign data"
+            primary={true}
+            onClick={() => {
+              toastr.success("Context action: Reassign profile");
+              this.onDialogClose();
+            }}
+            style={{ marginLeft: "8px" }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
+      }
+    });
+
     toastr.success("Context action: Delete profile data");
   };
 
