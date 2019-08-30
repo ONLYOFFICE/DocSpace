@@ -9,7 +9,10 @@ import {
   EmptyScreenContainer,
   Icons,
   Link,
-  RowContainer
+  RowContainer,
+  ModalDialog,
+  Button,
+  Text
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -28,6 +31,19 @@ import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 
 class SectionBodyContent extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dialog: {
+        visible: false,
+        header: "",
+        body: "",
+        successFunc: null
+      }
+    };
+  }
+
   onEmailSentClick = email => {
     window.open("mailto:" + email);
   };
@@ -41,8 +57,18 @@ class SectionBodyContent extends React.PureComponent {
     history.push(`${settings.homepage}/edit/${user.userName}`);
   };
 
-  onChangePasswordClick = () => {
-    toastr.success("Context action: Change password");
+  onChangePasswordClick = email => {
+    this.setState({dialog: {
+        visible: true,
+        header: "Password change",
+        body: <Text.Body>
+          Send the password change instructions to the <Link type="page" href={`mailto:${email}`} isHovered title={email}>{email}</Link> email address
+        </Text.Body>,
+        successFunc: () => {
+          toastr.success("Context action: Change password");
+          this.onDialogClose();
+        }
+    }});
   };
 
   onChangeEmailClick = () => {
@@ -120,7 +146,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "change-password",
             label: t("PeopleResource:LblChangePassword"),
-            onClick: this.onChangePasswordClick
+            onClick: this.onChangePasswordClick.bind(this, user.email)
           },
           {
             key: "change-email",
@@ -211,11 +237,17 @@ class SectionBodyContent extends React.PureComponent {
     resetFilter().finally(() => onLoading(false));
   };
 
+  onDialogClose = () => {
+    this.setState({dialog: { visible: false }});
+  }
+
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
+    const { dialog } = this.state;
 
     return users.length > 0 ? (
+      <>
       <RowContainer>
         {users.map(user => {
           const contextOptions = this.getUserContextOptions(user, viewer);
@@ -241,6 +273,17 @@ class SectionBodyContent extends React.PureComponent {
           );
         })}
       </RowContainer>
+      <ModalDialog
+          visible={dialog.visible}
+          headerContent={dialog.header}
+          bodyContent={dialog.body}
+          footerContent={[
+              <Button key="OkBtn" label="Send" primary={true} onClick={dialog.successFunc} />,
+              <Button key="CancelBtn" label="Cancel" primary={false} onClick={this.onDialogClose} style={{ marginLeft: '8px' }} />
+          ]}
+          onClose={this.onDialogClose}
+        />
+      </>
     ) : (
       <EmptyScreenContainer
         imageSrc="images/empty_screen_filter.png"
