@@ -12,7 +12,9 @@ import {
   RowContainer,
   ModalDialog,
   Button,
-  Text
+  Text,
+  Label,
+  TextInput
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -35,6 +37,7 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
+      newEmail: null,
       dialog: {
         visible: false,
         header: "",
@@ -93,8 +96,53 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onChangeEmailClick = () => {
-    toastr.success("Context action: Change e-mail");
+  onChangeEmailClick = email => {
+    this.setState({
+      newEmail: email
+    });
+    this.setState({
+      dialog: {
+        visible: true,
+        header: "Email change",
+        body: (
+          <>
+            <Label htmlFor="new-email" text="Enter a new email address" />
+            <TextInput
+              id="new-email"
+              scale={true}
+              isAutoFocussed={true}
+              value={this.state.newEmail}
+              onChange={e => {
+                this.setState({ newEmail: e.target.value });
+              }}
+            />
+            <Text.Body style={{ marginTop: "16px" }}>
+              The activation instructions will be sent to the entered email
+            </Text.Body>
+          </>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="Send"
+            primary={true}
+            onClick={() => {
+              toastr.success(
+                `Context action: Change e-mail from ${email} to ${this.state.newEmail}`
+              );
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
+      }
+    });
   };
 
   onDisableClick = user => {
@@ -132,9 +180,13 @@ class SectionBodyContent extends React.PureComponent {
         header: "Confirmation",
         body: (
           <>
-            <Text.Body>User <b>{user.displayName}</b> will be deleted.</Text.Body>
+            <Text.Body>
+              User <b>{user.displayName}</b> will be deleted.
+            </Text.Body>
             <Text.Body>Note: this action cannot be undone.</Text.Body>
-            <Text.Body color="#c30" fontSize="18" style={{margin: "20px 0"}}>Warning!</Text.Body>
+            <Text.Body color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+              Warning!
+            </Text.Body>
             <Text.Body>
               User personal documents which are available to others will be
               deleted. To avoid this, you must start the data reassign process
@@ -255,7 +307,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.onChangeEmailClick
+            onClick: this.onChangeEmailClick.bind(this, user.email)
           },
           isSelf
             ? {
