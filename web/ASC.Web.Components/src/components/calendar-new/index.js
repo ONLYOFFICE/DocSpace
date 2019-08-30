@@ -24,7 +24,7 @@ const DisabledStyle = css`
 const ComboBoxStyle = styled.div`
     position: relative;
     display: flex;
-    padding-bottom: 16px;
+    padding-bottom: 25px;
 `;
 
 const ComboBoxDateStyle = styled.div`
@@ -33,17 +33,26 @@ const ComboBoxDateStyle = styled.div`
     margin-left: 8px;
 `;
 
+const CalendarContainer = styled.div`
+    padding: 16px;
+    ${props => props.size === 'base' ?
+        `max-width: 293px;` : `max-width: 325px;`
+    }
+`;
+
 const CalendarStyle = styled.div`
+    
+    ${props => props.size === 'base' ?
+        `width: 260px;
+        border-radius: 6px;
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+        -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+        -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);`
+        : 'width: 294px;'
+    }
 
-    min-width: 280px;
-    width: ${props => props.scaled ? "100%;" : "325px;"}
-
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     padding: 16px 16px 16px 17px;
     box-sizing: content-box;
     font-family: Open Sans;
@@ -93,31 +102,31 @@ const CalendarStyle = styled.div`
 `;
 
 const Weekday = styled.div`
-    display: flex;
     overflow: hidden;
     flex-basis: 14.2857%;
-    padding-left: 4px;
 `;
 
 const Weekdays = styled.div`
     display: flex;
+    margin-bottom: 9px;
 `;
 
 const Month = styled.div`
-    width: 100%;
+    ${props => props.size === 'base' ? 'width: 267px;' : 'width: 303px;'}
 `;
 
 const Days = styled.div`
     display: flex;
     flex-wrap: wrap;
+    ${props => props.size === 'base' ? 'width: 270px;' : 'width: 310px;'}
 `;
 
 const Day = styled.div`
     display: flex;
     flex-basis: 14.2857%;
-    padding: 4px;
     text-align: center;
     line-height: 2.5em;
+    ${props => props.size === 'base' ? 'margin-top: 3px;' : 'margin-top: 7.5px;'}
 `;
 
 const AbbrDay = styled.abbr`
@@ -298,12 +307,13 @@ class Calendar extends Component {
             prevYearDay = minDate.getDate();
         }
 
+        const size = this.props.size;
         // Show neighboring days in prev month
         while (prevMonthDays != 0) {
             if (prevDays + 1 === prevMonthDay) { disableClass = "calendar-month_disabled"; }
             if (prevDays + 1 === prevYearDay) { disableClass = "calendar-month_disabled"; }
             arrayDays.unshift(
-                <Day key={--keys} className={disableClass} >
+                <Day size = {size} key={--keys} className={disableClass} >
                     <AbbrDay
                         onClick={this.onDayClick.bind(this, keys)}
                         className={className} >
@@ -346,7 +356,7 @@ class Calendar extends Component {
             else { disableClass = null; }
 
             arrayDays.push(
-                <Day key={keys++} className={disableClass} >
+                <Day size = {size} key={keys++} className={disableClass} >
                     <AbbrDay onClick={this.onDayClick.bind(this, i)} className={className}>{i}</AbbrDay>
                 </Day>
             );
@@ -383,7 +393,7 @@ class Calendar extends Component {
             if (i - days === nextYearDay) { disableClass = "calendar-month_disabled" }
             if (i - days === nextMonthDay) { disableClass = "calendar-month_disabled" }
             arrayDays.push(
-                <Day key={keys++} className={disableClass} >
+                <Day size = {size} key={keys++} className={disableClass} >
                     <AbbrDay
                         onClick={this.onDayClick.bind(this, i + 1)}
                         className={"calendar-month_neighboringMonth"} >
@@ -411,41 +421,43 @@ class Calendar extends Component {
         //console.log("render");
 
         const disabled = this.props.disabled;
-        const scaled = this.props.scaled;
+        const size = this.props.size;
         const dropDownSizeMonth = this.getListMonth().length > 4 ? 180 : undefined;
         const dropDownSizeYear = this.getListMonth().length > 4 ? 180 : undefined;
 
         return (
-            <CalendarStyle scaled={scaled} color={this.props.themeColor} disabled={disabled}>
-                <ComboBoxStyle>
-                    <ComboBox
-                        scaled={true}
-                        dropDownMaxHeight={dropDownSizeMonth}
-                        onSelect={this.onSelectMonth.bind(this)}
-                        selectedOption={this.getCurrentMonth()}
-                        options={this.getListMonth()}
-                        isDisabled={disabled}
-                    />
-                    <ComboBoxDateStyle>
+            <CalendarContainer size={size}>
+                <CalendarStyle size={size} color={this.props.themeColor} disabled={disabled}>
+                    <ComboBoxStyle>
                         <ComboBox
                             scaled={true}
-                            dropDownMaxHeight={dropDownSizeYear}
-                            onSelect={this.onSelectYear.bind(this)}
-                            selectedOption={this.getCurrentYear()}
-                            options={this.getArrayYears().reverse()}
+                            dropDownMaxHeight={dropDownSizeMonth}
+                            onSelect={this.onSelectMonth.bind(this)}
+                            selectedOption={this.getCurrentMonth()}
+                            options={this.getListMonth()}
                             isDisabled={disabled}
                         />
-                    </ComboBoxDateStyle>
-                </ComboBoxStyle>
-                <Month>
-                    <Weekdays>
-                        {this.getWeekDays()}
-                    </Weekdays>
-                    <Days>
-                        {this.getDays()}
-                    </Days>
-                </Month>
-            </CalendarStyle>
+                        <ComboBoxDateStyle>
+                            <ComboBox
+                                scaled={true}
+                                dropDownMaxHeight={dropDownSizeYear}
+                                onSelect={this.onSelectYear.bind(this)}
+                                selectedOption={this.getCurrentYear()}
+                                options={this.getArrayYears().reverse()}
+                                isDisabled={disabled}
+                            />
+                        </ComboBoxDateStyle>
+                    </ComboBoxStyle>
+                    <Month size={size}>
+                        <Weekdays>
+                            {this.getWeekDays()}
+                        </Weekdays>
+                        <Days size={size}>
+                            {this.getDays()}
+                        </Days>
+                    </Month>
+                </CalendarStyle>
+            </CalendarContainer>
         );
     }
 }
@@ -459,16 +471,17 @@ Calendar.propTypes = {
     maxDate: PropTypes.instanceOf(Date),
     locale: PropTypes.string,
     disabled: PropTypes.bool,
-    scaled: PropTypes.bool
+    size: PropTypes.oneOf(['base', 'big'])
 }
 
 Calendar.defaultProps = {
     selectedDate: new Date(),
     openToDate: new Date(),
     minDate: new Date("1970/01/01"),
-    maxDate: new Date("3000/01/01"),
+    maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
     themeColor: '#ED7309',
     locale: moment.locale(),
+    size: 'base'
 }
 
 export default Calendar;
