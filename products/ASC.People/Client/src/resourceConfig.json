@@ -97,5 +97,11 @@
       "AboutCompanyTitle",
       "LogoutButton"
     ]
+  },
+  "GroupAction": {
+    "Resource": [
+      "SaveButton",
+      "CancelButton"
+    ]
   }
 }
