@@ -88,7 +88,10 @@ class SectionBodyContent extends React.PureComponent {
     let status = "";
     const { t } = this.props;
 
-    if (isAdmin(viewer) || (!isAdmin(viewer) && isMe(user, viewer.userName))) {
+    const isViewerAdmin = isAdmin(viewer);
+    const isSelf = isMe(user, viewer.userName);
+
+    if (isViewerAdmin || (!isViewerAdmin && isSelf)) {
       status = getUserStatus(user);
     }
 
@@ -108,7 +111,7 @@ class SectionBodyContent extends React.PureComponent {
             label: t("PeopleResource:LblSendMessage"),
             onClick: this.onSendMessageClick
           },
-          { key: "key3", isSeparator: true },
+          { key: "separator", isSeparator: true },
           {
             key: "edit",
             label: t("PeopleResource:LblEdit"),
@@ -124,11 +127,17 @@ class SectionBodyContent extends React.PureComponent {
             label: t("PeopleResource:LblChangeEmail"),
             onClick: this.onChangeEmailClick
           },
-          {
+          isSelf
+          ? {
+            key: "delete-profile",
+            label: t("PeopleResource:LblDeleteProfile"),
+            onClick: this.onDeleteProfileClick
+          }
+          : {
             key: "disable",
             label: t("PeopleResource:DisableUserButton"),
             onClick: this.onDisableClick.bind(this, user)
-          }
+          }          
         ];
       case "disabled":
         return [
@@ -165,7 +174,7 @@ class SectionBodyContent extends React.PureComponent {
             label: "Invite again",
             onClick: this.onInviteAgainClick
           },
-          user.status === EmployeeStatus.Active 
+          !isSelf && (user.status === EmployeeStatus.Active 
           ? {
             key: "disable",
             label: t("PeopleResource:DisableUserButton"),
@@ -174,7 +183,8 @@ class SectionBodyContent extends React.PureComponent {
             key: "enable",
             label: t("PeopleResource:EnableUserButton"),
             onClick: this.onEnableClick.bind(this, user)
-          },
+          }),
+          isSelf &&
           {
             key: "delete-profile",
             label: t("PeopleResource:LblDeleteProfile"),
