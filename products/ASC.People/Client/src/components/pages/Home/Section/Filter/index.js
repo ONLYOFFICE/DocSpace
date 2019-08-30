@@ -6,7 +6,7 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { isAdmin } from "../../../../../store/auth/selectors";
 import { useTranslation } from "react-i18next";
-import { typeGuest, typeUser, departmentName } from './../../../../../helpers/customNames';
+import { typeGuest, typeUser, department } from './../../../../../helpers/customNames';
 
 const getSortData = ( t ) => {
   return [
@@ -162,7 +162,7 @@ const SectionFilterContent = React.memo(({
         label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartmentName', { departmentName }) },
+      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }) },
       ...groupOptions
     ];
 

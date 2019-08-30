@@ -10,7 +10,7 @@ import PasswordField from './FormFields/PasswordField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
-import { departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { department, position, employedSinceDate } from '../../../../../helpers/customNames';
 
 class CreateUserForm extends React.Component {
 
@@ -215,7 +215,7 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
+              labelText={`${this.props.t("CustomDepartment", { department })}:`}
               departments={this.state.profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />
