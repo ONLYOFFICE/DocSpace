@@ -1,5 +1,6 @@
 export const departmentName = 'Department';
 export const position = 'Position';
 export const employedSinceDate = 'Employed since';
-export const guest = 'Guest';
-export const employee = 'Employee';
+export const typeGuest = 'Guest';
+export const typeUser = 'Employee';
+export const headOfDepartment = 'Head of Department';

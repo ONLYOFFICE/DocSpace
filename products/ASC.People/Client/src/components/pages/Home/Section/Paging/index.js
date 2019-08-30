@@ -77,15 +77,15 @@ const SectionPagingContent = ({
     () => [
       {
         key: 25,
-        label: "25 per page"
+        label: t('CountPerPage', { count: 25 })
       },
       {
         key: 50,
-        label: "50 per page"
+        label: t('CountPerPage', { count: 50 })
       },
       {
         key: 100,
-        label: "100 per page"
+        label: t('CountPerPage', { count: 100 })
       }
     ],
     []
@@ -96,19 +96,19 @@ const SectionPagingContent = ({
     const totalPages = Math.ceil(filter.total / filter.pageCount);
     return [...Array(totalPages).keys()].map(
       item => {
-        return { key: item, label: `${item+1} of ${totalPages}` };
+        return { key: item, label: t('PageOfTotalPage', { page: item+1, totalPage: totalPages }) };
       }
     );
-  }, [filter.total, filter.pageCount]);
+  }, [filter.total, filter.pageCount, t]);
 
   const emptyPageSelection = {
     key: 0,
-    label: '1 of 1'
+    label: t('PageOfTotalPage', { page: 1, totalPage: 1 })
   }
 
   const emptyCountSelection = {
     key: 0,
-    label: "25 per page"
+    label: t('CountPerPage', { count: 25 })
   };
 
   const selectedPageItem = pageItems.find(x => x.key === filter.page) || emptyPageSelection;
@@ -118,8 +118,8 @@ const SectionPagingContent = ({
 
   return (
     <Paging
-      previousLabel={t('UserControlsCommonResource:PreviousPage')}
-      nextLabel={t('UserControlsCommonResource:NextPage')}
+      previousLabel={t('PreviousPage')}
+      nextLabel={t('NextPage')}
       pageItems={pageItems}
       onSelectPage={onChangePage}
       countItems={countItems}

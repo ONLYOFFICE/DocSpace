@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using ASC.Collections;
 using ASC.Core.Tenants;
 using ASC.Notify.Recipients;
 
@@ -38,9 +37,6 @@ namespace ASC.Core.Users
     [Serializable]
     public sealed class UserInfo : IDirectRecipient, ICloneable
     {
-        private readonly HttpRequestDictionary<GroupInfo[]> groupCache = new HttpRequestDictionary<GroupInfo[]>("UserInfo-Groups");
-        private readonly HttpRequestDictionary<IEnumerable<Guid>> groupCacheId = new HttpRequestDictionary<IEnumerable<Guid>>("UserInfo-Groups1");
-
         public UserInfo()
         {
             Status = EmployeeStatus.Active;
@@ -150,13 +146,14 @@ namespace ASC.Core.Users
             return MemberwiseClone();
         }
 
-        internal GroupInfo[] GetGroups(Tenant tenant, IncludeType includeType, Guid? categoryId)
+
+        internal List<GroupInfo> GetGroups(Tenant tenant, IncludeType includeType, Guid? categoryId)
         {
-            var groups = groupCache.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroups(tenant, ID, IncludeType.Distinct, null));
+            var groups = CoreContext.UserManager.GetUserGroups(tenant, ID, IncludeType.Distinct, null);
 
             if (categoryId.HasValue)
             {
-                return groups.Where(r => r.CategoryID.Equals(categoryId.Value)).ToArray();
+                return groups.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
             }
 
             return groups;
@@ -164,12 +161,7 @@ namespace ASC.Core.Users
 
         internal IEnumerable<Guid> GetUserGroupsId(int tenantId)
         {
-            return groupCacheId.Get(ID.ToString(), () => CoreContext.UserManager.GetUserGroupsGuids(tenantId, ID));
-        }
-
-        internal void ResetGroupCache()
-        {
-            groupCache.Reset(ID.ToString());
+            return CoreContext.UserManager.GetUserGroupsGuids(tenantId, ID);
         }
 
         internal string ContactsToString()

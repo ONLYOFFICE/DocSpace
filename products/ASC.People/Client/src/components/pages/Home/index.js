@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { PageLayout, RequestLoader } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
+import i18n from "./i18n";
+import { I18nextProvider } from "react-i18next";
+
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -98,13 +101,13 @@ class Home extends React.Component {
     } = this.state;
     const t = this.props.t;
     return (
-      <>
+      <I18nextProvider i18n={i18n}>
         <RequestLoader
           visible={this.state.isLoading}
           zIndex={256}
           loaderSize={16}
           loaderColor={"#999"}
-          label={`${t('Resource:LoadingProcessing')} ${t('Resource:LoadingDescription')}`}
+          label={`${t('LoadingProcessing')} ${t('LoadingDescription')}`}
           fontSize={12}
           fontColor={"#999"}
         />
@@ -135,7 +138,7 @@ class Home extends React.Component {
             <SectionPagingContent onLoading={this.onLoading} />
           }
         />
-      </>
+      </I18nextProvider>
     );
   }
 }

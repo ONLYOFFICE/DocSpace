@@ -16,12 +16,12 @@ function myDateKnob(name, defaultValue) {
 }
 
 const locales = moment.locales();
+const arraySize = ['base', 'big'];
 
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('new-calendar', () => (
-    <Section>
       <NewCalendar
         onChange={date => {
           action('Selected date')(date);
@@ -31,9 +31,8 @@ storiesOf('Components|Input', module)
         selectedDate={myDateKnob('selectedDate', new Date())}
         openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("1970/01/01"))}
-        maxDate={myDateKnob('maxDate', new Date("3000/01/01"))}
+        maxDate={myDateKnob('maxDate', new Date(new Date().getFullYear() + 1 + "/01/01"))}
         locale={select('location', locales, 'en')}
-        scaled = {boolean('scaled', false)}
+        size={select('size', arraySize, 'base')}
       />
-    </Section>
   ));

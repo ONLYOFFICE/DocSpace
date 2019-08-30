@@ -286,7 +286,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserInfoAddedAfterInvite(int tenantId, UserInfo newUserInfo)
         {
-            if (!CoreContext.UserManager.UserExists(tenantId, newUserInfo.ID)) return;
+            if (!CoreContext.UserManager.UserExists(newUserInfo)) return;
 
             INotifyAction notifyAction;
             var footer = "social";
@@ -337,9 +337,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
-        public void GuestInfoAddedAfterInvite(int tenantId, UserInfo newUserInfo)
+        public void GuestInfoAddedAfterInvite(UserInfo newUserInfo)
         {
-            if (!CoreContext.UserManager.UserExists(tenantId, newUserInfo.ID)) return;
+            if (!CoreContext.UserManager.UserExists(newUserInfo)) return;
 
             INotifyAction notifyAction;
             var analytics = string.Empty;
@@ -471,9 +471,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(tenantId, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(tenantId, fromUser.ID)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName()),
-                new TagValue(Tags.ToUserLink, GetUserProfileLink(tenantId, toUser.ID)));
+                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)));
         }
 
         public void SendMsgReassignsFailed(int tenantId, Guid recipientId, UserInfo fromUser, UserInfo toUser, string message)
@@ -484,13 +484,13 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(tenantId, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(tenantId, fromUser.ID)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName()),
-                new TagValue(Tags.ToUserLink, GetUserProfileLink(tenantId, toUser.ID)),
+                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)),
                 new TagValue(Tags.Message, message));
         }
 
-        public void SendMsgRemoveUserDataCompleted(int tenantId, Guid recipientId, Guid fromUserId, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+        public void SendMsgRemoveUserDataCompleted(int tenantId, Guid recipientId, UserInfo user, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             client.SendNoticeToAsync(
                 CoreContext.Configuration.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
@@ -498,14 +498,14 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(tenantId, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(tenantId, fromUserId)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
                 new TagValue("CrmSpace", FileSizeComment.FilesSizeToString(crmSpace)),
                 new TagValue("MailSpace", FileSizeComment.FilesSizeToString(mailSpace)),
                 new TagValue("TalkSpace", FileSizeComment.FilesSizeToString(talkSpace)));
         }
 
-        public void SendMsgRemoveUserDataFailed(int tenantId, Guid recipientId, Guid fromUserId, string fromUserName, string message)
+        public void SendMsgRemoveUserDataFailed(int tenantId, Guid recipientId, UserInfo user, string fromUserName, string message)
         {
             client.SendNoticeToAsync(
                 Actions.RemoveUserDataFailed,
@@ -513,13 +513,13 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(tenantId, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(tenantId, fromUserId)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue(Tags.Message, message));
         }
 
         public void SendAdminWelcome(UserInfo newUserInfo, int tenantId)
         {
-            if (!CoreContext.UserManager.UserExists(tenantId, newUserInfo.ID)) return;
+            if (!CoreContext.UserManager.UserExists(newUserInfo)) return;
 
             if (!newUserInfo.IsActive)
                 throw new ArgumentException("User is not activated yet!");
@@ -741,7 +741,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendInvitePersonal(int tenantId, string email, string additionalMember = "", bool analytics = true)
         {
             var newUserInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
-            if (CoreContext.UserManager.UserExists(tenantId, newUserInfo.ID)) return;
+            if (CoreContext.UserManager.UserExists(newUserInfo)) return;
 
             var lang = CoreContext.Configuration.CustomMode
                            ? "ru-RU"
@@ -851,9 +851,9 @@ namespace ASC.Web.Studio.Core.Notify
             return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff());
         }
 
-        private static string GetUserProfileLink(int tenantId, Guid userId)
+        private static string GetUserProfileLink(UserInfo userInfo)
         {
-            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenantId, userId));
+            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(userInfo));
         }
 
         private static string AddHttpToUrl(string url)

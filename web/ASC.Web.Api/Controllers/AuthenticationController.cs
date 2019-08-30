@@ -45,7 +45,7 @@ namespace ASC.Web.Api.Controllers
                         userName,
                         Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            if (user == null || !CoreContext.UserManager.UserExists(tenantId, user.ID))
+            if (user == null || !CoreContext.UserManager.UserExists(user))
             {
                 throw new Exception("user not found");
             }

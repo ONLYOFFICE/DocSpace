@@ -34,7 +34,7 @@ namespace ASC.Core
     {
         IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
 
-        IDictionary<Guid, UserInfo> GetUsers(int tenant, bool isAdmin,
+        IEnumerable<UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,

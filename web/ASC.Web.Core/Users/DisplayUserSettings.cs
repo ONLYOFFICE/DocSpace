@@ -69,7 +69,7 @@ namespace ASC.Web.Core.Users
             {
                 return string.Empty;
             }
-            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo.Tenant, userInfo.ID))
+            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo))
             {
                 return "profile removed";
             }
