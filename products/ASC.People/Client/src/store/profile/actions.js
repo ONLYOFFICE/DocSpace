@@ -111,12 +111,16 @@ export function createProfile(profile) {
         const {people} = getState();
         const {filter} = people;
         const member = employeeWrapperToMemberModel(profile);
+        let result;
 
         return api.createUser(member).then(res => {
             checkResponseError(res);
-            return Promise.resolve(dispatch(setProfile(res.data.response)));
+            result = res.data.response;
+            return dispatch(setProfile(result));
         }).then(() => {
             return fetchPeopleByFilter(dispatch, filter);
+        }).then(() => {
+            return Promise.resolve(result);
         });
     };
 };
@@ -126,12 +130,16 @@ export function updateProfile(profile) {
         const {people} = getState();
         const {filter} = people;
         const member = employeeWrapperToMemberModel(profile);
+        let result;
 
         return api.updateUser(member).then(res => {
             checkResponseError(res);
-            return Promise.resolve(dispatch(setProfile(res.data.response)));
+            result = res.data.response;
+            return Promise.resolve(dispatch(setProfile(result)));
         }).then(() => {
             return fetchPeopleByFilter(dispatch, filter);
+        }).then(() => {
+            return Promise.resolve(result);
         });
     };
 };

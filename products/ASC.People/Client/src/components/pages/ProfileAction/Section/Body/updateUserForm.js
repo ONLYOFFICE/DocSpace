@@ -97,9 +97,9 @@ class UpdateUserForm extends React.Component {
     this.setState({isLoading: true});
 
     this.props.updateProfile(this.state.profile)
-      .then(() => {
+      .then((profile) => {
         toastr.success("Success");
-        this.props.history.goBack();
+        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
         toastr.error(error.message)
@@ -256,7 +256,8 @@ class UpdateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    settings: state.auth.settings
   }
 };
 
