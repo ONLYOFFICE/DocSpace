@@ -27,9 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Collections;
+using ASC.Common.DependencyInjection;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
@@ -38,6 +41,8 @@ namespace ASC.Core
         private readonly IUserService userService;
 
         private readonly IDictionary<Guid, UserInfo> systemUsers;
+
+        private readonly IHttpContextAccessor Accessor;
 
 
         public UserManager(IUserService service)
@@ -48,6 +53,7 @@ namespace ASC.Core
             systemUsers[Constants.LostUser.ID] = Constants.LostUser;
             systemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
             systemUsers[Constants.NamingPoster.ID] = Constants.NamingPoster;
+            Accessor = CommonServiceProvider.GetService<IHttpContextAccessor>();
         }
 
 
@@ -89,7 +95,7 @@ namespace ASC.Core
 
         public IEnumerable<UserInfo> GetUsers(int tenantId, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
         {
-            return userService.GetUsers(tenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total).Values;
+            return userService.GetUsers(tenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total);
         }
 
         public DateTime GetMaxUsersLastModified(int tenantId)
@@ -151,7 +157,12 @@ namespace ASC.Core
 
         public bool UserExists(int tenantId, Guid id)
         {
-            return !GetUsers(tenantId, id).Equals(Constants.LostUser);
+            return !UserExists(GetUsers(tenantId, id));
+        }
+
+        public bool UserExists(UserInfo user)
+        {
+            return !user.Equals(Constants.LostUser);
         }
 
         public bool IsSystemUser(Guid id)
@@ -258,23 +269,30 @@ namespace ASC.Core
             return GetUsers(tenantId, id).GetUserGroupsId(tenantId);
         }
 
-        public GroupInfo[] GetUserGroups(Tenant tenant, Guid id)
+        public List<GroupInfo> GetUserGroups(Tenant tenant, Guid id)
         {
             return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, Guid.Empty);
         }
 
-        public GroupInfo[] GetUserGroups(Tenant tenant, Guid id, Guid categoryID)
+        public List<GroupInfo> GetUserGroups(Tenant tenant, Guid id, Guid categoryID)
         {
             return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, categoryID);
         }
 
-        public GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType)
+        public List<GroupInfo> GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType)
         {
             return GetUsers(tenant.TenantId, userID).GetGroups(tenant, includeType, null);
         }
 
-        internal GroupInfo[] GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType, Guid? categoryId)
+        internal List<GroupInfo> GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType, Guid? categoryId)
         {
+            var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo");
+            var fromCache = httpRequestDictionary.Get(userID.ToString());
+            if (fromCache != null)
+            {
+                return fromCache;
+            }
+
             var result = new List<GroupInfo>();
             var distinctUserGroups = new List<GroupInfo>();
 
@@ -303,11 +321,20 @@ namespace ASC.Core
 
             result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
 
-            return result.ToArray();
+            httpRequestDictionary.Add(userID.ToString(), result);
+
+            return result;
         }
 
         internal IEnumerable<Guid> GetUserGroupsGuids(int tenantId, Guid userID)
         {
+            var httpRequestDictionary = new HttpRequestDictionary<List<Guid>>(Accessor?.HttpContext, "GroupInfoID");
+            var fromCache = httpRequestDictionary.Get(userID.ToString());
+            if (fromCache != null)
+            {
+                return fromCache;
+            }
+
             var result = new List<Guid>();
 
             var refs = GetRefsInternal(tenantId);
@@ -325,6 +352,8 @@ namespace ASC.Core
                     result.AddRange(toAdd);
                 }
             }
+
+            httpRequestDictionary.Add(userID.ToString(), result);
 
             return result;
         }
@@ -350,7 +379,7 @@ namespace ASC.Core
 
             userService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
-            GetUsers(tenant.TenantId, userId).ResetGroupCache();
+            ResetGroupCache(userId);
         }
 
         public void RemoveUserFromGroup(Tenant tenant, Guid userId, Guid groupId)
@@ -360,7 +389,13 @@ namespace ASC.Core
 
             userService.RemoveUserGroupRef(tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
 
-            GetUsers(tenant.TenantId, userId).ResetGroupCache();
+            ResetGroupCache(userId);
+        }
+
+        internal void ResetGroupCache(Guid userID)
+        {
+            new HttpRequestDictionary<List<GroupInfo>>(Accessor?.HttpContext, "GroupInfo").Reset(userID.ToString());
+            new HttpRequestDictionary<List<Guid>>(Accessor?.HttpContext, "GroupInfoID").Reset(userID.ToString());
         }
 
         #endregion Users

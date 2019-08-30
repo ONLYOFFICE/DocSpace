@@ -122,7 +122,7 @@ namespace ASC.Web.Core.Users
                 {
                     if (isVisitor)
                     {
-                        StudioNotifyService.GuestInfoAddedAfterInvite(tenant.TenantId, newUserInfo);
+                        StudioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                     }
                     else
                     {
@@ -183,7 +183,7 @@ namespace ASC.Web.Core.Users
             }
 
             var userInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
-            if (!CoreContext.UserManager.UserExists(tenantId, userInfo.ID) || string.IsNullOrEmpty(userInfo.Email))
+            if (!CoreContext.UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
             {
                 throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
             }

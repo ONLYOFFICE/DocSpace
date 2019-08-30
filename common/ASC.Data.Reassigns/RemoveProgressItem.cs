@@ -65,6 +65,7 @@ namespace ASC.Data.Reassigns
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
+        public UserInfo User { get; }
 
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -77,6 +78,7 @@ namespace ASC.Data.Reassigns
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
+            User = user;
             FromUser = user.ID;
             _userName = UserFormatter.GetUserName(user, DisplayUserNameFormat.Default);
             _currentUserId = currentUserId;
@@ -223,7 +225,7 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, FromUser, _userName,
+                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, User, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
@@ -236,7 +238,7 @@ namespace ASC.Data.Reassigns
         {
             if (!_notify) return;
 
-            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, FromUser, _userName, errorMessage);
+            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, User, _userName, errorMessage);
         }
     }
 }
