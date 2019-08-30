@@ -8,7 +8,6 @@ import { NewCalendar } from 'asc-web-components';
 import Section from '../../../.storybook/decorators/section';
 import moment from 'moment';
 import 'moment/min/locales'
-//import { text } from '@storybook/addon-knobs/dist/deprecated';
 
 
 function myDateKnob(name, defaultValue) {

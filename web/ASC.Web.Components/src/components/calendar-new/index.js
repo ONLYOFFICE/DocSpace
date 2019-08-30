@@ -171,14 +171,14 @@ class Calendar extends Component {
         const maxDate = this.props.maxDate;
         let disabled = false;
         const monthList = [];
-        
+
         const month = this.state.months.map(item => item.charAt(0).toLocaleUpperCase() + item.slice(1));
         //This function is not optimal for all languages. // It'is bad...
-        
+
         for (let i = 0; i <= 11; i++) {
             monthList.push({ key: `${i}`, label: `${month[i]}`, disabled: disabled });
         }
-        
+
         let i = 0;
         if (this.state.openToDate.getFullYear() === minDate.getFullYear()) {
             while (i != minDate.getMonth()) {
@@ -201,7 +201,15 @@ class Calendar extends Component {
     getCurrentMonth = () => {
         const openToDate = this.state.openToDate;
         const month = this.getListMonth();
-        const selectedMonth = month.find(x => x.key == openToDate.getMonth());
+        let selectedMonth = month.find(x => x.key == openToDate.getMonth());
+
+        if (selectedMonth.disabled === true) {
+            selectedMonth = month.find(x => x.disabled === false);
+            const key = selectedMonth.key;
+            const currentMonth = Number(key) + 1;
+            const date = new Date(openToDate.getFullYear() + "/" + currentMonth + "/" + "01");
+            this.state.openToDate = date;
+        }
         return selectedMonth;
     }
 
@@ -277,8 +285,23 @@ class Calendar extends Component {
             disableClass = "calendar-month_disabled";
         }
 
+        //prev month
+        let prevMonthDay = null;
+        if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() - 1 === minDate.getMonth()) {
+            prevMonthDay = minDate.getDate();
+        }
+
+        //prev month + year
+        let prevYearDay = null;
+        if (openToDate.getFullYear() === minDate.getFullYear() + 1 && openToDate.getMonth() === 0 && minDate.getMonth() === 11) {
+            prevYearDay = minDate.getDate();
+        }
+
         // Show neighboring days in prev month
         while (prevMonthDays != 0) {
+            if (prevDays + 1 === prevMonthDay) { disableClass = "calendar-month_disabled"; }
+            if (prevDays + 1 === prevYearDay) { disableClass = "calendar-month_disabled"; }
+            //console.log(prevDays);
             arrayDays.unshift(
                 <Day key={--keys} className={disableClass} >
                     <AbbrDay
@@ -337,20 +360,38 @@ class Calendar extends Component {
         if (maxDays > 42) { maxDays -= 7; }
 
 
+
+
+
+
         //Disable next month days
         disableClass = null;
         if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
             disableClass = "calendar-month_disabled";
         }
 
+        //next month + year 
+        let nextYearDay = null;
+        if (openToDate.getFullYear() === maxDate.getFullYear() - 1 && openToDate.getMonth() === 11 && maxDate.getMonth() === 0) {
+            nextYearDay = maxDate.getDate();
+        }
+
+        //next month
+        let nextMonthDay = null;
+        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() === maxDate.getMonth() - 1) {
+            nextMonthDay = maxDate.getDate();
+        }
+
         //Show neighboring days in next month
         let nextDay = 1;
         for (let i = days; i < maxDays - firstDay; i++) {
+            if (i - days === nextYearDay) { disableClass = "calendar-month_disabled" }
+            if (i - days === nextMonthDay) { disableClass = "calendar-month_disabled" }
             arrayDays.push(
                 <Day key={keys++} className={disableClass} >
                     <AbbrDay
                         onClick={this.onDayClick.bind(this, i + 1)}
-                        className={className} >
+                        className={"calendar-month_neighboringMonth"} >
                         {nextDay++}
                     </AbbrDay>
                 </Day>
