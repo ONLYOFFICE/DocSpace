@@ -82,6 +82,8 @@ namespace ASC.Core.Users
         {
             var ldapUserContacts = ui.Contacts;
 
+            if (ui.Contacts == null) return;
+
             var newContacts = new List<string>();
 
             for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
