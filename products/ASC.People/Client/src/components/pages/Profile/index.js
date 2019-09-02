@@ -4,14 +4,11 @@ import PropTypes from "prop-types";
 import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
+import { fetchProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 
 class Profile extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     const { match, fetchProfile } = this.props;
@@ -28,10 +25,6 @@ class Profile extends React.Component {
     if (userId !== prevUserId) {
       fetchProfile(userId);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.resetProfile();
   }
 
   render() {
@@ -70,6 +63,7 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
+  fetchProfile: PropTypes.func.isRequired,
   isLoaded: PropTypes.bool
 };
 
@@ -80,7 +74,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  setProfile,
-  fetchProfile,
-  resetProfile
+  fetchProfile
 })(Profile);

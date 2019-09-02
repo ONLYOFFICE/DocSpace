@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, profileEqual, updateProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -32,7 +32,7 @@ class UpdateUserForm extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!profileEqual(this.props.profile, prevProps.profile)) {
+    if (this.props.match.params.userId !== prevProps.match.params.userId) {
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -47,10 +47,7 @@ class UpdateUserForm extends React.Component {
         email: false,
         password: false,
       },
-      profile: { 
-        ...{ passwordType: "link" },
-        ...toEmployeeWrapper(props.profile)
-      }
+      profile: toEmployeeWrapper(props.profile)
     };
   }
 

@@ -33,32 +33,6 @@ export function getUserRole(profile) {
     return "user";
 };
 
-export function profileEqual(profileA, profileB) {
-    const keys = Object.keys(profileA);
-
-    for (let i = 0; i < keys.length; i++) {
-        let key = keys[i];
-
-        if (key === "groups") {
-            if (profileA[key].length !== profileB[key].length)
-                return false;
-
-            const groupsA = profileA[key].map(group => group.id);
-            const groupsB = profileA[key].map(group => group.id);
-            
-            for (let j = 0; j < groupsA.length; j++) {
-                if (!groupsB.includes(groupsA[j]))
-                    return false;
-            }
-        }
-
-        if(profileA[key] !== profileB[key])
-            return false;
-    }
-
-    return true;
-}
-
 export function toEmployeeWrapper(profile) {
     const emptyData = {
         id: "",
@@ -68,6 +42,7 @@ export function toEmployeeWrapper(profile) {
         password: "",
         birthday: "",
         sex: "male",
+        passwordType: "link",
         workFrom: "",
         location: "",
         title: "",

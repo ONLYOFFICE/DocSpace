@@ -4,53 +4,45 @@ import PropTypes from "prop-types";
 import { PageLayout, Loader } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, CreateUserForm, UpdateUserForm } from './Section';
-import { setProfile, fetchProfile, resetProfile } from '../../../store/profile/actions';
+import { fetchProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 
 class ProfileAction extends React.Component {
-  componentDidMount() {
-    const { match, setProfile, fetchProfile } = this.props;
-    const { userId, type } = match.params;
 
-    if (!userId) {
-      setProfile({ isVisitor: type === "guest" });
-    } else {
+  componentDidMount() {
+    const { match, fetchProfile } = this.props;
+    const { userId } = match.params;
+
+    if (userId) {
       fetchProfile(userId);
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, setProfile, fetchProfile } = this.props;
-    const { userId, type } = match.params;
+    const { match, fetchProfile } = this.props;
+    const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
-    const prevType = prevProps.match.params.type;
 
-    if (!userId && type !== prevType) {
-      setProfile({ isVisitor: type === "guest" });
-    } else if (userId !== prevUserId) {
+    if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.resetProfile();
   }
 
   render() {
     console.log("ProfileAction render")
 
-    const { profile } = this.props;
+    const { profile, match } = this.props;
 
     return (
       <I18nextProvider i18n={i18n}>
-        {profile
+        {profile || match.params.type
         ? <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
           sectionHeaderContent={<SectionHeaderContent />}
-          sectionBodyContent={profile.id ? <UpdateUserForm /> : <CreateUserForm />}
+          sectionBodyContent={match.params.type ? <CreateUserForm /> : <UpdateUserForm />}
         />
         : <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
@@ -66,9 +58,7 @@ class ProfileAction extends React.Component {
 ProfileAction.propTypes = {
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  setProfile: PropTypes.func.isRequired,
-  fetchProfile: PropTypes.func.isRequired,
-  resetProfile: PropTypes.func.isRequired
+  fetchProfile: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -78,7 +68,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  setProfile,
-  fetchProfile,
-  resetProfile
+  fetchProfile
 })(ProfileAction);
