@@ -15,14 +15,17 @@ const Header = styled(Text.ContentHeader)`
 `;
 
 const SectionHeaderContent = (props) => {
-  const {profile, history, settings} = props;
+  const { profile, history, settings, match } = props;
+  const { type } = match.params;
   const { t } = useTranslation();
 
-  const headerText = profile && profile.displayName
-    ? profile.displayName
-    : profile.isVisitor
+  const headerText = type
+    ? type === "guest"
       ? t('NewGuest')
-      : t('NewEmployee');
+      : t('NewEmployee')
+    : profile
+      ? profile.displayName
+      : "";
 
   const onClick = useCallback(() => {
     history.push(settings.homepage)
