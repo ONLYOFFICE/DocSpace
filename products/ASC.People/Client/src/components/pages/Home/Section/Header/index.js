@@ -7,6 +7,7 @@ import { withTranslation } from 'react-i18next';
 import { updateUserStatus, updateUserType } from '../../../../../store/people/actions';
 import { EmployeeStatus, EmployeeType } from '../../../../../helpers/constants';
 import { typeUser , typeGuest } from '../../../../../helpers/../helpers/customNames';
+import { resendUserInvites } from '../../../../../store/services/api';
 
 const contextOptions = ( t ) => {
   return [
@@ -65,6 +66,14 @@ const SectionHeaderContent = React.memo(({
           toastr.success(t('SuccessChangeUserType')); 
     }, [selectedUserIds, updateUserType, t]);
 
+    const onSentInviteAgain = useCallback(() => { 
+      resendUserInvites(selectedUserIds)
+        .then(() =>
+          toastr.success("The invitation was successfully sent")
+        )
+        .catch(e => toastr.error("ERROR"));
+    }, [selectedUserIds]);
+
     const menuItems = [
       {
         label: t('LblSelect'),
@@ -102,7 +111,7 @@ const SectionHeaderContent = React.memo(({
       {
         label: t('LblInviteAgain'),
         disabled: !selection.length,
-        onClick: toastr.success.bind(this, "Invite again action")
+        onClick: onSentInviteAgain
       },
       {
         label: t('LblSendEmail'),
