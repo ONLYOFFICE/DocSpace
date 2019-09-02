@@ -59,7 +59,7 @@ const getGroup = filterValues => {
   return groupId || null;
 };
 
-const SectionFilterContent = React.memo(({
+const SectionFilterContent = ({
   fetchPeople,
   filter,
   onLoading,
@@ -195,12 +195,12 @@ const SectionFilterContent = React.memo(({
   return (
     <FilterInput
       getFilterData={getData}
-      getSortData={()=> getSortData(t)}
+      getSortData={getSortData.bind(this, t)}
       selectedFilterData={selectedFilterData}
       onFilter={onFilter}
     />
   );
-});
+};
 
 function mapStateToProps(state) {
   return {

@@ -20,7 +20,7 @@ import {
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
 
-class Home extends React.Component {
+class PureHome extends React.Component {
   constructor(props) {
     super(props);
 
@@ -101,7 +101,7 @@ class Home extends React.Component {
     } = this.state;
     const t = this.props.t;
     return (
-      <I18nextProvider i18n={i18n}>
+      <>
         <RequestLoader
           visible={this.state.isLoading}
           zIndex={256}
@@ -138,16 +138,10 @@ class Home extends React.Component {
             <SectionPagingContent onLoading={this.onLoading} />
           }
         />
-      </I18nextProvider>
+      </>
     );
   }
 }
-
-Home.propTypes = {
-  users: PropTypes.array.isRequired,
-  history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
-};
 
 function mapStateToProps(state) {
   return {
@@ -158,7 +152,17 @@ function mapStateToProps(state) {
   };
 }
 
+const HomeContainer = withTranslation()(PureHome);
+
+const Home = (props) => <I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>;
+
+Home.propTypes = {
+  users: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
+  isLoaded: PropTypes.bool
+};
+
 export default connect(
   mapStateToProps,
   { setSelected }
-)(withRouter(withTranslation()(Home)));
+)(withRouter(Home));
