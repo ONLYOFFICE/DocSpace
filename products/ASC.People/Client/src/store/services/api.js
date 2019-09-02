@@ -92,3 +92,9 @@ export function resendUserInvites(userIds) {
     ? fakeApi.resendUserInvites(userIds)
     : axios.put(`${API_URL}/people/invite`, { userIds });
 }
+
+export function sendInstructionsToDelete() {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToDelete()
+    : axios.put(`${API_URL}/people/self/delete`);
+}
