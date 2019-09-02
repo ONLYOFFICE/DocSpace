@@ -86,7 +86,7 @@ ToggleButton.propTypes = {
     isChecked: PropTypes.bool.isRequired,
     isDisabled: PropTypes.bool,
     onChange: PropTypes.func,
-    label: PropTypes.label
+    label: PropTypes.string
 };
 
 export default ToggleButton;

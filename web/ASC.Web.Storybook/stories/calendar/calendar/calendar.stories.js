@@ -5,7 +5,6 @@ import { withKnobs, boolean, color, select, date } from '@storybook/addon-knobs/
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { NewCalendar } from 'asc-web-components';
-import Section from '../../../.storybook/decorators/section';
 import moment from 'moment';
 import 'moment/min/locales'
 
@@ -18,10 +17,10 @@ function myDateKnob(name, defaultValue) {
 const locales = moment.locales();
 const arraySize = ['base', 'big'];
 
-storiesOf('Components|Input', module)
+storiesOf('Components|Calendar', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('new-calendar', () => (
+  .add('calendar', () => (
       <NewCalendar
         onChange={date => {
           action('Selected date')(date);
