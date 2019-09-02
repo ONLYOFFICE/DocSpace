@@ -410,3 +410,7 @@ export function resendUserInvites(userIds) {
 export function sendInstructionsToDelete() {
   return fakeResponse("Instruction has been sent successfully");
 };
+
+export function sendInstructionsToChangePassword() {
+  return fakeResponse("Instruction has been sent successfully");
+};

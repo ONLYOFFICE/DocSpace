@@ -33,7 +33,8 @@ import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import {
   resendUserInvites,
-  sendInstructionsToDelete
+  sendInstructionsToDelete,
+  sendInstructionsToChangePassword
 } from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
 
@@ -85,7 +86,19 @@ class SectionBodyContent extends React.PureComponent {
             label="Send"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading } = this.props;
+              onLoading(true);
+              sendInstructionsToChangePassword(email)
+              .then(() =>
+                  toastr.success(
+                    <Text.Body>
+                      The password change instructions have been sent to the{" "}
+                      <b>{email}</b> email address
+                    </Text.Body>
+                  )
+                )
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,

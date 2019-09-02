@@ -98,3 +98,9 @@ export function sendInstructionsToDelete() {
     ? fakeApi.sendInstructionsToDelete()
     : axios.put(`${API_URL}/people/self/delete.json`);
 }
+
+export function sendInstructionsToChangePassword(email) {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToChangePassword(email)
+    : axios.post(`${API_URL}/people/password.json`, { email });
+}
