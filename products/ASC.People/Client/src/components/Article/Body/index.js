@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
+import { utils } from 'asc-web-components';
 import { connect } from 'react-redux';
 import {
   TreeMenu,
@@ -50,16 +51,25 @@ const getItems = data => {
   });
 };
 
-const PeopleTreeMenu = props => {
-  const { data, selectGroup, defaultSelectedKeys } = props;
+class ArticleBodyContent extends React.Component {
 
-  console.log("PeopleTreeMenu", props);
+  shouldComponentUpdate(nextProps) {
+    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
+      return true;
+    }
 
-  const onSelect = useCallback(data => {
-    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
-  }, [selectGroup])
+    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
+      return true;
+    }
 
-  const switcherIcon = obj => {
+    return false;
+  }
+
+  onSelect = data => {
+    this.props.selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+  };
+
+  switcherIcon = obj => {
     if (obj.isLeaf) {
       return null;
     }
@@ -74,24 +84,28 @@ const PeopleTreeMenu = props => {
     }
   };
 
-  return (
-    <TreeMenu
-      checkable={false}
-      draggable={false}
-      disabled={false}
-      multiple={false}
-      showIcon={true}
-      defaultExpandAll={true}
-      switcherIcon={switcherIcon}
-      onSelect={onSelect}
-      defaultSelectedKeys={defaultSelectedKeys}
-    >
-      {getItems(data)}
-    </TreeMenu>
-  );
-};
+  render() {
+    const { data, selectedKeys } = this.props;
 
-const ArticleBodyContent = props => <PeopleTreeMenu {...props} />;
+    console.log("PeopleTreeMenu", this.props);
+
+    return (
+      <TreeMenu
+        checkable={false}
+        draggable={false}
+        disabled={false}
+        multiple={false}
+        showIcon={true}
+        defaultExpandAll={true}
+        switcherIcon={this.switcherIcon}
+        onSelect={this.onSelect}
+        selectedKeys={selectedKeys}
+      >
+        {getItems(data)}
+      </TreeMenu>
+    );
+  };
+};
 
 const getTreeGroups = (groups) => {
   const treeData = [
@@ -113,7 +127,7 @@ const getTreeGroups = (groups) => {
 function mapStateToProps(state) {
   return {
     data: getTreeGroups(state.people.groups),
-    defaultSelectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
+    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
   };
 }
 

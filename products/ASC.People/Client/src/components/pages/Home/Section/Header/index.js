@@ -6,17 +6,19 @@ import { isAdmin } from '../../../../../store/auth/selectors';
 import { withTranslation } from 'react-i18next';
 import { updateUserStatus, updateUserType } from '../../../../../store/people/actions';
 import { EmployeeStatus, EmployeeType } from '../../../../../helpers/constants';
+import { typeUser , typeGuest } from '../../../../../helpers/../helpers/customNames';
+import { resendUserInvites } from '../../../../../store/services/api';
 
-const contextOptions = () => {
+const contextOptions = ( t ) => {
   return [
     {
       key: "edit-group",
-      label: "Edit",
+      label: t("EditButton"),
       onClick: toastr.success.bind(this, "Edit group action")
     },
     {
       key: "delete-group",
-      label: "Delete",
+      label: t('DeleteButton'),
       onClick: toastr.success.bind(this, "Delete group action")
     }
   ];
@@ -27,7 +29,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const SectionHeaderContent = ({
+const SectionHeaderContent = React.memo(({
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
@@ -46,70 +48,78 @@ const SectionHeaderContent = ({
 
     const onSetActive = useCallback(() => { 
       updateUserStatus(EmployeeStatus.Active, selectedUserIds);
-      toastr.success("Set active action"); 
-    }, [selectedUserIds, updateUserStatus]);
+      toastr.success(t('SuccessChangeUserStatus')); 
+    }, [selectedUserIds, updateUserStatus, t]);
 
     const onSetDisabled = useCallback(() => { 
       updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
-          toastr.success("Set disabled action"); 
-    }, [selectedUserIds, updateUserStatus]);
+          toastr.success(t('SuccessChangeUserStatus')); 
+    }, [selectedUserIds, updateUserStatus, t]);
 
     const onSetEmployee = useCallback(() => { 
       updateUserType(EmployeeType.User, selectedUserIds);
-      toastr.success("Set user(s) as employees"); 
-    }, [selectedUserIds, updateUserType]);
+      toastr.success(t('SuccessChangeUserType')); 
+    }, [selectedUserIds, updateUserType, t]);
 
     const onSetGuest = useCallback(() => { 
       updateUserType(EmployeeType.Guest, selectedUserIds);
-          toastr.success("Set user(s) as guests"); 
-    }, [selectedUserIds, updateUserType]);
+          toastr.success(t('SuccessChangeUserType')); 
+    }, [selectedUserIds, updateUserType, t]);
+
+    const onSentInviteAgain = useCallback(() => { 
+      resendUserInvites(selectedUserIds)
+        .then(() =>
+          toastr.success("The invitation was successfully sent")
+        )
+        .catch(e => toastr.error("ERROR"));
+    }, [selectedUserIds]);
 
     const menuItems = [
       {
-        label: "Select",
+        label: t('LblSelect'),
         isDropdown: true,
         isSeparator: true,
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem key="active" label="Active" />,
-          <DropDownItem key="disabled" label="Disabled" />,
-          <DropDownItem key="invited" label="Invited" />
+          <DropDownItem key="active" label={t('LblActive')} />,
+          <DropDownItem key="disabled" label={t('LblTerminated')} />,
+          <DropDownItem key="invited" label={t('LblInvited')} />
         ],
         onSelect: (item) => onSelect(item.key)
       },
       {
-        label: "Make employee",
+        label: t('CustomMakeUser', { typeUser }),
         disabled: !selection.length,
         onClick: onSetEmployee
       },
       {
-        label: "Make guest",
+        label: t('CustomMakeGuest', { typeGuest }),
         disabled: !selection.length,
         onClick: onSetGuest
       },
       {
-        label: "Set active",
+        label: t('LblSetActive'),
         disabled: !selection.length,
         onClick: onSetActive
       },
       {
-        label: "Set disabled",
+        label: t('LblSetDisabled'),
         disabled: !selection.length,
         onClick: onSetDisabled
       },
       {
-        label: "Invite again",
+        label: t('LblInviteAgain'),
         disabled: !selection.length,
-        onClick: toastr.success.bind(this, "Invite again action")
+        onClick: onSentInviteAgain
       },
       {
-        label: "Send e-mail",
+        label: t('LblSendEmail'),
         disabled: !selection.length,
         onClick: toastr.success.bind(this, "Send e-mail action")
       },
       {
-        label: t('PeopleResource:DeleteButton'),
+        label: t('DeleteButton'),
         disabled: !selection.length,
         onClick: toastr.success.bind(this, "Delete action")
       }
@@ -124,8 +134,8 @@ const SectionHeaderContent = ({
           onChange={onCheck}
           menuItems={menuItems}
           visible={isHeaderVisible}
-          moreLabel="More"
-          closeTitle="Close"
+          moreLabel={t("More")}
+          closeTitle={t("CloseButton")}
           onClose={onClose}
           selected={menuItems[0].label}
         />
@@ -137,18 +147,18 @@ const SectionHeaderContent = ({
       {isAdmin &&
         <ContextMenuButton 
           directionX='right' 
-          title='Actions' 
+          title={t("Actions")}
           iconName='VerticalDotsIcon' 
           size={16} 
           color='#A3A9AE' 
-          getData={contextOptions}
+          getData={() => contextOptions(t)}
           isDisabled={false}/>
       }
       </div>
-      : <Text.ContentHeader>People</Text.ContentHeader>
+      : <Text.ContentHeader>{t("People")}</Text.ContentHeader>
     )
     );
-  };
+  });
 
   const mapStateToProps = (state) => {
     return {

@@ -56,6 +56,15 @@
         "RemoveData",
         "DeleteSelfProfile",
         "EditButton",
+        "UserStatus",
+        "Email",
+        "UserType",
+        "Administrator",
+        "DeleteButton",
+        "More",
+        "CloseButton",
+        "Actions",
+        "People",
         "EnableUserButton"
       ],
       "PeopleResource": [
@@ -64,7 +73,21 @@
         "NotFoundDescription",
         "NotFoundTitle",
         "ClearButton",
+        "LblActive",
+        "LblTerminated",
+        "LblPending",
+        "LblOther",
         "LblChangeEmail"
+      ],
+      "PeopleJSResource": [
+        "SuccessChangeUserStatus",
+        "SuccessChangeUserType"
+      ],
+      "UserControlsCommonResource": [
+        "NextPage",
+        "PreviousPage",
+        "LblSelect"
+
       ]
     }
   },
@@ -73,6 +96,12 @@
       "Profile",
       "AboutCompanyTitle",
       "LogoutButton"
+    ]
+  },
+  "GroupAction": {
+    "Resource": [
+      "SaveButton",
+      "CancelButton"
     ]
   }
 }

@@ -6,11 +6,12 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { isAdmin } from "../../../../../store/auth/selectors";
 import { useTranslation } from "react-i18next";
+import { typeGuest, typeUser, department } from './../../../../../helpers/customNames';
 
-const getSortData = () => {
+const getSortData = ( t ) => {
   return [
-    { key: "firstname", label: "By first name" },
-    { key: "lastname", label: "By last name" }
+    { key: "firstname", label: t('ByFirstNameSorting') },
+    { key: "lastname", label: t('ByLastNameSorting') }
   ];
 };
 
@@ -58,7 +59,7 @@ const getGroup = filterValues => {
   return groupId || null;
 };
 
-const SectionFilterContent = ({
+const SectionFilterContent = React.memo(({
   fetchPeople,
   filter,
   onLoading,
@@ -109,18 +110,18 @@ const SectionFilterContent = ({
           {
             key: "filter-status",
             group: "filter-status",
-            label: t("PeopleResource:LblStatus"),
+            label: t("UserStatus"),
             isHeader: true
           },
           {
             key: "1",
             group: "filter-status",
-            label: t("PeopleResource:LblActive")
+            label: t("LblActive")
           },
           {
             key: "2",
             group: "filter-status",
-            label: t("PeopleResource:LblTerminated")
+            label: t("LblTerminated")
           }
         ];
 
@@ -133,31 +134,35 @@ const SectionFilterContent = ({
       {
         key: "filter-email",
         group: "filter-email",
-        label: t("PeopleResource:Email"),
+        label: t("Email"),
         isHeader: true
       },
-      { key: "1", group: "filter-email", label: t("PeopleResource:LblActive") },
+      { 
+        key: "1", 
+        group: "filter-email", 
+        label: t("LblActive") 
+      },
       {
         key: "2",
         group: "filter-email",
-        label: t("PeopleResource:LblPending")
+        label: t("LblPending")
       },
       {
         key: "filter-type",
         group: "filter-type",
-        label: t("PeopleResource:LblByType"),
+        label: t("UserType"),
         isHeader: true
       },
-      { key: "admin", group: "filter-type", label: "Administrator"},
-      { key: "user", group: "filter-type", label: "User" },
-      { key: "guest", group: "filter-type", label: "Guest" },
+      { key: "admin", group: "filter-type", label: t("Administrator")},
+      { key: "user", group: "filter-type", label: t('CustomTypeUser', { typeUser })},
+      { key: "guest", group: "filter-type", label: t('CustomTypeGuest', { typeGuest }) },
       {
         key: "filter-other",
         group: "filter-other",
-        label: t("PeopleResource:LblOther"),
+        label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: "Group" },
+      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }) },
       ...groupOptions
     ];
 
@@ -165,7 +170,7 @@ const SectionFilterContent = ({
 
     return filterOptions;
 
-  }, [user, t, groups]);
+  }, [user, groups, t]);
 
   const onFilter = useCallback(
     data => {
@@ -187,16 +192,15 @@ const SectionFilterContent = ({
     },
     [onLoading, fetchPeople, filter]
   );
-
   return (
     <FilterInput
       getFilterData={getData}
-      getSortData={getSortData}
+      getSortData={()=> getSortData(t)}
       selectedFilterData={selectedFilterData}
       onFilter={onFilter}
     />
   );
-};
+});
 
 function mapStateToProps(state) {
   return {

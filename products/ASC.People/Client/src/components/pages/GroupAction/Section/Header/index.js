@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton, Text } from 'asc-web-components';
+import { useTranslation } from 'react-i18next';
+import { department } from './../../../../../helpers/customNames';
 
 
 const wrapperStyle = {
@@ -16,8 +18,9 @@ const textStyle = {
 
 const SectionHeaderContent = (props) => {
   const {group, history, settings} = props;
+  const { t } = useTranslation();
 
-  const headerText = "New department";
+  const headerText = t('CustomNewDepartment', { department });
 
   return (
     <div style={wrapperStyle}>

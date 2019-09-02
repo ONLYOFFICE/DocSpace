@@ -11,7 +11,7 @@
   "SaveButton": "Save",
   "CancelButton": "Cancel",
   "CopyEmailAndPassword": "Copy e-mail & password",
-  "Type": "Type",
+  "UserType": "Type",
   
   "ActivationLink": "Activation link",
   "AddPhoto": "Add photo",
@@ -26,8 +26,7 @@
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
-  "CustomDepartmentName": "{{departmentName}}",
-
-  "CustomTypeGuest": "{{guest}}",
-  "CustomTypeUser": "{{employee}}"
+  "CustomDepartment": "{{department}}",
+  "CustomTypeGuest": "{{typeGuest}}",
+  "CustomTypeUser": "{{typeUser}}"
 }

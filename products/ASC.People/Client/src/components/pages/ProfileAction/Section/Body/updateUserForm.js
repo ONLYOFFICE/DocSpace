@@ -10,7 +10,7 @@ import TextChangeField from './FormFields/TextChangeField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
-import { departmentName, position, employedSinceDate, guest, employee } from '../../../../customNames';
+import { department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 
 class UpdateUserForm extends React.Component {
 
@@ -192,12 +192,12 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onTextChange}
             />
             <RadioField
-              labelText={`${this.props.t("Type")}:`}
+              labelText={`${this.props.t("UserType")}:`}
               radioName="sex"
               radioValue={this.state.profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: this.props.t("CustomTypeGuest", { guest })},
-                { value: "false", label: this.props.t("CustomTypeUser", { employee })}
+                { value: "true", label: this.props.t("CustomTypeGuest", { typeGuest })},
+                { value: "false", label: this.props.t("CustomTypeUser", { typeUser })}
               ]}
               radioIsDisabled={this.state.isLoading}
               radioOnChange={this.onTextChange}
@@ -224,7 +224,7 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onTextChange}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartmentName", { departmentName })}:`}
+              labelText={`${this.props.t("CustomDepartment", { department })}:`}
               departments={this.state.profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />

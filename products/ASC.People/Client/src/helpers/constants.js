@@ -21,7 +21,7 @@ export const EmployeeStatus = Object.freeze({
   });
 
 /**
- * Enum for employee status.
+ * Enum for employee type.
  * @readonly
  */
 export const EmployeeType = Object.freeze({

@@ -23,6 +23,8 @@
  *
 */
 
+using Microsoft.AspNetCore.Http;
+
 namespace ASC.Collections
 {
     public sealed class HttpRequestDictionary<T> : CachedDictionaryBase<T>
@@ -37,10 +39,13 @@ namespace ASC.Collections
             }
         }
 
-        public HttpRequestDictionary(string baseKey)
+        HttpContext HttpContext { get; set; }
+
+        public HttpRequestDictionary(HttpContext httpContext, string baseKey)
         {
             condition = (T) => true;
             this.baseKey = baseKey;
+            HttpContext = httpContext;
         }
 
         protected override void InsertRootKey(string rootKey)
@@ -50,25 +55,25 @@ namespace ASC.Collections
 
         public override void Reset(string rootKey, string key)
         {
-            if (Common.HttpContext.Current != null)
+            if (HttpContext != null)
             {
                 var builtkey = BuildKey(key, rootKey);
-                Common.HttpContext.Current.Items[builtkey] = null;
+                HttpContext.Items[builtkey] = null;
             }
         }
 
         public override void Add(string rootkey, string key, T newValue)
         {
-            if (Common.HttpContext.Current != null)
+            if (HttpContext != null)
             {
                 var builtkey = BuildKey(key, rootkey);
-                Common.HttpContext.Current.Items[builtkey] = new CachedItem(newValue);
+                HttpContext.Items[builtkey] = new CachedItem(newValue);
             }
         }
 
         protected override object GetObjectFromCache(string fullKey)
         {
-            return Common.HttpContext.Current?.Items[fullKey];
+            return HttpContext?.Items[fullKey];
         }
 
         protected override bool FitsCondition(object cached)
