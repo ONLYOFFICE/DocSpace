@@ -1,7 +1,7 @@
 import React from "react";
 import styled from 'styled-components';
 import { Icons } from '../icons';
-import {Popover, PopoverBody } from 'reactstrap';
+import { Popover, PopoverBody } from 'reactstrap';
 
 const Caret = styled.div`
   width: 7px;
@@ -9,6 +9,11 @@ const Caret = styled.div`
   right: 6px;
   transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   top: ${props => props.isOpen ? '2px' : '0'};
+`;
+const StyledPopover = styled(Popover)`
+  .popover{
+    border: none
+  }
 `;
 const StyledHideFilterButton = styled.div`
   display: flex;
@@ -53,7 +58,7 @@ class HideFilter extends React.Component {
   }
 
   toggle() {
-    if(!this.props.isDisabled){
+    if (!this.props.isDisabled) {
       this.setState({
         popoverOpen: !this.state.popoverOpen
       });
@@ -64,17 +69,18 @@ class HideFilter extends React.Component {
     //console.log("HideFilter render");
     return (
       <StyledHideFilter>
-        <StyledHideFilterButton id="PopoverLegacy" isDisabled={this.props.isDisabled} >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE"/></Caret></StyledHideFilterButton>
-        
-        <Popover 
-          isOpen={this.state.popoverOpen} 
-          trigger="legacy" 
-          placement="bottom-start" 
+        <StyledHideFilterButton id="PopoverLegacy" isDisabled={this.props.isDisabled} >{this.props.count} <Caret isOpen={this.state.popoverOpen}><Icons.ExpanderDownIcon size='scale' isfill={true} color="#A3A9AE" /></Caret></StyledHideFilterButton>
+
+        <StyledPopover
+          isOpen={this.state.popoverOpen}
+          trigger="legacy"
+          placement="bottom-start"
           target="PopoverLegacy"
-          hideArrow={true} 
+          hideArrow={true}
           toggle={this.toggle}>
           <StyledPopoverBody>{this.props.children}</StyledPopoverBody>
-        </Popover>
+        </StyledPopover>
+
       </StyledHideFilter>
     );
   }
