@@ -31,6 +31,7 @@ import {
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
+import { resendUserInvites } from "../../../../../store/services/api";
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -263,8 +264,13 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onInviteAgainClick = () => {
-    toastr.success("Context action: Invite again");
+  onInviteAgainClick = user => {
+    const { onLoading } = this.props;
+    onLoading(true);
+    resendUserInvites([user.id])
+      .then(() => toastr.success(<Text.Body>The email activation instructions have been sent to the <b>{user.email}</b> email address</Text.Body>))
+      .catch(e => toastr.error(<Text.Body>Failed to send the email activation instructions to the <b>{user.email}</b> email address</Text.Body>))
+      .finally(() => onLoading(false));
   };
   getUserContextOptions = (user, viewer) => {
     let status = "";
@@ -354,7 +360,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "invite-again",
             label: t("LblInviteAgain"),
-            onClick: this.onInviteAgainClick
+            onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
             (user.status === EmployeeStatus.Active

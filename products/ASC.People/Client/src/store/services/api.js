@@ -86,3 +86,9 @@ export function updateUserType(type, userIds) {
     ? fakeApi.updateUserType(type, userIds)
     : axios.put(`${API_URL}/people/type/${type}`, { userIds });
 }
+
+export function resendUserInvites(userIds) {
+  return IS_FAKE
+    ? fakeApi.resendUserInvites(userIds)
+    : axios.put(`${API_URL}/people/invite`, { userIds });
+}
