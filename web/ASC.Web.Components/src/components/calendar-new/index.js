@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components';
 import ComboBox from '../combobox';
 import moment from 'moment/min/moment-with-locales';
+import { Text } from "../text";
 
 const HoverStyle = css`
     &:hover {
@@ -24,7 +25,7 @@ const DisabledStyle = css`
 const ComboBoxStyle = styled.div`
     position: relative;
     display: flex;
-    padding-bottom: 25px;
+    padding-bottom: 24px !important;
 `;
 
 const ComboBoxDateStyle = styled.div`
@@ -34,7 +35,6 @@ const ComboBoxDateStyle = styled.div`
 `;
 
 const CalendarContainer = styled.div`
-    padding: 16px;
     ${props => props.size === 'base' ?
         `max-width: 293px;` : `max-width: 325px;`
     }
@@ -42,24 +42,10 @@ const CalendarContainer = styled.div`
 
 const CalendarStyle = styled.div`
     
-    ${props => props.size === 'base' ?
-        `width: 260px;
-        border-radius: 6px;
-        -moz-border-radius: 6px;
-        -webkit-border-radius: 6px;
-        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-        -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-        -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);`
-        : 'width: 294px;'
-    }
+    ${props => props.size === 'base' ? 'width: 260px;' : 'width: 294px;'}
 
     padding: 16px 16px 16px 17px;
     box-sizing: content-box;
-    font-family: Open Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 13px;
-    text-align: center;
     ${props => props.disabled ?
         `pointer-events: none;
         ${DisabledStyle}
@@ -89,10 +75,6 @@ const CalendarStyle = styled.div`
         ${HoverStyle}
     }
 
-    .calendar-month_weekdays_weekend {
-        color: #A3A9AE;
-    }
-
     .calendar-month_selected-day {
         background-color: ${props => props.color};
         border-radius: 16px;
@@ -103,16 +85,17 @@ const CalendarStyle = styled.div`
 
 const Weekday = styled.div`
     overflow: hidden;
-    flex-basis: 14.2857%;
+    flex-basis: 14.2857%; /*(1/7*100%)*/
 `;
 
 const Weekdays = styled.div`
+    width: ${props => props.size === 'base' ? '265px;' : '310px;'}
     display: flex;
-    margin-bottom: 9px;
+    margin-bottom: -5px;
 `;
 
 const Month = styled.div`
-    ${props => props.size === 'base' ? 'width: 267px;' : 'width: 303px;'}
+    width: ${props => props.size === 'base' ? '267px;' : '303px;'}
 `;
 
 const Days = styled.div`
@@ -123,15 +106,18 @@ const Days = styled.div`
 
 const Day = styled.div`
     display: flex;
-    flex-basis: 14.2857%;
+    flex-basis: 14.2857%; /*(1/7*100%)*/
     text-align: center;
-    line-height: 2.5em;
+    line-height: 2.5em !important;
     ${props => props.size === 'base' ? 'margin-top: 3px;' : 'margin-top: 7.5px;'}
 `;
 
-const AbbrDay = styled.abbr`
+const TextStyle = styled.div`
     width: 32px;
     height: 32px;
+    p {
+        text-align: center;
+    }
 `;
 
 class Calendar extends Component {
@@ -154,82 +140,85 @@ class Calendar extends Component {
     }
 
     onDayClick = (day) => {
-        let month = this.state.openToDate.getMonth() + 1;
-        let year = this.state.openToDate.getFullYear();
-        const date = new Date(month + "/" + day + "/" + year);
-        const days = new Date(year, month, 0).getDate();
+        const currentMonth = this.state.openToDate.getMonth();
+        const currentYear = this.state.openToDate.getFullYear();
+        const dateInCurrentMonth = new Date(currentYear, currentMonth, day);
+        const countDaysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
         if (day < 0) {
-            if (month === 1) { month = 13, year -= 1 }
-            const prevDays = new Date(year, (month - 1), 0).getDate();
-            const prevDate = new Date((month - 1) + "/" + (prevDays + day + 1) + "/" + year);
-            this.setState({ selectedDate: prevDate, openToDate: prevDate });
+            const countDaysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const dateInPrevMonth = new Date(currentYear, currentMonth - 1, (countDaysInPrevMonth + day + 1));
+            this.setState({ selectedDate: dateInPrevMonth, openToDate: dateInPrevMonth });
+            this.props.onChange && this.props.onChange(dateInPrevMonth);
         }
-        else if (day > days) {
-            if (month === 12) { month = 0, year += 1 }
-            const nextDate = new Date(month + 1 + "/" + (day - days) + "/" + year);
-            this.setState({ selectedDate: nextDate, openToDate: nextDate });
+        else if (day > countDaysInCurrentMonth) {
+            const dateInNextMonth = new Date(currentYear, currentMonth + 1, (day - countDaysInCurrentMonth));
+            this.setState({ selectedDate: dateInNextMonth, openToDate: dateInNextMonth });
+            this.props.onChange && this.props.onChange(dateInNextMonth);
         }
-        else if (this.formatSelectedDate(date) != this.formatSelectedDate(this.state.selectedDate)) {
-            this.setState({ selectedDate: date });
-            this.props.onChange && this.props.onChange(date);
+        else if (this.formatSelectedDate(dateInCurrentMonth) != this.formatSelectedDate(this.state.selectedDate)) {
+            this.setState({ selectedDate: dateInCurrentMonth });
+            this.props.onChange && this.props.onChange(dateInCurrentMonth);
         }
     }
 
     getListMonth = () => {
         const minDate = this.props.minDate;
         const maxDate = this.props.maxDate;
+        const months = this.state.months;
         let disabled = false;
-        const monthList = [];
-
-        const month = this.state.months.map(item => item.charAt(0).toLocaleUpperCase() + item.slice(1));
-        //This function is not optimal for all languages. // It'is bad...
-
-        for (let i = 0; i <= 11; i++) {
-            monthList.push({ key: `${i}`, label: `${month[i]}`, disabled: disabled });
-        }
+        const listMonths = [];
 
         let i = 0;
+        while (i <= 11) {
+            listMonths.push({ key: `${i}`, label: `${months[i]}`, disabled: disabled });
+            i++;
+        }
+
         if (this.state.openToDate.getFullYear() === minDate.getFullYear()) {
+            i = 0;
             while (i != minDate.getMonth()) {
-                monthList[i].disabled = true;
+                listMonths[i].disabled = true;
                 i++;
             }
         }
 
-        i = 11;
         if (this.state.openToDate.getFullYear() === maxDate.getFullYear()) {
+            i = 11;
             while (i != maxDate.getMonth()) {
-                monthList[i].disabled = true;
+                listMonths[i].disabled = true;
                 i--;
             }
         }
 
-        return monthList;
+        return listMonths;
     }
 
     getCurrentMonth = () => {
         const openToDate = this.state.openToDate;
-        const month = this.getListMonth();
-        let selectedMonth = month.find(x => x.key == openToDate.getMonth());
+        const months = this.getListMonth();
+        let selectedMonth = months.find(x => x.key == openToDate.getMonth());
 
         if (selectedMonth.disabled === true) {
-            selectedMonth = month.find(x => x.disabled === false);
-            const key = selectedMonth.key;
-            const currentMonth = Number(key) + 1;
-            const date = new Date(openToDate.getFullYear() + "/" + currentMonth + "/" + "01");
+            selectedMonth = months.find(x => x.disabled === false);
+            const date = new Date(openToDate.getFullYear(), selectedMonth.key, 1);
             this.state.openToDate = date;
         }
         return selectedMonth;
     }
 
     getArrayYears = () => {
-        const minDate = this.props.minDate.getFullYear();
-        const maxDate = this.props.maxDate.getFullYear();
+        const minYear = this.props.minDate.getFullYear();
+        const maxYear = this.props.maxDate.getFullYear();
         const yearList = [];
-        for (let i = minDate; i <= maxDate; i++) {
+
+        let i = minYear;
+        while (i <= maxYear) {
             let newDate = new Date(i, 0, 1);
-            yearList.push({ key: `${i}`, label: `${moment(newDate).format('YYYY')}` });
+            const label = moment(newDate).format('YYYY')
+            const key = i;
+            yearList.push({ key, label: label });
+            i++;
         }
         return yearList;
     }
@@ -253,8 +242,8 @@ class Calendar extends Component {
     }
 
     firstDayOfMonth = () => {
-        const selectedDate = this.state.openToDate;
-        const firstDay = moment(selectedDate).locale("en").startOf("month").format("d");
+        const openedDate = this.state.openToDate;
+        const firstDay = moment(openedDate).locale("en").startOf("month").format("d");
         let day = firstDay - 1;
         if (day < 0) { day = 6; }
         return day;
@@ -264,30 +253,33 @@ class Calendar extends Component {
         let arrayWeekDays = [];
         const weekdays = moment.weekdaysMin();
         weekdays.push(weekdays.shift());
-        let className = "";
+        let color;
         for (let i = 0; i < weekdays.length; i++) {
-            (i >= 5) ? className = "calendar-month_weekdays_weekend" : className = "calendar-month_weekdays";
-            arrayWeekDays.push(<Weekday className={className} key={weekdays[i]}>
-                <AbbrDay>{(weekdays[i].charAt(0).toUpperCase() + weekdays[i].slice(1))}</AbbrDay></Weekday>)
-            //This function is not optimal for all languages. // It'is bad...
+            (i >= 5) ? color = { color: "#A3A9AE" } : {};
+            arrayWeekDays.push(
+                <Weekday key={weekdays[i]}>
+                    <TextStyle>
+                        <Text.Body {...color} isBold={true}> {(weekdays[i])} </Text.Body>
+                    </TextStyle>
+                </Weekday>)
         }
         return arrayWeekDays;
     }
 
     getDays = () => {
         let keys = 0;
-        let prevMonthDays = this.firstDayOfMonth();
-        const year = this.state.openToDate.getFullYear();
-        const month = this.state.openToDate.getMonth() + 1;
-        const days = new Date(year, month, 0).getDate();
-        let prevDays = new Date(year, month - 1, 0).getDate();
+        let firstDayOfMonth = this.firstDayOfMonth();
+        const currentYear = this.state.openToDate.getFullYear();
+        const currentMonth = this.state.openToDate.getMonth() + 1;
+        const countDaysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+        let countDaysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
         const arrayDays = [];
         let className = "calendar-month_neighboringMonth";
+        const color = { color: "inherit;" };
 
         const openToDate = this.state.openToDate;
         const maxDate = this.props.maxDate;
         const minDate = this.props.minDate;
-
 
         //Disable preview month
         let disableClass = null;
@@ -295,7 +287,7 @@ class Calendar extends Component {
             disableClass = "calendar-month_disabled";
         }
 
-        //prev month
+        //Prev month
         let prevMonthDay = null;
         if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() - 1 === minDate.getMonth()) {
             prevMonthDay = minDate.getDate();
@@ -309,25 +301,24 @@ class Calendar extends Component {
 
         const size = this.props.size;
         // Show neighboring days in prev month
-        while (prevMonthDays != 0) {
-            if (prevDays + 1 === prevMonthDay) { disableClass = "calendar-month_disabled"; }
-            if (prevDays + 1 === prevYearDay) { disableClass = "calendar-month_disabled"; }
+        while (firstDayOfMonth != 0) {
+            if (countDaysInPrevMonth + 1 === prevMonthDay) { disableClass = "calendar-month_disabled"; }
+            if (countDaysInPrevMonth + 1 === prevYearDay) { disableClass = "calendar-month_disabled"; }
             arrayDays.unshift(
-                <Day size = {size} key={--keys} className={disableClass} >
-                    <AbbrDay
-                        onClick={this.onDayClick.bind(this, keys)}
-                        className={className} >
-                        {prevDays--}
-                    </AbbrDay>
+                <Day size={size} key={--keys} className={disableClass} >
+                    <TextStyle onClick={this.onDayClick.bind(this, keys)} className={className}>
+                        <Text.Body isBold={true} {...color}>
+                            {countDaysInPrevMonth--}
+                        </Text.Body>
+                    </TextStyle>
                 </Day>
             );
             //console.log("loop");
-            prevMonthDays--;
+            firstDayOfMonth--;
         }
-        keys = 0;
-
 
         //Disable max days in month
+        keys = 0;
         let maxDay, minDay;
         disableClass = null;
         if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
@@ -344,30 +335,31 @@ class Calendar extends Component {
         // Show days in month and weekend days
         let seven = 7;
         const dateNow = this.state.selectedDate.getDate();
-        const temp = 1;
-        prevMonthDays = this.firstDayOfMonth();
+        firstDayOfMonth = this.firstDayOfMonth();
 
-        for (let i = 1; i <= days; i++) {
-            if (i === (seven - prevMonthDays - temp)) { className = "calendar-month_weekend"; }
-            else if (i === (seven - prevMonthDays)) { seven += 7; className = "calendar-month_weekend"; }
+        for (let i = 1; i <= countDaysInMonth; i++) {
+            if (i === (seven - firstDayOfMonth - 1)) { className = "calendar-month_weekend"; }
+            else if (i === (seven - firstDayOfMonth)) { seven += 7; className = "calendar-month_weekend"; }
             else { className = "calendar-month"; }
             if (i === dateNow && this.compareDays()) { className = "calendar-month_selected-day" }
             if (i > maxDay || i < minDay) { disableClass = "calendar-month_disabled"; className = "calendar-month_disabled" }
             else { disableClass = null; }
 
             arrayDays.push(
-                <Day size = {size} key={keys++} className={disableClass} >
-                    <AbbrDay onClick={this.onDayClick.bind(this, i)} className={className}>{i}</AbbrDay>
+                <Day size={size} key={keys++} className={disableClass} >
+                    <TextStyle onClick={this.onDayClick.bind(this, i)} className={className}>
+                        <Text.Body isBold={true} {...color}>{i}</Text.Body>
+                    </TextStyle>
                 </Day>
             );
         }
 
         //Calculating neighboring days in next month
-        let maxDays = 42; // max days in month table
+        let maxDaysInMonthTable = 42;
         const firstDay = this.firstDayOfMonth();
-        if (firstDay > 5 && days >= 30) { maxDays += 7; }
-        else if (firstDay >= 5 && days > 30) { maxDays += 7; }
-        if (maxDays > 42) { maxDays -= 7; }
+        if (firstDay > 5 && countDaysInMonth >= 30) { maxDaysInMonthTable += 7; }
+        else if (firstDay >= 5 && countDaysInMonth > 30) { maxDaysInMonthTable += 7; }
+        if (maxDaysInMonthTable > 42) { maxDaysInMonthTable -= 7; }
 
         //Disable next month days
         disableClass = null;
@@ -389,16 +381,17 @@ class Calendar extends Component {
 
         //Show neighboring days in next month
         let nextDay = 1;
-        for (let i = days; i < maxDays - firstDay; i++) {
-            if (i - days === nextYearDay) { disableClass = "calendar-month_disabled" }
-            if (i - days === nextMonthDay) { disableClass = "calendar-month_disabled" }
+        for (let i = countDaysInMonth; i < maxDaysInMonthTable - firstDay; i++) {
+            if (i - countDaysInMonth === nextYearDay) { disableClass = "calendar-month_disabled" }
+            if (i - countDaysInMonth === nextMonthDay) { disableClass = "calendar-month_disabled" }
             arrayDays.push(
-                <Day size = {size} key={keys++} className={disableClass} >
-                    <AbbrDay
+                <Day size={size} key={keys++} className={disableClass} >
+                    <TextStyle
                         onClick={this.onDayClick.bind(this, i + 1)}
-                        className={"calendar-month_neighboringMonth"} >
-                        {nextDay++}
-                    </AbbrDay>
+                        className={"calendar-month_neighboringMonth"}
+                    >
+                        <Text.Body isBold={true} {...color}>{nextDay++}</Text.Body>
+                    </TextStyle>
                 </Day>
             );
         }
@@ -409,7 +402,7 @@ class Calendar extends Component {
         moment.locale(this.props.locale);
         this.state.months = moment.months();
         if (this.props.selectedDate !== prevProps.selectedDate ||
-            this.props.selectedDate !== prevProps.selectedDate) {
+            this.props.openToDate !== prevProps.openToDate) {
             this.setState({
                 selectedDate: this.props.selectedDate,
                 openToDate: this.props.openToDate
@@ -418,12 +411,12 @@ class Calendar extends Component {
     }
 
     render() {
-        //console.log("render");
+        console.log("Calendar render");
 
         const disabled = this.props.disabled;
         const size = this.props.size;
-        const dropDownSizeMonth = this.getListMonth().length > 4 ? 180 : undefined;
-        const dropDownSizeYear = this.getListMonth().length > 4 ? 180 : undefined;
+        const dropDownSizeMonth = this.getListMonth().length > 4 ? 184 : undefined;
+        const dropDownSizeYear = this.getListMonth().length > 4 ? 184 : undefined;
 
         return (
             <CalendarContainer size={size}>
@@ -449,7 +442,7 @@ class Calendar extends Component {
                         </ComboBoxDateStyle>
                     </ComboBoxStyle>
                     <Month size={size}>
-                        <Weekdays>
+                        <Weekdays size={size}>
                             {this.getWeekDays()}
                         </Weekdays>
                         <Days size={size}>
