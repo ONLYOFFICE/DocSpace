@@ -33,32 +33,6 @@ export function getUserRole(profile) {
     return "user";
 };
 
-export function profileEqual(profileA, profileB) {
-    const keys = Object.keys(profileA);
-
-    for (let i = 0; i < keys.length; i++) {
-        let key = keys[i];
-
-        if (key === "groups") {
-            if (profileA[key].length !== profileB[key].length)
-                return false;
-
-            const groupsA = profileA[key].map(group => group.id);
-            const groupsB = profileA[key].map(group => group.id);
-            
-            for (let j = 0; j < groupsA.length; j++) {
-                if (!groupsB.includes(groupsA[j]))
-                    return false;
-            }
-        }
-
-        if(profileA[key] !== profileB[key])
-            return false;
-    }
-
-    return true;
-}
-
 export function toEmployeeWrapper(profile) {
     const emptyData = {
         id: "",
@@ -68,6 +42,7 @@ export function toEmployeeWrapper(profile) {
         password: "",
         birthday: "",
         sex: "male",
+        passwordType: "link",
         workFrom: "",
         location: "",
         title: "",
@@ -111,12 +86,16 @@ export function createProfile(profile) {
         const {people} = getState();
         const {filter} = people;
         const member = employeeWrapperToMemberModel(profile);
+        let result;
 
         return api.createUser(member).then(res => {
             checkResponseError(res);
-            return Promise.resolve(dispatch(setProfile(res.data.response)));
+            result = res.data.response;
+            return dispatch(setProfile(result));
         }).then(() => {
             return fetchPeopleByFilter(dispatch, filter);
+        }).then(() => {
+            return Promise.resolve(result);
         });
     };
 };
@@ -126,12 +105,16 @@ export function updateProfile(profile) {
         const {people} = getState();
         const {filter} = people;
         const member = employeeWrapperToMemberModel(profile);
+        let result;
 
         return api.updateUser(member).then(res => {
             checkResponseError(res);
-            return Promise.resolve(dispatch(setProfile(res.data.response)));
+            result = res.data.response;
+            return Promise.resolve(dispatch(setProfile(result)));
         }).then(() => {
             return fetchPeopleByFilter(dispatch, filter);
+        }).then(() => {
+            return Promise.resolve(result);
         });
     };
 };

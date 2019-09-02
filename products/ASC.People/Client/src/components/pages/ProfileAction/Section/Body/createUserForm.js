@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, profileEqual, createProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -30,12 +30,14 @@ class CreateUserForm extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!profileEqual(this.props.profile, prevProps.profile)) {
+    if (this.props.match.params.type !== prevProps.match.params.type) {
       this.setState(this.mapPropsToState(this.props));
     }
   }
 
   mapPropsToState = (props) => {
+    const isVisitor = props.match.params.type === "guest";
+
     return {
       isLoading: false,
       showPassword: false,
@@ -45,10 +47,7 @@ class CreateUserForm extends React.Component {
         email: false,
         password: false,
       },
-      profile: { 
-        ...{ passwordType: "link" },
-        ...toEmployeeWrapper(props.profile)
-      }
+      profile: toEmployeeWrapper({ isVisitor: isVisitor})
     };
   }
 
@@ -99,9 +98,9 @@ class CreateUserForm extends React.Component {
     this.setState({isLoading: true});
 
     this.props.createProfile(this.state.profile)
-      .then(() => {
+      .then((profile) => {
         toastr.success("Success");
-        this.props.history.goBack();
+        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
         toastr.error(error.message)
@@ -110,7 +109,7 @@ class CreateUserForm extends React.Component {
   }
 
   onCancel() {
-    this.props.history.goBack();
+    this.props.history.push(this.props.settings.homepage)
   }
 
   render() {
@@ -236,7 +235,7 @@ class CreateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    profile: state.profile.targetUser
+    settings: state.auth.settings
   }
 };
 

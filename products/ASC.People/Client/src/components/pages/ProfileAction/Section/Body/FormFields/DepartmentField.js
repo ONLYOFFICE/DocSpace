@@ -17,7 +17,7 @@ const DepartmentField = React.memo((props) => {
       hasError={hasError}
       labelText={labelText}
     >
-      {departments.map((department) => (      
+      {departments && departments.map((department) => (      
         <SelectedItem
           key={`department_${department.id}`}    
           text={department.name}
