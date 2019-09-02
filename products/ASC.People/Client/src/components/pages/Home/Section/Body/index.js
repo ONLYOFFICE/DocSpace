@@ -419,7 +419,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onResetFilter = () => {
-    const { onLoading } = this.props;
+    const { onLoading, resetFilter } = this.props;
     onLoading(true);
     resetFilter().finally(() => onLoading(false));
   };

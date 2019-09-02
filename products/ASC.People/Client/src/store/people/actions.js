@@ -148,6 +148,8 @@ export function resetFilter() {
     const { people } = getState();
     const { filter } = people;
 
-    return fetchPeople(filter);
+    const newFilter = filter.clone(true);
+
+    return fetchPeopleByFilter(dispatch, newFilter);
   };
 }
