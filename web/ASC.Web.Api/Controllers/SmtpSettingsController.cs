@@ -146,7 +146,7 @@ namespace ASC.Api.Settings
             return ToSmtpOperationStatus();
         }
 
-        private static SmtpOperationStatus ToSmtpOperationStatus()
+        private SmtpOperationStatus ToSmtpOperationStatus()
         {
             var operations = SMTPTasks.GetTasks().ToList();
 
