@@ -32,6 +32,7 @@ import {
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { resendUserInvites } from "../../../../../store/services/api";
+import { isMobileOnly } from "react-device-detect";
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -52,8 +53,8 @@ class SectionBodyContent extends React.PureComponent {
     window.open("mailto:" + email);
   };
 
-  onSendMessageClick = () => {
-    toastr.success("Context action: Send message");
+  onSendMessageClick = mobilePhone => {
+    window.open(`sms:${mobilePhone}`);
   };
 
   onEditClick = user => {
@@ -294,10 +295,11 @@ class SectionBodyContent extends React.PureComponent {
             label: t("LblSendEmail"),
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
+          user.mobilePhone && isMobileOnly &&
           {
             key: "send-message",
             label: t("LblSendMessage"),
-            onClick: this.onSendMessageClick
+            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
           },
           { key: "separator", isSeparator: true },
           {
