@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
       },
 
       react: {
-        useSuspense: true
+        useSuspense: false
       },
       backend: {
         loadPath: `${config.homepage}/locales/Layout/{{lng}}/{{ns}}.json`
