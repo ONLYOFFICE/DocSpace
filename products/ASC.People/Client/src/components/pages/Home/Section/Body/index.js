@@ -269,7 +269,7 @@ class SectionBodyContent extends React.PureComponent {
     onLoading(true);
     resendUserInvites([user.id])
       .then(() => toastr.success(<Text.Body>The email activation instructions have been sent to the <b>{user.email}</b> email address</Text.Body>))
-      .catch(e => toastr.error(<Text.Body>Failed to send the email activation instructions to the <b>{user.email}</b> email address</Text.Body>))
+      .catch(e => toastr.error("ERROR"))
       .finally(() => onLoading(false));
   };
   getUserContextOptions = (user, viewer) => {
