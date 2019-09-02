@@ -50,7 +50,7 @@ if (process.env.NODE_ENV === "production") {
     },
 
     react: {
-      useSuspense: true
+      useSuspense: false
     }
   });
 }
