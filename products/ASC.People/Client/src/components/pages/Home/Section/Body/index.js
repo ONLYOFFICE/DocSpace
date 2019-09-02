@@ -31,6 +31,8 @@ import {
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
+import { resendUserInvites } from "../../../../../store/services/api";
+import { isMobileOnly } from "react-device-detect";
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -51,8 +53,8 @@ class SectionBodyContent extends React.PureComponent {
     window.open("mailto:" + email);
   };
 
-  onSendMessageClick = () => {
-    toastr.success("Context action: Send message");
+  onSendMessageClick = mobilePhone => {
+    window.open(`sms:${mobilePhone}`);
   };
 
   onEditClick = user => {
@@ -263,8 +265,13 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onInviteAgainClick = () => {
-    toastr.success("Context action: Invite again");
+  onInviteAgainClick = user => {
+    const { onLoading } = this.props;
+    onLoading(true);
+    resendUserInvites([user.id])
+      .then(() => toastr.success(<Text.Body>The email activation instructions have been sent to the <b>{user.email}</b> email address</Text.Body>))
+      .catch(e => toastr.error("ERROR"))
+      .finally(() => onLoading(false));
   };
   getUserContextOptions = (user, viewer) => {
     let status = "";
@@ -288,10 +295,11 @@ class SectionBodyContent extends React.PureComponent {
             label: t("LblSendEmail"),
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
+          user.mobilePhone && isMobileOnly &&
           {
             key: "send-message",
             label: t("LblSendMessage"),
-            onClick: this.onSendMessageClick
+            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
           },
           { key: "separator", isSeparator: true },
           {
@@ -354,7 +362,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "invite-again",
             label: t("LblInviteAgain"),
-            onClick: this.onInviteAgainClick
+            onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
             (user.status === EmployeeStatus.Active

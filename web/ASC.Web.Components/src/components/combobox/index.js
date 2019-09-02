@@ -43,7 +43,7 @@ const StyledComboBox = styled.div`
 
   :hover{
     border-color: ${state => state.isOpen ? '#2DA7DB' : '#A3A9AE' };
-    cursor: ${props => (props.isDisabled || !props.options.length) ? 'default' : 'pointer'};
+    cursor: ${props => (props.isDisabled || !props.options.length ) ? (props.advancedOptions) ? 'pointer' : 'default' : 'pointer'};
 
     ${props => props.isDisabled && `
       border-color: #ECEEF1;
@@ -57,7 +57,6 @@ const StyledComboButton = styled.div`
   justify-content: center;
 
   height: ${props => props.noBorder ? `18px` : `30px`};
-
   margin-left: 8px;
 `;
 
@@ -68,7 +67,7 @@ const StyledIcon = styled.div`
 `;
 
 const StyledOptionalItem = styled.div`
-  margin-right: 8px;
+margin-right: 8px;
 `;
 
 const StyledLabel = styled.div`
@@ -99,8 +98,8 @@ const StyledArrowIcon = styled.div`
   width: 8px;
   flex: 0 0 8px;
   margin-top: ${props => props.noBorder ? `5px` : `12px`};
-  margin-right: ${props => props.options.length ?  '8px' : '0px'};
-  margin-left: ${props => props.options.length ?  'auto' : '0px'};
+  margin-right: ${props => props.needDisplay ? '8px' : '0px'};
+  margin-left: ${props => props.needDisplay ? 'auto' : '0px'};
 
   ${props => props.isOpen && `
     transform: scale(1, -1);
@@ -132,7 +131,7 @@ class ComboBox extends React.PureComponent {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
-    if (this.props.isDisabled  || !this.props.options.length || e.target.closest('.optionalBlock')) return;
+    if (this.props.isDisabled || e.target.closest('.optionalBlock')) return;
     this.toggle(!this.state.isOpen);
   };
 
@@ -165,15 +164,24 @@ class ComboBox extends React.PureComponent {
 
   render() {
     //console.log("ComboBox render");
-
-    const { dropDownMaxHeight, isDisabled, directionX, directionY, scaled, children, options, noBorder } = this.props;
+    const {
+      dropDownMaxHeight, 
+      isDisabled, 
+      directionX, 
+      directionY, 
+      scaled, 
+      children, 
+      options, 
+      noBorder, 
+      advancedOptions 
+    } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
     const dropDownManualWidthProp = scaled ? { manualWidth: '100%' } : {};
     const boxIconColor = isDisabled ? '#D0D5DA' : '#333333';
     const arrowIconColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
-
+   
     return (
       <StyledComboBox ref={this.ref}
         {...this.props}
@@ -183,9 +191,11 @@ class ComboBox extends React.PureComponent {
         onSelect={this.stopAction}
       >
         <StyledComboButton noBorder={noBorder}>
-          <StyledOptionalItem className='optionalBlock'>
-            {children}
-          </StyledOptionalItem>
+          {children &&
+            <StyledOptionalItem className='optionalBlock'>
+              {children}
+            </StyledOptionalItem>
+          }
           {selectedOption && selectedOption.icon &&
             <StyledIcon>
               {React.createElement(Icons[selectedOption.icon],
@@ -200,9 +210,8 @@ class ComboBox extends React.PureComponent {
           <StyledLabel noBorder={noBorder}>
             {selectedOption.label}
           </StyledLabel>
-
-          <StyledArrowIcon options={options} noBorder={noBorder} isOpen={isOpen}>
-            {options.length > 0 &&
+          <StyledArrowIcon needDisplay={options.length > 0 || advancedOptions !== undefined} noBorder={noBorder} isOpen={isOpen}>
+            {(options.length > 0 || advancedOptions !== undefined) &&
               React.createElement(Icons['ExpanderDownIcon'],
                 {
                   size: 'scale',
@@ -211,7 +220,6 @@ class ComboBox extends React.PureComponent {
                 })
             }
           </StyledArrowIcon>
-
         </StyledComboButton>
         <DropDown
           directionX={directionX}
@@ -221,7 +229,9 @@ class ComboBox extends React.PureComponent {
           {...dropDownMaxHeightProp}
           {...dropDownManualWidthProp}
         >
-          {options.map((option) =>
+          {advancedOptions 
+          ? advancedOptions 
+          : options.map((option) =>
             <DropDownItem {...option}
               disabled={option.disabled || (option.label === selectedOption.label)}
               onClick={this.optionClick.bind(this, option)}
@@ -237,12 +247,14 @@ ComboBox.propTypes = {
   noBorder: PropTypes.bool,
   isDisabled: PropTypes.bool,
   selectedOption: PropTypes.object.isRequired,
+
   options: PropTypes.array.isRequired,
+  advancedOptions: PropTypes.element,
+
   onSelect: PropTypes.func,
   dropDownMaxHeight: PropTypes.number,
-
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
-  scaled: PropTypes.bool,
+  scaled: PropTypes.bool
 }
 
 ComboBox.defaultProps = {
