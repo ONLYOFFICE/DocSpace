@@ -1,4 +1,4 @@
-export const departmentName = 'Department';
+export const department = 'Department';
 export const position = 'Position';
 export const employedSinceDate = 'Employed since';
 export const typeGuest = 'Guest';

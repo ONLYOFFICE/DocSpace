@@ -1,0 +1,11 @@
+{
+  "SaveButton": "Save",
+  "CancelButton": "Cancel",
+
+
+
+  "CustomHeadOfDepartment": "{{headOfDepartment}}",
+  "CustomAddEmployee": "Add {{typeUser, lowercase}}",
+  "CustomNewDepartment": "New {{department, lowercase}}",
+  "CustomDepartmentName": "{{department}} name"
+}
