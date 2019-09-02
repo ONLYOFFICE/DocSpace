@@ -45,7 +45,6 @@ const StyledComboBox = styled(ComboBox)`
   background: transparent;
   cursor: pointer;
   vertical-align: middle;
-  margin-left: -10px;
 `;
 const StyledFilterName = styled.span`
   line-height: 18px;
