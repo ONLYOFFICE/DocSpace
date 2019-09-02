@@ -12,15 +12,6 @@ import styled from 'styled-components'
 const iconNames = Object.keys(Icons);
 const sizeOptions = ['base', 'middle', 'big', 'huge', 'content'];
 
-const RadioButtonWrapper = styled.div`
-  flex-direction: column;
-  
-  label {
-    white-space: nowrap;
-    padding: 8px 16px;
-  } 
-`;
-
 iconNames.push("NONE");
 
 storiesOf('Components|Input', module)
