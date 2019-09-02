@@ -411,7 +411,7 @@ class Calendar extends Component {
     }
 
     render() {
-        //console.log("Calendar render");
+        console.log("Calendar render");
 
         const disabled = this.props.disabled;
         const size = this.props.size;

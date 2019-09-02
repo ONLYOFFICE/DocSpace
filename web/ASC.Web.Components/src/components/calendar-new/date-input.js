@@ -6,7 +6,7 @@ import DropDown from '../drop-down';
 import { Col } from 'reactstrap';
 import NewCalendar from '../calendar-new';
 import moment from 'moment/min/moment-with-locales';
-//import { handleAnyClick } from '../../utils/event';
+import { handleAnyClick } from '../../utils/event';
 
 
 const DateInputStyle = styled.div`
@@ -15,6 +15,11 @@ const DateInputStyle = styled.div`
 class DatePicker extends Component {
     constructor(props) {
         super(props);
+
+        this.ref = React.createRef();
+        if (props.isOpen) {
+            handleAnyClick(true, this.handleClick);
+        }
     }
 
     state = {
@@ -25,6 +30,10 @@ class DatePicker extends Component {
         hasWarning: this.props.hasWarning,
     };
 
+    handleClick = (e) => {
+        this.state.isOpen && !this.ref.current.contains(e.target) && this.onIconClick(false);
+    }
+
     onIconClick = (isOpen) => {
         //console.log("Show calendar please");
         this.setState({ isOpen: isOpen });
@@ -33,11 +42,14 @@ class DatePicker extends Component {
     handleChange(e) {
         let date = new Date(e.target.value);
         if (!this.isValidDate(date)) { date = this.state.selectedDate; }
-        this.props.onChange && this.props.onChange(date);
+        if (this.validationDate(date)) {
+            this.props.onChange && this.props.onChange(date);
+        }
         this.setState({ value: e.target.value, selectedDate: date })
     }
 
     onChange = (value) => {
+        this.props.onChange && this.props.onChange(value);
         this.setState({ selectedDate: value, value: moment(value).format('L') })
     }
 
@@ -45,21 +57,29 @@ class DatePicker extends Component {
         return date instanceof Date && !isNaN(date);
     }
 
-    validationDate = () => {
+    validationDate = (date) => {
         const minDate = this.props.minDate;
         const maxDate = this.props.maxDate;
-        const selectedDate = this.state.selectedDate;
+        const selectedDate = date;
         if (selectedDate < minDate || selectedDate > maxDate) {
             this.state.selectedDate = new Date();
+            return false;
         }
+        return true;
+    }
+
+    componentWillUnmount() {
+        handleAnyClick(false, this.handleClick);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.selectedDate !== prevProps.selectedDate ||
-            this.props.isOpen !== prevProps.isOpen) {
+        if (this.state.isOpen !== prevState.isOpen) {
+            handleAnyClick(this.state.isOpen, this.handleClick);
+        }
+
+        if (this.props.selectedDate !== prevProps.selectedDate) {
             this.setState({
                 selectedDate: this.props.selectedDate,
-                isOpen: this.props.isOpen
             });
         }
     }
@@ -72,7 +92,7 @@ class DatePicker extends Component {
         const isReadOnly = this.props.isReadOnly;
         const hasError = this.props.hasError;
 
-        this.validationDate();
+        this.validationDate(this.state.selectedDate);
 
         return (
             <DateInputStyle ref={this.ref} >
