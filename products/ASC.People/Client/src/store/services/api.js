@@ -115,7 +115,7 @@ export function deleteUsers(userIds) {
   return IS_FAKE
     ? fakeApi.deleteUsers(userIds)
     : axios
-        .delete(`${API_URL}/people/delete.json`, { userIds })
+        .put(`${API_URL}/people/delete.json`, { userIds })
         .then(CheckError);
 }
 
