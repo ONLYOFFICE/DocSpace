@@ -57,27 +57,34 @@ namespace ASC.Api.Core.Middleware
         [DataMember(EmitDefaultValue = false, Order = 3)]
         public object Response { get; set; }
 
-        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null) : base(statusCode)
+        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
         {
             Status = 0;
             Response = response;
             Total = total;
 
-            if (response is List<object> list)
+            if (count.HasValue)
             {
-                Count = list.Count;
-            }
-            else if (response is IEnumerable<object> collection)
-            {
-                Count = collection.Count();
-            }
-            else if (response == null)
-            {
-                Count = 0;
+                Count = count;
             }
             else
             {
-                Count = 1;
+                if (response is List<object> list)
+                {
+                    Count = list.Count;
+                }
+                else if (response is IEnumerable<object> collection)
+                {
+                    Count = collection.Count();
+                }
+                else if (response == null)
+                {
+                    Count = 0;
+                }
+                else
+                {
+                    Count = 1;
+                }
             }
         }
     }

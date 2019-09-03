@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -36,7 +35,6 @@ namespace ASC.Api.Core
     public class ApiContext : ICloneable
     {
         public HttpContext HttpContext { get; set; }
-        private IQueryCollection Query { get; set; }
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
 
@@ -45,42 +43,38 @@ namespace ASC.Api.Core
             if (httpContext == null) return;
             HttpContext = httpContext;
 
-            if (HttpContext.Request.QueryString != null)
-            {
-                Query = HttpContext.Request.Query;
-            }
-
             Count = 0;
+            var query = HttpContext.Request.Query;
             //Try parse values
-            var count = GetRequestValue("count");
+            var count = query.GetRequestValue("count");
             if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
                 Count = (long)countParsed;
             }
 
-            var startIndex = GetRequestValue("startIndex");
+            var startIndex = query.GetRequestValue("startIndex");
             if (startIndex != null && long.TryParse(startIndex, out var startIndexParsed))
             {
                 StartIndex = Math.Max(0, startIndexParsed);
                 SpecifiedStartIndex = StartIndex;
             }
 
-            var sortOrder = GetRequestValue("sortOrder");
+            var sortOrder = query.GetRequestValue("sortOrder");
             if ("descending".Equals(sortOrder))
             {
                 SortDescending = true;
             }
 
-            FilterToType = GetRequestValue("type");
-            SortBy = GetRequestValue("sortBy");
-            FilterBy = GetRequestValue("filterBy");
-            FilterOp = GetRequestValue("filterOp");
-            FilterValue = GetRequestValue("filterValue");
-            FilterValues = GetRequestArray("filterValue");
-            Fields = GetRequestArray("fields");
+            FilterToType = query.GetRequestValue("type");
+            SortBy = query.GetRequestValue("sortBy");
+            FilterBy = query.GetRequestValue("filterBy");
+            FilterOp = query.GetRequestValue("filterOp");
+            FilterValue = query.GetRequestValue("filterValue");
+            FilterValues = query.GetRequestArray("filterValue");
+            Fields = query.GetRequestArray("fields");
 
-            var updatedSince = GetRequestValue("updatedSince");
+            var updatedSince = query.GetRequestValue("updatedSince");
             if (updatedSince != null)
             {
                 UpdatedSince = Convert.ToDateTime(updatedSince);
@@ -88,35 +82,6 @@ namespace ASC.Api.Core
         }
 
         public string[] Fields { get; set; }
-
-        private string[] GetRequestArray(string key)
-        {
-            if (Query != null)
-            {
-                var values = Query[key + "[]"];
-                if (values.Count > 0)
-                    return values;
-
-                values = Query[key];
-                if (values.Count > 0)
-                {
-                    if (values.Count == 1) //If it's only one element
-                    {
-                        //Try split
-                        if (!string.IsNullOrEmpty(values[0]))
-                            return values[0].Split(',');
-                    }
-                    return values;
-                }
-            }
-            return null;
-        }
-
-        public string GetRequestValue(string key)
-        {
-            var reqArray = GetRequestArray(key);
-            return reqArray?.FirstOrDefault();
-        }
 
         public string[] FilterValues { get; set; }
 
@@ -180,8 +145,6 @@ namespace ASC.Api.Core
 
         public bool FromCache { get; set; }
 
-        private readonly List<Type> _knowntype = new List<Type>();
-
         internal long SpecifiedCount { get; private set; }
 
         /// <summary>
@@ -228,25 +191,10 @@ namespace ASC.Api.Core
                 }
             }
         }
-
-
-        public void RegisterType(Type type)
+        public ApiContext SetCount(int count)
         {
-            if (!_knowntype.Contains(type))
-            {
-                _knowntype.Add(type);
-            }
-        }
-
-        public void RegisterTypes(IEnumerable<Type> types)
-        {
-            _knowntype.AddRange(types);
-
-        }
-
-        internal IEnumerable<Type> GetKnownTypes()
-        {
-            return _knowntype.Distinct();
+            HttpContext.Items[nameof(Count)] = count;
+            return this;
         }
 
         public object Clone()
@@ -265,6 +213,38 @@ namespace ASC.Api.Core
         public static implicit operator ApiContext(HttpContext httpContext)
         {
             return new ApiContext(httpContext);
+        }
+    }
+
+    public static class QueryExtension
+    {
+        internal static string[] GetRequestArray(this IQueryCollection query, string key)
+        {
+            if (query != null)
+            {
+                var values = query[key + "[]"];
+                if (values.Count > 0)
+                    return values;
+
+                values = query[key];
+                if (values.Count > 0)
+                {
+                    if (values.Count == 1) //If it's only one element
+                    {
+                        //Try split
+                        if (!string.IsNullOrEmpty(values[0]))
+                            return values[0].Split(',');
+                    }
+                    return values;
+                }
+            }
+            return null;
+        }
+
+        public static string GetRequestValue(this IQueryCollection query, string key)
+        {
+            var reqArray = query.GetRequestArray(key);
+            return reqArray?.FirstOrDefault();
         }
     }
 

@@ -308,7 +308,8 @@ namespace ASC.Employee.Core.Controllers
 
             var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total);
 
-            ApiContext.SetTotalCount(total);
+            ApiContext.SetTotalCount(total)
+                .SetCount(users.Count);
 
             return users;
         }
