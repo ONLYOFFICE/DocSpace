@@ -116,9 +116,6 @@ class SectionBodyContent extends React.PureComponent {
 
   onChangeEmailClick = email => {
     this.setState({
-      newEmail: email
-    });
-    this.setState({
       dialog: {
         visible: true,
         header: "Email change",
@@ -438,7 +435,10 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDialogClose = () => {
-    this.setState({ dialog: { visible: false } });
+    this.setState({ 
+      newEmail: null,
+      dialog: { visible: false } 
+    });
   };
 
   render() {
