@@ -6,7 +6,7 @@ module.exports = (config) => {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join('src', path.sep, '**', path.sep, 'locales', path.sep, '**'),
+          from: path.join('src', path.sep, 'components', path.sep, '**', path.sep, 'locales', path.sep, '**'),
           to: 'locales',
           transformPath(targetPath) {
             const reversedArrayOfFolders = path.dirname(targetPath).split(path.sep).reverse();
