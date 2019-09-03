@@ -506,9 +506,9 @@ namespace ASC.Web.Studio.Utility
 
         #region confirm links
 
-        public static string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        public static string GetConfirmationUrl(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetFullAbsolutePath(GetConfirmationUrlRelative(CoreContext.TenantManager.GetCurrentTenant().TenantId, email, confirmType, postfix, userId));
+            return GetFullAbsolutePath(GetConfirmationUrlRelative(tenantId, email, confirmType, postfix, userId));
         }
 
         public static string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

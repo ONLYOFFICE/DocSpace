@@ -935,7 +935,7 @@ namespace ASC.Employee.Core.Controllers
                 }
                 else
                 {
-                    StudioNotifyService.SendEmailActivationInstructions(user, user.Email);
+                    StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, user.Email);
                 }
             }
 
@@ -980,7 +980,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            StudioNotifyService.SendMsgProfileDeletion(user);
+            StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
             MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
