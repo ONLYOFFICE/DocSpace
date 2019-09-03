@@ -6,7 +6,7 @@ import Login from "./components/pages/Login/Login";
 import { PrivateRoute } from "./helpers/privateRoute";
 import { Error404 } from "./components/pages/Error";
 
-const Home = lazy(() => import("./components/pages/Home/Home"));
+const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About/About"));
 
 const App = () => {
