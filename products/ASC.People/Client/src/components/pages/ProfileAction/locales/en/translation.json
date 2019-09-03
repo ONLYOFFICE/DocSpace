@@ -19,8 +19,6 @@
   "SexMale": "Male",
   "SexFemale": "Female",
   "RequiredField": "Required field",
-  "NewEmployee": "New employee",
-  "NewGuest": "New guest",
   "ChangeButton": "Change",
   "Phone": "Phone",
 
@@ -28,5 +26,7 @@
   "CustomPosition": "{{position}}",
   "CustomDepartment": "{{department}}",
   "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}"
+  "CustomTypeUser": "{{typeUser}}",
+  "CustomNewEmployee": "New {{typeUser, lowercase}}",
+  "CustomNewGuest": "New {{typeGuest, lowercase}}"
 }
