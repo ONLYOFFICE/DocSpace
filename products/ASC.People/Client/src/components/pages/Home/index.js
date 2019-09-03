@@ -124,6 +124,7 @@ class PureHome extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
+              onLoading={this.onLoading}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}

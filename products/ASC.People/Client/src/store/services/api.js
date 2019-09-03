@@ -114,5 +114,16 @@ export function deleteUser(userId) {
 export function deleteUsers(userIds) {
   return IS_FAKE
     ? fakeApi.deleteUsers(userIds)
-    : axios.delete(`${API_URL}/people/delete.json`, { userIds });
+    : axios
+        .delete(`${API_URL}/people/delete.json`, { userIds })
+        .then(CheckError);
+}
+
+function CheckError(res) {
+  if (res.data && res.data.error) {
+    const error = res.data.error.message || "Unknown error has happened";
+    console.trace(error);
+    throw error;
+  }
+  return Promise.resolve(res);
 }
