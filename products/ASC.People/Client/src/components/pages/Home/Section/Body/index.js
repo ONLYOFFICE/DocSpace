@@ -358,7 +358,9 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onChangeEmailClick.bind(this, user.email)
           },
           isSelf
-            ? {
+            ? viewer.isOwner 
+              ? {} 
+              : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
                 onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
