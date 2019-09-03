@@ -7,7 +7,7 @@ import { PrivateRoute } from "./helpers/privateRoute";
 import { Error404 } from "./components/pages/Error";
 
 const Home = lazy(() => import("./components/pages/Home"));
-const About = lazy(() => import("./components/pages/About/About"));
+const About = lazy(() => import("./components/pages/About"));
 
 const App = () => {
   return (
