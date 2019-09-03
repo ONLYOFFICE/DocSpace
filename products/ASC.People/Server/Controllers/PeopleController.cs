@@ -944,7 +944,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(user => new EmployeeWraperFull(user, ApiContext));
         }
 
-        [Update("delete")]
+        [Update("delete", Order = -1)]
         public IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
         {
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
