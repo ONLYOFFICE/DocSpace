@@ -25,7 +25,7 @@ storiesOf('Components|Calendar', module)
         onChange={date => {
           action('Selected date')(date);
         }}
-        disabled={boolean('disabled', false)}
+        isDisabled={boolean('isDisabled', false)}
         themeColor={color('themeColor', '#ED7309')}
         selectedDate={myDateKnob('selectedDate', new Date())}
         openToDate={myDateKnob('openToDate', new Date())}

@@ -7,7 +7,6 @@ import { AUTH_KEY } from './helpers/constants';
 import store from './store/store';
 import './custom.scss';
 import App from './App';
-import './i18n'
 import * as serviceWorker from './serviceWorker';
 import { getUserInfo } from './store/auth/actions';
 

@@ -8,9 +8,11 @@ import {
     toastr
 } from "asc-web-components";
 import { isAdmin } from '../../../store/auth/selectors';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, I18nextProvider } from 'react-i18next';
+import i18n from '../i18n';
+import { typeUser, typeGuest, department } from './../../../helpers/customNames';
 
-class ArticleMainButtonContent extends React.Component {
+class PureArticleMainButtonContent extends React.Component {
     onDropDownItemClick = (link) => {
         this.props.history.push(link);
     };
@@ -27,37 +29,37 @@ class ArticleMainButtonContent extends React.Component {
                 <MainButton
                     isDisabled={false}
                     isDropdown={true}
-                    text={"Actions"}
+                    text={t('Actions')}
                 >
                     <DropDownItem
                         icon="CatalogEmployeeIcon"
-                        label="New employee"
+                        label={t('CustomNewEmployee', { typeUser })}
                         onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/user`)}
                     />
                     <DropDownItem
                         icon="CatalogGuestIcon"
-                        label="New guest"
+                        label={t('CustomNewGuest', { typeGuest })}
                         onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/guest`)}
                     />
                     <DropDownItem
                         icon="CatalogDepartmentsIcon"
-                        label="New department"
+                        label={t('CustomNewDepartment', { department })}
                         onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/group/create`)}
                     />
                     <DropDownItem isSeparator />
                     <DropDownItem
                         icon="InvitationLinkIcon"
-                        label="Invitation link"
+                        label={t('InviteLinkTitle')}
                         onClick={this.onNotImplementedClick.bind(this, "Invitation link action")}
                     />
                     <DropDownItem
                         icon="PlaneIcon"
-                        label="Invite again"
+                        label={t('LblInviteAgain')}
                         onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
                     />
                     <DropDownItem
                         icon="ImportIcon"
-                        label={t('PeopleResource:ImportPeople')}
+                        label={t('ImportPeople')}
                         onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                     />
                 </MainButton>
@@ -67,10 +69,6 @@ class ArticleMainButtonContent extends React.Component {
     };
 };
 
-ArticleMainButtonContent.propTypes = {
-    isAdmin: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired
-};
 
 const mapStateToProps = (state) => {
     return {
@@ -79,4 +77,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(withRouter(withTranslation()(ArticleMainButtonContent)));
+const ArticleMainButtonContentContainer = withTranslation()(PureArticleMainButtonContent);
+
+const ArticleMainButtonContent = (props) => <I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>;
+
+ArticleMainButtonContent.propTypes = {
+    isAdmin: PropTypes.bool.isRequired,
+    history: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));

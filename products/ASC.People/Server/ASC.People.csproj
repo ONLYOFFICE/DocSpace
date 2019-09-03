@@ -16,10 +16,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0-preview8.19405.7" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />

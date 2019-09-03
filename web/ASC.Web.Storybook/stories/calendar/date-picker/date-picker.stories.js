@@ -26,7 +26,6 @@ storiesOf('Components|Calendar', module)
           action('Selected date')(date);
         }}
         selectedDate={myDateKnob('selectedDate', new Date())}
-        openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("1970/01/01"))}
         maxDate={myDateKnob('maxDate', new Date(new Date().getFullYear() + 1 + "/01/01"))}
         isDisabled={boolean("isDisabled", false)}
@@ -35,7 +34,7 @@ storiesOf('Components|Calendar', module)
         hasWarning={boolean("hasWarning", false)}
         isOpen={boolean('isOpen', false)}
         themeColor={color('themeColor', '#ED7309')}
-        locale={select('location', locales, 'en')}
+        locale={select('location', locales, moment.locale())}
       />
     </Section>
   ));

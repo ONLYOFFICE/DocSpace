@@ -12,22 +12,24 @@ import { handleAnyClick } from '../../utils/event';
 const DateInputStyle = styled.div`
 
 `;
+
 class DatePicker extends Component {
     constructor(props) {
         super(props);
+
+        moment.locale(props.locale);
 
         this.ref = React.createRef();
         if (props.isOpen) {
             handleAnyClick(true, this.handleClick);
         }
+        this.format = moment.localeData().longDateFormat('L');
     }
 
     state = {
         isOpen: this.props.isOpen,
-        selectedDate: this.props.selectedDate,
-        openToDate: this.props.openToDate,
+        selectedDate: new Date(moment(this.props.selectedDate, this.format)),
         value: moment(this.props.selectedDate).format('L'),
-        hasWarning: this.props.hasWarning,
     };
 
     handleClick = (e) => {
@@ -40,7 +42,9 @@ class DatePicker extends Component {
     };
 
     handleChange(e) {
-        let date = new Date(e.target.value);
+        const format = moment.localeData().longDateFormat('L');
+        let date = new Date(moment(e.target.value, format));
+
         if (!this.isValidDate(date)) { date = this.state.selectedDate; }
         if (this.validationDate(date)) {
             this.props.onChange && this.props.onChange(date);
@@ -77,13 +81,20 @@ class DatePicker extends Component {
             handleAnyClick(this.state.isOpen, this.handleClick);
         }
 
-        if (this.props.selectedDate !== prevProps.selectedDate) {
+        if (this.props.selectedDate !== prevProps.selectedDate ||
+            this.props.isOpen !== prevProps.isOpen || 
+            this.props.locale != prevProps.locale) {
             this.setState({
                 selectedDate: this.props.selectedDate,
+                isOpen: this.props.isOpen,
+                value: moment(this.props.selectedDate).format('L')
             });
         }
     }
 
+    /*formatDate = () => {
+
+    }*/
 
     render() {
 
@@ -91,24 +102,22 @@ class DatePicker extends Component {
         const isDisabled = this.props.isDisabled;
         const isReadOnly = this.props.isReadOnly;
         const hasError = this.props.hasError;
+        const hasWarning = this.props.hasWarning;
 
         this.validationDate(this.state.selectedDate);
 
         return (
             <DateInputStyle ref={this.ref} >
                 <InputBlock
-                    id={"0"}
-                    name={"name"}
                     isDisabled={isDisabled}
                     isReadOnly={isReadOnly}
                     hasError={hasError}
-                    hasWarning={this.state.hasWarning}
-                    iconName={isDisabled ? "CalendarEmptyIcon" : "CalendarIcon"}
-                    isIconFill={true}
-                    iconColor="#A3A9AE"
+                    hasWarning={hasWarning}
+                    iconName={"CalendarIcon"}
                     onIconClick={this.onIconClick.bind(this, !this.state.isOpen)}
                     value={this.state.value}
                     onChange={this.handleChange.bind(this)}
+                    placeholder={moment.localeData().longDateFormat('L')}
                 />
                 <Col>
                     <DropDown opened={this.state.isOpen}>

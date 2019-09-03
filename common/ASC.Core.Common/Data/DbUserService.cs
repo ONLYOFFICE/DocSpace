@@ -50,7 +50,7 @@ namespace ASC.Core.Data
             return ExecList(q).ConvertAll(ToUser).ToDictionary(u => u.ID);
         }
 
-        public IEnumerable<UserInfo> GetUsers(int tenant, bool isAdmin,
+        public List<UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,

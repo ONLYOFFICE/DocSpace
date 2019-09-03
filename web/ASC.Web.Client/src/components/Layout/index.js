@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Layout } from "asc-web-components";
-import { logout } from "../store/auth/actions";
-import { withTranslation } from "react-i18next";
+import { logout } from "../../store/auth/actions";
+import { withTranslation, I18nextProvider } from 'react-i18next';
+import i18n from "./i18n";
 
-class StudioLayout extends React.Component {
+class PureStudioLayout extends React.Component {
     shouldComponentUpdate(nextProps) {
         if(this.props.hasChanges !== nextProps.hasChanges) {
             return true;
@@ -35,13 +36,13 @@ class StudioLayout extends React.Component {
 
         const currentUserActions = [
             {
-                key: 'ProfileBtn', label: t("Resource:Profile"), onClick: this.onProfileClick
+                key: 'ProfileBtn', label: t("Profile"), onClick: this.onProfileClick
             },
             {
-                key: 'AboutBtn', label: t("Resource:AboutCompanyTitle"), onClick: this.onAboutClick
+                key: 'AboutBtn', label: t("AboutCompanyTitle"), onClick: this.onAboutClick
             },
             {
-                key: 'LogoutBtn', label: t("Resource:LogoutButton"), onClick: this.onLogoutClick
+                key: 'LogoutBtn', label: t("LogoutButton"), onClick: this.onLogoutClick
             },
         ];
 
@@ -62,9 +63,6 @@ class StudioLayout extends React.Component {
     }
 };
 
-StudioLayout.propTypes = {
-  logout: PropTypes.func.isRequired
-};
 
 const getAvailableModules = modules => {
   const separator = { seporator: true, id: "nav-seporator-1" };
@@ -92,9 +90,15 @@ function mapStateToProps(state) {
     currentUser: state.auth.user,
     currentModuleId: state.auth.settings.currentModuleId
   };
-}
+};
+const StudioLayoutContainer = withTranslation()(PureStudioLayout);
+
+const StudioLayout = (props) => <I18nextProvider i18n={i18n}><StudioLayoutContainer {...props} /></I18nextProvider>;
+StudioLayout.propTypes = {
+  logout: PropTypes.func.isRequired
+};
 
 export default connect(
   mapStateToProps,
   { logout }
-)(withRouter(withTranslation()(StudioLayout)));
+)(withRouter(StudioLayout));

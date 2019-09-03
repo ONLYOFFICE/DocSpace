@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import { IconButton, Text } from 'asc-web-components';
 import { useTranslation } from 'react-i18next';
+import {typeUser, typeGuest } from './../../../../../helpers/customNames';
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,8 +22,8 @@ const SectionHeaderContent = (props) => {
 
   const headerText = type
     ? type === "guest"
-      ? t('NewGuest')
-      : t('NewEmployee')
+      ? t('CustomNewGuest', { typeGuest })
+      : t('CustomNewEmployee', { typeUser })
     : profile
       ? profile.displayName
       : "";

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { login } from '../../../store/auth/actions';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import i18n from './i18n';
 
 const FormContainer = styled(Container)`
     margin-top: 70px;
@@ -35,7 +36,7 @@ const FormContainer = styled(Container)`
 const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
-    const { t } = useTranslation();
+    const { t } = useTranslation('translation', { i18n });
     const [identifier, setIdentifier] = useState('');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
@@ -106,7 +107,7 @@ const Form = props => {
                 <Col sm="12" md={mdOptions}>
                     <Card className="login-card">
                         <CardImg className="card-img" src="images/dark_general.png" alt="Logo" top />
-                        <CardTitle  className="card-title">Cloud Office Applications</CardTitle>
+                        <CardTitle  className="card-title">{t('TitleCloudOfficeApplications')}</CardTitle>
                     </Card>
                 </Col>
             </Row>
@@ -117,7 +118,7 @@ const Form = props => {
                         name="login"
                         hasError={!identifierValid}
                         value={identifier}
-                        placeholder={t('Resource:RegistrationEmailWatermark')}
+                        placeholder={t('RegistrationEmailWatermark')}
                         size='huge'
                         scale={true}
                         isAutoFocussed={true}
@@ -140,7 +141,7 @@ const Form = props => {
                         type="password"
                         hasError={!passwordValid}
                         value={password}
-                        placeholder={t('Resource:Password')}
+                        placeholder={t('Password')}
                         size='huge'
                         scale={true}
                         tabIndex={2}
@@ -160,7 +161,7 @@ const Form = props => {
                     <Button
                         primary
                         size='big'
-                        label={isLoading ? t('Resource:LoadingProcessing') : t('Resource:LoginButton')}
+                        label={isLoading ? t('LoadingProcessing') : t('LoginButton')}
                         tabIndex={3}
                         isDisabled={isLoading}
                         isLoading={isLoading}
