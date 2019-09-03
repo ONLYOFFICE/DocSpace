@@ -8,6 +8,7 @@ import { Error404 } from "./components/pages/Error";
 
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));
+const Confirm = lazy(() => import("./components/pages/Confirm"));
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         >
           <Switch>
             <Route exact path="/login" component={Login} />
+            <Route exact path="/confirm" component={Confirm} />
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute component={Error404} />
