@@ -31,7 +31,6 @@ using System.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -175,9 +174,9 @@ namespace ASC.Web.Core
             httpContext.SetCookies(CookiesType.AuthKey, cookie);
         }
 
-        public static int GetLifeTime()
+        public static int GetLifeTime(int tenantId)
         {
-            return TenantCookieSettings.GetForTenant(TenantProvider.CurrentTenantID).LifeTime;
+            return TenantCookieSettings.GetForTenant(tenantId).LifeTime;
         }
 
         public static void ResetUserCookie(this HttpContext httpContext, int tenantId, Guid? userId = null)

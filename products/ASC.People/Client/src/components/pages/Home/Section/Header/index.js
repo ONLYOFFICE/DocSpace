@@ -29,7 +29,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const SectionHeaderContent = React.memo(({
+const SectionHeaderContent = ({
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
@@ -151,14 +151,14 @@ const SectionHeaderContent = React.memo(({
           iconName='VerticalDotsIcon' 
           size={16} 
           color='#A3A9AE' 
-          getData={() => contextOptions(t)}
+          getData={contextOptions.bind(this, t)}
           isDisabled={false}/>
       }
       </div>
       : <Text.ContentHeader>{t("People")}</Text.ContentHeader>
     )
     );
-  });
+  };
 
   const mapStateToProps = (state) => {
     return {

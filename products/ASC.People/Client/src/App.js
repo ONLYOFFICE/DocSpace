@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { BrowserRouter, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import PeopleLayout from "./components/Layout";
+import PeopleLayout from "./components/Layout/index";
 import Home from "./components/pages/Home";
 import PrivateRoute from "./helpers/privateRoute";
 import Profile from './components/pages/Profile';
