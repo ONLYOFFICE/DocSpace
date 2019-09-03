@@ -3,9 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { PageLayout, RequestLoader } from "asc-web-components";
-import { withTranslation } from 'react-i18next';
+import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
 
 import {
   ArticleHeaderContent,
@@ -99,7 +98,7 @@ class PureHome extends React.Component {
       isHeaderChecked,
       selected
     } = this.state;
-    const t = this.props.t;
+    const { t } = this.props;
     return (
       <>
         <RequestLoader

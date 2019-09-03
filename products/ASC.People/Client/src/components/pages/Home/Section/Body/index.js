@@ -342,7 +342,7 @@ class SectionBodyContent extends React.PureComponent {
           isSelf
             ? {
                 key: "delete-profile",
-                label: t("PeopleResource:LblDeleteProfile"),
+                label: t("DeleteSelfProfile"),
                 onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
             : {

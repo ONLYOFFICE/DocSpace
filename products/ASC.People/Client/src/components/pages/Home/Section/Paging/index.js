@@ -88,7 +88,7 @@ const SectionPagingContent = ({
         label: t('CountPerPage', { count: 100 })
       }
     ],
-    []
+    [t]
   );
 
   const pageItems = useMemo(() => {
