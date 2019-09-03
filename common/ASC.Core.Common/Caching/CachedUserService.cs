@@ -75,7 +75,7 @@ namespace ASC.Core.Caching
 
             cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
             cacheUserPhotoItem.Subscribe((p) => cache.Remove(p.Key), CacheNotifyAction.Remove);
-            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.InsertOrUpdate);
+            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
 
             cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
             cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
@@ -145,7 +145,7 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = service.SaveUser(tenant, user);
-            cacheUserInfoItem.Publish(new UserInfoCacheItem() { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.InsertOrUpdate);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.Any);
             return user;
         }
 
@@ -205,14 +205,14 @@ namespace ASC.Core.Caching
         public Group SaveGroup(int tenant, Group group)
         {
             group = service.SaveGroup(tenant, group);
-            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = group.Id.ToString() }, CacheNotifyAction.InsertOrUpdate);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = group.Id.ToString() }, CacheNotifyAction.Any);
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
             service.RemoveGroup(tenant, id);
-            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = id.ToString() }, CacheNotifyAction.Remove);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = id.ToString() }, CacheNotifyAction.Any);
         }
 
 
