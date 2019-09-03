@@ -1,6 +1,13 @@
 {
   "Article": {
-    
+    "Resource":[
+      "People",
+      "Actions",
+      "InviteLinkTitle"
+    ],
+    "PeopleResource": [
+      "ImportPeople"
+    ]
   },
   "pages": {
     "Profile": {
