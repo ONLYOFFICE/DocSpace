@@ -7,6 +7,7 @@ import {
   Icons
 } from "asc-web-components";
 import { selectGroup } from '../../../store/people/actions';
+import { departments } from './../../../helpers/customNames';
 
 const getItems = data => {
   return data.map(item => {
@@ -111,7 +112,7 @@ const getTreeGroups = (groups) => {
   const treeData = [
       {
           key: "root",
-          title: "Departments",
+          title: departments,
           root: true,
           children: groups.map(g => {
               return {

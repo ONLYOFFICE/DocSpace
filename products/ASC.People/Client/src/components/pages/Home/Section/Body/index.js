@@ -31,7 +31,10 @@ import {
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
-import { resendUserInvites } from "../../../../../store/services/api";
+import {
+  resendUserInvites,
+  sendInstructionsToDelete
+} from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
 
 class SectionBodyContent extends React.PureComponent {
@@ -230,7 +233,7 @@ class SectionBodyContent extends React.PureComponent {
     toastr.success("Context action: Delete profile data");
   };
 
-  onDeleteProfileClick = email => {
+  onDeleteSelfProfileClick = email => {
     this.setState({
       dialog: {
         visible: true,
@@ -249,7 +252,19 @@ class SectionBodyContent extends React.PureComponent {
             label="Send"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading } = this.props;
+              onLoading(true);
+              sendInstructionsToDelete()
+                .then(() =>
+                  toastr.success(
+                    <Text.Body>
+                      Instructions to delete your profile has been sent to{" "}
+                      <b>{email}</b> email address
+                    </Text.Body>
+                  )
+                )
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,
@@ -269,7 +284,14 @@ class SectionBodyContent extends React.PureComponent {
     const { onLoading } = this.props;
     onLoading(true);
     resendUserInvites([user.id])
-      .then(() => toastr.success(<Text.Body>The email activation instructions have been sent to the <b>{user.email}</b> email address</Text.Body>))
+      .then(() =>
+        toastr.success(
+          <Text.Body>
+            The email activation instructions have been sent to the{" "}
+            <b>{user.email}</b> email address
+          </Text.Body>
+        )
+      )
       .catch(e => toastr.error("ERROR"))
       .finally(() => onLoading(false));
   };
@@ -295,12 +317,12 @@ class SectionBodyContent extends React.PureComponent {
             label: t("LblSendEmail"),
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
-          user.mobilePhone && isMobileOnly &&
-          {
-            key: "send-message",
-            label: t("LblSendMessage"),
-            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
-          },
+          user.mobilePhone &&
+            isMobileOnly && {
+              key: "send-message",
+              label: t("LblSendMessage"),
+              onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
+            },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
@@ -320,8 +342,8 @@ class SectionBodyContent extends React.PureComponent {
           isSelf
             ? {
                 key: "delete-profile",
-                label: t("PeopleResource:LblDeleteProfile"),
-                onClick: this.onDeleteProfileClick.bind(this, user.email)
+                label: t("DeleteSelfProfile"),
+                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
             : {
                 key: "disable",
@@ -379,7 +401,7 @@ class SectionBodyContent extends React.PureComponent {
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick.bind(this, user.email)
+            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
           }
         ];
       default:

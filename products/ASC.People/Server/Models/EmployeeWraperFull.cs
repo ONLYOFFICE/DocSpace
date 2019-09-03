@@ -217,7 +217,10 @@ namespace ASC.Web.Api.Models
 
         private void FillConacts(UserInfo userInfo)
         {
+            if (userInfo.Contacts == null) return;
+
             var contacts = new List<Contact>();
+
             for (var i = 0; i < userInfo.Contacts.Count; i += 2)
             {
                 if (i + 1 < userInfo.Contacts.Count)

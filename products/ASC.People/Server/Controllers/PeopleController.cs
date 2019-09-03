@@ -556,7 +556,6 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            user.Contacts.Clear();
             UpdateContacts(memberModel.Contacts, user);
             CoreContext.UserManager.SaveUserInfo(Tenant, user);
             return new EmployeeWraperFull(user, ApiContext);
@@ -1165,8 +1164,17 @@ namespace ASC.Employee.Core.Controllers
         private void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
-            user.Contacts.Clear();
+
             if (contacts == null) return;
+
+            if (user.Contacts == null)
+            {
+                user.Contacts = new List<string>();
+            }
+            else
+            {
+                user.Contacts.Clear();
+            }
 
             foreach (var contact in contacts)
             {
@@ -1179,6 +1187,11 @@ namespace ASC.Employee.Core.Controllers
         {
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             if (contacts == null) return;
+
+            if (user.Contacts == null)
+            {
+                user.Contacts = new List<string>();
+            }
 
             foreach (var contact in contacts)
             {

@@ -1,3 +1,4 @@
+export const departments = 'Departments';
 export const department = 'Department';
 export const position = 'Position';
 export const employedSinceDate = 'Employed since';
