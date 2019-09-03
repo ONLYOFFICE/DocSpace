@@ -1,0 +1,23 @@
+{
+  "pages": {
+    "About": {
+    },
+    "Home": {
+    },
+    "Login": {
+      "Resource": [
+        "LoadingProcessing",
+        "Password",
+        "RegistrationEmailWatermark",
+        "LoginButton"
+      ]
+    }
+  },
+  "Layout": {
+    "Resource": [
+      "Profile",
+      "AboutCompanyTitle",
+      "LogoutButton"
+    ]
+  }
+}
