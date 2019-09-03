@@ -515,16 +515,16 @@ namespace ASC.Web.Studio.Utility
         {
             var validationKey = EmailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
 
-            var link = string.Format("confirm.aspx?type={0}&key={1}", confirmType, validationKey);
+            var link = $"confirm?key={validationKey}&type={confirmType}";
 
             if (!string.IsNullOrEmpty(email))
             {
-                link += "&email=" + HttpUtility.UrlEncode(email);
+                link += $"email={HttpUtility.UrlEncode(email)}";
             }
 
             if (userId != default)
             {
-                link += "&uid=" + userId;
+                link += $"uid={userId}";
             }
 
             if (postfix != null)
