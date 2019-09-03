@@ -104,3 +104,15 @@ export function sendInstructionsToChangePassword(email) {
     ? fakeApi.sendInstructionsToChangePassword(email)
     : axios.post(`${API_URL}/people/password.json`, { email });
 }
+
+export function deleteUser(userId) {
+  return IS_FAKE
+    ? fakeApi.deleteUser(userId)
+    : axios.delete(`${API_URL}/people/${userId}.json`);
+}
+
+export function deleteUsers(userIds) {
+  return IS_FAKE
+    ? fakeApi.deleteUsers(userIds)
+    : axios.delete(`${API_URL}/people/delete.json`, { userIds });
+}

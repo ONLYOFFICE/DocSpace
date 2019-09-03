@@ -22,7 +22,8 @@ import {
   deselectUser,
   setSelection,
   updateUserStatus,
-  resetFilter
+  resetFilter,
+  fetchPeople
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
@@ -34,7 +35,8 @@ import { EmployeeStatus } from "../../../../../helpers/constants";
 import {
   resendUserInvites,
   sendInstructionsToDelete,
-  sendInstructionsToChangePassword
+  sendInstructionsToChangePassword,
+  deleteUser
 } from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
 
@@ -215,7 +217,15 @@ class SectionBodyContent extends React.PureComponent {
             label="OK"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading, filter, fetchPeople } = this.props;
+              onLoading(true);
+              deleteUser(user.id)
+                .then(() => {
+                  toastr.success("User has been removed successfully");
+                  return fetchPeople(filter);
+                })
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,
@@ -239,8 +249,6 @@ class SectionBodyContent extends React.PureComponent {
         ]
       }
     });
-
-    toastr.success("Context action: Delete profile data");
   };
 
   onDeleteSelfProfileClick = email => {
@@ -521,11 +529,12 @@ const mapStateToProps = state => {
     selected: state.people.selected,
     users: state.people.users,
     viewer: state.auth.user,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    filter: state.people.filter
   };
 };
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter }
+  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople }
 )(withRouter(withTranslation()(SectionBodyContent)));
