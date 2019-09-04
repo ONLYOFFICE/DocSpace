@@ -73,8 +73,10 @@ const SectionBodyContent = (props) => {
       <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
         {groupMembers.map(member => 
           <SelectedItem
+            key={member.id}
             text={member.displayName}
-            onClick={(e) => console.log("onClose", e.target)}
+            onClick={(e) => console.log("onClick", e.target)}
+            onClose={(e) => console.log("onClose", e.target)}
             isInline={true}
             style={{ marginRight: "8px", marginBottom: "8px" }}
           />
