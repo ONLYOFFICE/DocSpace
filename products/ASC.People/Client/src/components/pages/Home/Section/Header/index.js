@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
@@ -28,20 +29,7 @@ import {
   deleteUsers
 } from "../../../../../store/services/api";
 
-const contextOptions = t => {
-  return [
-    {
-      key: "edit-group",
-      label: t("EditButton"),
-      onClick: toastr.success.bind(this, "Edit group action")
-    },
-    {
-      key: "delete-group",
-      label: t("DeleteButton"),
-      onClick: toastr.success.bind(this, "Delete group action")
-    }
-  ];
-};
+
 
 const wrapperStyle = {
   display: "flex",
@@ -63,7 +51,9 @@ const SectionHeaderContent = props => {
     updateUserStatus,
     updateUserType,
     onLoading, 
-    filter
+    filter,
+    history,
+    settings
   } = props;
 
   const selectedUserIds = getSelectionIds(selection);
@@ -157,6 +147,27 @@ const SectionHeaderContent = props => {
     }
   ];
 
+  const onEditGroup = useCallback(() =>  history.push(`${settings.homepage}/group/edit/${group.id}`), [history, settings, group]);
+
+  const onDeleteGroup = useCallback(() => {
+    toastr.success("Delete group action");
+  }, []);
+
+  const getContextOptions = useCallback(() => {
+    return [
+      {
+        key: "edit-group",
+        label: t("EditButton"),
+        onClick: onEditGroup
+      },
+      {
+        key: "delete-group",
+        label: t("DeleteButton"),
+        onClick: onDeleteGroup
+      }
+    ];
+  }, [t, onEditGroup, onDeleteGroup]);
+
   return isHeaderVisible ? (
     <div style={{ margin: "0 -16px" }}>
       <GroupButtonsMenu
@@ -181,7 +192,7 @@ const SectionHeaderContent = props => {
           iconName="VerticalDotsIcon"
           size={16}
           color="#A3A9AE"
-          getData={contextOptions.bind(this, t)}
+          getData={getContextOptions.bind(this, t)}
           isDisabled={false}
         />
       )}
@@ -196,11 +207,12 @@ const mapStateToProps = state => {
     group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
     selection: state.people.selection,
     isAdmin: isAdmin(state.auth.user),
-    filter: state.people.filter
+    filter: state.people.filter,
+    settings: state.auth.settings
   };
 };
 
 export default connect(
   mapStateToProps,
   { updateUserStatus, updateUserType, fetchPeople }
-)(withTranslation()(SectionHeaderContent));
+)(withTranslation()(withRouter(SectionHeaderContent)));

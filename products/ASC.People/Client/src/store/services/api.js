@@ -119,6 +119,12 @@ export function deleteUsers(userIds) {
         .then(CheckError);
 }
 
+export function getGroup(groupId) {
+  return IS_FAKE
+    ? fakeApi.getGroup(groupId)
+    : axios.get(`${API_URL}/group/${groupId}.json`);
+}
+
 function CheckError(res) {
   if (res.data && res.data.error) {
     const error = res.data.error.message || "Unknown error has happened";

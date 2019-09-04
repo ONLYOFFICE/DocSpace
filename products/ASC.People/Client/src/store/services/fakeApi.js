@@ -503,8 +503,36 @@ export function deleteUsers(userIds) {
 
 export function sendInstructionsToDelete() {
   return fakeResponse("Instruction has been sent successfully");
-};
+}
 
 export function sendInstructionsToChangePassword() {
   return fakeResponse("Instruction has been sent successfully");
-};
+}
+
+export function getGroup(groupId) {
+  return fakeResponse({
+    id: "06448c0a-7f10-4c6d-9ad4-f94de2235778",
+    name: "All domain users",
+    category: "00000000-0000-0000-0000-000000000000",
+    parent: "00000000-0000-0000-0000-000000000000",
+    description: null,
+    manager: {
+      id: "646a6cff-df57-4b83-8ffe-91a24910328c",
+      displayName: "Alexey Safronov",
+      avatarSmall:
+        "/storage/userPhotos/root/646a6cff-df57-4b83-8ffe-91a24910328c_size_32-32.png?_=1787432031",
+      profileUrl:
+        "http://localhost:8092/products/people/profile.aspx?user=alexey.safronov1"
+    },
+    members: [
+      {
+        id: "646a6cff-df57-4b83-8ffe-91a24910328c",
+        displayName: "Alexey Safronov",
+        avatarSmall:
+          "/storage/userPhotos/root/646a6cff-df57-4b83-8ffe-91a24910328c_size_32-32.png?_=1787432031",
+        profileUrl:
+          "http://localhost:8092/products/people/profile.aspx?user=alexey.safronov1"
+      }
+    ]
+  });
+}
