@@ -42,7 +42,6 @@ export function toEmployeeWrapper(profile) {
         password: "",
         birthday: "",
         sex: "male",
-        passwordType: "link",
         workFrom: "",
         location: "",
         title: "",
