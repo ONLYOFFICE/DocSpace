@@ -44,8 +44,6 @@ class UpdateUserForm extends React.Component {
       errors: {
         firstName: false,
         lastName: false,
-        email: false,
-        password: false,
       },
       profile: toEmployeeWrapper(props.profile)
     };
@@ -76,13 +74,12 @@ class UpdateUserForm extends React.Component {
   }
 
   validate() {
+    const { profile } = this.state;
     const errors = {
-      firstName: !this.state.profile.firstName,
-      lastName: !this.state.profile.lastName,
-      email: !this.state.profile.email,
-      password: this.state.profile.passwordType === "temp" && !this.state.profile.password
+      firstName: !profile.firstName,
+      lastName: !profile.lastName,
     };
-    const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
+    const hasError = errors.firstName || errors.lastName;
     this.setState({errors: errors});
     return !hasError;
   }
@@ -117,140 +114,143 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
+    const { isLoading, isDialogVisible, errors, profile } = this.state;
+    const { t } = this.props;
+
     return (
       <>
         <MainContainer>
           <AvatarContainer>
             <Avatar
               size="max"
-              role={getUserRole(this.state.profile)}
-              source={this.state.profile.avatarMax}
-              userName={this.state.profile.displayName}
+              role={getUserRole(profile)}
+              source={profile.avatarMax}
+              userName={profile.displayName}
               editing={true}
-              editLabel={this.props.t("EditPhoto")}
+              editLabel={t("EditPhoto")}
             />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
-              labelText={`${this.props.t("Email")}:`}
+              labelText={`${t("Email")}:`}
               inputName="email"
-              inputValue={this.state.profile.email}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
+              inputValue={profile.email}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
               buttonOnClick={this.onDialogShow}
               buttonTabIndex={1}
             />
             <TextChangeField
-              labelText={`${this.props.t("Password")}:`}
+              labelText={`${t("Password")}:`}
               inputName="password"
-              inputValue={this.state.profile.password}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
+              inputValue={profile.password}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
               buttonOnClick={this.onDialogShow}
               buttonTabIndex={2}
             />
             <TextChangeField
-              labelText={`${this.props.t("Phone")}:`}
+              labelText={`${t("Phone")}:`}
               inputName="phone"
-              inputValue={this.state.profile.phone}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
+              inputValue={profile.phone}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
               buttonOnClick={this.onDialogShow}
               buttonTabIndex={3}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.firstName}
-              labelText={`${this.props.t("FirstName")}:`}
+              hasError={errors.firstName}
+              labelText={`${t("FirstName")}:`}
               inputName="firstName"
-              inputValue={this.state.profile.firstName}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.firstName}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
               inputAutoFocussed={true}
               inputTabIndex={4}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.lastName}
-              labelText={`${this.props.t("LastName")}:`}
+              hasError={errors.lastName}
+              labelText={`${t("LastName")}:`}
               inputName="lastName"
-              inputValue={this.state.profile.lastName}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.lastName}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
               inputTabIndex={5}
             />
             <DateField
-              labelText={`${this.props.t("Birthdate")}:`}
+              labelText={`${t("Birthdate")}:`}
               inputName="birthday"
-              inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
               inputTabIndex={6}
             />
             <RadioField
-              labelText={`${this.props.t("Sex")}:`}
+              labelText={`${t("Sex")}:`}
               radioName="sex"
-              radioValue={this.state.profile.sex}
+              radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: this.props.t("SexMale")},
-                { value: 'female', label: this.props.t("SexFemale")}
+                { value: 'male', label: t("SexMale")},
+                { value: 'female', label: t("SexFemale")}
               ]}
-              radioIsDisabled={this.state.isLoading}
+              radioIsDisabled={isLoading}
               radioOnChange={this.onTextChange}
             />
             <RadioField
-              labelText={`${this.props.t("UserType")}:`}
+              labelText={`${t("UserType")}:`}
               radioName="sex"
-              radioValue={this.state.profile.isVisitor.toString()}
+              radioValue={profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: this.props.t("CustomTypeGuest", { typeGuest })},
-                { value: "false", label: this.props.t("CustomTypeUser", { typeUser })}
+                { value: "true", label: t("CustomTypeGuest", { typeGuest })},
+                { value: "false", label: t("CustomTypeUser", { typeUser })}
               ]}
-              radioIsDisabled={this.state.isLoading}
+              radioIsDisabled={isLoading}
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
-              inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={7}
             />
             <TextField
-              labelText={`${this.props.t("Location")}:`}
+              labelText={`${t("Location")}:`}
               inputName="location"
-              inputValue={this.state.profile.location}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.location}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
               inputTabIndex={8}
             />
             <TextField
-              labelText={`${this.props.t("CustomPosition", { position })}:`}
+              labelText={`${t("CustomPosition", { position })}:`}
               inputName="title"
-              inputValue={this.state.profile.title}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.title}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
               inputTabIndex={9}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartment", { department })}:`}
-              departments={this.state.profile.groups}
+              labelText={`${t("CustomDepartment", { department })}:`}
+              departments={profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>
         <div>
-          <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange} tabIndex={10}/> 
+          <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
+          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onTextChange} tabIndex={10}/> 
         </div>
         <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big" tabIndex={11}/>
-          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
+          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11}/>
+          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
         </div>
 
         <ModalDialog
-          visible={this.state.isDialogVisible}
+          visible={isDialogVisible}
           headerContent={"Change something"}
           bodyContent={<p>Send the something instructions?</p>}
           footerContent={<Button label="Send" primary={true} onClick={this.onDialogClose} />}
