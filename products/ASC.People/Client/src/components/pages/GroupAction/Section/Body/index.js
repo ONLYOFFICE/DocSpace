@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { withRouter } from 'react-router';
 import PropTypes from "prop-types";
 import {
   Button,
@@ -105,4 +106,4 @@ SectionBodyContent.defaultProps = {
   group: null
 }
 
-export default SectionBodyContent;
+export default withRouter(SectionBodyContent);
