@@ -138,6 +138,7 @@ class UpdateUserForm extends React.Component {
               buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
               buttonOnClick={this.onDialogShow}
+              buttonTabIndex={1}
             />
             <TextChangeField
               labelText={`${this.props.t("Password")}:`}
@@ -146,6 +147,7 @@ class UpdateUserForm extends React.Component {
               buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
               buttonOnClick={this.onDialogShow}
+              buttonTabIndex={2}
             />
             <TextChangeField
               labelText={`${this.props.t("Phone")}:`}
@@ -154,6 +156,7 @@ class UpdateUserForm extends React.Component {
               buttonText={this.props.t("ChangeButton")}
               buttonIsDisabled={this.state.isLoading}
               buttonOnClick={this.onDialogShow}
+              buttonTabIndex={3}
             />
             <TextField
               isRequired={true}
@@ -163,6 +166,8 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.firstName}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputAutoFocussed={true}
+              inputTabIndex={4}
             />
             <TextField
               isRequired={true}
@@ -172,6 +177,7 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.lastName}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={5}
             />
             <DateField
               labelText={`${this.props.t("Birthdate")}:`}
@@ -179,6 +185,7 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onBirthdayDateChange}
+              inputTabIndex={6}
             />
             <RadioField
               labelText={`${this.props.t("Sex")}:`}
@@ -208,6 +215,7 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onWorkFromDateChange}
+              inputTabIndex={7}
             />
             <TextField
               labelText={`${this.props.t("Location")}:`}
@@ -215,6 +223,7 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.location}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={8}
             />
             <TextField
               labelText={`${this.props.t("CustomPosition", { position })}:`}
@@ -222,6 +231,7 @@ class UpdateUserForm extends React.Component {
               inputValue={this.state.profile.title}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={9}
             />
             <DepartmentField
               labelText={`${this.props.t("CustomDepartment", { department })}:`}
@@ -232,11 +242,11 @@ class UpdateUserForm extends React.Component {
         </MainContainer>
         <div>
           <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange}/> 
+          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange} tabIndex={10}/> 
         </div>
         <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
-          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
+          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big" tabIndex={11}/>
+          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
         </div>
 
         <ModalDialog

@@ -133,6 +133,8 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.firstName}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputAutoFocussed={true}
+              inputTabIndex={1}
             />
             <TextField
               isRequired={true}
@@ -142,6 +144,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.lastName}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={2}
             />
             <TextField
               isRequired={true}
@@ -151,6 +154,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.email}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={3}
             />
             <PasswordField
               isRequired={true}
@@ -173,6 +177,7 @@ class CreateUserForm extends React.Component {
               refreshIconOnClick={()=>{}}
               copyLinkText={this.props.t("CopyEmailAndPassword")}
               copyLinkOnClick={()=>{}}
+              inputTabIndex={4}
             />
             <DateField
               labelText={`${this.props.t("Birthdate")}:`}
@@ -180,6 +185,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onBirthdayDateChange}
+              inputTabIndex={5}
             />
             <RadioField
               labelText={`${this.props.t("Sex")}:`}
@@ -198,6 +204,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onWorkFromDateChange}
+              inputTabIndex={6}
             />
             <TextField
               labelText={`${this.props.t("Location")}:`}
@@ -205,6 +212,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.location}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={7}
             />
             <TextField
               labelText={`${this.props.t("CustomPosition", { position })}:`}
@@ -212,6 +220,7 @@ class CreateUserForm extends React.Component {
               inputValue={this.state.profile.title}
               inputIsDisabled={this.state.isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={8}
             />
             <DepartmentField
               labelText={`${this.props.t("CustomDepartment", { department })}:`}
@@ -222,11 +231,11 @@ class CreateUserForm extends React.Component {
         </MainContainer>
         <div>
           <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange}/> 
+          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange} tabIndex={9}/> 
         </div>
         <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
-          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
+          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big" tabIndex={10}/>
+          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={11}/>
         </div>
       </>
     );

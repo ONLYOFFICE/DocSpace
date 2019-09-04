@@ -33,18 +33,19 @@ const PasswordField = React.memo((props) => {
     isRequired,
     hasError,
     labelText,
-    
+
     radioName,
     radioValue,
     radioOptions,
     radioIsDisabled,
     radioOnChange,
-    
+
     inputName,
     inputValue,
     inputIsDisabled,
     inputOnChange,
-    
+    inputTabIndex,
+
     inputIconOnClick,
     inputShowPassword,
 
@@ -80,6 +81,7 @@ const PasswordField = React.memo((props) => {
             onChange={inputOnChange}
             scale={true}
             type={inputShowPassword ? "text" : "password"}
+            tabIndex={inputTabIndex}
           />
           <Icons.RefreshIcon
             size="medium"
