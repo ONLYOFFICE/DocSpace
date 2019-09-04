@@ -20,7 +20,7 @@ const SectionHeaderContent = (props) => {
   const {group, history, settings} = props;
   const { t } = useTranslation();
 
-  const headerText = t('CustomNewDepartment', { department });
+  const headerText = group ? t('CustomEditDepartment', { department }) : t('CustomNewDepartment', { department });
 
   return (
     <div style={wrapperStyle}>
@@ -41,7 +41,8 @@ SectionHeaderContent.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    group: state.group.targetGroup
   };
 };
 
