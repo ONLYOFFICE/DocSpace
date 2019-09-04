@@ -80,10 +80,11 @@ class CreateUserForm extends React.Component {
   }
 
   validate() {
+    const emailRegex = /.+@.+\..+/;
     const errors = {
       firstName: !this.state.profile.firstName,
       lastName: !this.state.profile.lastName,
-      email: !this.state.profile.email,
+      email: !emailRegex.test(this.state.profile.email),
       password: this.state.profile.passwordType === "temp" && !this.state.profile.password
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
