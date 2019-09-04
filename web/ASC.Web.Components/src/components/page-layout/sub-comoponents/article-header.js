@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 
 const StyledArticleHeader = styled.div`
   border-bottom: 1px solid #ECEEF1;
   height: 56px;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: ${props => props.visible ? 'block' : 'none'};
   }
 `;

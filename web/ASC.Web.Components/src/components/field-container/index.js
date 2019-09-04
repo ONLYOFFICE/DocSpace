@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components';
-import device from '../device'
+import { tablet } from '../../utils/device'
 import Label from '../label'
 
 const horizontalCss = css`
@@ -32,7 +32,7 @@ const verticalCss = css`
 const Container = styled.div`
   ${props => props.vertical ? verticalCss : horizontalCss }
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     ${verticalCss}
   }
 `;

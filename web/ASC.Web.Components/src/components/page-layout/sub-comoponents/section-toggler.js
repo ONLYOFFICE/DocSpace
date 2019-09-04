@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 import { Icons } from '../../icons'
 
 const StyledSectionToggler = styled.div`
   height: 64px;
   display: none;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: ${props => props.visible ? 'block' : 'none'};
   }
 

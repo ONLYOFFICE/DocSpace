@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet, mobile } from '../../../utils/device'
 import { Icons } from '../../icons'
 
 const StyledArticlePinPanel = styled.div`
@@ -8,11 +8,11 @@ const StyledArticlePinPanel = styled.div`
   height: 56px;
   display: none;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: block;
   }
 
-  @media ${device.mobile} {
+  @media ${mobile} {
     display: none;
   }
 

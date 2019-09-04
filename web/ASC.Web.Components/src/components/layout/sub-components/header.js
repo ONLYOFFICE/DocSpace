@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 import NavItem from './nav-item'
 import { Text } from '../../text'
 
@@ -14,7 +14,7 @@ const StyledHeader = styled.header`
   position: absolute;
   width: 100vw;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: flex;
   }
 `;
