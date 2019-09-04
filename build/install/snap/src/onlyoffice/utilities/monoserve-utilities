@@ -1,0 +1,36 @@
+#!/bin/bash
+
+export ONLYOFFICE_SOCKET="/tmp/sockets/onlyoffice.socket"
+export ONLYOFFICE_API_SYSTEM_SOCKET="/tmp/sockets/onlyofficeApiSystem.socket"
+export ONLYOFFICE_CORE_MACHINEKEY_FILE="$SNAP_DATA/onlyoffice/.onlyoffice_core_machine_key"
+
+mkdir -p "$(dirname "$ONLYOFFICE_SOCKET")"
+chmod 750 "$(dirname "$ONLYOFFICE_SOCKET")"
+
+mkdir -p "$(dirname "$ONLYOFFICE_API_SYSTEM_SOCKET")"
+chmod 750 "$(dirname "$ONLYOFFICE_API_SYSTEM_SOCKET")"
+
+mkdir -p "$(dirname "$ONLYOFFICE_CORE_MACHINEKEY_FILE")"
+chmod 750 "$(dirname "$ONLYOFFICE_CORE_MACHINEKEY_FILE")"
+
+mkdir -p $SNAP_DATA/hyperfastcgi
+chmod 750 $SNAP_DATA/hyperfastcgi
+
+mkdir -p $SNAP_DATA/onlyoffice/logs
+chmod 750 $SNAP_DATA/onlyoffice/logs
+
+mkdir -p $SNAP_DATA/onlyoffice/data
+chmod 750 $SNAP_DATA/onlyoffice/data
+
+mkdir -p $SNAP_DATA/onlyoffice/config
+chmod 750 $SNAP_DATA/onlyoffice/config
+
+onlyoffice_get_core_machine_key() {
+	if [ ! -f "$ONLYOFFICE_CORE_MACHINEKEY_FILE" ]; then
+		echo "$(tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c64)" > ${ONLYOFFICE_CORE_MACHINEKEY_FILE};
+		chmod 600 ${ONLYOFFICE_CORE_MACHINEKEY_FILE};
+	fi
+
+	cat "$ONLYOFFICE_CORE_MACHINEKEY_FILE";
+}
+
