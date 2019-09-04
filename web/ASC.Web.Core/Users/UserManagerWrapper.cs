@@ -131,7 +131,7 @@ namespace ASC.Web.Core.Users
 
                     if (fromInviteLink)
                     {
-                        StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
+                        StudioNotifyService.SendEmailActivationInstructions(tenant.TenantId, newUserInfo, newUserInfo.Email);
                     }
                 }
                 else
