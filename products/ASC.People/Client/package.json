@@ -30,7 +30,6 @@
     "react-window": "^1.8.5",
     "reactstrap": "8.0.1",
     "redux": "4.0.4",
-    "redux-form": "^8.2.6",
     "redux-thunk": "2.3.0",
     "styled-components": "^4.3.2",
     "universal-cookie": "^4.0.2"
