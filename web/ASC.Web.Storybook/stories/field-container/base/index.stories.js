@@ -20,6 +20,7 @@ storiesOf('Components|FieldContainer', module)
       {({ value, set }) => (
       <Section>
         <FieldContainer
+          isVertical={boolean('isVertical', false)}
           isRequired={boolean('isRequired', false)}
           hasError={boolean('hasError', false)}
           labelText={text('labelText', 'Name:')}

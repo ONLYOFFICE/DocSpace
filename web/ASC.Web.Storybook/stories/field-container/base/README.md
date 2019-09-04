@@ -16,7 +16,7 @@ Responsive form field container
 
 <FieldContainer labelText="Name:">
     <TextInput/>
-</FieldContainer>    
+</FieldContainer>
 
 ```
 
@@ -24,6 +24,7 @@ Responsive form field container
 
 | Props       | Type     | Required | Values | Default | Description                                  |
 | ------------| -------- | :------: | -------| ------- | -------------------------------------------- |
+| `isVertical`| `bool`   |    -     | -      | false   | Vertical or horizontal alignment             |
 | `isRequired`| `bool`   |    -     | -      | false   | Indicates that the field is required to fill |
-| `hasError`  | `bool`   |    -     | -      | -       | Indicates that the field is incorrect        |
+| `hasError`  | `bool`   |    -     | -      | false   | Indicates that the field is incorrect        |
 | `labelText` | `string` |    -     | -      | -       | Field label text                             |
