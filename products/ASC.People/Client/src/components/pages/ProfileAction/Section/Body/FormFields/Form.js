@@ -5,6 +5,19 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
 
+  .field-input {
+    width: 320px;
+  }
+
+  .radio-group {
+    line-height: 32px;
+    display: flex;
+
+    label:not(:first-child) {
+        margin-left: 33px;
+    }
+  }
+
   @media ${device.tablet} {
     flex-direction: column;
   }
