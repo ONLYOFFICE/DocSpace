@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import { device, FieldContainer, RadioButtonGroup, InputBlock, Icons, Link } from 'asc-web-components'
+import { utils, FieldContainer, RadioButtonGroup, InputBlock, Icons, Link } from 'asc-web-components'
 
 const PasswordBlock = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ const PasswordBlock = styled.div`
     margin: 0 0 0 16px;
   }
 
-  @media ${device.tablet} {
+  @media ${utils.device.tablet} {
     flex-direction: column;
     align-items: start;
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { device } from 'asc-web-components'
+import { utils } from 'asc-web-components'
 
 const MainContainer = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const MainContainer = styled.div`
     }
   }
 
-  @media ${device.tablet} {
+  @media ${utils.device.tablet} {
     flex-direction: column;
   }
 `;
