@@ -6,6 +6,12 @@
   "InvitePassword": "Password",
   "FirstName": "First Name",
   "LastName": "Last Name",
+  "CopyEmailAndPassword": "Copy email and password",
+  "ErrorPasswordMessage": "Password must contain",
+  "ErrorPasswordLength": "from {{fromNumber}} to {{toNumber}} characters",
+  "ErrorPasswordNoDigits": "digits",
+  "ErrorPasswordNoUpperCase": "capital letters",
+  "ErrorPasswordNoSpecialSymbols": "special characters",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"
