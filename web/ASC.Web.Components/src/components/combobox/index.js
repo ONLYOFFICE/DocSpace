@@ -95,8 +95,8 @@ const StyledLabel = styled.div`
 const StyledArrowIcon = styled.div`
   display: flex;
   align-self: start;
-  width: 8px;
-  flex: 0 0 8px;
+  width: ${props => props.needDisplay ? '8px' : '0px'};
+  flex: 0 0 ${props => props.needDisplay ? '8px' : '0px'};
   margin-top: ${props => props.noBorder ? `5px` : `12px`};
   margin-right: ${props => props.needDisplay ? '8px' : '0px'};
   margin-left: ${props => props.needDisplay ? 'auto' : '0px'};

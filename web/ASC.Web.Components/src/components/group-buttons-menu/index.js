@@ -150,6 +150,7 @@ class GroupButtonsMenu extends React.PureComponent {
               fontWeight={item.fontWeight}
               disabled={item.disabled}
               onClick={this.groupButtonClick.bind(this, item)}
+              {...this.props}
             >
               {item.children}
             </GroupButton>
