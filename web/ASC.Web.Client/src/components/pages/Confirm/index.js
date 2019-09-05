@@ -215,25 +215,6 @@ const Confirm = (props) => {
                         passwordSettings={passwordSettings}
                         isDisabled={isLoading}
                     />
-                    {/* <TextInput
-                        id='password'
-                        name='password'
-                        type="password"
-                        value={password}
-                        placeholder={t('InvitePassword')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={4}
-                        isDisabled={isLoading}
-                        hasError={!passwordValid}
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            !passwordValid && setPasswordValid(true);
-                            errorText && setErrorText("");
-                            onKeyPress(event.target);
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    /> */}
                 </Col>
             </Row>
 
