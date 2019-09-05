@@ -239,7 +239,12 @@ class PasswordInput extends React.PureComponent {
       tooltipPasswordSpecial,
       emailInputName,
       inputWidth,
-      passwordSettings
+      passwordSettings,
+      hasError,
+      hasWarning,
+      placeholder,
+      tabIndex,
+      maxLength
     } = this.props;
     const {
       type,
@@ -297,6 +302,12 @@ class PasswordInput extends React.PureComponent {
             isIconFill={true}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
+            hasError={hasError}
+            hasWarning={hasWarning}
+            placeholder={placeholder}
+            tabIndex={tabIndex}
+            maxLength={maxLength}
+            autoComplete='new-password'
           >
             {displayTooltip &&
               <DropDown directionY='top' manualY='150%' isOpen={true}>
@@ -353,7 +364,6 @@ PasswordInput.propTypes = {
 
   generatorSpecial: PropTypes.string,
   passwordSettings: PropTypes.object.isRequired
-
 }
 
 PasswordInput.defaultProps = {
