@@ -258,9 +258,9 @@ class UpdateUserForm extends React.Component {
 
         <ModalDialog
           visible={isDialogVisible}
-          headerContent={"Change something"}
-          bodyContent={<p>Send the something instructions?</p>}
-          footerContent={<Button label="Send" primary={true} onClick={this.onDialogClose} />}
+          headerContent={"Change password"}
+          bodyContent={<Text.Body>Send the password change instruction to the <a href="mailto:asc@story.book">asc@story.book</a> email address</Text.Body>}
+          footerContent={<Button key="SendBtn" label="Send" size="medium" primary={true} onClick={this.onDialogClose} />}
           onClose={this.onDialogClose}
         />
       </>
