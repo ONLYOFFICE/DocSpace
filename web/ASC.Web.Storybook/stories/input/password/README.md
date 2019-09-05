@@ -19,7 +19,9 @@ Check for compliance with settings is carried out on fly. As you type in require
 
 Depending on screen width of device, input will change location of elements.
 
-When setting focus to input, tooltip will be shown with progress in fulfilling conditions specified in settings. When unfocused, tooltip disappears.
+When setting focus to input, tooltip will be shown with progress in fulfilling conditions specified in settings. When unfocused, tooltip disappears.  
+
+You can apply all the parameters of the InputBlock component to the component.
 
 #### Usage
 
@@ -75,4 +77,3 @@ const settings = {
 | `passwordSettings`  | `object`  |    ✅    | -                  | -         | Set of settings for password generator and validator      |
 | `isDisabled`        | `bool`    |    -     | -                  | `false`   | Set input disabled                                        |
 | `inputWidth`        | `string`  |    -     | -                  | -         | If you need to set input width manually                   |
-

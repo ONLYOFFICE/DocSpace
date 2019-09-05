@@ -58,6 +58,8 @@ storiesOf('Components|Input', module)
               generatorSpecial='!@#$%^&*'
               passwordSettings={fakeSettings}
               isDisabled={isDisabled}
+              placeholder='password'
+              maxLength={30}
             />
           )}
         </StringValue>
