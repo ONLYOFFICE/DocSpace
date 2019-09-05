@@ -16,7 +16,7 @@ import { ModalDialog } from 'asc-web-components';
 
 | Props           | Type                      | Required | Values | Default | Description                                      |
 | --------------- | ------------------------- | :------: | -------| ------- | ------------------------------------------------ |
-| `visible`        | `bool`                    |          |        |         | Display dialog or not                            |
+| `visible`       | `bool`                    |          |        |         | Display dialog or not                            |
 | `headerContent` | `string/element/elements` |          |        |         | Header content                                   |
 | `bodyContent`   | `string/element/elements` |          |        |         | Body content                                     |
 | `footerContent` | `string/element/elements` |          |        |         | Footer content                                   |

@@ -2,73 +2,68 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import Backdrop from '../backdrop'
-
-const Header = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid #dee2e6;
-  border-top-left-radius: .3rem;
-  border-top-right-radius: .3rem;
-`;
-
-const HeaderTitle = styled.div`
-  font-size: 1.5rem;
-`;
-
-const CloseButton = styled.button`
-  background-color: transparent;
-  border: 0;
-  padding: 1rem;
-  margin: -1rem -1rem -1rem auto;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Body = styled.div`
-  position: relative;
-  flex: 1 1 auto;
-  padding: 1rem;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 1rem;
-  border-top: 1px solid #dee2e6;
-  border-bottom-right-radius: .3rem;
-  border-bottom-left-radius: .3rem;
-`;
-
-const Content = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  pointer-events: auto;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0,0,0,.2);
-  border-radius: .3rem;
-  outline: 0;
-`;
+import { Text } from '../text'
 
 const Dialog = styled.div`
   position: relative;
   width: auto;
-  max-width: 500px;
+  max-width: 560px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   min-height: 100%;
 `;
+
+const Content = styled.div`
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  padding: 0 16px 16px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+`;
+
+const HeaderText = styled(Text.ContentHeader)`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const CloseButton = styled.a`
+  cursor: pointer;
+  position: absolute;
+  right: 16px;
+  top: 20px;
+  width: 16px;
+  height: 16px;
+
+  &:before, &:after {
+    position: absolute;
+    left: 8px;
+    content: ' ';
+    height: 16px;
+    width: 1px;
+    background-color: #D8D8D8;
+  }
+  &:before {
+    transform: rotate(45deg);
+  }
+  &:after {
+    transform: rotate(-45deg);
+  }
+`;
+
+const Body = styled.div`
+  position: relative;
+  padding: 16px 0;
+`;
+
+const Footer = styled.div``;
 
 const ModalDialog = props => {
   //console.log("ModalDialog render");
@@ -80,8 +75,8 @@ const ModalDialog = props => {
         <Dialog>
           <Content>
             <Header>
-              <HeaderTitle>{headerContent}</HeaderTitle>
-              <CloseButton onClick={onClose}>×</CloseButton>
+              <HeaderText>{headerContent}</HeaderText>
+              <CloseButton onClick={onClose}></CloseButton>
             </Header>
             <Body>{bodyContent}</Body>
             <Footer>{footerContent}</Footer>
