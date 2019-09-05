@@ -1,0 +1,10 @@
+/*
+Any global style for all stories
+It can also be an scss file, however,
+you have to go to `webpack.config.js` file
+and enable the options in there
+*/
+
+html {
+  padding: 2rem;
+}
