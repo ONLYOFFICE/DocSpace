@@ -25,7 +25,6 @@ class CreateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
-    this.onShowPassword = this.onShowPassword.bind(this);
     this.onCancel = this.onCancel.bind(this);
   }
 
@@ -38,14 +37,13 @@ class CreateUserForm extends React.Component {
   mapPropsToState = (props) => {
     return {
       isLoading: false,
-      showPassword: false,
       errors: {
         firstName: false,
         lastName: false,
         email: false,
         password: false,
       },
-      profile: toEmployeeWrapper({ 
+      profile: toEmployeeWrapper({
         isVisitor: props.match.params.type === "guest",
         passwordType: "link"
       })
@@ -76,10 +74,6 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
-  onShowPassword() {
-    this.setState({showPassword: !this.state.showPassword});
-  }
-
   validate() {
     const { profile } = this.state;
     const emailRegex = /.+@.+\..+/;
@@ -90,15 +84,15 @@ class CreateUserForm extends React.Component {
       password: profile.passwordType === "temp" && !profile.password
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
-    this.setState({errors: errors});
+    this.setState({ errors: errors });
     return !hasError;
   }
 
   handleSubmit() {
-    if(!this.validate())
+    if (!this.validate())
       return false;
 
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     this.props.createProfile(this.state.profile)
       .then((profile) => {
@@ -107,7 +101,7 @@ class CreateUserForm extends React.Component {
       })
       .catch((error) => {
         toastr.error(error.message)
-        this.setState({isLoading: false})
+        this.setState({ isLoading: false })
       });
   }
 
@@ -116,8 +110,8 @@ class CreateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, showPassword, errors, profile } = this.state;
-    const { t } = this.props;
+    const { isLoading, errors, profile } = this.state;
+    const { t, settings } = this.props;
 
     return (
       <>
@@ -169,21 +163,19 @@ class CreateUserForm extends React.Component {
               radioName="passwordType"
               radioValue={profile.passwordType}
               radioOptions={[
-                { value: 'link', label: t("ActivationLink")},
-                { value: 'temp', label: t("TemporaryPassword")}
+                { value: 'link', label: t("ActivationLink") },
+                { value: 'temp', label: t("TemporaryPassword") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
               inputName="password"
+              emailInputName="email"
               inputValue={profile.password}
               inputIsDisabled={isLoading || profile.passwordType === "link"}
               inputOnChange={this.onInputChange}
-              inputIconOnClick={this.onShowPassword}
-              inputShowPassword={showPassword}
-              refreshIconOnClick={()=>{}}
               copyLinkText={t("CopyEmailAndPassword")}
-              copyLinkOnClick={()=>{}}
               inputTabIndex={4}
+              passwordSettings={settings.passwordSettings}
             />
             <DateField
               labelText={`${t("Birthdate")}:`}
@@ -198,8 +190,8 @@ class CreateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: t("SexMale")},
-                { value: 'female', label: t("SexFemale")}
+                { value: 'male', label: t("SexMale") },
+                { value: 'female', label: t("SexFemale") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -239,9 +231,9 @@ class CreateUserForm extends React.Component {
           <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
           <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
         </div>
-        <div style={{marginTop: "60px"}}>
-          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={10}/>
-          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={11}/>
+        <div style={{ marginTop: "60px" }}>
+          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={10} />
+          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={11} />
         </div>
       </>
     );
