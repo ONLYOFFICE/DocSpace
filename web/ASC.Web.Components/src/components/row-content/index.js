@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-
-import device from '../device';
+import { tablet } from '../../utils/device';
 
 const truncateCss = css`
   white-space: nowrap;
@@ -12,17 +11,17 @@ const truncateCss = css`
 
 const commonCss = css`
   margin: 0 8px;
-  font-family: Open Sans;
+  font-family: 'Open Sans';
   font-size: 12px;
   font-style: normal;
   font-weight: 600;
 `;
 
 const RowContainer = styled.div`
-  width: 100%
+  width: 100%;
   display: inline-flex;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: block;
   }
 `;
@@ -35,7 +34,7 @@ const MainContainerWrapper = styled.div`
   margin-right: auto;
   min-width: 140px;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     min-width: 140px;
     margin-right: 8px;
     margin-top: 6px;
@@ -61,7 +60,7 @@ const SideContainerWrapper = styled.div`
   width: 160px;
   color: ${props => props.color && props.color};
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: none;
   }
 `;
@@ -69,7 +68,7 @@ const SideContainerWrapper = styled.div`
 const TabletSideInfo = styled.div`
   display: none;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     display: block;
     min-width: 160px;
     margin: 0 8px;

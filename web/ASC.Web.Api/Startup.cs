@@ -10,6 +10,7 @@ using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api
 {
@@ -39,12 +41,10 @@ namespace ASC.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                    .AddNewtonsoftJson(s =>
-                    {
-                        s.SerializerSettings.ContractResolver = new ResponseContractResolver(services.BuildServiceProvider());
-                        s.UseCamelCasing(true);
-                    })
+                    .AddNewtonsoftJson()
                     .AddXmlSerializerFormatters();
+
+            services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
             services.AddMemoryCache();
 

@@ -10,7 +10,8 @@ const DateField = React.memo((props) => {
     inputName,
     inputValue,
     inputIsDisabled,
-    inputOnChange
+    inputOnChange,
+    inputTabIndex
   } = props;
 
   return (
@@ -25,6 +26,7 @@ const DateField = React.memo((props) => {
         disabled={inputIsDisabled}
         onChange={inputOnChange}
         hasError={hasError}
+        tabIndex={inputTabIndex}
       />
     </FieldContainer>
   );

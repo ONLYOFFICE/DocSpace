@@ -86,3 +86,50 @@ export function updateUserType(type, userIds) {
     ? fakeApi.updateUserType(type, userIds)
     : axios.put(`${API_URL}/people/type/${type}`, { userIds });
 }
+
+export function resendUserInvites(userIds) {
+  return IS_FAKE
+    ? fakeApi.resendUserInvites(userIds)
+    : axios.put(`${API_URL}/people/invite`, { userIds });
+}
+
+export function sendInstructionsToDelete() {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToDelete()
+    : axios.put(`${API_URL}/people/self/delete.json`);
+}
+
+export function sendInstructionsToChangePassword(email) {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToChangePassword(email)
+    : axios.post(`${API_URL}/people/password.json`, { email });
+}
+
+export function deleteUser(userId) {
+  return IS_FAKE
+    ? fakeApi.deleteUser(userId)
+    : axios.delete(`${API_URL}/people/${userId}.json`);
+}
+
+export function deleteUsers(userIds) {
+  return IS_FAKE
+    ? fakeApi.deleteUsers(userIds)
+    : axios
+        .put(`${API_URL}/people/delete.json`, { userIds })
+        .then(CheckError);
+}
+
+export function getGroup(groupId) {
+  return IS_FAKE
+    ? fakeApi.getGroup(groupId)
+    : axios.get(`${API_URL}/group/${groupId}.json`);
+}
+
+function CheckError(res) {
+  if (res.data && res.data.error) {
+    const error = res.data.error.message || "Unknown error has happened";
+    console.trace(error);
+    throw error;
+  }
+  return Promise.resolve(res);
+}

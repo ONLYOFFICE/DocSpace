@@ -308,7 +308,8 @@ namespace ASC.Employee.Core.Controllers
 
             var users = CoreContext.UserManager.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total);
 
-            ApiContext.SetTotalCount(total);
+            ApiContext.SetTotalCount(total)
+                .SetCount(users.Count);
 
             return users;
         }
@@ -556,7 +557,6 @@ namespace ASC.Employee.Core.Controllers
             if (CoreContext.UserManager.IsSystemUser(user.ID))
                 throw new SecurityException();
 
-            user.Contacts.Clear();
             UpdateContacts(memberModel.Contacts, user);
             CoreContext.UserManager.SaveUserInfo(Tenant, user);
             return new EmployeeWraperFull(user, ApiContext);
@@ -935,7 +935,7 @@ namespace ASC.Employee.Core.Controllers
                 }
                 else
                 {
-                    StudioNotifyService.SendEmailActivationInstructions(user, user.Email);
+                    StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, user.Email);
                 }
             }
 
@@ -944,7 +944,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(user => new EmployeeWraperFull(user, ApiContext));
         }
 
-        [Update("delete")]
+        [Update("delete", Order = -1)]
         public IEnumerable<EmployeeWraperFull> RemoveUsers(UpdateMembersModel model)
         {
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
@@ -980,7 +980,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            StudioNotifyService.SendMsgProfileDeletion(user);
+            StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
             MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
@@ -1165,8 +1165,17 @@ namespace ASC.Employee.Core.Controllers
         private void UpdateContacts(IEnumerable<Contact> contacts, UserInfo user)
         {
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
-            user.Contacts.Clear();
+
             if (contacts == null) return;
+
+            if (user.Contacts == null)
+            {
+                user.Contacts = new List<string>();
+            }
+            else
+            {
+                user.Contacts.Clear();
+            }
 
             foreach (var contact in contacts)
             {
@@ -1179,6 +1188,11 @@ namespace ASC.Employee.Core.Controllers
         {
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             if (contacts == null) return;
+
+            if (user.Contacts == null)
+            {
+                user.Contacts = new List<string>();
+            }
 
             foreach (var contact in contacts)
             {

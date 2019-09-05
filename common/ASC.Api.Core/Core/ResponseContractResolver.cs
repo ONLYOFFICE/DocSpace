@@ -29,8 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -38,9 +36,9 @@ namespace ASC.Api.Core
 {
     public class ResponseContractResolver : DefaultContractResolver
     {
-        public ServiceProvider Services { get; }
+        public IHttpContextAccessor Services { get; }
 
-        public ResponseContractResolver(ServiceProvider services)
+        public ResponseContractResolver(IHttpContextAccessor services)
         {
             Services = services;
             NamingStrategy = new CamelCaseNamingStrategy
@@ -82,11 +80,11 @@ namespace ASC.Api.Core
     }
     public class JsonStringConverter : JsonConverter
     {
-        public ServiceProvider Services { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public JsonStringConverter(ServiceProvider services)
+        public JsonStringConverter(IHttpContextAccessor httpContextAccessor)
         {
-            Services = services;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public override bool CanConvert(Type objectType)
@@ -101,8 +99,7 @@ namespace ASC.Api.Core
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var httpContext = new ApiContext(Services.GetService<IHttpContextAccessor>().HttpContext);
-            var fields = httpContext.Fields;
+            var fields = HttpContextAccessor.HttpContext.Request.Query.GetRequestArray("fields");
 
             if (fields != null)
             {

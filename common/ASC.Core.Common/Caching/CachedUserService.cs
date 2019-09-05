@@ -75,7 +75,7 @@ namespace ASC.Core.Caching
 
             cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
             cacheUserPhotoItem.Subscribe((p) => cache.Remove(p.Key), CacheNotifyAction.Remove);
-            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.InsertOrUpdate);
+            cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
 
             cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
             cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
@@ -91,7 +91,7 @@ namespace ASC.Core.Caching
             }
         }
 
-        public IEnumerable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        public List<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
         {
             return service.GetUsers(tenant, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total);
         }
@@ -145,7 +145,7 @@ namespace ASC.Core.Caching
         public UserInfo SaveUser(int tenant, UserInfo user)
         {
             user = service.SaveUser(tenant, user);
-            cacheUserInfoItem.Publish(new UserInfoCacheItem() { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.InsertOrUpdate);
+            cacheUserInfoItem.Publish(new UserInfoCacheItem { ID = user.ID.ToByteString(), Tenant = tenant }, CacheNotifyAction.Any);
             return user;
         }
 
@@ -205,14 +205,14 @@ namespace ASC.Core.Caching
         public Group SaveGroup(int tenant, Group group)
         {
             group = service.SaveGroup(tenant, group);
-            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = group.Id.ToString() }, CacheNotifyAction.InsertOrUpdate);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = group.Id.ToString() }, CacheNotifyAction.Any);
             return group;
         }
 
         public void RemoveGroup(int tenant, Guid id)
         {
             service.RemoveGroup(tenant, id);
-            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = id.ToString() }, CacheNotifyAction.Remove);
+            cacheGroupCacheItem.Publish(new GroupCacheItem { ID = id.ToString() }, CacheNotifyAction.Any);
         }
 
 

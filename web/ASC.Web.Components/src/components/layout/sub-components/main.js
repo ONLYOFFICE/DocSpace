@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 
 const StyledMain = styled.main` 
   height: 100vh;
@@ -10,7 +10,7 @@ const StyledMain = styled.main`
   display: flex;
   flex-direction: row;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     padding: ${props => props.fullscreen ? '0' : '56px 0 0 0'};
   }
 `;

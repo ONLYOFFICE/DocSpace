@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, profileEqual, createProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -30,7 +30,7 @@ class CreateUserForm extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!profileEqual(this.props.profile, prevProps.profile)) {
+    if (this.props.match.params.type !== prevProps.match.params.type) {
       this.setState(this.mapPropsToState(this.props));
     }
   }
@@ -45,10 +45,10 @@ class CreateUserForm extends React.Component {
         email: false,
         password: false,
       },
-      profile: { 
-        ...{ passwordType: "link" },
-        ...toEmployeeWrapper(props.profile)
-      }
+      profile: toEmployeeWrapper({ 
+        isVisitor: props.match.params.type === "guest",
+        passwordType: "link"
+      })
     };
   }
 
@@ -81,11 +81,13 @@ class CreateUserForm extends React.Component {
   }
 
   validate() {
+    const { profile } = this.state;
+    const emailRegex = /.+@.+\..+/;
     const errors = {
-      firstName: !this.state.profile.firstName,
-      lastName: !this.state.profile.lastName,
-      email: !this.state.profile.email,
-      password: this.state.profile.passwordType === "temp" && !this.state.profile.password
+      firstName: !profile.firstName,
+      lastName: !profile.lastName,
+      email: !emailRegex.test(profile.email),
+      password: profile.passwordType === "temp" && !profile.password
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
     this.setState({errors: errors});
@@ -99,9 +101,9 @@ class CreateUserForm extends React.Component {
     this.setState({isLoading: true});
 
     this.props.createProfile(this.state.profile)
-      .then(() => {
+      .then((profile) => {
         toastr.success("Success");
-        this.props.history.goBack();
+        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
         toastr.error(error.message)
@@ -110,124 +112,136 @@ class CreateUserForm extends React.Component {
   }
 
   onCancel() {
-    this.props.history.goBack();
+    this.props.history.push(this.props.settings.homepage)
   }
 
   render() {
+    const { isLoading, showPassword, errors, profile } = this.state;
+    const { t } = this.props;
+
     return (
       <>
         <MainContainer>
           <AvatarContainer>
             <Avatar
               size="max"
-              role={getUserRole(this.state.profile)}
+              role={getUserRole(profile)}
               editing={true}
-              editLabel={this.props.t("AddPhoto")}
+              editLabel={t("AddPhoto")}
             />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextField
               isRequired={true}
-              hasError={this.state.errors.firstName}
-              labelText={`${this.props.t("FirstName")}:`}
+              hasError={errors.firstName}
+              labelText={`${t("FirstName")}:`}
               inputName="firstName"
-              inputValue={this.state.profile.firstName}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.firstName}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
+              inputAutoFocussed={true}
+              inputTabIndex={1}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.lastName}
-              labelText={`${this.props.t("LastName")}:`}
+              hasError={errors.lastName}
+              labelText={`${t("LastName")}:`}
               inputName="lastName"
-              inputValue={this.state.profile.lastName}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.lastName}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={2}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.email}
-              labelText={`${this.props.t("Email")}:`}
+              hasError={errors.email}
+              labelText={`${t("Email")}:`}
               inputName="email"
-              inputValue={this.state.profile.email}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.email}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={3}
             />
             <PasswordField
               isRequired={true}
-              hasError={this.state.errors.password}
-              labelText={`${this.props.t("Password")}:`}
+              hasError={errors.password}
+              labelText={`${t("Password")}:`}
               radioName="passwordType"
-              radioValue={this.state.profile.passwordType}
+              radioValue={profile.passwordType}
               radioOptions={[
-                { value: 'link', label: this.props.t("ActivationLink")},
-                { value: 'temp', label: this.props.t("TemporaryPassword")}
+                { value: 'link', label: t("ActivationLink")},
+                { value: 'temp', label: t("TemporaryPassword")}
               ]}
-              radioIsDisabled={this.state.isLoading}
+              radioIsDisabled={isLoading}
               radioOnChange={this.onTextChange}
               inputName="password"
-              inputValue={this.state.profile.password}
-              inputIsDisabled={this.state.isLoading || this.state.profile.passwordType === "link"}
+              inputValue={profile.password}
+              inputIsDisabled={isLoading || profile.passwordType === "link"}
               inputOnChange={this.onTextChange}
               inputIconOnClick={this.onShowPassword}
-              inputShowPassword={this.state.showPassword}
+              inputShowPassword={showPassword}
               refreshIconOnClick={()=>{}}
-              copyLinkText={this.props.t("CopyEmailAndPassword")}
+              copyLinkText={t("CopyEmailAndPassword")}
               copyLinkOnClick={()=>{}}
+              inputTabIndex={4}
             />
             <DateField
-              labelText={`${this.props.t("Birthdate")}:`}
+              labelText={`${t("Birthdate")}:`}
               inputName="birthday"
-              inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
+              inputTabIndex={5}
             />
             <RadioField
-              labelText={`${this.props.t("Sex")}:`}
+              labelText={`${t("Sex")}:`}
               radioName="sex"
-              radioValue={this.state.profile.sex}
+              radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: this.props.t("SexMale")},
-                { value: 'female', label: this.props.t("SexFemale")}
+                { value: 'male', label: t("SexMale")},
+                { value: 'female', label: t("SexFemale")}
               ]}
-              radioIsDisabled={this.state.isLoading}
+              radioIsDisabled={isLoading}
               radioOnChange={this.onTextChange}
             />
             <DateField
-              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
-              inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onWorkFromDateChange}
+              inputTabIndex={6}
             />
             <TextField
-              labelText={`${this.props.t("Location")}:`}
+              labelText={`${t("Location")}:`}
               inputName="location"
-              inputValue={this.state.profile.location}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.location}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={7}
             />
             <TextField
-              labelText={`${this.props.t("CustomPosition", { position })}:`}
+              labelText={`${t("CustomPosition", { position })}:`}
               inputName="title"
-              inputValue={this.state.profile.title}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.title}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onTextChange}
+              inputTabIndex={8}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartment", { department })}:`}
-              departments={this.state.profile.groups}
+              labelText={`${t("CustomDepartment", { department })}:`}
+              departments={profile.groups}
               onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>
         <div>
-          <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange}/> 
+          <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
+          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onTextChange} tabIndex={9}/> 
         </div>
         <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
-          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
+          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={10}/>
+          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={11}/>
         </div>
       </>
     );
@@ -236,7 +250,7 @@ class CreateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    profile: state.profile.targetUser
+    settings: state.auth.settings
   }
 };
 

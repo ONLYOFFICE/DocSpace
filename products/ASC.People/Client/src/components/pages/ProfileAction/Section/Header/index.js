@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import { IconButton, Text } from 'asc-web-components';
 import { useTranslation } from 'react-i18next';
+import {typeUser, typeGuest } from './../../../../../helpers/customNames';
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,14 +16,17 @@ const Header = styled(Text.ContentHeader)`
 `;
 
 const SectionHeaderContent = (props) => {
-  const {profile, history, settings} = props;
+  const { profile, history, settings, match } = props;
+  const { type } = match.params;
   const { t } = useTranslation();
 
-  const headerText = profile && profile.displayName
-    ? profile.displayName
-    : profile.isVisitor
-      ? t('NewGuest')
-      : t('NewEmployee');
+  const headerText = type
+    ? type === "guest"
+      ? t('CustomNewGuest', { typeGuest })
+      : t('CustomNewEmployee', { typeUser })
+    : profile
+      ? profile.displayName
+      : "";
 
   const onClick = useCallback(() => {
     history.push(settings.homepage)

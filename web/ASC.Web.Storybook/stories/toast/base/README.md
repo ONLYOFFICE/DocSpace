@@ -27,7 +27,26 @@ or
   {toastr.success('Some text for toast')}
 </Toast>
 ```
+You can use simple html tags. For this action you should wrap your message by empty tags:
+```js
 
+<Toast />
+<button onClick={() => toastr.success(<>You have <b>bold text</b></>)}>Click</button>
+```
+
+If your notification include only text in html tags or data in JSX tags, you can omit empty tags:
+```js
+
+<Toast />
+<button onClick={() => toastr.success(<b>Bold text</b>)}>Click</button>
+```
+
+```js
+import { Text } from 'asc-web-components';
+
+<Toast />
+<button onClick={() => toastr.success(<Text.Body>The email activation instructions have been sent to the <b>{user.email}</b> email address</Text.Body>))}>Click</button>
+```
 
 #### Properties
 

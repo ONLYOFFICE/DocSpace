@@ -3,9 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { PageLayout, RequestLoader } from "asc-web-components";
-import { withTranslation } from 'react-i18next';
+import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
 
 import {
   ArticleHeaderContent,
@@ -20,7 +19,7 @@ import {
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
 
-class Home extends React.Component {
+class PureHome extends React.Component {
   constructor(props) {
     super(props);
 
@@ -99,9 +98,9 @@ class Home extends React.Component {
       isHeaderChecked,
       selected
     } = this.state;
-    const t = this.props.t;
+    const { t } = this.props;
     return (
-      <I18nextProvider i18n={i18n}>
+      <>
         <RequestLoader
           visible={this.state.isLoading}
           zIndex={256}
@@ -124,6 +123,7 @@ class Home extends React.Component {
               onCheck={this.onSectionHeaderContentCheck}
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
+              onLoading={this.onLoading}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
@@ -138,16 +138,10 @@ class Home extends React.Component {
             <SectionPagingContent onLoading={this.onLoading} />
           }
         />
-      </I18nextProvider>
+      </>
     );
   }
 }
-
-Home.propTypes = {
-  users: PropTypes.array.isRequired,
-  history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool
-};
 
 function mapStateToProps(state) {
   return {
@@ -158,7 +152,17 @@ function mapStateToProps(state) {
   };
 }
 
+const HomeContainer = withTranslation()(PureHome);
+
+const Home = (props) => <I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>;
+
+Home.propTypes = {
+  users: PropTypes.array.isRequired,
+  history: PropTypes.object.isRequired,
+  isLoaded: PropTypes.bool
+};
+
 export default connect(
   mapStateToProps,
   { setSelected }
-)(withRouter(withTranslation()(Home)));
+)(withRouter(Home));

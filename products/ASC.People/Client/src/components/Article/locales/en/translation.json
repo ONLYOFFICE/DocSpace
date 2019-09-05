@@ -1,0 +1,12 @@
+{
+  "InviteLinkTitle": "Invitation link",
+  "ImportPeople": "Import people",
+  "Actions": "Actions",
+  "People": "People",
+
+  "LblInviteAgain": "Invite again",
+
+  "CustomNewEmployee": "New {{typeUser, lowercase}}",
+  "CustomNewGuest": "New {{typeGuest, lowercase}}",
+  "CustomNewDepartment": "New {{department, lowercase}}"
+}

@@ -31,6 +31,7 @@ const DateInput = props => {
             iconColor="#A3A9AE"
             onIconClick={iconClick}
             scale={true}
+            tabIndex={props.tabIndex}
           />
         }
         {...props}

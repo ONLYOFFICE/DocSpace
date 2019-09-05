@@ -146,7 +146,7 @@ namespace ASC.Api.Settings
             return ToSmtpOperationStatus();
         }
 
-        private static SmtpOperationStatus ToSmtpOperationStatus()
+        private SmtpOperationStatus ToSmtpOperationStatus()
         {
             var operations = SMTPTasks.GetTasks().ToList();
 
@@ -162,7 +162,7 @@ namespace ASC.Api.Settings
 
             var operation =
                 operations
-                    .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == TenantProvider.CurrentTenantID);
+                    .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
 
             if (operation == null)
             {

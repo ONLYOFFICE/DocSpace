@@ -1,4 +1,7 @@
 PUSHD %~dp0
+call runasadmin.bat "%~dpnx0"
+if %errorlevel% == 0 (
+
 call start\stop.bat
 
 PUSHD %~dp0..
@@ -27,3 +30,4 @@ call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=No
 start /b call build\start\start.bat
 
 pause
+)

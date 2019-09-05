@@ -115,11 +115,10 @@ namespace ASC.Web.Core.Users
                 CacheNotify.Subscribe((data) =>
                 {
                     var userId = new Guid(data.UserID.ToByteArray());
-                    var size = FromCahe(data.Size);
 
                     try
                     {
-                        Photofiles.TryGetValue(CacheSize.Big, out var dict);
+                        Photofiles.TryGetValue(data.Size, out var dict);
                         dict?.TryRemove(userId, out _);
                         //var storage = GetDataStore();
                         //storage.DeleteFiles("", data.UserID + "*.*", false);

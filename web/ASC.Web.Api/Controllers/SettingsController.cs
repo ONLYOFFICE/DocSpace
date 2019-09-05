@@ -384,7 +384,6 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var tenantId = TenantProvider.CurrentTenantID;
             var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
 
             if (model.Logo != null)
@@ -396,7 +395,7 @@ namespace ASC.Api.Settings
             }
 
             _tenantWhiteLabelSettings.LogoText = model.LogoText;
-            _tenantWhiteLabelSettings.Save(tenantId);
+            _tenantWhiteLabelSettings.Save(Tenant.TenantId);
 
         }
 
@@ -407,7 +406,6 @@ namespace ASC.Api.Settings
         {
             if (model.Attachments != null && model.Attachments.Any())
             {
-                var tenantId = TenantProvider.CurrentTenantID;
                 var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
 
                 foreach (var f in model.Attachments)
@@ -419,7 +417,7 @@ namespace ASC.Api.Settings
                     using var inputStream = f.OpenReadStream();
                     _tenantWhiteLabelSettings.SetLogoFromStream(logoType, fileExt, inputStream);
                 }
-                _tenantWhiteLabelSettings.Save(tenantId);
+                _tenantWhiteLabelSettings.Save(Tenant.TenantId);
             }
             else
             {
@@ -467,10 +465,10 @@ namespace ASC.Api.Settings
 
             var result = new Dictionary<int, string>
             {
-                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
+                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
             };
 
             return result;
@@ -708,10 +706,10 @@ namespace ASC.Api.Settings
 
             if (isMe)
             {
-                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
+                return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, user.Email, ConfirmType.TfaActivation);
             }
 
-            StudioNotifyService.SendMsgTfaReset(user);
+            StudioNotifyService.SendMsgTfaReset(Tenant.TenantId, user);
             return string.Empty;
         }
 
@@ -975,8 +973,8 @@ namespace ASC.Api.Settings
                 });
             }
 
-            var hits = StatisticManager.GetHitsByPeriod(TenantProvider.CurrentTenantID, from, to);
-            var hosts = StatisticManager.GetHostsByPeriod(TenantProvider.CurrentTenantID, from, to);
+            var hits = StatisticManager.GetHitsByPeriod(Tenant.TenantId, from, to);
+            var hosts = StatisticManager.GetHostsByPeriod(Tenant.TenantId, from, to);
 
             if (hits.Count == 0 || hosts.Count == 0) return points;
 

@@ -46,7 +46,7 @@ const CalendarStyle = styled.div`
 
     padding: 16px 16px 16px 17px;
     box-sizing: content-box;
-    ${props => props.disabled ?
+    ${props => props.isDisabled ?
         `pointer-events: none;
         ${DisabledStyle}
         `
@@ -411,16 +411,16 @@ class Calendar extends Component {
     }
 
     render() {
-        console.log("Calendar render");
+        //console.log("Calendar render");
 
-        const disabled = this.props.disabled;
+        const isDisabled = this.props.isDisabled;
         const size = this.props.size;
         const dropDownSizeMonth = this.getListMonth().length > 4 ? 184 : undefined;
         const dropDownSizeYear = this.getListMonth().length > 4 ? 184 : undefined;
 
         return (
             <CalendarContainer size={size}>
-                <CalendarStyle size={size} color={this.props.themeColor} disabled={disabled}>
+                <CalendarStyle size={size} color={this.props.themeColor} isDisabled={isDisabled}>
                     <ComboBoxStyle>
                         <ComboBox
                             scaled={true}
@@ -428,7 +428,7 @@ class Calendar extends Component {
                             onSelect={this.onSelectMonth.bind(this)}
                             selectedOption={this.getCurrentMonth()}
                             options={this.getListMonth()}
-                            isDisabled={disabled}
+                            isDisabled={isDisabled}
                         />
                         <ComboBoxDateStyle>
                             <ComboBox
@@ -437,7 +437,7 @@ class Calendar extends Component {
                                 onSelect={this.onSelectYear.bind(this)}
                                 selectedOption={this.getCurrentYear()}
                                 options={this.getArrayYears().reverse()}
-                                isDisabled={disabled}
+                                isDisabled={isDisabled}
                             />
                         </ComboBoxDateStyle>
                     </ComboBoxStyle>
@@ -463,7 +463,7 @@ Calendar.propTypes = {
     minDate: PropTypes.instanceOf(Date),
     maxDate: PropTypes.instanceOf(Date),
     locale: PropTypes.string,
-    disabled: PropTypes.bool,
+    isDisabled: PropTypes.bool,
     size: PropTypes.oneOf(['base', 'big'])
 }
 

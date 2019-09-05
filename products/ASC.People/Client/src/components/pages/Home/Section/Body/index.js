@@ -22,7 +22,8 @@ import {
   deselectUser,
   setSelection,
   updateUserStatus,
-  resetFilter
+  resetFilter,
+  fetchPeople
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
@@ -31,6 +32,13 @@ import {
 } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
+import {
+  resendUserInvites,
+  sendInstructionsToDelete,
+  sendInstructionsToChangePassword,
+  deleteUser
+} from "../../../../../store/services/api";
+import { isMobileOnly } from "react-device-detect";
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -51,8 +59,8 @@ class SectionBodyContent extends React.PureComponent {
     window.open("mailto:" + email);
   };
 
-  onSendMessageClick = () => {
-    toastr.success("Context action: Send message");
+  onSendMessageClick = mobilePhone => {
+    window.open(`sms:${mobilePhone}`);
   };
 
   onEditClick = user => {
@@ -80,7 +88,19 @@ class SectionBodyContent extends React.PureComponent {
             label="Send"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading } = this.props;
+              onLoading(true);
+              sendInstructionsToChangePassword(email)
+              .then(() =>
+                  toastr.success(
+                    <Text.Body>
+                      The password change instructions have been sent to the{" "}
+                      <b>{email}</b> email address
+                    </Text.Body>
+                  )
+                )
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,
@@ -97,9 +117,6 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onChangeEmailClick = email => {
-    this.setState({
-      newEmail: email
-    });
     this.setState({
       dialog: {
         visible: true,
@@ -200,7 +217,15 @@ class SectionBodyContent extends React.PureComponent {
             label="OK"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading, filter, fetchPeople } = this.props;
+              onLoading(true);
+              deleteUser(user.id)
+                .then(() => {
+                  toastr.success("User has been removed successfully");
+                  return fetchPeople(filter);
+                })
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,
@@ -224,11 +249,9 @@ class SectionBodyContent extends React.PureComponent {
         ]
       }
     });
-
-    toastr.success("Context action: Delete profile data");
   };
 
-  onDeleteProfileClick = email => {
+  onDeleteSelfProfileClick = email => {
     this.setState({
       dialog: {
         visible: true,
@@ -247,7 +270,19 @@ class SectionBodyContent extends React.PureComponent {
             label="Send"
             primary={true}
             onClick={() => {
-              toastr.success("Context action: Delete profile");
+              const { onLoading } = this.props;
+              onLoading(true);
+              sendInstructionsToDelete()
+                .then(() =>
+                  toastr.success(
+                    <Text.Body>
+                      Instructions to delete your profile has been sent to{" "}
+                      <b>{email}</b> email address
+                    </Text.Body>
+                  )
+                )
+                .catch(e => toastr.error("ERROR"))
+                .finally(() => onLoading(false));
               this.onDialogClose();
             }}
           />,
@@ -263,8 +298,20 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onInviteAgainClick = () => {
-    toastr.success("Context action: Invite again");
+  onInviteAgainClick = user => {
+    const { onLoading } = this.props;
+    onLoading(true);
+    resendUserInvites([user.id])
+      .then(() =>
+        toastr.success(
+          <Text.Body>
+            The email activation instructions have been sent to the{" "}
+            <b>{user.email}</b> email address
+          </Text.Body>
+        )
+      )
+      .catch(e => toastr.error("ERROR"))
+      .finally(() => onLoading(false));
   };
   getUserContextOptions = (user, viewer) => {
     let status = "";
@@ -288,11 +335,12 @@ class SectionBodyContent extends React.PureComponent {
             label: t("LblSendEmail"),
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
-          {
-            key: "send-message",
-            label: t("LblSendMessage"),
-            onClick: this.onSendMessageClick
-          },
+          user.mobilePhone &&
+            isMobileOnly && {
+              key: "send-message",
+              label: t("LblSendMessage"),
+              onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
+            },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
@@ -310,10 +358,12 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onChangeEmailClick.bind(this, user.email)
           },
           isSelf
-            ? {
+            ? viewer.isOwner 
+              ? {} 
+              : {
                 key: "delete-profile",
-                label: t("PeopleResource:LblDeleteProfile"),
-                onClick: this.onDeleteProfileClick.bind(this, user.email)
+                label: t("DeleteSelfProfile"),
+                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
             : {
                 key: "disable",
@@ -354,7 +404,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "invite-again",
             label: t("LblInviteAgain"),
-            onClick: this.onInviteAgainClick
+            onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
             (user.status === EmployeeStatus.Active
@@ -371,7 +421,7 @@ class SectionBodyContent extends React.PureComponent {
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick.bind(this, user.email)
+            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
           }
         ];
       default:
@@ -389,13 +439,16 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onResetFilter = () => {
-    const { onLoading } = this.props;
+    const { onLoading, resetFilter } = this.props;
     onLoading(true);
     resetFilter().finally(() => onLoading(false));
   };
 
   onDialogClose = () => {
-    this.setState({ dialog: { visible: false } });
+    this.setState({ 
+      newEmail: null,
+      dialog: { visible: false } 
+    });
   };
 
   render() {
@@ -478,11 +531,12 @@ const mapStateToProps = state => {
     selected: state.people.selected,
     users: state.people.users,
     viewer: state.auth.user,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    filter: state.people.filter
   };
 };
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter }
+  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople }
 )(withRouter(withTranslation()(SectionBodyContent)));

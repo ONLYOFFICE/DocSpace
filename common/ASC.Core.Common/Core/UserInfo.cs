@@ -41,7 +41,6 @@ namespace ASC.Core.Users
         {
             Status = EmployeeStatus.Active;
             ActivationStatus = EmployeeActivationStatus.NotActivated;
-            Contacts = new List<string>();
             LastModified = DateTime.UtcNow;
         }
 
@@ -166,7 +165,7 @@ namespace ASC.Core.Users
 
         internal string ContactsToString()
         {
-            if (Contacts.Count == 0) return null;
+            if (Contacts == null || Contacts.Count == 0) return null;
             var sBuilder = new StringBuilder();
             foreach (var contact in Contacts)
             {
@@ -178,11 +177,18 @@ namespace ASC.Core.Users
         internal UserInfo ContactsFromString(string contacts)
         {
             if (string.IsNullOrEmpty(contacts)) return this;
-            Contacts.Clear();
-            foreach (var contact in contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries))
+
+            if (Contacts == null)
             {
-                Contacts.Add(contact);
+                Contacts = new List<string>();
             }
+            else
+            {
+                Contacts.Clear();
+            }
+
+            Contacts.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
+
             return this;
         }
     }
