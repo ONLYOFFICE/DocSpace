@@ -1,0 +1,46 @@
+upstream fastcgi_backend_apisystem {
+        server unix:${ONLYOFFICE_API_SYSTEM_SOCKET};
+        keepalive 32;
+}
+
+upstream fastcgi_backend {
+	server unix:${ONLYOFFICE_SOCKET};
+	keepalive 32;
+}
+
+fastcgi_cache_path ${SNAP_DATA}/nginx/cache/onlyoffice
+	levels=1:2
+	keys_zone=onlyoffice:16m
+	max_size=256m
+	inactive=1d;
+
+map $http_host $this_host {
+  "" $host;
+  default $http_host;
+}
+
+map $http_x_forwarded_proto $the_scheme {
+  default $http_x_forwarded_proto;
+  "" $scheme;
+}
+
+map $http_x_forwarded_host $the_host {
+  default $http_x_forwarded_host;
+  "" $this_host;
+}
+	
+server {
+	listen 80;
+
+        add_header Access-Control-Allow-Origin *;
+
+	large_client_header_buffers 4 16k;
+
+        set $X_REWRITER_URL $the_scheme://$the_host;
+
+        if ($http_x_rewriter_url != '') {
+                set $X_REWRITER_URL $http_x_rewriter_url ;
+        }
+        
+	include ${SNAP_DATA}/nginx/config/conf.d/includes/onlyoffice-communityserver-*.conf;
+}	
