@@ -21,7 +21,8 @@ class UpdateUserForm extends React.Component {
 
     this.validate = this.validate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.onTextChange = this.onTextChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onUserTypeChange = this.onUserTypeChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
@@ -49,9 +50,15 @@ class UpdateUserForm extends React.Component {
     };
   }
 
-  onTextChange(event) {
+  onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
+    this.setState(stateCopy)
+  }
+
+  onUserTypeChange(event) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy)
   }
 
@@ -165,7 +172,7 @@ class UpdateUserForm extends React.Component {
               inputName="firstName"
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputAutoFocussed={true}
               inputTabIndex={4}
             />
@@ -176,7 +183,7 @@ class UpdateUserForm extends React.Component {
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={5}
             />
             <DateField
@@ -196,18 +203,18 @@ class UpdateUserForm extends React.Component {
                 { value: 'female', label: t("SexFemale")}
               ]}
               radioIsDisabled={isLoading}
-              radioOnChange={this.onTextChange}
+              radioOnChange={this.onInputChange}
             />
             <RadioField
               labelText={`${t("UserType")}:`}
-              radioName="sex"
+              radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
                 { value: "true", label: t("CustomTypeGuest", { typeGuest })},
                 { value: "false", label: t("CustomTypeUser", { typeUser })}
               ]}
               radioIsDisabled={isLoading}
-              radioOnChange={this.onTextChange}
+              radioOnChange={this.onUserTypeChange}
             />
             <DateField
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
@@ -222,7 +229,7 @@ class UpdateUserForm extends React.Component {
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={8}
             />
             <TextField
@@ -230,7 +237,7 @@ class UpdateUserForm extends React.Component {
               inputName="title"
               inputValue={profile.title}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={9}
             />
             <DepartmentField
@@ -242,7 +249,7 @@ class UpdateUserForm extends React.Component {
         </MainContainer>
         <div>
           <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onTextChange} tabIndex={10}/> 
+          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
         </div>
         <div style={{marginTop: "60px"}}>
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11}/>
@@ -251,9 +258,9 @@ class UpdateUserForm extends React.Component {
 
         <ModalDialog
           visible={isDialogVisible}
-          headerContent={"Change something"}
-          bodyContent={<p>Send the something instructions?</p>}
-          footerContent={<Button label="Send" primary={true} onClick={this.onDialogClose} />}
+          headerContent={"Change password"}
+          bodyContent={<Text.Body>Send the password change instruction to the <a href="mailto:asc@story.book">asc@story.book</a> email address</Text.Body>}
+          footerContent={<Button key="SendBtn" label="Send" size="medium" primary={true} onClick={this.onDialogClose} />}
           onClose={this.onDialogClose}
         />
       </>

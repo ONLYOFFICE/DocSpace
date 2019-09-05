@@ -25,28 +25,20 @@ storiesOf('Components|ModalDialog', module)
             />
             <ModalDialog
               visible={value}
-              headerContent={"Header text"}
+              headerContent="Change password"
               bodyContent={
-                <p>{"Body text"}</p>
+                <div>Send the password change instruction to the <a href="mailto:asc@story.book">asc@story.book</a> email address</div>
               }
               footerContent={[
                 <Button
-                  key="OkBtn"
-                  label="Ok"
+                  key="SendBtn"
+                  label="Send"
                   primary={true}
+                  size="medium"
                   onClick={(e) => {
                     action('onOk')(e);
                     toggle(false);
                   }}
-                />,
-                <Button
-                  key="CancelBtn"
-                  label="Cancel"
-                  onClick={(e) => {
-                    action('onCancel')(e);
-                    toggle(false);
-                  }}
-                  style={{marginLeft:"8px"}}
                 />
               ]}
               onClose={e => {
