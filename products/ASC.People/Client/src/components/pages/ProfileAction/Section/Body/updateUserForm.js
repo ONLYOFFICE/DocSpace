@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
@@ -28,7 +28,12 @@ class UpdateUserForm extends React.Component {
     this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
 
-    this.onDialogShow = this.onDialogShow.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
+    this.onSendEmailChangeInstructions = this.onSendEmailChangeInstructions.bind(this);
+    this.onPasswordChange = this.onPasswordChange.bind(this);
+    this.onSendPasswordChangeInstructions = this.onSendPasswordChangeInstructions.bind(this);
+    this.onPhoneChange = this.onPhoneChange.bind(this);
+    this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
   }
 
@@ -41,12 +46,18 @@ class UpdateUserForm extends React.Component {
   mapPropsToState = (props) => {
     return {
       isLoading: false,
-      isDialogVisible: false,
       errors: {
         firstName: false,
         lastName: false,
       },
-      profile: toEmployeeWrapper(props.profile)
+      profile: toEmployeeWrapper(props.profile),
+      dialog: {
+        visible: false,
+        header: "",
+        body: "",
+        buttons: [],
+        newEmail: "",
+      }
     };
   }
 
@@ -87,7 +98,7 @@ class UpdateUserForm extends React.Component {
       lastName: !profile.lastName,
     };
     const hasError = errors.firstName || errors.lastName;
-    this.setState({errors: errors});
+    this.setState({ errors: errors });
     return !hasError;
   }
 
@@ -112,16 +123,102 @@ class UpdateUserForm extends React.Component {
     this.props.history.goBack();
   }
 
-  onDialogShow() {
-    this.setState({isDialogVisible: true})
+  onEmailChange(event) {
+    const dialog = { 
+      visible: true,
+      header: "Change email",
+      body: (
+        <Text.Body>
+          <span style={{display: "block", marginBottom: "8px"}}>The activation instructions will be sent to the entered email</span>
+          <TextInput
+            id="new-email"
+            scale={true}
+            isAutoFocussed={true}
+            value={event.target.value}
+            onChange={this.onEmailChange}
+          />
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendEmailChangeInstructions}
+        />
+      ],
+      newEmail: event.target.value
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendEmailChangeInstructions() {
+    toastr.success("Context action: Change email");
+    this.onDialogClose();
+  }
+
+  onPasswordChange() {
+    const dialog = { 
+      visible: true,
+      header: "Change password",
+      body: (
+        <Text.Body>
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>${this.state.profile.email}</a> email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendPasswordChangeInstructions}
+        />
+      ]
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendPasswordChangeInstructions() {
+    toastr.success("Context action: Change password");
+    this.onDialogClose();
+  }
+
+  onPhoneChange() {
+    const dialog = { 
+      visible: true,
+      header: "Change phone",
+      body: (
+        <Text.Body>
+          The instructions on how to change the user mobile number will be sent to the user email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendPhoneChangeInstructions}
+        />
+      ]
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendPhoneChangeInstructions() {
+    toastr.success("Context action: Change phone");
+    this.onDialogClose();
   }
 
   onDialogClose() {
-    this.setState({isDialogVisible: false})
+    const dialog = { visible: false }; 
+    this.setState({ dialog: dialog })
   }
 
   render() {
-    const { isLoading, isDialogVisible, errors, profile } = this.state;
+    const { isLoading, errors, profile, dialog } = this.state;
     const { t } = this.props;
 
     return (
@@ -144,7 +241,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onDialogShow}
+              buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
             />
             <TextChangeField
@@ -153,7 +250,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.password}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onDialogShow}
+              buttonOnClick={this.onPasswordChange}
               buttonTabIndex={2}
             />
             <TextChangeField
@@ -162,7 +259,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.phone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onDialogShow}
+              buttonOnClick={this.onPhoneChange}
               buttonTabIndex={3}
             />
             <TextField
@@ -257,10 +354,10 @@ class UpdateUserForm extends React.Component {
         </div>
 
         <ModalDialog
-          visible={isDialogVisible}
-          headerContent={"Change password"}
-          bodyContent={<Text.Body>Send the password change instruction to the <a href="mailto:asc@story.book">asc@story.book</a> email address</Text.Body>}
-          footerContent={<Button key="SendBtn" label="Send" size="medium" primary={true} onClick={this.onDialogClose} />}
+          visible={dialog.visible}
+          headerContent={dialog.header}
+          bodyContent={dialog.body}
+          footerContent={dialog.buttons}
           onClose={this.onDialogClose}
         />
       </>
