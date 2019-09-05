@@ -21,7 +21,7 @@ class CreateUserForm extends React.Component {
 
     this.validate = this.validate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.onTextChange = this.onTextChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
@@ -52,7 +52,7 @@ class CreateUserForm extends React.Component {
     };
   }
 
-  onTextChange(event) {
+  onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy)
@@ -138,7 +138,7 @@ class CreateUserForm extends React.Component {
               inputName="firstName"
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputAutoFocussed={true}
               inputTabIndex={1}
             />
@@ -149,7 +149,7 @@ class CreateUserForm extends React.Component {
               inputName="lastName"
               inputValue={profile.lastName}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={2}
             />
             <TextField
@@ -159,7 +159,7 @@ class CreateUserForm extends React.Component {
               inputName="email"
               inputValue={profile.email}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={3}
             />
             <PasswordField
@@ -173,11 +173,11 @@ class CreateUserForm extends React.Component {
                 { value: 'temp', label: t("TemporaryPassword")}
               ]}
               radioIsDisabled={isLoading}
-              radioOnChange={this.onTextChange}
+              radioOnChange={this.onInputChange}
               inputName="password"
               inputValue={profile.password}
               inputIsDisabled={isLoading || profile.passwordType === "link"}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputIconOnClick={this.onShowPassword}
               inputShowPassword={showPassword}
               refreshIconOnClick={()=>{}}
@@ -202,7 +202,7 @@ class CreateUserForm extends React.Component {
                 { value: 'female', label: t("SexFemale")}
               ]}
               radioIsDisabled={isLoading}
-              radioOnChange={this.onTextChange}
+              radioOnChange={this.onInputChange}
             />
             <DateField
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
@@ -217,7 +217,7 @@ class CreateUserForm extends React.Component {
               inputName="location"
               inputValue={profile.location}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={7}
             />
             <TextField
@@ -225,7 +225,7 @@ class CreateUserForm extends React.Component {
               inputName="title"
               inputValue={profile.title}
               inputIsDisabled={isLoading}
-              inputOnChange={this.onTextChange}
+              inputOnChange={this.onInputChange}
               inputTabIndex={8}
             />
             <DepartmentField
@@ -237,7 +237,7 @@ class CreateUserForm extends React.Component {
         </MainContainer>
         <div>
           <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onTextChange} tabIndex={9}/> 
+          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
         </div>
         <div style={{marginTop: "60px"}}>
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={10}/>
