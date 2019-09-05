@@ -1,67 +1,98 @@
-const path = require("path");
-const webpack = require('webpack'); //to access built-in plugins
-/*
-Code reference:
-  https://storybook.js.org/docs/configurations/custom-webpack-config/#full-control-mode
-*/
+const path = require('path');
 
-// Export a function. Accept the base config as the only param.
-module.exports = async ({ config, mode }) => {
-  // `mode` has a value of 'DEVELOPMENT' or 'PRODUCTION'
-  // You can change the configuration based on that.
-  // 'PRODUCTION' is used when building the static version of storybook.
+const sourceFolders = [
+  path.resolve(__dirname),
+  path.resolve(__dirname, '../src'),
+];
 
-  /* ********* SASS *********
-  If you want to work with sass, enable the following module:
+module.exports = ({ config }) => {
 
-  config.module.rules.push({
-    test: /\.scss$/,
-    loaders: [
-      'style-loader',
-      'css-loader',
-      {
-        loader: 'postcss-loader',
-        options: { plugins: () => [require('autoprefixer')()] }
-      },
-      'sass-loader'
-    ],
-    include: path.resolve(__dirname, '../')
-  });
+  if (process.env.NODE_ENV === 'production') {
+    // remove progress plugin
+    // progress plugin outputs a lot of console logs, which makes
+    // netlify build realllllllllllllllly slow.
+    config.plugins = config.plugins.filter(
+      plugin => plugin.constructor.name !== 'ProgressPlugin'
+    );
+    config.devtool = 'none'; // TODO: should we use something differen?
+  } else {
+    config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
+  }
 
+  config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
+  config.module.rules = [
+    // Disable require.ensure as it's not a standard language feature.
+    { parser: { requireEnsure: false } },
+    // add story source
+    {
+      test: /\.stories\.js$/,
+      loaders: [require.resolve('@storybook/addon-storysource/loader')],
+      enforce: 'pre',
+    },
+    // Process JS with Babel.
+    {
+      test: /\.js$/,
+      include: sourceFolders,
+      use: [
+        {
+          loader: require.resolve('babel-loader'),
+          options: {
+            babelrc: false,
+            compact: false,
+            presets: [require.resolve('../scripts/get-babel-preset')],
+            // This is a feature of `babel-loader` for webpack (not Babel itself).
+            // It enables caching results in ./node_modules/.cache/babel-loader/
+            // directory for faster rebuilds.
+            cacheDirectory: true,
+            highlightCode: true,
+          },
+        },
+      ],
+    },
+    // For svg icons, we want to get them transformed into React components
+    // when we import them.
+    {
+      test: /\.react\.svg$/,
+      include: sourceFolders,
+      use: [
+        {
+          loader: require.resolve('babel-loader'),
+          options: {
+            babelrc: false,
+            presets: [require.resolve('../scripts/get-babel-preset')],
+            // This is a feature of `babel-loader` for webpack (not Babel itself).
+            // It enables caching results in ./node_modules/.cache/babel-loader/
+            // directory for faster rebuilds.
+            cacheDirectory: true,
+            highlightCode: true,
+          },
+        },
+        {
+          loader: require.resolve('@svgr/webpack'),
+          options: {
+            // NOTE: disable this and manually add `removeViewBox: false` in the SVGO plugins list
+            // See related PR: https://github.com/smooth-code/svgr/pull/137
+            icon: false,
+            svgoConfig: {
+              plugins: [
+                { removeViewBox: false },
+                // Keeps ID's of svgs so they can be targeted with CSS
+                { cleanupIDs: false },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    // Storybook uses a plugin to load and render markdown files.
+    {
+      test: /\.md$/,
+      use: [
+        { loader: require.resolve('html-loader') },
+        { loader: require.resolve('markdown-loader') },
+      ],
+    }
+  ];
 
-  and don't forget to install as devDependencies:
-
-  - style-loader
-  - css-loader
-  - postcss-loader
-  - autoprefixer
-  */
-
-  /* resolver to make story panel work */
-  config.resolve.alias = {
-    "styled-components": path.resolve(
-      __dirname,
-      "../node_modules",
-      "styled-components"
-    )
-  };
-
-  config.module.rules.push({
-    test: /\.stories.js?$/,
-    loaders: [require.resolve('@storybook/addon-storysource/loader')],
-    enforce: 'pre',
-  });
-
-  config.module.rules.push({
-    test: /\.react.svg$/,
-    loader: 'svg-inline-loader',
-  });
-
-  config.plugins.push(
-    new webpack.ProvidePlugin({
-        "React": "react",
-    }));
-
-  // Return the altered config
   return config;
 };
