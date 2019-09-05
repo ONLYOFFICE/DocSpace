@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput } from 'asc-web-components';
 import { Container, Row, Col } from 'reactstrap';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
@@ -17,6 +17,13 @@ const ConfirmContainer = styled(Container)`
     }
 `;
 const mdOptions = { size: 6, offset: 3 };
+
+const passwordSettings = {
+    minLength: 6,
+    upperCase: true,
+    digits: true,
+    specSymbols: true
+};
 
 const Confirm = (props) => {
     const { t } = useTranslation('translation', { i18n });
@@ -181,7 +188,34 @@ const Confirm = (props) => {
 
             <Row className='login-row'>
                 <Col sm="12" md={mdOptions}>
-                    <TextInput
+                    <PasswordInput
+                        inputName="password"
+                        emailInputName="email"
+                        inputValue={password}
+                        placeholder={t('InvitePassword')}
+                        size='huge'
+                        scale={true}
+                        tabIndex={4}
+                        hasError={!passwordValid}
+                        onChange={event => {
+                            setPassword(event.target.value);
+                            !passwordValid && setPasswordValid(true);
+                            errorText && setErrorText("");
+                            onKeyPress(event.target);
+                        }}
+                        clipActionResource={t('CopyEmailAndPassword')}
+                        clipEmailResource={`${t('Email')}: `}
+                        clipPasswordResource={`${t('InvitePassword')}: `}
+                        tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber:30 })}:`}
+                        tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+                        tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+                        tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
+                        generatorSpecial="!@#$%^&*"
+                        passwordSettings={passwordSettings}
+                        isDisabled={isLoading}
+                    />
+                    {/* <TextInput
                         id='password'
                         name='password'
                         type="password"
@@ -199,7 +233,7 @@ const Confirm = (props) => {
                             onKeyPress(event.target);
                         }}
                         onKeyDown={event => onKeyPress(event.target)}
-                    />
+                    /> */}
                 </Col>
             </Row>
 

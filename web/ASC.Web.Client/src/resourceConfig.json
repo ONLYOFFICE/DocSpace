@@ -20,6 +20,12 @@
         "Email",
         "InvitePassword",
         "FirstName",
+        "CopyEmailAndPassword",
+        "ErrorPasswordMessage",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordNoSpecialSymbols",
         "LastName"
       ]
     }
