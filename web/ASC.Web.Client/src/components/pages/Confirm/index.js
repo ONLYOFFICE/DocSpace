@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 
@@ -77,11 +77,6 @@ const Confirm = (props) => {
 
         let hasError = false;
 
-        if (!validationEmail.test(email.trim())) {
-            hasError = true;
-            setEmailValid(!hasError);
-        }
-
         if (!firstName.trim()) {
             hasError = true;
             setFirstNameValid(!hasError);
@@ -92,7 +87,12 @@ const Confirm = (props) => {
             setLastNameValid(!hasError);
         }
 
-        if (!password.trim()) {
+        if (!validationEmail.test(email.trim())) {
+            hasError = true;
+            setEmailValid(!hasError);
+        }
+
+        if (!password.trim() || !passwordValid) {
             hasError = true;
             setPasswordValid(!hasError);
         }
@@ -103,7 +103,7 @@ const Confirm = (props) => {
         setIsLoading(true);
 
 
-    }, [errorText, email, firstName, lastName, password, validationEmail]);
+    }, [errorText, email, firstName, lastName, password, validationEmail, passwordValid]);
 
     const onKeyPress = useCallback((target) => {
         if (target.code === "Enter") {
@@ -121,6 +121,9 @@ const Confirm = (props) => {
             window.removeEventListener('keyup', onKeyPress);
         };
     }, [onKeyPress]);
+
+    const onCopyToClipboard = () => toastr.success(t('EmailAndPasswordCopiedToClipboard'));
+    const validatePassword = (value) => setPasswordValid(value);
 
     return (
         <ConfirmContainer>
@@ -184,7 +187,6 @@ const Confirm = (props) => {
 
                 <FieldContainer isVertical={true} className=''>
                     <TextInput
-                        type="email"
                         id='email'
                         name='email'
                         value={email}
@@ -223,6 +225,8 @@ const Confirm = (props) => {
                             errorText && setErrorText("");
                             onKeyPress(event.target);
                         }}
+                        onCopyToClipboard={onCopyToClipboard}
+                        onValidateInput={validatePassword}
                         clipActionResource={t('CopyEmailAndPassword')}
                         clipEmailResource={`${t('Email')}: `}
                         clipPasswordResource={`${t('InvitePassword')}: `}
