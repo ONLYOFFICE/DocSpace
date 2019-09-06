@@ -4,8 +4,9 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { AvatarEditor, Avatar } from 'asc-web-components';
-import Section from '../../.storybook/decorators/section';
+import AvatarEditor from '.';
+import Avatar from '../avatar';
+import Section from '../../../.storybook/decorators/section';
 
 class AvatarEditorStory extends React.Component  {
   constructor(props) {
@@ -62,7 +63,7 @@ class AvatarEditorStory extends React.Component  {
 storiesOf('Components|AvatarEditor', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('avatar editor', () => {
+  .add('base', () => {
    
     return (
       <Section>
