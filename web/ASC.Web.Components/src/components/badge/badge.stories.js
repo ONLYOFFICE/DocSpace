@@ -4,13 +4,13 @@ import { action } from '@storybook/addon-actions';
 import withReadme from 'storybook-readme/with-readme';
 import { withKnobs, number, color, text } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
-import Section from '../../.storybook/decorators/section';
-import {Badge} from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
+import Badge from '.';
 
 storiesOf('Components|Badge', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('badge', () => (
+  .add('base', () => (
     <Section>
       <Badge
         number={number('number', 10)}
