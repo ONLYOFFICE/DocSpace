@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Button } from 'asc-web-components';
+import Button from '.';
 import Section from '../../../.storybook/decorators/section';
 
 function onClick(e) {

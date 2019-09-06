@@ -4,7 +4,8 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, select, color, number} from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Icons, IconButton } from 'asc-web-components';
+import IconButton from '.';
+import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Buttons', module)

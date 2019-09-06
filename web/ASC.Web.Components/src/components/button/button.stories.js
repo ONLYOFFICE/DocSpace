@@ -4,7 +4,8 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Button, Icons } from 'asc-web-components';
+import Button from '.';
+import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 import { orderBy } from 'lodash';
 
