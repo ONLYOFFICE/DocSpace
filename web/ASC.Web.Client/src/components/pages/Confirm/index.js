@@ -118,38 +118,14 @@ const Confirm = (props) => {
             <Row className='login-row'>
                 <Col sm="12" md={mdOptions}>
                     <TextInput
-                        type="email"
-                        id='email'
-                        name='email'
-                        value={email}
-                        placeholder={t('Email')}
-                        size='huge'
-                        scale={true}
-                        isAutoFocussed={true}
-                        tabIndex={1}
-                        autoComplete='email'
-                        isDisabled={isLoading}
-                        hasError={!emailValid}
-                        onChange={event => {
-                            setEmail(event.target.value);
-                            !emailValid && setEmailValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
-                </Col>
-            </Row>
-
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <TextInput
                         id='name'
                         name='name'
                         value={firstName}
                         placeholder={t('FirstName')}
                         size='huge'
                         scale={true}
-                        tabIndex={2}
+                        tabIndex={1}
+                        isAutoFocussed={true}
                         autoComplete='given-name'
                         isDisabled={isLoading}
                         hasError={!firstNameValid}
@@ -172,13 +148,37 @@ const Confirm = (props) => {
                         placeholder={t('LastName')}
                         size='huge'
                         scale={true}
-                        tabIndex={3}
+                        tabIndex={2}
                         autoComplete='family-name'
                         isDisabled={isLoading}
                         hasError={!lastNameValid}
                         onChange={event => {
                             setLastName(event.target.value);
                             !lastNameValid && setLastNameValid(true);
+                            errorText && setErrorText("");
+                        }}
+                        onKeyDown={event => onKeyPress(event.target)}
+                    />
+                </Col>
+            </Row>
+
+            <Row className='login-row'>
+                <Col sm="12" md={mdOptions}>
+                    <TextInput
+                        type="email"
+                        id='email'
+                        name='email'
+                        value={email}
+                        placeholder={t('Email')}
+                        size='huge'
+                        scale={true}
+                        tabIndex={3}
+                        autoComplete='email'
+                        isDisabled={isLoading}
+                        hasError={!emailValid}
+                        onChange={event => {
+                            setEmail(event.target.value);
+                            !emailValid && setEmailValid(true);
                             errorText && setErrorText("");
                         }}
                         onKeyDown={event => onKeyPress(event.target)}
@@ -196,6 +196,7 @@ const Confirm = (props) => {
                         size='huge'
                         scale={true}
                         tabIndex={4}
+                        maxLength={30}
                         hasError={!passwordValid}
                         onChange={event => {
                             setPassword(event.target.value);
@@ -207,7 +208,7 @@ const Confirm = (props) => {
                         clipEmailResource={`${t('Email')}: `}
                         clipPasswordResource={`${t('InvitePassword')}: `}
                         tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber:30 })}:`}
+                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
                         tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
                         tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
                         tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}

@@ -13,7 +13,9 @@ Input description
 #### Usage
 
 ```js
-<TextInput value="text" onChange={event => alert(event.target.value)} />;
+const mask =[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+
+<TextInput mask={mask} value="text" onChange={event => alert(event.target.value)} />;
 ```
 
 #### Properties
@@ -37,6 +39,7 @@ Input description
 | `size`          | `string`        |          | `base`, `middle`, `big`, `huge` | `base` | Supported size of the input fields.                         |
 | `scale`           | `bool`   |    -     | -                            | -       | Indicates the input field has scale                                                                |
 | `withBorder`           | `bool`            |    -     | -                            | `true`  | Indicates that component contain border      |
+| `mask`                 | `array`   |    -  | -                   | -       | input text mask                                                                             |
 
 ### Main Functions and use cases are:
 
