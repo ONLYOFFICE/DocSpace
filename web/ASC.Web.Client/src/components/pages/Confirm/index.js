@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 
@@ -49,6 +49,8 @@ const passwordSettings = {
     digits: true,
     specSymbols: true
 };
+
+const isLoaded = true;
 
 const Confirm = (props) => {
     const { t } = useTranslation('translation', { i18n });
@@ -126,142 +128,148 @@ const Confirm = (props) => {
     const validatePassword = (value) => setPasswordValid(value);
 
     return (
-        <ConfirmContainer>
+        !isLoaded
+            ? (
+                <Loader className="pageLoader" type="rombs" size={40} />
+            )
+            : (
+                <ConfirmContainer>
 
-            <Text.Body className='confirm-block-title' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
+                    <Text.Body className='confirm-block-title' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
 
-            <div className='login-row'>
-                <a href='/login'>
-                    <img src="images/dark_general.png" alt="Logo" />
-                </a>
-                <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
-            </div>
+                    <div className='login-row'>
+                        <a href='/login'>
+                            <img src="images/dark_general.png" alt="Logo" />
+                        </a>
+                        <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+                    </div>
 
-            <div className='input-container login-row'>
+                    <div className='input-container login-row'>
 
-                <FieldContainer isVertical={true} className=''>
-                    <TextInput
-                        id='name'
-                        name='name'
-                        value={firstName}
-                        placeholder={t('FirstName')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={1}
-                        isAutoFocussed={true}
-                        autoComplete='given-name'
-                        isDisabled={isLoading}
-                        hasError={!firstNameValid}
-                        onChange={event => {
-                            setFirstName(event.target.value);
-                            !firstNameValid && setFirstNameValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
+                        <FieldContainer isVertical={true} className=''>
+                            <TextInput
+                                id='name'
+                                name='name'
+                                value={firstName}
+                                placeholder={t('FirstName')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={1}
+                                isAutoFocussed={true}
+                                autoComplete='given-name'
+                                isDisabled={isLoading}
+                                hasError={!firstNameValid}
+                                onChange={event => {
+                                    setFirstName(event.target.value);
+                                    !firstNameValid && setFirstNameValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
 
-                </FieldContainer>
+                        </FieldContainer>
 
-                <FieldContainer isVertical={true} className=''>
+                        <FieldContainer isVertical={true} className=''>
 
-                    <TextInput
-                        id='surname'
-                        name='surname'
-                        value={lastName}
-                        placeholder={t('LastName')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={2}
-                        autoComplete='family-name'
-                        isDisabled={isLoading}
-                        hasError={!lastNameValid}
-                        onChange={event => {
-                            setLastName(event.target.value);
-                            !lastNameValid && setLastNameValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
+                            <TextInput
+                                id='surname'
+                                name='surname'
+                                value={lastName}
+                                placeholder={t('LastName')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={2}
+                                autoComplete='family-name'
+                                isDisabled={isLoading}
+                                hasError={!lastNameValid}
+                                onChange={event => {
+                                    setLastName(event.target.value);
+                                    !lastNameValid && setLastNameValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
 
-                </FieldContainer>
+                        </FieldContainer>
 
-                <FieldContainer isVertical={true} className=''>
-                    <TextInput
-                        id='email'
-                        name='email'
-                        value={email}
-                        placeholder={t('Email')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={3}
-                        autoComplete='email'
-                        isDisabled={isLoading}
-                        hasError={!emailValid}
-                        onChange={event => {
-                            setEmail(event.target.value);
-                            !emailValid && setEmailValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
+                        <FieldContainer isVertical={true} className=''>
+                            <TextInput
+                                id='email'
+                                name='email'
+                                value={email}
+                                placeholder={t('Email')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={3}
+                                autoComplete='email'
+                                isDisabled={isLoading}
+                                hasError={!emailValid}
+                                onChange={event => {
+                                    setEmail(event.target.value);
+                                    !emailValid && setEmailValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
 
-                </FieldContainer>
+                        </FieldContainer>
 
-                <FieldContainer isVertical={true} className=''>
-                    <PasswordInput
-                        inputName="password"
-                        emailInputName="email"
-                        inputValue={password}
-                        placeholder={t('InvitePassword')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={4}
-                        maxLength={30}
-                        inputWidth='400px'
-                        hasError={!passwordValid}
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            !passwordValid && setPasswordValid(true);
-                            errorText && setErrorText("");
-                            onKeyPress(event.target);
-                        }}
-                        onCopyToClipboard={onCopyToClipboard}
-                        onValidateInput={validatePassword}
-                        clipActionResource={t('CopyEmailAndPassword')}
-                        clipEmailResource={`${t('Email')}: `}
-                        clipPasswordResource={`${t('InvitePassword')}: `}
-                        tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
-                        tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
-                        tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
-                        tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
-                        generatorSpecial="!@#$%^&*"
-                        passwordSettings={passwordSettings}
-                        isDisabled={isLoading}
-                    />
-                </FieldContainer>
+                        <FieldContainer isVertical={true} className=''>
+                            <PasswordInput
+                                inputName="password"
+                                emailInputName="email"
+                                inputValue={password}
+                                placeholder={t('InvitePassword')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={4}
+                                maxLength={30}
+                                inputWidth='400px'
+                                hasError={!passwordValid}
+                                onChange={event => {
+                                    setPassword(event.target.value);
+                                    !passwordValid && setPasswordValid(true);
+                                    errorText && setErrorText("");
+                                    onKeyPress(event.target);
+                                }}
+                                onCopyToClipboard={onCopyToClipboard}
+                                onValidateInput={validatePassword}
+                                clipActionResource={t('CopyEmailAndPassword')}
+                                clipEmailResource={`${t('Email')}: `}
+                                clipPasswordResource={`${t('InvitePassword')}: `}
+                                tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+                                tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
+                                tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+                                tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+                                tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
+                                generatorSpecial="!@#$%^&*"
+                                passwordSettings={passwordSettings}
+                                isDisabled={isLoading}
+                            />
+                        </FieldContainer>
 
-                <div className='login-row join-button'>
-                    <Button
-                        primary
-                        size='big'
-                        label={t('LoginRegistryButton')}
-                        tabIndex={5}
-                        isDisabled={isLoading}
-                        isLoading={isLoading}
-                        onClick={onSubmit}
-                    />
-                </div>
+                        <div className='login-row join-button'>
+                            <Button
+                                primary
+                                size='big'
+                                label={t('LoginRegistryButton')}
+                                tabIndex={5}
+                                isDisabled={isLoading}
+                                isLoading={isLoading}
+                                onClick={onSubmit}
+                            />
+                        </div>
 
-            </div>
+                    </div>
 
-            {/*             <Row className='login-row'>
+                    {/*             <Row className='login-row'>
 
                     <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
 
             </Row>
  */}
-        </ConfirmContainer>
+                </ConfirmContainer>
+            )
     );
 }
 
