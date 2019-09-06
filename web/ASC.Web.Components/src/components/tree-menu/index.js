@@ -70,6 +70,10 @@ const TreeMenu = props => {
             onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
             defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys} = props;
 
+    const onTreeNodeSelect = (data, e) => {
+        const result = e.selected ? data : [e.node.props.eventKey];
+        onSelect(result, e);
+    }
     return (
         <StyledTreeMenu
           checkable = {!!checkable}
@@ -94,7 +98,7 @@ const TreeMenu = props => {
           onDragOver={onDragOver}
 
           switcherIcon = {switcherIcon}
-          onSelect={onSelect}
+          onSelect={onTreeNodeSelect}
           onDragEnter={onDragEnter}
 
           onCheck={onCheck}
