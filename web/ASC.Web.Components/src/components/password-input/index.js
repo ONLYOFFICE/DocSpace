@@ -9,7 +9,9 @@ import Link from '../link'
 import { Text } from '../text'
 import DropDown from '../drop-down'
 
-const StyledInput = styled.div`
+const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => <div {...props}></div>;
+
+const StyledInput = styled(SimpleInput)`
   display: flex;
   align-items: center;
   line-height: 32px;
@@ -120,7 +122,7 @@ class PasswordInput extends React.PureComponent {
       digits: digits,
       capital: capital,
       special: special,
-      length: value.length >= passwordSettings.minLength
+      length: value.trim().length >= passwordSettings.minLength
     };
   }
 
@@ -132,12 +134,14 @@ class PasswordInput extends React.PureComponent {
       && passwordValidation.capital
       && passwordValidation.special
       && passwordValidation.length;
-    const progressWidth = value.length * 100 / this.props.passwordSettings.minLength;
+    const progressWidth = value.trim().length * 100 / this.props.passwordSettings.minLength;
     const progressColor = progressScore
       ? greenColor
       : (value.length === 0)
         ? 'transparent'
         : redColor;
+
+    this.props.onValidateInput && this.props.onValidateInput(progressScore);
 
     this.setState({
       progressColor: progressColor,
@@ -183,12 +187,12 @@ class PasswordInput extends React.PureComponent {
 
       if (passwordSettings.upperCase) {
         hold = (password.length % 2 == 0)
-        ? (hold.toUpperCase())
-        : (hold);
+          ? (hold.toUpperCase())
+          : (hold);
       }
 
       character += hold;
-      
+
       if (passwordSettings.digits) {
         character += numeric.charAt(b);
       }
@@ -196,7 +200,7 @@ class PasswordInput extends React.PureComponent {
       if (passwordSettings.specSymbols) {
         character += special.charAt(c);
       }
-          
+
       password = character;
     }
 
@@ -209,23 +213,26 @@ class PasswordInput extends React.PureComponent {
   }
 
   copyToClipboard = emailInputName => {
-    const { clipEmailResource, clipPasswordResource, isDisabled } = this.props;
+    const { clipEmailResource, clipPasswordResource, isDisabled, onCopyToClipboard } = this.props;
 
     if (isDisabled)
       return event.preventDefault();
 
     const textField = document.createElement('textarea');
     const emailValue = document.getElementsByName(emailInputName)[0].value;
+    const formattedText = clipEmailResource + emailValue + ' | ' + clipPasswordResource + this.state.inputValue;
 
-    textField.innerText = clipEmailResource + emailValue + ' | ' + clipPasswordResource + this.state.inputValue;
-
+    textField.innerText = formattedText;
     document.body.appendChild(textField);
     textField.select();
     document.execCommand('copy');
     textField.remove();
+
+    onCopyToClipboard && onCopyToClipboard(formattedText);
   }
 
   render() {
+    //console.log('PasswordInput render()');
     const {
       inputName,
       isDisabled,
@@ -244,7 +251,8 @@ class PasswordInput extends React.PureComponent {
       hasWarning,
       placeholder,
       tabIndex,
-      maxLength
+      maxLength,
+      onValidateInput
     } = this.props;
     const {
       type,
@@ -272,20 +280,20 @@ class PasswordInput extends React.PureComponent {
           </StyledTooltipItem>
         }
         {passwordSettings.upperCase &&
-        <StyledTooltipItem forwardedAs='div' title={tooltipPasswordCapital} valid={validCapital} >
-          {tooltipPasswordCapital}
-        </StyledTooltipItem>
+          <StyledTooltipItem forwardedAs='div' title={tooltipPasswordCapital} valid={validCapital} >
+            {tooltipPasswordCapital}
+          </StyledTooltipItem>
         }
         {passwordSettings.specSymbols &&
-        <StyledTooltipItem forwardedAs='div' title={tooltipPasswordSpecial} valid={validSpecial} >
-          {tooltipPasswordSpecial}
-        </StyledTooltipItem>
+          <StyledTooltipItem forwardedAs='div' title={tooltipPasswordSpecial} valid={validSpecial} >
+            {tooltipPasswordSpecial}
+          </StyledTooltipItem>
         }
       </StyledTooltipContainer>
     );
 
     return (
-      <StyledInput>
+      <StyledInput onValidateInput={onValidateInput}>
         <PasswordProgress inputWidth={inputWidth}>
           <InputBlock
             name={inputName}
@@ -363,21 +371,24 @@ PasswordInput.propTypes = {
   tooltipPasswordSpecial: PropTypes.string,
 
   generatorSpecial: PropTypes.string,
-  passwordSettings: PropTypes.object.isRequired
+  passwordSettings: PropTypes.object.isRequired,
+
+  onValidateInput: PropTypes.func,
+  onCopyToClipboard: PropTypes.func
 }
 
 PasswordInput.defaultProps = {
   inputType: 'password',
   inputName: 'passwordInput',
 
+  isDisabled: false,
   size: 'base',
   scale: true,
 
-  clipEmailResource: 'E-mail',
-  clipPasswordResource: 'Password',
+  clipEmailResource: 'E-mail ',
+  clipPasswordResource: 'Password ',
 
   generatorSpecial: '!@#$%^&*'
-
 }
 
 export default PasswordInput;
