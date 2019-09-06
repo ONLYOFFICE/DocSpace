@@ -82,17 +82,17 @@ storiesOf('Components|Input', module)
 
     const advancedOptions =
       <>
-        <DropDownItem key='1'>
+        <DropDownItem key='1' noHover>
           <RadioButton value='asc' name='first' label='A-Z' isChecked={true} />
         </DropDownItem>
-        <DropDownItem key='2'>
+        <DropDownItem key='2' noHover>
           <RadioButton value='desc' name='first' label='Z-A' />
         </DropDownItem>
         <DropDownItem key='3' isSeparator />
-        <DropDownItem key='4'>
+        <DropDownItem key='4' noHover>
           <RadioButton value='first' name='second' label='First name' />
         </DropDownItem>
-        <DropDownItem key='5'>
+        <DropDownItem key='5' noHover>
           <RadioButton value='last' name='second' label='Last name' isChecked={true} />
         </DropDownItem>
       </>;
