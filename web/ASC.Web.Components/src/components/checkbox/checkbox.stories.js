@@ -5,7 +5,7 @@ import { BooleanValue } from 'react-values'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Checkbox } from 'asc-web-components';
+import Checkbox from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Input', module)
