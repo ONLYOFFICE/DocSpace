@@ -1,19 +1,19 @@
 module.exports = {
+  setupFiles: [
+    '<rootDir>/test/setup-tests.js'
+  ],
   setupFilesAfterEnv: [
-    /* Enables jest-enzyme assertions
-      https://github.com/FormidableLabs/enzyme-matchers/tree/master/packages/jest-enzyme#readme
-    */
-    '<rootDir>/node_modules/jest-enzyme/lib/index.js',
-    '<rootDir>/config/setupTest.js',
+    '<rootDir>/scripts/setup-test-framework.js'
   ],
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    '^.+\\.js$': '<rootDir>/test/transform-babel-jest.js',
   },
   /* It solves css/less/scss import issues.
     You might have similar issues with different file extensions (e.g. md).
     Just search for "<file type> jest loader"
   */
   moduleNameMapper: {
-    '^.+\\.(css|less|scss)$': 'babel-jest',
+    '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+      '<rootDir>/test/transform-file.js'
   },
 };
