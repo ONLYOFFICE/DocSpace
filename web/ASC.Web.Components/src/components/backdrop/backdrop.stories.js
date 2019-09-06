@@ -5,14 +5,15 @@ import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme';
 import { withKnobs, number } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
-import Section from '../../.storybook/decorators/section';
-import { Backdrop, Button } from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
+import Backdrop from '.';
+import Button from '../button';
 
 
 storiesOf('Components|Backdrop', module)
   .addDecorator(withReadme(Readme))
   .addDecorator(withKnobs)
-  .add('Backdrop', () => (
+  .add('base', () => (
     <Section>
       <BooleanValue>
         {({ value, toggle }) => (
