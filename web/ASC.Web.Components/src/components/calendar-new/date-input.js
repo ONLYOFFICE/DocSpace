@@ -42,7 +42,6 @@ class DatePicker extends Component {
         if (this.state.value != e.target.value) {
             const format = moment.localeData().longDateFormat('L');
             let date = new Date(moment(e.target.value, format));
-
             this.setState({ value: e.target.value });
             if (!isNaN(date) && this.validationDate(date)) {
                 this.props.onChange && this.props.onChange(date);
@@ -72,6 +71,8 @@ class DatePicker extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        moment.locale(this.props.locale);
+
         if (this.state.isOpen !== prevState.isOpen) {
             handleAnyClick(this.state.isOpen, this.handleClick);
         }
@@ -102,7 +103,20 @@ class DatePicker extends Component {
         const hasError = this.props.hasError;
         const hasWarning = this.props.hasWarning;
 
-        const symbol = '/';
+        let symbol = '.';
+        let str = moment.localeData().longDateFormat('L');
+        console.log(str);
+
+        if (str.indexOf('/') + 1) { symbol = "/"; }
+        else if (str.indexOf('.') + 1) { symbol = "."; }
+        else if (str.indexOf('-') + 1) { symbol = "-"; }
+
+        let mask = [/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/];
+
+        if (str[0] === "Y") { mask = mask.reverse(); }
+        if (this.props.locale === "ko" || this.props.locale === "lv") {
+            mask.push(symbol);
+        }
 
         return (
             <DateInputStyle /*onFocus={this.onFocus} onBlur={this.onBlur}*/ ref={this.ref} >
@@ -116,7 +130,7 @@ class DatePicker extends Component {
                     value={this.state.value}
                     onChange={this.handleChange}
                     placeholder={moment.localeData().longDateFormat('L')}
-                    mask={[/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/]}
+                    mask={mask}
                     keepCharPositions={true}
                 //guide={true}
                 //showMask={true}
