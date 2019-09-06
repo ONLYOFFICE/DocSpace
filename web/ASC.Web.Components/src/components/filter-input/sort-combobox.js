@@ -88,7 +88,7 @@ class SortComboBox extends React.Component {
 
         const advancedOptions = (
             <>
-                <DropDownItem>
+                <DropDownItem noHover >
                     <RadioButtonGroup
                         className="display-block"
                         onClick={this.onChangeSortDirection}
@@ -100,7 +100,7 @@ class SortComboBox extends React.Component {
                     />
                 </DropDownItem>
                 <DropDownItem isSeparator />
-                <DropDownItem>
+                <DropDownItem noHover >
                     <RadioButtonGroup
                         className="display-block"
                         onClick={this.onChangeSortId}
