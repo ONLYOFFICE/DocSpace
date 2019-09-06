@@ -72,6 +72,8 @@ storiesOf('Components|Input', module)
                 tabIndex={number('tabIndex', 1)}
                 iconSize={number('iconSize', 0)}
 
+                mask={text("mask", null)}
+
                 isDisabled={boolean('isDisabled', false)}
                 iconName={select('iconName', iconNames, 'SearchIcon')}
                 iconColor={color('iconColor', "#D0D5DA")}

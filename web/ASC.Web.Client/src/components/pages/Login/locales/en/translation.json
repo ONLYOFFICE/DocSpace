@@ -4,5 +4,5 @@
   "Password": "Password",
   "RegistrationEmailWatermark": "Your registration email",
 
-  "TitleCloudOfficeApplications": "Cloud Office Applications"
+  "CustomWelcomePageTitle": "{{welcomePageTitle}}"
 }
