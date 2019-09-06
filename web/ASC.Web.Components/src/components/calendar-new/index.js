@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import ComboBox from '../combobox';
 import moment from 'moment/min/moment-with-locales';
 import { Text } from "../text";
+import isEqual from 'lodash/isEqual';
 
 const HoverStyle = css`
     &:hover {
@@ -89,13 +90,13 @@ const Weekday = styled.div`
 `;
 
 const Weekdays = styled.div`
-    width: ${props => props.size === 'base' ? '265px;' : '310px;'}
+    width: ${props => props.size === 'base' ? '265px' : '310px'};
     display: flex;
     margin-bottom: -5px;
 `;
 
 const Month = styled.div`
-    width: ${props => props.size === 'base' ? '267px;' : '303px;'}
+    width: ${props => props.size === 'base' ? '267px' : '303px'};
 `;
 
 const Days = styled.div`
@@ -163,8 +164,15 @@ class Calendar extends Component {
     }
 
     getListMonth = () => {
-        const minDate = this.props.minDate;
-        const maxDate = this.props.maxDate;
+
+        const minDateYear = this.props.minDate.getFullYear();
+        const minDateMonth = this.props.minDate.getMonth();
+
+        const maxDateYear = this.props.maxDate.getFullYear();
+        const maxDateMonth = this.props.maxDate.getMonth();
+
+        const openToDateYear = this.state.openToDate.getFullYear();
+
         const months = this.state.months;
         let disabled = false;
         const listMonths = [];
@@ -175,17 +183,17 @@ class Calendar extends Component {
             i++;
         }
 
-        if (this.state.openToDate.getFullYear() === minDate.getFullYear()) {
+        if (openToDateYear === minDateYear) {
             i = 0;
-            while (i != minDate.getMonth()) {
+            while (i != minDateMonth) {
                 listMonths[i].disabled = true;
                 i++;
             }
         }
 
-        if (this.state.openToDate.getFullYear() === maxDate.getFullYear()) {
+        else if (openToDateYear === maxDateYear) {
             i = 11;
-            while (i != maxDate.getMonth()) {
+            while (i != maxDateMonth) {
                 listMonths[i].disabled = true;
                 i--;
             }
@@ -194,14 +202,15 @@ class Calendar extends Component {
         return listMonths;
     }
 
-    getCurrentMonth = () => {
-        const openToDate = this.state.openToDate;
-        const months = this.getListMonth();
-        let selectedMonth = months.find(x => x.key == openToDate.getMonth());
+    getCurrentMonth = (months) => {
+        const openToDateMonth = this.state.openToDate.getMonth();
+        const openToDateYear = this.state.openToDate.getFullYear();
+
+        let selectedMonth = months.find(x => x.key == openToDateMonth);
 
         if (selectedMonth.disabled === true) {
             selectedMonth = months.find(x => x.disabled === false);
-            const date = new Date(openToDate.getFullYear(), selectedMonth.key, 1);
+            const date = new Date(openToDateYear, selectedMonth.key, 1);
             this.state.openToDate = date;
         }
         return selectedMonth;
@@ -220,11 +229,12 @@ class Calendar extends Component {
             yearList.push({ key, label: label });
             i++;
         }
-        return yearList;
+        return yearList.reverse();
     }
 
-    getCurrentYear = () => {
-        return this.getArrayYears().find(x => x.key == this.state.openToDate.getFullYear());
+    getCurrentYear = (arrayYears) => {
+        const openToDateYear = this.state.openToDate.getFullYear()
+        return arrayYears.find(x => x.key == openToDateYear);
     }
 
     formatSelectedDate = (date) => {
@@ -278,25 +288,34 @@ class Calendar extends Component {
         const color = { color: "inherit;" };
 
         const openToDate = this.state.openToDate;
-        const maxDate = this.props.maxDate;
-        const minDate = this.props.minDate;
+
+        const openToDateMonth = openToDate.getMonth();
+        const openToDateYear = openToDate.getFullYear();
+
+        const maxDateMonth = this.props.maxDate.getMonth();
+        const maxDateYear = this.props.maxDate.getFullYear();
+        const maxDateDay = this.props.maxDate.getDate();
+
+        const minDateMonth = this.props.minDate.getMonth();
+        const minDateYear = this.props.minDate.getFullYear();
+        const minDateDay = this.props.minDate.getDate();
 
         //Disable preview month
         let disableClass = null;
-        if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() === minDate.getMonth()) {
+        if (openToDateYear === minDateYear && openToDateMonth === minDateMonth) {
             disableClass = "calendar-month_disabled";
         }
 
         //Prev month
         let prevMonthDay = null;
-        if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() - 1 === minDate.getMonth()) {
-            prevMonthDay = minDate.getDate();
+        if (openToDateYear === minDateYear && openToDateMonth - 1 === minDateMonth) {
+            prevMonthDay = minDateDay;
         }
 
         //prev month + year
         let prevYearDay = null;
-        if (openToDate.getFullYear() === minDate.getFullYear() + 1 && openToDate.getMonth() === 0 && minDate.getMonth() === 11) {
-            prevYearDay = minDate.getDate();
+        if (openToDateYear === minDateYear + 1 && openToDateMonth === 0 && minDateMonth === 11) {
+            prevYearDay = minDateDay;
         }
 
         const size = this.props.size;
@@ -321,14 +340,14 @@ class Calendar extends Component {
         keys = 0;
         let maxDay, minDay;
         disableClass = null;
-        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
-            if (openToDate.getMonth() === maxDate.getMonth()) { maxDay = maxDate.getDate(); }
+        if (openToDateYear === maxDateYear && openToDateMonth >= maxDateMonth) {
+            if (openToDateMonth === maxDateMonth) { maxDay = maxDateDay; }
             else { maxDay = null; }
         }
 
         //Disable min days in month
-        if (openToDate.getFullYear() === minDate.getFullYear() && openToDate.getMonth() >= minDate.getMonth()) {
-            if (openToDate.getMonth() === minDate.getMonth()) { minDay = minDate.getDate(); }
+        if (openToDateYear === minDateYear && openToDateMonth >= minDateMonth) {
+            if (openToDateMonth === minDateMonth) { minDay = minDateDay; }
             else { minDay = null; }
         }
 
@@ -363,20 +382,20 @@ class Calendar extends Component {
 
         //Disable next month days
         disableClass = null;
-        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() >= maxDate.getMonth()) {
+        if (openToDateYear === maxDateYear && openToDateMonth >= maxDateMonth) {
             disableClass = "calendar-month_disabled";
         }
 
         //next month + year 
         let nextYearDay = null;
-        if (openToDate.getFullYear() === maxDate.getFullYear() - 1 && openToDate.getMonth() === 11 && maxDate.getMonth() === 0) {
-            nextYearDay = maxDate.getDate();
+        if (openToDateYear === maxDateYear - 1 && openToDateMonth === 11 && maxDateMonth === 0) {
+            nextYearDay = maxDateDay;
         }
 
         //next month
         let nextMonthDay = null;
-        if (openToDate.getFullYear() === maxDate.getFullYear() && openToDate.getMonth() === maxDate.getMonth() - 1) {
-            nextMonthDay = maxDate.getDate();
+        if (openToDateYear === maxDateYear && openToDateMonth === maxDateMonth - 1) {
+            nextMonthDay = maxDateDay;
         }
 
         //Show neighboring days in next month
@@ -399,10 +418,8 @@ class Calendar extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        moment.locale(this.props.locale);
-        this.state.months = moment.months();
-        if (this.props.selectedDate !== prevProps.selectedDate ||
-            this.props.openToDate !== prevProps.openToDate) {
+        if (this.formatSelectedDate(this.props.selectedDate) != this.formatSelectedDate(prevProps.selectedDate) ||
+            this.formatDate(this.props.openToDate) != this.formatDate(prevProps.openToDate)) {
             this.setState({
                 selectedDate: this.props.selectedDate,
                 openToDate: this.props.openToDate
@@ -410,33 +427,59 @@ class Calendar extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if ((this.formatSelectedDate(this.props.selectedDate) !== this.formatSelectedDate(nextProps.selectedDate)) ||
+            (this.formatDate(this.props.openToDate) !== this.formatDate(nextProps.openToDate))) {
+            //console.log("shouldComponentUpdate");
+            //console.log("this.props.openToDate", this.formatDate(this.props.openToDate));
+            //console.log("nextProps.openToDate", this.formatDate(nextProps.openToDate));
+            //console.log("this.props.selectedDate", this.formatSelectedDate(this.props.selectedDate));
+            //console.log("nextProps.selectedDate", this.formatSelectedDate(nextProps.selectedDate));
+            this.setState({
+                selectedDate: nextProps.selectedDate,
+                openToDate: nextProps.openToDate
+            });
+            return true;
+        }
+        return (!isEqual(this.state, nextState));
+    }
+
     render() {
         //console.log("Calendar render");
 
+        moment.locale(this.props.locale);
+        this.state.months = moment.months();
         const isDisabled = this.props.isDisabled;
         const size = this.props.size;
-        const dropDownSizeMonth = this.getListMonth().length > 4 ? 184 : undefined;
-        const dropDownSizeYear = this.getListMonth().length > 4 ? 184 : undefined;
+        const themeColor = this.props.themeColor
+
+        const optionsMonth = this.getListMonth();
+        const selectedOptionMonth = this.getCurrentMonth(optionsMonth);
+        const dropDownSizeMonth = optionsMonth.length > 4 ? 184 : undefined;
+
+        const optionsYear = this.getArrayYears();
+        const selectedOptionYear = this.getCurrentYear(optionsYear);
+        const dropDownSizeYear = optionsYear.length > 4 ? 184 : undefined;
 
         return (
-            <CalendarContainer size={size}>
-                <CalendarStyle size={size} color={this.props.themeColor} isDisabled={isDisabled}>
+            <CalendarContainer size={size} >
+                <CalendarStyle size={size} color={themeColor} isDisabled={isDisabled}>
                     <ComboBoxStyle>
                         <ComboBox
                             scaled={true}
                             dropDownMaxHeight={dropDownSizeMonth}
-                            onSelect={this.onSelectMonth.bind(this)}
-                            selectedOption={this.getCurrentMonth()}
-                            options={this.getListMonth()}
+                            onSelect={this.onSelectMonth}
+                            selectedOption={selectedOptionMonth}
+                            options={optionsMonth}
                             isDisabled={isDisabled}
                         />
                         <ComboBoxDateStyle>
                             <ComboBox
                                 scaled={true}
                                 dropDownMaxHeight={dropDownSizeYear}
-                                onSelect={this.onSelectYear.bind(this)}
-                                selectedOption={this.getCurrentYear()}
-                                options={this.getArrayYears().reverse()}
+                                onSelect={this.onSelectYear}
+                                selectedOption={selectedOptionYear}
+                                options={optionsYear}
                                 isDisabled={isDisabled}
                             />
                         </ComboBoxDateStyle>
@@ -450,7 +493,7 @@ class Calendar extends Component {
                         </Days>
                     </Month>
                 </CalendarStyle>
-            </CalendarContainer>
+            </CalendarContainer >
         );
     }
 }

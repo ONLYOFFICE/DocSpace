@@ -53,6 +53,17 @@ export function getSettings() {
   return fakeResponse(data);
 }
 
+export function getPortalPasswordSettings() {
+  const data = {
+    minLength: 6,
+    upperCase: false,
+    digits: false,
+    specSymbols: false
+  };
+
+  return fakeResponse(data);
+}
+
 export function getUser() {
   const data = {
     index: "a",

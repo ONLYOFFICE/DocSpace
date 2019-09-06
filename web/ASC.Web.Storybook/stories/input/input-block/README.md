@@ -13,7 +13,10 @@ InputBlock description
 #### Usage
 
 ```js
-<InputBlock iconName={"SearchIcon"} onIconClick={event => alert(event.target.value)} onChange={event => alert(event.target.value)} >
+const mask =[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
+
+<InputBlock mask={mask} iconName={"SearchIcon"} onIconClick={event => alert(event.target.value)} 
+    onChange={event => alert(event.target.value)} >
     <Button size='base' isDisabled={false} onClick={() => alert('Button clicked')} label="OK" />
 </InputBlock>;
 ```
@@ -42,3 +45,4 @@ InputBlock description
 | `isIconFill`           | `bool`   |          |                                | `false` | Determines if icon fill is needed                                                                      |
 | `onIconClick`          | `func`   |    ✅    | -                              | -       | Will be triggered whenever an icon is clicked                                                          |
 | `iconSize`             | `number` |    ✅    | -                              | -       | Size icon                                                                                              |
+| `mask`                 | `array`   |    -  | -                   | -       | input text mask                                                                             |

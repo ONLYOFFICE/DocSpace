@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# shellcheck source=src/nginx/utilities/nginx-utilities
+. "$SNAP/utilities/nginx-utilities"
+
+cp -dfr ${SNAP}/config/nginx-config/* ${SNAP_DATA}/nginx/config
+
+sed -e "s|\${SNAP}|$SNAP|;s|\${SNAP_DATA}|$SNAP_DATA|;s|\${NGINX_PIDFILE}|$NGINX_PIDFILE|;s|\${ONLYOFFICE_SOCKET}|$ONLYOFFICE_SOCKET|;s|\${ONLYOFFICE_API_SYSTEM_SOCKET}|$ONLYOFFICE_API_SYSTEM_SOCKET|" -i ${SNAP_DATA}/nginx/config/conf.d/onlyoffice
+sed -e "s|\${SNAP}|$SNAP|;s|\${SNAP_DATA}|$SNAP_DATA|;s|\${NGINX_PIDFILE}|$NGINX_PIDFILE|;s|\${ONLYOFFICE_SOCKET}|$ONLYOFFICE_SOCKET|;s|\${ONLYOFFICE_API_SYSTEM_SOCKET}|$ONLYOFFICE_API_SYSTEM_SOCKET|" -i ${SNAP_DATA}/nginx/config/conf.d/includes/onlyoffice-communityserver-common.conf
+sed -e "s|\${SNAP}|$SNAP|;s|\${SNAP_DATA}|$SNAP_DATA|;s|\${NGINX_PIDFILE}|$NGINX_PIDFILE|;s|\${ONLYOFFICE_SOCKET}|$ONLYOFFICE_SOCKET|;s|\${ONLYOFFICE_API_SYSTEM_SOCKET}|$ONLYOFFICE_API_SYSTEM_SOCKET|" -i ${SNAP_DATA}/nginx/config/nginx.conf
+
+exec "$SNAP/sbin/nginx" "-c" "$SNAP_DATA/nginx/config/nginx.conf" "-p" "$SNAP_DATA/nginx" "-g" "daemon off;" "$@"

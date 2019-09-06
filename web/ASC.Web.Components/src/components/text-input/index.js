@@ -2,8 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import commonInputStyle from '../text-input/common-input-styles';
+import MaskedInput from 'react-text-mask'
 
-const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder,  ...props }) => <input {...props}/>;
+const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder, keepCharPositions,  ...props }) => 
+    (props.mask != null) ? <MaskedInput keepCharPositions {...props}/> : <input {...props}/>;
 
 const StyledInput = styled(Input).attrs((props) => ({
     id: props.id,
@@ -86,6 +88,8 @@ TextInput.propTypes = {
     maxLength: PropTypes.number,
     placeholder: PropTypes.string,
     tabIndex: PropTypes.number,
+    mask: PropTypes.array,
+    keepCharPositions: PropTypes.bool,
 
     size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
     scale: PropTypes.bool,
@@ -112,7 +116,8 @@ TextInput.defaultProps = {
     hasError: false,
     hasWarning: false,
     autoComplete: 'off',
-    withBorder: true
+    withBorder: true,
+    keepCharPositions: false
 }
 
 export default TextInput

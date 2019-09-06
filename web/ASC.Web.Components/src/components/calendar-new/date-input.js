@@ -8,10 +8,7 @@ import NewCalendar from '../calendar-new';
 import moment from 'moment/min/moment-with-locales';
 import { handleAnyClick } from '../../utils/event';
 
-
-const DateInputStyle = styled.div`
-
-`;
+const DateInputStyle = styled.div``;
 
 class DatePicker extends Component {
     constructor(props) {
@@ -30,6 +27,7 @@ class DatePicker extends Component {
         isOpen: this.props.isOpen,
         selectedDate: new Date(moment(this.props.selectedDate, this.format)),
         value: moment(this.props.selectedDate).format('L'),
+        email: this.props.email
     };
 
     handleClick = (e) => {
@@ -37,28 +35,25 @@ class DatePicker extends Component {
     }
 
     onIconClick = (isOpen) => {
-        //console.log("Show calendar please");
         this.setState({ isOpen: isOpen });
     };
 
-    handleChange(e) {
-        const format = moment.localeData().longDateFormat('L');
-        let date = new Date(moment(e.target.value, format));
+    handleChange = (e) => {
+        if (this.state.value != e.target.value) {
+            const format = moment.localeData().longDateFormat('L');
+            let date = new Date(moment(e.target.value, format));
 
-        if (!this.isValidDate(date)) { date = this.state.selectedDate; }
-        if (this.validationDate(date)) {
-            this.props.onChange && this.props.onChange(date);
+            this.setState({ value: e.target.value });
+            if (!isNaN(date) && this.validationDate(date)) {
+                this.props.onChange && this.props.onChange(date);
+                this.setState({ selectedDate: date })
+            }
         }
-        this.setState({ value: e.target.value, selectedDate: date })
     }
 
     onChange = (value) => {
         this.props.onChange && this.props.onChange(value);
         this.setState({ selectedDate: value, value: moment(value).format('L') })
-    }
-
-    isValidDate = (date) => {
-        return date instanceof Date && !isNaN(date);
     }
 
     validationDate = (date) => {
@@ -82,32 +77,35 @@ class DatePicker extends Component {
         }
 
         if (this.props.selectedDate !== prevProps.selectedDate ||
-            this.props.isOpen !== prevProps.isOpen || 
-            this.props.locale != prevProps.locale) {
+            this.props.locale !== prevProps.locale ||
+            this.props.isOpen !== prevProps.isOpen) {
             this.setState({
-                selectedDate: this.props.selectedDate,
                 isOpen: this.props.isOpen,
+                selectedDate: this.props.selectedDate,
                 value: moment(this.props.selectedDate).format('L')
             });
         }
     }
 
-    /*formatDate = () => {
-
+    /*onClick = (e) => {
+        if (this.ref.current.contains(e.target)) { console.log("contains"); }
+        else { console.log("ne contains"); }
     }*/
+    //onFocus = () => { console.log("Focus"); }
+    //onBlur = () => { console.log("Blur"); }
+
 
     render() {
-
         //console.log("Date-picker render");
         const isDisabled = this.props.isDisabled;
         const isReadOnly = this.props.isReadOnly;
         const hasError = this.props.hasError;
         const hasWarning = this.props.hasWarning;
 
-        this.validationDate(this.state.selectedDate);
+        const symbol = '/';
 
         return (
-            <DateInputStyle ref={this.ref} >
+            <DateInputStyle /*onFocus={this.onFocus} onBlur={this.onBlur}*/ ref={this.ref} >
                 <InputBlock
                     isDisabled={isDisabled}
                     isReadOnly={isReadOnly}
@@ -116,19 +114,28 @@ class DatePicker extends Component {
                     iconName={"CalendarIcon"}
                     onIconClick={this.onIconClick.bind(this, !this.state.isOpen)}
                     value={this.state.value}
-                    onChange={this.handleChange.bind(this)}
+                    onChange={this.handleChange}
                     placeholder={moment.localeData().longDateFormat('L')}
+                    mask={[/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/]}
+                    keepCharPositions={true}
+                //guide={true}
+                //showMask={true}
                 />
-                <Col>
-                    <DropDown opened={this.state.isOpen}>
-                        {<NewCalendar
-                            {...this.props}
-                            openToDate={this.state.selectedDate}
-                            selectedDate={this.state.selectedDate}
-                            onChange={this.onChange}
-                        />}
-                    </DropDown>
-                </Col>
+
+                {this.state.isOpen ?
+                    <Col>
+                        <DropDown opened={this.state.isOpen}>
+                            {<NewCalendar
+                                {...this.props}
+                                openToDate={this.state.selectedDate}
+                                selectedDate={this.state.selectedDate}
+                                onChange={this.onChange}
+                            />}
+                        </DropDown>
+                    </Col>
+                    :
+                    null
+                }
             </DateInputStyle>
         );
     }

@@ -2368,6 +2368,7 @@ asap@~2.0.3, asap@~2.0.6:
     react-autosize-textarea "^7.0.0"
     react-custom-scrollbars "^4.2.1"
     react-datepicker "^2.8.0"
+    react-text-mask "^5.4.3"
     react-toastify "^5.3.2"
     react-virtualized-auto-sizer "^1.0.2"
     react-window "^1.8.5"
@@ -10694,6 +10695,13 @@ react-syntax-highlighter@^8.0.1:
     lowlight "~1.9.1"
     prismjs "^1.8.4"
     refractor "^2.4.1"
+
+react-text-mask@^5.4.3:
+  version "5.4.3"
+  resolved "https://registry.yarnpkg.com/react-text-mask/-/react-text-mask-5.4.3.tgz#991efb4299e30c2e6c2c46d13f617169463e0d2d"
+  integrity sha1-mR77QpnjDC5sLEbRP2FxaUY+DS0=
+  dependencies:
+    prop-types "^15.5.6"
 
 react-textarea-autosize@^7.1.0:
   version "7.1.0"

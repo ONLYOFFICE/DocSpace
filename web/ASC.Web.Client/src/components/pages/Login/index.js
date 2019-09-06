@@ -8,6 +8,7 @@ import { login } from '../../../store/auth/actions';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
+import { welcomePageTitle } from './../../../helpers/customNames';
 
 const FormContainer = styled(Container)`
     margin-top: 70px;
@@ -94,11 +95,11 @@ const Form = props => {
     useEffect(() => {
         window.addEventListener('keydown', onKeyPress);
         window.addEventListener('keyup', onKeyPress);
-      // Remove event listeners on cleanup
-      return () => {
-        window.removeEventListener('keydown', onKeyPress);
-        window.removeEventListener('keyup', onKeyPress);
-      };
+        // Remove event listeners on cleanup
+        return () => {
+            window.removeEventListener('keydown', onKeyPress);
+            window.removeEventListener('keyup', onKeyPress);
+        };
     }, [onKeyPress]);
 
     return (
@@ -107,7 +108,7 @@ const Form = props => {
                 <Col sm="12" md={mdOptions}>
                     <Card className="login-card">
                         <CardImg className="card-img" src="images/dark_general.png" alt="Logo" top />
-                        <CardTitle  className="card-title">{t('TitleCloudOfficeApplications')}</CardTitle>
+                        <CardTitle className="card-title">{t('CustomWelcomePageTitle', { welcomePageTitle })}</CardTitle>
                     </Card>
                 </Col>
             </Row>
@@ -168,7 +169,7 @@ const Form = props => {
                         onClick={onSubmit} />
                 </Col>
             </Row>
-            <Collapse isOpen={ !!errorText }>
+            <Collapse isOpen={!!errorText}>
                 <Row className="login-row">
                     <Col sm="12" md={mdOptions}>
                         <div className="alert alert-danger">{errorText}</div>

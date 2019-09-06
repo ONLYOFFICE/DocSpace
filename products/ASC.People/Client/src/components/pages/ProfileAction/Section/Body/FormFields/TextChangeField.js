@@ -16,10 +16,12 @@ const TextChangeField = React.memo((props) => {
 
     inputName,
     inputValue,
+    inputTabIndex,
 
     buttonText,
     buttonIsDisabled,
-    buttonOnClick
+    buttonOnClick,
+    buttonTabIndex
   } = props;
 
   return (
@@ -34,6 +36,7 @@ const TextChangeField = React.memo((props) => {
           value={inputValue}
           isDisabled={true}
           hasError={hasError}
+          tabIndex={inputTabIndex}
         />
         <Button
           label={buttonText}
@@ -41,6 +44,7 @@ const TextChangeField = React.memo((props) => {
           isDisabled={buttonIsDisabled}
           size="medium"
           style={{ marginLeft: "8px" }}
+          tabIndex={buttonTabIndex}
         />
       </InputContainer>
     </FieldContainer>
