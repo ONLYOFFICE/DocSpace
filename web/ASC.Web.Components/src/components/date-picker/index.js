@@ -42,10 +42,16 @@ class DatePicker extends Component {
         if (this.state.value != e.target.value) {
             const format = moment.localeData().longDateFormat('L');
             let date = new Date(moment(e.target.value, format));
+
+            console.log(moment(e.target.value).format());
+
             this.setState({ value: e.target.value });
-            if (!isNaN(date) && this.validationDate(date)) {
-                this.props.onChange && this.props.onChange(date);
-                this.setState({ selectedDate: date })
+
+            if (!isNaN(moment(e.target.value).format())) {
+                if (!isNaN(date) && this.validationDate(date)) {
+                    this.props.onChange && this.props.onChange(date);
+                    this.setState({ selectedDate: date })
+                }
             }
         }
     }
