@@ -56,7 +56,7 @@ const RoleWrapper = styled.div`
 `;
 
 const ImageStyled = styled.img`
-    max-width: 100%; 
+    width: 100%; 
     height: auto;
     border-radius: 50%;
 
@@ -119,9 +119,14 @@ const EditLink = styled.div`
   padding-left: 10px;
   padding-right: 10px;
 
+  a:hover {
+      border-bottom: none
+  }
+
   span {
     display: inline-block;
     max-width: 100%;
+    text-decoration: underline dashed;
   }
 `;
 
@@ -175,7 +180,6 @@ const Avatar = memo(props => {
               title={editLabel}
               isTextOverflow={true}
               fontSize={14}
-              isHovered={true}
               color={whiteColor}
               onClick={editAction}
             >

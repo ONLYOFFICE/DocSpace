@@ -6,7 +6,7 @@ const DepartmentField = React.memo((props) => {
     isRequired,
     hasError,
     labelText,
-    
+
     departments,
     onRemoveDepartment
   } = props;

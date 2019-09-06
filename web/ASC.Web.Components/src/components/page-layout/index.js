@@ -113,7 +113,7 @@ class PageLayout extends React.PureComponent {
       <>
         {
           this.state.isBackdropAvailable &&
-          <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
+          <Backdrop zIndex={400} visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
         }
         {
           this.state.isArticleAvailable &&

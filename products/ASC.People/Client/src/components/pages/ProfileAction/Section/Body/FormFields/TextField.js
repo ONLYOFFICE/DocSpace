@@ -10,7 +10,9 @@ const TextField = React.memo((props) => {
     inputName,
     inputValue,
     inputIsDisabled,
-    inputOnChange
+    inputOnChange,
+    inputAutoFocussed,
+    inputTabIndex
   } = props;
 
   return (
@@ -26,6 +28,8 @@ const TextField = React.memo((props) => {
         onChange={inputOnChange}
         hasError={hasError}
         className="field-input"
+        isAutoFocussed={inputAutoFocussed}
+        tabIndex={inputTabIndex}
       />
     </FieldContainer>
   );

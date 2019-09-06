@@ -100,7 +100,7 @@ class FilterInput extends React.Component {
         }
 
         this.state = {
-            sortDirection: props.selectedFilterData.sortDirection === "asc" ? true : false,
+            sortDirection: props.selectedFilterData.sortDirection === "desc" ? true : false,
             sortId: props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : props.getSortData().length > 0 ? props.getSortData()[0].key : "",
             searchText: props.selectedFilterData.inputValue || props.value,
 
@@ -114,9 +114,10 @@ class FilterInput extends React.Component {
 
         this.onClickSortItem = this.onClickSortItem.bind(this);
         this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
+        this.onChangeSortDirection = this.onChangeSortDirection.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.onChangeFilter = this.onChangeFilter.bind(this);
-        
+
         this.onSearchChanged = this.onSearchChanged.bind(this);
 
         this.getDefaultSelectedIndex = this.getDefaultSelectedIndex.bind(this);
@@ -139,6 +140,10 @@ class FilterInput extends React.Component {
             hideFilterItems: []
         })
     }
+    onChangeSortDirection(key) {
+        this.onFilter(this.state.filterValues, this.state.sortId, !!key ? "desc" : "asc");
+        this.setState({ sortDirection: !!key });
+    }
     getDefaultSelectedIndex() {
         const sortData = this.props.getSortData();
         if (sortData.length > 0) {
@@ -147,21 +152,21 @@ class FilterInput extends React.Component {
         }
         return 0;
     }
-    onClickSortItem(item) {
-        this.setState({ sortId: item.key });
-        this.onFilter(this.state.filterValues, item.key, this.state.sortDirection ? "asc" : "desc");
+    onClickSortItem(key) {
+        this.setState({ sortId: key });
+        this.onFilter(this.state.filterValues, key, this.state.sortDirection ? "desc" : "asc");
     }
     onSortDirectionClick() {
 
-        this.onFilter(this.state.filterValues, this.state.sortId, !this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(this.state.filterValues, this.state.sortId, !this.state.sortDirection ? "desc" : "asc");
         this.setState({ sortDirection: !this.state.sortDirection });
     }
     onSearchChanged(value) {
         this.setState({ searchText: value });
-        this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc",value);
+        this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", value);
     }
     onSearch(result) {
-        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc");
     }
     getFilterData() {
         const _this = this;
@@ -181,12 +186,12 @@ class FilterInput extends React.Component {
     }
     clearFilter() {
         this.setState({
-            searchText:'',
+            searchText: '',
             filterValues: [],
             openFilterItems: [],
             hideFilterItems: []
         });
-        this.onFilter([], this.state.sortId, this.state.sortDirection ? "asc" : "desc", '');
+        this.onFilter([], this.state.sortId, this.state.sortDirection ? "desc" : "asc", '');
     }
     updateFilter(inputFilterItems) {
         const currentFilterItems = inputFilterItems || cloneObjectsArray(this.state.filterValues);
@@ -223,7 +228,7 @@ class FilterInput extends React.Component {
                 openFilterItems: newOpenFilterItems,
                 hideFilterItems: newHideFilterItems
             });
-            
+
         } else {
             this.setState({
                 openFilterItems: currentFilterItems.slice(),
@@ -247,7 +252,7 @@ class FilterInput extends React.Component {
             item.key = item.key.replace(item.group + "_", '');
             return item;
         })
-        this.onFilter(filterValues.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+        this.onFilter(filterValues.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
     }
     onFilter(filterValues, sortId, sortDirection, searchText) {
         let cloneFilterValues = cloneObjectsArray(filterValues);
@@ -267,14 +272,14 @@ class FilterInput extends React.Component {
             searchText: result.inputValue,
             filterValues: result.filterValues,
         });
-        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "asc" : "desc", result.inputValue);
+        this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", result.inputValue);
     }
     onFilterRender() {
         if (this.isResizeUpdate) {
             this.isResizeUpdate = false;
         }
 
-        if(this.searchWrapper.current && this.filterWrapper.current){
+        if (this.searchWrapper.current && this.filterWrapper.current) {
             const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
             const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
             if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2) this.updateFilter();
@@ -325,7 +330,7 @@ class FilterInput extends React.Component {
                     item.key = item.key.replace(item.group + "_", '');
                     return item;
                 })
-                this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+                this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
                 this.setState({
                     filterValues: currentFilterItems,
                     openFilterItems: currentFilterItems,
@@ -361,14 +366,14 @@ class FilterInput extends React.Component {
                 item.key = item.key.replace(item.group + "_", '');
                 return item;
             })
-            this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "asc" : "desc");
+            this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
         }
 
     }
-    
+
     componentDidMount() {
         window.addEventListener('resize', this.throttledResize);
-        if(this.state.filterValues.length > 0) this.updateFilter();
+        if (this.state.filterValues.length > 0) this.updateFilter();
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.throttledResize);
@@ -382,7 +387,7 @@ class FilterInput extends React.Component {
             }
             this.setState(
                 {
-                    sortDirection: nextProps.selectedFilterData.sortDirection === "asc" ? true : false,
+                    sortDirection: nextProps.selectedFilterData.sortDirection === "desc" ? true : false,
                     sortId: this.props.getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
                     filterValues: internalFilterData,
                     searchText: nextProps.selectedFilterData.inputValue || this.props.value
@@ -456,10 +461,13 @@ class FilterInput extends React.Component {
                 <SortComboBox
                     options={this.props.getSortData()}
                     isDisabled={this.props.isDisabled}
-                    onSelect={this.onClickSortItem}
+                    onChangeSortId={this.onClickSortItem}
+                    onChangeSortDirection={this.onChangeSortDirection}
                     selectedOption={this.props.getSortData().length > 0 ? this.props.getSortData().find(x => x.key === this.state.sortId) : {}}
                     onButtonClick={this.onSortDirectionClick}
-                    sortDirection={this.state.sortDirection}
+                    sortDirection={+this.state.sortDirection}
+                    directionAscLabel={this.props.directionAscLabel}
+                    directionDescLabel={this.props.directionDescLabel}
                 />
             </StyledFilterInput>
 
@@ -470,6 +478,8 @@ class FilterInput extends React.Component {
 FilterInput.protoTypes = {
     autoRefresh: PropTypes.bool,
     selectedFilterData: PropTypes.object,
+    directionAscLabel: PropTypes.string,
+    directionDescLabel: PropTypes.string
 };
 
 FilterInput.defaultProps = {
@@ -479,7 +489,9 @@ FilterInput.defaultProps = {
         sortId: '',
         filterValues: [],
         searchText: ''
-    }
+    },
+    directionAscLabel: 'A-Z',
+    directionDescLabel: 'Z-A'
 };
 
 export default FilterInput;

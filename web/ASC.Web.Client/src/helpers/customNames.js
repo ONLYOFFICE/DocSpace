@@ -1,0 +1,1 @@
+export const welcomePageTitle = 'Cloud Office Applications';

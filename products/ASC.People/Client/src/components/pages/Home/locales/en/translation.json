@@ -47,5 +47,8 @@
   "CustomMakeGuest": "Make {{typeGuest, lowercase}}",
   "CustomDepartment": "{{department}}",
   "CountPerPage": "{{count}} per page",
-  "PageOfTotalPage": "{{page}} of {{totalPage}}"
+  "PageOfTotalPage": "{{page}} of {{totalPage}}",
+
+  "DirectionAscLabel":"A-Z",
+  "DirectionDescLabel":"Z-A"
 }
