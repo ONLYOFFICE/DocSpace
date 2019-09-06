@@ -2,6 +2,9 @@ import { configure, addDecorator, addParameters } from '@storybook/react';
 import { withA11y } from '@storybook/addon-a11y';
 import { addReadme } from 'storybook-readme';
 import { withConsole } from '@storybook/addon-console';
+
+import '!style-loader!css-loader!./styles.scss';
+
 //import 'bootstrap/dist/css/bootstrap.css';
 //import 'react-toastify/dist/ReactToastify.min.css';
 /*
