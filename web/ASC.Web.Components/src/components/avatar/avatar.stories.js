@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Avatar } from 'asc-web-components';
+import Avatar from '.';
 import Section from '../../../.storybook/decorators/section';
 
 const roleOptions = ['owner', 'admin','guest','user'];
