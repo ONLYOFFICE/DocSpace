@@ -2,10 +2,11 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { StringValue } from 'react-values';
-import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
-import Readme from '../README.md';
-import { FilterInput, Button } from 'asc-web-components';
+import Readme from './README.md';
+import FilterInput from '.';
+import Button from '../button';
 import Section from '../../../.storybook/decorators/section';
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
