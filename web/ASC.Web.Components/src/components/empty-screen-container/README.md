@@ -14,27 +14,12 @@ Used to display empty screen page
 
 ```js
 <EmptyScreenContainer
-      imageSrc={text("imageSrc", "empty_screen_filter.png")}
-      imageAlt={text("imageAlt", "Empty Screen Filter image")}
-      headerText={text(
-        "headerText",
-        "No results matching your search could be found"
-      )}
-      descriptionText={text(
-        "descriptionText",
-        "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section."
-      )}
+      imageSrc="empty_screen_filter.png"
+      imageAlt="Empty Screen Filter image"
+      headerText="No results matching your search could be found"
+      descriptionText="No results matching your search could be found"
       buttons={
-        <>
-          <Icons.CrossIcon size="small" style={{marginRight: "4px"}} />
-          <Link
-            type="action"
-            isHovered={true}
-            onClick={(e) => action("Reset filter clicked")(e)}
-          >
-            Reset filter
-          </Link>
-        </>
+        <a href="/">Go to home</a>
       }
     />
 ```
