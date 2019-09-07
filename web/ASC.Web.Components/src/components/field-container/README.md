@@ -15,7 +15,7 @@ Responsive form field container
 ```js
 
 <FieldContainer labelText="Name:">
-    <TextInput/>
+    <TextInput value="" onChange={(e) => console.log(e.target.value)} />
 </FieldContainer>
 
 ```
