@@ -5,7 +5,7 @@ import { DateValue } from 'react-values'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { DateInput } from 'asc-web-components';
+import DateInput from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Input', module)

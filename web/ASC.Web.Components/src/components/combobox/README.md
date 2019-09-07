@@ -43,7 +43,7 @@ const advancedOptions = (
 <ComboBox
   options={[]} // An empty array will enable advancedOptions
   advancedOptions={advancedOptions}
-  onSelect={option => action("Selected option")(option)}
+  onSelect={option => console.log("Selected option", option)}
   selectedOption={{
     key: 0,
     label: "Select"

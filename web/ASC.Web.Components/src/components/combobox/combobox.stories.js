@@ -5,9 +5,12 @@ import { withKnobs, boolean, select, number } from '@storybook/addon-knobs/react
 import { optionsKnob as options } from '@storybook/addon-knobs';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { ComboBox, Icons, Button, RadioButton, DropDownItem } from 'asc-web-components'
+import ComboBox from '.';
+import { Icons } from '../icons';
+import Button from '../button';
+import RadioButton from '../radio-button';
+import DropDownItem from '../drop-down-item'
 import Section from '../../../.storybook/decorators/section';
-import styled from 'styled-components'
 
 const iconNames = Object.keys(Icons);
 const sizeOptions = ['base', 'middle', 'big', 'huge', 'content'];
