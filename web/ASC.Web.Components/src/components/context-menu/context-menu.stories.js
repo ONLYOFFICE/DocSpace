@@ -1,9 +1,13 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ContextMenu, Row } from 'asc-web-components';
-import Section from '../../.storybook/decorators/section';
+import ContextMenu from '.';
+import Row from '../row';
+import Section from '../../../.storybook/decorators/section';
+import Readme from './README.md';
+import withReadme from 'storybook-readme/with-readme';
 
 storiesOf('Components|ContextMenu', module)
+  .addDecorator(withReadme(Readme))
   .add('base', () => {
     const array = Array.from(Array(10).keys());
 
