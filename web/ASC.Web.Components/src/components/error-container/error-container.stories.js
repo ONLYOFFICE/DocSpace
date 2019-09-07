@@ -3,7 +3,8 @@ import { storiesOf } from '@storybook/react'
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
 import { withKnobs, text } from '@storybook/addon-knobs/react';
-import { Text, ErrorContainer } from 'asc-web-components';
+import { Text } from '../text';
+import ErrorContainer from '.';
 
 storiesOf('Components| ErrorContainer', module)
     .addDecorator(withKnobs)
