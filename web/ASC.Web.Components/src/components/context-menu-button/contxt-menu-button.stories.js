@@ -3,8 +3,9 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, select, number, color, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import Section from '../../.storybook/decorators/section';
-import { ContextMenuButton, Icons } from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
+import ContextMenuButton from '.';
+import { Icons } from '../icons';
 
 const iconNames = Object.keys(Icons);
 
