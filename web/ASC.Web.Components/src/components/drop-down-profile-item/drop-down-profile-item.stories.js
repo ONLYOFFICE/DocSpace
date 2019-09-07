@@ -2,7 +2,9 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
-import { DropDown, DropDownItem, DropDownProfileItem } from 'asc-web-components'
+import DropDown from '../drop-down';
+import DropDownItem from '../drop-down-item';
+import DropDownProfileItem from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components | DropDown', module)
