@@ -2,12 +2,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text, PasswordInput } from 'asc-web-components';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 
-const ConfirmContainer = styled(Container)`
+const ConfirmContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     .confirm-block-title {
         margin: 20px 0px;
     }
@@ -15,8 +18,30 @@ const ConfirmContainer = styled(Container)`
     .login-row {
         margin: 23px 0 0;
     }
+
+    .input-container {
+
+        margin-left: 13%;
+
+        @media (max-width: 1500px) {
+            margin-left: 22%;
+        }
+    
+
+        @media (max-width: 768px) {
+            margin-left: 5%;
+        }
+        
+
+        input {
+            width: 400px;
+        }
+    }
+
+    .join-button {
+        align-self: baseline;
+    }
 `;
-const mdOptions = { size: 6, offset: 3 };
 
 const passwordSettings = {
     minLength: 6,
@@ -100,23 +125,18 @@ const Confirm = (props) => {
     return (
         <ConfirmContainer>
 
-            <Row className='confirm-block-title'>
-                <Col sm="12" md={mdOptions}>
-                    <Text.Body as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
-                </Col>
-            </Row>
+            <Text.Body className='confirm-block-title' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <a href='/login'>
-                        <img className='login-row' src="images/dark_general.png" alt="Logo" />
-                    </a>
-                    <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
-                </Col>
-            </Row>
+            <div className='login-row'>
+                <a href='/login'>
+                    <img src="images/dark_general.png" alt="Logo" />
+                </a>
+                <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+            </div>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+            <div className='input-container login-row'>
+
+                <FieldContainer isVertical={true} className=''>
                     <TextInput
                         id='name'
                         name='name'
@@ -136,11 +156,11 @@ const Confirm = (props) => {
                         }}
                         onKeyDown={event => onKeyPress(event.target)}
                     />
-                </Col>
-            </Row>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+                </FieldContainer>
+
+                <FieldContainer isVertical={true} className=''>
+
                     <TextInput
                         id='surname'
                         name='surname'
@@ -159,11 +179,10 @@ const Confirm = (props) => {
                         }}
                         onKeyDown={event => onKeyPress(event.target)}
                     />
-                </Col>
-            </Row>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+                </FieldContainer>
+
+                <FieldContainer isVertical={true} className=''>
                     <TextInput
                         type="email"
                         id='email'
@@ -183,11 +202,10 @@ const Confirm = (props) => {
                         }}
                         onKeyDown={event => onKeyPress(event.target)}
                     />
-                </Col>
-            </Row>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+                </FieldContainer>
+
+                <FieldContainer isVertical={true} className=''>
                     <PasswordInput
                         inputName="password"
                         emailInputName="email"
@@ -197,6 +215,7 @@ const Confirm = (props) => {
                         scale={true}
                         tabIndex={4}
                         maxLength={30}
+                        inputWidth='400px'
                         hasError={!passwordValid}
                         onChange={event => {
                             setPassword(event.target.value);
@@ -216,11 +235,9 @@ const Confirm = (props) => {
                         passwordSettings={passwordSettings}
                         isDisabled={isLoading}
                     />
-                </Col>
-            </Row>
+                </FieldContainer>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+                <div className='login-row join-button'>
                     <Button
                         primary
                         size='big'
@@ -230,13 +247,14 @@ const Confirm = (props) => {
                         isLoading={isLoading}
                         onClick={onSubmit}
                     />
-                </Col>
-            </Row>
+                </div>
+
+            </div>
 
             {/*             <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+
                     <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
-                </Col>
+
             </Row>
  */}
         </ConfirmContainer>

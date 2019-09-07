@@ -60,6 +60,8 @@ storiesOf('Components|Input', module)
               isDisabled={isDisabled}
               placeholder='password'
               maxLength={30}
+              onValidateInput={(a) => console.log(a)}
+              onCopyToClipboard={(b) => console.log('Data ' + b + ' copied to clipboard')}
             />
           )}
         </StringValue>

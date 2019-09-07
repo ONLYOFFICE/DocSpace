@@ -6,14 +6,18 @@ import isEqual from 'lodash/isEqual';
 import throttle from 'lodash/throttle';
 import FilterBlock from './filter-block';
 import SortComboBox from './sort-combobox';
+import { mobile } from '../../utils/device';
 
 const StyledFilterInput = styled.div`
-    min-width: 380px;
+    width: 100%;
 `;
 const StyledSearchInput = styled.div`
-  display: block;
-  float: left;
-  width: calc(80% - 8px);
+    display: block;
+    float: left;
+    width: calc(80% - 8px);
+    @media ${mobile} {
+        width: calc(100% - 58px);
+    }
 `;
 const StyledFilterBlock = styled.div`
     display: flex;

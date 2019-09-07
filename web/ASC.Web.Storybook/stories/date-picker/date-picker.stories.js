@@ -5,7 +5,7 @@ import { withKnobs, boolean, color, select, date } from '@storybook/addon-knobs/
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import { DatePicker } from 'asc-web-components';
-import Section from '../../../.storybook/decorators/section';
+import Section from '../../.storybook/decorators/section';
 import moment from 'moment';
 import 'moment/min/locales'
 
@@ -16,7 +16,7 @@ function myDateKnob(name, defaultValue) {
 
 const locales = moment.locales();
 
-storiesOf('Components|Calendar', module)
+storiesOf('Components|Date-picker', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('date-picker', () => (
