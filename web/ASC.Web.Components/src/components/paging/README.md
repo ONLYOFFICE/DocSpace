@@ -9,17 +9,18 @@ Paging is used to navigate med content pages.
 ```js
 import { Paging } from 'asc-web-components';
 
-<ComboBox 
-    previousLabel='Previous' 
+<Paging 
+    previousLabel='Previous'
     nextLabel='Next'
-    pageItems={pageItems} 
-    countItems={countItems} 
-    previousAction={previousAction} 
-    nextAction={nextAction} 
+    selectedPageItem={{ label: "1 of 1"}}
+    selectedCountItem={{ label: "25 per page"}}
+    previousAction={() => console.log('Prev')}
+    nextAction={() => console.log('Next')}
     openDirection='bottom'
-    disablePrevious={false}
-    disableNext={false}
+    onSelectPage={(a) => console.log(a)}
+    onSelectCount={(a) => console.log(a)}
 />
+
 ```
 
 #### Properties

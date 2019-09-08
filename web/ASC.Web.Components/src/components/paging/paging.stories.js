@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Paging } from 'asc-web-components';
+import Paging from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Paging', module)
