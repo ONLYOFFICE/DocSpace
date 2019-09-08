@@ -56,7 +56,8 @@ const settings = {
   placeholder="password"
   onValidateInput={a => console.log(a)}
   onCopyToClipboard={b => console.log("Data " + b + " copied to clipboard")}
-/>;
+/>
+
 ```
 
 #### Properties
