@@ -4,8 +4,9 @@ import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import styled from '@emotion/styled';
-import { TreeMenu, TreeNode } from 'asc-web-components';
-import { Icons } from 'asc-web-components';
+import TreeMenu from '../tree-menu';
+import TreeNode from '.';
+import { Icons } from '../icons';
 
 
 const TreeMenuStory = props => {
