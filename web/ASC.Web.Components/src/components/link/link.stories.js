@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Link } from 'asc-web-components';
+import Link from '.';
 import Readme from './README.md';
 import { text, boolean, withKnobs, select, number, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
