@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Collapse, Container, Row, Col } from 'reactstrap';
 import { storiesOf } from '@storybook/react';
-import { TextInput, Button } from 'asc-web-components';
+import TextInput from '../text-input';
+import Button from '../button';
 
 const LoginForm = props => {
     const { loginPlaceholder, passwordPlaceholder, buttonText, onSubmit, errorText } = props;
