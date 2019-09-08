@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import withReadme from 'storybook-readme/with-readme';
-import { RadioButton } from 'asc-web-components';
+import RadioButton from '.';
 import Section from '../../../.storybook/decorators/section';
 import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
@@ -13,7 +13,6 @@ storiesOf('Components|Input', module)
   .add('radio button', () => {
     return (
       <Section>
-        <>
           <RadioButton
             value={text('value', 'value')}
             name={text('name', 'name')}
@@ -29,7 +28,6 @@ storiesOf('Components|Input', module)
             }
             }
           />
-        </>
       </Section>
     );
   });

@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import PasswordInput from '.';
 
-describe('<Paging />', () => {
+describe('<PasswordInput />', () => {
   it('renders without error', () => {
     const settings = {
       minLength: 6,
