@@ -20,7 +20,7 @@ const arraySize = ['base', 'big'];
 storiesOf('Components|Calendar', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('calendar', () => (
+  .add('base', () => (
       <NewCalendar
         onChange={date => {
           action('Selected date')(date);

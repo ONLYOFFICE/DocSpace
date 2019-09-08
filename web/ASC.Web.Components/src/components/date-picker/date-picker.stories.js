@@ -4,8 +4,8 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, color, select, date } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { DatePicker } from 'asc-web-components';
-import Section from '../../.storybook/decorators/section';
+import DatePicker from '.';
+import Section from '../../../.storybook/decorators/section';
 import moment from 'moment';
 import 'moment/min/locales'
 
@@ -16,10 +16,10 @@ function myDateKnob(name, defaultValue) {
 
 const locales = moment.locales();
 
-storiesOf('Components|Date-picker', module)
+storiesOf('Components|DatePicker', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('date-picker', () => (
+  .add('base', () => (
     <Section>
       <DatePicker
         onChange={date => {

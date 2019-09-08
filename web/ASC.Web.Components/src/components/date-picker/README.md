@@ -1,27 +1,22 @@
-# Calendar
+# DatePicker
 
 #### Description
 
-Custom calendar
+DatePicker
 
 #### Usage
 
 ```js
-import { NewCalendar } from 'asc-web-components';
+import { DatePicker } from 'asc-web-components';
 
-<NewCalendar
-    onChange={date => {
-        action('Selected date')(date);
-    }}
-    disabled={boolean('disabled', false)}
-    themeColor={color('themeColor', '#ED7309')}
-    selectedDate={myDateKnob('selectedDate', new Date())}
-    openToDate={myDateKnob('openToDate', new Date())}
-    minDate={myDateKnob('minDate', new Date("1970/01/01"))}
-    maxDate={myDateKnob('maxDate', new Date("3000/01/01"))}
-    locale={select('location', locales, 'en')}
-    scaled = {boolean('scaled', false)}
-/>
+<DatePicker
+        onChange={date => {
+          console.log('Selected date', date);
+        }}
+        selectedDate={new Date()}
+        minDate={new Date("1970/01/01")}
+        maxDate={new Date(new Date().getFullYear() + 1 + "/01/01")}
+      />
 ```
 
 #### Properties
