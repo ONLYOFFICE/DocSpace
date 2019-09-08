@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "..\\ASC.Web.Storybook"
 		}
 	],
 	"settings": {
