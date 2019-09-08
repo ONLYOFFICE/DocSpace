@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import { storiesOf } from '@storybook/react';
-import { TreeMenu, TreeNode } from 'asc-web-components';
-import { Icons } from 'asc-web-components';
+import TreeMenu from '../tree-menu';
+import TreeNode from '../tree-menu-node';
+import { Icons } from '../icons';
 
 const treeData = [
   { key: '0-0', title: 'Departments', root: true, children:
