@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, number, text, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { RequestLoader } from 'asc-web-components';
+import RequestLoader from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Loaders', module)
