@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, color, select, date } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { NewCalendar } from 'asc-web-components';
+import NewCalendar from '.';
 import moment from 'moment';
 import 'moment/min/locales'
 
