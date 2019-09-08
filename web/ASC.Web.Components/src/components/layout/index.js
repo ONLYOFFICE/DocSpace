@@ -218,7 +218,7 @@ class Layout extends React.Component {
       </>
     );
   }
-};
+}
 
 Layout.propTypes = {
   isBackdropVisible: PropTypes.bool,

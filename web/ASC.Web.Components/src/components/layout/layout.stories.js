@@ -1,8 +1,18 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import styled from '@emotion/styled'
-import { Layout, PageLayout, Text, IconButton, ContextMenuButton, MainButton, SearchInput, Paging } from 'asc-web-components'
+import styled from '@emotion/styled';
+import Layout from '.';
+import PageLayout from '../page-layout';
+import { Text } from '../text';
+import IconButton from '../icon-button';
+import ContextMenuButton from '../context-menu-button';
+import MainButton from '../main-button';
+import SearchInput from '../search-input';
+import Paging from '../paging';
+import withReadme from 'storybook-readme/with-readme';
+import { text, boolean, withKnobs } from '@storybook/addon-knobs/react';
+import Readme from './README.md';
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
@@ -205,7 +215,9 @@ const sectionPagingContent = <Paging
 />
 
 storiesOf('Components|Layout', module)
-  .add('Layout', () => (
+  .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
+  .add('base', () => (
     <Layout
       currentUser={currentUser}
       currentUserActions={currentUserActions}
@@ -213,6 +225,10 @@ storiesOf('Components|Layout', module)
       currentModuleId={currentModuleId}
       onLogoClick={onLogoClick}
       asideContent={asideContent}
+      isBackdropVisible={boolean("isBackdropVisible", false)}
+      isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
+      isNavOpened={boolean("isNavOpened", false)}
+      isAsideVisible={boolean("isAsideVisible", false)}
     >
       <PageLayout
         articleHeaderContent={articleHeaderContent}

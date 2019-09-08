@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import Label from '.';
 
-describe('<IconButton />', () => {
+describe('<Label />', () => {
   it('renders without error', () => {
     const wrapper = mount(
       <Label
