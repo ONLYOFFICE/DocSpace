@@ -1,7 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import Section from '../../.storybook/decorators/section';
-import { RowContainer, Row, RowContent, Avatar, Link, Icons } from 'asc-web-components';
+import Section from '../../../.storybook/decorators/section';
+import RowContainer from '.';
+import Row from '../row';
+import RowContent from '../row-content';
+import Avatar from '../avatar';
+import Link from '../combobox';
+import { Icons } from '../icons';
 
 const getRndString = (n) => Math.random().toString(36).substring(2, (n + 2));
 const getRndNumber = (a, b) => Math.floor(Math.random() * (b - a)) + a;
