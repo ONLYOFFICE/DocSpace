@@ -1,10 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { TabContainer } from 'asc-web-components';
-import Section from '../../.storybook/decorators/section';
+import TabContainer from '.';
+import Section from '../../../.storybook/decorators/section';
 import { action } from '@storybook/addon-actions';
 
 const array_items = [
