@@ -4,7 +4,7 @@ import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { ToggleButton } from 'asc-web-components';
+import ToggleButton from '.';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Input', module)

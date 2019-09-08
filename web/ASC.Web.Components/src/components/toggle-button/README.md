@@ -9,7 +9,7 @@ Custom toggle button input
 ```js
 import { ToggleButton } from 'asc-web-components';
 
-<ToggleButton value="text" onChange={event => console.log(event.target.value)}/>
+<ToggleButton label="text" onChange={event => console.log(event.target.value)} isChecked={false}/>
 ```
 
 #### Properties
