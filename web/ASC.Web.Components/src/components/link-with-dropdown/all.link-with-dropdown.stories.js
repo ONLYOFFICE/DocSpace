@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { LinkWithDropdown } from 'asc-web-components';
+import LinkWithDropdown from '.';
 import { Container, Row, Col } from 'reactstrap';
 
 const rowStyle = {
