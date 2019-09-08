@@ -3,7 +3,8 @@ import { storiesOf } from '@storybook/react'
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
 import { Container, Row, Col } from 'reactstrap';
-import { GroupButton, DropDownItem } from 'asc-web-components'
+import GroupButton from '.';
+import DropDownItem from '../drop-down-item';
 
 const rowStyle = { marginTop: 8 };
 

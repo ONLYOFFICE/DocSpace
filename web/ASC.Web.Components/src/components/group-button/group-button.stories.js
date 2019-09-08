@@ -1,9 +1,10 @@
-import React from 'react'
-import { storiesOf } from '@storybook/react'
+import React from 'react';
+import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text } from '@storybook/addon-knobs/react';
-import withReadme from 'storybook-readme/with-readme'
-import Readme from './README.md'
-import { GroupButton, DropDownItem } from 'asc-web-components'
+import withReadme from 'storybook-readme/with-readme';
+import Readme from './README.md';
+import GroupButton from '.';
+import DropDownItem from '../drop-down-item';
 
 storiesOf('Components|GroupButton', module)
     .addDecorator(withKnobs)
