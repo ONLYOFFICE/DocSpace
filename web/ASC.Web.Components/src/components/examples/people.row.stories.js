@@ -1,6 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Row, RowContent, Avatar, Link, Icons } from 'asc-web-components';
+import Row from '../row';
+import Avatar from '../avatar';
+import Link from '../link';
+import RowContent from '../combobox';
+import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 
 const fakeUsers = [
