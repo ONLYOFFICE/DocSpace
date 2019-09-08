@@ -5,28 +5,12 @@ import { StringValue } from 'react-values';
 import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { SearchInput, Button } from 'asc-web-components';
+import SearchInput from '.';
+import Button from '../button';
 import Section from '../../../.storybook/decorators/section';
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
 
-function getData() {
-    return [
-      { key: 'filter-status', group: 'filter-status', label: 'Status', isHeader: true },
-        { key: '0', group: 'filter-status', label: 'Active' },
-        { key: '1', group: 'filter-status', label: 'Disabled' },
-      { key: 'filter-type', group: 'filter-type', label: 'Type', isHeader: true },
-        { key: '0', group: 'filter-type', label: 'Folders' },
-      { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
-        { key: '0', group: 'filter-other', subgroup: 'filter-groups', defaultSelectLabel: 'Select', label: 'Groups' },
-          { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
-        { key: '1', group: 'filter-other', subgroup: 'filter-empty', defaultSelectLabel: 'Select', label: 'Empty' },
-        { key: '2', group: 'filter-other', subgroup: 'filter-test', defaultSelectLabel: 'Select', label: 'Test' },
-          { key: '0', inSubgroup: true, group: 'filter-test', label: 'test1'},
-          { key: '1', inSubgroup: true, group: 'filter-test', label: 'test2'},
-
-    ];
-}
 class SearchStory extends React.Component  {
   constructor(props) {
     super(props);
