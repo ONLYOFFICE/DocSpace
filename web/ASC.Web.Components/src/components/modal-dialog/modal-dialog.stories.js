@@ -5,7 +5,8 @@ import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../.storybook/decorators/section';
-import { ModalDialog, Button } from 'asc-web-components';
+import ModalDialog from '.';
+import Button from '../button';
 
 
 storiesOf('Components|ModalDialog', module)
