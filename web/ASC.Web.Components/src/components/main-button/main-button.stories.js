@@ -2,7 +2,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { text, boolean, withKnobs, select } from '@storybook/addon-knobs/react';
-import { MainButton, DropDownItem, Icons } from 'asc-web-components';
+import MainButton from '.';
+import DropDownItem from '../drop-down-item';
+import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
@@ -20,7 +22,7 @@ function ClickSecondaryButton(e, credentials) {
 storiesOf('Components|MainButton', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('main button', () => {
+  .add('base', () => {
 
     let isDropdown=boolean('isDropdown', true);
 
