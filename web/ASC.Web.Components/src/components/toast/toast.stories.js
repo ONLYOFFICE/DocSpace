@@ -1,6 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Toast, toastr } from 'asc-web-components';
+import Toast from '.';
+import toastr from './toastr';
 import Readme from './README.md';
 import { text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';

@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { storiesOf } from '@storybook/react';
-import { Toast, toastr, Link } from 'asc-web-components';
+import Toast from '.';
+import toastr from './toastr';
+import Link from '../link';
 
 class TostWrapper extends React.Component {
   componentDidMount() {
