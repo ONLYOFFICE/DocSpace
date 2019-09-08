@@ -13,9 +13,9 @@ ToggleContent allow you to adding information, which you may hide/show by clicki
 #### Usage
 
 ```js
-<ToggleContent>
-// your data
-<ToggleContent />
+    <ToggleContent>
+        <span>Some text</span>
+    </ToggleContent>
 ```
 
 #### Properties

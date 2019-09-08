@@ -1,6 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ToggleContent, Button, Text, Icons, TextInput } from 'asc-web-components';
+import ToggleContent from '.';
+import Button from '../button';
+import TextInput from '../button';
+import { Text } from '../text';
+import { Icons } from '../icons';
 import Readme from './README.md';
 import withReadme from 'storybook-readme/with-readme';
 import { text, withKnobs, boolean, select } from '@storybook/addon-knobs/react';
