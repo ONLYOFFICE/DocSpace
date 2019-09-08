@@ -15,9 +15,7 @@ Displays content as row.
 ```js
 <Row 
     checked={false}
-    element={element} 
-    contextOptions={optionData}
-    data={rowData}
+    contextOptions={[]}
 >
     {children}
 </Row>

@@ -3,7 +3,11 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, text, select } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Row, Text, Avatar, ComboBox, Icons } from 'asc-web-components';
+import Row from '.';
+import { Text } from '../text';
+import Avatar from '../avatar';
+import ComboBox from '../combobox';
+import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 
 storiesOf('Components|Row', module)
