@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { Textarea } from 'asc-web-components';
+import Textarea from '.';
 import Section from '../../../.storybook/decorators/section';
 import { StringValue } from 'react-values';
 import { action } from '@storybook/addon-actions';

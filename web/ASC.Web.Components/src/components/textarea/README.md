@@ -13,7 +13,7 @@ Textarea is used for displaying custom textarea
 #### Usage
 
 ```js
-<Textarea placeholder="Add comment" onChange={event => alert(event.target.value) value='value' />
+<Textarea placeholder="Add comment" onChange={event => alert(event.target.value)} value='value' />
 ```
 
 #### Properties
