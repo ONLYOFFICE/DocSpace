@@ -8,7 +8,7 @@ import { FilterInput } from 'asc-web-components';
 
 #### Description
 
-FilterInput description
+Used to filter tables
 
 #### Usage
 

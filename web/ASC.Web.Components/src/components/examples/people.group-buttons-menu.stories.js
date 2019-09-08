@@ -3,7 +3,9 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs, text } from '@storybook/addon-knobs/react';
 import { BooleanValue } from 'react-values'
 import styled from '@emotion/styled';
-import { GroupButtonsMenu, DropDownItem, Button } from 'asc-web-components'
+import GroupButtonsMenu from '../group-buttons-menu';
+import DropDownItem from '../drop-down-item';
+import Button from '../button';
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;

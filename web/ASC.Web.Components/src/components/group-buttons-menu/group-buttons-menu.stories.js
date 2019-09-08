@@ -4,8 +4,10 @@ import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
 import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme'
 import styled from '@emotion/styled';
-import Readme from './README.md'
-import { GroupButtonsMenu, DropDownItem, Button } from 'asc-web-components'
+import Readme from './README.md';
+import GroupButtonsMenu from '.';
+import DropDownItem from '../drop-down-item';
+import Button from '../button';
 
 const GroupButtonsMenuContainer = styled.div`
   height: 2000px;
