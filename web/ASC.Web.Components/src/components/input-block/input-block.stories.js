@@ -6,7 +6,9 @@ import { optionsKnob as options } from '@storybook/addon-knobs';
 import withReadme from 'storybook-readme/with-readme';
 import { StringValue } from 'react-values';
 import Readme from './README.md';
-import { InputBlock, Icons, Button } from 'asc-web-components';
+import InputBlock from '.';
+import { Icons } from '../icons';
+import Button from '../button';
 import Section from '../../../.storybook/decorators/section';
 
 const iconNames = Object.keys(Icons);
