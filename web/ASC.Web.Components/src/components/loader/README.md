@@ -1,4 +1,4 @@
-# Loaders: Base
+# Loader
 
 ## Usage
 

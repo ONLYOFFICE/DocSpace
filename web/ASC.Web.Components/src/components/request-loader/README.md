@@ -1,4 +1,4 @@
-# Loaders: RequestLoader
+# RequestLoader
 
 ## Usage
 
