@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { SelectedItem } from 'asc-web-components';
+import SelectedItem from '.';
 import Section from '../../../.storybook/decorators/section';
 import styled from '@emotion/styled';
 
