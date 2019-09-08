@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import withReadme from 'storybook-readme/with-readme';
-import { RadioButtonGroup } from 'asc-web-components';
+import RadioButtonGroup from '.';
 import Section from '../../../.storybook/decorators/section';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
