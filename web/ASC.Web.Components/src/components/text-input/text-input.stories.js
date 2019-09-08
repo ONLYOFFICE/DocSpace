@@ -5,8 +5,9 @@ import { StringValue } from 'react-values';
 import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import { TextInput } from 'asc-web-components';
-import Section from '../../../../.storybook/decorators/section';
+import TextInput from '.';
+
+import Section from '../../../.storybook/decorators/section';
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
 
