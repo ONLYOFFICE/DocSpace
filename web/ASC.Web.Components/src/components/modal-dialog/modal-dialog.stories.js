@@ -4,14 +4,14 @@ import { action } from '@storybook/addon-actions';
 import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
-import Section from '../../.storybook/decorators/section';
+import Section from '../../../.storybook/decorators/section';
 import ModalDialog from '.';
 import Button from '../button';
 
 
 storiesOf('Components|ModalDialog', module)
   .addDecorator(withReadme(Readme))
-  .add('Modal dialog', () => (
+  .add('base', () => (
     <Section>
       <BooleanValue>
         {({ value, toggle }) => (
