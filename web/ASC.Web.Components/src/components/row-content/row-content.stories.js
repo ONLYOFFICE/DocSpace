@@ -2,7 +2,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
-import { RowContent, Link, Icons } from 'asc-web-components';
+import RowContent from '.';
+import Link from '../link';
+import { Icons } from '../icons';
 
 storiesOf('Components|RowContent', module)
   .addDecorator(withReadme(Readme))
