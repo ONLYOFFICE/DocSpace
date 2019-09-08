@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { withKnobs, select, color, boolean } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
-import {Icons} from 'asc-web-components';
+import {Icons} from '.';
 
 const IconList = styled.div`
   display: grid;
