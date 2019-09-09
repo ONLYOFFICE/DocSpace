@@ -1,0 +1,17 @@
+{
+	"folders": [
+        {
+			"name": "ASC.Web.Components"
+			"path": ".\\web\\ASC.Web.Components"
+		},
+        {
+			"name": "ASC.Web.Client"
+			"path": ".\\web\\ASC.Web.Client"
+		},
+		{
+			"name": "ASC.People.Client"
+			"path": ".\\products\\ASC.People\\Client"
+		}
+	],
+	"settings": {}
+}

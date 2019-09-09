@@ -94,7 +94,7 @@ class GroupButtonsMenu extends React.PureComponent {
       this.setState({ priorityItems: this.props.menuItems, });
       this.updateMenu();
     }
-  };
+  }
 
   countMenuItems = (array, outerWidth, initialWidth) => {
     let total = (initialWidth + 80);
