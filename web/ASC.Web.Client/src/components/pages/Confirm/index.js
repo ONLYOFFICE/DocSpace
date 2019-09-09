@@ -71,7 +71,7 @@ const Confirm = (props) => {
     const queryParams = queryString.split('&');
     const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
     // const linkParams = Object.fromEntries(arrayOfQueryParams);
-    const emailRegex = '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$';
+    const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
     const validationEmail = new RegExp(emailRegex);
 
     const onSubmit = useCallback((e) => {
