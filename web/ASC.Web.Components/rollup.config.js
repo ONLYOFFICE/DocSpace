@@ -85,7 +85,8 @@ const config = [
     external: defaultExternal,
     output: {
       file: pkg.module,
-      format: "esm"
+      format: "esm",
+      sourcemap: true
     },
     plugins: configureRollupPlugins({
       babel: {
@@ -105,7 +106,8 @@ const config = [
     external: defaultExternal,
     output: {
       file: pkg.main,
-      format: "cjs"
+      format: "cjs",
+      sourcemap: true
     },
     plugins: [
       ...configureRollupPlugins(),

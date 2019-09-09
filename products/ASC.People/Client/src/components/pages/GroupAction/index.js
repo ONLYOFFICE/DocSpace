@@ -5,7 +5,7 @@ import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } fr
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import { fetchGroup } from "../../../store/group/actions";
+import { fetchGroup, resetGroup } from "../../../store/group/actions";
 
 class GroupAction extends React.Component {
 
@@ -19,12 +19,12 @@ class GroupAction extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchGroup } = this.props;
+    const { match, fetchGroup, resetGroup } = this.props;
     const { groupId } = match.params;
     const prevUserId = prevProps.match.params.groupId;
 
-    if (groupId !== undefined && groupId !== prevUserId) {
-      fetchGroup(groupId);
+    if (groupId !== prevUserId) {
+      groupId ? fetchGroup(groupId) : resetGroup();
     }
   }
 
@@ -41,7 +41,7 @@ class GroupAction extends React.Component {
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
           sectionHeaderContent={<SectionHeaderContent />}
-          sectionBodyContent={<SectionBodyContent group={group} />}
+          sectionBodyContent={<SectionBodyContent />}
         />
         : <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
@@ -62,4 +62,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchGroup })(GroupAction);
+export default connect(mapStateToProps, { fetchGroup, resetGroup })(GroupAction);
