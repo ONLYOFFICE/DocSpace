@@ -25,7 +25,7 @@ storiesOf('Components | DropDown', module)
           <DropDownItem
             isHeader={isHeader}
             label={isHeader ? 'Category' : ''}
-            onClick={() => console.log('Button 1 clicked')} />
+          />
           <DropDownItem
             icon={useIcon ? 'WindowsMsnIcon' : ''}
             label='Button 1'
@@ -48,7 +48,7 @@ storiesOf('Components | DropDown', module)
           <DropDownItem
             isHeader={isHeader}
             label={isHeader ? 'Category' : ''}
-            onClick={() => console.log('Button 1 clicked')} />
+          />
           <DropDownItem
             icon={useIcon ? 'NavLogoIcon' : ''}
             label='Button 5'

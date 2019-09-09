@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Layout } from "asc-web-components";
+import { Layout, Toast } from "asc-web-components";
 import { logout } from "../../store/auth/actions";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
@@ -57,6 +57,7 @@ class PureStudioLayout extends React.Component {
         console.log("StudioLayout render", newProps);
         return (
             <>
+                <Toast />
                 <Layout key="1" {...newProps}>{children}</Layout>
             </>
         );

@@ -6,7 +6,6 @@ import InputBlock from '../input-block';
 import isEqual from 'lodash/isEqual';
 
 const StyledSearchInput = styled.div`
-  min-width: 200px;
   font-family: Open Sans;
   font-style: normal;
 `;

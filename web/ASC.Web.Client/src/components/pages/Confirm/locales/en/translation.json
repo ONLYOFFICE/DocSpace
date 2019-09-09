@@ -12,6 +12,7 @@
   "ErrorPasswordNoDigits": "digits",
   "ErrorPasswordNoUpperCase": "capital letters",
   "ErrorPasswordNoSpecialSymbols": "special characters",
+  "EmailAndPasswordCopiedToClipboard": "Email and password copied to clipboard",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

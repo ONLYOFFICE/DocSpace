@@ -10,65 +10,79 @@ const itemTruncate = css`
 `;
 
 const fontStyle = css`
-    font-family: 'Open Sans',sans-serif,Arial;
+    font-family: 'Open Sans', sans-serif, Arial;
     font-style: normal;
 `;
 
+const disabledAndHeaderStyle = css`
+    color: #A3A9AE;
+              
+    &:hover {
+      cursor: default;
+      background-color: white;
+    }
+`;
+
 const StyledDropdownItem = styled.div`
-    width: ${props => (props.isSeparator ? 'calc(100% - 32px)' : '100%')};
-    height: ${props => (props.isSeparator && '1px')};
-    line-height: ${props => (props.isSeparator ? '1px' : '36px')};
-
-    margin: ${props => (props.isSeparator ? '0 16px' : '0')};
-    padding: 0 16px;
-
-    border: ${props => (props.isSeparator ? '0.5px solid #ECEEF1' : '0')};
-    cursor: ${props => (!props.isSeparator ? 'pointer' : 'default')};
-
     display: block;
-    
-    color: ${props => props.disabled || props.isHeader ? '#A3A9AE' : '#333333'};
-    text-transform: ${props => props.isHeader ? 'uppercase' : 'none'};
-
+    width: 100%;
+    border: 0px;
+    cursor: pointer;
+    margin: 0px;
+    padding: 0 16px;
+    line-height: 36px;
     box-sizing: border-box;
     text-align: left;
     background: none;
     text-decoration: none;
-    
     user-select: none;
-    -o-user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    stroke: none;
 
     ${fontStyle}
 
     font-weight: 600;
     font-size: 13px;
+    color: #333333;
+    text-transform: none;
 
     ${itemTruncate}
-    
-    &:hover{
-        ${props => props.isSeparator || props.disabled || props.isHeader
-    ? `cursor: default;`
-    : `
-            background-color: #F8F9F9;
-            width: 100%;
-            text-align: left;
 
-            &:first-of-type {
-                border-radius: 6px 6px 0 0;
-                -moz-border-radius: 6px 6px 0 0;
-                -webkit-border-radius: 6px 6px 0 0;
-            }
+    &:hover {
+      background-color: ${props => props.noHover ? 'white' : '#F8F9F9'};
+      text-align: left;
 
-            &:last-of-type {
-                border-radius: 0 0 6px 6px;
-                -moz-border-radius: 0 0 6px 6px;
-                -webkit-border-radius: 0 0 6px 6px;
-            }`
-  }
+      &:first-of-type {
+        border-radius: 6px 6px 0 0;
+      }
+
+      &:last-of-type {
+        border-radius: 0 0 6px 6px;
+      }
     }
+
+    ${props => props.isSeparator && 
+      `
+        border: 0.5px solid #ECEEF1;
+        cursor: default;
+        margin: 0px 16px;
+        line-height: 1px;
+        height: 1px;
+        width: calc(100% - 32px);
+  
+        &:hover {
+          cursor: default;
+        }
+      `
+    }
+  
+    ${props => props.isHeader &&
+      `
+        ${disabledAndHeaderStyle}
+
+        text-transform: uppercase;
+      `
+    }
+  
+    ${props => props.disabled && disabledAndHeaderStyle }
 `;
 
 const IconWrapper = styled.span`
@@ -80,14 +94,18 @@ const IconWrapper = styled.span`
 
 const DropDownItem = props => {
   //console.log("DropDownItem render");
-  const { isSeparator, label, icon, children } = props;
-  const color = props.disabled ? '#A3A9AE' : '#333333';
-  
+  const { isSeparator, label, icon, children, disabled , onClick } = props;
+  const color = disabled ? '#A3A9AE' : '#333333';
+
+  const onClickAction = () => {
+    onClick && !disabled && onClick();
+  }
+
   return (
-    <StyledDropdownItem {...props} >
+    <StyledDropdownItem {...props} onClick={onClickAction}>
       {icon &&
         <IconWrapper>
-          {React.createElement(Icons[icon], {size: "scale", color: color, isfill: true})}
+          {React.createElement(Icons[icon], { size: "scale", color: color, isfill: true })}
         </IconWrapper>
       }
       {isSeparator ? '\u00A0' : label ? label : children && children}
@@ -101,7 +119,8 @@ DropDownItem.propTypes = {
   tabIndex: PropTypes.number,
   label: PropTypes.string,
   disabled: PropTypes.bool,
-  icon: PropTypes.string
+  icon: PropTypes.string,
+  noHover: PropTypes.bool
 };
 
 DropDownItem.defaultProps = {
@@ -109,7 +128,8 @@ DropDownItem.defaultProps = {
   isHeader: false,
   tabIndex: -1,
   label: '',
-  disabled: false
+  disabled: false,
+  noHover: false
 };
 
 export default DropDownItem
