@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { storiesOf } from '@storybook/react';
 import TreeMenu from '../tree-menu';
-import TreeNode from '../tree-menu-node';
+import TreeNode from '../tree-menu/sub-components/tree-node';
 import { Icons } from '../icons';
 
 const treeData = [
