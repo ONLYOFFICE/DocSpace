@@ -50,6 +50,8 @@ const passwordSettings = {
     specSymbols: true
 };
 
+const emailInputName = 'email';
+
 const isLoaded = true;
 
 const Confirm = (props) => {
@@ -93,8 +95,8 @@ const Confirm = (props) => {
             hasError = true;
             setEmailValid(!hasError);
         }
-
-        if (!password.trim() || !passwordValid) {
+        const passwordValue = (document.getElementsByName('password')[0].value);
+        if (!passwordValue || !passwordValid) {
             hasError = true;
             setPasswordValid(!hasError);
         }
@@ -105,7 +107,7 @@ const Confirm = (props) => {
         setIsLoading(true);
 
 
-    }, [errorText, email, firstName, lastName, password, validationEmail, passwordValid]);
+    }, [errorText, email, firstName, lastName, validationEmail, passwordValid]);
 
     const onKeyPress = useCallback((target) => {
         if (target.code === "Enter") {
@@ -195,7 +197,7 @@ const Confirm = (props) => {
                         <FieldContainer isVertical={true} className=''>
                             <TextInput
                                 id='email'
-                                name='email'
+                                name={emailInputName}
                                 value={email}
                                 placeholder={t('Email')}
                                 size='huge'
@@ -217,7 +219,7 @@ const Confirm = (props) => {
                         <FieldContainer isVertical={true} className=''>
                             <PasswordInput
                                 inputName="password"
-                                emailInputName="email"
+                                emailInputName={emailInputName}
                                 inputValue={password}
                                 placeholder={t('InvitePassword')}
                                 size='huge'
