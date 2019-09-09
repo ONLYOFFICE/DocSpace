@@ -7,6 +7,8 @@ import throttle from 'lodash/throttle';
 import FilterBlock from './filter-block';
 import SortComboBox from './sort-combobox';
 import { mobile } from '../../utils/device';
+import map from 'lodash/map';
+import clone from 'lodash/clone';
 
 const StyledFilterInput = styled.div`
     width: 100%;
@@ -23,7 +25,7 @@ const StyledFilterBlock = styled.div`
     display: flex;
 `;
 const cloneObjectsArray = function (props) {
-    return _.map(props, _.clone);;
+    return map(props, clone);
 }
 const convertToInternalData = function (fullDataArray, inputDataArray) {
     const filterItems = [];

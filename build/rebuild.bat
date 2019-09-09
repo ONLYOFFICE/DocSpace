@@ -12,10 +12,6 @@ call yarn install --cwd packages/asc-web-components >> build\ASC.Web.Components.
 
 call yarn link --cwd packages/asc-web-components
 
-echo "ASC.Web.Storybook"
-call yarn link "asc-web-components" --cwd web/ASC.Web.Storybook
-call yarn install --cwd web/ASC.Web.Storybook  > build\ASC.Web.Storybook.log
-
 echo "ASC.Web.Client"
 call yarn link "asc-web-components" --cwd web/ASC.Web.Client
 call yarn install --cwd web/ASC.Web.Client > build\ASC.Web.Client.log
