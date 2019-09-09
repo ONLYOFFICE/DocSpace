@@ -31,3 +31,4 @@ Is a item of DropDown component
 | `icon`             | `string` |    -     | -                           | -              | Dropdown item icon                                                |
 | `onClick`          | `func`   |    -     | -                           | -              | What the dropdown item will trigger when clicked                  |
 | `disabled`         | `bool`   |    -     | -                           | `false`        | Tells when the dropdown item should display like disabled         |
+| `noHover`          | `bool`   |    -     | -                           | `false`        | Disable default style hover effect                                |
