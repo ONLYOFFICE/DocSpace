@@ -3,7 +3,8 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, updateProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, getUserContacts } from "../../../../../store/people/selectors";
+import { updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
