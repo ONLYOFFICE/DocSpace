@@ -55,6 +55,12 @@ const Row = memo(({ data, index, style }) => {
   );
 });
 
+Row.propTypes = {
+  data: PropTypes.any,
+  index: PropTypes.number,
+  style: PropTypes.object
+};
+
 class DropDown extends React.PureComponent {
 
   constructor(props) {
@@ -65,7 +71,7 @@ class DropDown extends React.PureComponent {
     };
     
     this.dropDown = React.createRef();
-  };
+  }
 
   setDropDownWidthState = () => {
     if (this.dropDown.current) {
@@ -77,13 +83,13 @@ class DropDown extends React.PureComponent {
 
   componentDidMount () {
     this.setDropDownWidthState();
-  };
+  }
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened || this.props.isOpen !== prevProps.isOpen) {
       this.setDropDownWidthState();
     }
-  };
+  }
 
   render() {
     const {maxHeight, withArrow, directionX, children} = this.props;
@@ -111,9 +117,12 @@ class DropDown extends React.PureComponent {
       </StyledDropdown>
     );
   }
-};
+}
 
 DropDown.propTypes = {
+  opened: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  children: PropTypes.any,
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
   withArrow: PropTypes.bool,
