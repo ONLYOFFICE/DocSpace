@@ -157,6 +157,6 @@ const TreeMenuStory = props => {
 storiesOf('Components|Tree', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('Tree menu', () => <TreeMenuStory data={treeData} />);
+  .add('base', () => <TreeMenuStory data={treeData} />);
   
 

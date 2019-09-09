@@ -11,7 +11,7 @@ const stypes = ["smallWhite", "smallBlack", "mediumBlack"];
 storiesOf('Components|Scrollbar', module)
   .addDecorator(withReadme(Readme))
   .addDecorator(withKnobs)
-  .add('Scrollbar', () => (
+  .add('base', () => (
     <Section>
         <Scrollbar
             stype={select('stype', stypes, 'smallBlack')}
