@@ -2,12 +2,15 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text, PasswordInput } from 'asc-web-components';
-import { Container, Row, Col } from 'reactstrap';
+import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 
-const ConfirmContainer = styled(Container)`
+const ConfirmContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     .confirm-block-title {
         margin: 20px 0px;
     }
@@ -15,8 +18,30 @@ const ConfirmContainer = styled(Container)`
     .login-row {
         margin: 23px 0 0;
     }
+
+    .input-container {
+
+        margin-left: 13%;
+
+        @media (max-width: 1500px) {
+            margin-left: 22%;
+        }
+    
+
+        @media (max-width: 768px) {
+            margin-left: 5%;
+        }
+        
+
+        input {
+            width: 400px;
+        }
+    }
+
+    .join-button {
+        align-self: baseline;
+    }
 `;
-const mdOptions = { size: 6, offset: 3 };
 
 const passwordSettings = {
     minLength: 6,
@@ -24,6 +49,8 @@ const passwordSettings = {
     digits: true,
     specSymbols: true
 };
+
+const isLoaded = true;
 
 const Confirm = (props) => {
     const { t } = useTranslation('translation', { i18n });
@@ -52,11 +79,6 @@ const Confirm = (props) => {
 
         let hasError = false;
 
-        if (!validationEmail.test(email.trim())) {
-            hasError = true;
-            setEmailValid(!hasError);
-        }
-
         if (!firstName.trim()) {
             hasError = true;
             setFirstNameValid(!hasError);
@@ -67,7 +89,12 @@ const Confirm = (props) => {
             setLastNameValid(!hasError);
         }
 
-        if (!password.trim()) {
+        if (!validationEmail.test(email.trim())) {
+            hasError = true;
+            setEmailValid(!hasError);
+        }
+
+        if (!password.trim() || !passwordValid) {
             hasError = true;
             setPasswordValid(!hasError);
         }
@@ -78,7 +105,7 @@ const Confirm = (props) => {
         setIsLoading(true);
 
 
-    }, [errorText, email, firstName, lastName, password, validationEmail]);
+    }, [errorText, email, firstName, lastName, password, validationEmail, passwordValid]);
 
     const onKeyPress = useCallback((target) => {
         if (target.code === "Enter") {
@@ -97,149 +124,152 @@ const Confirm = (props) => {
         };
     }, [onKeyPress]);
 
+    const onCopyToClipboard = () => toastr.success(t('EmailAndPasswordCopiedToClipboard'));
+    const validatePassword = (value) => setPasswordValid(value);
+
     return (
-        <ConfirmContainer>
+        !isLoaded
+            ? (
+                <Loader className="pageLoader" type="rombs" size={40} />
+            )
+            : (
+                <ConfirmContainer>
 
-            <Row className='confirm-block-title'>
-                <Col sm="12" md={mdOptions}>
-                    <Text.Body as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
-                </Col>
-            </Row>
+                    <Text.Body className='confirm-block-title' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <a href='/login'>
-                        <img className='login-row' src="images/dark_general.png" alt="Logo" />
-                    </a>
-                    <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
-                </Col>
-            </Row>
+                    <div className='login-row'>
+                        <a href='/login'>
+                            <img src="images/dark_general.png" alt="Logo" />
+                        </a>
+                        <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+                    </div>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <TextInput
-                        id='name'
-                        name='name'
-                        value={firstName}
-                        placeholder={t('FirstName')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={1}
-                        isAutoFocussed={true}
-                        autoComplete='given-name'
-                        isDisabled={isLoading}
-                        hasError={!firstNameValid}
-                        onChange={event => {
-                            setFirstName(event.target.value);
-                            !firstNameValid && setFirstNameValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
-                </Col>
-            </Row>
+                    <div className='input-container login-row'>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <TextInput
-                        id='surname'
-                        name='surname'
-                        value={lastName}
-                        placeholder={t('LastName')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={2}
-                        autoComplete='family-name'
-                        isDisabled={isLoading}
-                        hasError={!lastNameValid}
-                        onChange={event => {
-                            setLastName(event.target.value);
-                            !lastNameValid && setLastNameValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
-                </Col>
-            </Row>
+                        <FieldContainer isVertical={true} className=''>
+                            <TextInput
+                                id='name'
+                                name='name'
+                                value={firstName}
+                                placeholder={t('FirstName')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={1}
+                                isAutoFocussed={true}
+                                autoComplete='given-name'
+                                isDisabled={isLoading}
+                                hasError={!firstNameValid}
+                                onChange={event => {
+                                    setFirstName(event.target.value);
+                                    !firstNameValid && setFirstNameValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <TextInput
-                        type="email"
-                        id='email'
-                        name='email'
-                        value={email}
-                        placeholder={t('Email')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={3}
-                        autoComplete='email'
-                        isDisabled={isLoading}
-                        hasError={!emailValid}
-                        onChange={event => {
-                            setEmail(event.target.value);
-                            !emailValid && setEmailValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)}
-                    />
-                </Col>
-            </Row>
+                        </FieldContainer>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <PasswordInput
-                        inputName="password"
-                        emailInputName="email"
-                        inputValue={password}
-                        placeholder={t('InvitePassword')}
-                        size='huge'
-                        scale={true}
-                        tabIndex={4}
-                        maxLength={30}
-                        hasError={!passwordValid}
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            !passwordValid && setPasswordValid(true);
-                            errorText && setErrorText("");
-                            onKeyPress(event.target);
-                        }}
-                        clipActionResource={t('CopyEmailAndPassword')}
-                        clipEmailResource={`${t('Email')}: `}
-                        clipPasswordResource={`${t('InvitePassword')}: `}
-                        tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
-                        tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
-                        tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
-                        tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
-                        generatorSpecial="!@#$%^&*"
-                        passwordSettings={passwordSettings}
-                        isDisabled={isLoading}
-                    />
-                </Col>
-            </Row>
+                        <FieldContainer isVertical={true} className=''>
 
-            <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
-                    <Button
-                        primary
-                        size='big'
-                        label={t('LoginRegistryButton')}
-                        tabIndex={5}
-                        isDisabled={isLoading}
-                        isLoading={isLoading}
-                        onClick={onSubmit}
-                    />
-                </Col>
-            </Row>
+                            <TextInput
+                                id='surname'
+                                name='surname'
+                                value={lastName}
+                                placeholder={t('LastName')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={2}
+                                autoComplete='family-name'
+                                isDisabled={isLoading}
+                                hasError={!lastNameValid}
+                                onChange={event => {
+                                    setLastName(event.target.value);
+                                    !lastNameValid && setLastNameValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
 
-            {/*             <Row className='login-row'>
-                <Col sm="12" md={mdOptions}>
+                        </FieldContainer>
+
+                        <FieldContainer isVertical={true} className=''>
+                            <TextInput
+                                id='email'
+                                name='email'
+                                value={email}
+                                placeholder={t('Email')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={3}
+                                autoComplete='email'
+                                isDisabled={isLoading}
+                                hasError={!emailValid}
+                                onChange={event => {
+                                    setEmail(event.target.value);
+                                    !emailValid && setEmailValid(true);
+                                    errorText && setErrorText("");
+                                }}
+                                onKeyDown={event => onKeyPress(event.target)}
+                            />
+
+                        </FieldContainer>
+
+                        <FieldContainer isVertical={true} className=''>
+                            <PasswordInput
+                                inputName="password"
+                                emailInputName="email"
+                                inputValue={password}
+                                placeholder={t('InvitePassword')}
+                                size='huge'
+                                scale={true}
+                                tabIndex={4}
+                                maxLength={30}
+                                inputWidth='400px'
+                                hasError={!passwordValid}
+                                onChange={event => {
+                                    setPassword(event.target.value);
+                                    !passwordValid && setPasswordValid(true);
+                                    errorText && setErrorText("");
+                                    onKeyPress(event.target);
+                                }}
+                                onCopyToClipboard={onCopyToClipboard}
+                                onValidateInput={validatePassword}
+                                clipActionResource={t('CopyEmailAndPassword')}
+                                clipEmailResource={`${t('Email')}: `}
+                                clipPasswordResource={`${t('InvitePassword')}: `}
+                                tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+                                tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
+                                tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+                                tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+                                tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
+                                generatorSpecial="!@#$%^&*"
+                                passwordSettings={passwordSettings}
+                                isDisabled={isLoading}
+                            />
+                        </FieldContainer>
+
+                        <div className='login-row join-button'>
+                            <Button
+                                primary
+                                size='big'
+                                label={t('LoginRegistryButton')}
+                                tabIndex={5}
+                                isDisabled={isLoading}
+                                isLoading={isLoading}
+                                onClick={onSubmit}
+                            />
+                        </div>
+
+                    </div>
+
+                    {/*             <Row className='login-row'>
+
                     <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
-                </Col>
+
             </Row>
  */}
-        </ConfirmContainer>
+                </ConfirmContainer>
+            )
     );
 }
 

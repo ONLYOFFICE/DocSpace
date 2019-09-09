@@ -6,18 +6,27 @@ import DropDownItem from '../drop-down-item';
 import RadioButtonGroup from '../radio-button-group'
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { mobile } from '../../utils/device'
 
 const StyledIconButton = styled.div`
     transform: ${state => !state.sortDirection ? 'scale(1, -1)' : 'scale(1)'};
 `;
 const StyledComboBox = styled(ComboBox)`
-  display: block;
-  float: left;
-  width: 20%;
-  margin-left: 8px;
-  .display-block{
-      display: block;
-  }
+    display: block;
+    float: left;
+    width: 20%;
+    margin-left: 8px;
+    .display-block{
+        display: block;
+    }
+
+    @media ${mobile} {
+        width: 50px;
+        .optionalBlock ~ div:first-child{
+            opacity: 0
+        }
+    }
+
 `;
 
 class SortComboBox extends React.Component {
@@ -27,6 +36,9 @@ class SortComboBox extends React.Component {
         this.state = {
             sortDirection: this.props.sortDirection
         }
+
+        this.combobox = React.createRef();
+
         this.onChangeSortId = this.onChangeSortId.bind(this);
         this.onChangeSortDirection = this.onChangeSortDirection.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
@@ -47,9 +59,15 @@ class SortComboBox extends React.Component {
             sortDirection: +e.target.value
         });
         typeof this.props.onChangeSortDirection === 'function' && this.props.onChangeSortDirection(+e.target.value);
-
     }
     shouldComponentUpdate(nextProps, nextState) {
+        //TODO 
+        /*const comboboxText = this.combobox.current.ref.current.children[0].children[1];
+        if(comboboxText.scrollWidth > Math.round(comboboxText.getBoundingClientRect().width)){
+            comboboxText.style.opacity = "0";
+        }else{
+            comboboxText.style.opacity = "1";
+        }*/
         if (this.props.sortDirection !== nextProps.sortDirection) {
             this.setState({
                 sortDirection: nextProps.sortDirection
@@ -70,7 +88,7 @@ class SortComboBox extends React.Component {
 
         const advancedOptions = (
             <>
-                <DropDownItem>
+                <DropDownItem noHover >
                     <RadioButtonGroup
                         className="display-block"
                         onClick={this.onChangeSortDirection}
@@ -82,7 +100,7 @@ class SortComboBox extends React.Component {
                     />
                 </DropDownItem>
                 <DropDownItem isSeparator />
-                <DropDownItem>
+                <DropDownItem noHover >
                     <RadioButtonGroup
                         className="display-block"
                         onClick={this.onChangeSortId}
@@ -97,6 +115,7 @@ class SortComboBox extends React.Component {
         );
         return (
             <StyledComboBox
+                ref={this.combobox}
                 options={[]}
                 advancedOptions={advancedOptions}
                 isDisabled={this.props.isDisabled}
