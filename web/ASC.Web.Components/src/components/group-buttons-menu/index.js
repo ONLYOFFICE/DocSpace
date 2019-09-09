@@ -78,9 +78,12 @@ class GroupButtonsMenu extends React.PureComponent {
   };
 
   componentDidMount() {
-    const groupMenuItems = [... document.getElementById("groupMenu").children];
+    const groupMenuItems = document.getElementById("groupMenu") 
+      ? document.getElementById("groupMenu").children 
+      : [];
+    const groupMenuItemsArray = [...groupMenuItems];
 
-    this.widthsArray = groupMenuItems.map(item => item.getBoundingClientRect().width);
+    this.widthsArray = groupMenuItemsArray.map(item => item.getBoundingClientRect().width);
     window.addEventListener('resize', this.throttledResize);
     this.updateMenu();
   }
@@ -189,6 +192,14 @@ GroupButtonsMenu.propTypes = {
   visible: PropTypes.bool,
   moreLabel: PropTypes.string,
   closeTitle: PropTypes.string
+}
+
+GroupButtonsMenu.defaultProps = {
+  checked: false,
+  selected: 'Select',
+  visible: PropTypes.bool,
+  moreLabel: 'More',
+  closeTitle: 'Close'
 }
 
 export default GroupButtonsMenu;
