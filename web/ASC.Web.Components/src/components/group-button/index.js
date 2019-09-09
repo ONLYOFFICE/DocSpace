@@ -220,7 +220,13 @@ GroupButton.propTypes = {
   onClick: PropTypes.func,
   fontWeight: PropTypes.string,
   onSelect: PropTypes.func,
-  isSelect: PropTypes.bool
+  isSelect: PropTypes.bool,
+  selected: PropTypes.string,
+  onChange: PropTypes.func,
+  isIndeterminate: PropTypes.bool,
+  children: PropTypes.any,
+  checked: PropTypes.bool,
+  dropDownMaxHeight: PropTypes.number
 };
 
 GroupButton.defaultProps = {
