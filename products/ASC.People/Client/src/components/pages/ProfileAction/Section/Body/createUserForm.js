@@ -3,7 +3,8 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, createProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, getUserContacts } from "../../../../../store/people/selectors";
+import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'

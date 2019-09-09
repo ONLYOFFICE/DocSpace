@@ -120,3 +120,22 @@ export function getSelectedGroup(groups, selectedGroupId) {
 export function getSelectionIds(selections) {
     return selections.map((user) => { return user.id });
 }
+
+export function toEmployeeWrapper(profile) {
+    const emptyData = {
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        birthday: "",
+        sex: "male",
+        workFrom: "",
+        location: "",
+        title: "",
+        groups: [],
+        notes: ""
+    };
+
+    return { ...emptyData, ...profile };
+}
