@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,18 +47,21 @@ namespace ASC.Notify
         public NotifySender NotifySender { get; }
         public NotifyCleaner NotifyCleaner { get; }
         public WebItemManager WebItemManager { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public NotifyServiceLauncher(NotifyServiceCfg notifyServiceCfg,
             NotifySender notifySender,
             NotifyService notifyService,
             NotifyCleaner notifyCleaner,
-            WebItemManager webItemManager)
+            WebItemManager webItemManager,
+            IServiceProvider serviceProvider)
         {
             NotifyServiceCfg = notifyServiceCfg;
             NotifyService = notifyService;
             NotifySender = notifySender;
             NotifyCleaner = notifyCleaner;
             WebItemManager = webItemManager;
+            ServiceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -96,7 +100,7 @@ namespace ASC.Notify
         {
             CommonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
             DbRegistry.Configure();
-            NotifyConfiguration.Configure();
+            NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {

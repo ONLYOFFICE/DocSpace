@@ -276,7 +276,7 @@ namespace ASC.Web.Core.Sms
             return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
         }
 
-        public bool ValidateKeys()
+        public bool ValidateKeys(AuthContext authContext)
         {
             return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
@@ -390,11 +390,11 @@ namespace ASC.Web.Core.Sms
         }
 
 
-        public bool ValidateKeys()
+        public bool ValidateKeys(AuthContext authContext)
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret).GetExistingPhoneNumbers();
+                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -403,13 +403,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers()
+        public void ClearOldNumbers(AuthContext authContext)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
-            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret);
+            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext);
 
-            var dao = new CachedVoipDao(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            var dao = new CachedVoipDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, authContext);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {

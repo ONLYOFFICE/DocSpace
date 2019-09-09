@@ -42,12 +42,18 @@ using ASC.Notify.Patterns;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioWhatsNewNotify
     {
-        public static void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
+        public IServiceProvider ServiceProvider { get; }
+
+        public StudioWhatsNewNotify(IServiceProvider  serviceProvider)
+            => (ServiceProvider) = (serviceProvider);
+
+        public void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
         {
             var log = LogManager.GetLogger("ASC.Notify.WhatsNew");
 
@@ -65,6 +71,13 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
+                    using var scope = ServiceProvider.CreateScope();
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
+                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
+
                     var tenant = CoreContext.TenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
@@ -77,14 +90,14 @@ namespace ASC.Web.Studio.Core.Notify
                     CoreContext.TenantManager.SetCurrentTenant(tenant);
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
-                    foreach (var user in CoreContext.UserManager.GetUsers(tenant))
+                    foreach (var user in userManager.GetUsers(tenant))
                     {
-                        if (!StudioNotifyHelper.IsSubscribedToNotify(tenant, user, Actions.SendWhatsNew))
+                        if (!studioNotifyHelper.IsSubscribedToNotify(tenant, user, Actions.SendWhatsNew))
                         {
                             continue;
                         }
 
-                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
@@ -96,9 +109,9 @@ namespace ASC.Web.Studio.Core.Notify
                             From = scheduleDate.Date.AddDays(-1),
                             To = scheduleDate.Date.AddSeconds(-1),
                             Max = 100,
-                        });
+                        }, authContext);
 
-                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin());
+                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
 
                         var feedMinGroupedWrappers = feedMinWrappers
                             .Where(f =>
@@ -117,8 +130,8 @@ namespace ASC.Web.Studio.Core.Notify
                             g => g.Select(f => new WhatsNewUserActivity
                             {
                                 Date = f.CreatedDate,
-                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName() : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = CommonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
@@ -140,8 +153,8 @@ namespace ASC.Web.Studio.Core.Notify
                                         new WhatsNewUserActivity
                                         {
                                             Date = prawbc.CreatedDate,
-                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName() : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = CommonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
@@ -160,8 +173,8 @@ namespace ASC.Web.Studio.Core.Notify
                                     new WhatsNewUserActivity
                                     {
                                         Date = ls.CreatedDate,
-                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName() : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],

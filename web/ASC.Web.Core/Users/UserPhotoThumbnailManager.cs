@@ -33,21 +33,21 @@ namespace ASC.Web.Core.Users
 {
     public class UserPhotoThumbnailManager
     {
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, int x, int y, int width, int height, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, int tenantId, int x, int y, int width, int height, Guid userId)
         {
-            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(x, y, width, height), userId);
+            return SaveThumbnails(userPhotoManager, tenantId, new UserPhotoThumbnailSettings(x, y, width, height), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, Point point, Size size, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, int tenantId, Point point, Size size, Guid userId)
         {
-            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(point, size), userId);
+            return SaveThumbnails(userPhotoManager, tenantId, new UserPhotoThumbnailSettings(point, size), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, int tenantId, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
         {
             if (thumbnailSettings.Size.IsEmpty) return null;
 
-            var thumbnailsData = new ThumbnailsData(userId);
+            var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
 
             var resultBitmaps = new List<ThumbnailItem>();
 
@@ -107,10 +107,12 @@ namespace ASC.Web.Core.Users
     public class ThumbnailsData
     {
         private Guid UserId { get; set; }
+        public UserPhotoManager UserPhotoManager { get; }
 
-        public ThumbnailsData(Guid userId)
+        public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
         {
             UserId = userId;
+            UserPhotoManager = userPhotoManager;
         }
 
         public Bitmap MainImgBitmap(int tenantId)

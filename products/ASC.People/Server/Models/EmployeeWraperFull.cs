@@ -31,6 +31,7 @@ using System.Runtime.Serialization;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Web.Core;
 using ASC.Web.Core.Users;
 
 namespace ASC.Web.Api.Models
@@ -124,8 +125,8 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraperFull(UserInfo userInfo, ApiContext context)
-            : base(userInfo, context)
+        public EmployeeWraperFull(UserInfo userInfo, ApiContext context, UserManager userManager, UserPhotoManager userphotomanager, WebItemSecurity webItemSecurity)
+            : base(userInfo, context, userManager, userphotomanager)
         {
             UserName = userInfo.UserName;
             FirstName = userInfo.FirstName;
@@ -168,8 +169,8 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("groups") || context.Check("department"))
             {
-                var groups = CoreContext.UserManager.GetUserGroups(context.Tenant, userInfo.ID)
-                    .Select(x => new GroupWrapperSummary(x, context))
+                var groups = userManager.GetUserGroups(context.Tenant, userInfo.ID)
+                    .Select(x => new GroupWrapperSummary(x, context, userManager))
                     .ToList();
 
                 if (groups.Count > 0)
@@ -187,29 +188,29 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("avatarMax"))
             {
-                AvatarMax = UserPhotoManager.GetMaxPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarMax = userphotomanager.GetMaxPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatarMedium"))
             {
-                AvatarMedium = UserPhotoManager.GetMediumPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarMedium = userphotomanager.GetMediumPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatar"))
             {
-                Avatar = UserPhotoManager.GetBigPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                Avatar = userphotomanager.GetBigPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("listAdminModules"))
             {
-                var listAdminModules = userInfo.GetListAdminModules(context.Tenant);
+                var listAdminModules = userInfo.GetListAdminModules(context.Tenant, webItemSecurity);
 
                 if (listAdminModules.Any())
                     ListAdminModules = listAdminModules;
             }
 
-            IsVisitor = userInfo.IsVisitor(context.Tenant);
-            IsAdmin = userInfo.IsAdmin(context.Tenant);
+            IsVisitor = userInfo.IsVisitor(context.Tenant, userManager);
+            IsAdmin = userInfo.IsAdmin(context.Tenant, userManager);
             IsOwner = userInfo.IsOwner(context.Tenant);
             IsLDAP = userInfo.IsLDAP();
             IsSSO = userInfo.IsSSO();
@@ -235,22 +236,22 @@ namespace ASC.Web.Api.Models
             }
         }
 
-        public static EmployeeWraperFull GetFull(Guid userId, ApiContext context)
+        public static EmployeeWraperFull GetFull(Guid userId, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager, WebItemSecurity webItemSecurity)
         {
             try
             {
-                return GetFull(CoreContext.UserManager.GetUsers(context.Tenant.TenantId, userId), context);
+                return GetFull(userManager.GetUsers(context.Tenant.TenantId, userId), context, userManager, userPhotoManager, webItemSecurity);
 
             }
             catch (Exception)
             {
-                return GetFull(ASC.Core.Users.Constants.LostUser, context);
+                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity);
             }
         }
 
-        public static EmployeeWraperFull GetFull(UserInfo userInfo, ApiContext context)
+        public static EmployeeWraperFull GetFull(UserInfo userInfo, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager,WebItemSecurity webItemSecurity)
         {
-            return new EmployeeWraperFull(userInfo, context);
+            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity);
         }
 
         public new static EmployeeWraperFull GetSample()

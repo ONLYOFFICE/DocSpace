@@ -11,12 +11,29 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class ModulesController : ControllerBase
     {
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public AuthContext AuthContext { get; }
+
+        public ModulesController(
+            UserManager userManager, 
+            TenantManager tenantManager, 
+            WebItemSecurity webItemSecurity,
+            AuthContext authContext)
+        {
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            AuthContext = authContext;
+        }
+
         [Read]
         public IEnumerable<string> GetAll()
         {
             var result = new List<string>();
 
-            foreach (var a in WebItemManager.Instance.GetItems(CoreContext.TenantManager.GetCurrentTenant(), WebZoneType.StartProductList))
+            foreach (var a in WebItemManager.Instance.GetItems(TenantManager.GetCurrentTenant(), WebZoneType.StartProductList, WebItemSecurity, AuthContext))
             {
                 result.Add(a.ApiURL);
             }

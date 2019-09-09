@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Core;
 
 namespace ASC.VoipService
 {
@@ -39,9 +40,9 @@ namespace ASC.VoipService
             get { return Settings.Caller; }
         }
 
-        public VoipPhone()
+        public VoipPhone(AuthContext authContext)
         {
-            Settings = new VoipSettings();
+            Settings = new VoipSettings(authContext);
         }
 
         public virtual VoipCall Call(string to, string contactId = null)

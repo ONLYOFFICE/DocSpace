@@ -146,23 +146,6 @@ namespace ASC.Core.Users
         }
 
 
-        internal List<GroupInfo> GetGroups(Tenant tenant, IncludeType includeType, Guid? categoryId)
-        {
-            var groups = CoreContext.UserManager.GetUserGroups(tenant, ID, IncludeType.Distinct, null);
-
-            if (categoryId.HasValue)
-            {
-                return groups.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
-            }
-
-            return groups;
-        }
-
-        internal IEnumerable<Guid> GetUserGroupsId(int tenantId)
-        {
-            return CoreContext.UserManager.GetUserGroupsGuids(tenantId, ID);
-        }
-
         internal string ContactsToString()
         {
             if (Contacts == null || Contacts.Count == 0) return null;

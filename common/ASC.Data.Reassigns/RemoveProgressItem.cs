@@ -69,12 +69,29 @@ namespace ASC.Data.Reassigns
 
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public AuthContext AuthContext { get; }
 
-        public RemoveProgressItem(HttpContext context, MessageService messageService, QueueWorkerRemove queueWorkerRemove, StudioNotifyService studioNotifyService, int tenantId, UserInfo user, Guid currentUserId, bool notify)
+        public RemoveProgressItem(
+            HttpContext context,
+            MessageService messageService,
+            QueueWorkerRemove queueWorkerRemove,
+            StudioNotifyService studioNotifyService,
+            UserManager userManager,
+            SecurityContext securityContext,
+            WebItemSecurity webItemSecurity,
+            AuthContext authContext,
+            int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             _context = context;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            WebItemSecurity = webItemSecurity;
+            AuthContext = authContext;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -171,7 +188,7 @@ namespace ASC.Data.Reassigns
         {
             docsSpace = mailSpace = talkSpace = 0;
 
-            var webItems = WebItemManager.Instance.GetItems(tenant, Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
+            var webItems = WebItemManager.Instance.GetItems(tenant, Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All, WebItemSecurity, AuthContext);
 
             foreach (var item in webItems)
             {

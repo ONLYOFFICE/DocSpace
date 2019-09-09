@@ -35,37 +35,36 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.UserControls.Statistics
 {
-    public static class TenantStatisticsProvider
+    public class TenantStatisticsProvider
     {
-        public static bool IsNotPaid()
+        public UserManager UserManager { get; }
+
+        public TenantStatisticsProvider(UserManager userManager)
         {
-            Tariff tariff;
-            return TenantExtra.EnableTarrifSettings
-                   && ((tariff = TenantExtra.GetCurrentTariff()).State >= TariffState.NotPaid
-                       || TenantExtra.Enterprise && !TenantExtra.EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
+            UserManager = userManager;
         }
 
-        public static int GetUsersCount(Tenant tenant)
+        public int GetUsersCount(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID).Length;
+            return UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID).Length;
         }
 
-        public static long GetUsedSize()
+        public long GetUsedSize()
         {
             return GetUsedSize(TenantProvider.CurrentTenantID);
         }
 
-        public static long GetUsedSize(int tenant)
+        public long GetUsedSize(int tenant)
         {
             return GetQuotaRows(tenant).Sum(r => r.Counter);
         }
 
-        public static long GetUsedSize(Guid moduleId)
+        public long GetUsedSize(Guid moduleId)
         {
             return GetQuotaRows(TenantProvider.CurrentTenantID).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
         }
 
-        public static IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
+        public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
         {
             return CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);

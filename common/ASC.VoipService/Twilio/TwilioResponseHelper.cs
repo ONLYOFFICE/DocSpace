@@ -38,9 +38,12 @@ namespace ASC.VoipService.Twilio
         private readonly VoipSettings settings;
         private readonly string baseUrl;
 
-        public TwilioResponseHelper(VoipSettings settings, string baseUrl)
+        public AuthContext AuthContext { get; }
+
+        public TwilioResponseHelper(VoipSettings settings, string baseUrl, AuthContext authContext)
         {
             this.settings = settings;
+            AuthContext = authContext;
             this.baseUrl = baseUrl.TrimEnd('/') + "/twilio/";
         }
 
@@ -138,7 +141,7 @@ namespace ASC.VoipService.Twilio
             return oper != null ? AddToResponse(response, oper) : response;
         }
 
-        public VoiceResponse Redirect(string to)
+        public VoiceResponse Redirect(string to, SecurityContext securityContext)
         {
             if (to == "hold")
             {
@@ -148,7 +151,7 @@ namespace ASC.VoipService.Twilio
 
             if (Guid.TryParse(to, out var newCallerId))
             {
-                SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
+                securityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, newCallerId);
             }
 
             return new VoiceResponse().Enqueue(settings.Queue.Name, GetEcho("enqueue"), "POST",
@@ -198,7 +201,7 @@ namespace ASC.VoipService.Twilio
             }
             if (user)
             {
-                result += "?CallerId=" + SecurityContext.CurrentAccount.ID;
+                result += "?CallerId=" + AuthContext.CurrentAccount.ID;
             }
 
             return result;

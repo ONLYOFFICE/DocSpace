@@ -62,17 +62,14 @@ namespace ASC.Web.Studio.Core.SMS
             }
         }
 
-        public static bool IsVisibleSettings
+        public static bool IsVisibleSettings(TenantExtra tenantExtra)
         {
-            get
-            {
-                var quota = TenantExtra.GetTenantQuota();
-                return CoreContext.Configuration.Standalone
-                       || ((!quota.Trial || SetupInfo.SmsTrial)
-                           && !quota.NonProfit
-                           && !quota.Free
-                           && !quota.Open);
-            }
+            var quota = tenantExtra.GetTenantQuota();
+            return CoreContext.Configuration.Standalone
+                    || ((!quota.Trial || SetupInfo.SmsTrial)
+                        && !quota.NonProfit
+                        && !quota.Free
+                        && !quota.Open);
         }
     }
 }

@@ -162,23 +162,23 @@ namespace ASC.Web.Studio.Utility
 
         #region user profile link
 
-        public static string GetUserProfile(int tenantId, Guid userID)
+        public static string GetUserProfile(int tenantId, Guid userID, UserManager userManager)
         {
-            if (!CoreContext.UserManager.UserExists(tenantId, userID))
+            if (!userManager.UserExists(tenantId, userID))
                 return GetEmployees();
 
-            return GetUserProfile(tenantId, userID.ToString());
+            return GetUserProfile(tenantId, userID.ToString(), userManager);
         }
 
-        public static string GetUserProfile(UserInfo user)
+        public static string GetUserProfile(UserInfo user, UserManager userManager)
         {
-            if (!CoreContext.UserManager.UserExists(user))
+            if (!userManager.UserExists(user))
                 return GetEmployees();
 
-            return GetUserProfile(user, true);
+            return GetUserProfile(user, userManager, true);
         }
 
-        public static string GetUserProfile(int tenantId, string user, bool absolute = true)
+        public static string GetUserProfile(int tenantId, string user, UserManager userManager, bool absolute = true)
         {
             var queryParams = "";
 
@@ -196,7 +196,7 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(tenantId, guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(tenantId, guid, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
@@ -206,9 +206,9 @@ namespace ASC.Web.Studio.Utility
             return url;
         }
 
-        public static string GetUserProfile(UserInfo user, bool absolute = true)
+        public static string GetUserProfile(UserInfo user, UserManager userManager, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
+            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -216,9 +216,9 @@ namespace ASC.Web.Studio.Utility
 
             return url;
         }
-        public static string GetUserProfile(int tenantId, Guid user, bool absolute = true)
+        public static string GetUserProfile(int tenantId, Guid user, UserManager userManager, bool absolute = true)
         {
-            var queryParams = GetUserParamsPair(tenantId, user);
+            var queryParams = GetUserParamsPair(tenantId, user, userManager);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -229,20 +229,20 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID(Tenant tenant, HttpContext context)
+        public static Guid GetProductID(Tenant tenant, HttpContext context, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
             var productID = Guid.Empty;
 
             if (context != null)
             {
-                GetLocationByRequest(tenant, out var product, out _, context);
+                GetLocationByRequest(tenant, userManager, webItemSecurity, authContext, out var product, out _, context);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(Tenant tenant, out IProduct currentProduct, out IModule currentModule, HttpContext context)
+        public static void GetLocationByRequest(Tenant tenant, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext, out IProduct currentProduct, out IModule currentModule, HttpContext context)
         {
             var currentURL = string.Empty;
             if (context != null && context.Request != null)
@@ -257,7 +257,7 @@ namespace ASC.Web.Studio.Utility
                 //}
             }
 
-            GetLocationByUrl(tenant, currentURL, out currentProduct, out currentModule);
+            GetLocationByUrl(tenant, currentURL, userManager, webItemSecurity, authContext, out currentProduct, out currentModule);
         }
 
         public static IWebItem GetWebItemByUrl(string currentURL)
@@ -301,7 +301,7 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        public static void GetLocationByUrl(Tenant tenant, string currentURL, out IProduct currentProduct, out IModule currentModule)
+        public static void GetLocationByUrl(Tenant tenant, string currentURL, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext, out IProduct currentProduct, out IModule currentModule)
         {
             currentProduct = null;
             currentModule = null;
@@ -340,7 +340,7 @@ namespace ASC.Web.Studio.Utility
 
                             if (!string.IsNullOrEmpty(moduleName))
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID, webItemSecurity, authContext).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
@@ -355,7 +355,7 @@ namespace ASC.Web.Studio.Utility
                             }
                             else
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID, webItemSecurity, authContext).OfType<IModule>())
                                 {
                                     if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
                                     {
@@ -457,14 +457,14 @@ namespace ASC.Web.Studio.Utility
             return result;
         }
 
-        public static string GetUserParamsPair(int tenantId, Guid userID)
+        public static string GetUserParamsPair(int tenantId, Guid userID, UserManager userManager)
         {
-            return GetUserParamsPair(CoreContext.UserManager.GetUsers(tenantId, userID));
+            return GetUserParamsPair(userManager.GetUsers(tenantId, userID), userManager);
         }
 
-        public static string GetUserParamsPair(UserInfo user)
+        public static string GetUserParamsPair(UserInfo user, UserManager userManager)
         {
-            if (user == null || string.IsNullOrEmpty(user.UserName) || !CoreContext.UserManager.UserExists(user))
+            if (user == null || string.IsNullOrEmpty(user.UserName) || !userManager.UserExists(user))
                 return "";
 
             return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));

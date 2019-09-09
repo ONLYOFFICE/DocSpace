@@ -16,13 +16,13 @@ namespace ASC.Api.Core.Middleware
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, UserManager userManager, TenantManager tenantManager, AuthContext authContext)
         {
             CultureInfo culture = null;
 
-            if (SecurityContext.IsAuthenticated)
+            if (authContext.IsAuthenticated)
             {
-                var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                var user = userManager.GetUsers(authContext.CurrentAccount.ID);
 
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
@@ -32,7 +32,7 @@ namespace ASC.Api.Core.Middleware
 
             if (culture == null)
             {
-                culture = CoreContext.TenantManager.GetCurrentTenant().GetCulture();
+                culture = tenantManager.GetCurrentTenant().GetCulture();
             }
 
             Thread.CurrentThread.CurrentCulture = culture;

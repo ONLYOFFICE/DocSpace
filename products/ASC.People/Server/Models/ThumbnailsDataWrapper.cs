@@ -34,14 +34,14 @@ namespace ASC.Web.Api.Models
     [DataContract]
     public class ThumbnailsDataWrapper
     {
-        public ThumbnailsDataWrapper(Tenant tenant, Guid userId)
+        public ThumbnailsDataWrapper(Tenant tenant, Guid userId, UserPhotoManager userPhotoManager)
         {
-            Original = UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, userId);
-            Retina = UserPhotoManager.GetRetinaPhotoURL(tenant.TenantId, userId);
-            Max = UserPhotoManager.GetMaxPhotoURL(tenant.TenantId, userId);
-            Big = UserPhotoManager.GetBigPhotoURL(tenant.TenantId, userId);
-            Medium = UserPhotoManager.GetMediumPhotoURL(tenant.TenantId, userId);
-            Small = UserPhotoManager.GetSmallPhotoURL(tenant.TenantId, userId);
+            Original = userPhotoManager.GetPhotoAbsoluteWebPath(tenant, userId);
+            Retina = userPhotoManager.GetRetinaPhotoURL(tenant.TenantId, userId);
+            Max = userPhotoManager.GetMaxPhotoURL(tenant.TenantId, userId);
+            Big = userPhotoManager.GetBigPhotoURL(tenant.TenantId, userId);
+            Medium = userPhotoManager.GetMediumPhotoURL(tenant.TenantId, userId);
+            Small = userPhotoManager.GetSmallPhotoURL(tenant.TenantId, userId);
         }
 
         private ThumbnailsDataWrapper()

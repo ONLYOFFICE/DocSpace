@@ -67,13 +67,28 @@ namespace ASC.Data.Reassigns
         public MessageService MessageService { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
         public StudioNotifyService StudioNotifyService { get; }
+        public UserManager UserManager { get; }
+        public UserPhotoManager UserPhotoManager { get; }
+        public SecurityContext SecurityContext { get; }
 
-        public ReassignProgressItem(HttpContext context, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, StudioNotifyService studioNotifyService, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        public ReassignProgressItem(
+            HttpContext context,
+            MessageService messageService,
+            QueueWorkerReassign queueWorkerReassign,
+            QueueWorkerRemove queueWorkerRemove,
+            StudioNotifyService studioNotifyService,
+            UserManager userManager,
+            UserPhotoManager userPhotoManager,
+            SecurityContext securityContext,
+            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             _context = context;
             MessageService = messageService;
             QueueWorkerRemove = queueWorkerRemove;
             StudioNotifyService = studioNotifyService;
+            UserManager = userManager;
+            UserPhotoManager = userPhotoManager;
+            SecurityContext = securityContext;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -162,13 +177,13 @@ namespace ASC.Data.Reassigns
 
         private void SendSuccessNotify()
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = UserManager.GetUsers(_tenantId, FromUser);
+            var toUser = UserManager.GetUsers(_tenantId, ToUser);
 
             StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
 
-            var fromUserName = fromUser.DisplayUserName(false);
-            var toUserName = toUser.DisplayUserName(false);
+            var fromUserName = fromUser.DisplayUserName(false, UserManager);
+            var toUserName = toUser.DisplayUserName(false, UserManager);
 
             if (_httpHeaders != null)
                 MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
@@ -178,19 +193,19 @@ namespace ASC.Data.Reassigns
 
         private void SendErrorNotify(string errorMessage)
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = UserManager.GetUsers(_tenantId, FromUser);
+            var toUser = UserManager.GetUsers(_tenantId, ToUser);
 
             StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
         }
 
         private void DeleteUserProfile(Tenant tenant)
         {
-            var user = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var userName = user.DisplayUserName(false);
+            var user = UserManager.GetUsers(_tenantId, FromUser);
+            var userName = user.DisplayUserName(false, UserManager);
 
             UserPhotoManager.RemovePhoto(tenant, user.ID);
-            CoreContext.UserManager.DeleteUser(tenant, user.ID);
+            UserManager.DeleteUser(tenant, user.ID);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)

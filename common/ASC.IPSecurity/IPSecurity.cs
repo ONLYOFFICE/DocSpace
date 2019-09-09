@@ -55,13 +55,13 @@ namespace ASC.IPSecurity
 
         private static readonly string CurrentIpForTest = ConfigurationManager.AppSettings["ipsecurity.test"];
 
-        public static bool Verify(HttpContext httpContext, Tenant tenant)
+        public static bool Verify(HttpContext httpContext, Tenant tenant, AuthContext authContext)
         {
             if (!IpSecurityEnabled) return true;
 
             if (httpContext == null) return true;
 
-            if (tenant == null || SecurityContext.CurrentAccount.ID == tenant.OwnerId) return true;
+            if (tenant == null || authContext.CurrentAccount.ID == tenant.OwnerId) return true;
 
             string requestIps = null;
             try

@@ -84,35 +84,43 @@ namespace ASC.Web.Studio.Core.Quota
             set { throw new NotImplementedException(); }
         }
 
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
 
-        public static QuotaWrapper GetCurrent(Tenant tenant)
+        public QuotaWrapper()
         {
+
+        }
+
+        public QuotaWrapper(Tenant tenant, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext)
+        {
+            TenantExtra = tenantExtra;
+            TenantStatisticsProvider = tenantStatisticsProvider;
+
             var quota = TenantExtra.GetTenantQuota();
             var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.TenantId).ToList();
 
-            var result = new QuotaWrapper
-            {
-                StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
-                UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
-                MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers,
-                UsersCount = CoreContext.Configuration.Personal ? 1 : TenantStatisticsProvider.GetUsersCount(tenant),
+            StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
+            UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
+            MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
+            UsersCount = CoreContext.Configuration.Personal ? 1 : TenantStatisticsProvider.GetUsersCount(tenant);
 
-                StorageUsage = quotaRows
-                        .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
-                        .ToList()
-            };
+            StorageUsage = quotaRows
+                    .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
+                    .ToList();
 
             if (CoreContext.Configuration.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
-                result.UserStorageSize = CoreContext.Configuration.PersonalMaxSpace;
+                UserStorageSize = CoreContext.Configuration.PersonalMaxSpace;
 
                 var webItem = WebItemManager.Instance[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
-                    result.UserUsedSize = spaceUsageManager.GetUserSpaceUsage(SecurityContext.CurrentAccount.ID);
+                {
+                    UserUsedSize = spaceUsageManager.GetUserSpaceUsage(authContext.CurrentAccount.ID);
+                }
             }
 
-            result.MaxFileSize = Math.Min(result.AvailableSize, (ulong)quota.MaxFileSize);
-            return result;
+            MaxFileSize = Math.Min(AvailableSize, (ulong)quota.MaxFileSize);
         }
 
         public static QuotaWrapper GetSample()

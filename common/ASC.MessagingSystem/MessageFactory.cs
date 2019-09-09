@@ -34,7 +34,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.MessagingSystem
 {
-    static class MessageFactory
+    public class MessageFactory
     {
         private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
         private const string userAgentHeader = "User-Agent";
@@ -42,8 +42,14 @@ namespace ASC.MessagingSystem
         private const string hostHeader = "Host";
         private const string refererHeader = "Referer";
 
+        public AuthContext AuthContext { get; }
 
-        public static EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
+        public MessageFactory(AuthContext authContext)
+        {
+            AuthContext = authContext;
+        }
+
+        public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
@@ -53,7 +59,7 @@ namespace ASC.MessagingSystem
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
                     TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                    UserId = SecurityContext.CurrentAccount.ID,
+                    UserId = AuthContext.CurrentAccount.ID,
                     Page = request?.GetTypedHeaders().Referer.ToString(),
                     Action = action,
                     Description = description,
@@ -68,7 +74,7 @@ namespace ASC.MessagingSystem
             }
         }
 
-        public static EventMessage Create(MessageUserData userData, Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
+        public EventMessage Create(MessageUserData userData, Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
@@ -76,7 +82,7 @@ namespace ASC.MessagingSystem
                 {
                     Date = DateTime.UtcNow,
                     TenantId = userData == null ? CoreContext.TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
-                    UserId = userData == null ? SecurityContext.CurrentAccount.ID : userData.UserId,
+                    UserId = userData == null ? AuthContext.CurrentAccount.ID : userData.UserId,
                     Action = action,
                     Description = description,
                     Target = target

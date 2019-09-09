@@ -45,12 +45,13 @@ using ASC.Web.Core.Helpers;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioPeriodicNotify
     {
-        public static void SendSaasLetters(INotifyClient client, string senderName, DateTime scheduleDate)
+        public static void SendSaasLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -75,10 +76,17 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    using var scope = serviceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
+
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var tariff = CoreContext.PaymentManager.GetTariff(tenant.TenantId);
-                    var quota = CoreContext.TenantManager.GetTenantQuota(tenant.TenantId);
+                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
 
                     var duedate = tariff.DueDate.Date;
                     var delayDuedate = tariff.DelayDueDate.Date;
@@ -151,7 +159,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 3 days after registration to admins SAAS TRIAL + only 1 user
 
-                        if (tenant.CreatedDateTime.Date.AddDays(3) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
+                        if (tenant.CreatedDateTime.Date.AddDays(3) == now && userManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.SaasAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -205,7 +213,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-formatting-100.png";
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = StudioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                             tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-share-100.png";
@@ -280,7 +288,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 {
                                     log.InfoFormat("start CreateCoupon to {0}", tenant.TenantAlias);
 
-                                    coupon = SetupInfo.IsSecretEmail(CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId).Email)
+                                    coupon = SetupInfo.IsSecretEmail(userManager.GetUsers(tenant.TenantId, tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
                                                 : CouponManager.CreateCoupon();
 
@@ -327,7 +335,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 30 days after SAAS TRIAL expired + only 1 user
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(30) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
+                        else if (duedate != DateTime.MaxValue && duedate.AddDays(30) == now && userManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.SaasAdminTrialWarningAfter30V10;
                             toadmins = true;
@@ -346,7 +354,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
+                            var owner = userManager.GetUsers(tenant.TenantId, tenant.OwnerId);
                             greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -360,7 +368,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias);
+                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -420,7 +428,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                            var owner = CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
+                            var owner = userManager.GetUsers(tenant.TenantId, tenant.OwnerId);
                             greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -434,7 +442,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias);
+                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -447,26 +455,26 @@ namespace ASC.Web.Studio.Core.Notify
                     if (action == null) continue;
 
                     var users = toowner
-                                    ? new List<UserInfo> { CoreContext.UserManager.GetUsers(tenant.TenantId, tenant.OwnerId) }
-                                    : StudioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
+                                    ? new List<UserInfo> { userManager.GetUsers(tenant.TenantId, tenant.OwnerId) }
+                                    : studioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
 
 
                     var analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, action, toowner, toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
-                        var rquota = TenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
+                        var rquota = tenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
+                            new[] { studioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers(tenant).Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers(tenant).Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, duedate.ToLongDateString()),
@@ -482,7 +490,7 @@ namespace ASC.Web.Studio.Core.Notify
                             TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
                             TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                             TagValues.TableBottom(),
-                            new TagValue(CommonTags.Footer, u.IsAdmin(tenant) ? "common" : "social"),
+                            new TagValue(CommonTags.Footer, u.IsAdmin(tenant, userManager) ? "common" : "social"),
                             new TagValue(CommonTags.Analytics, analytics),
                             new TagValue(Tags.Coupon, coupon));
                     }
@@ -496,7 +504,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendSaasTariffLetters");
         }
 
-        public static void SendEnterpriseLetters(INotifyClient client, string senderName, DateTime scheduleDate)
+        public static void SendEnterpriseLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -518,10 +526,16 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    using var scope = serviceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
+
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var tariff = CoreContext.PaymentManager.GetTariff(tenant.TenantId);
-                    var quota = CoreContext.TenantManager.GetTenantQuota(tenant.TenantId);
+                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
 
                     var duedate = tariff.DueDate.Date;
                     var delayDuedate = tariff.DelayDueDate.Date;
@@ -625,7 +639,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(4) == now && CoreContext.UserManager.GetUsers(tenant).Count() == 1)
+                        else if (tenant.CreatedDateTime.Date.AddDays(4) == now && userManager.GetUsers(tenant).Count() == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -678,7 +692,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-formatting-100.png";
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = StudioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                             tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-share-100.png";
@@ -833,23 +847,23 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = StudioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
+                    var users = studioNotifyHelper.GetRecipients(tenant, toadmins, tousers, false);
 
-                    foreach (var u in users.Where(u => paymentMessage || StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var rquota = TenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
+                        var rquota = tenantExtra.GetRightQuota(tenant) ?? TenantQuota.Default;
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
+                            new[] { studioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                             new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
-                            new TagValue(Tags.ActiveUsers, CoreContext.UserManager.GetUsers(tenant).Count()),
+                            new TagValue(Tags.ActiveUsers, userManager.GetUsers(tenant).Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                             new TagValue(Tags.DueDate, duedate.ToLongDateString()),
@@ -876,7 +890,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendTariffEnterpriseLetters");
         }
 
-        public static void SendOpensourceLetters(INotifyClient client, string senderName, DateTime scheduleDate)
+        public static void SendOpensourceLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -895,7 +909,13 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    using var scope = serviceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
+
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
                     INotifyAction action = null;
 
@@ -973,27 +993,27 @@ namespace ASC.Web.Studio.Core.Notify
 
                         tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-01-100.png";
                         tableItemComment1 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips1;
-                        tableItemLearnMoreUrl1 = StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
+                        tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
                         tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                         tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-02-100.png";
                         tableItemComment2 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips2;
-                        tableItemLearnMoreUrl2 = StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
+                        tableItemLearnMoreUrl2 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
                         tableItemLearnMoreText2 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                         tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-07-100.png";
                         tableItemComment3 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips3;
-                        tableItemLearnMoreUrl3 = StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
+                        tableItemLearnMoreUrl3 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
                         tableItemLearnMoreText3 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                         tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-03-100.png";
                         tableItemComment4 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips4;
-                        tableItemLearnMoreUrl4 = StudioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
+                        tableItemLearnMoreUrl4 = studioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
                         tableItemLearnMoreText4 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                         tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-04-100.png";
                         tableItemComment5 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips5;
-                        tableItemLearnMoreUrl5 = StudioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
+                        tableItemLearnMoreUrl5 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
                         tableItemLearnMoreText5 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
                         tableItemImg6 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-08-100.png";
@@ -1014,9 +1034,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                     if (action == null) continue;
 
-                    var users = StudioNotifyHelper.GetRecipients(tenant, true, false, false);
+                    var users = studioNotifyHelper.GetRecipients(tenant, true, false, false);
 
-                    foreach (var u in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
+                    foreach (var u in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
@@ -1024,9 +1044,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             action,
-                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
+                            new[] { studioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
                             new[] { senderName },
-                            new TagValue(Tags.UserName, u.DisplayUserName()),
+                            new TagValue(Tags.UserName, u.DisplayUserName(userManager)),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
                             TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
@@ -1049,7 +1069,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendOpensourceTariffLetters");
         }
 
-        public static void SendPersonalLetters(INotifyClient client, string senderName, DateTime scheduleDate)
+        public static void SendPersonalLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
 
@@ -1064,17 +1084,25 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var sendCount = 0;
 
-                    CoreContext.TenantManager.SetCurrentTenant(tenant.TenantId);
+                    using var scope = serviceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
+
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+                    var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                    var Authentication = scope.ServiceProvider.GetService<AuthManager>();
 
                     log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 
-                    var users = CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active);
+                    var users = userManager.GetUsers(tenant, EmployeeStatus.Active);
 
-                    foreach (var user in users.Where(u => StudioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
+                    foreach (var user in users.Where(u => studioNotifyHelper.IsSubscribedToNotify(tenant, u, Actions.PeriodicNotify)))
                     {
                         INotifyAction action;
 
-                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        SecurityContext.AuthenticateMe(Authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1140,7 +1168,7 @@ namespace ASC.Web.Studio.Core.Notify
                         client.SendNoticeToAsync(
                           action,
                           null,
-                          StudioNotifyHelper.RecipientFromEmail(new[] { user.Email.ToLower() }, true),
+                          studioNotifyHelper.RecipientFromEmail(new[] { user.Email.ToLower() }, true),
                           new[] { senderName },
                           TagValues.PersonalHeaderStart(),
                           TagValues.PersonalHeaderEnd(),
@@ -1159,13 +1187,13 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendLettersPersonal.");
         }
 
-        public static bool ChangeSubscription(Tenant tenant, Guid userId)
+        public static bool ChangeSubscription(Tenant tenant, Guid userId, StudioNotifyHelper studioNotifyHelper)
         {
-            var recipient = StudioNotifyHelper.ToRecipient(tenant.TenantId, userId);
+            var recipient = studioNotifyHelper.ToRecipient(tenant.TenantId, userId);
 
-            var isSubscribe = StudioNotifyHelper.IsSubscribedToNotify(tenant, recipient, Actions.PeriodicNotify);
+            var isSubscribe = studioNotifyHelper.IsSubscribedToNotify(tenant, recipient, Actions.PeriodicNotify);
 
-            StudioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
+            studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
 
             return !isSubscribe;
         }

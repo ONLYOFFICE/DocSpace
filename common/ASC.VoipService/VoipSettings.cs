@@ -45,7 +45,7 @@ namespace ASC.VoipService
 
         public Queue Queue { get; set; }
 
-        public Agent Caller { get { return Operators.FirstOrDefault(r => r.Id == SecurityContext.CurrentAccount.ID); } }
+        public Agent Caller { get { return Operators.FirstOrDefault(r => r.Id == AuthContext.CurrentAccount.ID); } }
 
         public WorkingHours WorkingHours { get; set; }
 
@@ -106,15 +106,18 @@ namespace ASC.VoipService
             }
         }
 
+        public AuthContext AuthContext { get; }
 
-        public VoipSettings()
+        public VoipSettings(AuthContext authContext)
         {
             Operators = new List<Agent>();
+            AuthContext = authContext;
         }
 
-        public VoipSettings(string settings)
+        public VoipSettings(string settings, AuthContext authContext)
         {
             JsonSettings = settings;
+            AuthContext = authContext;
         }
 
         public virtual string Connect(bool user = true, string contactId = null)
@@ -137,9 +140,9 @@ namespace ASC.VoipService
             return JsonSettings;
         }
 
-        public static VoipSettings GetSettings(string settings)
+        public VoipSettings GetSettings(string settings)
         {
-            return new VoipSettings { JsonSettings = settings };
+            return new VoipSettings(AuthContext) { JsonSettings = settings };
         }
     }
 

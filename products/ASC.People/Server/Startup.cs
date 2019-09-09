@@ -1,21 +1,35 @@
+using System.Configuration;
+
 using ASC.Api.Core;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Common.Security;
+using ASC.Common.Security.Authorizing;
 using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Billing;
+using ASC.Core.Caching;
+using ASC.Core.Data;
+using ASC.Core.Notify;
+using ASC.Core.Security.Authorizing;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
+using ASC.Notify.Recipients;
 using ASC.Web.Core;
+using ASC.Web.Core.Notify;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -42,7 +56,7 @@ namespace ASC.People
         {
             services.AddHttpContextAccessor();
 
-            services.AddControllers()
+            services.AddControllers().AddControllersAsServices()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();
 
@@ -77,12 +91,79 @@ namespace ASC.People
             services.AddLogManager()
                     .AddStorage()
                     .AddWebItemManager()
-                    .AddScoped(r => new ApiContext(r.GetService<IHttpContextAccessor>().HttpContext))
-                    .AddSingleton<StudioNotifyService>()
-                    .AddSingleton<UserManagerWrapper>()
+                    .AddSingleton((r) =>
+                    {
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
+                        return (IUserService)new CachedUserService(new DbUserService(cs));
+                    })
+                    .AddSingleton((r) =>
+                    {
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
+                        return (ITenantService)new CachedTenantService(new DbTenantService(cs));
+                    })
+                    .AddSingleton((r) =>
+                    {
+                        var quotaCacheEnabled = false;
+                        if (Common.Utils.ConfigurationManager.AppSettings["core:enable-quota-cache"] == null)
+                        {
+                            quotaCacheEnabled = true;
+                        }
+                        else
+                        {
+                            quotaCacheEnabled = !bool.TryParse(Common.Utils.ConfigurationManager.AppSettings["core:enable-quota-cache"], out var enabled) || enabled;
+                        }
+
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
+                        return quotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs); ;
+                    })
+                    .AddSingleton((r) =>
+                    {
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
+                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>());
+                    })
+                    .AddScoped<ApiContext>()
+                    .AddScoped<StudioNotifyService>()
+                    .AddScoped<UserManagerWrapper>()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
-                    .AddScoped<QueueWorkerRemove>();
+                    .AddScoped<QueueWorkerRemove>()
+                    .AddScoped<TenantManager>()
+                    .AddScoped<UserManager>()
+                    .AddScoped<StudioNotifyHelper>()
+                    .AddScoped<StudioNotifySource>()
+                    .AddScoped<StudioNotifyServiceHelper>()
+                    .AddScoped<AuthManager>()
+                    .AddScoped<TenantExtra>()
+                    .AddScoped<TenantStatisticsProvider>()
+                    .AddScoped<SecurityContext>()
+                    .AddScoped<AzManager>()
+                    .AddScoped<WebItemSecurity>()
+                    .AddScoped<UserPhotoManager>()
+                    .AddScoped<CookiesManager>()
+                    .AddScoped<PermissionContext>()
+                    .AddScoped<AuthContext>()
+                    .AddScoped<MessageFactory>()
+                    .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
+                    .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
+                    .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))
+                    .AddScoped(typeof(IPermissionProvider), typeof(PermissionProvider))
+                    ;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

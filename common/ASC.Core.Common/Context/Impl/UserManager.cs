@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Collections;
-using ASC.Common.DependencyInjection;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -38,22 +37,31 @@ namespace ASC.Core
 {
     public class UserManager
     {
-        private readonly IUserService userService;
+        public static IDictionary<Guid, UserInfo> SystemUsers { get; }
 
-        private readonly IDictionary<Guid, UserInfo> systemUsers;
+        public IHttpContextAccessor Accessor { get; }
+        public IUserService userService { get; }
+        public TenantManager TenantManager { get; }
+        public PermissionContext PermissionContext { get; }
 
-        private readonly IHttpContextAccessor Accessor;
+        static UserManager()
+        {
+            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
+            SystemUsers[Constants.LostUser.ID] = Constants.LostUser;
+            SystemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
+            SystemUsers[Constants.NamingPoster.ID] = Constants.NamingPoster;
+        }
 
-
-        public UserManager(IUserService service)
+        public UserManager(
+            IUserService service, 
+            IHttpContextAccessor httpContextAccessor, 
+            TenantManager tenantManager,
+            PermissionContext permissionContext)
         {
             userService = service;
-
-            systemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
-            systemUsers[Constants.LostUser.ID] = Constants.LostUser;
-            systemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
-            systemUsers[Constants.NamingPoster.ID] = Constants.NamingPoster;
-            Accessor = CommonServiceProvider.GetService<IHttpContextAccessor>();
+            Accessor = httpContextAccessor;
+            TenantManager = tenantManager;
+            PermissionContext = permissionContext;
         }
 
 
@@ -84,10 +92,10 @@ namespace ASC.Core
             switch (type)
             {
                 case EmployeeType.User:
-                    users = users.Where(u => !u.IsVisitor(tenant));
+                    users = users.Where(u => !u.IsVisitor(tenant, this));
                     break;
                 case EmployeeType.Visitor:
-                    users = users.Where(u => u.IsVisitor(tenant));
+                    users = users.Where(u => u.IsVisitor(tenant, this));
                     break;
             }
             return users.ToArray();
@@ -144,7 +152,7 @@ namespace ASC.Core
         }
         public UserInfo GetUsers(int tenantId, Guid id)
         {
-            if (IsSystemUser(id)) return systemUsers[id];
+            if (IsSystemUser(id)) return SystemUsers[id];
             var u = userService.GetUser(tenantId, id);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
@@ -167,7 +175,7 @@ namespace ASC.Core
 
         public bool IsSystemUser(Guid id)
         {
-            return systemUsers.ContainsKey(id);
+            return SystemUsers.ContainsKey(id);
         }
 
         public UserInfo GetUserByEmail(int tenantId, string email)
@@ -215,9 +223,9 @@ namespace ASC.Core
 
         public UserInfo SaveUserInfo(Tenant tenant, UserInfo u, bool isVisitor = false)
         {
-            if (IsSystemUser(u.ID)) return systemUsers[u.ID];
-            if (u.ID == Guid.Empty) SecurityContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
-            else SecurityContext.DemandPermissions(tenant, new UserSecurityProvider(u.ID), Constants.Action_EditUser);
+            if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
+            if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
+            else PermissionContext.DemandPermissions(tenant, new UserSecurityProvider(u.ID), Constants.Action_EditUser);
 
             if (Constants.MaxEveryoneCount <= GetUsersByGroup(tenant, Constants.GroupEveryone.ID).Length)
             {
@@ -241,7 +249,7 @@ namespace ASC.Core
         public void DeleteUser(Tenant tenant, Guid id)
         {
             if (IsSystemUser(id)) return;
-            SecurityContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(tenant, Constants.Action_AddRemoveUser);
             if (id == tenant.OwnerId)
             {
                 throw new InvalidOperationException("Can not remove tenant owner.");
@@ -253,7 +261,7 @@ namespace ASC.Core
         public void SaveUserPhoto(Tenant tenant, Guid id, byte[] photo)
         {
             if (IsSystemUser(id)) return;
-            SecurityContext.DemandPermissions(tenant, new UserSecurityProvider(id), Constants.Action_EditUser);
+            PermissionContext.DemandPermissions(tenant, new UserSecurityProvider(id), Constants.Action_EditUser);
 
             userService.SetUserPhoto(tenant.TenantId, id, photo);
         }
@@ -266,22 +274,22 @@ namespace ASC.Core
 
         public IEnumerable<Guid> GetUserGroupsId(int tenantId, Guid id)
         {
-            return GetUsers(tenantId, id).GetUserGroupsId(tenantId);
+            return GetUserGroupsGuids(tenantId, id);
         }
 
         public List<GroupInfo> GetUserGroups(Tenant tenant, Guid id)
         {
-            return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, Guid.Empty);
+            return GetUserGroups(tenant, id, IncludeType.Distinct, Guid.Empty);
         }
 
         public List<GroupInfo> GetUserGroups(Tenant tenant, Guid id, Guid categoryID)
         {
-            return GetUsers(tenant.TenantId, id).GetGroups(tenant, IncludeType.Distinct, categoryID);
+            return GetUserGroups(tenant, id, IncludeType.Distinct, categoryID);
         }
 
         public List<GroupInfo> GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType)
         {
-            return GetUsers(tenant.TenantId, userID).GetGroups(tenant, includeType, null);
+            return GetUserGroups(tenant, userID, includeType, null);
         }
 
         internal List<GroupInfo> GetUserGroups(Tenant tenant, Guid userID, IncludeType includeType, Guid? categoryId)
@@ -317,6 +325,11 @@ namespace ASC.Core
             if (IncludeType.Distinct == (includeType & IncludeType.Distinct))
             {
                 result.AddRange(distinctUserGroups);
+            }
+
+            if (categoryId.HasValue)
+            {
+                result = result.Where(r => r.CategoryID.Equals(categoryId.Value)).ToList();
             }
 
             result.Sort((group1, group2) => string.Compare(group1.Name, group2.Name, StringComparison.Ordinal));
@@ -375,7 +388,7 @@ namespace ASC.Core
             {
                 return;
             }
-            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
+            PermissionContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
             userService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
@@ -385,7 +398,7 @@ namespace ASC.Core
         public void RemoveUserFromGroup(Tenant tenant, Guid userId, Guid groupId)
         {
             if (Constants.LostUser.ID == userId || Constants.LostGroupInfo.ID == groupId) return;
-            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
+            PermissionContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
             userService.RemoveUserGroupRef(tenant.TenantId, userId, groupId, UserGroupRefType.Contains);
 
@@ -487,7 +500,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(g)) return Constants.LostGroupInfo;
             if (Constants.BuildinGroups.Any(b => b.ID == g.ID)) return Constants.BuildinGroups.Single(b => b.ID == g.ID);
-            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
+            PermissionContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
             var newGroup = userService.SaveGroup(tenant.TenantId, ToGroup(g));
             return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
@@ -497,7 +510,7 @@ namespace ASC.Core
         {
             if (Constants.LostGroupInfo.Equals(id)) return;
             if (Constants.BuildinGroups.Any(b => b.ID == id)) return;
-            SecurityContext.DemandPermissions(tenant, Constants.Action_EditGroups);
+            PermissionContext.DemandPermissions(tenant, Constants.Action_EditGroups);
 
             userService.RemoveGroup(tenant.TenantId, id);
         }

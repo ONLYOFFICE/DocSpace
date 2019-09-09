@@ -28,6 +28,7 @@ using System;
 using System.Text;
 using System.Web;
 using ASC.Common;
+using ASC.Core;
 using ASC.Core.Common;
 using Uri = System.Uri;
 
@@ -35,16 +36,16 @@ namespace ASC.VoipService.Twilio
 {
     public class TwilioVoipSettings : VoipSettings
     {
-        public TwilioVoipSettings() { }
+        public TwilioVoipSettings(AuthContext authContext) : base(authContext) { }
 
-        public TwilioVoipSettings(Uri voiceUrl)
+        public TwilioVoipSettings(Uri voiceUrl, AuthContext authContext) : this(authContext)
         {
             if (string.IsNullOrEmpty(voiceUrl.Query)) return;
 
             JsonSettings = Encoding.UTF8.GetString(Convert.FromBase64String(HttpUtility.UrlDecode(HttpUtility.ParseQueryString(voiceUrl.Query)["settings"])));
         }
 
-        public TwilioVoipSettings(string settings) : base(settings)
+        public TwilioVoipSettings(string settings, AuthContext authContext) : base(settings, authContext)
         {
         }
 
@@ -70,7 +71,7 @@ namespace ASC.VoipService.Twilio
 
         private string GetEcho(string method, bool user = true)
         {
-            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, "")).GetEcho(method, user);
+            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, ""), AuthContext).GetEcho(method, user);
         }
     }
 }

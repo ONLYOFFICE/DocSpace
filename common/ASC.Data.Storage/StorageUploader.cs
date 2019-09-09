@@ -37,6 +37,7 @@ using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
@@ -48,6 +49,8 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
+        public IServiceProvider ServiceProvider { get; }
+
         static StorageUploader()
         {
             Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
@@ -56,7 +59,12 @@ namespace ASC.Data.Storage
             Locker = new object();
         }
 
-        public static void Start(int tenantId, StorageSettings newStorageSettings)
+        public StorageUploader(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public void Start(int tenantId, StorageSettings newStorageSettings)
         {
             if (TokenSource.Token.IsCancellationRequested) return;
 
@@ -67,7 +75,7 @@ namespace ASC.Data.Storage
                 migrateOperation = Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(tenantId, newStorageSettings);
+                migrateOperation = new MigrateOperation(ServiceProvider, tenantId, newStorageSettings);
                 Cache.Insert(GetCacheKey(tenantId), migrateOperation, DateTime.MaxValue);
             }
 
@@ -121,18 +129,23 @@ namespace ASC.Data.Storage
             Modules = StorageFactory.GetModuleList(ConfigPath, true);
         }
 
-        public MigrateOperation(int tenantId, StorageSettings settings)
+        public MigrateOperation(IServiceProvider serviceProvider, int tenantId, StorageSettings settings)
         {
+            ServiceProvider = serviceProvider;
             this.tenantId = tenantId;
             this.settings = settings;
             StepCount = Modules.Count();
         }
+
+        public IServiceProvider ServiceProvider { get; }
 
         protected override void DoJob()
         {
             try
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
+                using var scope = ServiceProvider.CreateScope();
+                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var tenant = CoreContext.TenantManager.GetTenant(tenantId);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
                 SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);

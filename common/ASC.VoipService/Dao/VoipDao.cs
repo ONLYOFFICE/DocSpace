@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.VoipService.Twilio;
@@ -37,9 +38,10 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID)
+        public VoipDao(int tenantID, AuthContext authContext)
             : base(tenantID)
         {
+            AuthContext = authContext;
         }
 
         public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -286,9 +288,9 @@ namespace ASC.VoipService.Dao
 
         #region Converters
 
-        private static VoipPhone ToPhone(object[] r)
+        private VoipPhone ToPhone(object[] r)
         {
-            return GetProvider().GetPhone(r);
+            return GetProvider(AuthContext).GetPhone(r);
         }
 
         private static VoipCall ToCall(object[] r)
@@ -331,9 +333,9 @@ namespace ASC.VoipService.Dao
             get { return ConsumerFactory.GetByName("twilio"); }
         }
 
-        public static TwilioProvider GetProvider()
+        public static TwilioProvider GetProvider(AuthContext authContext)
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"]);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext);
         }
 
         public static bool ConfigSettingsExist
@@ -344,6 +346,8 @@ namespace ASC.VoipService.Dao
                        !string.IsNullOrEmpty(Consumer["twilioAuthToken"]);
             }
         }
+
+        public AuthContext AuthContext { get; }
 
         #endregion
     }

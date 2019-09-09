@@ -40,8 +40,9 @@ namespace ASC.MessagingSystem
         private readonly IMessageSender sender;
         private readonly HttpRequest request;
 
+        public MessageFactory MessageFactory { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory)
         {
             if (configuration["messaging:enabled"] != "true")
             {
@@ -50,6 +51,7 @@ namespace ASC.MessagingSystem
 
             sender = new DbMessageSender();
             request = httpContextAccessor?.HttpContext?.Request;
+            MessageFactory = messageFactory;
         }
 
         #region HttpRequest

@@ -43,19 +43,11 @@ namespace ASC.Core
     {
         private static readonly object syncRoot = new object();
         private static bool notifyStarted;
-        private static NotifyContext notifyContext;
         private static bool? ismono;
         private static string monoversion;
 
 
-        public static NotifyContext NotifyContext
-        {
-            get
-            {
-                NotifyStartUp();
-                return notifyContext;
-            }
-        }
+        public static NotifyContext NotifyContext { get; private set; }
 
         public static string[] DefaultClientSenders
         {
@@ -94,14 +86,14 @@ namespace ASC.Core
         }
 
 
-        private static void NotifyStartUp()
+        public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
             if (notifyStarted) return;
             lock (syncRoot)
             {
                 if (notifyStarted) return;
 
-                notifyContext = new NotifyContext();
+                NotifyContext = new NotifyContext();
 
                 INotifySender jabberSender = new NotifyServiceSender();
                 INotifySender emailSender = new NotifyServiceSender();
@@ -110,7 +102,7 @@ namespace ASC.Core
 
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    jabberSender = new JabberSender();
+                    jabberSender = new JabberSender(serviceProvider);
 
                     var properties = new Dictionary<string, string>
                     {
@@ -130,16 +122,16 @@ namespace ASC.Core
                     emailSender.Init(properties);
                 }
 
-                notifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender));
-                notifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
 
-                notifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-                notifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
+                NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
+                NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
                 notifyStarted = true;
             }
         }
 
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request)
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext)
         {
             request.Properties.Add("Tenant", CoreContext.TenantManager.GetCurrentTenant(false));
         }

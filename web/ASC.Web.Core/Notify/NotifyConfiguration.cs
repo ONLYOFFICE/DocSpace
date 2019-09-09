@@ -45,7 +45,7 @@ using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 using Google.Protobuf;
-
+using Microsoft.Extensions.DependencyInjection;
 using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -56,15 +56,16 @@ namespace ASC.Web.Studio.Core.Notify
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-
-        public static void Configure()
+        private static IServiceProvider ServiceProvider { get; set; }
+        public static void Configure(IServiceProvider serviceProvider)
         {
             lock (locker)
             {
                 if (!configured)
                 {
                     configured = true;
-
+                    ServiceProvider = serviceProvider;
+                    WorkContext.NotifyStartUp(serviceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
@@ -72,7 +73,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
+        private static void NotifyClientRegisterCallback(Context context, INotifyClient client, UserManager userManager)
         {
             #region url correction
 
@@ -122,6 +123,8 @@ namespace ASC.Web.Studio.Core.Notify
                  {
                      try
                      {
+                         using var scope = ServiceProvider.CreateScope();
+                         var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
                          // culture
                          var u = Constants.LostUser;
                          var tenant = CoreContext.TenantManager.GetCurrentTenant();
@@ -138,18 +141,18 @@ namespace ASC.Web.Studio.Core.Notify
 
                              if (guid != default)
                              {
-                                 u = CoreContext.UserManager.GetUsers(tenant.TenantId, guid);
+                                 u = userManager.GetUsers(tenant.TenantId, guid);
                              }
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByEmail(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByEmail(tenant.TenantId, r.Recipient.ID);
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByUserName(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByUserName(tenant.TenantId, r.Recipient.ID);
                          }
 
                          if (!Constants.LostUser.Equals(u))
@@ -172,7 +175,7 @@ namespace ASC.Web.Studio.Core.Notify
                              }
                              if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                              {
-                                 return !WebItemSecurity.IsAvailableForUser(tenant, productId, u.ID);
+                                 return !webItemSecurity.IsAvailableForUser(tenant, productId, u.ID);
                              }
                          }
 
@@ -227,40 +230,41 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
             var tenant = CoreContext.TenantManager.GetCurrentTenant();
 
-            if (SecurityContext.IsAuthenticated)
+            if (authContext.IsAuthenticated)
             {
-                aid = SecurityContext.CurrentAccount.ID;
-                var user = CoreContext.UserManager.GetUsers(tenant.TenantId, aid);
-                if (CoreContext.UserManager.UserExists(user))
+                aid = authContext.CurrentAccount.ID;
+                var user = userManager.GetUsers(tenant.TenantId, aid);
+                if (userManager.UserExists(user))
                 {
-                    aname = user.DisplayUserName(false)
+                    aname = user.DisplayUserName(false, userManager)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }
             }
-
-            //TODOL httpContext
-            CommonLinkUtility.GetLocationByRequest(tenant, out var product, out var module, null);
+            using var scope = ServiceProvider.CreateScope();
+            var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
+            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+            CommonLinkUtility.GetLocationByRequest(tenant, userManager, webItemSecurity, authContext,out var product, out var module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((TenantExtra.Enterprise || CoreContext.Configuration.CustomMode) && !MailWhiteLabelSettings.Instance.IsDefault)
+            if ((tenantExtra.Enterprise || CoreContext.Configuration.CustomMode) && !MailWhiteLabelSettings.Instance.IsDefault)
             {
                 logoText = TenantLogoManager.GetLogoText();
             }
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenant.TenantId, aid))));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenant.TenantId, aid, userManager))));
             request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
@@ -277,12 +281,12 @@ namespace ASC.Web.Studio.Core.Notify
                 request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
             }
 
-            AddLetterLogo(request);
+            AddLetterLogo(request, tenantExtra);
         }
 
-        private static void AddLetterLogo(NotifyRequest request)
+        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra)
         {
-            if (TenantExtra.Enterprise || CoreContext.Configuration.CustomMode)
+            if (tenantExtra.Enterprise || CoreContext.Configuration.CustomMode)
             {
                 try
                 {

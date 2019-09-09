@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Notify.Channels;
 using ASC.Notify.Engine;
 using ASC.Notify.Model;
@@ -63,7 +64,7 @@ namespace ASC.Notify
         }
 
 
-        public event Action<Context, INotifyClient> NotifyClientRegistration;
+        public event Action<Context, INotifyClient, UserManager> NotifyClientRegistration;
 
 
         public Context()
@@ -98,11 +99,11 @@ namespace ASC.Notify
             }
         }
 
-        INotifyClient INotifyRegistry.RegisterClient(INotifySource source)
+        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, UserManager userManager, AuthContext authContext)
         {
             //ValidateNotifySource(source);
-            var client = new NotifyClientImpl(this, source);
-            NotifyClientRegistration?.Invoke(this, client);
+            var client = new NotifyClientImpl(this, source, userManager, authContext);
+            NotifyClientRegistration?.Invoke(this, client, userManager);
             return client;
         }
 

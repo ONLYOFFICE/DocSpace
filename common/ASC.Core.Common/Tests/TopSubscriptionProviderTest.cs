@@ -31,6 +31,7 @@ using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
 using NUnit.Framework;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.Tests
 {
@@ -50,6 +51,7 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec;
         private IRecipient testRec2;
         private NotifyAction nAction;
+        private IServiceProvider serviceProvider;
 
         [OneTimeSetUp]
         public void CreateProviders()
@@ -62,8 +64,7 @@ namespace ASC.Core.Common.Tests
             testRec = new DirectRecipient("ff0c4e13-1831-43c2-91ce-7b7beb56179b", null); //Oliver Khan
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
-
-            recProvider = new RecipientProviderImpl();
+            recProvider = serviceProvider.GetService<RecipientProviderImpl>();
             var directSubProvider = new DirectSubscriptionProvider(sourceId, CoreContext.SubscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
             CoreContext.TenantManager.SetCurrentTenant(tenant);

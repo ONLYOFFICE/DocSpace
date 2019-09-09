@@ -24,81 +24,26 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ASC.Core.Tenants;
 using ASC.Web.Core;
-using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Core.Users
 {
     public static class StudioUserInfoExtension
     {
-        public static string GetUserProfilePageURL(this UserInfo userInfo)
+        public static string GetUserProfilePageURL(this UserInfo userInfo, UserManager userManager)
         {
-            return userInfo == null ? "" : CommonLinkUtility.GetUserProfile(userInfo);
+            return userInfo == null ? "" : CommonLinkUtility.GetUserProfile(userInfo, userManager);
         }
 
-        public static string RenderProfileLink(this UserInfo userInfo, Guid productID, int tenantId)
-        {
-            var sb = new StringBuilder();
-
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo))
-            {
-                sb.Append("<span class='userLink text-medium-describe'>");
-                sb.Append(Resource.ProfileRemoved);
-                sb.Append("</span>");
-            }
-            else if (Array.Exists(Configuration.Constants.SystemAccounts, a => a.ID == userInfo.ID))
-            {
-                sb.Append("<span class='userLink text-medium-describe'>");
-                sb.Append(userInfo.LastName);
-                sb.Append("</span>");
-            }
-            else
-            {
-                sb.AppendFormat("<span class=\"userLink\" id=\"{0}\" data-uid=\"{1}\" data-pid=\"{2}\">", Guid.NewGuid(), userInfo.ID, productID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURL(), userInfo.DisplayUserName());
-                sb.Append("</span>");
-            }
-            return sb.ToString();
-        }
-
-        public static string RenderCustomProfileLink(this UserInfo userInfo, string containerCssClass, string linkCssClass, int tenantId)
-        {
-            var containerCss = string.IsNullOrEmpty(containerCssClass) ? "userLink" : "userLink " + containerCssClass;
-            var linkCss = string.IsNullOrEmpty(linkCssClass) ? "" : linkCssClass;
-            var sb = new StringBuilder();
-
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo))
-            {
-                sb.AppendFormat("<span class='{0}'>", containerCss);
-                sb.Append(Resource.ProfileRemoved);
-                sb.Append("</span>");
-            }
-            else if (Array.Exists(Configuration.Constants.SystemAccounts, a => a.ID == userInfo.ID))
-            {
-                sb.AppendFormat("<span class='{0}'>", containerCss);
-                sb.Append(userInfo.LastName);
-                sb.Append("</span>");
-            }
-            else
-            {
-                sb.AppendFormat("<span class=\"{0}\" id=\"{1}\" data-uid=\"{2}\" >", containerCss, Guid.NewGuid(), userInfo.ID);
-                sb.AppendFormat("<a class='{0}' href=\"{1}\">{2}</a>", linkCss, userInfo.GetUserProfilePageURL(), userInfo.DisplayUserName());
-                sb.Append("</span>");
-            }
-            return sb.ToString();
-        }
-
-        public static List<string> GetListAdminModules(this UserInfo ui, Tenant tenant)
+        public static List<string> GetListAdminModules(this UserInfo ui, Tenant tenant, WebItemSecurity webItemSecurity)
         {
             var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
 
-            return (from product in products where WebItemSecurity.IsProductAdministrator(tenant, product.ID, ui.ID) select product.ProductClassName).ToList();
+            return (from product in products where webItemSecurity.IsProductAdministrator(tenant, product.ID, ui.ID) select product.ProductClassName).ToList();
         }
     }
 }

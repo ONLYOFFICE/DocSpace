@@ -37,16 +37,18 @@ namespace ASC.Core
     {
         private readonly IUserService userService;
 
+        public UserManager UserManager { get; }
 
-        public AuthManager(IUserService service)
+        public AuthManager(IUserService service, UserManager userManager)
         {
-            this.userService = service;
+            userService = service;
+            UserManager = userManager;
         }
 
 
         public IUserAccount[] GetUserAccounts(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
+            return UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
         }
 
         public void SetUserPassword(int tenantId, Guid userID, string password)
@@ -64,7 +66,7 @@ namespace ASC.Core
             var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
             if (s != null) return s;
 
-            var u = CoreContext.UserManager.GetUsers(tenantId, id);
+            var u = UserManager.GetUsers(tenantId, id);
             return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }
 

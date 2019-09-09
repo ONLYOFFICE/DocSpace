@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using ASC.Core;
 using ASC.Core.Common.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -63,7 +64,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public bool ValidateKeys()
+        public bool ValidateKeys(AuthContext authContext)
         {
             try
             {

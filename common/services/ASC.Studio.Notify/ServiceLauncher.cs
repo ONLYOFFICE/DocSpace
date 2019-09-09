@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,17 +40,19 @@ namespace ASC.Notify
     {
         public WebItemManager WebItemManager { get; }
         public StudioNotifyServiceSender StudioNotifyServiceSender { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender)
+        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender, IServiceProvider serviceProvider)
         {
             WebItemManager = webItemManager;
             StudioNotifyServiceSender = studioNotifyServiceSender;
+            ServiceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             DbRegistry.Configure();
-            NotifyConfiguration.Configure();
+            NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
 
             StudioNotifyServiceSender.RegisterSendMethod();

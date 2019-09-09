@@ -35,9 +35,20 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core.SMS
 {
-    public static class SmsManager
+    public class SmsManager
     {
-        public static string SaveMobilePhone(Tenant tenant, UserInfo user, string mobilePhone)
+        public UserManager UserManager { get; }
+        public TenantExtra TenantExtra { get; }
+        public SecurityContext SecurityContext { get; }
+
+        public SmsManager(UserManager userManager, TenantExtra tenantExtra, SecurityContext securityContext)
+        {
+            UserManager = userManager;
+            TenantExtra = tenantExtra;
+            SecurityContext = securityContext;
+        }
+
+        public string SaveMobilePhone(Tenant tenant, UserInfo user, string mobilePhone)
         {
             mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 
@@ -49,14 +60,14 @@ namespace ASC.Web.Studio.Core.SMS
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
             if (SecurityContext.IsAuthenticated)
             {
-                CoreContext.UserManager.SaveUserInfo(tenant, user);
+                UserManager.SaveUserInfo(tenant, user);
             }
             else
             {
                 try
                 {
                     SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-                    CoreContext.UserManager.SaveUserInfo(tenant, user);
+                    UserManager.SaveUserInfo(tenant, user);
                 }
                 finally
                 {
@@ -72,11 +83,11 @@ namespace ASC.Web.Studio.Core.SMS
             return mobilePhone;
         }
 
-        public static void PutAuthCode(UserInfo user, bool again)
+        public void PutAuthCode(UserInfo user, bool again)
         {
             if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
 
-            if (!StudioSmsNotificationSettings.IsVisibleSettings || !StudioSmsNotificationSettings.Enable) throw new MethodAccessException();
+            if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) || !StudioSmsNotificationSettings.Enable) throw new MethodAccessException();
 
             var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
@@ -89,9 +100,9 @@ namespace ASC.Web.Studio.Core.SMS
             }
         }
 
-        public static void ValidateSmsCode(Tenant tenant, UserInfo user, string code)
+        public void ValidateSmsCode(Tenant tenant, UserInfo user, string code)
         {
-            if (!StudioSmsNotificationSettings.IsVisibleSettings
+            if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra)
                 || !StudioSmsNotificationSettings.Enable)
             {
                 return;
@@ -122,7 +133,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
                 user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-                CoreContext.UserManager.SaveUserInfo(tenant, user);
+                UserManager.SaveUserInfo(tenant, user);
             }
         }
     }

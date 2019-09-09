@@ -67,12 +67,12 @@ namespace ASC.Web.Core.Helpers
 
         #region system
 
-        public static void ValidatePortalName(string domain)
+        public static void ValidatePortalName(string domain, Guid userId)
         {
             try
             {
                 var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, data);
+                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
             {
@@ -111,20 +111,20 @@ namespace ASC.Web.Core.Helpers
 
         #region cache
 
-        public static void AddTenantToCache(string domain)
+        public static void AddTenantToCache(string domain, Guid userId)
         {
             var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, data);
+            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
-        public static void RemoveTenantFromCache(string domain)
+        public static void RemoveTenantFromCache(string domain, Guid userId)
         {
-            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE");
+            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
         }
 
-        public static IEnumerable<string> FindTenantsInCache(string domain)
+        public static IEnumerable<string> FindTenantsInCache(string domain, Guid userId)
         {
-            var result = SendToApi(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get);
+            var result = SendToApi(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
@@ -133,7 +133,7 @@ namespace ASC.Web.Core.Helpers
 
         #endregion
 
-        private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, string data = null)
+        private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
         {
             if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
@@ -146,7 +146,7 @@ namespace ASC.Web.Core.Helpers
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;
             webRequest.Accept = "application/json";
-            webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(SecurityContext.CurrentAccount.ID.ToString()));
+            webRequest.Headers.Add(HttpRequestHeader.Authorization, CreateAuthToken(userId.ToString()));
             webRequest.ContentType = "application/x-www-form-urlencoded";
             webRequest.ContentLength = 0;
 

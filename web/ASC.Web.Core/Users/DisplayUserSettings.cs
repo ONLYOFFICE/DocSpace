@@ -53,23 +53,23 @@ namespace ASC.Web.Core.Users
             };
         }
 
-        public static string GetFullUserName(int tenantId, Guid userID, bool withHtmlEncode = true)
+        public static string GetFullUserName(UserManager userManager, int tenantId, Guid userID, bool withHtmlEncode = true)
         {
-            return GetFullUserName(CoreContext.UserManager.GetUsers(tenantId, userID), withHtmlEncode);
+            return GetFullUserName(userManager, userManager.GetUsers(tenantId, userID), withHtmlEncode);
         }
 
-        public static string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
+        public static string GetFullUserName(UserManager userManager, UserInfo userInfo, bool withHtmlEncode = true)
         {
-            return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
+            return GetFullUserName(userManager, userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
         }
 
-        public static string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
+        public static string GetFullUserName(UserManager userManager, UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
         {
             if (userInfo == null)
             {
                 return string.Empty;
             }
-            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo))
+            if (!userInfo.ID.Equals(Guid.Empty) && !userManager.UserExists(userInfo))
             {
                 return "profile removed";
             }

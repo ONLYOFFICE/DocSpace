@@ -53,6 +53,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Core.WebZones;
@@ -64,6 +65,7 @@ using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
+using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
@@ -82,31 +84,56 @@ namespace ASC.Api.Settings
         private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
 
         private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
-
         private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
-
         public Tenant Tenant { get { return ApiContext.Tenant; } }
-
         public ApiContext ApiContext { get; }
-
         public LogManager LogManager { get; }
-
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
-
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public UserPhotoManager UserPhotoManager { get; }
+        public AuthContext AuthContext { get; }
+        public CookiesManager CookiesManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public StudioNotifyHelper StudioNotifyHelper { get; }
+        public LicenseReader LicenseReader { get; }
+        public PermissionContext PermissionContext { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticsProvider,
+            UserPhotoManager userPhotoManager,
+            AuthContext authContext,
+            CookiesManager cookiesManager,
+            WebItemSecurity webItemSecurity,
+            StudioNotifyHelper studioNotifyHelper,
+            LicenseReader licenseReader,
+            PermissionContext permissionContext)
         {
             LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            TenantExtra = tenantExtra;
+            TenantStatisticsProvider = tenantStatisticsProvider;
+            UserPhotoManager = userPhotoManager;
+            AuthContext = authContext;
+            CookiesManager = cookiesManager;
+            WebItemSecurity = webItemSecurity;
+            StudioNotifyHelper = studioNotifyHelper;
+            LicenseReader = licenseReader;
+            PermissionContext = permissionContext;
         }
 
         [Read("")]
@@ -118,7 +145,7 @@ namespace ASC.Api.Settings
                 Culture = Tenant.GetCulture().ToString()
             };
 
-            if (SecurityContext.IsAuthenticated)
+            if (AuthContext.IsAuthenticated)
             {
                 settings.TrustedDomains = Tenant.TrustedDomains;
                 settings.TrustedDomainsType = Tenant.TrustedDomainsType;
@@ -134,13 +161,13 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return QuotaWrapper.GetCurrent(Tenant);
+            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext);
         }
 
         [Read("recalculatequota")]
         public void RecalculateQuota()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var operations = quotaTasks.GetTasks()
                 .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
@@ -158,7 +185,7 @@ namespace ASC.Api.Settings
         [Read("checkrecalculatequota")]
         public bool CheckRecalculateQuota()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
 
@@ -181,16 +208,16 @@ namespace ASC.Api.Settings
         [Read("version")]
         public TenantVersionWrapper GetVersions()
         {
-            return new TenantVersionWrapper(Tenant.Version, CoreContext.TenantManager.GetTenantVersions());
+            return new TenantVersionWrapper(Tenant.Version, TenantManager.GetTenantVersions());
         }
 
         [Update("version")]
         public TenantVersionWrapper SetVersion(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
-            CoreContext.TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
-            CoreContext.TenantManager.SetTenantVersion(Tenant, model.VersionId);
+            TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
+            TenantManager.SetTenantVersion(Tenant, model.VersionId);
 
             return GetVersions();
         }
@@ -210,8 +237,8 @@ namespace ASC.Api.Settings
                       {
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
-                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext)),
-                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, ApiContext)),
+                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager)),
+                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, ApiContext, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
         }
@@ -221,13 +248,13 @@ namespace ASC.Api.Settings
         {
             var module = WebItemManager.Instance[id];
 
-            return module != null && !module.IsDisabled(Tenant);
+            return module != null && !module.IsDisabled(Tenant, WebItemSecurity, AuthContext);
         }
 
         [Read("security/modules")]
         public object GetEnabledModules()
         {
-            var EnabledModules = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal)
+            var EnabledModules = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal, WebItemSecurity, AuthContext)
                                         .Where(item => !item.IsSubItem() && item.Visible)
                                         .ToList()
                                         .Select(item => new
@@ -250,7 +277,7 @@ namespace ASC.Api.Settings
         [Update("security")]
         public IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             WebItemSecurity.SetSecurity(model.Id, model.Enabled, model.Subjects?.ToArray());
             var securityInfo = GetWebItemSecurityInfo(new List<string> { model.Id });
@@ -284,7 +311,7 @@ namespace ASC.Api.Settings
         [Update("security/access")]
         public IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var itemList = new ItemDictionary<string, bool>();
 
@@ -332,7 +359,7 @@ namespace ASC.Api.Settings
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(Tenant, productid)
-                                  .Select(r => EmployeeWraper.Get(r, ApiContext))
+                                  .Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager))
                                   .ToList();
         }
 
@@ -346,21 +373,21 @@ namespace ASC.Api.Settings
         [Update("security/administrator")]
         public object SetProductAdministrator(SecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             WebItemSecurity.SetProductAdministrator(Tenant, model.ProductId, model.UserId, model.Administrator);
 
-            var admin = CoreContext.UserManager.GetUsers(model.UserId);
+            var admin = UserManager.GetUsers(model.UserId);
 
             if (model.ProductId == Guid.Empty)
             {
                 var messageAction = model.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false, UserManager));
             }
             else
             {
                 var messageAction = model.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false, UserManager));
             }
 
             return new { model.ProductId, model.UserId, model.Administrator };
@@ -377,7 +404,7 @@ namespace ASC.Api.Settings
         [Create("whitelabel/save")]
         public void SaveWhiteLabelSettings(WhiteLabelModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled || !TenantLogoManager.WhiteLabelPaid)
             {
@@ -430,7 +457,7 @@ namespace ASC.Api.Settings
         [Read("whitelabel/sizes")]
         public object GetWhiteLabelSizes()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -453,7 +480,7 @@ namespace ASC.Api.Settings
         [Read("whitelabel/logos")]
         public Dictionary<int, string> GetWhiteLabelLogos(bool retina)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -493,7 +520,7 @@ namespace ASC.Api.Settings
         [Update("whitelabel/restore")]
         public void RestoreWhiteLabelOptions()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled || !TenantLogoManager.WhiteLabelPaid)
             {
@@ -511,21 +538,21 @@ namespace ASC.Api.Settings
         [Read("iprestrictions")]
         public IEnumerable<IPRestriction> GetIpRestrictions()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Get(Tenant.TenantId);
         }
 
         [Update("iprestrictions")]
         public IEnumerable<string> SaveIpRestrictions(IpRestrictionsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
         [Update("iprestrictions/settings")]
         public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var settings = new IPRestrictionsSettings { Enable = model.Enable };
             settings.Save();
@@ -546,7 +573,7 @@ namespace ASC.Api.Settings
                     using var client = new WebClient();
                     var data = new NameValueCollection
                     {
-                        ["userId"] = SecurityContext.CurrentAccount.ID.ToString(),
+                        ["userId"] = AuthContext.CurrentAccount.ID.ToString(),
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
 
@@ -564,13 +591,13 @@ namespace ASC.Api.Settings
         [Update("tips/change/subscription")]
         public bool UpdateTipsSubscription()
         {
-            return StudioPeriodicNotify.ChangeSubscription(Tenant, SecurityContext.CurrentAccount.ID);
+            return StudioPeriodicNotify.ChangeSubscription(Tenant, AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
         [Update("wizard/complete")]
         public WizardSettings CompleteWizard()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var settings = WizardSettings.Load();
 
@@ -586,7 +613,7 @@ namespace ASC.Api.Settings
         [Update("tfaapp")]
         public bool TfaSettings(TfaModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var result = false;
 
@@ -594,7 +621,7 @@ namespace ASC.Api.Settings
             switch (model.Type)
             {
                 case "sms":
-                    if (!StudioSmsNotificationSettings.IsVisibleSettings)
+                    if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra))
                         throw new Exception(Resource.SmsNotAvailable);
 
                     if (!SmsProviderManager.Enabled())
@@ -621,7 +648,7 @@ namespace ASC.Api.Settings
                     TfaAppAuthSettings.Enable = true;
                     action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) && StudioSmsNotificationSettings.Enable)
                     {
                         StudioSmsNotificationSettings.Enable = false;
                     }
@@ -636,7 +663,7 @@ namespace ASC.Api.Settings
                         TfaAppAuthSettings.Enable = false;
                     }
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) && StudioSmsNotificationSettings.Enable)
                     {
                         StudioSmsNotificationSettings.Enable = false;
                     }
@@ -648,7 +675,7 @@ namespace ASC.Api.Settings
 
             if (result)
             {
-                CookiesManager.ResetTenantCookie(HttpContext);
+                CookiesManager.ResetTenantCookie();
             }
 
             MessageService.Send(action);
@@ -659,12 +686,12 @@ namespace ASC.Api.Settings
         [Read("tfaappcodes")]
         public IEnumerable<object> TfaAppGetCodes()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
             if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(currentUser.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (currentUser.IsVisitor(ApiContext.Tenant) || currentUser.IsOutsider(ApiContext.Tenant))
+            if (currentUser.IsVisitor(ApiContext.Tenant, UserManager) || currentUser.IsOutsider(ApiContext.Tenant, UserManager))
                 throw new NotSupportedException("Not available.");
 
             return TfaAppUserSettings.LoadForCurrentUser().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
@@ -673,16 +700,16 @@ namespace ASC.Api.Settings
         [Update("tfaappnewcodes")]
         public IEnumerable<object> TfaAppRequestNewCodes()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(Tenant.TenantId, AuthContext.CurrentAccount.ID);
 
             if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(currentUser.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (currentUser.IsVisitor(Tenant) || currentUser.IsOutsider(Tenant))
+            if (currentUser.IsVisitor(Tenant, UserManager) || currentUser.IsOutsider(Tenant, UserManager))
                 throw new NotSupportedException("Not available.");
 
             var codes = currentUser.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
-            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, UserManager));
             return codes;
         }
 
@@ -690,19 +717,19 @@ namespace ASC.Api.Settings
         public string TfaAppNewApp(TfaModel model)
         {
             var isMe = model.Id.Equals(Guid.Empty);
-            var user = CoreContext.UserManager.GetUsers(isMe ? SecurityContext.CurrentAccount.ID : model.Id);
+            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
 
-            if (!isMe && !SecurityContext.CheckPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser))
+            if (!isMe && !PermissionContext.CheckPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
 
             if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(user.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (user.IsVisitor(Tenant) || user.IsOutsider(Tenant))
+            if (user.IsVisitor(Tenant, UserManager) || user.IsOutsider(Tenant, UserManager))
                 throw new NotSupportedException("Not available.");
 
             TfaAppUserSettings.DisableForUser(user.ID);
-            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, UserManager));
 
             if (isMe)
             {
@@ -717,11 +744,11 @@ namespace ASC.Api.Settings
         [Update("welcome/close")]
         public void CloseWelcomePopup()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
             var collaboratorPopupSettings = CollaboratorSettings.LoadForCurrentUser();
 
-            if (!(currentUser.IsVisitor(Tenant) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(Tenant)))
+            if (!(currentUser.IsVisitor(Tenant, UserManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(Tenant, UserManager)))
                 throw new NotSupportedException("Not available.");
 
             collaboratorPopupSettings.FirstVisit = false;
@@ -732,7 +759,7 @@ namespace ASC.Api.Settings
         [Update("colortheme")]
         public void SaveColorTheme(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             ColorThemesSettings.SaveColorTheme(model.Theme);
             MessageService.Send(MessageAction.ColorThemeChanged);
         }
@@ -741,7 +768,7 @@ namespace ASC.Api.Settings
         [Update("timeandlanguage")]
         public string TimaAndLanguage(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var culture = CultureInfo.GetCultureInfo(model.Lng);
 
@@ -763,7 +790,7 @@ namespace ASC.Api.Settings
             }
             Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID) ?? TimeZoneInfo.Utc;
 
-            CoreContext.TenantManager.SaveTenant(Tenant);
+            TenantManager.SaveTenant(Tenant);
 
             if (!Tenant.TimeZone.Id.Equals(oldTimeZone.Id) || changelng)
             {
@@ -784,7 +811,7 @@ namespace ASC.Api.Settings
         [Update("defaultpage")]
         public string SaveDefaultPageSettings(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID }.Save();
 
@@ -830,7 +857,7 @@ namespace ASC.Api.Settings
         [Create("customnavigation/create")]
         public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var settings = CustomNavigationSettings.Load();
 
@@ -880,7 +907,7 @@ namespace ASC.Api.Settings
         [Delete("customnavigation/delete/{id}")]
         public void DeleteCustomNavigationItem(Guid id)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var settings = CustomNavigationSettings.Load();
 
@@ -928,9 +955,9 @@ namespace ASC.Api.Settings
         [Read("statistics/spaceusage/{id}")]
         public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All)
+            var webtem = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All, WebItemSecurity, AuthContext)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
@@ -953,7 +980,7 @@ namespace ASC.Api.Settings
         [Read("statistics/visit")]
         public List<ChartPointWrapper> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var from = TenantUtil.DateTimeFromUtc(fromDate);
             var to = TenantUtil.DateTimeFromUtc(toDate);
@@ -1001,7 +1028,7 @@ namespace ASC.Api.Settings
         [Read("storage")]
         public List<StorageWrapper> GetAllStorages()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var current = StorageSettings.Load();
             var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
@@ -1011,7 +1038,7 @@ namespace ASC.Api.Settings
         [Read("storage/progress", false)]
         public double GetStorageProgress()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             if (!CoreContext.Configuration.Standalone) return -1;
 
@@ -1022,7 +1049,7 @@ namespace ASC.Api.Settings
         [Update("storage")]
         public StorageSettings UpdateStorage(StorageModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             if (!CoreContext.Configuration.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
@@ -1051,7 +1078,7 @@ namespace ASC.Api.Settings
         [Delete("storage")]
         public void ResetStorageToDefault()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             if (!CoreContext.Configuration.Standalone) return;
 
             var settings = StorageSettings.Load();
@@ -1073,7 +1100,7 @@ namespace ASC.Api.Settings
         [Read("storage/cdn")]
         public List<StorageWrapper> GetAllCdnStorages()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             if (!CoreContext.Configuration.Standalone) return null;
 
             var current = CdnStorageSettings.Load();
@@ -1084,7 +1111,7 @@ namespace ASC.Api.Settings
         [Update("storage/cdn")]
         public CdnStorageSettings UpdateCdn(StorageModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             if (!CoreContext.Configuration.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
@@ -1114,7 +1141,7 @@ namespace ASC.Api.Settings
         [Delete("storage/cdn")]
         public void ResetCdnToDefault()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
             if (!CoreContext.Configuration.Standalone) return;
 
             CdnStorageSettings.Load().Clear();
@@ -1123,7 +1150,7 @@ namespace ASC.Api.Settings
         //[Read("storage/backup")]
         //public List<StorageWrapper> GetAllBackupStorages()
         //{
-        //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+        //    PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
         //    var schedule = new BackupAjaxHandler().GetSchedule();
         //    var current = new StorageSettings();

@@ -23,25 +23,28 @@ namespace ASC.Web.Api.Controllers
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
-
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
         public LogManager LogManager { get; }
-
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
 
 
         public PortalController(LogManager logManager,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            AuthContext authContext
+            )
         {
             LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            AuthContext = authContext;
         }
 
         [Read("")]
@@ -53,13 +56,13 @@ namespace ASC.Web.Api.Controllers
         [Read("users/{userID}")]
         public UserInfo GetUser(Guid userID)
         {
-            return CoreContext.UserManager.GetUsers(Tenant.TenantId, userID);
+            return UserManager.GetUsers(Tenant.TenantId, userID);
         }
 
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, string.Empty, ConfirmType.LinkInvite, (int)employeeType, SecurityContext.CurrentAccount.ID)
+            return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 
@@ -91,7 +94,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return CoreContext.UserManager.GetUserNames(Tenant, EmployeeStatus.Active).Count();
+            return UserManager.GetUserNames(Tenant, EmployeeStatus.Active).Count();
         }
 
         [Read("tariff")]

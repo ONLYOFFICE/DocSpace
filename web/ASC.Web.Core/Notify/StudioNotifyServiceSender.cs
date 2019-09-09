@@ -36,6 +36,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -46,26 +47,38 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
-        public StudioNotifyServiceSender()
+        public IServiceProvider ServiceProvider { get; }
+
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider)
         {
-            client = WorkContext.NotifyContext.NotifyService.RegisterClient(StudioNotifyHelper.NotifySource);
             cache = new KafkaCache<NotifyItem>();
             cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+            ServiceProvider = serviceProvider;
         }
 
         public void OnMessage(NotifyItem item)
         {
-            CoreContext.TenantManager.SetCurrentTenant(item.TenantId);
-            SecurityContext.AuthenticateMe(item.TenantId, Guid.Parse(item.UserId));
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var authContext = scope.ServiceProvider.GetService<AuthContext>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+
+            tenantManager.SetCurrentTenant(item.TenantId);
+            securityContext.AuthenticateMe(item.TenantId, Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext);
+
+            var tenant = tenantManager.GetCurrentTenant(false);
+
             if (tenant != null)
             {
                 culture = tenant.GetCulture();
             }
 
-            var user = CoreContext.UserManager.GetUsers(item.TenantId, SecurityContext.CurrentAccount.ID);
+            var user = userManager.GetUsers(item.TenantId, securityContext.CurrentAccount.ID);
             if (!string.IsNullOrEmpty(user.CultureName))
             {
                 culture = CultureInfo.GetCultureInfo(user.CultureName);
@@ -95,15 +108,17 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (ConfigurationManager.AppSettings["core:notify:tariff"] != "false")
             {
-                if (TenantExtra.Enterprise)
+                using var scope = ServiceProvider.CreateScope();
+                var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+                if (tenantExtra.Enterprise)
                 {
                     client.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
-                else if (TenantExtra.Opensource)
+                else if (tenantExtra.Opensource)
                 {
                     client.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
-                else if (TenantExtra.Saas)
+                else if (tenantExtra.Saas)
                 {
                     if (CoreContext.Configuration.Personal)
                     {
@@ -124,27 +139,28 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendSaasLetters(client, EMailSenderName, scheduleDate);
+            StudioPeriodicNotify.SendSaasLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendEnterpriseLetters(client, EMailSenderName, scheduleDate);
+            StudioPeriodicNotify.SendEnterpriseLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendOpensourceTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendOpensourceLetters(client, EMailSenderName, scheduleDate);
+            StudioPeriodicNotify.SendOpensourceLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendLettersPersonal(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendPersonalLetters(client, EMailSenderName, scheduleDate);
+            StudioPeriodicNotify.SendPersonalLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
-            StudioWhatsNewNotify.SendMsgWhatsNew(scheduleDate, client);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, client);
         }
     }
 }

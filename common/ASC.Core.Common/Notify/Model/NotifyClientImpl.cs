@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Core;
 using ASC.Notify.Engine;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -37,10 +38,14 @@ namespace ASC.Notify.Model
         private readonly InterceptorStorage interceptors = new InterceptorStorage();
         private readonly INotifySource notifySource;
 
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
 
-        public NotifyClientImpl(Context context, INotifySource notifySource)
+        public NotifyClientImpl(Context context, INotifySource notifySource, UserManager userManager, AuthContext authContext)
         {
             this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            UserManager = userManager;
+            AuthContext = authContext;
             ctx = context ?? throw new ArgumentNullException("context");
         }
 
@@ -133,7 +138,7 @@ namespace ASC.Notify.Model
         private void SendAsync(NotifyRequest request)
         {
             request.Interceptors = interceptors.GetAll();
-            ctx.NotifyEngine.QueueRequest(request);
+            ctx.NotifyEngine.QueueRequest(request, UserManager, AuthContext);
         }
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)

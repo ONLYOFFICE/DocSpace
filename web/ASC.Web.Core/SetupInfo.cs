@@ -97,36 +97,9 @@ namespace ASC.Web.Studio.Core
             get;
             private set;
         }
-
-        /// <summary>
-        /// Max possible file size for not chunked upload. Less or equal than 100 mb.
-        /// </summary>
-        public static long MaxUploadSize
-        {
-            get { return Math.Min(AvailableFileSize, MaxChunkedUploadSize); }
-        }
-
         public static long AvailableFileSize
         {
             get { return 100L * 1024L * 1024L; }
-        }
-
-        /// <summary>
-        /// Max possible file size for chunked upload.
-        /// </summary>
-        public static long MaxChunkedUploadSize
-        {
-            get
-            {
-                var diskQuota = TenantExtra.GetTenantQuota();
-                if (diskQuota != null)
-                {
-                    var usedSize = TenantStatisticsProvider.GetUsedSize();
-                    var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
-                    return Math.Min(freeSize, diskQuota.MaxFileSize);
-                }
-                return ChunkUploadSize;
-            }
         }
 
         public static string TeamlabSiteRedirect

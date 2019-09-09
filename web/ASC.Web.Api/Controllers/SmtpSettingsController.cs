@@ -55,7 +55,9 @@ namespace ASC.Api.Settings
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
-
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public PermissionContext PermissionContext { get; }
         public LogManager LogManager { get; }
 
         public MessageService MessageService { get; }
@@ -68,12 +70,18 @@ namespace ASC.Api.Settings
         public SmtpSettingsController(LogManager logManager,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            SecurityContext securityContext,
+            PermissionContext permissionContext)
         {
             LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            PermissionContext = permissionContext;
         }
 
 
@@ -97,7 +105,7 @@ namespace ASC.Api.Settings
             if (smtpSettings == null)
                 throw new ArgumentNullException("smtpSettings");
 
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
             var settingConfig = ToSmtpSettingsConfig(smtpSettings);
 
@@ -115,7 +123,7 @@ namespace ASC.Api.Settings
 
             if (!CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
             {
-                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+                PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
                 CoreContext.Configuration.SmtpSettings = null;
             }
 
@@ -131,7 +139,7 @@ namespace ASC.Api.Settings
 
             var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings);
 
-            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID);
+            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext);
 
             SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
 

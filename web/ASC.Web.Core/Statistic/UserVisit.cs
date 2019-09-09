@@ -42,11 +42,6 @@ namespace ASC.Web.Studio.Core.Statistic
 
         public virtual Guid UserID { get; set; }
 
-        public virtual UserInfo User
-        {
-            get { return CoreContext.UserManager.GetUsers(UserID); }
-        }
-
         public virtual Guid ProductID { get; set; }
 
         public virtual int VisitCount { get; set; }

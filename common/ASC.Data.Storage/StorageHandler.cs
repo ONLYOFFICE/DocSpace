@@ -37,6 +37,7 @@ using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.DiscStorage
 {
@@ -47,16 +48,22 @@ namespace ASC.Data.Storage.DiscStorage
         private readonly string _domain;
         private readonly bool _checkAuth;
 
-        public StorageHandler(string path, string module, string domain, bool checkAuth = true)
+        public StorageHandler(IServiceProvider serviceProvider, string path, string module, string domain, bool checkAuth = true)
         {
+            ServiceProvider = serviceProvider;
             _path = path;
             _module = module;
             _domain = domain;
             _checkAuth = checkAuth;
         }
 
+        public IServiceProvider ServiceProvider { get; }
+
         public async Task Invoke(HttpContext context)
         {
+            using var scope = ServiceProvider.CreateScope();
+            var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+
             if (_checkAuth && !SecurityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -142,8 +149,8 @@ namespace ASC.Data.Storage.DiscStorage
         {
             var virtPath = PathUtils.ResolveVirtualPath(module, domain);
             virtPath = virtPath.TrimStart('/');
-
-            var handler = new StorageHandler(string.Empty, module, domain, !publicRoute);
+            
+            var handler = new StorageHandler(builder.ServiceProvider, string.Empty, module, domain, !publicRoute);
             var url = virtPath + "{*pathInfo}";
 
             if (!builder.DataSources.Any(r => r.Endpoints.Any(e => e.DisplayName == url)))

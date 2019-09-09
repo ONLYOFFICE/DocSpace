@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -76,8 +75,8 @@ namespace ASC.Web.Api
             services.AddLogManager()
                     .AddStorage()
                     .AddWebItemManager()
-                    .AddScoped(r => new ApiContext(r.GetService<IHttpContextAccessor>().HttpContext))
-                    .AddSingleton<StudioNotifyService>()
+                    .AddScoped<ApiContext>()
+                    .AddScoped<StudioNotifyService>()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
                     .AddScoped<QueueWorkerRemove>();

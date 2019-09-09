@@ -36,14 +36,15 @@ namespace ASC.Core.Users
 {
     public static class UserInfoExtension
     {
-        public static string DisplayUserName(this UserInfo userInfo)
+        public static string DisplayUserName(this UserInfo userInfo, UserManager userManager)
         {
-            return DisplayUserName(userInfo, true);
+            return DisplayUserName(userInfo, true, userManager);
         }
 
-        public static string DisplayUserName(this UserInfo userInfo, bool withHtmlEncode)
+        //fix
+        public static string DisplayUserName(this UserInfo userInfo, bool withHtmlEncode, UserManager userManager)
         {
-            return DisplayUserSettings.GetFullUserName(userInfo, withHtmlEncode);
+            return DisplayUserSettings.GetFullUserName(userManager, userInfo, withHtmlEncode);
         }
 
         public static List<UserInfo> SortByUserName(this IEnumerable<UserInfo> userInfoCollection)
@@ -55,52 +56,52 @@ namespace ASC.Core.Users
             return users;
         }
 
-        public static bool HasAvatar(this UserInfo userInfo, Tenant tenant)
+        public static bool HasAvatar(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.UserHasAvatar(tenant, userInfo.ID);
         }
 
-        public static Size GetPhotoSize(this UserInfo userInfo, Tenant tenant)
+        public static Size GetPhotoSize(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetPhotoSize(tenant, userInfo.ID);
         }
 
-        public static string GetPhotoURL(this UserInfo userInfo, Tenant tenant)
+        public static string GetPhotoURL(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, userInfo.ID);
         }
 
-        public static string GetRetinaPhotoURL(this UserInfo userInfo, int tenantId)
+        public static string GetRetinaPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetRetinaPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetMaxPhotoURL(this UserInfo userInfo, int tenantId)
+        public static string GetMaxPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetMaxPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetBigPhotoURL(this UserInfo userInfo, int tenantId)
+        public static string GetBigPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetBigPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetMediumPhotoURL(this UserInfo userInfo, int tenantId)
+        public static string GetMediumPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetMediumPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string GetSmallPhotoURL(this UserInfo userInfo, int tenantId)
+        public static string GetSmallPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
         {
             return UserPhotoManager.GetSmallPhotoURL(tenantId, userInfo.ID);
         }
 
-        public static string RenderProfileLinkBase(this UserInfo userInfo, Tenant tenant)
+        public static string RenderProfileLinkBase(this UserInfo userInfo, Tenant tenant, UserManager userManager)
         {
             var sb = new StringBuilder();
 
             //check for removed users
-            if (userInfo == null || !CoreContext.UserManager.UserExists(userInfo))
+            if (userInfo == null || !userManager.UserExists(userInfo))
             {
                 sb.Append("<span class='userLink text-medium-describe' style='white-space:nowrap;'>profile removed</span>");
             }
@@ -108,7 +109,7 @@ namespace ASC.Core.Users
             {
                 var popupID = Guid.NewGuid();
                 sb.AppendFormat("<span class=\"userLink\" style='white-space:nowrap;' id='{0}' data-uid='{1}'>", popupID, userInfo.ID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(), userInfo.DisplayUserName());
+                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(userManager), userInfo.DisplayUserName(userManager));
                 sb.Append("</span>");
 
                 sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);
@@ -121,9 +122,9 @@ namespace ASC.Core.Users
         /// </summary>
         /// <param name="userInfo"></param>        
         /// <returns></returns>
-        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo)
+        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo, UserManager userManager)
         {
-            return CommonLinkUtility.GetUserProfile(userInfo);
+            return CommonLinkUtility.GetUserProfile(userInfo, userManager);
         }
     }
 }

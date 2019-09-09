@@ -44,10 +44,10 @@ namespace ASC.Core.Common.Settings
         {
             get { return CoreContext.TenantManager.GetCurrentTenant().TenantId; }
         }
-
+        //
         private static Guid CurrentUserID
         {
-            get { return SecurityContext.CurrentAccount.ID; }
+            get { return Guid.Empty; }
         }
 
         private static SettingsManager SettingsManagerInstance

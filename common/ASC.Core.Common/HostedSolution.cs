@@ -70,7 +70,7 @@ namespace ASC.Core
             userService = new DbUserService(connectionString);
             quotaService = new DbQuotaService(connectionString);
             tariffService = new TariffService(connectionString, quotaService, tenantService);
-            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService);
+            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;
             DbId = connectionString.Name;
@@ -158,7 +158,7 @@ namespace ASC.Core
             tenant.OwnerId = user.ID;
             tenant = tenantService.SaveTenant(tenant);
 
-            settingsManager.SaveSettings(new TenantAnalyticsSettings { Analytics = ri.Analytics }, tenant.TenantId);
+            settingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)

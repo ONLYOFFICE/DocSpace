@@ -36,73 +36,75 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    class StudioNotifyHelper
+    public class StudioNotifyHelper
     {
-        public static readonly string Helplink;
+        public readonly string Helplink;
 
-        public static readonly StudioNotifySource NotifySource;
+        public readonly StudioNotifySource NotifySource;
 
-        public static readonly ISubscriptionProvider SubscriptionProvider;
+        public readonly ISubscriptionProvider SubscriptionProvider;
 
-        public static readonly IRecipientProvider RecipientsProvider;
+        public readonly IRecipientProvider RecipientsProvider;
 
+        public UserManager UserManager { get; }
 
-        static StudioNotifyHelper()
+        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager)
         {
             Helplink = CommonLinkUtility.GetHelpLink(false);
-            NotifySource = new StudioNotifySource();
+            NotifySource = studioNotifySource;
+            UserManager = userManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
         }
 
 
-        public static IEnumerable<UserInfo> GetRecipients(Tenant tenant, bool toadmins, bool tousers, bool toguests)
+        public IEnumerable<UserInfo> GetRecipients(Tenant tenant, bool toadmins, bool tousers, bool toguests)
         {
             if (toadmins)
             {
                 if (tousers)
                 {
                     if (toguests)
-                        return CoreContext.UserManager.GetUsers(tenant);
+                        return UserManager.GetUsers(tenant);
 
-                    return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User);
+                    return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User);
                 }
 
                 if (toguests)
                     return
-                        CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID)
-                                   .Concat(CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor));
+                        UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID)
+                                   .Concat(UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor));
 
-                return CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID);
+                return UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID);
             }
 
             if (tousers)
             {
                 if (toguests)
-                    return CoreContext.UserManager.GetUsers(tenant)
-                                      .Where(u => !CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                    return UserManager.GetUsers(tenant)
+                                      .Where(u => !UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
 
-                return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User)
+                                  .Where(u => !UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
             }
 
             if (toguests)
-                return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor);
+                return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor);
 
             return new List<UserInfo>();
         }
 
-        public static IRecipient ToRecipient(int tenantId, Guid userId)
+        public IRecipient ToRecipient(int tenantId, Guid userId)
         {
             return RecipientsProvider.GetRecipient(tenantId, userId.ToString());
         }
 
-        public static IRecipient[] RecipientFromEmail(string email, bool checkActivation)
+        public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
         {
             return RecipientFromEmail(new[] { email }, checkActivation);
         }
 
-        public static IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
+        public IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
         {
             var res = new List<IRecipient>();
 
@@ -137,22 +139,22 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public static bool IsSubscribedToNotify(Tenant tenant, Guid userId, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(Tenant tenant, Guid userId, INotifyAction notifyAction)
         {
             return IsSubscribedToNotify(tenant, ToRecipient(tenant.TenantId, userId), notifyAction);
         }
 
-        public static bool IsSubscribedToNotify(Tenant tenant, IRecipient recipient, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(Tenant tenant, IRecipient recipient, INotifyAction notifyAction)
         {
             return recipient != null && SubscriptionProvider.IsSubscribed(tenant, notifyAction, recipient, null);
         }
 
-        public static void SubscribeToNotify(int tenantId, Guid userId, INotifyAction notifyAction, bool subscribe)
+        public void SubscribeToNotify(int tenantId, Guid userId, INotifyAction notifyAction, bool subscribe)
         {
             SubscribeToNotify(ToRecipient(tenantId, userId), notifyAction, subscribe);
         }
 
-        public static void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
+        public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
         {
             if (recipient == null) return;
 

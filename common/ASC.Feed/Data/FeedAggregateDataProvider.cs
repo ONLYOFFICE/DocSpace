@@ -132,7 +132,7 @@ namespace ASC.Feed.Data
             tx.Commit();
         }
 
-        public static List<FeedResultItem> GetFeeds(FeedApiFilter filter)
+        public static List<FeedResultItem> GetFeeds(FeedApiFilter filter, AuthContext authContext)
         {
             var filterOffset = filter.Offset;
             var filterLimit = filter.Max > 0 && filter.Max < 1000 ? filter.Max : 1000;
@@ -143,7 +143,7 @@ namespace ASC.Feed.Data
             List<FeedResultItem> feedsIteration;
             do
             {
-                feedsIteration = GetFeedsInternal(filter);
+                feedsIteration = GetFeedsInternal(filter, authContext);
                 foreach (var feed in feedsIteration)
                 {
                     if (feeds.ContainsKey(feed.GroupId))
@@ -164,15 +164,15 @@ namespace ASC.Feed.Data
             return feeds.Take(filterLimit).SelectMany(group => group.Value).ToList();
         }
 
-        private static List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
+        private static List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter, AuthContext authContext)
         {
             var query = new SqlQuery("feed_aggregate a")
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
                 .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
                 .Where(
-                    !Exp.Eq("a.modified_by", SecurityContext.CurrentAccount.ID) &
-                    Exp.Eq("u.user_id", SecurityContext.CurrentAccount.ID)
+                    !Exp.Eq("a.modified_by", authContext.CurrentAccount.ID) &
+                    Exp.Eq("u.user_id", authContext.CurrentAccount.ID)
                 )
                 .OrderBy("a.modified_date", false)
                 .SetFirstResult(filter.Offset)
@@ -226,14 +226,14 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
             return news;
         }
 
-        public static int GetNewFeedsCount(DateTime lastReadedTime)
+        public static int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext)
         {
             var q = new SqlQuery("feed_aggregate a")
                 .Select("id")
                 .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
-                .Where(!Exp.Eq("a.modified_by", SecurityContext.CurrentAccount.ID))
+                .Where(!Exp.Eq("a.modified_by", authContext.CurrentAccount.ID))
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
-                .Where("u.user_id", SecurityContext.CurrentAccount.ID)
+                .Where("u.user_id", authContext.CurrentAccount.ID)
                 .SetMaxResults(1001);
 
             if (1 < lastReadedTime.Year)
@@ -351,17 +351,17 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
 
         public DateTime AggregatedDate { get; private set; }
 
-        public FeedMin ToFeedMin()
+        public FeedMin ToFeedMin(UserManager userManager)
         {
             var feedMin = JsonConvert.DeserializeObject<FeedMin>(Json);
-            feedMin.Author = new FeedMinUser { UserInfo = CoreContext.UserManager.GetUsers(feedMin.AuthorId) };
+            feedMin.Author = new FeedMinUser { UserInfo = userManager.GetUsers(feedMin.AuthorId) };
             feedMin.CreatedDate = CreatedDate;
 
             if (feedMin.Comments == null) return feedMin;
 
             foreach (var comment in feedMin.Comments)
             {
-                comment.Author = new FeedMinUser { UserInfo = CoreContext.UserManager.GetUsers(comment.AuthorId) };
+                comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
             }
             return feedMin;
         }

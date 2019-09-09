@@ -32,7 +32,7 @@ using ASC.Common.Security.Authorizing;
 
 namespace ASC.Core.Security.Authorizing
 {
-    class PermissionProvider : IPermissionProvider
+    public class PermissionProvider : IPermissionProvider
     {
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {

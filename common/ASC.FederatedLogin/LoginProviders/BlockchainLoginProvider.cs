@@ -37,11 +37,11 @@ namespace ASC.Web.Studio.Core
 {
     public static class BlockchainLoginProvider
     {
-        public static void UpdateData(string account)
+        public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
-            var user = CoreContext.UserManager.GetUsers(tenant.TenantId, SecurityContext.CurrentAccount.ID);
-            if (!SecurityContext.IsAuthenticated || user.IsVisitor(tenant)) throw new SecurityException();
+            var tenant = tenantManager.GetCurrentTenant();
+            var user = userManager.GetUsers(tenant.TenantId, securityContext.CurrentAccount.ID);
+            if (!securityContext.IsAuthenticated || user.IsVisitor(tenant, userManager)) throw new SecurityException();
 
             var loginProfile = new LoginProfile
             {
@@ -61,9 +61,9 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress()
+        public static string GetAddress(SecurityContext securityContext)
         {
-            return GetAddress(SecurityContext.CurrentAccount.ID);
+            return GetAddress(securityContext.CurrentAccount.ID);
         }
 
         public static string GetAddress(Guid userId)

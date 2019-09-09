@@ -37,6 +37,15 @@ namespace ASC.Core.Notify.Jabber
 
         private static DateTime lastErrorTime = default;
 
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+
+        public JabberServiceClient(UserManager userManager, AuthContext authContext)
+        {
+            UserManager = userManager;
+            AuthContext = authContext;
+        }
+
         private static bool IsServiceProbablyNotAvailable()
         {
             return lastErrorTime != default && lastErrorTime + Timeout > DateTime.Now;
@@ -190,7 +199,7 @@ namespace ASC.Core.Notify.Jabber
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
                 using var service = GetService();
-                service.Ping(SecurityContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
+                service.Ping(AuthContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {
@@ -203,9 +212,9 @@ namespace ASC.Core.Notify.Jabber
             return CoreContext.TenantManager.GetCurrentTenant().TenantId;
         }
 
-        private static string GetCurrentUserName()
+        private string GetCurrentUserName()
         {
-            return CoreContext.UserManager.GetUsers(GetCurrentTenantId(), SecurityContext.CurrentAccount.ID).UserName;
+            return UserManager.GetUsers(GetCurrentTenantId(), AuthContext.CurrentAccount.ID).UserName;
         }
 
         private static void ProcessError(Exception error)

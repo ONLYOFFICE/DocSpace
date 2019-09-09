@@ -24,10 +24,12 @@
 */
 
 
+using ASC.Core;
+
 namespace ASC.FederatedLogin.LoginProviders
 {
     public interface IValidateKeysProvider
     {
-        bool ValidateKeys();
+        bool ValidateKeys(AuthContext authContext);
     }
 }

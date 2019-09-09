@@ -45,15 +45,12 @@ namespace ASC.Core
         private readonly ITenantService tenantService;
         private readonly IQuotaService quotaService;
         private readonly ITariffService tariffService;
-        private readonly List<string> thisCompAddresses = new List<string>();
+        private static List<string> thisCompAddresses = new List<string>();
 
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public TenantManager(ITenantService tenantService, IQuotaService quotaService, ITariffService tariffService)
+        static TenantManager()
         {
-            this.tenantService = tenantService;
-            this.quotaService = quotaService;
-            this.tariffService = tariffService;
-
             thisCompAddresses.Add("localhost");
             thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
             thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
@@ -65,6 +62,14 @@ namespace ASC.Core
             {
                 // ignore
             }
+        }
+
+        public TenantManager(ITenantService tenantService, IQuotaService quotaService, ITariffService tariffService, IHttpContextAccessor httpContextAccessor)
+        {
+            this.tenantService = tenantService;
+            this.quotaService = quotaService;
+            this.tariffService = tariffService;
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
@@ -171,7 +176,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, ASC.Common.HttpContext.Current);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext ?? ASC.Common.HttpContext.Current);
         }
 
         public void SetCurrentTenant(Tenant tenant)

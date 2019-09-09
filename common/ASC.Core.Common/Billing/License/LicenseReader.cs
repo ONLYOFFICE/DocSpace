@@ -38,7 +38,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace ASC.Core.Billing
 {
-    public static class LicenseReader
+    public class LicenseReader
     {
         private static readonly ILog Log = LogManager.GetLogger("ASC");
         private static readonly string LicensePath;
@@ -54,6 +54,10 @@ namespace ASC.Core.Billing
             LicensePathTemp = LicensePath + ".tmp";
         }
 
+        public LicenseReader(UserManager userManager)
+        {
+            UserManager = userManager;
+        }
 
         public static string CustomerId
         {
@@ -79,7 +83,7 @@ namespace ASC.Core.Billing
             CoreContext.PaymentManager.DeleteDefaultTariff();
         }
 
-        public static void RefreshLicense()
+        public void RefreshLicense()
         {
             try
             {
@@ -119,7 +123,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        public static DateTime SaveLicenseTemp(Stream licenseStream)
+        public DateTime SaveLicenseTemp(Stream licenseStream)
         {
             try
             {
@@ -159,7 +163,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        private static DateTime Validate(License license)
+        private DateTime Validate(License license)
         {
             if (string.IsNullOrEmpty(license.CustomerId)
                 || string.IsNullOrEmpty(license.Signature))
@@ -175,7 +179,7 @@ namespace ASC.Core.Billing
             if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
-            if (license.ActiveUsers < CoreContext.UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)
+            if (license.ActiveUsers < UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)
             {
                 throw new LicenseQuotaException("License quota", license.OriginalLicense);
             }
@@ -193,7 +197,7 @@ namespace ASC.Core.Billing
             return license.DueDate.Date;
         }
 
-        private static void LicenseToDB(License license)
+        private void LicenseToDB(License license)
         {
             Validate(license);
 
@@ -315,5 +319,7 @@ namespace ASC.Core.Billing
                 return _date;
             }
         }
+
+        public UserManager UserManager { get; }
     }
 }

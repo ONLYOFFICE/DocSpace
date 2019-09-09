@@ -32,11 +32,16 @@ using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Security.Authorizing
 {
-    class RoleProvider : IRoleProvider
+    public class RoleProvider : IRoleProvider
     {
+        //circ dep
+        public IServiceProvider ServiceProvider { get; }
+        public RoleProvider(IServiceProvider serviceProvider) => (ServiceProvider) = (serviceProvider);
+
         public List<IRole> GetRoles(Tenant tenant, ISubject account)
         {
             var roles = new List<IRole>();
@@ -48,7 +53,7 @@ namespace ASC.Core.Security.Authorizing
                 }
                 else if (account is IUserAccount)
                 {
-                    roles = CoreContext.UserManager
+                    roles = ServiceProvider.GetService<UserManager>()
                                        .GetUserGroups(tenant, account.ID, IncludeType.Distinct | IncludeType.InParent)
                                        .Select(g => (IRole)g)
                                        .ToList();
@@ -59,13 +64,13 @@ namespace ASC.Core.Security.Authorizing
 
         public bool IsSubjectInRole(Tenant tenant, ISubject account, IRole role)
         {
-            return CoreContext.UserManager.IsUserInGroup(tenant, account.ID, role.ID);
+            return ServiceProvider.GetService<UserManager>().IsUserInGroup(tenant, account.ID, role.ID);
         }
 
-        private static List<IRole> GetParentRoles(int tenantId, Guid roleID)
+        private List<IRole> GetParentRoles(int tenantId, Guid roleID)
         {
             var roles = new List<IRole>();
-            var gi = CoreContext.UserManager.GetGroupInfo(tenantId, roleID);
+            var gi = ServiceProvider.GetService<UserManager>().GetGroupInfo(tenantId, roleID);
             if (gi != null)
             {
                 var parent = gi.Parent;

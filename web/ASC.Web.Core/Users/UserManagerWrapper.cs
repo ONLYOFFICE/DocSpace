@@ -47,20 +47,26 @@ namespace ASC.Web.Core.Users
     public sealed class UserManagerWrapper
     {
         public StudioNotifyService StudioNotifyService { get; }
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public AuthContext AuthContext { get; }
 
-        public UserManagerWrapper(StudioNotifyService studioNotifyService)
+        public UserManagerWrapper(StudioNotifyService studioNotifyService, UserManager userManager, SecurityContext securityContext, AuthContext authContext)
         {
             StudioNotifyService = studioNotifyService;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthContext = authContext;
         }
 
-        private static bool TestUniqueUserName(string uniqueName, int tenantId)
+        private bool TestUniqueUserName(string uniqueName, int tenantId)
         {
             if (string.IsNullOrEmpty(uniqueName))
                 return false;
-            return Equals(CoreContext.UserManager.GetUserByUserName(tenantId, uniqueName), Constants.LostUser);
+            return Equals(UserManager.GetUserByUserName(tenantId, uniqueName), Constants.LostUser);
         }
 
-        private static string MakeUniqueName(int tenantId, UserInfo userInfo)
+        private string MakeUniqueName(int tenantId, UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
                 throw new ArgumentException(Resource.ErrorEmailEmpty, "userInfo");
@@ -75,9 +81,9 @@ namespace ASC.Web.Core.Users
             return uniqueName;
         }
 
-        public static bool CheckUniqueEmail(int tenantId, Guid userId, string email)
+        public bool CheckUniqueEmail(int tenantId, Guid userId, string email)
         {
-            var foundUser = CoreContext.UserManager.GetUserByEmail(tenantId, email);
+            var foundUser = UserManager.GetUserByEmail(tenantId, email);
             return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
         }
 
@@ -106,7 +112,7 @@ namespace ASC.Web.Core.Users
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
 
-            var newUserInfo = CoreContext.UserManager.SaveUserInfo(tenant, userInfo, isVisitor);
+            var newUserInfo = UserManager.SaveUserInfo(tenant, userInfo, isVisitor);
             SecurityContext.SetUserPassword(tenant.TenantId, newUserInfo.ID, password);
 
             if (CoreContext.Configuration.Personal)
@@ -151,7 +157,7 @@ namespace ASC.Web.Core.Users
 
             if (isVisitor)
             {
-                CoreContext.UserManager.AddUserIntoGroup(tenant, newUserInfo.ID, Constants.GroupVisitor.ID);
+                UserManager.AddUserIntoGroup(tenant, newUserInfo.ID, Constants.GroupVisitor.ID);
             }
 
             return newUserInfo;
@@ -177,13 +183,13 @@ namespace ASC.Web.Core.Users
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.IPSecurity.Verify(context, tenant))
+            if (settings.Enable && !IPSecurity.IPSecurity.Verify(context, tenant, AuthContext))
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
 
-            var userInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
-            if (!CoreContext.UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
+            var userInfo = UserManager.GetUserByEmail(tenantId, email);
+            if (!UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
             {
                 throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
             }
@@ -202,7 +208,7 @@ namespace ASC.Web.Core.Users
 
             StudioNotifyService.UserPasswordChange(tenantId, userInfo);
 
-            var displayUserName = userInfo.DisplayUserName(false);
+            var displayUserName = userInfo.DisplayUserName(false, UserManager);
             messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;

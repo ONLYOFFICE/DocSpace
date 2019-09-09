@@ -39,7 +39,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Core.Mail
 {
-    public static class MailServiceHelper
+    public class MailServiceHelper
     {
         public const string ConnectionStringFormat = "Server={0};Database={1};User ID={2};Password={3};Pooling=True;Character Set=utf8";
         public const string MailServiceDbId = "mailservice";
@@ -54,10 +54,19 @@ namespace ASC.Web.Core.Mail
         private static readonly ICache Cache = AscCache.Memory;
         private const string CacheKey = "mailserverinfo";
 
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+
         static MailServiceHelper()
         {
             CacheNotify = new KafkaCache<MailServiceHelperCache>();
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
+
+        public MailServiceHelper(UserManager userManager, AuthContext authContext)
+        {
+            UserManager = userManager;
+            AuthContext = authContext;
         }
 
         private static string GetDefaultDatabase()
@@ -85,12 +94,12 @@ namespace ASC.Web.Core.Mail
             return new DbManager(connectionSettings.Name);
         }
 
-        private static void DemandPermission()
+        private void DemandPermission()
         {
             if (!CoreContext.Configuration.Standalone)
                 throw new NotSupportedException("Method for server edition only.");
 
-            if (!CoreContext.UserManager.IsUserInGroup(CoreContext.TenantManager.GetCurrentTenant(), SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            if (!UserManager.IsUserInGroup(CoreContext.TenantManager.GetCurrentTenant(), AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
                 throw new SecurityException();
         }
 
@@ -101,7 +110,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static MailServerInfo GetMailServerInfo()
+        public MailServerInfo GetMailServerInfo()
         {
             DemandPermission();
 
@@ -138,7 +147,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static string[] GetDataFromExternalDatabase(string dbid, string connectionString, string ip)
+        public string[] GetDataFromExternalDatabase(string dbid, string connectionString, string ip)
         {
             DemandPermission();
 
@@ -176,7 +185,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
+        public void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
         {
             DemandPermission();
 

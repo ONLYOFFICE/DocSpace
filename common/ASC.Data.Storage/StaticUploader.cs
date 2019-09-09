@@ -38,6 +38,7 @@ using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
@@ -49,6 +50,8 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
+        public IServiceProvider ServiceProvider { get; }
+
         static StaticUploader()
         {
             Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
@@ -57,7 +60,12 @@ namespace ASC.Data.Storage
             TokenSource = new CancellationTokenSource();
         }
 
-        public static string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
+        public StaticUploader(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public static string UploadFile(IServiceProvider serviceProvider,string relativePath, string mappedPath, Action<string> onComplete = null)
         {
             if (TokenSource.Token.IsCancellationRequested) return null;
             if (!CanUpload()) return null;
@@ -75,7 +83,7 @@ namespace ASC.Data.Storage
                     return !string.IsNullOrEmpty(uploadOperation.Result) ? uploadOperation.Result : string.Empty;
                 }
 
-                uploadOperation = new UploadOperation(tenantId, relativePath, mappedPath);
+                uploadOperation = new UploadOperation(serviceProvider, tenantId, relativePath, mappedPath);
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
@@ -85,13 +93,13 @@ namespace ASC.Data.Storage
             return uploadOperation.Result;
         }
 
-        public static Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
+        public static Task<string> UploadFileAsync(IServiceProvider serviceProvider, string relativePath, string mappedPath, Action<string> onComplete = null)
         {
             var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
             var task = new Task<string>(() =>
             {
                 CoreContext.TenantManager.SetCurrentTenant(tenantId);
-                return UploadFile(relativePath, mappedPath, onComplete);
+                return UploadFile(serviceProvider, relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
             task.ConfigureAwait(false);
@@ -101,7 +109,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public static async void UploadDir(string relativePath, string mappedPath)
+        public async void UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
@@ -115,7 +123,7 @@ namespace ASC.Data.Storage
                 uploadOperation = Cache.Get<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(relativePath, mappedPath);
+                uploadOperation = new UploadOperationProgress(ServiceProvider, relativePath, mappedPath);
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
@@ -167,9 +175,11 @@ namespace ASC.Data.Storage
         private readonly string path;
         private readonly string mappedPath;
         public string Result { get; private set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public UploadOperation(int tenantId, string path, string mappedPath)
+        public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
+            ServiceProvider = serviceProvider;
             this.tenantId = tenantId;
             this.path = path.TrimStart('/');
             this.mappedPath = mappedPath;
@@ -180,6 +190,8 @@ namespace ASC.Data.Storage
         {
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var tenant = CoreContext.TenantManager.GetTenant(tenantId);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
                 SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
@@ -214,8 +226,11 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        public UploadOperationProgress(string relativePath, string mappedPath)
+        public IServiceProvider ServiceProvider { get; }
+
+        public UploadOperationProgress(IServiceProvider serviceProvider, string relativePath, string mappedPath)
         {
+            ServiceProvider = serviceProvider;
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
 
@@ -235,7 +250,7 @@ namespace ASC.Data.Storage
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                tasks.Add(StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()));
+                tasks.Add(StaticUploader.UploadFileAsync(ServiceProvider, Path.Combine(relativePath, filePath), file, (res) => StepDone()));
             }
 
             await Task.WhenAll(tasks);
@@ -246,7 +261,7 @@ namespace ASC.Data.Storage
             foreach (var file in directoryFiles)
             {
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
-                StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
+                StaticUploader.UploadFileAsync(ServiceProvider, Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
         }
     }

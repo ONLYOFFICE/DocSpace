@@ -30,13 +30,20 @@ using System.Text.RegularExpressions;
 using ASC.Common.Logging;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Notify.Senders
 {
     public class JabberSender : INotifySender
     {
-        private readonly JabberServiceClient service = new JabberServiceClient();
         private static readonly ILog log = LogManager.GetLogger("ASC");
+
+        public IServiceProvider ServiceProvider { get; }
+
+        public JabberSender(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
 
         public void Init(IDictionary<string, string> properties)
         {
@@ -52,6 +59,8 @@ namespace ASC.Core.Notify.Senders
             }
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var service = scope.ServiceProvider.GetService<JabberServiceClient>();
                 service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
             }
             catch (Exception e)

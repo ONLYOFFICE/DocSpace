@@ -67,7 +67,7 @@ namespace ASC.Notify.Engine
 
 
 
-        public event Action<NotifyEngine, NotifyRequest> BeforeTransferRequest;
+        public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext> BeforeTransferRequest;
 
         public event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
 
@@ -80,9 +80,9 @@ namespace ASC.Notify.Engine
         }
 
 
-        public virtual void QueueRequest(NotifyRequest request)
+        public virtual void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext)
         {
-            BeforeTransferRequest?.Invoke(this, request);
+            BeforeTransferRequest?.Invoke(this, request, userManager, authContext);
             lock (requests)
             {
                 if (!notifySender.IsAlive)

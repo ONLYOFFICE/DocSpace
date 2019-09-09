@@ -75,7 +75,7 @@ namespace ASC.Web.Studio.Core.TFA
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), size, size, true);
         }
 
-        public static bool ValidateAuthCode(this UserInfo user, int tenantId, string code, bool checkBackup = true)
+        public static bool ValidateAuthCode(this UserInfo user, int tenantId, string code, SecurityContext securityContext, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
                 || !TfaAppAuthSettings.Enable)
@@ -110,9 +110,9 @@ namespace ASC.Web.Studio.Core.TFA
 
             Cache.Insert("tfa/" + user.ID, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
-            if (!SecurityContext.IsAuthenticated)
+            if (!securityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(tenantId, user.ID);
+                var cookiesKey = securityContext.AuthenticateMe(tenantId, user.ID);
                 //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

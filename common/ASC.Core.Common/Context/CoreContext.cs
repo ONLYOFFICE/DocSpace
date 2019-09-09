@@ -46,10 +46,6 @@ namespace ASC.Core
 
         public static TenantManager TenantManager { get; private set; }
 
-        public static UserManager UserManager { get; private set; }
-
-        public static AuthManager Authentication { get; private set; }
-
         public static AuthorizationManager AuthorizationManager { get; private set; }
 
         public static PaymentManager PaymentManager { get; private set; }
@@ -84,10 +80,8 @@ namespace ASC.Core
             var tariffService = new TariffService(cs, quotaService, tenantService);
 
             Configuration = new CoreConfiguration(tenantService);
-            TenantManager = new TenantManager(tenantService, quotaService, tariffService);
+            TenantManager = new TenantManager(tenantService, quotaService, tariffService, null);
             PaymentManager = new PaymentManager(Configuration, quotaService, tariffService);
-            UserManager = new UserManager(userService);
-            Authentication = new AuthManager(userService);
             AuthorizationManager = new AuthorizationManager(azService);
             SubscriptionManager = new SubscriptionManager(subService);
         }

@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Core;
 using Twilio.Clients;
 using Twilio.Http;
 using Twilio.Rest.Api.V2010.Account;
@@ -38,10 +39,10 @@ namespace ASC.VoipService.Twilio
     {
         private readonly TwilioRestClient twilio;
 
-        public TwilioPhone(TwilioRestClient twilio)
+        public TwilioPhone(TwilioRestClient twilio, AuthContext authContext) : base(authContext)
         {
             this.twilio = twilio;
-            Settings = new TwilioVoipSettings();
+            Settings = new TwilioVoipSettings(authContext);
         }
 
         #region Calls

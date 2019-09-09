@@ -39,9 +39,20 @@ using ASC.Web.Studio.UserControls.Statistics;
 
 namespace ASC.Web.Studio.Utility
 {
-    public static class TenantExtra
+    public class TenantExtra
     {
-        public static bool EnableTarrifSettings
+        public UserManager UserManager { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public AuthContext AuthContext { get; }
+
+        public TenantExtra(UserManager userManager, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext)
+        {
+            UserManager = userManager;
+            TenantStatisticsProvider = tenantStatisticsProvider;
+            AuthContext = authContext;
+        }
+
+        public bool EnableTarrifSettings
         {
             get
             {
@@ -52,27 +63,27 @@ namespace ASC.Web.Studio.Utility
             }
         }
 
-        public static bool Saas
+        public bool Saas
         {
             get { return !CoreContext.Configuration.Standalone; }
         }
 
-        public static bool Enterprise
+        public bool Enterprise
         {
             get { return CoreContext.Configuration.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
-        public static bool Opensource
+        public bool Opensource
         {
             get { return CoreContext.Configuration.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
-        public static bool EnterprisePaid
+        public bool EnterprisePaid
         {
             get { return Enterprise && GetTenantQuota().Id != Tenant.DEFAULT_TENANT && GetCurrentTariff().State < TariffState.NotPaid; }
         }
 
-        public static bool EnableControlPanel
+        public bool EnableControlPanel
         {
             get
             {
@@ -80,45 +91,45 @@ namespace ASC.Web.Studio.Utility
                 return Enterprise &&
                     GetTenantQuota().ControlPanel &&
                     GetCurrentTariff().State < TariffState.NotPaid &&
-                    CoreContext.UserManager.GetUsers(tenant.TenantId, SecurityContext.CurrentAccount.ID).IsAdmin(tenant);
+                    UserManager.GetUsers(tenant.TenantId, AuthContext.CurrentAccount.ID).IsAdmin(tenant, UserManager);
             }
         }
 
-        public static bool EnableDocbuilder
+        public bool EnableDocbuilder
         {
             get { return !Opensource; }
         }
-        public static string GetAppsPageLink()
+        public string GetAppsPageLink()
         {
             return VirtualPathUtility.ToAbsolute("~/appinstall.aspx");
         }
 
-        public static string GetTariffPageLink()
+        public string GetTariffPageLink()
         {
             return VirtualPathUtility.ToAbsolute("~/tariffs.aspx");
         }
 
-        public static Tariff GetCurrentTariff()
+        public Tariff GetCurrentTariff()
         {
             return CoreContext.PaymentManager.GetTariff(TenantProvider.CurrentTenantID);
         }
 
-        public static TenantQuota GetTenantQuota()
+        public TenantQuota GetTenantQuota()
         {
             return GetTenantQuota(TenantProvider.CurrentTenantID);
         }
 
-        public static TenantQuota GetTenantQuota(int tenant)
+        public TenantQuota GetTenantQuota(int tenant)
         {
             return CoreContext.TenantManager.GetTenantQuota(tenant);
         }
 
-        public static IEnumerable<TenantQuota> GetTenantQuotas()
+        public IEnumerable<TenantQuota> GetTenantQuotas()
         {
             return CoreContext.TenantManager.GetTenantQuotas();
         }
 
-        private static TenantQuota GetPrevQuota(TenantQuota curQuota)
+        private TenantQuota GetPrevQuota(TenantQuota curQuota)
         {
             TenantQuota prev = null;
             foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers).Where(r => r.Year == curQuota.Year && r.Year3 == curQuota.Year3))
@@ -131,7 +142,7 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        public static int GetPrevUsersCount(TenantQuota quota)
+        public int GetPrevUsersCount(TenantQuota quota)
         {
             var prevQuota = GetPrevQuota(quota);
             if (prevQuota == null || prevQuota.Trial)
@@ -139,13 +150,13 @@ namespace ASC.Web.Studio.Utility
             return prevQuota.ActiveUsers + 1;
         }
 
-        public static int GetRightQuotaId(Tenant tenant)
+        public int GetRightQuotaId(Tenant tenant)
         {
             var q = GetRightQuota(tenant);
             return q != null ? q.Id : 0;
         }
 
-        public static TenantQuota GetRightQuota(Tenant tenant)
+        public TenantQuota GetRightQuota(Tenant tenant)
         {
             var usedSpace = TenantStatisticsProvider.GetUsedSize();
             var needUsersCount = TenantStatisticsProvider.GetUsersCount(tenant);
@@ -160,19 +171,19 @@ namespace ASC.Web.Studio.Utility
                                          && !q.Trial);
         }
 
-        public static void TrialRequest()
+        public void TrialRequest()
         {
             CoreContext.PaymentManager.SendTrialRequest(
                 TenantProvider.CurrentTenantID,
-                CoreContext.UserManager.GetUsers(TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID));
+                UserManager.GetUsers(TenantProvider.CurrentTenantID, AuthContext.CurrentAccount.ID));
         }
 
-        public static int GetRemainingCountUsers(Tenant tenant)
+        public int GetRemainingCountUsers(Tenant tenant)
         {
             return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount(tenant);
         }
 
-        public static bool UpdatedWithoutLicense
+        public bool UpdatedWithoutLicense
         {
             get
             {
@@ -180,6 +191,40 @@ namespace ASC.Web.Studio.Utility
                 return CoreContext.Configuration.Standalone
                        && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
                        && licenseDay < LicenseReader.VersionReleaseDate;
+            }
+        }
+
+        public bool IsNotPaid()
+        {
+            Tariff tariff;
+            return EnableTarrifSettings
+                   && ((tariff = GetCurrentTariff()).State >= TariffState.NotPaid
+                       || Enterprise && !EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
+        }
+
+        /// <summary>
+        /// Max possible file size for not chunked upload. Less or equal than 100 mb.
+        /// </summary>
+        public long MaxUploadSize
+        {
+            get { return Math.Min(SetupInfo.AvailableFileSize, MaxChunkedUploadSize); }
+        }
+
+        /// <summary>
+        /// Max possible file size for chunked upload.
+        /// </summary>
+        public long MaxChunkedUploadSize
+        {
+            get
+            {
+                var diskQuota = GetTenantQuota();
+                if (diskQuota != null)
+                {
+                    var usedSize = TenantStatisticsProvider.GetUsedSize();
+                    var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
+                    return Math.Min(freeSize, diskQuota.MaxFileSize);
+                }
+                return SetupInfo.ChunkUploadSize;
             }
         }
     }

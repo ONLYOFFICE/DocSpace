@@ -27,14 +27,22 @@
 using System;
 using ASC.Core.Tenants;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core
 {
-    public static class FileSizeComment
+    public class FileSizeComment
     {
-        public static string FileSizeExceptionString
+        public TenantExtra TenantExtra { get; }
+
+        public FileSizeComment(TenantExtra tenantExtra)
         {
-            get { return GetFileSizeExceptionString(SetupInfo.MaxUploadSize); }
+            TenantExtra = tenantExtra;
+        }
+
+        public string FileSizeExceptionString
+        {
+            get { return GetFileSizeExceptionString(TenantExtra.MaxUploadSize); }
         }
 
         public static string FileImageSizeExceptionString
@@ -55,7 +63,7 @@ namespace ASC.Web.Studio.Core
         /// <summary>
         /// The maximum file size is exceeded (25 MB).
         /// </summary>
-        public static Exception FileSizeException
+        public Exception FileSizeException
         {
             get { return new TenantQuotaException(FileSizeExceptionString); }
         }
@@ -82,7 +90,7 @@ namespace ASC.Web.Studio.Core
         /// Get note about maximum file size
         /// </summary>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote()
+        public string GetFileSizeNote()
         {
             return GetFileSizeNote(true);
         }
@@ -92,7 +100,7 @@ namespace ASC.Web.Studio.Core
         /// </summary>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote(bool withHtmlStrong)
+        public string GetFileSizeNote(bool withHtmlStrong)
         {
             return GetFileSizeNote(Resource.FileSizeNote, withHtmlStrong);
         }
@@ -103,11 +111,11 @@ namespace ASC.Web.Studio.Core
         /// <param name="note">Resource fromat of note</param>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote(string note, bool withHtmlStrong)
+        public string GetFileSizeNote(string note, bool withHtmlStrong)
         {
             return
                 string.Format(note,
-                              FilesSizeToString(SetupInfo.MaxUploadSize),
+                              FilesSizeToString(TenantExtra.MaxUploadSize),
                               withHtmlStrong ? "<strong>" : string.Empty,
                               withHtmlStrong ? "</strong>" : string.Empty);
         }

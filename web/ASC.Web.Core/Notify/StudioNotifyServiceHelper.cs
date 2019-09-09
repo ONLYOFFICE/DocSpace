@@ -11,11 +11,20 @@ namespace ASC.Web.Core.Notify
 {
     public class StudioNotifyServiceHelper
     {
-        private readonly ICacheNotify<NotifyItem> cache;
+        private static readonly ICacheNotify<NotifyItem> cache;
 
-        public StudioNotifyServiceHelper()
+        public StudioNotifyHelper StudioNotifyHelper { get; }
+        public AuthContext AuthContext { get; }
+
+        static StudioNotifyServiceHelper()
         {
             cache = new KafkaCache<NotifyItem>();
+        }
+
+        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext)
+        {
+            StudioNotifyHelper = studioNotifyHelper;
+            AuthContext = authContext;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -61,7 +70,7 @@ namespace ASC.Web.Core.Notify
             var item = new NotifyItem
             {
                 TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                UserId = SecurityContext.CurrentAccount.ID.ToString(),
+                UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
                 CheckSubsciption = checkSubsciption
             };

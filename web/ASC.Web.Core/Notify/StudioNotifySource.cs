@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Core;
 using ASC.Core.Notify;
 using ASC.Core.Tenants;
 using ASC.Notify.Model;
@@ -33,10 +34,10 @@ using ASC.Web.Core.PublicResources;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    class StudioNotifySource : NotifySource
+    public class StudioNotifySource : NotifySource
     {
-        public StudioNotifySource()
-            : base("asc.web.studio")
+        public StudioNotifySource(UserManager userManager, TenantManager tenantManager, IRecipientProvider recipientsProvider)
+            : base("asc.web.studio", userManager, tenantManager, recipientsProvider)
         {
         }
 

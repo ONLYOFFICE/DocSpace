@@ -38,10 +38,10 @@ namespace ASC.Api.Core
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
 
-        public ApiContext(HttpContext httpContext)
+        public ApiContext(IHttpContextAccessor httpContextAccessor)
         {
-            if (httpContext == null) return;
-            HttpContext = httpContext;
+            if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
+            HttpContext = httpContextAccessor.HttpContext;
 
             Count = 0;
             var query = HttpContext.Request.Query;
@@ -206,13 +206,6 @@ namespace ASC.Api.Core
         {
             return string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
                                  SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
-        }
-
-
-
-        public static implicit operator ApiContext(HttpContext httpContext)
-        {
-            return new ApiContext(httpContext);
         }
     }
 

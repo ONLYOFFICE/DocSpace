@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Core.WebZones;
 
@@ -192,17 +193,17 @@ namespace ASC.Web.Core
             }
         }
 
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone)
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
-            return GetItems(tenant, webZone, ItemAvailableState.Normal);
+            return GetItems(tenant, webZone, ItemAvailableState.Normal, webItemSecurity, authContext);
         }
 
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState)
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
             var copy = items.Values.ToList();
             var list = copy.Where(item =>
                 {
-                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant))
+                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant, webItemSecurity, authContext))
                     {
                         return false;
                     }
@@ -214,14 +215,14 @@ namespace ASC.Web.Core
             return list;
         }
 
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID)
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
-            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal);
+            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal, webItemSecurity, authContext);
         }
 
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState)
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
-            return GetItems(tenant, WebZoneType.All, avaliableState).OfType<IModule>()
+            return GetItems(tenant, WebZoneType.All, avaliableState, webItemSecurity, authContext).OfType<IModule>()
                                                             .Where(p => p.ProjectId == parentItemID)
                                                             .Cast<IWebItem>()
                                                             .ToList();
