@@ -70,12 +70,12 @@ storiesOf('Components|RowContainer', module)
                       {user.status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
                     </>
                     {user.isHead
-                      ? <Link type='page' title='Head of department' fontSize={12} color={sideInfoColor} >Head of department</Link>
-                      : <></>
+                      ? <Link containerWidth='120px' type='page' title='Head of department' fontSize={12} color={sideInfoColor} >Head of department</Link>
+                      : <div containerWidth='120px'></div>
                     }
-                    <Link type='action' title={user.department} fontSize={12} color={sideInfoColor} >{user.department}</Link>
+                    <Link containerWidth='160px' type='action' title={user.department} fontSize={12} color={sideInfoColor} >{user.department}</Link>
                     <Link type='page' title={user.mobilePhone} fontSize={12} color={sideInfoColor} >{user.mobilePhone}</Link>
-                    <Link type='page' title={user.email} fontSize={12} color={sideInfoColor} >{user.email}</Link>
+                    <Link containerWidth='180px' type='page' title={user.email} fontSize={12} color={sideInfoColor} >{user.email}</Link>
                   </RowContent>
                 </Row>
               );
