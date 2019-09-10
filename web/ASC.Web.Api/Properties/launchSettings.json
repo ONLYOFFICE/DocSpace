@@ -12,13 +12,21 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": false,
-      "launchUrl": "api/modules"
+      "launchUrl": "api/modules",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../../../Data"
+      }
     },
     "ASC.Web.Api": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/modules",
-      "applicationUrl": "http://localhost:5000"
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "$STORAGE_ROOT": "../../../../../Data"
+      }
     }
   }
 }
