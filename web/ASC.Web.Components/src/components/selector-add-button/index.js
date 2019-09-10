@@ -8,11 +8,11 @@ const StyledButton = styled.div`
     border: 1px solid #ECEEF1;
     box-sizing: border-box;
     border-radius: 3px;
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
     height: 32px;
     width: 32px;
+    padding: 8px;
+    display: inline-grid;
+    line-height: 32px;
     cursor: ${props => !props.isDisabled ? "pointer" : "default"};
 
     &:hover{
@@ -27,10 +27,10 @@ const StyledButton = styled.div`
 `;
 
 const SelectorAddButton = (props) => {
-  const {isDisabled, title, onClick } = props;
+  const {isDisabled, title, onClick, className } = props;
 
   return (
-    <StyledButton isDisabled={isDisabled} title={title} onClick={onClick} >
+    <StyledButton isDisabled={isDisabled} title={title} onClick={onClick} className={className} >
       <IconButton
         color="#979797"
         size={14}
@@ -45,7 +45,8 @@ const SelectorAddButton = (props) => {
 SelectorAddButton.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
+  className: PropTypes.string
 };
 
 SelectorAddButton.defaultProps = {

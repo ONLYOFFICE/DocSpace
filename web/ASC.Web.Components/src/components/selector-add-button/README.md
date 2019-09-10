@@ -22,6 +22,4 @@ import { SelectorAddButton } from 'asc-web-components';
 | `isDisabled` | `bool`     |    -     | -      | false   | Tells when the button should present a disabled state |
 | `title`      | `string`   |    -     | -      | -       | Title text                                            |
 | `onClick`    | `function` |    -     | -      | -       | What the button will trigger when clicked             |
-
-
-
+| `className`  | `string`   |    -     | -      | -       | Attribute className                                   |
