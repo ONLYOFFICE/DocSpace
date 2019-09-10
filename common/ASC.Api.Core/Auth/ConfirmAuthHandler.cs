@@ -19,6 +19,12 @@ namespace ASC.Api.Core.Auth
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
+        public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, SecurityContext securityContext) : base(options, logger, encoder, clock)
+        {
+            SecurityContext = securityContext;
+        }
+
+        public SecurityContext SecurityContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
