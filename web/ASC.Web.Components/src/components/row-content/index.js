@@ -114,7 +114,7 @@ const RowContent = props => {
       {children.map((element, index) => {
         if (index > 1) {
           return (
-            <SideContainerWrapper key={'side-' + index} containerWidth={element.props.containerWidth} >
+            <SideContainerWrapper key={'side-' + index} containerWidth={element.props && element.props.containerWidth} >
               {element}
             </SideContainerWrapper>
           );
@@ -128,8 +128,7 @@ const RowContent = props => {
 };
 
 RowContent.propTypes = {
-  children: PropTypes.node.isRequired,
-  containerWidth: PropTypes.string
+  children: PropTypes.node.isRequired
 };
 
 export default RowContent;
