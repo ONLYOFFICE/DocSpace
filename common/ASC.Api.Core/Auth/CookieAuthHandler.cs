@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Web.Core
+namespace ASC.Api.Core.Auth
 {
     public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
