@@ -47,12 +47,12 @@ const UserContent = ({ user, history, settings }) => {
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
       {headDepartment
-        ? <Link type='page' title={t('CustomHeadOfDepartment', { headOfDepartment })} fontSize={12} color={sideInfoColor} onClick={onHeadDepartmentClick} >{t('CustomHeadOfDepartment', { headOfDepartment })}</Link>
-        : <></>
+        ? <Link containerWidth='60px' type='page' title={t('CustomHeadOfDepartment', { headOfDepartment })} fontSize={12} color={sideInfoColor} onClick={onHeadDepartmentClick} >{t('CustomHeadOfDepartment', { headOfDepartment })}</Link>
+        : <div containerWidth='60px'></div>
       }
-      <Link type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
+      <Link containerWidth='160px' type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
       <Link type='page' title={mobilePhone} fontSize={12} color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
-      <Link type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
+      <Link containerWidth='180px' type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
     </RowContent>
   );
 };
