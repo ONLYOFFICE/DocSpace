@@ -53,6 +53,7 @@ const UserEmailWrapper = styled.div`
     ${commonStyle}
 `;
 
+// eslint-disable-next-line react/display-name
 const DropDownProfileItem = memo(props => {
   //console.log("DropDownItem render");
   const { displayName, email, avatarRole, avatarSource } = props;
