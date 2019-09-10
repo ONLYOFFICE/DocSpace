@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "RUN ASC.People"
+exec dotnet run --project ${SNAP_DATA}\products\ASC.People\Server\ASC.People.csproj --no-build

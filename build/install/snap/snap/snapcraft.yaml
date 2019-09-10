@@ -5,7 +5,42 @@ description: ""
 grade: stable
 confinement: devmode
 
-apps:
+apps:  
+  app-notify:
+    command: start_notify
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-people-client:
+    command: start_people_client
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-people-server:
+    command: start_people_server
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-web-api:
+    command: start_web_api
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-web-client:
+    command: start_web_client
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-web-studio:
+    command: start_web_studio
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+  app-web-studio-notify:
+    command: start_web_studio_notify
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind] 
   nginx:
     command: start_nginx
     daemon: simple
@@ -27,6 +62,32 @@ hooks:
   configure:
     plugs: [network, network-bind]
 parts:
+  deps:
+     plugin: nil
+     override-pull: |   
+        # elasticsearch
+        wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+        add-apt-repository "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+        # yarn
+        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+        echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+        apt-get update
+  
+  communityserver:
+    plugin: dotnet
+    source: https://github.com/ONLYOFFICE/CommunityServer-AspNetCore.git
+    source-type: git
+    stage-packages:
+      - jq
+      - dotnet-sdk-2.2
+      - apt-transport-https
+      - default-jre
+      - elasticsearch
+      - python3-pip
+    build-packages:
+      - dotnet-sdk-2.2
+      - yarn   
+
   python:
     plugin: python
     python-version: python3
@@ -144,7 +205,6 @@ parts:
     plugin: dump
     prime:
       - -*
-
 
   hooks:
     plugin: dump

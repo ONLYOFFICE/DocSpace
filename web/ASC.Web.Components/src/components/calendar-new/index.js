@@ -29,6 +29,13 @@ const ComboBoxStyle = styled.div`
   padding-bottom: 24px !important;
 `;
 
+const ComboBoxMonthStyle = styled.div`
+  ${props =>
+    props.size === "base"
+      ? `width: 172px; max-width: 172px;`
+      : `width: 205px; max-width: 205px;`}
+`;
+
 const ComboBoxDateStyle = styled.div`
   min-width: 80px;
   height: 32px;
@@ -575,7 +582,7 @@ class Calendar extends Component {
   }
 
   render() {
-    console.log("Calendar render");
+    //console.log("Calendar render");
 
     const { isDisabled, size, themeColor } = this.props;
     const {
@@ -594,14 +601,16 @@ class Calendar extends Component {
       <CalendarContainer size={size}>
         <CalendarStyle size={size} color={themeColor} isDisabled={isDisabled}>
           <ComboBoxStyle>
-            <ComboBox
-              scaled={true}
-              dropDownMaxHeight={dropDownSizeMonth}
-              onSelect={this.onSelectMonth}
-              selectedOption={selectedOptionMonth}
-              options={optionsMonth}
-              isDisabled={isDisabled}
-            />
+            <ComboBoxMonthStyle size={size}>
+              <ComboBox
+                scaled={true}
+                dropDownMaxHeight={dropDownSizeMonth}
+                onSelect={this.onSelectMonth}
+                selectedOption={selectedOptionMonth}
+                options={optionsMonth}
+                isDisabled={isDisabled}
+              />
+            </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
               <ComboBox
                 scaled={true}
@@ -613,6 +622,7 @@ class Calendar extends Component {
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
+
           <Month size={size}>
             <Weekdays optionsWeekdays={optionsWeekdays} size={size} />
             <Days
