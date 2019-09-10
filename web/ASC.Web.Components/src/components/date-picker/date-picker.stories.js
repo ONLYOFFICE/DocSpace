@@ -34,7 +34,7 @@ storiesOf('Components|DatePicker', module)
         hasWarning={boolean("hasWarning", false)}
         isOpen={boolean('isOpen', false)}
         themeColor={color('themeColor', '#ED7309')}
-        locale={select('location', locales, moment.locale())}
+        locale={select('locale', locales, moment.locale())}
       />
     </Section>
   ));

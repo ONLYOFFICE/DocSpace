@@ -8,7 +8,6 @@ import NewCalendar from '.';
 import moment from 'moment';
 import 'moment/min/locales'
 
-
 function myDateKnob(name, defaultValue) {
   const stringTimestamp = date(name, defaultValue)
   return new Date(stringTimestamp)
@@ -31,7 +30,7 @@ storiesOf('Components|Calendar', module)
         openToDate={myDateKnob('openToDate', new Date())}
         minDate={myDateKnob('minDate', new Date("1970/01/01"))}
         maxDate={myDateKnob('maxDate', new Date(new Date().getFullYear() + 1 + "/01/01"))}
-        locale={select('location', locales, 'en')}
+        locale={select('locale', locales, 'en')}
         size={select('size', arraySize, 'base')}
       />
   ));
