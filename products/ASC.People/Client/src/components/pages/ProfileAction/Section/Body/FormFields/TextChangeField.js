@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { FieldContainer, TextInput, Button } from 'asc-web-components'
 
 const InputContainer = styled.div`
-  width: 320px;
+  width: 100%;
+  max-width: 320px;
   display: flex;
   align-items: center;
 `;
