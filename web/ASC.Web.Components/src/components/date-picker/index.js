@@ -1,184 +1,213 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types'
-import styled, { css } from 'styled-components';
-import InputBlock from '../input-block';
-import DropDown from '../drop-down';
-import { Col } from 'reactstrap';
-import NewCalendar from '../calendar-new';
-import moment from 'moment/min/moment-with-locales';
-import { handleAnyClick } from '../../utils/event';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import InputBlock from "../input-block";
+import DropDown from "../drop-down";
+import { Col } from "reactstrap";
+import NewCalendar from "../calendar-new";
+import moment from "moment/min/moment-with-locales";
+import { handleAnyClick } from "../../utils/event";
+import isEmpty from "lodash/isEmpty";
 
 const DateInputStyle = styled.div``;
 
 class DatePicker extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        moment.locale(props.locale);
+    moment.locale(props.locale);
+    this.ref = React.createRef();
+    this.newRef = React.createRef();
 
-        this.ref = React.createRef();
-        if (props.isOpen) {
-            handleAnyClick(true, this.handleClick);
-        }
-        this.format = moment.localeData().longDateFormat('L');
+    if (props.isOpen) {
+      handleAnyClick(true, this.handleClick);
     }
 
-    state = {
-        isOpen: this.props.isOpen,
-        selectedDate: new Date(moment(this.props.selectedDate, this.format)),
-        value: moment(this.props.selectedDate).format('L'),
-        email: this.props.email
+    const { isOpen, selectedDate } = this.props;
+
+    this.state = {
+      isOpen,
+      selectedDate: moment(selectedDate).toDate(),
+      value: moment(selectedDate).format("L"),
+      mask: this.getMask
     };
+  }
 
-    handleClick = (e) => {
-        this.state.isOpen && !this.ref.current.contains(e.target) && this.onIconClick(false);
+  handleClick = e => {
+    this.state.isOpen &&
+      !this.ref.current.contains(e.target) &&
+      this.onIconClick(false);
+  };
+
+  onIconClick = isOpen => {
+    this.setState({ isOpen });
+  };
+
+  handleChange = e => {
+    if (this.state.value != e.target.value) {
+      let newState = { value: e.target.value };
+      const format = moment.localeData().longDateFormat("L");
+      const momentDate = moment(e.target.value, format);
+      const date = momentDate.toDate();
+
+      if (!isNaN(date) && this.compareDates(date)) {
+        this.props.onChange && this.props.onChange(date);
+        newState = Object.assign({}, newState, {
+          selectedDate: date
+        });
+      }
+      this.setState(newState);
+    }
+  };
+
+  onChange = value => {
+    const formatValue = moment(value).format("L");
+    this.props.onChange && this.props.onChange(value);
+    this.setState({ selectedDate: value, value: formatValue });
+  };
+
+  compareDates = date => {
+    const { minDate, maxDate } = this.props;
+    const selectedDate = date;
+
+    if (selectedDate < minDate || selectedDate > maxDate) {
+      return false;
+    }
+    return true;
+  };
+
+  getMask = () => {
+    let symbol = ".";
+    let localeMask = moment.localeData().longDateFormat("L");
+
+    if (localeMask.indexOf("/") + 1) {
+      symbol = "/";
+    } else if (localeMask.indexOf(".") + 1) {
+      symbol = ".";
+    } else if (localeMask.indexOf("-") + 1) {
+      symbol = "-";
     }
 
-    onIconClick = (isOpen) => {
-        this.setState({ isOpen: isOpen });
-    };
+    let mask = [/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/];
 
-    handleChange = (e) => {
-        if (this.state.value != e.target.value) {
-            const format = moment.localeData().longDateFormat('L');
-            let date = new Date(moment(e.target.value, format));
+    if (localeMask[0] === "Y") {
+      mask = mask.reverse();
+    }
+    if (this.props.locale === "ko" || this.props.locale === "lv") {
+      mask.push(symbol);
+    }
+    return mask;
+  };
 
-            console.log(moment(e.target.value).format());
+  componentWillUnmount() {
+    handleAnyClick(false, this.handleClick);
+  }
 
-            this.setState({ value: e.target.value });
+  componentDidUpdate(prevProps, prevState) {
+    const { locale, isOpen, selectedDate } = this.props;
+    let newState = {};
 
-            if (!isNaN(moment(e.target.value).format())) {
-                if (!isNaN(date) && this.validationDate(date)) {
-                    this.props.onChange && this.props.onChange(date);
-                    this.setState({ selectedDate: date })
-                }
-            }
-        }
+    if (locale !== prevProps.locale) {
+      moment.locale(locale);
+      newState = {
+        mask: this.getMask(),
+        value: moment(selectedDate).format("L")
+      };
     }
 
-    onChange = (value) => {
-        this.props.onChange && this.props.onChange(value);
-        this.setState({ selectedDate: value, value: moment(value).format('L') })
+    if (selectedDate !== prevProps.selectedDate) {
+      newState = Object.assign({}, newState, {
+        selectedDate
+      });
     }
 
-    validationDate = (date) => {
-        const minDate = this.props.minDate;
-        const maxDate = this.props.maxDate;
-        const selectedDate = date;
-        if (selectedDate < minDate || selectedDate > maxDate) {
-            this.state.selectedDate = new Date();
-            return false;
-        }
-        return true;
+    if (this.state.isOpen !== prevState.isOpen) {
+      handleAnyClick(this.state.isOpen, this.handleClick);
     }
 
-    componentWillUnmount() {
-        handleAnyClick(false, this.handleClick);
+    if (isOpen !== prevProps.isOpen) {
+      newState = Object.assign({}, newState, {
+        isOpen
+      });
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        moment.locale(this.props.locale);
-
-        if (this.state.isOpen !== prevState.isOpen) {
-            handleAnyClick(this.state.isOpen, this.handleClick);
-        }
-
-        if (this.props.selectedDate !== prevProps.selectedDate ||
-            this.props.locale !== prevProps.locale ||
-            this.props.isOpen !== prevProps.isOpen) {
-            this.setState({
-                isOpen: this.props.isOpen,
-                selectedDate: this.props.selectedDate,
-                value: moment(this.props.selectedDate).format('L')
-            });
-        }
+    if (!isEmpty(newState)) {
+      this.setState(newState);
     }
+  }
 
-    /*onClick = (e) => {
-        if (this.ref.current.contains(e.target)) { console.log("contains"); }
-        else { console.log("ne contains"); }
-    }*/
-    //onFocus = () => { console.log("Focus"); }
-    //onBlur = () => { console.log("Blur"); }
+  render() {
+    const {
+      isDisabled,
+      isReadOnly,
+      hasError,
+      hasWarning,
+      minDate,
+      maxDate,
+      locale,
+      themeColor
+    } = this.props;
 
+    const { value, isOpen, mask, selectedDate } = this.state;
 
-    render() {
-        //console.log("Date-picker render");
-        const isDisabled = this.props.isDisabled;
-        const isReadOnly = this.props.isReadOnly;
-        const hasError = this.props.hasError;
-        const hasWarning = this.props.hasWarning;
-
-        let symbol = '.';
-        let str = moment.localeData().longDateFormat('L');
-        console.log(str);
-
-        if (str.indexOf('/') + 1) { symbol = "/"; }
-        else if (str.indexOf('.') + 1) { symbol = "."; }
-        else if (str.indexOf('-') + 1) { symbol = "-"; }
-
-        let mask = [/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/];
-
-        if (str[0] === "Y") { mask = mask.reverse(); }
-        if (this.props.locale === "ko" || this.props.locale === "lv") {
-            mask.push(symbol);
-        }
-
-        return (
-            <DateInputStyle /*onFocus={this.onFocus} onBlur={this.onBlur}*/ ref={this.ref} >
-                <InputBlock
-                    isDisabled={isDisabled}
-                    isReadOnly={isReadOnly}
-                    hasError={hasError}
-                    hasWarning={hasWarning}
-                    iconName={"CalendarIcon"}
-                    onIconClick={this.onIconClick.bind(this, !this.state.isOpen)}
-                    value={this.state.value}
-                    onChange={this.handleChange}
-                    placeholder={moment.localeData().longDateFormat('L')}
-                    mask={mask}
-                    keepCharPositions={true}
-                //guide={true}
-                //showMask={true}
+    return (
+      <DateInputStyle ref={this.ref}>
+        <InputBlock
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          hasError={hasError}
+          hasWarning={hasWarning}
+          iconName={"CalendarIcon"}
+          onIconClick={this.onIconClick.bind(this, !isOpen)}
+          value={value}
+          onChange={this.handleChange}
+          placeholder={moment.localeData().longDateFormat("L")}
+          mask={mask}
+          keepCharPositions={true}
+          //guide={true}
+          //showMask={true}
+        />
+        {isOpen ? (
+          <Col>
+            <DropDown opened={isOpen}>
+              {
+                <NewCalendar
+                  locale={locale}
+                  themeColor={themeColor}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  isDisabled={isDisabled}
+                  openToDate={selectedDate}
+                  selectedDate={selectedDate}
+                  onChange={this.onChange}
                 />
-
-                {this.state.isOpen ?
-                    <Col>
-                        <DropDown opened={this.state.isOpen}>
-                            {<NewCalendar
-                                {...this.props}
-                                openToDate={this.state.selectedDate}
-                                selectedDate={this.state.selectedDate}
-                                onChange={this.onChange}
-                            />}
-                        </DropDown>
-                    </Col>
-                    :
-                    null
-                }
-            </DateInputStyle>
-        );
-    }
+              }
+            </DropDown>
+          </Col>
+        ) : null}
+      </DateInputStyle>
+    );
+  }
 }
 
 DatePicker.propTypes = {
-    onChange: PropTypes.func,
-    themeColor: PropTypes.string,
-    selectedDate: PropTypes.instanceOf(Date),
-    openToDate: PropTypes.instanceOf(Date),
-    minDate: PropTypes.instanceOf(Date),
-    maxDate: PropTypes.instanceOf(Date),
-    locale: PropTypes.string,
-    isDisabled: PropTypes.bool,
-    isReadOnly: PropTypes.bool,
-    hasError: PropTypes.bool,
-    hasWarning: PropTypes.bool,
-    isOpen: PropTypes.bool
-}
+  onChange: PropTypes.func,
+  themeColor: PropTypes.string,
+  selectedDate: PropTypes.instanceOf(Date),
+  openToDate: PropTypes.instanceOf(Date),
+  minDate: PropTypes.instanceOf(Date),
+  maxDate: PropTypes.instanceOf(Date),
+  locale: PropTypes.string,
+  isDisabled: PropTypes.bool,
+  isReadOnly: PropTypes.bool,
+  hasError: PropTypes.bool,
+  hasWarning: PropTypes.bool,
+  isOpen: PropTypes.bool
+};
 
 DatePicker.defaultProps = {
-    minDate: new Date("1970/01/01"),
-    maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
-}
+  minDate: new Date("1970/01/01"),
+  maxDate: new Date(new Date().getFullYear() + 1, 1, 1)
+};
 
 export default DatePicker;
