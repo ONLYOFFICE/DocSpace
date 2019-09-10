@@ -5,7 +5,7 @@ import RowContainer from '.';
 import Row from '../row';
 import RowContent from '../row-content';
 import Avatar from '../avatar';
-import Link from '../combobox';
+import Link from '../link';
 import { Icons } from '../icons';
 
 const getRndString = (n) => Math.random().toString(36).substring(2, (n + 2));
