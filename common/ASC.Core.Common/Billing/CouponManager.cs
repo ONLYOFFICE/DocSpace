@@ -147,7 +147,7 @@ namespace ASC.Core.Common.Billing
 
         private static HttpClient PrepaireClient()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol =  SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
             var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
