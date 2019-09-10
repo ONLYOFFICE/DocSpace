@@ -32,17 +32,25 @@ class ProfileAction extends React.Component {
   render() {
     console.log("ProfileAction render")
 
+    let loaded = false;
     const { profile, match } = this.props;
+    const { userId, type } = match.params;
+
+    if (type) {
+      loaded = true;
+    } else if (profile) {
+      loaded = profile.userName === userId || profile.id === userId;
+    }
 
     return (
       <I18nextProvider i18n={i18n}>
-        {profile || match.params.type
+        {loaded
         ? <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
           sectionHeaderContent={<SectionHeaderContent />}
-          sectionBodyContent={match.params.type ? <CreateUserForm /> : <UpdateUserForm />}
+          sectionBodyContent={type ? <CreateUserForm /> : <UpdateUserForm />}
         />
         : <PageLayout
           articleHeaderContent={<ArticleHeaderContent />}
