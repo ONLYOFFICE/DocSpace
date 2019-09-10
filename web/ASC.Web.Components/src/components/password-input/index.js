@@ -9,6 +9,7 @@ import Link from '../link'
 import { Text } from '../text'
 import DropDown from '../drop-down'
 
+// eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => <div {...props}></div>;
 
 SimpleInput.propTypes = {
