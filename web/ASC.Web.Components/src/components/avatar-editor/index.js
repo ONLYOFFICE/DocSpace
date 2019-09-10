@@ -50,7 +50,7 @@ class AvatarEditorBody extends React.Component {
             this.setState({
                 hasMaxSizeError: false
             });
-        };
+        }
     }
     onFileLoad(file){
         let reader = new FileReader();

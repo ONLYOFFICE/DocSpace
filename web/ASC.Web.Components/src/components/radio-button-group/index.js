@@ -29,7 +29,7 @@ class RadioButtonGroup extends React.Component {
     if (this.props.selected !== prevProps.selected) {
       this.setState({ selectedOption: this.props.selected });
     }
-  };
+  }
 
   render() {
     const options = this.props.options;
@@ -57,8 +57,8 @@ class RadioButtonGroup extends React.Component {
         }
       </StyledDiv>
     );
-  };
-};
+  }
+}
 
 RadioButtonGroup.propTypes = {
   isDisabled: PropTypes.bool,

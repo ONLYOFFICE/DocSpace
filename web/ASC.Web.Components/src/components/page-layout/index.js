@@ -18,7 +18,7 @@ class PageLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = this.mapPropsToState(props);
-  };
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.hasChanges(this.props,prevProps)) {

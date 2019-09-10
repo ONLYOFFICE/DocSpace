@@ -39,13 +39,13 @@ class TostWrapper extends React.Component {
     toastr.clear();
     ReactDOM.unmountComponentAtNode(this.toastContainer);
     document.body.removeChild(this.toastContainer);
-  };
+  }
 
   render() {
     return (<></>);
   }
 
-};
+}
 
 storiesOf('Components|Toast', module)
   .addParameters({ viewport: { defaultViewport: 'responsive' } })

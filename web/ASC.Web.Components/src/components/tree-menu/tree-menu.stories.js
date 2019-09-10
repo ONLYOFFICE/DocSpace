@@ -4,7 +4,7 @@ import { withKnobs, boolean, text,select} from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import TreeMenu from '.';
-import TreeNode from '../tree-menu-node';
+import TreeNode from './sub-components/tree-node';
 import { Icons } from '../icons';
 import { action } from '@storybook/addon-actions';
 
