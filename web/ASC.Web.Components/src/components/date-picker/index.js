@@ -44,13 +44,19 @@ class DatePicker extends Component {
   };
 
   handleChange = e => {
-    if (this.state.value != e.target.value) {
-      let newState = { value: e.target.value };
+    const value = e.target.value;
+    if (this.state.value != value) {
+      let newState = { value };
       const format = moment.localeData().longDateFormat("L");
-      const momentDate = moment(e.target.value, format);
+      const momentDate = moment(value, format);
       const date = momentDate.toDate();
 
-      if (!isNaN(date) && this.compareDates(date)) {
+      if (
+        !isNaN(date) &&
+        this.compareDates(date) &&
+        value.indexOf("_") === -1
+      ) {
+        //console.log("Mask complete");
         this.props.onChange && this.props.onChange(date);
         newState = Object.assign({}, newState, {
           selectedDate: date
@@ -78,7 +84,8 @@ class DatePicker extends Component {
 
   getMask = () => {
     let symbol = ".";
-    let localeMask = moment.localeData().longDateFormat("L");
+    const localeMask = moment.localeData().longDateFormat("L");
+    const { locale } = this.props;
 
     if (localeMask.indexOf("/") + 1) {
       symbol = "/";
@@ -88,12 +95,23 @@ class DatePicker extends Component {
       symbol = "-";
     }
 
-    let mask = [/\d/, /\d/, symbol, /\d/, /\d/, symbol, /\d/, /\d/, /\d/, /\d/];
+    const mask = [
+      /\d/,
+      /\d/,
+      symbol,
+      /\d/,
+      /\d/,
+      symbol,
+      /\d/,
+      /\d/,
+      /\d/,
+      /\d/
+    ];
 
     if (localeMask[0] === "Y") {
-      mask = mask.reverse();
+      mask.reverse();
     }
-    if (this.props.locale === "ko" || this.props.locale === "lv") {
+    if (locale === "ko" || locale === "lv") {
       mask.push(symbol);
     }
     return mask;

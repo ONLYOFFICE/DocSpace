@@ -315,6 +315,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
+        [Authorize(AuthenticationSchemes = "confirm")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);

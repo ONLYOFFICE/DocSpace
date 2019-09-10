@@ -27,6 +27,7 @@ class CreateUserForm extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
+    this.onAddGroup = this.onAddGroup.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
 
@@ -75,9 +76,13 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
+  onAddGroup() {
+    console.log("onAddGroup")
+  }
+
   onGroupClose(id) {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.groups = this.state.groups.filter((group) => group.id !== id);
+    stateCopy.profile.groups = this.state.profile.groups.filter((group) => group.id !== id);
     this.setState(stateCopy)
   }
 
@@ -262,7 +267,10 @@ class CreateUserForm extends React.Component {
             />
             <DepartmentField
               labelText={`${t("CustomDepartment", { department })}:`}
+              isDisabled={isLoading}
               departments={profile.groups}
+              addButtonTitle={t("Add")}
+              onAddDepartment={this.onAddGroup}
               onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>

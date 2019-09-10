@@ -19,6 +19,16 @@ const MainContainer = styled.div`
     }
   }
 
+.departments-field {
+  .field-body {
+    display: flex;
+    align-items: center;
+  }
+  .department-item {
+    margin: 0 0 0 8px;
+  }
+}
+
   @media ${utils.device.tablet} {
     flex-direction: column;
   }
