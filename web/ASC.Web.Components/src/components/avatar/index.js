@@ -159,6 +159,7 @@ Initials.propTypes = {
   userName: PropTypes.string
 };
 
+// eslint-disable-next-line react/display-name
 const Avatar = memo(props => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editLabel, editAction } = props;
