@@ -7,6 +7,7 @@ const StyledSectionBody = styled.div`
   margin: 16px 0;
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
+  height: 100%;
 `;
 
 const SectionBody = React.memo(props => {
@@ -23,8 +24,14 @@ const SectionBody = React.memo(props => {
   );
 });
 
+SectionBody.displayName = "SectionBody";
+
 SectionBody.propTypes = {
-  withScroll: PropTypes.bool
+  withScroll: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
 };
 
 SectionBody.defaultProps = {

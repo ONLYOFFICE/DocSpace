@@ -1,5 +1,6 @@
 
 using ASC.Api.Core;
+using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
@@ -53,7 +54,9 @@ namespace ASC.Web.Api
 
             services.AddHttpContextAccessor();
 
-            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            services.AddAuthentication("cookie")
+                    .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
+                    .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
             var builder = services.AddMvc(config =>
             {
@@ -106,6 +109,8 @@ namespace ASC.Web.Api
             app.UseSession();
 
             app.UseAuthentication();
+            
+            app.UseAuthorization();
 
             app.UseCultureMiddleware();
 
