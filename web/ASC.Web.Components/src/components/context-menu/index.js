@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { handleAnyClick } from '../../utils/event';
 
@@ -96,16 +95,19 @@ class ContextMenu extends React.PureComponent {
     return (visible && options || null) &&
       <DropDown id="contextMenu" opened={true}>
         {options.map((item) => (
-          <DropDownItem {...item} />
+          <DropDownItem key={item.key} {...item} />
         ))}
       </DropDown>
-  };
+  }
 }
 
 ContextMenu.propTypes = {
+  options: PropTypes.array,
+  targetAreaId: PropTypes.string
 };
 
 ContextMenu.defaultProps = {
+  options: []
 };
 
 export default ContextMenu;

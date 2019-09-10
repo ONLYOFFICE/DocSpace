@@ -69,7 +69,7 @@ const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
   if (isDisabled) {
     newProps.isfill = true;
     newProps.color = "#F8F9F9";
-  };
+  }
 
   return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
 };
@@ -89,7 +89,7 @@ class RadioButton extends React.Component {
     if (this.props.isChecked !== prevProps.isChecked) {
       this.setState({ isChecked: this.props.isChecked });
     }
-  };
+  }
 
   render() {
 
@@ -117,8 +117,8 @@ class RadioButton extends React.Component {
         </Text.Body>
       </Label>
     );
-  };
-};
+  }
+}
 
 RadioButton.propTypes = {
   isChecked: PropTypes.bool,

@@ -519,12 +519,12 @@ namespace ASC.Web.Studio.Utility
 
             if (!string.IsNullOrEmpty(email))
             {
-                link += $"email={HttpUtility.UrlEncode(email)}";
+                link += $"&email={HttpUtility.UrlEncode(email)}";
             }
 
             if (userId != default)
             {
-                link += $"uid={userId}";
+                link += $"&uid={userId}";
             }
 
             if (postfix != null)

@@ -155,6 +155,11 @@ const Initials = props => (
   <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>
 );
 
+Initials.propTypes = {
+  userName: PropTypes.string
+};
+
+// eslint-disable-next-line react/display-name
 const Avatar = memo(props => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editLabel, editAction } = props;
@@ -200,7 +205,8 @@ Avatar.propTypes = {
   source: PropTypes.string,
   editLabel: PropTypes.string,
   userName: PropTypes.string,
-  editing: PropTypes.bool
+  editing: PropTypes.bool,
+  editAction: PropTypes.func
 };
 
 Avatar.defaultProps = {

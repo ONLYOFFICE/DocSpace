@@ -132,7 +132,7 @@ storiesOf('Components|GroupButtonsMenu', module)
           <>
             <Button
               label="Show menu"
-              onClick={(e) => {
+              onClick={() => {
                 toggle(visible);
               }}
             />
@@ -146,7 +146,7 @@ storiesOf('Components|GroupButtonsMenu', module)
                     moreLabel={text('moreLabel', 'More')}
                     closeTitle={text('closeTitle', 'Close')}
                     onClose={() => console.log('Close action')}
-                    onChange={(e) => toggle(checked)}
+                    onChange={() => toggle(checked)}
                     selected={groupItems[0].label}
                   />
                 )}

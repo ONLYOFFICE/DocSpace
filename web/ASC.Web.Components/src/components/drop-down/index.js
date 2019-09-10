@@ -45,6 +45,7 @@ const Arrow = styled.div`
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
 `;
 
+// eslint-disable-next-line react/display-name
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
 
@@ -54,6 +55,12 @@ const Row = memo(({ data, index, style }) => {
       style={style} />
   );
 });
+
+Row.propTypes = {
+  data: PropTypes.any,
+  index: PropTypes.number,
+  style: PropTypes.object
+};
 
 class DropDown extends React.PureComponent {
 
@@ -65,7 +72,7 @@ class DropDown extends React.PureComponent {
     };
     
     this.dropDown = React.createRef();
-  };
+  }
 
   setDropDownWidthState = () => {
     if (this.dropDown.current) {
@@ -77,13 +84,13 @@ class DropDown extends React.PureComponent {
 
   componentDidMount () {
     this.setDropDownWidthState();
-  };
+  }
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened || this.props.isOpen !== prevProps.isOpen) {
       this.setDropDownWidthState();
     }
-  };
+  }
 
   render() {
     const {maxHeight, withArrow, directionX, children} = this.props;
@@ -111,9 +118,12 @@ class DropDown extends React.PureComponent {
       </StyledDropdown>
     );
   }
-};
+}
 
 DropDown.propTypes = {
+  opened: PropTypes.bool,
+  isOpen: PropTypes.bool,
+  children: PropTypes.any,
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
   withArrow: PropTypes.bool,

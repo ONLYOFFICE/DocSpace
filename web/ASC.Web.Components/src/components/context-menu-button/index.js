@@ -102,7 +102,7 @@ class ContextMenuButton extends React.PureComponent {
         </DropDown>
       </StyledOuther>
     );
-  };
+  }
 }
 
 ContextMenuButton.propTypes = {

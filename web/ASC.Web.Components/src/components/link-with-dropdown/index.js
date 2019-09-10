@@ -202,7 +202,7 @@ class LinkWithDropdown extends React.PureComponent {
             </>
 
         );
-    };
+    }
 }
 
 LinkWithDropdown.propTypes = {

@@ -9,7 +9,13 @@ import Link from '../link'
 import { Text } from '../text'
 import DropDown from '../drop-down'
 
+// eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => <div {...props}></div>;
+
+SimpleInput.propTypes = {
+  onValidateInput: PropTypes.func,
+  onCopyToClipboard: PropTypes.func
+}
 
 const StyledInput = styled(SimpleInput)`
   display: flex;
@@ -297,7 +303,7 @@ class PasswordInput extends React.PureComponent {
         <PasswordProgress inputWidth={inputWidth}>
           <InputBlock
             name={inputName}
-            hasError={false}
+            hasError={hasError}
             isDisabled={isDisabled}
             iconName='EyeIcon'
             value={inputValue}
@@ -310,7 +316,6 @@ class PasswordInput extends React.PureComponent {
             isIconFill={true}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
-            hasError={hasError}
             hasWarning={hasWarning}
             placeholder={placeholder}
             tabIndex={tabIndex}
@@ -346,8 +351,8 @@ class PasswordInput extends React.PureComponent {
         </CopyLink>
       </StyledInput>
     );
-  };
-};
+  }
+}
 
 PasswordInput.propTypes = {
   inputType: PropTypes.oneOf(['text', 'password']),
@@ -355,6 +360,12 @@ PasswordInput.propTypes = {
   emailInputName: PropTypes.string.isRequired,
   inputValue: PropTypes.string,
   onChange: PropTypes.func,
+  inputWidth: PropTypes.string,
+  hasError: PropTypes.bool,
+  hasWarning: PropTypes.bool,
+  placeholder: PropTypes.string,
+  tabIndex: PropTypes.number,
+  maxLength: PropTypes.number,
 
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
