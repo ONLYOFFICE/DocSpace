@@ -120,7 +120,9 @@ DropDownItem.propTypes = {
   label: PropTypes.string,
   disabled: PropTypes.bool,
   icon: PropTypes.string,
-  noHover: PropTypes.bool
+  noHover: PropTypes.bool,
+  onClick: PropTypes.func,
+  children: PropTypes.any
 };
 
 DropDownItem.defaultProps = {

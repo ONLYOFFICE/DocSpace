@@ -28,12 +28,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Utils;
 using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Data.Storage
 {
     class PathUtils
     {
+        private static string StorageRoot { get; }
+        static PathUtils()
+        {
+            StorageRoot = ConfigurationManager.AppSettings[Constants.STORAGE_ROOT_PARAM];
+        }
+
         public static string Normalize(string path, bool addTailingSeparator = false)
         {
             path = path
@@ -90,7 +97,7 @@ namespace ASC.Data.Storage
 
             if (physPath.Contains(Constants.STORAGE_ROOT_PARAM))
             {
-                physPath = physPath.Replace(Constants.STORAGE_ROOT_PARAM, storageConfig[Constants.STORAGE_ROOT_PARAM]);
+                physPath = physPath.Replace(Constants.STORAGE_ROOT_PARAM, StorageRoot ?? storageConfig[Constants.STORAGE_ROOT_PARAM]);
             }
 
             if (!Path.IsPathRooted(physPath))

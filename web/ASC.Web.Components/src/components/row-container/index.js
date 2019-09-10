@@ -17,7 +17,7 @@ class RowContainer extends React.PureComponent {
     this.state = {
       contextOptions: []
     };
-  };
+  }
 
   onRowContextClick = (options) => {
     if (Array.isArray(options)) {
@@ -75,7 +75,7 @@ class RowContainer extends React.PureComponent {
       </StyledRowContainer>
     );
   }
-};
+}
 
 RowContainer.propTypes = {
   itemHeight: PropTypes.number,
