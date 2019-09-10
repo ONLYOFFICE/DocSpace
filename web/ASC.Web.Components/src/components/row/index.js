@@ -56,7 +56,7 @@ class Row extends React.PureComponent {
     this.state = {
       checked: this.props.checked
     }
-  };
+  }
 
   changeCheckbox = (e) => {
     this.props.onSelect && this.props.onSelect(e.target.checked, this.props.data);
@@ -68,7 +68,7 @@ class Row extends React.PureComponent {
     if (this.props.checked !== prevProps.checked) {
       this.setState({ checked: this.props.checked });
     }
-  };
+  }
   
   render() {
     //console.log("Row render");
@@ -96,7 +96,7 @@ class Row extends React.PureComponent {
         </StyledOptionButton>
       </StyledRow>
     );
-  };
+  }
 }
 
 Row.propTypes = {

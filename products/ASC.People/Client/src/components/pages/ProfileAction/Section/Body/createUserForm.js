@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, getUserContacts } from "../../../../../store/people/selectors";
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
 import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -11,6 +11,8 @@ import PasswordField from './FormFields/PasswordField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
+import ContactsField from './FormFields/ContactsField'
+import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { department, position, employedSinceDate } from '../../../../../helpers/customNames';
 
 class CreateUserForm extends React.Component {
@@ -27,6 +29,10 @@ class CreateUserForm extends React.Component {
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
+
+    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
+    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
+    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -110,9 +116,42 @@ class CreateUserForm extends React.Component {
     this.props.history.push(this.props.settings.homepage)
   }
 
+  onContactsItemAdd(item) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.push({
+      id: new Date().getTime().toString(),
+      type: item.value,
+      value: ""
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTypeChange(item) {
+    const id = item.key.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.type = item.value;
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTextChange(event) {
+    const id = event.target.name.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.value = event.target.value;
+    });
+    this.setState(stateCopy);
+  }
+
   render() {
     const { isLoading, errors, profile } = this.state;
     const { t, settings } = this.props;
+
+    const pattern = getUserContactsPattern();
+    const contacts = getUserContacts(profile.contacts);
 
     return (
       <>
@@ -228,11 +267,32 @@ class CreateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        <div>
-          <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
+        <InfoFieldContainer headerText={t("Comments")}>
           <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
-        </div>
-        <div style={{ marginTop: "60px" }}>
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("ContactInformation")}>
+          <ContactsField
+            pattern={pattern.contact}
+            contacts={contacts.contact}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("SocialProfiles")}>
+          <ContactsField
+            pattern={pattern.social}
+            contacts={contacts.social}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
+        <div>
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={10} />
           <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={11} />
         </div>

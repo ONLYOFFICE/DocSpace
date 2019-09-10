@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, getUserContacts } from "../../../../../store/people/selectors";
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -11,6 +11,8 @@ import TextChangeField from './FormFields/TextChangeField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
+import ContactsField from './FormFields/ContactsField'
+import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 
 class UpdateUserForm extends React.Component {
@@ -36,6 +38,10 @@ class UpdateUserForm extends React.Component {
     this.onPhoneChange = this.onPhoneChange.bind(this);
     this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
+
+    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
+    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
+    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -45,7 +51,7 @@ class UpdateUserForm extends React.Component {
   }
 
   mapPropsToState = (props) => {
-    return {
+     const newState = {
       isLoading: false,
       errors: {
         firstName: false,
@@ -60,6 +66,15 @@ class UpdateUserForm extends React.Component {
         newEmail: "",
       }
     };
+
+    //Set unique contacts id 
+    const now = new Date().getTime();
+
+    newState.profile.contacts.forEach((contact, index) => {
+      contact.id = (now + index).toString();
+    });
+
+    return newState;
   }
 
   onInputChange(event) {
@@ -218,9 +233,42 @@ class UpdateUserForm extends React.Component {
     this.setState({ dialog: dialog })
   }
 
+  onContactsItemAdd(item) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.push({
+      id: new Date().getTime().toString(),
+      type: item.value,
+      value: ""
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTypeChange(item) {
+    const id = item.key.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.type = item.value;
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTextChange(event) {
+    const id = event.target.name.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.value = event.target.value;
+    });
+    this.setState(stateCopy);
+  }
+
   render() {
     const { isLoading, errors, profile, dialog } = this.state;
     const { t } = this.props;
+
+    const pattern = getUserContactsPattern();
+    const contacts = getUserContacts(profile.contacts);
 
     return (
       <>
@@ -345,15 +393,35 @@ class UpdateUserForm extends React.Component {
             />
           </MainFieldsContainer>
         </MainContainer>
-        <div>
-          <Text.ContentHeader>{t("Comments")}</Text.ContentHeader>
+        <InfoFieldContainer headerText={t("Comments")}>
           <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
-        </div>
-        <div style={{marginTop: "60px"}}>
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("ContactInformation")}>
+          <ContactsField
+            pattern={pattern.contact}
+            contacts={contacts.contact}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("SocialProfiles")}>
+          <ContactsField
+            pattern={pattern.social}
+            contacts={contacts.social}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
+        <div>
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11}/>
           <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
         </div>
-
         <ModalDialog
           visible={dialog.visible}
           headerContent={dialog.header}

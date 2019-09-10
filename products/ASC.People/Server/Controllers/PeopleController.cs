@@ -1177,7 +1177,7 @@ namespace ASC.Employee.Core.Controllers
                 user.Contacts.Clear();
             }
 
-            foreach (var contact in contacts)
+            foreach (var contact in contacts.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
                 user.Contacts.Add(contact.Type);
                 user.Contacts.Add(contact.Value);

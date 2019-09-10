@@ -47,7 +47,7 @@ class Article extends React.Component {
     return (
       <StyledArticle {...this.props} />
     );
-  };
-};
+  }
+}
 
 export default Article;

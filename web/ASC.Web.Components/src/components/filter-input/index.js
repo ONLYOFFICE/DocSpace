@@ -147,7 +147,7 @@ class FilterInput extends React.Component {
         })
     }
     onChangeSortDirection(key) {
-        this.onFilter(this.state.filterValues, this.state.sortId, !!key ? "desc" : "asc");
+        this.onFilter(this.state.filterValues, this.state.sortId, key ? "desc" : "asc");
         this.setState({ sortDirection: !!key });
     }
     getDefaultSelectedIndex() {
@@ -228,7 +228,7 @@ class FilterInput extends React.Component {
                         if (hiddenItem) newHideFilterItems.push(hiddenItem);
                         newOpenFilterItems.splice(newOpenFilterItems.findIndex(x => x.key === filterArr[i].getAttribute('id')), 1);
                     }
-                };
+                }
             }
             this.setState({
                 openFilterItems: newOpenFilterItems,
@@ -294,7 +294,7 @@ class FilterInput extends React.Component {
     onClickFilterItem(event, filterItem) {
         const currentFilterItems = cloneObjectsArray(this.state.filterValues);
 
-        if (!!filterItem.subgroup) {
+        if (filterItem.subgroup) {
             const indexFilterItem = currentFilterItems.findIndex(x => x.group === filterItem.subgroup);
             if (indexFilterItem != -1) {
                 currentFilterItems.splice(indexFilterItem, 1);
@@ -387,7 +387,7 @@ class FilterInput extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (!isEqual(this.props.selectedFilterData, nextProps.selectedFilterData)) {
             let internalFilterData = cloneObjectsArray(this.state.filterValues);
-            if (!!nextProps.selectedFilterData.filterValues) {
+            if (nextProps.selectedFilterData.filterValues) {
                 internalFilterData = convertToInternalData(this.props.getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
                 this.updateFilter(internalFilterData);
             }
@@ -479,7 +479,7 @@ class FilterInput extends React.Component {
 
         );
     }
-};
+}
 
 FilterInput.protoTypes = {
     autoRefresh: PropTypes.bool,

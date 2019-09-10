@@ -6,6 +6,8 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toa
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 
+const inputWidth = '400px';
+
 const ConfirmContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -34,7 +36,7 @@ const ConfirmContainer = styled.div`
         
 
         input {
-            width: 400px;
+            width: ${inputWidth};
         }
     }
 
@@ -51,6 +53,7 @@ const passwordSettings = {
 };
 
 const emailInputName = 'email';
+const passwordInputName = 'password';
 
 const isLoaded = true;
 
@@ -95,7 +98,7 @@ const Confirm = (props) => {
             hasError = true;
             setEmailValid(!hasError);
         }
-        const passwordValue = (document.getElementsByName('password')[0].value);
+        const passwordValue = (document.getElementsByName(passwordInputName)[0].value);
         if (!passwordValue || !passwordValid) {
             hasError = true;
             setPasswordValid(!hasError);
@@ -218,7 +221,7 @@ const Confirm = (props) => {
 
                         <FieldContainer isVertical={true} className=''>
                             <PasswordInput
-                                inputName="password"
+                                inputName={passwordInputName}
                                 emailInputName={emailInputName}
                                 inputValue={password}
                                 placeholder={t('InvitePassword')}
@@ -226,7 +229,7 @@ const Confirm = (props) => {
                                 scale={true}
                                 tabIndex={4}
                                 maxLength={30}
-                                inputWidth='400px'
+                                inputWidth={inputWidth}
                                 hasError={!passwordValid}
                                 onChange={event => {
                                     setPassword(event.target.value);

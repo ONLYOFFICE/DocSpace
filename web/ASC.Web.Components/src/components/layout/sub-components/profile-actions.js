@@ -27,7 +27,7 @@ class ProfileActions extends React.PureComponent {
 
     if(props.opened)
       handleAnyClick(true, this.handleClick);
-  };
+  }
 
   handleClick = (e) => {
     this.state.opened && !this.ref.current.contains(e.target) && this.toggle(false);

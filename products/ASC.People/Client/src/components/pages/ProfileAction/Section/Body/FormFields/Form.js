@@ -6,7 +6,8 @@ const MainContainer = styled.div`
   flex-direction: row;
 
   .field-input {
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
   }
 
   .radio-group {

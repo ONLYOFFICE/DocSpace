@@ -105,7 +105,12 @@ Paging.propTypes = {
   selectedCountItem: PropTypes.object,
 
   onSelectPage: PropTypes.func,
-  onSelectCount: PropTypes.func
+  onSelectCount: PropTypes.func,
+
+  pageItems: PropTypes.array,
+  countItems: PropTypes.array,
+
+  openDirection: PropTypes.oneOf(['bottom', 'top'])
 }
 
 Paging.defaultProps = {
