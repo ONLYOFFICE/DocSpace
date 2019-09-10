@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { ComboBox, TextInput } from 'asc-web-components'
 
 const Container = styled.div`
-  width: 450px;
+  width: 100%;
+  max-width: 450px;
 
   .field-select {
     width: 120px;
