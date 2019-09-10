@@ -1,9 +1,9 @@
+using ASC.Api.Core.Auth;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
-using ASC.Web.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
