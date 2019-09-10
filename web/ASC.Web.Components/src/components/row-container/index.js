@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-list';
-import { FixedSizeList as List, areEqual } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import ContextMenu from '../context-menu';
 
@@ -48,12 +48,12 @@ class RowContainer extends React.PureComponent {
         itemData={children}
         outerElementType={CustomScrollbarsVirtualList}
       >
-        {renderRow}
+        {RenderRow}
       </List>
     );
 
 
-    const renderRow = memo(({ data, index, style }) => {
+    const RenderRow = ({ data, index, style }) => {
 
       const options = data[index].props.contextOptions;
       
@@ -62,9 +62,7 @@ class RowContainer extends React.PureComponent {
           {data[index]}
         </div>
       )
-    },
-      areEqual
-    );
+    };
 
     return (
       <StyledRowContainer id='rowContainer' manualHeight={manualHeight}>
