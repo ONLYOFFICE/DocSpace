@@ -54,16 +54,13 @@ namespace ASC.Web.Core.Users
                 IsNewUser = false
             };
         }
-    }
 
-    public class UserHelpTourHelper
-    {
-        public static bool IsNewUser
+        public bool NewUser
         {
-            get { return UserHelpTourSettings.LoadForCurrentUser().IsNewUser; }
+            get { return LoadForCurrentUser().IsNewUser; }
             set
             {
-                var settings = UserHelpTourSettings.LoadForCurrentUser();
+                var settings = LoadForCurrentUser();
                 settings.IsNewUser = value;
                 settings.SaveForCurrentUser();
             }

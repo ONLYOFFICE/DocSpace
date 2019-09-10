@@ -72,8 +72,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.Api.Settings
 {
     [DefaultRoute]
@@ -102,6 +100,10 @@ namespace ASC.Api.Settings
         public StudioNotifyHelper StudioNotifyHelper { get; }
         public LicenseReader LicenseReader { get; }
         public PermissionContext PermissionContext { get; }
+        public TfaAppUserSettings TfaAppUserSettings { get; }
+        public CollaboratorSettings CollaboratorSettings { get; }
+        public PersonalQuotaSettings PersonalQuotaSettings { get; }
+        public TfaManager TfaManager { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
@@ -117,7 +119,11 @@ namespace ASC.Api.Settings
             WebItemSecurity webItemSecurity,
             StudioNotifyHelper studioNotifyHelper,
             LicenseReader licenseReader,
-            PermissionContext permissionContext)
+            PermissionContext permissionContext,
+            TfaAppUserSettings tfaAppUserSettings,
+            CollaboratorSettings collaboratorSettings,
+            PersonalQuotaSettings personalQuotaSettings,
+            TfaManager tfaManager)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -134,6 +140,10 @@ namespace ASC.Api.Settings
             StudioNotifyHelper = studioNotifyHelper;
             LicenseReader = licenseReader;
             PermissionContext = permissionContext;
+            TfaAppUserSettings = tfaAppUserSettings;
+            CollaboratorSettings = collaboratorSettings;
+            PersonalQuotaSettings = personalQuotaSettings;
+            TfaManager = tfaManager;
         }
 
         [Read("")]
@@ -161,7 +171,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext);
+            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings);
         }
 
         [Read("recalculatequota")]
@@ -709,7 +719,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(Tenant, UserManager) || currentUser.IsOutsider(Tenant, UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = currentUser.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
+            var codes = TfaManager.GenerateBackupCodes(currentUser).Select(r => new { r.IsUsed, r.Code }).ToList();
             MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, UserManager));
             return codes;
         }

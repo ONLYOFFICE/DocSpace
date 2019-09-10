@@ -63,26 +63,23 @@ namespace ASC.Core
             get { return customMode ?? (bool)(customMode = ConfigurationManager.AppSettings["core.custom-mode"] == "true"); }
         }
 
-        public long PersonalMaxSpace
+        public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
         {
-            get
-            {
-                var quotaSettings = PersonalQuotaSettings.LoadForCurrentUser();
+            var quotaSettings = personalQuotaSettings.LoadForCurrentUser();
 
-                if (quotaSettings.MaxSpace != long.MaxValue)
-                    return quotaSettings.MaxSpace;
+            if (quotaSettings.MaxSpace != long.MaxValue)
+                return quotaSettings.MaxSpace;
 
-                if (personalMaxSpace.HasValue)
-                    return personalMaxSpace.Value;
-
-
-                if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out var value))
-                    value = long.MaxValue;
-
-                personalMaxSpace = value;
-
+            if (personalMaxSpace.HasValue)
                 return personalMaxSpace.Value;
-            }
+
+
+            if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out var value))
+                value = long.MaxValue;
+
+            personalMaxSpace = value;
+
+            return personalMaxSpace.Value;
         }
 
         public SmtpSettings SmtpSettings

@@ -40,14 +40,24 @@ namespace ASC.Core.Common.Settings
     [DataContract]
     public abstract class BaseSettings<T> : ISettings where T : class, ISettings
     {
+        public BaseSettings()
+        {
+
+        }
+
+        public BaseSettings(AuthContext authContext)
+        {
+            AuthContext = authContext;
+        }
+
         private static int TenantID
         {
             get { return CoreContext.TenantManager.GetCurrentTenant().TenantId; }
         }
         //
-        private static Guid CurrentUserID
+        private Guid CurrentUserID
         {
-            get { return Guid.Empty; }
+            get { return AuthContext.CurrentAccount.ID; }
         }
 
         private static SettingsManager SettingsManagerInstance
@@ -60,7 +70,7 @@ namespace ASC.Core.Common.Settings
             return SettingsManagerInstance.LoadSettings<T>(TenantID);
         }
 
-        public static T LoadForCurrentUser()
+        public T LoadForCurrentUser()
         {
             return LoadForUser(CurrentUserID);
         }
@@ -111,6 +121,7 @@ namespace ASC.Core.Common.Settings
         }
 
         public abstract Guid ID { get; }
+        public AuthContext AuthContext { get; }
 
         public abstract ISettings GetDefault();
     }

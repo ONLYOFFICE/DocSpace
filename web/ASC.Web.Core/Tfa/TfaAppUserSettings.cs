@@ -72,7 +72,7 @@ namespace ASC.Web.Studio.Core.TFA
             return salt;
         }
 
-        public static IEnumerable<BackupCode> BackupCodes
+        public IEnumerable<BackupCode> BackupCodes
         {
             get { return LoadForCurrentUser().CodesSetting; }
             set
@@ -83,7 +83,7 @@ namespace ASC.Web.Studio.Core.TFA
             }
         }
 
-        public static IEnumerable<BackupCode> BackupCodesForUser(Guid userId)
+        public IEnumerable<BackupCode> BackupCodesForUser(Guid userId)
         {
             return LoadForUser(userId).CodesSetting;
         }

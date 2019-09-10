@@ -36,6 +36,7 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Security;
 using ASC.Core.Users;
+using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using Google.Authenticator;
 
@@ -65,17 +66,28 @@ namespace ASC.Web.Studio.Core.TFA
         }
     }
 
-    public static class TfaManager
+    public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
         private static readonly ICache Cache = AscCache.Memory;
 
-        public static SetupCode GenerateSetupCode(this UserInfo user, int size)
+        public TfaAppUserSettings TfaAppUserSettings { get; }
+        public SecurityContext SecurityContext { get; }
+        public CookiesManager CookiesManager { get; }
+
+        public TfaManager(TfaAppUserSettings tfaAppUserSettings, SecurityContext securityContext, CookiesManager cookiesManager)
+        {
+            TfaAppUserSettings = tfaAppUserSettings;
+            SecurityContext = securityContext;
+            CookiesManager = cookiesManager;
+        }
+
+        public SetupCode GenerateSetupCode(UserInfo user, int size)
         {
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), size, size, true);
         }
 
-        public static bool ValidateAuthCode(this UserInfo user, int tenantId, string code, SecurityContext securityContext, bool checkBackup = true)
+        public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
                 || !TfaAppAuthSettings.Enable)
@@ -110,22 +122,22 @@ namespace ASC.Web.Studio.Core.TFA
 
             Cache.Insert("tfa/" + user.ID, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
 
-            if (!securityContext.IsAuthenticated)
+            if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = securityContext.AuthenticateMe(tenantId, user.ID);
-                //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+                var cookiesKey = SecurityContext.AuthenticateMe(tenantId, user.ID);
+                CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 
             if (!TfaAppUserSettings.EnableForUser(user.ID))
             {
-                user.GenerateBackupCodes();
+                GenerateBackupCodes(user);
                 return true;
             }
 
             return false;
         }
 
-        public static IEnumerable<BackupCode> GenerateBackupCodes(this UserInfo user)
+        public IEnumerable<BackupCode> GenerateBackupCodes(UserInfo user)
         {
             var count = SetupInfo.TfaAppBackupCodeCount;
             var length = SetupInfo.TfaAppBackupCodeLength;

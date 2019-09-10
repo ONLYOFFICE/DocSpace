@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.UserControls.Management
             get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
         }
 
-        public static bool HideRecommendation
+        public bool HideRecommendation
         {
             get { return LoadForCurrentUser().HideBuyRecommendationSetting; }
             set
@@ -76,7 +76,7 @@ namespace ASC.Web.Studio.UserControls.Management
             }
         }
 
-        public static bool HideNotify
+        public bool HideNotify
         {
             get { return LoadForCurrentUser().HideNotifySetting; }
             set
