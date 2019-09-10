@@ -8,11 +8,10 @@ const StyledButton = styled.div`
     border: 1px solid #ECEEF1;
     box-sizing: border-box;
     border-radius: 3px;
-    height: 32px;
-    width: 32px;
-    padding: 8px;
-    display: inline-grid;
-    line-height: 32px;
+    height: 34px;
+    width: 34px;
+    padding: 9px;
+    display: inline-block;
     cursor: ${props => !props.isDisabled ? "pointer" : "default"};
 
     &:hover{
