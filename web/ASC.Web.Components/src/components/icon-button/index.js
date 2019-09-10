@@ -114,8 +114,8 @@ class IconButton extends React.Component{
                 {React.createElement(Icons[this.state.currentIconName], {size: "scale", color: this.state.currentIconColor, isfill: this.props.isFill})}
             </StyledOuter>
         );
-    };
-};
+    }
+}
 
 IconButton.propTypes = {
     color: PropTypes.string,

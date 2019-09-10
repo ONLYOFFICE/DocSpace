@@ -15,7 +15,7 @@ class Section extends React.Component {
   render() {
     //console.log("PageLayout Section render");
     return (<StyledSection {...this.props} />);
-  };
-};
+  }
+}
 
 export default Section;

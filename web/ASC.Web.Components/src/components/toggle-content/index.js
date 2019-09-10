@@ -51,7 +51,7 @@ class ToggleContent extends React.Component {
     if (this.props.isOpen !== prevProps.isOpen) {
       this.setState({ isOpen: this.props.isOpen });
     }
-  };
+  }
 
   render() {
     //console.log("ToggleContent render");
