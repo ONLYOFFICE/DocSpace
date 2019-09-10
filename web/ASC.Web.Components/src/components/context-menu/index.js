@@ -13,7 +13,7 @@ class ContextMenu extends React.PureComponent {
       visible: false
     };
 
-    if(!this.state.visible)
+    if (!this.state.visible)
       handleAnyClick(true, this.handleClick);
   }
 
@@ -46,7 +46,7 @@ class ContextMenu extends React.PureComponent {
 
     const screenW = this.container.offsetWidth;
     const screenH = this.container.offsetHeight;
-    
+
     const rootW = menu.offsetWidth;
     const rootH = menu.offsetHeight;
 
@@ -94,9 +94,11 @@ class ContextMenu extends React.PureComponent {
 
     return (visible && options || null) &&
       <DropDown id="contextMenu" opened={true}>
-        {options.map((item) => (
-          <DropDownItem key={item.key} {...item} />
-        ))}
+        {options.map((item) => {
+          if (item && item.key !== undefined) {
+            return <DropDownItem key={item.key} {...item} />
+          }
+        })}
       </DropDown>
   }
 }
