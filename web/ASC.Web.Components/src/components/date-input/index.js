@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import DatePicker from "react-datepicker";
 import InputBlock from '../input-block';
-import "react-datepicker/dist/react-datepicker.css";
 
 const StyledDatePicker = styled.div`
   width: 108px;
@@ -31,6 +30,7 @@ const DateInput = props => {
             iconColor="#A3A9AE"
             onIconClick={iconClick}
             scale={true}
+            tabIndex={props.tabIndex}
           />
         }
         {...props}

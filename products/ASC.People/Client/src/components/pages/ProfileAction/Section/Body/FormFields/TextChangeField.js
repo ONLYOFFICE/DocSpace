@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { FieldContainer, TextInput, Button } from 'asc-web-components'
 
 const InputContainer = styled.div`
-  width: 320px;
+  width: 100%;
+  max-width: 320px;
   display: flex;
   align-items: center;
 `;
@@ -16,10 +17,12 @@ const TextChangeField = React.memo((props) => {
 
     inputName,
     inputValue,
+    inputTabIndex,
 
     buttonText,
     buttonIsDisabled,
-    buttonOnClick
+    buttonOnClick,
+    buttonTabIndex
   } = props;
 
   return (
@@ -34,6 +37,7 @@ const TextChangeField = React.memo((props) => {
           value={inputValue}
           isDisabled={true}
           hasError={hasError}
+          tabIndex={inputTabIndex}
         />
         <Button
           label={buttonText}
@@ -41,6 +45,7 @@ const TextChangeField = React.memo((props) => {
           isDisabled={buttonIsDisabled}
           size="medium"
           style={{ marginLeft: "8px" }}
+          tabIndex={buttonTabIndex}
         />
       </InputContainer>
     </FieldContainer>

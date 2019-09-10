@@ -28,7 +28,25 @@ const hoverCss = css`
     `}
 `;
 
+// eslint-disable-next-line no-unused-vars
 const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, ...props}) => <button type="button" {...props}></button>;
+
+ButtonWrapper.propTypes = {
+  label: PropTypes.string,
+  primary: PropTypes.bool,
+  size: PropTypes.oneOf(['base', 'medium', 'big']),
+  scale: PropTypes.bool,
+  icon: PropTypes.node,
+
+  tabIndex: PropTypes.number,
+
+  isHovered: PropTypes.bool,
+  isClicked: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  isLoading: PropTypes.bool,
+
+  onClick: PropTypes.func,
+};
 
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
@@ -171,7 +189,9 @@ const Icon = ({size, primary, icon}) => (
 );
 
 Icon.propTypes = {
-  icon: PropTypes.node
+  icon: PropTypes.node,
+  size: PropTypes.string,
+  primary: PropTypes.bool
 };
 
 Icon.defaultProps = {

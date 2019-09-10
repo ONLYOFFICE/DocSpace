@@ -6,7 +6,6 @@ import InputBlock from '../input-block';
 import isEqual from 'lodash/isEqual';
 
 const StyledSearchInput = styled.div`
-  min-width: 200px;
   font-family: Open Sans;
   font-style: normal;
 `;
@@ -34,7 +33,7 @@ class SearchInput extends React.Component {
       inputValue: ''
     });
     if(typeof this.props.onClearSearch === 'function') this.props.onClearSearch();
-  };
+  }
   onInputChange(e) {
     this.setState({
       inputValue: e.target.value
@@ -104,7 +103,7 @@ class SearchInput extends React.Component {
       </StyledSearchInput>
     );
   }
-};
+}
 
 SearchInput.propTypes = {
   id: PropTypes.string,

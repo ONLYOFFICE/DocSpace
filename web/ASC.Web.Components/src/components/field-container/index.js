@@ -1,11 +1,13 @@
 import React from 'react'
-import styled from 'styled-components';
-import device from '../device'
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import { tablet } from '../../utils/device'
 import Label from '../label'
 
-const Container = styled.div`
+const horizontalCss = css`
   display: flex;
   flex-direction: row;
+  align-items: start;
   margin: 0 0 16px 0;
 
   .field-label {
@@ -13,45 +15,56 @@ const Container = styled.div`
     margin: 0;
     width: 110px;
   }
-
-  .field-input {
-    width: 320px;
+  .field-body {
+    flex-grow: 1;
   }
+`
+const verticalCss = css`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin: 0 0 16px 0;
 
-  .radio-group {
-    line-height: 32px;
-    display: flex;
-
-    label:not(:first-child) {
-        margin-left: 33px;
-    }
+  .field-label {
+    line-height: unset;
+    margin: 0 0 4px 0;
+    width: 100%;
   }
-
-  @media ${device.tablet} {
-    flex-direction: column;
-    align-items: start;
-
-    .field-label {
-      line-height: unset;
-      margin: 0 0 4px 0;
-      width: auto;
-      flex-grow: 1;
-    }
+  .field-body {
+    width: 100%;
   }
-`;
+`
 
-const Body = styled.div`
-  flex-grow: 1;
+const Container = styled.div`
+  ${props => props.vertical ? verticalCss : horizontalCss }
+
+  @media ${tablet} {
+    ${verticalCss}
+  }
 `;
 
 const FieldContainer = React.memo((props) => {
-  const {isRequired, hasError, labelText, className, children} = props;
+  const {isVertical, className, isRequired, hasError, labelText, children} = props;
   return (
-    <Container className={className}>
+    <Container vertical={isVertical} className={className}>
       <Label isRequired={isRequired} error={hasError} text={labelText} className="field-label"/>
-      <Body>{children}</Body>
+      <div className="field-body">{children}</div>
     </Container>
   );
 });
+
+FieldContainer.displayName = 'FieldContainer';
+
+FieldContainer.propTypes = {
+  isVertical: PropTypes.bool,
+  className: PropTypes.string,
+  isRequired: PropTypes.bool,
+  hasError: PropTypes.bool,
+  labelText: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
 
 export default FieldContainer

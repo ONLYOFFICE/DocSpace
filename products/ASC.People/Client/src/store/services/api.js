@@ -35,6 +35,12 @@ export function getSettings() {
     : axios.get(`${API_URL}/settings.json`);
 }
 
+export function getPortalPasswordSettings() {
+  return IS_FAKE
+    ? fakeApi.getPortalPasswordSettings()
+    : axios.get(`${API_URL}/settings/security/password`);
+}
+
 export function getUser(userId) {
   return IS_FAKE
     ? fakeApi.getUser()
@@ -64,13 +70,17 @@ export function updateUser(data) {
 }
 
 export function getInitInfo() {
-  return axios.all([getUser(), getModulesList(), getSettings()]).then(
-    axios.spread(function(userResp, modulesResp, settingsResp) {
-      return Promise.resolve({
+  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(
+    axios.spread(function(userResp, modulesResp, settingsResp, passwordSettingsResp) {
+      let info = {
         user: userResp.data.response,
         modules: modulesResp.data.response,
         settings: settingsResp.data.response
-      });
+      };
+
+      info.settings.passwordSettings = passwordSettingsResp.data.response;
+
+      return Promise.resolve(info);
     })
   );
 }
@@ -117,6 +127,12 @@ export function deleteUsers(userIds) {
     : axios
         .put(`${API_URL}/people/delete.json`, { userIds })
         .then(CheckError);
+}
+
+export function getGroup(groupId) {
+  return IS_FAKE
+    ? fakeApi.getGroup(groupId)
+    : axios.get(`${API_URL}/group/${groupId}.json`);
 }
 
 function CheckError(res) {

@@ -11,6 +11,24 @@
         "RegistrationEmailWatermark",
         "LoginButton"
       ]
+    },
+    "Confirm": {
+      "Resource": [
+        "InviteTitle",
+        "LoginRegistryButton",
+        "LoginWithAccount",
+        "Email",
+        "InvitePassword",
+        "FirstName",
+        "CopyEmailAndPassword",
+        "ErrorPasswordMessage",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordNoSpecialSymbols",
+        "EmailAndPasswordCopiedToClipboard",
+        "LastName"
+      ]
     }
   },
   "Layout": {

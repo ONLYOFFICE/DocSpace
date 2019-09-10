@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 
 const StyledArticle = styled.article`
   padding: 0 16px;
@@ -12,7 +12,7 @@ const StyledArticle = styled.article`
   transition: width .3s ease-in-out;
   overflow: hidden auto;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     ${props => props.visible
     ? props.pinned
       ? `
@@ -47,7 +47,7 @@ class Article extends React.Component {
     return (
       <StyledArticle {...this.props} />
     );
-  };
-};
+  }
+}
 
 export default Article;

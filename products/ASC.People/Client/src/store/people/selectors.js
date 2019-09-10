@@ -45,8 +45,8 @@ export const getUserRole = user => {
     else return "user";
 };
 
-export const getUserContacts = (contacts) => {
-    const pattern = {
+export const getUserContactsPattern = () => {
+    return {
         contact: [
             { type: "mail", icon: "MailIcon" },
             { type: "phone", icon: "PhoneIcon" },
@@ -67,13 +67,16 @@ export const getUserContacts = (contacts) => {
             { type: "yahoo", icon: "YahooIcon" }
         ]
     };
+};
 
+export const getUserContacts = (contacts) => {
     const mapContacts = (a, b) => {
         return a.map(a => ({ ...a, ...b.find(({ type }) => type === a.type) }))
-                .filter(c => (c.value !== "" && c.icon));
+                .filter(c => c.icon);
     }
 
-    let info = {};
+    const info = {};
+    const pattern = getUserContactsPattern();
 
     info.contact = mapContacts(contacts, pattern.contact);
     info.social = mapContacts(contacts, pattern.social);
@@ -119,4 +122,24 @@ export function getSelectedGroup(groups, selectedGroupId) {
 
 export function getSelectionIds(selections) {
     return selections.map((user) => { return user.id });
+}
+
+export function toEmployeeWrapper(profile) {
+    const emptyData = {
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        birthday: "",
+        sex: "male",
+        workFrom: "",
+        location: "",
+        title: "",
+        groups: [],
+        notes: "",
+        contacts: []
+    };
+
+    return { ...emptyData, ...profile };
 }

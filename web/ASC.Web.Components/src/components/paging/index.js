@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import Button from '../button'
 import ComboBox from '../combobox'
-import device from '../device'
+import { mobile } from '../../utils/device'
 
 
 const StyledPaging = styled.div`
@@ -22,7 +22,7 @@ const StyledOnPage = styled.div`
   margin-left: auto;
   margin-right: 0px;
 
-  @media ${device.mobile} {
+  @media ${mobile} {
     display: none;
   }
 `;
@@ -105,7 +105,12 @@ Paging.propTypes = {
   selectedCountItem: PropTypes.object,
 
   onSelectPage: PropTypes.func,
-  onSelectCount: PropTypes.func
+  onSelectCount: PropTypes.func,
+
+  pageItems: PropTypes.array,
+  countItems: PropTypes.array,
+
+  openDirection: PropTypes.oneOf(['bottom', 'top'])
 }
 
 Paging.defaultProps = {

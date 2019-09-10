@@ -1,15 +1,18 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, updateProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
+import { updateProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
+import ContactsField from './FormFields/ContactsField'
+import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 
 class UpdateUserForm extends React.Component {
@@ -21,14 +24,25 @@ class UpdateUserForm extends React.Component {
 
     this.validate = this.validate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.onTextChange = this.onTextChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onUserTypeChange = this.onUserTypeChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
+    this.onAddGroup = this.onAddGroup.bind(this);
     this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
 
-    this.onDialogShow = this.onDialogShow.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
+    this.onSendEmailChangeInstructions = this.onSendEmailChangeInstructions.bind(this);
+    this.onPasswordChange = this.onPasswordChange.bind(this);
+    this.onSendPasswordChangeInstructions = this.onSendPasswordChangeInstructions.bind(this);
+    this.onPhoneChange = this.onPhoneChange.bind(this);
+    this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
+
+    this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
+    this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
+    this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -38,22 +52,41 @@ class UpdateUserForm extends React.Component {
   }
 
   mapPropsToState = (props) => {
-    return {
+     const newState = {
       isLoading: false,
-      isDialogVisible: false,
       errors: {
         firstName: false,
         lastName: false,
-        email: false,
-        password: false,
       },
-      profile: toEmployeeWrapper(props.profile)
+      profile: toEmployeeWrapper(props.profile),
+      dialog: {
+        visible: false,
+        header: "",
+        body: "",
+        buttons: [],
+        newEmail: "",
+      }
     };
+
+    //Set unique contacts id 
+    const now = new Date().getTime();
+
+    newState.profile.contacts.forEach((contact, index) => {
+      contact.id = (now + index).toString();
+    });
+
+    return newState;
   }
 
-  onTextChange(event) {
+  onInputChange(event) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile[event.target.name] = event.target.value;
+    this.setState(stateCopy)
+  }
+
+  onUserTypeChange(event) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.isVisitor = event.target.value === "true";
     this.setState(stateCopy)
   }
 
@@ -69,21 +102,24 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
+  onAddGroup() {
+    console.log("onAddGroup")
+  }
+
   onGroupClose(id) {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.groups = this.state.groups.filter((group) => group.id !== id);
+    stateCopy.profile.groups = this.state.profile.groups.filter((group) => group.id !== id);
     this.setState(stateCopy)
   }
 
   validate() {
+    const { profile } = this.state;
     const errors = {
-      firstName: !this.state.profile.firstName,
-      lastName: !this.state.profile.lastName,
-      email: !this.state.profile.email,
-      password: this.state.profile.passwordType === "temp" && !this.state.profile.password
+      firstName: !profile.firstName,
+      lastName: !profile.lastName,
     };
-    const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
-    this.setState({errors: errors});
+    const hasError = errors.firstName || errors.lastName;
+    this.setState({ errors: errors });
     return !hasError;
   }
 
@@ -108,142 +144,297 @@ class UpdateUserForm extends React.Component {
     this.props.history.goBack();
   }
 
-  onDialogShow() {
-    this.setState({isDialogVisible: true})
+  onEmailChange(event) {
+    const dialog = { 
+      visible: true,
+      header: "Change email",
+      body: (
+        <Text.Body>
+          <span style={{display: "block", marginBottom: "8px"}}>The activation instructions will be sent to the entered email</span>
+          <TextInput
+            id="new-email"
+            scale={true}
+            isAutoFocussed={true}
+            value={event.target.value}
+            onChange={this.onEmailChange}
+          />
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendEmailChangeInstructions}
+        />
+      ],
+      newEmail: event.target.value
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendEmailChangeInstructions() {
+    toastr.success("Context action: Change email");
+    this.onDialogClose();
+  }
+
+  onPasswordChange() {
+    const dialog = { 
+      visible: true,
+      header: "Change password",
+      body: (
+        <Text.Body>
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>${this.state.profile.email}</a> email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendPasswordChangeInstructions}
+        />
+      ]
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendPasswordChangeInstructions() {
+    toastr.success("Context action: Change password");
+    this.onDialogClose();
+  }
+
+  onPhoneChange() {
+    const dialog = { 
+      visible: true,
+      header: "Change phone",
+      body: (
+        <Text.Body>
+          The instructions on how to change the user mobile number will be sent to the user email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendPhoneChangeInstructions}
+        />
+      ]
+     };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendPhoneChangeInstructions() {
+    toastr.success("Context action: Change phone");
+    this.onDialogClose();
   }
 
   onDialogClose() {
-    this.setState({isDialogVisible: false})
+    const dialog = { visible: false }; 
+    this.setState({ dialog: dialog })
+  }
+
+  onContactsItemAdd(item) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.push({
+      id: new Date().getTime().toString(),
+      type: item.value,
+      value: ""
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTypeChange(item) {
+    const id = item.key.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.type = item.value;
+    });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemTextChange(event) {
+    const id = event.target.name.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.contacts.forEach(element => {
+      if (element.id === id)
+        element.value = event.target.value;
+    });
+    this.setState(stateCopy);
   }
 
   render() {
+    const { isLoading, errors, profile, dialog } = this.state;
+    const { t } = this.props;
+
+    const pattern = getUserContactsPattern();
+    const contacts = getUserContacts(profile.contacts);
+
     return (
       <>
         <MainContainer>
           <AvatarContainer>
             <Avatar
               size="max"
-              role={getUserRole(this.state.profile)}
-              source={this.state.profile.avatarMax}
-              userName={this.state.profile.displayName}
+              role={getUserRole(profile)}
+              source={profile.avatarMax}
+              userName={profile.displayName}
               editing={true}
-              editLabel={this.props.t("EditPhoto")}
+              editLabel={t("EditPhoto")}
             />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
-              labelText={`${this.props.t("Email")}:`}
+              labelText={`${t("Email")}:`}
               inputName="email"
-              inputValue={this.state.profile.email}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={this.onDialogShow}
+              inputValue={profile.email}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
+              buttonOnClick={this.onEmailChange}
+              buttonTabIndex={1}
             />
             <TextChangeField
-              labelText={`${this.props.t("Password")}:`}
+              labelText={`${t("Password")}:`}
               inputName="password"
-              inputValue={this.state.profile.password}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={this.onDialogShow}
+              inputValue={profile.password}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
+              buttonOnClick={this.onPasswordChange}
+              buttonTabIndex={2}
             />
             <TextChangeField
-              labelText={`${this.props.t("Phone")}:`}
+              labelText={`${t("Phone")}:`}
               inputName="phone"
-              inputValue={this.state.profile.phone}
-              buttonText={this.props.t("ChangeButton")}
-              buttonIsDisabled={this.state.isLoading}
-              buttonOnClick={this.onDialogShow}
+              inputValue={profile.phone}
+              buttonText={t("ChangeButton")}
+              buttonIsDisabled={isLoading}
+              buttonOnClick={this.onPhoneChange}
+              buttonTabIndex={3}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.firstName}
-              labelText={`${this.props.t("FirstName")}:`}
+              hasError={errors.firstName}
+              labelText={`${t("FirstName")}:`}
               inputName="firstName"
-              inputValue={this.state.profile.firstName}
-              inputIsDisabled={this.state.isLoading}
-              inputOnChange={this.onTextChange}
+              inputValue={profile.firstName}
+              inputIsDisabled={isLoading}
+              inputOnChange={this.onInputChange}
+              inputAutoFocussed={true}
+              inputTabIndex={4}
             />
             <TextField
               isRequired={true}
-              hasError={this.state.errors.lastName}
-              labelText={`${this.props.t("LastName")}:`}
+              hasError={errors.lastName}
+              labelText={`${t("LastName")}:`}
               inputName="lastName"
-              inputValue={this.state.profile.lastName}
-              inputIsDisabled={this.state.isLoading}
-              inputOnChange={this.onTextChange}
+              inputValue={profile.lastName}
+              inputIsDisabled={isLoading}
+              inputOnChange={this.onInputChange}
+              inputTabIndex={5}
             />
             <DateField
-              labelText={`${this.props.t("Birthdate")}:`}
+              labelText={`${t("Birthdate")}:`}
               inputName="birthday"
-              inputValue={this.state.profile.birthday ? new Date(this.state.profile.birthday) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onBirthdayDateChange}
+              inputTabIndex={6}
             />
             <RadioField
-              labelText={`${this.props.t("Sex")}:`}
+              labelText={`${t("Sex")}:`}
               radioName="sex"
-              radioValue={this.state.profile.sex}
+              radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: this.props.t("SexMale")},
-                { value: 'female', label: this.props.t("SexFemale")}
+                { value: 'male', label: t("SexMale")},
+                { value: 'female', label: t("SexFemale")}
               ]}
-              radioIsDisabled={this.state.isLoading}
-              radioOnChange={this.onTextChange}
+              radioIsDisabled={isLoading}
+              radioOnChange={this.onInputChange}
             />
             <RadioField
-              labelText={`${this.props.t("UserType")}:`}
-              radioName="sex"
-              radioValue={this.state.profile.isVisitor.toString()}
+              labelText={`${t("UserType")}:`}
+              radioName="isVisitor"
+              radioValue={profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: this.props.t("CustomTypeGuest", { typeGuest })},
-                { value: "false", label: this.props.t("CustomTypeUser", { typeUser })}
+                { value: "true", label: t("CustomTypeGuest", { typeGuest })},
+                { value: "false", label: t("CustomTypeUser", { typeUser })}
               ]}
-              radioIsDisabled={this.state.isLoading}
-              radioOnChange={this.onTextChange}
+              radioIsDisabled={isLoading}
+              radioOnChange={this.onUserTypeChange}
             />
             <DateField
-              labelText={`${this.props.t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
-              inputValue={this.state.profile.workFrom ? new Date(this.state.profile.workFrom) : undefined}
-              inputIsDisabled={this.state.isLoading}
+              inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
+              inputIsDisabled={isLoading}
               inputOnChange={this.onWorkFromDateChange}
+              inputTabIndex={7}
             />
             <TextField
-              labelText={`${this.props.t("Location")}:`}
+              labelText={`${t("Location")}:`}
               inputName="location"
-              inputValue={this.state.profile.location}
-              inputIsDisabled={this.state.isLoading}
-              inputOnChange={this.onTextChange}
+              inputValue={profile.location}
+              inputIsDisabled={isLoading}
+              inputOnChange={this.onInputChange}
+              inputTabIndex={8}
             />
             <TextField
-              labelText={`${this.props.t("CustomPosition", { position })}:`}
+              labelText={`${t("CustomPosition", { position })}:`}
               inputName="title"
-              inputValue={this.state.profile.title}
-              inputIsDisabled={this.state.isLoading}
-              inputOnChange={this.onTextChange}
+              inputValue={profile.title}
+              inputIsDisabled={isLoading}
+              inputOnChange={this.onInputChange}
+              inputTabIndex={9}
             />
             <DepartmentField
-              labelText={`${this.props.t("CustomDepartment", { department })}:`}
-              departments={this.state.profile.groups}
+              labelText={`${t("CustomDepartment", { department })}:`}
+              isDisabled={isLoading}
+              departments={profile.groups}
+              addButtonTitle={t("Add")}
+              onAddDepartment={this.onAddGroup}
               onRemoveDepartment={this.onGroupClose}
             />
           </MainFieldsContainer>
         </MainContainer>
+        <InfoFieldContainer headerText={t("Comments")}>
+          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("ContactInformation")}>
+          <ContactsField
+            pattern={pattern.contact}
+            contacts={contacts.contact}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
+        <InfoFieldContainer headerText={t("SocialProfiles")}>
+          <ContactsField
+            pattern={pattern.social}
+            contacts={contacts.social}
+            isDisabled={isLoading}
+            addItemText={t("AddContact")}
+            onItemAdd={this.onContactsItemAdd}
+            onItemTypeChange={this.onContactsItemTypeChange}
+            onItemTextChange={this.onContactsItemTextChange}
+          /> 
+        </InfoFieldContainer>
         <div>
-          <Text.ContentHeader>{this.props.t("Comments")}</Text.ContentHeader>
-          <Textarea name="notes" value={this.state.profile.notes} isDisabled={this.state.isLoading} onChange={this.onTextChange}/> 
+          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11}/>
+          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
         </div>
-        <div style={{marginTop: "60px"}}>
-          <Button label={this.props.t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={this.state.isLoading} size="big"/>
-          <Button label={this.props.t("CancelButton")} onClick={this.onCancel} isDisabled={this.state.isLoading} size="big" style={{ marginLeft: "8px" }}/>
-        </div>
-
         <ModalDialog
-          visible={this.state.isDialogVisible}
-          headerContent={"Change something"}
-          bodyContent={<p>Send the something instructions?</p>}
-          footerContent={<Button label="Send" primary={true} onClick={this.onDialogClose} />}
+          visible={dialog.visible}
+          headerContent={dialog.header}
+          bodyContent={dialog.body}
+          footerContent={dialog.buttons}
           onClose={this.onDialogClose}
         />
       </>

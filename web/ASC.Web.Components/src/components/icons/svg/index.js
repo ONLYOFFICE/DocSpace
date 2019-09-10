@@ -124,6 +124,7 @@ import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
 
 import OrigEyeIcon from './eye.react.svg';
+import OrigEyeOffIcon from './eye.off.react.svg';
 import OrigMenuIcon from './menu.react.svg';
 
 import OrigNavLogoIcon from './nav.logo.react.svg';
@@ -395,6 +396,10 @@ export const ExternalLinkIcon = createStyledIcon(
 export const EyeIcon = createStyledIcon(
   OrigEyeIcon,
   'EyeIcon'
+);
+export const EyeOffIcon = createStyledIcon(
+  OrigEyeOffIcon,
+  'EyeOffIcon'
 );
 export const FileActionsConvertEditDocIcon = createStyledIcon(
   OrigFileActionsConvertEditDocIcon,

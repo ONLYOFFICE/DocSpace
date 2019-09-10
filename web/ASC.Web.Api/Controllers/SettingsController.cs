@@ -267,6 +267,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/password")]
+        [Authorize(AuthenticationSchemes = "confirm")]
         public object GetPasswordSettings()
         {
             var UserPasswordSettings = PasswordSettings.Load();

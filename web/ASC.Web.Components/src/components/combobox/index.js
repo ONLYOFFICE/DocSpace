@@ -95,8 +95,8 @@ const StyledLabel = styled.div`
 const StyledArrowIcon = styled.div`
   display: flex;
   align-self: start;
-  width: 8px;
-  flex: 0 0 8px;
+  width: ${props => props.needDisplay ? '8px' : '0px'};
+  flex: 0 0 ${props => props.needDisplay ? '8px' : '0px'};
   margin-top: ${props => props.noBorder ? `5px` : `12px`};
   margin-right: ${props => props.needDisplay ? '8px' : '0px'};
   margin-left: ${props => props.needDisplay ? 'auto' : '0px'};
@@ -146,7 +146,7 @@ class ComboBox extends React.PureComponent {
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
-  };
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.opened !== prevProps.opened) {
@@ -160,7 +160,7 @@ class ComboBox extends React.PureComponent {
     if (this.props.selectedOption !== prevProps.selectedOption) {
       this.setState({ selectedOption: this.props.selectedOption });
     }
-  };
+  }
 
   render() {
     //console.log("ComboBox render");
@@ -233,6 +233,7 @@ class ComboBox extends React.PureComponent {
           ? advancedOptions 
           : options.map((option) =>
             <DropDownItem {...option}
+              key={option.key}
               disabled={option.disabled || (option.label === selectedOption.label)}
               onClick={this.optionClick.bind(this, option)}
             />
@@ -241,7 +242,7 @@ class ComboBox extends React.PureComponent {
       </StyledComboBox>
     );
   }
-};
+}
 
 ComboBox.propTypes = {
   noBorder: PropTypes.bool,
@@ -250,10 +251,14 @@ ComboBox.propTypes = {
 
   options: PropTypes.array.isRequired,
   advancedOptions: PropTypes.element,
+  children: PropTypes.any,
+  opened: PropTypes.bool,
 
   onSelect: PropTypes.func,
   dropDownMaxHeight: PropTypes.number,
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
+  directionX: PropTypes.oneOf(['left', 'right']),
+  directionY: PropTypes.oneOf(['bottom', 'top']),
   scaled: PropTypes.bool
 }
 

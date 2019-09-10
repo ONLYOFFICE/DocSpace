@@ -14,7 +14,7 @@ class Layout extends React.Component {
     super(props);
     this.timeout = null;
     this.state = this.mapPropsToState(props);
-  };
+  }
 
   /*shouldComponentUpdate() {
     return false;
@@ -218,7 +218,7 @@ class Layout extends React.Component {
       </>
     );
   }
-};
+}
 
 Layout.propTypes = {
   isBackdropVisible: PropTypes.bool,

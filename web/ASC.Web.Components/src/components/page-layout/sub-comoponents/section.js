@@ -6,7 +6,6 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden auto;
 `;
 
 class Section extends React.Component {
@@ -16,7 +15,7 @@ class Section extends React.Component {
   render() {
     //console.log("PageLayout Section render");
     return (<StyledSection {...this.props} />);
-  };
-};
+  }
+}
 
 export default Section;

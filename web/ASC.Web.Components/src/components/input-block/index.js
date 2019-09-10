@@ -102,6 +102,8 @@ const InputBlock = React.forwardRef((props, ref) => {
         scale={props.scale}
         onChange={onChange}
         withBorder={false}
+        mask={props.mask}
+        keepCharPositions={props.keepCharPositions}
       />
       {
         iconNames.includes(props.iconName)
@@ -130,6 +132,8 @@ InputBlock.propTypes = {
   maxLength: PropTypes.number,
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
+  mask: PropTypes.oneOfType([ PropTypes.array, PropTypes.func ]),
+  keepCharPositions: PropTypes.bool,
 
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
   scale: PropTypes.bool,
@@ -175,7 +179,8 @@ InputBlock.defaultProps = {
   iconName: "",
   iconColor: "#ffffff",
   isIconFill: false,
-  isDisabled: false
+  isDisabled: false,
+  keepCharPositions: false
 }
 
 export default InputBlock

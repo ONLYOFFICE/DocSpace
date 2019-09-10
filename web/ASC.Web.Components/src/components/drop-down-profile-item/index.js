@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import Avatar from '../avatar'
@@ -53,7 +53,8 @@ const UserEmailWrapper = styled.div`
     ${commonStyle}
 `;
 
-const DropDownProfileItem = React.memo(props => {
+// eslint-disable-next-line react/display-name
+const DropDownProfileItem = memo(props => {
   //console.log("DropDownItem render");
   const { displayName, email, avatarRole, avatarSource } = props;
 
@@ -74,7 +75,7 @@ const DropDownProfileItem = React.memo(props => {
   );
 });
 
-DropDownItem.propTypes = {
+DropDownProfileItem.propTypes = {
   displayName: PropTypes.string,
   email: PropTypes.string,
   avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),

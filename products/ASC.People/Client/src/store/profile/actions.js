@@ -26,33 +26,6 @@ export function checkResponseError(res) {
     }
 }
 
-export function getUserRole(profile) {
-    if(profile.isOwner) return "owner";
-    if(profile.isAdmin) return "admin";
-    if(profile.isVisitor) return "guest";
-    return "user";
-};
-
-export function toEmployeeWrapper(profile) {
-    const emptyData = {
-        id: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        birthday: "",
-        sex: "male",
-        passwordType: "link",
-        workFrom: "",
-        location: "",
-        title: "",
-        groups: [],
-        notes: ""
-    };
-
-    return { ...emptyData, ...profile };
-}
-
 export function employeeWrapperToMemberModel(profile) {
     const comment = profile.notes;
     const department = profile.groups ? profile.groups.map(group => group.id) : [];

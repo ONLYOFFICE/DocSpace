@@ -18,7 +18,7 @@ class PageLayout extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = this.mapPropsToState(props);
-  };
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.hasChanges(this.props,prevProps)) {
@@ -113,7 +113,7 @@ class PageLayout extends React.PureComponent {
       <>
         {
           this.state.isBackdropAvailable &&
-          <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
+          <Backdrop zIndex={400} visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
         }
         {
           this.state.isArticleAvailable &&

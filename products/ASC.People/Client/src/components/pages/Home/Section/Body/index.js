@@ -86,6 +86,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="OkBtn"
             label="Send"
+            size="medium"
             primary={true}
             onClick={() => {
               const { onLoading } = this.props;
@@ -107,6 +108,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="CancelBtn"
             label="Cancel"
+            size="medium"
             primary={false}
             onClick={this.onDialogClose}
             style={{ marginLeft: "8px" }}
@@ -142,6 +144,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="OkBtn"
             label="Send"
+            size="medium"
             primary={true}
             onClick={() => {
               toastr.success(
@@ -153,6 +156,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="CancelBtn"
             label="Cancel"
+            size="medium"
             primary={false}
             onClick={this.onDialogClose}
             style={{ marginLeft: "8px" }}
@@ -215,6 +219,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="OkBtn"
             label="OK"
+            size="medium"
             primary={true}
             onClick={() => {
               const { onLoading, filter, fetchPeople } = this.props;
@@ -232,6 +237,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="ReassignBtn"
             label="Reassign data"
+            size="medium"
             primary={true}
             onClick={() => {
               toastr.success("Context action: Reassign profile");
@@ -242,6 +248,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="CancelBtn"
             label="Cancel"
+            size="medium"
             primary={false}
             onClick={this.onDialogClose}
             style={{ marginLeft: "8px" }}
@@ -268,6 +275,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="OkBtn"
             label="Send"
+            size="medium"
             primary={true}
             onClick={() => {
               const { onLoading } = this.props;
@@ -289,6 +297,7 @@ class SectionBodyContent extends React.PureComponent {
           <Button
             key="CancelBtn"
             label="Cancel"
+            size="medium"
             primary={false}
             onClick={this.onDialogClose}
             style={{ marginLeft: "8px" }}

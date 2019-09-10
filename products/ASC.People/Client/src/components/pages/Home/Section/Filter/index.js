@@ -198,6 +198,8 @@ const SectionFilterContent = ({
       getSortData={getSortData.bind(this, t)}
       selectedFilterData={selectedFilterData}
       onFilter={onFilter}
+      directionAscLabel={t("DirectionAscLabel")}
+      directionDescLabel={t("DirectionDescLabel")}
     />
   );
 };

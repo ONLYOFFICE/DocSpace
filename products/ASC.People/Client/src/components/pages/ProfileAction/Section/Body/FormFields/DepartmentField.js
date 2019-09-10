@@ -1,13 +1,15 @@
 import React from 'react'
-import { FieldContainer, SelectedItem } from 'asc-web-components'
+import { FieldContainer, SelectorAddButton, SelectedItem } from 'asc-web-components'
 
 const DepartmentField = React.memo((props) => {
   const {
     isRequired,
+    isDisabled,
     hasError,
     labelText,
-    
+    addButtonTitle,
     departments,
+    onAddDepartment,
     onRemoveDepartment
   } = props;
 
@@ -16,14 +18,20 @@ const DepartmentField = React.memo((props) => {
       isRequired={isRequired}
       hasError={hasError}
       labelText={labelText}
+      className="departments-field"
     >
+      <SelectorAddButton
+        isDisabled={isDisabled}
+        title={addButtonTitle}
+        onClick={onAddDepartment}
+      />
       {departments && departments.map((department) => (      
         <SelectedItem
           key={`department_${department.id}`}    
           text={department.name}
           onClose={() => { onRemoveDepartment(department.id) }}
           isInline={true}
-          className={"department-item"}
+          className="department-item"
         />
       ))}
     </FieldContainer>

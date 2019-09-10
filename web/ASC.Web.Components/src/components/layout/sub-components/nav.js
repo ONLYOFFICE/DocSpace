@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import device from '../../device'
+import { tablet } from '../../../utils/device'
 import Scrollbar from '../../scrollbar';
 
 const backgroundColor = '#0F4071';
@@ -17,7 +17,7 @@ const StyledNav = styled.nav`
   width: ${props => props.opened ? '240px' : '56px'};
   z-index: 200;
 
-  @media ${device.tablet} {
+  @media ${tablet} {
     width: ${props => props.opened ? '240px' : '0'};
   }
 `;

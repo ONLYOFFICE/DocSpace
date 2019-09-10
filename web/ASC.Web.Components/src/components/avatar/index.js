@@ -56,7 +56,7 @@ const RoleWrapper = styled.div`
 `;
 
 const ImageStyled = styled.img`
-    max-width: 100%; 
+    width: 100%; 
     height: auto;
     border-radius: 50%;
 
@@ -119,9 +119,14 @@ const EditLink = styled.div`
   padding-left: 10px;
   padding-right: 10px;
 
+  a:hover {
+      border-bottom: none
+  }
+
   span {
     display: inline-block;
     max-width: 100%;
+    text-decoration: underline dashed;
   }
 `;
 
@@ -150,6 +155,11 @@ const Initials = props => (
   <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>
 );
 
+Initials.propTypes = {
+  userName: PropTypes.string
+};
+
+// eslint-disable-next-line react/display-name
 const Avatar = memo(props => {
   //console.log("Avatar render");
   const { size, source, userName, role, editing, editLabel, editAction } = props;
@@ -175,7 +185,6 @@ const Avatar = memo(props => {
               title={editLabel}
               isTextOverflow={true}
               fontSize={14}
-              isHovered={true}
               color={whiteColor}
               onClick={editAction}
             >
@@ -196,7 +205,8 @@ Avatar.propTypes = {
   source: PropTypes.string,
   editLabel: PropTypes.string,
   userName: PropTypes.string,
-  editing: PropTypes.bool
+  editing: PropTypes.bool,
+  editAction: PropTypes.func
 };
 
 Avatar.defaultProps = {
