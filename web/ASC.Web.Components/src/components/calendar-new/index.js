@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import ComboBox from "../combobox";
-import moment from "moment/min/moment-with-locales";
+import moment from "moment";
 import { Weekdays, Days } from "./sub-components";
 import isEmpty from "lodash/isEmpty";
 
