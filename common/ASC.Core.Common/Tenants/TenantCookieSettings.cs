@@ -88,7 +88,7 @@ namespace ASC.Core.Tenants
             (settings ?? GetInstance()).SaveForTenant(tenantId);
         }
 
-        public static TenantCookieSettings GetForUser(Guid userId)
+        public TenantCookieSettings GetForUser(Guid userId)
         {
             return IsVisibleSettings
                        ? LoadForUser(userId)

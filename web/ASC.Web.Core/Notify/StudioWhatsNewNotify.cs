@@ -56,8 +56,9 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
         {
             var log = LogManager.GetLogger("ASC.Notify.WhatsNew");
+            var WebItemManager = ServiceProvider.GetService<WebItemManager>();
 
-            if (WebItemManager.Instance.GetItemsAll<IProduct>().Count == 0)
+            if (WebItemManager.GetItemsAll<IProduct>().Count == 0)
             {
                 log.Info("No products. Return from function");
                 return;
@@ -65,7 +66,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start send whats new.");
 
-            var products = WebItemManager.Instance.GetItemsAll().ToDictionary(p => p.GetSysName());
+            var products = WebItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
 
             foreach (var tenantid in GetChangedTenants(scheduleDate))
             {

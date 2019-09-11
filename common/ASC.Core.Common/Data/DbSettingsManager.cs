@@ -41,7 +41,7 @@ using ASC.Core.Common.Settings;
 
 namespace ASC.Core.Data
 {
-    internal class DbSettingsManager
+    public class DbSettingsManager
     {
         private static readonly ILog log = LogManager.GetLogger("ASC");
 

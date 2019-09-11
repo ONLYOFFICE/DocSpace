@@ -168,7 +168,7 @@ namespace ASC.Web.Studio.Core.TFA
             return list;
         }
 
-        private static string GenerateAccessToken(UserInfo user)
+        private string GenerateAccessToken(UserInfo user)
         {
             return Signature.Create(TfaAppUserSettings.GetSalt(user.ID)).Substring(0, 10);
         }

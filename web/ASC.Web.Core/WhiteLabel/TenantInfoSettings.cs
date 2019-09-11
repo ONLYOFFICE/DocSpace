@@ -50,11 +50,19 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "Default")]
         private bool _isDefault { get; set; }
 
+        public TenantInfoSettings()
+        {
+        }
+        public TenantInfoSettings(AuthContext authContext, SettingsManager settingsManager, WebImageSupplier webImageSupplier) : base(authContext, settingsManager)
+        {
+            WebImageSupplier = webImageSupplier;
+        }
+
         #region ISettings Members
 
         public override ISettings GetDefault()
         {
-            return new TenantInfoSettings
+            return new TenantInfoSettings()
             {
                 _isDefault = true
             };
@@ -148,6 +156,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get { return new Guid("{5116B892-CCDD-4406-98CD-4F18297C0C0A}"); }
         }
+
+        public WebImageSupplier WebImageSupplier { get; }
 
         #endregion
     }

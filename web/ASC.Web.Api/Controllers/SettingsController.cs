@@ -104,6 +104,8 @@ namespace ASC.Api.Settings
         public CollaboratorSettings CollaboratorSettings { get; }
         public PersonalQuotaSettings PersonalQuotaSettings { get; }
         public TfaManager TfaManager { get; }
+        public WebItemManager WebItemManager { get; }
+        public WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
@@ -123,7 +125,9 @@ namespace ASC.Api.Settings
             TfaAppUserSettings tfaAppUserSettings,
             CollaboratorSettings collaboratorSettings,
             PersonalQuotaSettings personalQuotaSettings,
-            TfaManager tfaManager)
+            TfaManager tfaManager,
+            WebItemManager webItemManager,
+            WebItemManagerSecurity webItemManagerSecurity)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -144,6 +148,8 @@ namespace ASC.Api.Settings
             CollaboratorSettings = collaboratorSettings;
             PersonalQuotaSettings = personalQuotaSettings;
             TfaManager = tfaManager;
+            WebItemManager = webItemManager;
+            WebItemManagerSecurity = webItemManagerSecurity;
         }
 
         [Read("")]
@@ -171,7 +177,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings);
+            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings, WebItemManager);
         }
 
         [Read("recalculatequota")]
@@ -237,10 +243,10 @@ namespace ASC.Api.Settings
         {
             if (ids == null || !ids.Any())
             {
-                ids = WebItemManager.Instance.GetItemsAll().Select(i => i.ID.ToString());
+                ids = WebItemManager.GetItemsAll().Select(i => i.ID.ToString());
             }
 
-            var subItemList = WebItemManager.Instance.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
+            var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
             return ids.Select(r => WebItemSecurity.GetSecurityInfo(Tenant.TenantId, r))
                       .Select(i => new SecurityWrapper
@@ -256,7 +262,7 @@ namespace ASC.Api.Settings
         [Read("security/{id}")]
         public bool GetWebItemSecurityInfo(Guid id)
         {
-            var module = WebItemManager.Instance[id];
+            var module = WebItemManager[id];
 
             return module != null && !module.IsDisabled(Tenant, WebItemSecurity, AuthContext);
         }
@@ -264,7 +270,7 @@ namespace ASC.Api.Settings
         [Read("security/modules")]
         public object GetEnabledModules()
         {
-            var EnabledModules = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal, WebItemSecurity, AuthContext)
+            var EnabledModules = WebItemManagerSecurity.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal)
                                         .Where(item => !item.IsSubItem() && item.Visible)
                                         .ToList()
                                         .Select(item => new
@@ -341,7 +347,7 @@ namespace ASC.Api.Settings
 
                 if (item.Value)
                 {
-                    if (WebItemManager.Instance[productId] is IProduct webItem)
+                    if (WebItemManager[productId] is IProduct webItem)
                     {
                         var productInfo = WebItemSecurity.GetSecurityInfo(Tenant.TenantId, item.Key);
                         var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
@@ -832,9 +838,9 @@ namespace ASC.Api.Settings
         }
 
 
-        private static string GetProductName(Guid productId)
+        private string GetProductName(Guid productId)
         {
-            var product = WebItemManager.Instance[productId];
+            var product = WebItemManager[productId];
             return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
         }
 
@@ -968,7 +974,7 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All, WebItemSecurity, AuthContext)
+            var webtem = WebItemManagerSecurity.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&

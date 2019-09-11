@@ -248,12 +248,14 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
             using var scope = ServiceProvider.CreateScope();
-            var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
             var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
-            CommonLinkUtility.GetLocationByRequest(tenant, userManager, webItemSecurity, authContext,out var product, out var module, null);
+            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
+            var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
+
+            CommonLinkUtility.GetLocationByRequest(tenant, webItemManagerSecurity, webItemManager, out var product, out var module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
-                product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
+                product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;

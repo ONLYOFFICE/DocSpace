@@ -41,7 +41,6 @@ namespace ASC.Notify
                     var serviceProvider = services.BuildServiceProvider();
                     ConfigurationManager.Init(serviceProvider);
                     CommonServiceProvider.Init(serviceProvider);
-                    serviceProvider.UseWebItemManager();
 
                     var c = ConfigurationManager.GetSetting<NotifyServiceCfg>("notify");
                     c.Init();

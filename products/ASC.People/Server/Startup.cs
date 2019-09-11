@@ -207,7 +207,6 @@ namespace ASC.People
 
             app.UseCSP();
             app.UseCm();
-            app.UseWebItemManager();
             app.UseStaticFiles();
         }
     }

@@ -37,7 +37,6 @@ using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.Utility;
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Core
 {
@@ -51,6 +50,7 @@ namespace ASC.Web.Core
         public AuthContext AuthContext { get; }
         public PermissionContext PermissionContext { get; }
         public AuthManager Authentication { get; }
+        public WebItemManager WebItemManager { get; }
 
         static WebItemSecurity()
         {
@@ -69,12 +69,13 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemSecurity(UserManager userManager, AuthContext  authContext,PermissionContext permissionContext, AuthManager authentication)
+        public WebItemSecurity(UserManager userManager, AuthContext  authContext,PermissionContext permissionContext, AuthManager authentication, WebItemManager webItemManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
             PermissionContext = permissionContext;
             Authentication = authentication;
+            WebItemManager = webItemManager;
         }
 
         //
@@ -106,7 +107,7 @@ namespace ASC.Web.Core
             }
 
             // can read or administrator
-            var securityObj = WebItemSecurityObject.Create(id);
+            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
             if (CoreContext.Configuration.Personal
                 && securityObj.WebItemId != WebItemManager.DocumentsProductID)
@@ -116,7 +117,7 @@ namespace ASC.Web.Core
             }
             else
             {
-                var webitem = WebItemManager.Instance[securityObj.WebItemId];
+                var webitem = WebItemManager[securityObj.WebItemId];
                 if (webitem != null)
                 {
                     if ((webitem.ID == WebItemManager.CRMProductID ||
@@ -138,7 +139,7 @@ namespace ASC.Web.Core
                     else if (webitem is IModule)
                     {
                         result = PermissionContext.PermissionResolver.Check(tenant, Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
-                            IsAvailableForUser(tenant, WebItemManager.Instance.GetParentItemID(webitem.ID), @for);
+                            IsAvailableForUser(tenant, WebItemManager.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
@@ -164,12 +165,12 @@ namespace ASC.Web.Core
             return result;
         }
 
-        public static void SetSecurity(string id, bool enabled, params Guid[] subjects)
+        public void SetSecurity(string id, bool enabled, params Guid[] subjects)
         {
             if (TenantAccessSettings.Load().Anyone)
                 throw new SecurityException("Security settings are disabled for an open portal");
 
-            var securityObj = WebItemSecurityObject.Create(id);
+            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
             // remove old aces
             CoreContext.AuthorizationManager.RemoveAllAces(securityObj);
@@ -198,7 +199,7 @@ namespace ASC.Web.Core
         public WebItemSecurityInfo GetSecurityInfo(int tenantId, string id)
         {
             var info = GetSecurity(id).ToList();
-            var module = WebItemManager.Instance.GetParentItemID(new Guid(id)) != Guid.Empty;
+            var module = WebItemManager.GetParentItemID(new Guid(id)) != Guid.Empty;
             return new WebItemSecurityInfo
             {
                 WebItemId = id,
@@ -215,9 +216,9 @@ namespace ASC.Web.Core
             };
         }
 
-        private static IEnumerable<Tuple<Guid, bool>> GetSecurity(string id)
+        private IEnumerable<Tuple<Guid, bool>> GetSecurity(string id)
         {
-            var securityObj = WebItemSecurityObject.Create(id);
+            var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
             var result = CoreContext.AuthorizationManager
                 .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
                 .GroupBy(a => a.SubjectId)
@@ -258,7 +259,7 @@ namespace ASC.Web.Core
                 if (productid == ASC.Core.Users.Constants.GroupAdmin.ID)
                 {
                     var groups = new List<Guid> { WebItemManager.MailProductID };
-                    groups.AddRange(WebItemManager.Instance.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
+                    groups.AddRange(WebItemManager.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
 
                     foreach (var id in groups)
                     {
@@ -292,7 +293,7 @@ namespace ASC.Web.Core
             if (productid == Guid.Empty)
             {
                 groups.Add(ASC.Core.Users.Constants.GroupAdmin.ID);
-                groups.AddRange(WebItemManager.Instance.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
+                groups.AddRange(WebItemManager.GetItemsAll().OfType<IProduct>().Select(p => p.ID));
                 groups.Add(WebItemManager.MailProductID);
             }
             else
@@ -331,7 +332,7 @@ namespace ASC.Web.Core
         private class WebItemSecurityObject : ISecurityObject
         {
             public Guid WebItemId { get; private set; }
-
+            public WebItemManager WebItemManager { get; }
 
             public Type ObjectType
             {
@@ -354,7 +355,7 @@ namespace ASC.Web.Core
             }
 
 
-            public static WebItemSecurityObject Create(string id)
+            public static WebItemSecurityObject Create(string id, WebItemManager webItemManager)
             {
                 if (string.IsNullOrEmpty(id))
                 {
@@ -368,25 +369,26 @@ namespace ASC.Web.Core
                 }
                 else
                 {
-                    var w = WebItemManager.Instance
+                    var w = webItemManager
                         .GetItemsAll()
                         .FirstOrDefault(i => id.Equals(i.GetSysName(), StringComparison.InvariantCultureIgnoreCase));
                     if (w != null) itemId = w.ID;
                 }
-                return new WebItemSecurityObject(itemId);
+                return new WebItemSecurityObject(itemId, webItemManager);
             }
 
 
-            private WebItemSecurityObject(Guid itemId)
+            private WebItemSecurityObject(Guid itemId, WebItemManager webItemManager)
             {
                 WebItemId = itemId;
+                WebItemManager = webItemManager;
             }
 
             public ISecurityObjectId InheritFrom(ISecurityObjectId objectId)
             {
                 if (objectId is WebItemSecurityObject s)
                 {
-                    return WebItemSecurityObject.Create(WebItemManager.Instance.GetParentItemID(s.WebItemId).ToString("N")) is WebItemSecurityObject parent && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
+                    return Create(WebItemManager.GetParentItemID(s.WebItemId).ToString("N"), WebItemManager) is WebItemSecurityObject parent && parent.WebItemId != s.WebItemId && parent.WebItemId != Guid.Empty ? parent : null;
                 }
                 return null;
             }

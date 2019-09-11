@@ -125,7 +125,12 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraperFull(UserInfo userInfo, ApiContext context, UserManager userManager, UserPhotoManager userphotomanager, WebItemSecurity webItemSecurity)
+        public EmployeeWraperFull(
+            UserInfo userInfo, 
+            ApiContext context, 
+            UserManager userManager, 
+            UserPhotoManager userphotomanager, 
+            WebItemSecurity webItemSecurity)
             : base(userInfo, context, userManager, userphotomanager)
         {
             UserName = userInfo.UserName;

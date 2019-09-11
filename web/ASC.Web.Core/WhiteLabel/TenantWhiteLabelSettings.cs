@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
@@ -47,6 +48,14 @@ namespace ASC.Web.Core.WhiteLabel
     public class TenantWhiteLabelSettings : BaseSettings<TenantWhiteLabelSettings>
     {
         public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
+
+        public TenantWhiteLabelSettings()
+        {
+        }
+        public TenantWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, WebImageSupplier webImageSupplier) : base(authContext, settingsManager)
+        {
+            WebImageSupplier = webImageSupplier;
+        }
 
         #region Logos information: extension, isDefault, text for img auto generating
 
@@ -360,7 +369,7 @@ namespace ASC.Web.Core.WhiteLabel
             return GetAbsoluteDefaultLogoPath(type, general);
         }
 
-        public static string GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum type, bool general)
+        public string GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum type, bool general)
         {
             var partnerLogoPath = GetPartnerStorageLogoPath(type, general);
             if (!string.IsNullOrEmpty(partnerLogoPath))
@@ -495,6 +504,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
             get { return new Guid("{05d35540-c80b-4b17-9277-abd9e543bf93}"); }
         }
+
+        public WebImageSupplier WebImageSupplier { get; }
 
         #region Save for Resource replacement
 

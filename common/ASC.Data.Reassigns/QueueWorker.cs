@@ -63,8 +63,7 @@ namespace ASC.Data.Reassigns
             StudioNotifyService studioNotifyService,
             UserManager userManager,
             SecurityContext securityContext,
-            WebItemSecurity webItemSecurity,
-            AuthContext authContext)
+            WebItemSecurity webItemSecurity)
         {
             HttpContextAccessor = httpContextAccessor;
             MessageService = messageService;
@@ -72,7 +71,6 @@ namespace ASC.Data.Reassigns
             UserManager = userManager;
             SecurityContext = securityContext;
             WebItemSecurity = webItemSecurity;
-            AuthContext = authContext;
         }
 
         public string GetProgressItemId(int tenantId, Guid userId)
@@ -132,9 +130,8 @@ namespace ASC.Data.Reassigns
             UserPhotoManager userPhotoManager,
             QueueWorkerRemove queueWorkerRemove,
             SecurityContext securityContext,
-            WebItemSecurity webItemSecurity,
-            AuthContext authContext) : 
-            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity, authContext)
+            WebItemSecurity webItemSecurity) : 
+            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity)
         {
             UserPhotoManager = userPhotoManager;
             QueueWorkerRemove = queueWorkerRemove;
@@ -153,15 +150,17 @@ namespace ASC.Data.Reassigns
             UserManager userManager,
             SecurityContext securityContext,
             WebItemSecurity webItemSecurity,
-            AuthContext authContext) : 
-            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity, authContext)
+            WebItemManagerSecurity webItemManagerSecurity) : 
+            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity)
         {
-            
+            WebItemManagerSecurity = webItemManagerSecurity;
         }
+
+        public WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, UserManager, SecurityContext, WebItemSecurity, AuthContext, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, SecurityContext, WebItemManagerSecurity, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
         }
     }
 }

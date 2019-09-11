@@ -113,18 +113,6 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        private static WebItemManager instance;
-        public static WebItemManager Instance
-        {
-            get
-            {
-                return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>());
-            }
-            internal set
-            {
-                instance = value;
-            }
-        }
         public IContainer Container { get; }
 
         public IWebItem this[Guid id]
@@ -139,6 +127,7 @@ namespace ASC.Web.Core
         public WebItemManager(IContainer container)
         {
             Container = container;
+            LoadItems();
         }
 
         public void LoadItems()
@@ -193,47 +182,12 @@ namespace ASC.Web.Core
             }
         }
 
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, WebItemSecurity webItemSecurity, AuthContext authContext)
-        {
-            return GetItems(tenant, webZone, ItemAvailableState.Normal, webItemSecurity, authContext);
-        }
-
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState, WebItemSecurity webItemSecurity, AuthContext authContext)
-        {
-            var copy = items.Values.ToList();
-            var list = copy.Where(item =>
-                {
-                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant, webItemSecurity, authContext))
-                    {
-                        return false;
-                    }
-                    var attribute = (WebZoneAttribute)Attribute.GetCustomAttribute(item.GetType(), typeof(WebZoneAttribute), true);
-                    return attribute != null && (attribute.Type & webZone) != 0;
-                }).ToList();
-
-            list.Sort((x, y) => GetSortOrder(x).CompareTo(GetSortOrder(y)));
-            return list;
-        }
-
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, WebItemSecurity webItemSecurity, AuthContext authContext)
-        {
-            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal, webItemSecurity, authContext);
-        }
-
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState, WebItemSecurity webItemSecurity, AuthContext authContext)
-        {
-            return GetItems(tenant, WebZoneType.All, avaliableState, webItemSecurity, authContext).OfType<IModule>()
-                                                            .Where(p => p.ProjectId == parentItemID)
-                                                            .Cast<IWebItem>()
-                                                            .ToList();
-        }
-
         public Guid GetParentItemID(Guid itemID)
         {
             return this[itemID] is IModule m ? m.ProjectId : Guid.Empty;
         }
 
-        public static int GetSortOrder(IWebItem item)
+        public int GetSortOrder(IWebItem item)
         {
             return item != null && item.Context != null ? item.Context.DefaultSortOrder : 0;
         }
@@ -256,24 +210,61 @@ namespace ASC.Web.Core
         }
     }
 
+    public class WebItemManagerSecurity
+    {
+        public WebItemSecurity WebItemSecurity { get; }
+        public AuthContext AuthContext { get; }
+        public WebItemManager WebItemManager { get; }
+
+        public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
+        {
+            WebItemSecurity = webItemSecurity;
+            AuthContext = authContext;
+            WebItemManager = webItemManager;
+        }
+
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone)
+        {
+            return GetItems(tenant, webZone, ItemAvailableState.Normal);
+        }
+
+        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState)
+        {
+            var copy = WebItemManager.GetItemsAll().ToList();
+            var list = copy.Where(item =>
+                {
+                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant, WebItemSecurity, AuthContext))
+                    {
+                        return false;
+                    }
+                    var attribute = (WebZoneAttribute)Attribute.GetCustomAttribute(item.GetType(), typeof(WebZoneAttribute), true);
+                    return attribute != null && (attribute.Type & webZone) != 0;
+                }).ToList();
+
+            list.Sort((x, y) => WebItemManager.GetSortOrder(x).CompareTo(WebItemManager.GetSortOrder(y)));
+            return list;
+        }
+
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID)
+        {
+            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal);
+        }
+
+        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState)
+        {
+            return GetItems(tenant, WebZoneType.All, avaliableState).OfType<IModule>()
+                                                            .Where(p => p.ProjectId == parentItemID)
+                                                            .Cast<IWebItem>()
+                                                            .ToList();
+        }
+    }
+
     public static class WebItemManagerExtension
     {
         public static IServiceCollection AddWebItemManager(this IServiceCollection services)
         {
             services.AddSingleton<WebItemManager>();
             return services;
-        }
-        public static IApplicationBuilder UseWebItemManager(this IApplicationBuilder applicationBuilder)
-        {
-            UseWebItemManager(applicationBuilder.ApplicationServices);
-            return applicationBuilder;
-        }
-        public static IServiceProvider UseWebItemManager(this IServiceProvider serviceProvider)
-        {
-            var webItemManager = serviceProvider.GetService<WebItemManager>();
-            WebItemManager.Instance = webItemManager;
-            webItemManager.LoadItems();
-            return serviceProvider;
         }
     }
 }

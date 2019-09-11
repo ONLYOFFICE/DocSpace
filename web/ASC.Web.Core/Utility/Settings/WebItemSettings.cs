@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Utility.Settings
@@ -42,18 +43,23 @@ namespace ASC.Web.Core.Utility.Settings
 
         [DataMember(Name = "Settings")]
         public List<WebItemOption> SettingsCollection { get; set; }
-
+        public WebItemManager WebItemManager { get; }
 
         public WebItemSettings()
         {
             SettingsCollection = new List<WebItemOption>();
         }
 
+        public WebItemSettings(AuthContext authContext, SettingsManager settingsManager, WebItemManager webItemManager) : base(authContext, settingsManager)
+        {
+            SettingsCollection = new List<WebItemOption>();
+            WebItemManager = webItemManager;
+        }
 
         public override ISettings GetDefault()
         {
             var settings = new WebItemSettings();
-            WebItemManager.Instance.GetItemsAll().ForEach(w =>
+            WebItemManager.GetItemsAll().ForEach(w =>
             {
                 var opt = new WebItemOption()
                 {

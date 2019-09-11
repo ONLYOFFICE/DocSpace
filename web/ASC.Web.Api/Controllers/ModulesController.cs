@@ -13,19 +13,16 @@ namespace ASC.Web.Api.Controllers
     {
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
+        public WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public ModulesController(
             UserManager userManager, 
             TenantManager tenantManager, 
-            WebItemSecurity webItemSecurity,
-            AuthContext authContext)
+            WebItemManagerSecurity webItemManagerSecurity)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
-            WebItemSecurity = webItemSecurity;
-            AuthContext = authContext;
+            WebItemManagerSecurity = webItemManagerSecurity;
         }
 
         [Read]
@@ -33,7 +30,7 @@ namespace ASC.Web.Api.Controllers
         {
             var result = new List<string>();
 
-            foreach (var a in WebItemManager.Instance.GetItems(TenantManager.GetCurrentTenant(), WebZoneType.StartProductList, WebItemSecurity, AuthContext))
+            foreach (var a in WebItemManagerSecurity.GetItems(TenantManager.GetCurrentTenant(), WebZoneType.StartProductList))
             {
                 result.Add(a.ApiURL);
             }

@@ -50,12 +50,14 @@ namespace ASC.Web.Core
         public IHttpContextAccessor HttpContextAccessor { get; }
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
+        public TenantCookieSettings TenantCookieSettings { get; }
 
-        public CookiesManager(IHttpContextAccessor httpContextAccessor, UserManager userManager, SecurityContext securityContext)
+        public CookiesManager(IHttpContextAccessor httpContextAccessor, UserManager userManager, SecurityContext securityContext, TenantCookieSettings tenantCookieSettings)
         {
             HttpContextAccessor = httpContextAccessor;
             UserManager = userManager;
             SecurityContext = securityContext;
+            TenantCookieSettings = tenantCookieSettings;
         }
 
         private static string GetCookiesName(CookiesType type)

@@ -45,9 +45,10 @@ namespace ASC.Core.Common.Settings
 
         }
 
-        public BaseSettings(AuthContext authContext)
+        public BaseSettings(AuthContext authContext, SettingsManager settingsManager)
         {
             AuthContext = authContext;
+            SettingsManager = settingsManager;
         }
 
         private static int TenantID
@@ -75,9 +76,9 @@ namespace ASC.Core.Common.Settings
             return LoadForUser(CurrentUserID);
         }
 
-        public static T LoadForUser(Guid userId)
+        public T LoadForUser(Guid userId)
         {
-            return SettingsManagerInstance.LoadSettingsFor<T>(TenantID, userId);
+            return SettingsManager.LoadSettingsFor<T>(TenantID, userId);
         }
 
         public static T LoadForDefaultTenant()
@@ -92,7 +93,7 @@ namespace ASC.Core.Common.Settings
 
         public virtual bool Save()
         {
-            return SettingsManagerInstance.SaveSettings(this, TenantID);
+            return SettingsManager.SaveSettings(this, TenantID);
         }
 
         public bool SaveForCurrentUser()
@@ -122,6 +123,7 @@ namespace ASC.Core.Common.Settings
 
         public abstract Guid ID { get; }
         public AuthContext AuthContext { get; }
+        public SettingsManager SettingsManager { get; }
 
         public abstract ISettings GetDefault();
     }

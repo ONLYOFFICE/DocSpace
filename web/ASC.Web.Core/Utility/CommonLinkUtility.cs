@@ -229,20 +229,20 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID(Tenant tenant, HttpContext context, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext)
+        public static Guid GetProductID(Tenant tenant, HttpContext context, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager)
         {
             var productID = Guid.Empty;
 
             if (context != null)
             {
-                GetLocationByRequest(tenant, userManager, webItemSecurity, authContext, out var product, out _, context);
+                GetLocationByRequest(tenant, webItemManagerSecurity, webItemManager, out var product, out _, context);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(Tenant tenant, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext, out IProduct currentProduct, out IModule currentModule, HttpContext context)
+        public static void GetLocationByRequest(Tenant tenant, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule, HttpContext context)
         {
             var currentURL = string.Empty;
             if (context != null && context.Request != null)
@@ -257,10 +257,10 @@ namespace ASC.Web.Studio.Utility
                 //}
             }
 
-            GetLocationByUrl(tenant, currentURL, userManager, webItemSecurity, authContext, out currentProduct, out currentModule);
+            GetLocationByUrl(tenant, currentURL, webItemManagerSecurity, webItemManager, out currentProduct, out currentModule);
         }
 
-        public static IWebItem GetWebItemByUrl(string currentURL)
+        public static IWebItem GetWebItemByUrl(string currentURL, WebItemManager webItemManager)
         {
             if (!string.IsNullOrEmpty(currentURL))
             {
@@ -268,7 +268,7 @@ namespace ASC.Web.Studio.Utility
                 var itemName = GetWebItemNameFromUrl(currentURL);
                 if (!string.IsNullOrEmpty(itemName))
                 {
-                    foreach (var item in WebItemManager.Instance.GetItemsAll())
+                    foreach (var item in webItemManager.GetItemsAll())
                     {
                         var _itemName = GetWebItemNameFromUrl(item.StartURL);
                         if (string.Compare(itemName, _itemName, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -278,7 +278,7 @@ namespace ASC.Web.Studio.Utility
                 else
                 {
                     var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
-                    var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
+                    var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName], webItemManager);
                     var pid = productByName == null ? Guid.Empty : productByName.ID;
 
                     if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
@@ -294,14 +294,14 @@ namespace ASC.Web.Studio.Utility
                     }
 
                     if (pid != Guid.Empty)
-                        return WebItemManager.Instance[pid];
+                        return webItemManager[pid];
                 }
             }
 
             return null;
         }
 
-        public static void GetLocationByUrl(Tenant tenant, string currentURL, UserManager userManager, WebItemSecurity webItemSecurity, AuthContext authContext, out IProduct currentProduct, out IModule currentModule)
+        public static void GetLocationByUrl(Tenant tenant, string currentURL, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule)
         {
             currentProduct = null;
             currentModule = null;
@@ -309,7 +309,7 @@ namespace ASC.Web.Studio.Utility
             if (string.IsNullOrEmpty(currentURL)) return;
 
             var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
-            var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
+            var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName], webItemManager);
             var pid = productByName == null ? Guid.Empty : productByName.ID;
 
             if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
@@ -329,7 +329,7 @@ namespace ASC.Web.Studio.Utility
 
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(moduleName))
             {
-                foreach (var product in WebItemManager.Instance.GetItemsAll<IProduct>())
+                foreach (var product in webItemManager.GetItemsAll<IProduct>())
                 {
                     var _productName = GetProductNameFromUrl(product.StartURL);
                     if (!string.IsNullOrEmpty(_productName))
@@ -340,7 +340,7 @@ namespace ASC.Web.Studio.Utility
 
                             if (!string.IsNullOrEmpty(moduleName))
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID, webItemSecurity, authContext).OfType<IModule>())
+                                foreach (var module in webItemManagerSecurity.GetSubItems(tenant, product.ID).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
@@ -355,7 +355,7 @@ namespace ASC.Web.Studio.Utility
                             }
                             else
                             {
-                                foreach (var module in WebItemManager.Instance.GetSubItems(tenant, product.ID, webItemSecurity, authContext).OfType<IModule>())
+                                foreach (var module in webItemManagerSecurity.GetSubItems(tenant, product.ID).OfType<IModule>())
                                 {
                                     if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
                                     {
@@ -372,7 +372,7 @@ namespace ASC.Web.Studio.Utility
             }
 
             if (pid != Guid.Empty)
-                currentProduct = WebItemManager.Instance[pid] as IProduct;
+                currentProduct = webItemManager[pid] as IProduct;
         }
 
         private static string GetWebItemNameFromUrl(string url)
@@ -440,12 +440,12 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        private static IProduct GetProductBySysName(string sysName)
+        private static IProduct GetProductBySysName(string sysName, WebItemManager webItemManager)
         {
             IProduct result = null;
 
             if (!string.IsNullOrEmpty(sysName))
-                foreach (var product in WebItemManager.Instance.GetItemsAll<IProduct>())
+                foreach (var product in webItemManager.GetItemsAll<IProduct>())
                 {
                     if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
                     {

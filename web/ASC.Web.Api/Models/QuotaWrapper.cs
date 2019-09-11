@@ -86,17 +86,18 @@ namespace ASC.Web.Studio.Core.Quota
 
         public TenantExtra TenantExtra { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public WebItemManager WebItemManager { get; }
 
         public QuotaWrapper()
         {
 
         }
 
-        public QuotaWrapper(Tenant tenant, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, PersonalQuotaSettings personalQuotaSettings)
+        public QuotaWrapper(Tenant tenant, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, PersonalQuotaSettings personalQuotaSettings, WebItemManager webItemManager)
         {
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
-
+            WebItemManager = webItemManager;
             var quota = TenantExtra.GetTenantQuota();
             var quotaRows = TenantStatisticsProvider.GetQuotaRows(tenant.TenantId).ToList();
 
@@ -113,7 +114,7 @@ namespace ASC.Web.Studio.Core.Quota
             {
                 UserStorageSize = CoreContext.Configuration.PersonalMaxSpace(personalQuotaSettings);
 
-                var webItem = WebItemManager.Instance[WebItemManager.DocumentsProductID];
+                var webItem = WebItemManager[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
                 {
                     UserUsedSize = spaceUsageManager.GetUserSpaceUsage(authContext.CurrentAccount.ID);

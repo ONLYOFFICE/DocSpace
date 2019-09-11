@@ -64,9 +64,9 @@ namespace ASC.Web.Core.WhiteLabel
         public static string GetFavicon(bool general, bool timeParam)
         {
             string faviconPath;
+            var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
                 faviconPath = tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
                 if (timeParam)
                 {
@@ -76,7 +76,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
             else
             {
-                faviconPath = TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
+                faviconPath = tenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
             }
 
             return faviconPath;
@@ -84,13 +84,13 @@ namespace ASC.Web.Core.WhiteLabel
 
         public static string GetTopLogo(bool general)//LogoLightSmall
         {
+            var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
+
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-
                 return tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
             }
-            return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
+            return tenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
         }
 
         public static string GetLogoDark(bool general)
@@ -109,12 +109,13 @@ namespace ASC.Web.Core.WhiteLabel
 
         public static string GetLogoDocsEditor(bool general)
         {
+            var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
+
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
                 return tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
             }
-            return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
+            return tenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
         }
 
         public static string GetLogoText()

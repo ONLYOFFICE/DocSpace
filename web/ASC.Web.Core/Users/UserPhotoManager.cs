@@ -134,13 +134,17 @@ namespace ASC.Web.Core.Users
         }
 
         public UserManager UserManager { get; }
+        public WebImageSupplier WebImageSupplier { get; }
+        public UserPhotoThumbnailSettings UserPhotoThumbnailSettings { get; }
 
-        public UserPhotoManager(UserManager userManager)
+        public UserPhotoManager(UserManager userManager, WebImageSupplier webImageSupplier, UserPhotoThumbnailSettings userPhotoThumbnailSettings)
         {
             UserManager = userManager;
+            WebImageSupplier = webImageSupplier;
+            UserPhotoThumbnailSettings = userPhotoThumbnailSettings;
         }
 
-        public static string GetDefaultPhotoAbsoluteWebPath()
+        public string GetDefaultPhotoAbsoluteWebPath()
         {
             return WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
         }
@@ -202,27 +206,27 @@ namespace ASC.Web.Core.Users
         }
 
 
-        public static string GetDefaultSmallPhotoURL()
+        public string GetDefaultSmallPhotoURL()
         {
             return GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
         }
 
-        public static string GetDefaultMediumPhotoURL()
+        public string GetDefaultMediumPhotoURL()
         {
             return GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
         }
 
-        public static string GetDefaultBigPhotoURL()
+        public string GetDefaultBigPhotoURL()
         {
             return GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
         }
 
-        public static string GetDefaultMaxPhotoURL()
+        public string GetDefaultMaxPhotoURL()
         {
             return GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
         }
 
-        public static string GetDefaultRetinaPhotoURL()
+        public string GetDefaultRetinaPhotoURL()
         {
             return GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
         }
@@ -336,7 +340,7 @@ namespace ASC.Web.Core.Users
             return GetDefaultPhotoAbsoluteWebPath(size);
         }
 
-        private static string GetDefaultPhotoAbsoluteWebPath(Size size) =>
+        private string GetDefaultPhotoAbsoluteWebPath(Size size) =>
             size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => WebImageSupplier.GetAbsoluteWebPath(_defaultRetinaAvatar),
@@ -368,7 +372,7 @@ namespace ASC.Web.Core.Users
         }
 
 
-        private static string SearchInCache(int tenantId, Guid userId, Size size, out bool isDef)
+        private string SearchInCache(int tenantId, Guid userId, Size size, out bool isDef)
         {
             if (!IsCacheLoadedForTenant(tenantId))
                 LoadDiskCache(tenantId);
@@ -508,7 +512,7 @@ namespace ASC.Web.Core.Users
             return photoUrl;
         }
 
-        private static void SetUserPhotoThumbnailSettings(Guid userId, int width, int height)
+        private void SetUserPhotoThumbnailSettings(Guid userId, int width, int height)
         {
             var settings = UserPhotoThumbnailSettings.LoadForUser(userId);
 
@@ -698,7 +702,7 @@ namespace ASC.Web.Core.Users
             return data.ToArray();
         }
 
-        public static string GetSizedTempPhotoAbsoluteWebPath(int tenantId, string fileName, int newWidth, int newHeight)
+        public string GetSizedTempPhotoAbsoluteWebPath(int tenantId, string fileName, int newWidth, int newHeight)
         {
             var store = GetDataStore(tenantId);
             if (store.IsFile(_tempDomainName, fileName))

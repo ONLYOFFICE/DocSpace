@@ -67,28 +67,28 @@ namespace ASC.Web.Core
             return sysname;
         }
 
-        public static string GetDisabledIconAbsoluteURL(this IWebItem item)
+        public static string GetDisabledIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.DisabledIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
         }
 
-        public static string GetSmallIconAbsoluteURL(this IWebItem item)
+        public static string GetSmallIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.SmallIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
         }
 
-        public static string GetIconAbsoluteURL(this IWebItem item)
+        public static string GetIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.IconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
         }
 
-        public static string GetLargeIconAbsoluteURL(this IWebItem item)
+        public static string GetLargeIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.LargeIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
         }
 
         public static List<string> GetUserOpportunities(this IWebItem item)

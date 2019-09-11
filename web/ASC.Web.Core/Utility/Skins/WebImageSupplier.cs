@@ -31,26 +31,32 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Utility.Skins
 {
-    public static class WebImageSupplier
+    public class WebImageSupplier
     {
         private static string FolderName { get; } = ConfigurationManager.AppSettings["web:images"];
+        public WebItemManager WebItemManager { get; }
 
-        public static string GetAbsoluteWebPath(string imgFileName)
+        public WebImageSupplier(WebItemManager webItemManager)
+        {
+            WebItemManager = webItemManager;
+        }
+
+        public string GetAbsoluteWebPath(string imgFileName)
         {
             return GetAbsoluteWebPath(imgFileName, Guid.Empty);
         }
 
-        public static string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
+        public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
         {
             return GetImageAbsoluteWebPath(imgFileName, moduleID);
         }
 
-        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext)
+        public string GetImageFolderAbsoluteWebPath(HttpContext httpContext)
         {
             return GetImageFolderAbsoluteWebPath(httpContext, Guid.Empty);
         }
 
-        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext, Guid moduleID)
+        public string GetImageFolderAbsoluteWebPath(HttpContext httpContext, Guid moduleID)
         {
             if (httpContext == null) return string.Empty;
 
@@ -58,7 +64,7 @@ namespace ASC.Web.Core.Utility.Skins
             return WebPath.GetPath(currentThemePath.ToLower());
         }
 
-        private static string GetImageAbsoluteWebPath(string fileName, Guid partID)
+        private string GetImageAbsoluteWebPath(string fileName, Guid partID)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -68,13 +74,13 @@ namespace ASC.Web.Core.Utility.Skins
             return WebPath.GetPath(filepath.ToLower());
         }
 
-        private static string GetPartImageFolderRel(Guid partID)
+        private string GetPartImageFolderRel(Guid partID)
         {
             var folderName = FolderName;
             string itemFolder = null;
             if (!Guid.Empty.Equals(partID))
             {
-                var product = WebItemManager.Instance[partID];
+                var product = WebItemManager[partID];
                 if (product != null && product.Context != null)
                 {
                     itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
@@ -85,7 +91,7 @@ namespace ASC.Web.Core.Utility.Skins
             return folderName.TrimStart('~').ToLowerInvariant();
         }
 
-        private static string GetAppThemeVirtualPath(IWebItem webitem)
+        private string GetAppThemeVirtualPath(IWebItem webitem)
         {
             if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
             {

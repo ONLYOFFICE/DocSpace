@@ -58,7 +58,7 @@ namespace ASC.Web.Studio.Core.TFA
             };
         }
 
-        public static long GetSalt(Guid userId)
+        public long GetSalt(Guid userId)
         {
             var settings = LoadForUser(userId);
             var salt = settings.SaltSetting;
@@ -88,7 +88,7 @@ namespace ASC.Web.Studio.Core.TFA
             return LoadForUser(userId).CodesSetting;
         }
 
-        public static void DisableCodeForUser(Guid userId, string code)
+        public void DisableCodeForUser(Guid userId, string code)
         {
             var settings = LoadForUser(userId);
             var query = settings.CodesSetting.Where(x => x.Code == code).ToList();
@@ -99,7 +99,7 @@ namespace ASC.Web.Studio.Core.TFA
             settings.SaveForUser(userId);
         }
 
-        public static bool EnableForUser(Guid guid)
+        public bool EnableForUser(Guid guid)
         {
             return LoadForUser(guid).CodesSetting.Any();
         }

@@ -123,7 +123,6 @@ namespace ASC.Web.Api
 
             app.UseCSP();
             app.UseCm();
-            app.UseWebItemManager();
         }
     }
 }

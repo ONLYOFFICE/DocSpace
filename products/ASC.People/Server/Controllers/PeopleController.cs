@@ -61,6 +61,7 @@ namespace ASC.Employee.Core.Controllers
         public WebItemSecurity WebItemSecurity { get; }
         public PermissionContext PermissionContext { get; }
         public AuthContext AuthContext { get; }
+        public WebItemManager WebItemManager { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -77,7 +78,8 @@ namespace ASC.Employee.Core.Controllers
             CookiesManager cookiesManager,
             WebItemSecurity webItemSecurity,
             PermissionContext permissionContext,
-            AuthContext authContext)
+            AuthContext authContext,
+            WebItemManager webItemManager)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -95,6 +97,7 @@ namespace ASC.Employee.Core.Controllers
             WebItemSecurity = webItemSecurity;
             PermissionContext = permissionContext;
             AuthContext = authContext;
+            WebItemManager = webItemManager;
         }
 
         [Read("info")]
@@ -328,7 +331,7 @@ namespace ASC.Employee.Core.Controllers
                     Constants.GroupAdmin.ID
                 };
 
-                var products = WebItemManager.Instance.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
+                var products = WebItemManager.GetItemsAll().Where(i => i is IProduct || i.ID == WebItemManager.MailProductID);
                 adminGroups.AddRange(products.Select(r => r.ID));
 
                 includeGroups.Add(adminGroups);

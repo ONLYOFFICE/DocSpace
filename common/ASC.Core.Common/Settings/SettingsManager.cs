@@ -29,7 +29,7 @@ using ASC.Core.Data;
 
 namespace ASC.Core.Common.Settings
 {
-    internal class SettingsManager : DbSettingsManager
+    public class SettingsManager : DbSettingsManager
     {
         public static SettingsManager Instance { get; private set; }
 

@@ -63,18 +63,21 @@ namespace ASC.Core
         public UserManager UserManager { get; }
         public AuthManager Authentication { get; }
         public AuthContext AuthContext { get; }
+        public TenantCookieSettings TenantCookieSettings { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
             IHttpContextAccessor httpContextAccessor,
             UserManager userManager,
             AuthManager authentication,
-            AuthContext authContext
+            AuthContext authContext,
+            TenantCookieSettings tenantCookieSettings
             )
         {
             UserManager = userManager;
             Authentication = authentication;
             AuthContext = authContext;
+            TenantCookieSettings = tenantCookieSettings;
             HttpContextAccessor = httpContextAccessor;
         }
 
