@@ -1,6 +1,7 @@
-import React from 'react'
-import styled from 'styled-components';
-import { FieldContainer, TextInput, Button } from 'asc-web-components'
+import React from "react";
+import styled from "styled-components";
+import isEqual from "lodash/isEqual";
+import { FieldContainer, TextInput, Button } from "asc-web-components";
 
 const InputContainer = styled.div`
   width: 100%;
@@ -9,47 +10,55 @@ const InputContainer = styled.div`
   align-items: center;
 `;
 
-const TextChangeField = React.memo((props) => {
-  const {
-    isRequired,
-    hasError,
-    labelText,
+class TextChangeField extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-    inputName,
-    inputValue,
-    inputTabIndex,
+  render() {
+    console.log("TextChangeField render");
 
-    buttonText,
-    buttonIsDisabled,
-    buttonOnClick,
-    buttonTabIndex
-  } = props;
+    const {
+      isRequired,
+      hasError,
+      labelText,
 
-  return (
-    <FieldContainer
-      isRequired={isRequired}
-      hasError={hasError}
-      labelText={labelText}
-    >
-      <InputContainer>
-        <TextInput
-          name={inputName}
-          value={inputValue}
-          isDisabled={true}
-          hasError={hasError}
-          tabIndex={inputTabIndex}
-        />
-        <Button
-          label={buttonText}
-          onClick={buttonOnClick}
-          isDisabled={buttonIsDisabled}
-          size="medium"
-          style={{ marginLeft: "8px" }}
-          tabIndex={buttonTabIndex}
-        />
-      </InputContainer>
-    </FieldContainer>
-  );
-});
+      inputName,
+      inputValue,
+      inputTabIndex,
+
+      buttonText,
+      buttonIsDisabled,
+      buttonOnClick,
+      buttonTabIndex
+    } = this.props;
+
+    return (
+      <FieldContainer
+        isRequired={isRequired}
+        hasError={hasError}
+        labelText={labelText}
+      >
+        <InputContainer>
+          <TextInput
+            name={inputName}
+            value={inputValue}
+            isDisabled={true}
+            hasError={hasError}
+            tabIndex={inputTabIndex}
+          />
+          <Button
+            label={buttonText}
+            onClick={buttonOnClick}
+            isDisabled={buttonIsDisabled}
+            size="medium"
+            style={{ marginLeft: "8px" }}
+            tabIndex={buttonTabIndex}
+          />
+        </InputContainer>
+      </FieldContainer>
+    );
+  }
+}
 
 export default TextChangeField;

@@ -1,41 +1,57 @@
-import React from 'react'
-import { FieldContainer, SelectorAddButton, SelectedItem } from 'asc-web-components'
+import React from "react";
+import isEqual from "lodash/isEqual";
+import {
+  FieldContainer,
+  SelectorAddButton,
+  SelectedItem
+} from "asc-web-components";
 
-const DepartmentField = React.memo((props) => {
-  const {
-    isRequired,
-    isDisabled,
-    hasError,
-    labelText,
-    addButtonTitle,
-    departments,
-    onAddDepartment,
-    onRemoveDepartment
-  } = props;
+class DepartmentField extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-  return (
-    <FieldContainer
-      isRequired={isRequired}
-      hasError={hasError}
-      labelText={labelText}
-      className="departments-field"
-    >
-      <SelectorAddButton
-        isDisabled={isDisabled}
-        title={addButtonTitle}
-        onClick={onAddDepartment}
-      />
-      {departments && departments.map((department) => (      
-        <SelectedItem
-          key={`department_${department.id}`}    
-          text={department.name}
-          onClose={() => { onRemoveDepartment(department.id) }}
-          isInline={true}
-          className="department-item"
+  render() {
+    console.log("DepartmentField render");
+
+    const {
+      isRequired,
+      isDisabled,
+      hasError,
+      labelText,
+      addButtonTitle,
+      departments,
+      onAddDepartment,
+      onRemoveDepartment
+    } = this.props;
+
+    return (
+      <FieldContainer
+        isRequired={isRequired}
+        hasError={hasError}
+        labelText={labelText}
+        className="departments-field"
+      >
+        <SelectorAddButton
+          isDisabled={isDisabled}
+          title={addButtonTitle}
+          onClick={onAddDepartment}
+          className="department-add-btn"
         />
-      ))}
-    </FieldContainer>
-  );
-});
+        {departments.map(department => (
+            <SelectedItem
+              key={`department_${department.id}`}
+              text={department.name}
+              onClose={() => {
+                onRemoveDepartment(department.id);
+              }}
+              isInline={true}
+              className="department-item"
+            />
+          ))}
+      </FieldContainer>
+    );
+  }
+}
 
-export default DepartmentField
+export default DepartmentField;

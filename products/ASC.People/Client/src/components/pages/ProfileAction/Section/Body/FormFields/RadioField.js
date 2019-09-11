@@ -1,35 +1,44 @@
-import React from 'react'
-import { FieldContainer, RadioButtonGroup } from 'asc-web-components'
+import React from "react";
+import isEqual from "lodash/isEqual";
+import { FieldContainer, RadioButtonGroup } from "asc-web-components";
 
-const RadioField = React.memo((props) => {
-  const {
-    isRequired,
-    hasError,
-    labelText,
+class RadioField extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-    radioName,
-    radioValue,
-    radioOptions,
-    radioIsDisabled,
-    radioOnChange
-  } = props;
+  render() {
+    console.log("RadioField render");
 
-  return (
-    <FieldContainer
-      isRequired={isRequired}
-      hasError={hasError}
-      labelText={labelText}
-    >
-      <RadioButtonGroup
-        name={radioName}
-        selected={radioValue}
-        options={radioOptions}
-        isDisabled={radioIsDisabled}
-        onClick={radioOnChange}
-        className="radio-group"
-      />
-    </FieldContainer>
-  );
-});
+    const {
+      isRequired,
+      hasError,
+      labelText,
 
-export default RadioField
+      radioName,
+      radioValue,
+      radioOptions,
+      radioIsDisabled,
+      radioOnChange
+    } = this.props;
+
+    return (
+      <FieldContainer
+        isRequired={isRequired}
+        hasError={hasError}
+        labelText={labelText}
+      >
+        <RadioButtonGroup
+          name={radioName}
+          selected={radioValue}
+          options={radioOptions}
+          isDisabled={radioIsDisabled}
+          onClick={radioOnChange}
+          className="radio-group"
+        />
+      </FieldContainer>
+    );
+  }
+}
+
+export default RadioField;

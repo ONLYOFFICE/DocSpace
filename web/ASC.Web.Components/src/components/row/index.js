@@ -76,12 +76,12 @@ class Row extends React.PureComponent {
 
     return (
       <StyledRow ref={this.rowRef} {...this.props}>
-        {this.props.hasOwnProperty("checked") &&
+        {Object.prototype.hasOwnProperty.call(this.props, 'checked') &&
           <StyledCheckbox>
             <Checkbox isChecked={checked} onChange={this.changeCheckbox} />
           </StyledCheckbox>
         }
-        {this.props.hasOwnProperty("element") &&
+        {Object.prototype.hasOwnProperty.call(this.props, 'element') &&
           <StyledElement>
             {element}
           </StyledElement>
@@ -90,7 +90,7 @@ class Row extends React.PureComponent {
           {children}
         </StyledContent>
         <StyledOptionButton>
-          {this.props.hasOwnProperty("contextOptions") && contextOptions.length > 0 &&
+          {Object.prototype.hasOwnProperty.call(this.props, 'contextOptions') && contextOptions.length > 0 &&
             <ContextMenuButton directionX='right' getData={this.getOptions} />
           }
         </StyledOptionButton>

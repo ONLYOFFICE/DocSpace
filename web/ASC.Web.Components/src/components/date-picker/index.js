@@ -3,13 +3,19 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
-import { Col } from "reactstrap";
 import NewCalendar from "../calendar-new";
-import moment from "moment/min/moment-with-locales";
+import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
 
-const DateInputStyle = styled.div``;
+const DateInputStyle = styled.div`
+  max-width: 110px;
+  width: 110px;
+`;
+
+const DropDownStyle = styled.div`
+  position: relative;
+`;
 
 class DatePicker extends Component {
   constructor(props) {
@@ -19,47 +25,57 @@ class DatePicker extends Component {
     this.ref = React.createRef();
     this.newRef = React.createRef();
 
-    if (props.isOpen) {
+    const { isOpen, selectedDate, hasError } = this.props;
+
+    if (isOpen) {
       handleAnyClick(true, this.handleClick);
     }
-
-    const { isOpen, selectedDate } = this.props;
 
     this.state = {
       isOpen,
       selectedDate: moment(selectedDate).toDate(),
       value: moment(selectedDate).format("L"),
-      mask: this.getMask
+      mask: this.getMask,
+      hasError
     };
   }
 
   handleClick = e => {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
-      this.onIconClick(false);
-  };
-
-  onIconClick = isOpen => {
-    this.setState({ isOpen });
+      this.onClick(false);
   };
 
   handleChange = e => {
-    const value = e.target.value;
-    if (this.state.value != value) {
-      let newState = { value };
+    const { value, hasError } = this.state;
+
+    const targetValue = e.target.value;
+    if (value != targetValue) {
+      let newState = { value: targetValue };
       const format = moment.localeData().longDateFormat("L");
-      const momentDate = moment(value, format);
+      const momentDate = moment(targetValue, format);
       const date = momentDate.toDate();
 
       if (
         !isNaN(date) &&
         this.compareDates(date) &&
-        value.indexOf("_") === -1
+        targetValue.indexOf("_") === -1
       ) {
         //console.log("Mask complete");
         this.props.onChange && this.props.onChange(date);
         newState = Object.assign({}, newState, {
-          selectedDate: date
+          selectedDate: date,
+          hasError: false
+        });
+      } else if (targetValue.indexOf("_") !== -1 && targetValue.length !== 0) {
+        //hasWarning
+        newState = Object.assign({}, newState, {
+          hasError: true
+        });
+      } else {
+        newState = Object.assign({}, newState, {
+          hasError: true,
+          isOpen: false
         });
       }
       this.setState(newState);
@@ -67,9 +83,16 @@ class DatePicker extends Component {
   };
 
   onChange = value => {
+    this.onClick(!this.state.isOpen);
     const formatValue = moment(value).format("L");
     this.props.onChange && this.props.onChange(value);
     this.setState({ selectedDate: value, value: formatValue });
+  };
+
+  onClick = isOpen => {
+    if (!this.state.hasError) {
+      this.setState({ isOpen });
+    }
   };
 
   compareDates = date => {
@@ -122,7 +145,8 @@ class DatePicker extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { locale, isOpen, selectedDate } = this.props;
+    const { locale, isOpen, selectedDate, maxDate, minDate } = this.props;
+    const { hasError, value } = this.state;
     let newState = {};
 
     if (locale !== prevProps.locale) {
@@ -149,6 +173,34 @@ class DatePicker extends Component {
       });
     }
 
+    if (this.props.hasError !== prevProps.hasError) {
+      newState = Object.assign({}, newState, {
+        hasError: this.props.hasError,
+        isOpen: false
+      });
+    }
+
+    const date = new Date(value);
+    if (
+      selectedDate < maxDate &&
+      selectedDate > minDate &&
+      hasError &&
+      date < maxDate &&
+      date > minDate &&
+      !this.props.hasError
+    ) {
+      newState = Object.assign({}, newState, {
+        hasError: false
+      });
+    }
+
+    if ((selectedDate > maxDate || selectedDate < minDate) && !hasError) {
+      newState = Object.assign({}, newState, {
+        hasError: true,
+        isOpen: false
+      });
+    }
+
     if (!isEmpty(newState)) {
       this.setState(newState);
     }
@@ -158,35 +210,35 @@ class DatePicker extends Component {
     const {
       isDisabled,
       isReadOnly,
-      hasError,
-      hasWarning,
+      //hasWarning,
       minDate,
       maxDate,
       locale,
       themeColor
     } = this.props;
 
-    const { value, isOpen, mask, selectedDate } = this.state;
+    const { value, isOpen, mask, selectedDate, hasError } = this.state;
 
     return (
       <DateInputStyle ref={this.ref}>
         <InputBlock
+          scale={true}
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          hasWarning={hasWarning}
+          onFocus={this.onClick.bind(this, true)}
+          //hasWarning={hasWarning}
           iconName={"CalendarIcon"}
-          onIconClick={this.onIconClick.bind(this, !isOpen)}
+          onIconClick={this.onClick.bind(this, !isOpen)}
           value={value}
           onChange={this.handleChange}
-          placeholder={moment.localeData().longDateFormat("L")}
           mask={mask}
           keepCharPositions={true}
           //guide={true}
           //showMask={true}
         />
         {isOpen ? (
-          <Col>
+          <DropDownStyle>
             <DropDown opened={isOpen}>
               {
                 <NewCalendar
@@ -201,7 +253,7 @@ class DatePicker extends Component {
                 />
               }
             </DropDown>
-          </Col>
+          </DropDownStyle>
         ) : null}
       </DateInputStyle>
     );

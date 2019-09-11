@@ -19,15 +19,15 @@ const MainContainer = styled.div`
     }
   }
 
-.departments-field {
-  .field-body {
-    display: flex;
-    align-items: center;
+  .departments-field {
+    .department-add-btn {
+      margin: 0 8px 8px 0;
+      float: left;
+    }
+    .department-item {
+      margin: 0 8px 8px 0;
+    }
   }
-  .department-item {
-    margin: 0 0 0 8px;
-  }
-}
 
   @media ${utils.device.tablet} {
     flex-direction: column;

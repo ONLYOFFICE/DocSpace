@@ -11,7 +11,10 @@ import ComboBox from "../combobox";
 import { isArrayEqual } from "../../utils/array";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
+import DropDown from "../drop-down";
 
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 const Container = ({
   value,
   placeholder,
@@ -20,6 +23,7 @@ const Container = ({
   width,
   maxHeight,
   isDisabled,
+  onSelect,
   onSearchChanged,
   options,
   selectedOptions,
@@ -30,44 +34,54 @@ const Container = ({
   onChangeGroup,
   ...props
 }) => <div {...props} />;
+/* eslint-enable react/prop-types */
+/* eslint-enable no-unused-vars */
 
 const StyledContainer = styled(Container)`
   ${props => (props.width ? `width: ${props.width}px;` : "")}
 
-  .options_searcher {
-    margin-bottom: 12px;
-  }
+  .data_container {
+    margin: 16px;
 
-  .options_group_selector {
-    margin-bottom: 12px;
-  }
+    .options_searcher {
+      margin-bottom: 12px;
+    }
 
-  .option_select_all_checkbox {
-    margin-bottom: 12px;
-    margin-left: 8px;
-  }
+    .options_group_selector {
+      margin-bottom: 12px;
+    }
 
-  .options_list {
-    .option {
-      line-height: 32px;
-      cursor: pointer;
+    .option_select_all_checkbox {
+      margin-bottom: 12px;
+      margin-left: 8px;
+    }
 
-      .option_checkbox {
-        margin-left: 8px;
-      }
+    .options_list {
+      .option {
+        line-height: 32px;
+        cursor: pointer;
 
-      .option_link {
-        padding-left: 8px;
-      }
+        .option_checkbox {
+          margin-left: 8px;
+        }
 
-      &:hover {
-        background-color: #eceef1;
+        .option_link {
+          padding-left: 8px;
+        }
+
+        &:hover {
+          background-color: #eceef1;
+        }
       }
     }
   }
 
-  .add_members_btn {
-    margin: 16px 0;
+  .button_container {
+    border-top: 1px solid #eceef1;
+    .add_members_btn {
+      margin: 16px;
+      width: 293px;
+    }
   }
 `;
 
@@ -122,10 +136,10 @@ class AdvancedSelector extends React.Component {
     };
   };
 
-  getCurrentGroup = (groups) => {
+  getCurrentGroup = groups => {
     const currentGroup = groups.length > 0 ? groups[0] : "No groups";
     return currentGroup;
-  }
+  };
 
   onButtonClick = () => {
     this.props.onSelect &&
@@ -197,7 +211,7 @@ class AdvancedSelector extends React.Component {
     );
   };
 
-  render() {
+  renderBody = () => {
     const {
       value,
       placeholder,
@@ -211,67 +225,83 @@ class AdvancedSelector extends React.Component {
     } = this.props;
 
     const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
-
-    console.log("AdvancedSelector render()", currentGroup, options);
-
     return (
       <StyledContainer {...this.props}>
-        <SearchInput
-          className="options_searcher"
-          isDisabled={isDisabled}
-          size="base"
-          scale={true}
-          isNeedFilter={false}
-          placeholder={placeholder}
-          value={value}
-          onChange={onSearchChanged}
-          onClearSearch={onSearchChanged.bind(this, "")}
-        />
-        {groups && groups.length > 0 && (
-          <ComboBox
-            className="options_group_selector"
+        <div className="data_container">
+          <SearchInput
+            className="options_searcher"
             isDisabled={isDisabled}
-            options={groups}
-            selectedOption={currentGroup}
-            dropDownMaxHeight={200}
-            scaled={true}
-            size="content"
-            onSelect={this.onCurrentGroupChange}
-          />
-        )}
-        {isMultiSelect && (
-          <Checkbox
-            label={selectAllLabel}
-            isChecked={selectedAll || selectedOptions.length === options.length}
-            isIndeterminate={!selectedAll && selectedOptions.length > 0}
-            className="option_select_all_checkbox"
-            onChange={this.onSelectedAllChange}
-          />
-        )}
-        <FixedSizeList
-          className="options_list"
-          height={maxHeight}
-          itemSize={32}
-          itemCount={options.length}
-          itemData={options}
-          outerElementType={CustomScrollbarsVirtualList}
-        >
-          {this.renderRow.bind(this)}
-        </FixedSizeList>
-        {isMultiSelect && (
-          <Button
-            className="add_members_btn"
-            primary={true}
-            size="big"
-            label={buttonLabel}
+            size="base"
             scale={true}
-            isDisabled={
-              !this.state.selectedOptions || !this.state.selectedOptions.length
-            }
-            onClick={this.onButtonClick}
+            isNeedFilter={false}
+            placeholder={placeholder}
+            value={value}
+            onChange={onSearchChanged}
+            onClearSearch={onSearchChanged.bind(this, "")}
           />
+          {groups && groups.length > 0 && (
+            <ComboBox
+              className="options_group_selector"
+              isDisabled={isDisabled}
+              options={groups}
+              selectedOption={currentGroup}
+              dropDownMaxHeight={200}
+              scaled={true}
+              size="content"
+              onSelect={this.onCurrentGroupChange}
+            />
+          )}
+          {isMultiSelect && (
+            <Checkbox
+              label={selectAllLabel}
+              isChecked={
+                selectedAll || selectedOptions.length === options.length
+              }
+              isIndeterminate={!selectedAll && selectedOptions.length > 0}
+              className="option_select_all_checkbox"
+              onChange={this.onSelectedAllChange}
+            />
+          )}
+          <FixedSizeList
+            className="options_list"
+            height={maxHeight}
+            itemSize={32}
+            itemCount={options.length}
+            itemData={options}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {this.renderRow.bind(this)}
+          </FixedSizeList>
+        </div>
+        {isMultiSelect && (
+          <div className="button_container">
+            <Button
+              className="add_members_btn"
+              primary={true}
+              size="big"
+              label={buttonLabel}
+              scale={true}
+              isDisabled={
+                !this.state.selectedOptions ||
+                !this.state.selectedOptions.length
+              }
+              onClick={this.onButtonClick}
+            />
+          </div>
         )}
       </StyledContainer>
+    );
+  };
+
+  render() {
+    const { isDropDown, isOpen, options } = this.props;
+    const { currentGroup } = this.state;
+    console.log("AdvancedSelector render()", currentGroup, options);
+
+    return isDropDown ? (
+      <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
+    ) : (
+      this.renderBody()
     );
   }
 }
@@ -294,6 +324,8 @@ AdvancedSelector.propTypes = {
   buttonLabel: PropTypes.string,
   onSelect: PropTypes.func,
   onChangeGroup: PropTypes.func,
+  isDropDown: PropTypes.bool,
+  isOpen: PropTypes.bool
 };
 
 AdvancedSelector.defaultProps = {

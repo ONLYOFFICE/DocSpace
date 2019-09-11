@@ -13,6 +13,11 @@
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Controllers\LdapController.cs" />
     <Compile Remove="Controllers\SsoSettingsV2Controller.cs" />

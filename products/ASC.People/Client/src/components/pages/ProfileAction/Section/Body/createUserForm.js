@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr } from 'asc-web-components'
+import { Avatar, Button, Textarea, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
 import { createProfile } from '../../../../../store/profile/actions';
