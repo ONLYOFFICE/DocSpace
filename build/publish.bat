@@ -1,5 +1,5 @@
 echo "Delete publish folder"
-del /s /q publish
+rmdir /s /q publish
 
 echo "Publish ASC.Notify.csproj project"
 dotnet publish ..\common\services\ASC.Notify\ASC.Notify.csproj -c Release -o publish/ASC.Notify/
