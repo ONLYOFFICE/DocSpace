@@ -24,10 +24,11 @@ const DepartmentField = React.memo((props) => {
         isDisabled={isDisabled}
         title={addButtonTitle}
         onClick={onAddDepartment}
+        className="department-add-btn"
       />
-      {departments && departments.map((department) => (      
+      {departments && departments.map((department) => (
         <SelectedItem
-          key={`department_${department.id}`}    
+          key={`department_${department.id}`}
           text={department.name}
           onClose={() => { onRemoveDepartment(department.id) }}
           isInline={true}

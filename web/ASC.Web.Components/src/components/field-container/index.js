@@ -14,6 +14,7 @@ const horizontalCss = css`
     line-height: 32px;
     margin: 0;
     width: 110px;
+    min-width: 110px;
   }
   .field-body {
     flex-grow: 1;
