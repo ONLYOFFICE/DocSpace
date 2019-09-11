@@ -3,7 +3,6 @@
 *.suo
 *.user
 .vs/
-.vscode/
 *-lock.json
 **/node_modules/
 **/storybook-static/
