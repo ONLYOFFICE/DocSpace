@@ -3,13 +3,16 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
-import { Col } from "reactstrap";
 import NewCalendar from "../calendar-new";
-import moment from "moment/min/moment-with-locales";
+import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
 
 const DateInputStyle = styled.div``;
+
+const DropDownStyle = styled.div`
+  position: relative;
+`;
 
 class DatePicker extends Component {
   constructor(props) {
@@ -29,7 +32,8 @@ class DatePicker extends Component {
       isOpen,
       selectedDate: moment(selectedDate).toDate(),
       value: moment(selectedDate).format("L"),
-      mask: this.getMask
+      mask: this.getMask,
+      hasError: this.props.hasError
     };
   }
 
@@ -37,10 +41,6 @@ class DatePicker extends Component {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
       this.onIconClick(false);
-  };
-
-  onIconClick = isOpen => {
-    this.setState({ isOpen });
   };
 
   handleChange = e => {
@@ -59,10 +59,21 @@ class DatePicker extends Component {
         //console.log("Mask complete");
         this.props.onChange && this.props.onChange(date);
         newState = Object.assign({}, newState, {
-          selectedDate: date
+          selectedDate: date,
+          hasError: false
+        });
+      } else {
+        newState = Object.assign({}, newState, {
+          hasError: true
         });
       }
       this.setState(newState);
+    }
+  };
+
+  onIconClick = isOpen => {
+    if (!this.state.hasError) {
+      this.setState({ isOpen });
     }
   };
 
@@ -122,7 +133,7 @@ class DatePicker extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { locale, isOpen, selectedDate } = this.props;
+    const { locale, isOpen, selectedDate, maxDate, minDate } = this.props;
     let newState = {};
 
     if (locale !== prevProps.locale) {
@@ -158,7 +169,6 @@ class DatePicker extends Component {
     const {
       isDisabled,
       isReadOnly,
-      hasError,
       hasWarning,
       minDate,
       maxDate,
@@ -166,7 +176,7 @@ class DatePicker extends Component {
       themeColor
     } = this.props;
 
-    const { value, isOpen, mask, selectedDate } = this.state;
+    const { value, isOpen, mask, selectedDate, hasError } = this.state;
 
     return (
       <DateInputStyle ref={this.ref}>
@@ -179,14 +189,13 @@ class DatePicker extends Component {
           onIconClick={this.onIconClick.bind(this, !isOpen)}
           value={value}
           onChange={this.handleChange}
-          placeholder={moment.localeData().longDateFormat("L")}
           mask={mask}
           keepCharPositions={true}
           //guide={true}
           //showMask={true}
         />
         {isOpen ? (
-          <Col>
+          <DropDownStyle>
             <DropDown opened={isOpen}>
               {
                 <NewCalendar
@@ -201,7 +210,7 @@ class DatePicker extends Component {
                 />
               }
             </DropDown>
-          </Col>
+          </DropDownStyle>
         ) : null}
       </DateInputStyle>
     );
