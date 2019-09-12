@@ -171,6 +171,7 @@ class PasswordInput extends React.PureComponent {
 
     const newPassword = this.getNewPassword();
     this.checkPassword(newPassword);
+    this.props.onChange && this.props.onChange({target: {value: newPassword}});
   }
 
   getNewPassword = () => {
