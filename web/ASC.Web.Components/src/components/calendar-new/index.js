@@ -45,10 +45,11 @@ const ComboBoxDateStyle = styled.div`
 const CalendarContainer = styled.div`
   ${props =>
     props.size === "base" ? `max-width: 293px;` : `max-width: 325px;`}
+  ${props => (props.hasError ? `border: 1px solid red;` : ``)}
 `;
 
 const CalendarStyle = styled.div`
-  ${props => (props.size === "base" ? "width: 260px;" : "width: 294px;")}
+  ${props => (props.size === "base" ? "width: 260px;" : `width: 294px;`)}
 
   padding: 16px 16px 16px 17px;
   box-sizing: content-box;
@@ -104,7 +105,7 @@ class Calendar extends Component {
   }
 
   mapPropsToState = props => {
-    const { minDate, maxDate, openToDate, selectedDate } = props;
+    const { minDate, maxDate, openToDate, selectedDate, isDisabled } = props;
     const months = moment.months();
     const arrayWeekdays = moment.weekdaysMin();
     const optionsMonth = this.getListMonth(
@@ -129,6 +130,8 @@ class Calendar extends Component {
       openToDate,
       selectedDate,
       optionsMonth,
+      hasError: false,
+      isDisabled,
       selectedOptionMonth: this.getCurrentMonth(optionsMonth, openToDate),
       optionsYear,
       selectedOptionYear: this.getCurrentYear(optionsYear, openToDate),
@@ -201,8 +204,7 @@ class Calendar extends Component {
         openToDate: dateInNextMonth
       });
     } else if (
-      this.formatSelectedDate(dateInCurrentMonth) !=
-      this.formatSelectedDate(this.state.selectedDate)
+      this.compareDates(dateInCurrentMonth, this.state.selectedDate) !== 0
     ) {
       newState = this.mapPropsToState({
         ...this.state,
@@ -262,7 +264,6 @@ class Calendar extends Component {
     if (selectedMonth.disabled === true) {
       selectedMonth = months.find(x => x.disabled === false);
     }
-
     return selectedMonth;
   };
 
@@ -284,21 +285,8 @@ class Calendar extends Component {
 
   getCurrentYear = (arrayYears, openToDate) => {
     const openToDateYear = openToDate.getFullYear();
-    return arrayYears.find(x => x.key == openToDateYear);
-  };
-
-  formatSelectedDate = date => {
-    return (
-      date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear()
-    );
-  };
-
-  formatDate = date => {
-    return date.getMonth() + 1 + "/" + 1 + "/" + date.getFullYear();
-  };
-
-  compareDays = (openToDate, selectedDate) => {
-    return this.formatDate(openToDate) === this.formatDate(selectedDate);
+    let currentYear = arrayYears.find(x => x.key == openToDateYear);
+    return currentYear;
   };
 
   firstDayOfMonth = openToDate => {
@@ -425,7 +413,7 @@ class Calendar extends Component {
       } else {
         className = "calendar-month";
       }
-      if (i === dateNow && this.compareDays(openToDate, selectedDate)) {
+      if (i === dateNow && this.compareMonths(openToDate, selectedDate) === 0) {
         className = "calendar-month_selected-day";
       }
       if (i > maxDay || i < minDay) {
@@ -504,6 +492,18 @@ class Calendar extends Component {
     return arrayDays;
   };
 
+  compareDates = (date1, date2) => {
+    return moment(date1)
+      .startOf("day")
+      .diff(moment(date2).startOf("day"), "days");
+  };
+
+  compareMonths = (date1, date2) => {
+    return moment(date1)
+      .startOf("months")
+      .diff(moment(date2).startOf("months"), "months");
+  };
+
   componentDidUpdate(prevProps) {
     const {
       selectedDate,
@@ -514,53 +514,81 @@ class Calendar extends Component {
       locale
     } = this.props;
 
+    const { hasError } = this.state;
+
     let newState = {};
 
-    if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
-      newState = { selectedDate };
-    }
-
-    if (this.compareDates(openToDate, prevProps.openToDate) !== 0) {
-      newState = Object.assign({}, newState, {
-        openToDate
+    //MAX MIN DATE ERROR
+    if (
+      openToDate > maxDate ||
+      openToDate < minDate ||
+      selectedDate > maxDate ||
+      selectedDate < minDate
+    ) {
+      if (!hasError && !this.state.isDisabled) {
+        this.setState({
+          hasError: true,
+          isDisabled: true
+        });
+        this.props.onChange &&
+          this.props.onChange("INVALID PROP (SELECTED DATE/OPEN TO DATE) DATE");
+      }
+      return;
+    } else if (
+      (openToDate < maxDate ||
+        openToDate > minDate ||
+        selectedDate < maxDate ||
+        selectedDate > minDate) &&
+      hasError &&
+      this.state.isDisabled
+    ) {
+      this.setState({
+        hasError: false,
+        isDisabled: false
       });
-    }
+    } else {
+      if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
+        newState = { selectedDate };
+      }
 
-    if (this.compareDates(minDate, prevProps.minDate) !== 0) {
-      newState = Object.assign({}, newState, {
-        minDate
-      });
-    }
+      if (this.compareDates(openToDate, prevProps.openToDate) !== 0) {
+        newState = Object.assign({}, newState, {
+          openToDate
+        });
+      }
 
-    if (this.compareDates(maxDate, prevProps.maxDate) !== 0) {
-      newState = Object.assign({}, newState, {
-        maxDate
-      });
-    }
+      if (this.compareDates(minDate, prevProps.minDate) !== 0) {
+        newState = Object.assign({}, newState, {
+          minDate
+        });
+      }
 
-    if (isDisabled !== prevProps.isDisabled) {
-      newState = Object.assign({}, newState, {
-        isDisabled
-      });
-    }
+      if (this.compareDates(maxDate, prevProps.maxDate) !== 0) {
+        newState = Object.assign({}, newState, {
+          maxDate
+        });
+      }
 
-    if (!isEmpty(newState) || locale !== prevProps.locale) {
-      moment.locale(locale);
-      newState = this.mapPropsToState({
-        ...this.state,
-        ...newState
-      });
-      this.setState(newState);
+      if (isDisabled !== prevProps.isDisabled) {
+        newState = Object.assign({}, newState, {
+          isDisabled
+        });
+      }
+
+      if (!isEmpty(newState) || locale !== prevProps.locale) {
+        moment.locale(locale);
+        newState = this.mapPropsToState({
+          ...this.state,
+          ...newState
+        });
+
+        //console.log("componentDidUpdate newState", newState);
+        this.setState(newState);
+      }
     }
   }
 
-  compareDates = (date1, date2) => {
-    return moment(date1)
-      .startOf("day")
-      .diff(moment(date2).startOf("day"), "days");
-  };
-
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     const {
       selectedDate,
       openToDate,
@@ -569,12 +597,15 @@ class Calendar extends Component {
       isDisabled
     } = this.props;
 
+    const { hasError } = this.state;
+
     if (
       this.compareDates(selectedDate, nextProps.selectedDate) === 0 &&
       this.compareDates(openToDate, nextProps.openToDate) === 0 &&
       this.compareDates(minDate, nextProps.minDate) === 0 &&
       this.compareDates(maxDate, nextProps.maxDate) === 0 &&
-      isDisabled !== nextProps.isDisabled
+      isDisabled !== nextProps.isDisabled &&
+      hasError !== nextState.hasError
     ) {
       return false;
     }
@@ -584,21 +615,23 @@ class Calendar extends Component {
   render() {
     //console.log("Calendar render");
 
-    const { isDisabled, size, themeColor } = this.props;
+    const { size, themeColor } = this.props;
     const {
       optionsMonth,
       selectedOptionMonth,
       selectedOptionYear,
       optionsYear,
       optionsDays,
-      optionsWeekdays
+      optionsWeekdays,
+      hasError,
+      isDisabled
     } = this.state;
 
     const dropDownSizeMonth = optionsMonth.length > 4 ? 184 : undefined;
     const dropDownSizeYear = optionsYear.length > 4 ? 184 : undefined;
 
     return (
-      <CalendarContainer size={size}>
+      <CalendarContainer hasError={hasError} size={size}>
         <CalendarStyle size={size} color={themeColor} isDisabled={isDisabled}>
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
