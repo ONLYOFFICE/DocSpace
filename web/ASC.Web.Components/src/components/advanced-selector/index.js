@@ -120,7 +120,7 @@ class AdvancedSelector extends React.Component {
 
   handleClick = e => {
     if (this.props.isOpen && !this.ref.current.contains(e.target) && e.target.className.indexOf("option_checkbox") === -1) {
-      this.props.onSelect && this.props.onSelect(this.state.selectedOptions);
+      this.props.onCancel && this.props.onCancel();
     }
   };
 
@@ -389,6 +389,7 @@ AdvancedSelector.propTypes = {
   buttonLabel: PropTypes.string,
   onSelect: PropTypes.func,
   onChangeGroup: PropTypes.func,
+  onCancel: PropTypes.func,
   isDropDown: PropTypes.bool,
   isOpen: PropTypes.bool
 };

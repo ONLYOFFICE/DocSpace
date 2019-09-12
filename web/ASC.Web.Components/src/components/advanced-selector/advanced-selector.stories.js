@@ -187,6 +187,7 @@ storiesOf("Components|AdvancedSelector", module)
                         action("onSelect")(selectedOptions);
                         toggle();
                       }}
+                      onCancel={toggle}
                       onChangeGroup={group => {
                         set(
                           options.filter(option => {
