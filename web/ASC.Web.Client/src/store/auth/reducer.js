@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT } from './actions';
+import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
 
@@ -20,11 +20,12 @@ const initialState = {
         datePatternJQ: "00/00/0000",
         dateTimePattern: "dddd, MMMM d, yyyy h:mm:ss tt",
         datepicker: {
-          datePattern: "mm/dd/yy",
-          dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
-          timePattern: "h:mm tt"
-        }
-      }   
+            datePattern: "mm/dd/yy",
+            dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
+            timePattern: "h:mm tt"
+        },
+    },
+    password: null
 }
 
 const authReducer = (state = initialState, action) => {
@@ -39,9 +40,13 @@ const authReducer = (state = initialState, action) => {
                 modules: action.modules
             });
         case SET_SETTINGS:
-                return Object.assign({}, state, {
-                    settings: { ...state.settings, ...action.settings }
-                });
+            return Object.assign({}, state, {
+                settings: { ...state.settings, ...action.settings }
+            });
+        case SET_PASSWORD_SETTINGS:
+            return Object.assign({}, state, {
+                password: { ...state.password, ...action.password }
+            });
         case SET_IS_LOADED:
             return Object.assign({}, state, {
                 isLoaded: action.isLoaded

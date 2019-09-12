@@ -13,7 +13,7 @@ function fakeResponse(data) {
             response: data
         }
     });
-} 
+}
 
 export function login(data) {
     return axios.post(`${API_URL}/authentication`, data);
@@ -98,7 +98,25 @@ export function getSettings() {
         "culture": "ru-RU",
         "utcOffset": "03:00:00",
         "utcHoursOffset": 3
-        };
+    };
 
     return fakeResponse(data);
 };
+
+export function getPasswordSettings() {
+    const data = {
+        "minLength": 12,
+        "upperCase": true,
+        "digits": true,
+        "specSymbols": true
+    };
+
+    return fakeResponse(data);
+};
+
+export function createUser() {
+    const data = {
+        "id": "00000000-0000-0000-0000-000000000000"
+    }; 
+    return fakeResponse(data);
+    }

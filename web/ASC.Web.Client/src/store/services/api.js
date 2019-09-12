@@ -31,6 +31,19 @@ export function getUser() {
 
 export function getSettings() {
     return IS_FAKE 
-        ? fakeApi.getSettings() 
+        ? fakeApi.getSettings()
         : axios.get(`${API_URL}/settings.json`);
 };
+
+export function getPasswordSettings(key) {
+    return IS_FAKE
+        ? fakeApi.getPasswordSettings()
+        : axios.get(`${API_URL}/settings/security/password`, { headers: { 'confirm' : key } });
+        
+};
+
+export function createUser(data, key) {
+    return IS_FAKE 
+        ? fakeApi.createUser() 
+        : axios.post(`${API_URL}/people`, data, { headers: { 'confirm' : key } });
+    }
