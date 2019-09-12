@@ -2,17 +2,17 @@ import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "../backdrop";
 
-import Article from "./sub-comoponents/article";
-import ArticleHeader from "./sub-comoponents/article-header";
-import ArticleMainButton from "./sub-comoponents/article-main-button";
-import ArticleBody from "./sub-comoponents/article-body";
-import ArticlePinPanel from "./sub-comoponents/article-pin-panel";
-import Section from "./sub-comoponents/section";
-import SectionHeader from "./sub-comoponents/section-header";
-import SectionFilter from "./sub-comoponents/section-filter";
-import SectionBody from "./sub-comoponents/section-body";
-import SectionPaging from "./sub-comoponents/section-paging";
-import SectionToggler from "./sub-comoponents/section-toggler";
+import Article from "./sub-components/article";
+import ArticleHeader from "./sub-components/article-header";
+import ArticleMainButton from "./sub-components/article-main-button";
+import ArticleBody from "./sub-components/article-body";
+import ArticlePinPanel from "./sub-components/article-pin-panel";
+import Section from "./sub-components/section";
+import SectionHeader from "./sub-components/section-header";
+import SectionFilter from "./sub-components/section-filter";
+import SectionBody from "./sub-components/section-body";
+import SectionPaging from "./sub-components/section-paging";
+import SectionToggler from "./sub-components/section-toggler";
 
 class PageLayout extends React.PureComponent {
   constructor(props) {
