@@ -16,6 +16,7 @@ using ASC.Core.Caching;
 using ASC.Core.Data;
 using ASC.Core.Notify;
 using ASC.Core.Security.Authorizing;
+using ASC.Core.Tenants;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
@@ -23,6 +24,7 @@ using ASC.Notify.Recipients;
 using ASC.Web.Core;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -160,6 +162,10 @@ namespace ASC.People
                     .AddScoped<PermissionContext>()
                     .AddScoped<AuthContext>()
                     .AddScoped<MessageFactory>()
+                    .AddScoped<WebImageSupplier>()
+                    .AddScoped<UserPhotoThumbnailSettings>()
+                    .AddScoped<TenantCookieSettings>()
+                    .AddScoped<WebItemManagerSecurity>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))
