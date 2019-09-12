@@ -4,6 +4,7 @@ import { Loader } from "asc-web-components";
 import StudioLayout from "./components/Layout/index";
 import Login from "./components/pages/Login";
 import { PrivateRoute } from "./helpers/privateRoute";
+import { PublicRoute } from "./helpers/publicRoute";
 import { Error404 } from "./components/pages/Error";
 
 const Home = lazy(() => import("./components/pages/Home"));
@@ -18,8 +19,8 @@ const App = () => {
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
           <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/confirm" component={Confirm} />
+            <PublicRoute exact path="/login" component={Login} />
+            <PublicRoute path="/confirm" component={Confirm} />
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute component={Error404} />

@@ -318,6 +318,10 @@ namespace ASC.Employee.Core.Controllers
         [Authorize(AuthenticationSchemes = "confirm")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
+            if (HttpContext.User.IsInRole(ASC.Common.Security.Authorizing.Role.System))
+            {
+                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            }
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             if (string.IsNullOrEmpty(memberModel.Password))

@@ -1,38 +1,47 @@
-import React from 'react'
-import { FieldContainer, TextInput } from 'asc-web-components'
+import React from "react";
+import isEqual from "lodash/isEqual";
+import { FieldContainer, TextInput } from "asc-web-components";
 
-const TextField = React.memo((props) => {
-  const {
-    isRequired,
-    hasError,
-    labelText,
+class TextField extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-    inputName,
-    inputValue,
-    inputIsDisabled,
-    inputOnChange,
-    inputAutoFocussed,
-    inputTabIndex
-  } = props;
+  render() {
+    console.log("TextField render");
 
-  return (
-    <FieldContainer
-      isRequired={isRequired}
-      hasError={hasError}
-      labelText={labelText}
-    >
-      <TextInput
-        name={inputName}
-        value={inputValue}
-        isDisabled={inputIsDisabled}
-        onChange={inputOnChange}
+    const {
+      isRequired,
+      hasError,
+      labelText,
+
+      inputName,
+      inputValue,
+      inputIsDisabled,
+      inputOnChange,
+      inputAutoFocussed,
+      inputTabIndex
+    } = this.props;
+
+    return (
+      <FieldContainer
+        isRequired={isRequired}
         hasError={hasError}
-        className="field-input"
-        isAutoFocussed={inputAutoFocussed}
-        tabIndex={inputTabIndex}
-      />
-    </FieldContainer>
-  );
-});
+        labelText={labelText}
+      >
+        <TextInput
+          name={inputName}
+          value={inputValue}
+          isDisabled={inputIsDisabled}
+          onChange={inputOnChange}
+          hasError={hasError}
+          className="field-input"
+          isAutoFocussed={inputAutoFocussed}
+          tabIndex={inputTabIndex}
+        />
+      </FieldContainer>
+    );
+  }
+}
 
 export default TextField;

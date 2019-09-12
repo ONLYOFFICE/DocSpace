@@ -273,6 +273,7 @@ class PasswordInput extends React.PureComponent {
     } = this.state;
 
     const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
+    const iconName = type === 'password' ? 'EyeIcon' : 'EyeOffIcon';
 
     const tooltipContent = (
       <StyledTooltipContainer forwardedAs='div' title={tooltipPasswordTitle}>
@@ -305,7 +306,7 @@ class PasswordInput extends React.PureComponent {
             name={inputName}
             hasError={hasError}
             isDisabled={isDisabled}
-            iconName='EyeIcon'
+            iconName={iconName}
             value={inputValue}
             onIconClick={this.changeInputType}
             onChange={this.onChangeAction}
