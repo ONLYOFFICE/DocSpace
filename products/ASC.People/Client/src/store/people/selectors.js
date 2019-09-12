@@ -1,4 +1,4 @@
-import { find, filter } from "lodash";
+import { find, filter, cloneDeep } from "lodash";
 import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
 
 export function getSelectedUser(selection, userId) {
@@ -141,5 +141,5 @@ export function toEmployeeWrapper(profile) {
         contacts: []
     };
 
-    return { ...emptyData, ...profile };
+    return cloneDeep({ ...emptyData, ...profile });
 }
