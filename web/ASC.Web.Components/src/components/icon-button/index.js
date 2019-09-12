@@ -9,7 +9,7 @@ const StyledOuter = styled.div`
     cursor: ${props => props.isDisabled || !props.isClickable ? 'default' : 'pointer'};
     line-height: 0;
 `;
-class IconButton extends React.Component {
+class IconButton extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -73,19 +73,14 @@ class IconButton extends React.Component {
             }
         }
     }
-    shouldComponentUpdate(nextProps, nextState) {
-
-        if (!isEqual(this.props, nextProps)) {
+    componentDidUpdate(prevProps) {
+        if (this.props.iconName !== prevProps.iconName || this.props.color !== prevProps.color) {
             let newState = {
-                currentIconName: this.state.currentIconName,
-                currentIconColor: this.state.currentIconColor
+                currentIconName: this.props.iconName !== prevProps.iconName ? this.props.iconName : this.state.currentIconName,
+                currentIconColor: this.props.color !== prevProps.color ? this.props.color : this.state.currentIconColor
             }
-            if (this.props.iconName !== nextProps.iconName) newState.currentIconName = nextProps.iconName;
-            if (this.props.color !== nextProps.color) newState.currentIconColor = nextProps.color;
             this.setState(newState);
-            return true;
         }
-        return !isEqual(this.state, nextState);
     }
     render() {
         //console.log("IconButton render");
@@ -117,7 +112,10 @@ IconButton.propTypes = {
     iconName: PropTypes.string.isRequired,
     iconHoverName: PropTypes.string,
     iconClickName: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    onMouseEnter: PropTypes.func,
+    onMouseDown: PropTypes.func,
+    onMouseUp: PropTypes.func
 };
 
 IconButton.defaultProps = {
