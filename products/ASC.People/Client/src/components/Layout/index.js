@@ -67,7 +67,7 @@ class PurePeopleLayout extends React.Component {
 
 
 const getAvailableModules = (modules) => {
-    const separator = { seporator: true, id: 'nav-seporator-1' };
+    const separator = { separator: true, id: 'nav-separator-1' };
     const products = modules.map(product => {
         return {
             id: product.id,

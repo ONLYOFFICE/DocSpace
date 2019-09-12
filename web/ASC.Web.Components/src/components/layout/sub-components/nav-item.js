@@ -6,7 +6,7 @@ import { Icons } from '../../icons'
 const baseColor = '#7A95B0',
       activeColor = '#FFFFFF';
 
-const NavItemSeporator = styled.div`
+const NavItemSeparator = styled.div`
   border-bottom: 1px solid ${baseColor};
   margin: 0 16px;
 `;
@@ -43,12 +43,12 @@ const NavItemBadge = styled(Badge)`
 
 const NavItem = React.memo(props => {
   //console.log("NavItem render");
-  const { seporator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
+  const { separator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
   const color = active ? activeColor : baseColor;
 
   return (
-    seporator
-    ? <NavItemSeporator/>
+    separator
+    ? <NavItemSeparator/>
     : <NavItemWrapper onClick={onClick}>
         {React.createElement(Icons[iconName], {size: "big", isfill: true, color: color})}
         {children && <NavItemLabel opened={opened} color={color}>{children}</NavItemLabel>}
