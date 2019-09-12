@@ -1,13 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Avatar from '../../avatar'
-import DropDown from '../../drop-down'
-import DropDownItem from '../../drop-down-item'
-import DropDownProfileItem from '../../drop-down-profile-item'
-import { handleAnyClick } from '../../../utils/event';
+import React from "react";
+import PropTypes from "prop-types";
+import Avatar from "../../avatar";
+import DropDown from "../../drop-down";
+import DropDownItem from "../../drop-down-item";
+import DropDownProfileItem from "../../drop-down-profile-item";
+import { handleAnyClick } from "../../../utils/event";
 
 class ProfileActions extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -25,17 +24,18 @@ class ProfileActions extends React.PureComponent {
     this.onAvatarClick = this.onAvatarClick.bind(this);
     this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
 
-    if(props.opened)
-      handleAnyClick(true, this.handleClick);
+    if (props.opened) handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) => {
-    this.state.opened && !this.ref.current.contains(e.target) && this.toggle(false);
-  }
+  handleClick = e => {
+    this.state.opened &&
+      !this.ref.current.contains(e.target) &&
+      this.toggle(false);
+  };
 
-  toggle = (opened) => {
+  toggle = opened => {
     this.setState({ opened: opened });
-  }
+  };
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
@@ -46,26 +46,26 @@ class ProfileActions extends React.PureComponent {
       this.toggle(this.props.opened);
     }
 
-    if(this.state.opened !== prevState.opened) {
+    if (this.state.opened !== prevState.opened) {
       handleAnyClick(this.state.opened, this.handleClick);
     }
   }
 
-  getUserRole = (user) => {
-    if(user.isOwner) return "owner";
-    if(user.isAdmin) return "admin";
-    if(user.isVisitor) return "guest";
+  getUserRole = user => {
+    if (user.isOwner) return "owner";
+    if (user.isAdmin) return "admin";
+    if (user.isVisitor) return "guest";
     return "user";
   };
 
   onAvatarClick = () => {
     this.toggle(!this.state.opened);
-  }
+  };
 
-  onDropDownItemClick = (action) => {
+  onDropDownItemClick = action => {
     action.onClick && action.onClick();
     this.toggle(!this.state.opened);
-  }
+  };
 
   render() {
     //console.log("Layout sub-component ProfileActions render");
@@ -81,7 +81,7 @@ class ProfileActions extends React.PureComponent {
         <DropDown
           isUserPreview
           withArrow
-          directionX='right'
+          directionX="right"
           isOpen={this.state.opened}
         >
           <DropDownProfileItem
@@ -90,14 +90,13 @@ class ProfileActions extends React.PureComponent {
             displayName={this.state.user.displayName}
             email={this.state.user.email}
           />
-          {
-            this.state.userActions.map(action => 
-              <DropDownItem 
-                {...action}
-                onClick={this.onDropDownItemClick.bind(this, action)}
-              />
-            )
-          }
+          {this.state.userActions.map(action => (
+            <DropDownItem
+              key={action.key}
+              {...action}
+              onClick={this.onDropDownItemClick.bind(this, action)}
+            />
+          ))}
         </DropDown>
       </div>
     );
@@ -108,12 +107,12 @@ ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
   userActions: PropTypes.array
-}
+};
 
 ProfileActions.defaultProps = {
   opened: false,
   user: {},
   userActions: []
-}
+};
 
-export default ProfileActions
+export default ProfileActions;

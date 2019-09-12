@@ -1,6 +1,7 @@
-import React from 'react'
-import styled from 'styled-components';
-import { Icons } from '../../icons';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Icons } from "../../icons";
 
 const LogoItem = styled.div`
   display: flex;
@@ -14,21 +15,31 @@ const LogoItem = styled.div`
 const NavLogoItem = React.memo(props => {
   //console.log("NavLogoItem render");
   const navLogoIconStyle = {
-    display: props.opened ? 'none' : 'block'
+    display: props.opened ? "none" : "block"
   };
 
   const navLogoOpenedIconStyle = {
-    display: props.opened ? 'block' : 'none',
-    maxHeight: '24px',
-    width: 'auto'
+    display: props.opened ? "block" : "none",
+    maxHeight: "24px",
+    width: "auto"
   };
 
   return (
     <LogoItem>
-      <Icons.NavLogoIcon style={navLogoIconStyle} onClick={props.onClick}/>
-      <Icons.NavLogoOpenedIcon style={navLogoOpenedIconStyle} onClick={props.onClick}/>
+      <Icons.NavLogoIcon style={navLogoIconStyle} onClick={props.onClick} />
+      <Icons.NavLogoOpenedIcon
+        style={navLogoOpenedIconStyle}
+        onClick={props.onClick}
+      />
     </LogoItem>
   );
 });
+
+NavLogoItem.displayName = "NavLogoItem";
+
+NavLogoItem.propTypes = {
+  opened: PropTypes.bool,
+  onClick: PropTypes.func
+};
 
 export default NavLogoItem;

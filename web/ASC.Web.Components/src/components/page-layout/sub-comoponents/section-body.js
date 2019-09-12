@@ -16,10 +16,11 @@ const SectionBody = React.memo(props => {
 
   return (
     <StyledSectionBody>
-      {withScroll 
-        ? <Scrollbar stype="mediumBlack">{children}</Scrollbar> 
-        : <>{children}</>
-      }
+      {withScroll ? (
+        <Scrollbar stype="mediumBlack">{children}</Scrollbar>
+      ) : (
+        <>{children}</>
+      )}
     </StyledSectionBody>
   );
 });
@@ -30,7 +31,8 @@ SectionBody.propTypes = {
   withScroll: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
+    PropTypes.any
   ])
 };
 

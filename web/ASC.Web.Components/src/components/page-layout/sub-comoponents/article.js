@@ -1,26 +1,27 @@
-import React from 'react'
-import styled from 'styled-components'
-import { tablet } from '../../../utils/device'
+import React from "react";
+import styled from "styled-components";
+import { tablet } from "../../../utils/device";
 
 const StyledArticle = styled.article`
   padding: 0 16px;
-  background: #F8F9F9;
+  background: #f8f9f9;
   display: flex;
   flex-direction: column;
   width: 264px;
   min-width: 264px;
-  transition: width .3s ease-in-out;
+  transition: width 0.3s ease-in-out;
   overflow: hidden auto;
 
   @media ${tablet} {
-    ${props => props.visible
-    ? props.pinned
-      ? `
+    ${props =>
+      props.visible
+        ? props.pinned
+          ? `
             display: flex;
             width: 240px;
             min-width: 240px;
           `
-      : `
+          : `
             width: 240px;
             min-width: 240px;
             position: fixed;
@@ -29,11 +30,10 @@ const StyledArticle = styled.article`
             left: 0;
             z-index: 400;
           `
-    : `
-        display: none;
-        width: 0px;
-      `
-  }
+        : `
+            display: none;
+            width: 0px;
+          `}
   }
 `;
 
@@ -44,9 +44,7 @@ class Article extends React.Component {
 
   render() {
     //console.log("PageLayout Article render");
-    return (
-      <StyledArticle {...this.props} />
-    );
+    return <StyledArticle {...this.props} />;
   }
 }
 

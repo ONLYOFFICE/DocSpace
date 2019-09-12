@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
 const StyledSection = styled.section`
   padding: 0 16px;
@@ -14,7 +14,7 @@ class Section extends React.Component {
   }*/
   render() {
     //console.log("PageLayout Section render");
-    return (<StyledSection {...this.props} />);
+    return <StyledSection {...this.props} />;
   }
 }
 

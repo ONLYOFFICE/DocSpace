@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from "react";
+import styled from "styled-components";
 
 const StyledSectionPaging = styled.div`
   margin: 0 0 16px;
@@ -7,7 +7,9 @@ const StyledSectionPaging = styled.div`
 
 const SectionPaging = React.memo(props => {
   //console.log("PageLayout SectionPaging render");
-  return (<StyledSectionPaging {...props} />);
+  return <StyledSectionPaging {...props} />;
 });
+
+SectionPaging.displayName = "SectionPaging";
 
 export default SectionPaging;
