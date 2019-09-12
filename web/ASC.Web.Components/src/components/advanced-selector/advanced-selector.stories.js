@@ -6,7 +6,7 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import AdvancedSelector from "./";
 import Section from "../../../.storybook/decorators/section";
-import { boolean } from "@storybook/addon-knobs/dist/deprecated";
+import { boolean, select } from "@storybook/addon-knobs/dist/deprecated";
 import { ArrayValue, BooleanValue } from "react-values";
 import Button from "../button";
 
@@ -77,6 +77,7 @@ storiesOf("Components|AdvancedSelector", module)
         >
           {({ value, set }) => (
             <AdvancedSelector
+              size={select("size", ["compact", "full"], "compact")}
               placeholder={text("placeholder", "Search users")}
               onSearchChanged={value => {
                 action("onSearchChanged")(value);
@@ -179,6 +180,7 @@ storiesOf("Components|AdvancedSelector", module)
                 >
                   {({ value, set }) => (
                     <AdvancedSelector
+                      size={select("size", ["compact", "full"], "compact")}
                       isDropDown={true}
                       isOpen={isOpen}
                       placeholder={text("placeholder", "Search users")}

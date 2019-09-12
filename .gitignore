@@ -3,7 +3,6 @@
 *.suo
 *.user
 .vs/
-.vscode/
 *-lock.json
 **/node_modules/
 **/storybook-static/
@@ -12,3 +11,4 @@
 *.log
 /packages/asc-web-components
 /products/ASC.People/Data/
+Data/

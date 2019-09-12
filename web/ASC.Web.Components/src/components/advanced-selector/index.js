@@ -12,6 +12,8 @@ import { isArrayEqual } from "../../utils/array";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
 import DropDown from "../drop-down";
+import { handleAnyClick } from "../../utils/event";
+import isEmpty from 'lodash/isEmpty';
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -19,7 +21,7 @@ const Container = ({
   value,
   placeholder,
   isMultiSelect,
-  mode,
+  size,
   width,
   maxHeight,
   isDisabled,
@@ -32,16 +34,27 @@ const Container = ({
   groups,
   selectedGroups,
   onChangeGroup,
+  isOpen,
+  isDropDown,
+  containerWidth,
+  containerHeight,
   ...props
 }) => <div {...props} />;
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
 const StyledContainer = styled(Container)`
-  ${props => (props.width ? `width: ${props.width}px;` : "")}
+  display: flex;
+  flex-direction: column;
+
+  ${props => (props.containerWidth ? `width: ${props.containerWidth}px;` : "")}
+  ${props =>
+    props.containerHeight
+      ? `height: ${props.containerHeight}px;`
+      : ""}
 
   .data_container {
-    margin: 16px;
+    margin: 16px 16px 0 16px;
 
     .options_searcher {
       margin-bottom: 12px;
@@ -53,7 +66,7 @@ const StyledContainer = styled(Container)`
 
     .option_select_all_checkbox {
       margin-bottom: 12px;
-      margin-left: 8px;
+      /*margin-left: 8px;*/
     }
 
     .options_list {
@@ -62,32 +75,35 @@ const StyledContainer = styled(Container)`
         cursor: pointer;
 
         .option_checkbox {
-          margin-left: 8px;
+          /*margin-left: 8px;*/
         }
 
         .option_link {
           padding-left: 8px;
         }
 
-        &:hover {
+        /*&:hover {
           background-color: #eceef1;
-        }
+        }*/
       }
     }
   }
 
   .button_container {
-    border-top: 1px solid #eceef1;
-    .add_members_btn {
-      margin: 16px;
-      width: 293px;
+      border-top: 1px solid #eceef1;
+      display: flex;
+
+      .add_members_btn {
+        margin: 16px;
+      }
     }
-  }
 `;
 
 class AdvancedSelector extends React.Component {
   constructor(props) {
     super(props);
+
+    this.ref = React.createRef();
 
     const groups = this.convertGroups(this.props.groups);
     const currentGroup = this.getCurrentGroup(groups);
@@ -98,25 +114,53 @@ class AdvancedSelector extends React.Component {
       groups: groups,
       currentGroup: currentGroup
     };
+
+    if (props.isOpen) handleAnyClick(true, this.handleClick);
+  }
+
+  handleClick = e => {
+    if (this.props.isOpen && !this.ref.current.contains(e.target)) {
+      this.props.onSelect && this.props.onSelect(this.state.selectedOptions);
+    }
+  };
+
+  componentWillUnmount() {
+    handleAnyClick(false, this.handleClick);
   }
 
   componentDidUpdate(prevProps) {
+    let newState = {};
+
     if (!isArrayEqual(this.props.selectedOptions, prevProps.selectedOptions)) {
-      this.setState({ selectedOptions: this.props.selectedOptions });
+      newState = { selectedOptions: this.props.selectedOptions };
     }
 
     if (this.props.isMultiSelect !== prevProps.isMultiSelect) {
-      this.setState({ selectedOptions: [] });
+      newState = Object.assign({}, newState, {
+        selectedOptions: []
+      });
     }
 
     if (this.props.selectedAll !== prevProps.selectedAll) {
-      this.setState({ selectedAll: this.props.selectedAll });
+      newState = Object.assign({}, newState, {
+        selectedAll: this.props.selectedAll
+      });
     }
 
     if (!isArrayEqual(this.props.groups, prevProps.groups)) {
       const groups = this.convertGroups(this.props.groups);
       const currentGroup = this.getCurrentGroup(groups);
-      this.setState({ groups, currentGroup });
+      newState = Object.assign({}, newState, {
+        groups, currentGroup
+      });
+    }
+
+    if(!isEmpty(newState)) {
+      this.setState({ ...this.state, ...newState });
+    }
+
+    if (this.props.isOpen !== prevProps.isOpen) {
+      handleAnyClick(this.props.isOpen, this.handleClick);
     }
   }
 
@@ -215,19 +259,29 @@ class AdvancedSelector extends React.Component {
     const {
       value,
       placeholder,
-      maxHeight,
       isDisabled,
       onSearchChanged,
       options,
       isMultiSelect,
       buttonLabel,
-      selectAllLabel
+      selectAllLabel,
+      size
     } = this.props;
 
     const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
+
+    const containerHeight = size === "compact" ? (!groups || !groups.length ? 336 : 326) : 545;
+    const containerWidth = size === "compact" ? (!groups || !groups.length ? 325 : 326) : 690;
+    const listHeight = size === "compact" ? (!groups || !groups.length ? 176 : 120) : 345;
+    const itemHeight = 32;
+
     return (
-      <StyledContainer {...this.props}>
-        <div className="data_container">
+      <StyledContainer
+        containerHeight={containerHeight}
+        containerWidth={containerWidth}
+        {...this.props}
+      >
+        <div className="data_container" ref={this.ref}>
           <SearchInput
             className="options_searcher"
             isDisabled={isDisabled}
@@ -264,10 +318,10 @@ class AdvancedSelector extends React.Component {
           )}
           <FixedSizeList
             className="options_list"
-            height={maxHeight}
-            itemSize={32}
-            itemCount={options.length}
-            itemData={options}
+            height={listHeight}
+            itemSize={itemHeight}
+            itemCount={this.props.options.length}
+            itemData={this.props.options}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {this.renderRow.bind(this)}
@@ -310,8 +364,7 @@ AdvancedSelector.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   isMultiSelect: PropTypes.bool,
-  mode: PropTypes.oneOf(["base", "compact"]),
-  width: PropTypes.number,
+  size: PropTypes.oneOf(["compact", "full"]),
   maxHeight: PropTypes.number,
   isDisabled: PropTypes.bool,
   onSearchChanged: PropTypes.func,
@@ -330,9 +383,7 @@ AdvancedSelector.propTypes = {
 
 AdvancedSelector.defaultProps = {
   isMultiSelect: false,
-  width: 325,
-  maxHeight: 545,
-  mode: "base",
+  size: "compact",
   buttonLabel: "Add members",
   selectAllLabel: "Select all"
 };
