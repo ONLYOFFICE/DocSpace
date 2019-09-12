@@ -21,7 +21,7 @@ const Container = ({
   value,
   placeholder,
   isMultiSelect,
-  mode,
+  size,
   width,
   maxHeight,
   isDisabled,
@@ -264,14 +264,15 @@ class AdvancedSelector extends React.Component {
       options,
       isMultiSelect,
       buttonLabel,
-      selectAllLabel
+      selectAllLabel,
+      size
     } = this.props;
 
     const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
 
-    const containerHeight = !groups || !groups.length ? 336 : 545;
-    const containerWidth = !groups || !groups.length ? 325 : 690;
-    const listHeight = 176;
+    const containerHeight = size === "compact" ? (!groups || !groups.length ? 336 : 326) : 545;
+    const containerWidth = size === "compact" ? (!groups || !groups.length ? 325 : 326) : 690;
+    const listHeight = size === "compact" ? (!groups || !groups.length ? 176 : 120) : 345;
     const itemHeight = 32;
 
     return (
@@ -363,7 +364,7 @@ AdvancedSelector.propTypes = {
   value: PropTypes.string,
   placeholder: PropTypes.string,
   isMultiSelect: PropTypes.bool,
-  mode: PropTypes.oneOf(["compact", "full"]),
+  size: PropTypes.oneOf(["compact", "full"]),
   maxHeight: PropTypes.number,
   isDisabled: PropTypes.bool,
   onSearchChanged: PropTypes.func,
@@ -382,7 +383,7 @@ AdvancedSelector.propTypes = {
 
 AdvancedSelector.defaultProps = {
   isMultiSelect: false,
-  mode: "compact",
+  size: "compact",
   buttonLabel: "Add members",
   selectAllLabel: "Select all"
 };
