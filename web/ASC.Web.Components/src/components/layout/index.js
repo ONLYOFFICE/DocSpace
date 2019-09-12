@@ -66,7 +66,7 @@ class Layout extends React.Component {
         isolateModules.push(item);
       } else {
         mainModules.push(item);
-        if (item.seporator) continue;
+        if (item.separator) continue;
         totalNotifications+=item.notifications;
       }
     }
@@ -195,7 +195,7 @@ class Layout extends React.Component {
             {
               this.state.mainModules.map(item => 
                 <NavItem
-                  seporator={!!item.seporator}
+                  separator={!!item.separator}
                   key={item.id}
                   opened={this.state.isNavOpened}
                   active={item.id == this.state.currentModuleId}

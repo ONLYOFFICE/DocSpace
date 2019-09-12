@@ -395,7 +395,7 @@ class UpdateUserForm extends React.Component {
               labelText={`${t("CustomDepartment", { department })}:`}
               isDisabled={isLoading}
               departments={profile.groups}
-              addButtonTitle={t("Add")}
+              addButtonTitle={t("AddButton")}
               onAddDepartment={this.onAddGroup}
               onRemoveDepartment={this.onGroupClose}
             />
