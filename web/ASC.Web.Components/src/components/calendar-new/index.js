@@ -520,10 +520,10 @@ class Calendar extends Component {
 
     //MAX MIN DATE ERROR
     if (
-      openToDate > maxDate ||
-      openToDate < minDate ||
-      selectedDate > maxDate ||
-      selectedDate < minDate
+      this.compareDates(openToDate, maxDate) > 0 ||
+      this.compareDates(openToDate, minDate) < 0 ||
+      this.compareDates(selectedDate, maxDate) > 0 ||
+      this.compareDates(selectedDate, minDate) < 0
     ) {
       if (!hasError && !this.state.isDisabled) {
         this.setState({
@@ -533,19 +533,25 @@ class Calendar extends Component {
         this.props.onChange &&
           this.props.onChange("INVALID PROP (SELECTED DATE/OPEN TO DATE) DATE");
       }
-      return;
     } else if (
-      (openToDate < maxDate ||
-        openToDate > minDate ||
-        selectedDate < maxDate ||
-        selectedDate > minDate) &&
+      (this.compareDates(openToDate, maxDate) <= 0 ||
+        this.compareDates(openToDate, minDate) >= 0 ||
+        this.compareDates(selectedDate, maxDate) <= 0 ||
+        this.compareDates(selectedDate, minDate) >= 0) &&
       hasError &&
       this.state.isDisabled
     ) {
-      this.setState({
-        hasError: false,
-        isDisabled: false
+      newState = Object.assign({}, newState, {
+        selectedDate,
+        openToDate,
+        isDisabled: false,
+        hasError: false
       });
+      newState = this.mapPropsToState({
+        ...this.state,
+        ...newState
+      });
+      this.setState(newState);
     } else {
       if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
         newState = { selectedDate };
