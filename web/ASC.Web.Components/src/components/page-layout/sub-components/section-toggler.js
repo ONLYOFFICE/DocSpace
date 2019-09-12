@@ -1,14 +1,15 @@
-import React from 'react'
-import styled from 'styled-components'
-import { tablet } from '../../../utils/device'
-import { Icons } from '../../icons'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { tablet } from "../../../utils/device";
+import { Icons } from "../../icons";
 
 const StyledSectionToggler = styled.div`
   height: 64px;
   display: none;
 
   @media ${tablet} {
-    display: ${props => props.visible ? 'block' : 'none'};
+    display: ${props => (props.visible ? "block" : "none")};
   }
 
   div {
@@ -21,18 +22,24 @@ const StyledSectionToggler = styled.div`
   }
 `;
 
-
-const SectionToggler = React.memo(props => { 
+const SectionToggler = React.memo(props => {
   //console.log("PageLayout SectionToggler render");
   const { visible, onClick } = props;
 
   return (
     <StyledSectionToggler visible={visible}>
       <div onClick={onClick}>
-        <Icons.CatalogButtonIcon size="scale"/>
+        <Icons.CatalogButtonIcon size="scale" />
       </div>
     </StyledSectionToggler>
   );
 });
+
+SectionToggler.displayName = "SectionToggler";
+
+SectionToggler.propTypes = {
+  visible: PropTypes.bool,
+  onClick: PropTypes.func
+};
 
 export default SectionToggler;

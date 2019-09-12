@@ -1,12 +1,13 @@
-import React from 'react'
-import styled, {css} from 'styled-components'
-import Badge from '../../badge'
-import { Icons } from '../../icons'
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import Badge from "../../badge";
+import { Icons } from "../../icons";
 
-const baseColor = '#7A95B0',
-      activeColor = '#FFFFFF';
+const baseColor = "#7A95B0",
+  activeColor = "#FFFFFF";
 
-const NavItemSeporator = styled.div`
+const NavItemSeparator = styled.div`
   border-bottom: 1px solid ${baseColor};
   margin: 0 16px;
 `;
@@ -23,12 +24,12 @@ const NavItemWrapper = styled.div`
 
 const NavItemLabel = styled.div`
   font-weight: bold;
-  font-size: 16px;  
+  font-size: 16px;
   margin: 0 auto 0 16px;
   overflow: hidden;
   text-overflow: ellipsis;
   color: ${props => props.color};
-  display: ${props => props.opened ? 'block' : 'none'};
+  display: ${props => (props.opened ? "block" : "none")};
 `;
 
 const badgeCss = css`
@@ -38,23 +39,60 @@ const badgeCss = css`
 `;
 
 const NavItemBadge = styled(Badge)`
-  ${props => props.opened ? "" : badgeCss}
+  ${props => (props.opened ? "" : badgeCss)}
 `;
 
 const NavItem = React.memo(props => {
   //console.log("NavItem render");
-  const { seporator, opened, active, iconName, children, badgeNumber, onClick, onBadgeClick } = props;
+  const {
+    separator,
+    opened,
+    active,
+    iconName,
+    children,
+    badgeNumber,
+    onClick,
+    onBadgeClick
+  } = props;
   const color = active ? activeColor : baseColor;
 
-  return (
-    seporator
-    ? <NavItemSeporator/>
-    : <NavItemWrapper onClick={onClick}>
-        {React.createElement(Icons[iconName], {size: "big", isfill: true, color: color})}
-        {children && <NavItemLabel opened={opened} color={color}>{children}</NavItemLabel>}
-        <NavItemBadge opened={opened} number={badgeNumber} onClick={onBadgeClick}/>
-      </NavItemWrapper>
+  return separator ? (
+    <NavItemSeparator />
+  ) : (
+    <NavItemWrapper onClick={onClick}>
+      {React.createElement(Icons[iconName], {
+        size: "big",
+        isfill: true,
+        color: color
+      })}
+      {children && (
+        <NavItemLabel opened={opened} color={color}>
+          {children}
+        </NavItemLabel>
+      )}
+      <NavItemBadge
+        opened={opened}
+        number={badgeNumber}
+        onClick={onBadgeClick}
+      />
+    </NavItemWrapper>
   );
 });
+
+NavItem.displayName = "NavItem";
+
+NavItem.propTypes = {
+  separator: PropTypes.bool,
+  opened: PropTypes.bool,
+  active: PropTypes.bool,
+  iconName: PropTypes.string,
+  badgeNumber: PropTypes.number,
+  onClick: PropTypes.func,
+  onBadgeClick: PropTypes.func,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
 
 export default NavItem;
