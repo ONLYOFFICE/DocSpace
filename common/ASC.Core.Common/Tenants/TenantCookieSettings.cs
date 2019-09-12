@@ -44,6 +44,13 @@ namespace ASC.Core.Tenants
 
         private static readonly bool IsVisibleSettings;
 
+        public TenantCookieSettings()
+        {
+        }
+        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager) : base(authContext, settingsManager)
+        {
+        }
+
         static TenantCookieSettings()
         {
             IsVisibleSettings = !(ConfigurationManager.AppSettings["web:hide-settings"] ?? string.Empty)

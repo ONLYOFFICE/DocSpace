@@ -78,7 +78,7 @@ namespace ASC.Web.Studio.Core.Notify
                 culture = tenant.GetCulture();
             }
 
-            var user = userManager.GetUsers(item.TenantId, securityContext.CurrentAccount.ID);
+            var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
             if (!string.IsNullOrEmpty(user.CultureName))
             {
                 culture = CultureInfo.GetCultureInfo(user.CultureName);

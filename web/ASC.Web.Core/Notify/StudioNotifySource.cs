@@ -36,8 +36,8 @@ namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioNotifySource : NotifySource
     {
-        public StudioNotifySource(UserManager userManager, TenantManager tenantManager, IRecipientProvider recipientsProvider)
-            : base("asc.web.studio", userManager, tenantManager, recipientsProvider)
+        public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider)
+            : base("asc.web.studio", userManager, recipientsProvider)
         {
         }
 
@@ -183,14 +183,14 @@ namespace ASC.Web.Studio.Core.Notify
                 this.provider = provider;
             }
 
-            public object GetSubscriptionRecord(Tenant tenant, INotifyAction action, IRecipient recipient, string objectID)
+            public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
             {
-                return provider.GetSubscriptionRecord(tenant, GetAdminAction(action), recipient, objectID);
+                return provider.GetSubscriptionRecord(GetAdminAction(action), recipient, objectID);
             }
 
-            public string[] GetSubscriptions(Tenant tenant, INotifyAction action, IRecipient recipient, bool checkSubscription = true)
+            public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
             {
-                return provider.GetSubscriptions(tenant, GetAdminAction(action), recipient, checkSubscription);
+                return provider.GetSubscriptions(GetAdminAction(action), recipient, checkSubscription);
             }
 
             public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
@@ -198,9 +198,9 @@ namespace ASC.Web.Studio.Core.Notify
                 provider.Subscribe(GetAdminAction(action), objectID, recipient);
             }
 
-            public void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
+            public void UnSubscribe(INotifyAction action, IRecipient recipient)
             {
-                provider.UnSubscribe(tenant, GetAdminAction(action), recipient);
+                provider.UnSubscribe(GetAdminAction(action), recipient);
             }
 
             public void UnSubscribe(INotifyAction action)
@@ -223,14 +223,14 @@ namespace ASC.Web.Studio.Core.Notify
                 provider.UpdateSubscriptionMethod(GetAdminAction(action), recipient, senderNames);
             }
 
-            public IRecipient[] GetRecipients(int tenantId, INotifyAction action, string objectID)
+            public IRecipient[] GetRecipients(INotifyAction action, string objectID)
             {
-                return provider.GetRecipients(tenantId, GetAdminAction(action), objectID);
+                return provider.GetRecipients(GetAdminAction(action), objectID);
             }
 
-            public string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient)
+            public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
             {
-                return provider.GetSubscriptionMethod(tenant, GetAdminAction(action), recipient);
+                return provider.GetSubscriptionMethod(GetAdminAction(action), recipient);
             }
 
             public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)

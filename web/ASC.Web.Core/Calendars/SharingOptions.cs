@@ -51,7 +51,7 @@ namespace ASC.Web.Core.Calendars
             this.PublicItems = new List<PublicItem>();
         }
 
-        public bool PublicForItem(Tenant tenant, Guid itemId, UserManager userManager)
+        public bool PublicForItem(Guid itemId, UserManager userManager)
         {
             if (SharedForAll)
                 return true;
@@ -59,11 +59,11 @@ namespace ASC.Web.Core.Calendars
             if (PublicItems.Exists(i => i.Id.Equals(itemId)))
                 return true;
 
-            var u = userManager.GetUsers(tenant.TenantId, itemId);
+            var u = userManager.GetUsers(itemId);
             if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
             {
-                var userGroups = new List<GroupInfo>(userManager.GetUserGroups(tenant, itemId));
-                userGroups.AddRange(userManager.GetUserGroups(tenant, itemId, Constants.SysGroupCategoryId));
+                var userGroups = new List<GroupInfo>(userManager.GetUserGroups(itemId));
+                userGroups.AddRange(userManager.GetUserGroups(itemId, Constants.SysGroupCategoryId));
                 return userGroups.Exists(g => PublicItems.Exists(i => i.Id.Equals(g.ID)));
             }
 

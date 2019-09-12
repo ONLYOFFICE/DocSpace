@@ -124,28 +124,28 @@ namespace ASC.Web.Core
                         webitem.ID == WebItemManager.PeopleProductID ||
                         webitem.ID == WebItemManager.BirthdaysProductID ||
                         webitem.ID == WebItemManager.MailProductID) &&
-                        UserManager.GetUsers(tenant.TenantId, @for).IsVisitor(tenant, UserManager))
+                        UserManager.GetUsers(@for).IsVisitor(UserManager))
                     {
                         // hack: crm, people, birtthday and mail products not visible for collaborators
                         result = false;
                     }
                     else if ((webitem.ID == WebItemManager.CalendarProductID ||
                               webitem.ID == WebItemManager.TalkProductID) &&
-                             UserManager.GetUsers(tenant.TenantId, @for).IsOutsider(tenant, UserManager))
+                             UserManager.GetUsers(@for).IsOutsider(UserManager))
                     {
                         // hack: calendar and talk products not visible for outsider
                         result = false;
                     }
                     else if (webitem is IModule)
                     {
-                        result = PermissionContext.PermissionResolver.Check(tenant, Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
                             IsAvailableForUser(tenant, WebItemManager.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
                         var hasUsers = CoreContext.AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
-                        result = PermissionContext.PermissionResolver.Check(tenant, Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
-                                 (hasUsers && IsProductAdministrator(tenant, securityObj.WebItemId, @for));
+                        result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
+                                 (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                     }
                 }
                 else
@@ -196,7 +196,7 @@ namespace ASC.Web.Core
             cacheNotify.Publish(new WebItemSecurityNotifier(), CacheNotifyAction.Any);
         }
 
-        public WebItemSecurityInfo GetSecurityInfo(int tenantId, string id)
+        public WebItemSecurityInfo GetSecurityInfo(string id)
         {
             var info = GetSecurity(id).ToList();
             var module = WebItemManager.GetParentItemID(new Guid(id)) != Guid.Empty;
@@ -207,11 +207,11 @@ namespace ASC.Web.Core
                 Enabled = !info.Any() || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
 
                 Users = info
-                               .Select(i => UserManager.GetUsers(tenantId, i.Item1))
+                               .Select(i => UserManager.GetUsers(i.Item1))
                                .Where(u => u.ID != ASC.Core.Users.Constants.LostUser.ID),
 
                 Groups = info
-                               .Select(i => UserManager.GetGroupInfo(tenantId, i.Item1))
+                               .Select(i => UserManager.GetGroupInfo(i.Item1))
                                .Where(g => g.ID != ASC.Core.Users.Constants.LostGroupInfo.ID && g.CategoryID != ASC.Core.Users.Constants.SysGroupCategoryId)
             };
         }
@@ -231,7 +231,7 @@ namespace ASC.Web.Core
             return result;
         }
 
-        public void SetProductAdministrator(Tenant tenant, Guid productid, Guid userid, bool administrator)
+        public void SetProductAdministrator(Guid productid, Guid userid, bool administrator)
         {
             if (productid == Guid.Empty)
             {
@@ -239,7 +239,7 @@ namespace ASC.Web.Core
             }
             if (administrator)
             {
-                if (UserManager.IsUserInGroup(tenant, userid, ASC.Core.Users.Constants.GroupVisitor.ID))
+                if (UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupVisitor.ID))
                 {
                     throw new SecurityException("Collaborator can not be an administrator");
                 }
@@ -252,7 +252,7 @@ namespace ASC.Web.Core
                     }
                 }
 
-                UserManager.AddUserIntoGroup(tenant, userid, productid);
+                UserManager.AddUserIntoGroup(userid, productid);
             }
             else
             {
@@ -263,7 +263,7 @@ namespace ASC.Web.Core
 
                     foreach (var id in groups)
                     {
-                        UserManager.RemoveUserFromGroup(tenant, userid, id);
+                        UserManager.RemoveUserFromGroup(userid, id);
                     }
                 }
 
@@ -275,19 +275,19 @@ namespace ASC.Web.Core
                     }
                 }
 
-                UserManager.RemoveUserFromGroup(tenant, userid, productid);
+                UserManager.RemoveUserFromGroup(userid, productid);
             }
 
             cacheNotify.Publish(new WebItemSecurityNotifier(), CacheNotifyAction.Any);
         }
 
-        public bool IsProductAdministrator(Tenant tenant, Guid productid, Guid userid)
+        public bool IsProductAdministrator(Guid productid, Guid userid)
         {
-            return UserManager.IsUserInGroup(tenant, userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
-                   UserManager.IsUserInGroup(tenant, userid, productid);
+            return UserManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
+                   UserManager.IsUserInGroup(userid, productid);
         }
 
-        public IEnumerable<UserInfo> GetProductAdministrators(Tenant tenant, Guid productid)
+        public IEnumerable<UserInfo> GetProductAdministrators(Guid productid)
         {
             var groups = new List<Guid>();
             if (productid == Guid.Empty)
@@ -304,7 +304,7 @@ namespace ASC.Web.Core
             var users = Enumerable.Empty<UserInfo>();
             foreach (var id in groups)
             {
-                users = users.Union(UserManager.GetUsersByGroup(tenant, id));
+                users = users.Union(UserManager.GetUsersByGroup(id));
             }
             return users.ToList();
         }

@@ -53,9 +53,9 @@ namespace ASC.Web.Core.Users
             };
         }
 
-        public static string GetFullUserName(UserManager userManager, int tenantId, Guid userID, bool withHtmlEncode = true)
+        public static string GetFullUserName(UserManager userManager, Guid userID, bool withHtmlEncode = true)
         {
-            return GetFullUserName(userManager, userManager.GetUsers(tenantId, userID), withHtmlEncode);
+            return GetFullUserName(userManager, userManager.GetUsers(userID), withHtmlEncode);
         }
 
         public static string GetFullUserName(UserManager userManager, UserInfo userInfo, bool withHtmlEncode = true)

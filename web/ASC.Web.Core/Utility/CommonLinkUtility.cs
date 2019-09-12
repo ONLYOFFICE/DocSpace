@@ -162,12 +162,12 @@ namespace ASC.Web.Studio.Utility
 
         #region user profile link
 
-        public static string GetUserProfile(int tenantId, Guid userID, UserManager userManager)
+        public static string GetUserProfile(Guid userID, UserManager userManager)
         {
-            if (!userManager.UserExists(tenantId, userID))
+            if (!userManager.UserExists(userID))
                 return GetEmployees();
 
-            return GetUserProfile(tenantId, userID.ToString(), userManager);
+            return GetUserProfile(userID.ToString(), userManager);
         }
 
         public static string GetUserProfile(UserInfo user, UserManager userManager)
@@ -178,7 +178,7 @@ namespace ASC.Web.Studio.Utility
             return GetUserProfile(user, userManager, true);
         }
 
-        public static string GetUserProfile(int tenantId, string user, UserManager userManager, bool absolute = true)
+        public static string GetUserProfile(string user, UserManager userManager, bool absolute = true)
         {
             var queryParams = "";
 
@@ -196,7 +196,7 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(tenantId, guid, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
@@ -216,9 +216,9 @@ namespace ASC.Web.Studio.Utility
 
             return url;
         }
-        public static string GetUserProfile(int tenantId, Guid user, UserManager userManager, bool absolute = true)
+        public static string GetUserProfile(Guid user, UserManager userManager, bool absolute = true)
         {
-            var queryParams = GetUserParamsPair(tenantId, user, userManager);
+            var queryParams = GetUserParamsPair(user, userManager);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -457,9 +457,9 @@ namespace ASC.Web.Studio.Utility
             return result;
         }
 
-        public static string GetUserParamsPair(int tenantId, Guid userID, UserManager userManager)
+        public static string GetUserParamsPair(Guid userID, UserManager userManager)
         {
-            return GetUserParamsPair(userManager.GetUsers(tenantId, userID), userManager);
+            return GetUserParamsPair(userManager.GetUsers(userID), userManager);
         }
 
         public static string GetUserParamsPair(UserInfo user, UserManager userManager)

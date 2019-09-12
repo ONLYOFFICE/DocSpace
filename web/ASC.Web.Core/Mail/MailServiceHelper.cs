@@ -99,7 +99,7 @@ namespace ASC.Web.Core.Mail
             if (!CoreContext.Configuration.Standalone)
                 throw new NotSupportedException("Method for server edition only.");
 
-            if (!UserManager.IsUserInGroup(CoreContext.TenantManager.GetCurrentTenant(), AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
                 throw new SecurityException();
         }
 

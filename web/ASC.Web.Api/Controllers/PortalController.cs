@@ -56,7 +56,7 @@ namespace ASC.Web.Api.Controllers
         [Read("users/{userID}")]
         public UserInfo GetUser(Guid userID)
         {
-            return UserManager.GetUsers(Tenant.TenantId, userID);
+            return UserManager.GetUsers(userID);
         }
 
         [Read("users/invite/{employeeType}")]
@@ -94,7 +94,7 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return UserManager.GetUserNames(Tenant, EmployeeStatus.Active).Count();
+            return UserManager.GetUserNames(EmployeeStatus.Active).Count();
         }
 
         [Read("tariff")]

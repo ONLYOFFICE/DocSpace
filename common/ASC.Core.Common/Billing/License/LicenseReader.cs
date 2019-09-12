@@ -179,7 +179,7 @@ namespace ASC.Core.Billing
             if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
-            if (license.ActiveUsers < UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)
+            if (license.ActiveUsers < UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
             {
                 throw new LicenseQuotaException("License quota", license.OriginalLicense);
             }

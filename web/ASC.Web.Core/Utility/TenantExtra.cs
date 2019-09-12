@@ -87,11 +87,10 @@ namespace ASC.Web.Studio.Utility
         {
             get
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
                 return Enterprise &&
                     GetTenantQuota().ControlPanel &&
                     GetCurrentTariff().State < TariffState.NotPaid &&
-                    UserManager.GetUsers(tenant.TenantId, AuthContext.CurrentAccount.ID).IsAdmin(tenant, UserManager);
+                    UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager);
             }
         }
 
@@ -150,16 +149,16 @@ namespace ASC.Web.Studio.Utility
             return prevQuota.ActiveUsers + 1;
         }
 
-        public int GetRightQuotaId(Tenant tenant)
+        public int GetRightQuotaId()
         {
-            var q = GetRightQuota(tenant);
+            var q = GetRightQuota();
             return q != null ? q.Id : 0;
         }
 
-        public TenantQuota GetRightQuota(Tenant tenant)
+        public TenantQuota GetRightQuota()
         {
             var usedSpace = TenantStatisticsProvider.GetUsedSize();
-            var needUsersCount = TenantStatisticsProvider.GetUsersCount(tenant);
+            var needUsersCount = TenantStatisticsProvider.GetUsersCount();
             var quotas = GetTenantQuotas();
 
             return quotas.OrderBy(q => q.ActiveUsers)
@@ -175,12 +174,12 @@ namespace ASC.Web.Studio.Utility
         {
             CoreContext.PaymentManager.SendTrialRequest(
                 TenantProvider.CurrentTenantID,
-                UserManager.GetUsers(TenantProvider.CurrentTenantID, AuthContext.CurrentAccount.ID));
+                UserManager.GetUsers(AuthContext.CurrentAccount.ID));
         }
 
-        public int GetRemainingCountUsers(Tenant tenant)
+        public int GetRemainingCountUsers()
         {
-            return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount(tenant);
+            return GetTenantQuota().ActiveUsers - TenantStatisticsProvider.GetUsersCount();
         }
 
         public bool UpdatedWithoutLicense

@@ -54,7 +54,7 @@ namespace ASC.Web.Api.Models
 
             if (httpContext.Check("avatarSmall"))
             {
-                AvatarSmall = userPhotoManager.GetSmallPhotoURL(httpContext.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarSmall = userPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (Id != Guid.Empty)

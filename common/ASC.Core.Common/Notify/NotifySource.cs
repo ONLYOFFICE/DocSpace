@@ -67,20 +67,18 @@ namespace ASC.Core.Notify
             private set;
         }
         public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
 
-        public NotifySource(string id, UserManager userManager, TenantManager tenantManager, IRecipientProvider recipientsProvider)
+        public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
 
             ID = id;
             UserManager = userManager;
-            TenantManager = tenantManager;
             RecipientsProvider = recipientsProvider;
         }
 
-        public NotifySource(Guid id, UserManager userManager, TenantManager tenantManager, IRecipientProvider recipientsProvider)
-            : this(id.ToString(), userManager, tenantManager, recipientsProvider)
+        public NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider)
+            : this(id.ToString(), userManager, recipientsProvider)
         {
         }
 
@@ -139,7 +137,7 @@ namespace ASC.Core.Notify
 
         protected virtual IRecipientProvider CreateRecipientsProvider()
         {
-            return new RecipientProviderImpl(UserManager, TenantManager) ?? throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
+            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
         }
     }
 }

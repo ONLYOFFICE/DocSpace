@@ -58,45 +58,45 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public IEnumerable<UserInfo> GetRecipients(Tenant tenant, bool toadmins, bool tousers, bool toguests)
+        public IEnumerable<UserInfo> GetRecipients(bool toadmins, bool tousers, bool toguests)
         {
             if (toadmins)
             {
                 if (tousers)
                 {
                     if (toguests)
-                        return UserManager.GetUsers(tenant);
+                        return UserManager.GetUsers();
 
-                    return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User);
+                    return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
                 }
 
                 if (toguests)
                     return
-                        UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID)
-                                   .Concat(UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor));
+                        UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
+                                   .Concat(UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
 
-                return UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID);
+                return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID);
             }
 
             if (tousers)
             {
                 if (toguests)
-                    return UserManager.GetUsers(tenant)
-                                      .Where(u => !UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                    return UserManager.GetUsers()
+                                      .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
 
-                return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
+                                  .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
             }
 
             if (toguests)
-                return UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor);
+                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
 
             return new List<UserInfo>();
         }
 
-        public IRecipient ToRecipient(int tenantId, Guid userId)
+        public IRecipient ToRecipient(Guid userId)
         {
-            return RecipientsProvider.GetRecipient(tenantId, userId.ToString());
+            return RecipientsProvider.GetRecipient(userId.ToString());
         }
 
         public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
@@ -139,19 +139,19 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public bool IsSubscribedToNotify(Tenant tenant, Guid userId, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(Guid userId, INotifyAction notifyAction)
         {
-            return IsSubscribedToNotify(tenant, ToRecipient(tenant.TenantId, userId), notifyAction);
+            return IsSubscribedToNotify(ToRecipient(userId), notifyAction);
         }
 
-        public bool IsSubscribedToNotify(Tenant tenant, IRecipient recipient, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(IRecipient recipient, INotifyAction notifyAction)
         {
-            return recipient != null && SubscriptionProvider.IsSubscribed(tenant, notifyAction, recipient, null);
+            return recipient != null && SubscriptionProvider.IsSubscribed(notifyAction, recipient, null);
         }
 
-        public void SubscribeToNotify(int tenantId, Guid userId, INotifyAction notifyAction, bool subscribe)
+        public void SubscribeToNotify(Guid userId, INotifyAction notifyAction, bool subscribe)
         {
-            SubscribeToNotify(ToRecipient(tenantId, userId), notifyAction, subscribe);
+            SubscribeToNotify(ToRecipient(userId), notifyAction, subscribe);
         }
 
         public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)

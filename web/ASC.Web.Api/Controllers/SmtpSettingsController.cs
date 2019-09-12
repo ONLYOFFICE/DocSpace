@@ -105,7 +105,7 @@ namespace ASC.Api.Settings
             if (smtpSettings == null)
                 throw new ArgumentNullException("smtpSettings");
 
-            PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var settingConfig = ToSmtpSettingsConfig(smtpSettings);
 
@@ -123,7 +123,7 @@ namespace ASC.Api.Settings
 
             if (!CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
             {
-                PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
                 CoreContext.Configuration.SmtpSettings = null;
             }
 

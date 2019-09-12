@@ -39,6 +39,8 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Core.Data
 {
     public class DbSettingsManager
@@ -52,6 +54,12 @@ namespace ASC.Core.Data
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
         private readonly string dbId;
 
+        public IServiceProvider ServiceProvider { get; }
+
+        public DbSettingsManager(IServiceProvider serviceProvider) : this((ConnectionStringSettings)null)
+        {
+            ServiceProvider = serviceProvider;
+        }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
@@ -139,7 +147,7 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = (ISettings)Activator.CreateInstance<T>();
+            var settingsInstance = (ISettings)ServiceProvider.GetService<T>();
             var key = settingsInstance.ID.ToString() + tenantId + userId;
 
             try
@@ -181,8 +189,8 @@ namespace ASC.Core.Data
         {
             using var stream = new MemoryStream(data);
             var settings = data[0] == 0
-? new BinaryFormatter().Deserialize(stream)
-: GetJsonSerializer(typeof(T)).ReadObject(stream);
+                            ? new BinaryFormatter().Deserialize(stream)
+                            : GetJsonSerializer(typeof(T)).ReadObject(stream);
             return (T)settings;
         }
 

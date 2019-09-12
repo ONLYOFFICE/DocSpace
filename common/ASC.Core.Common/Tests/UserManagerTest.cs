@@ -47,34 +47,34 @@ namespace ASC.Core.Common.Tests
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(0);
 
-            var users = userManager.Search(tenant, null, EmployeeStatus.Active);
+            var users = userManager.Search(null, EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "", EmployeeStatus.Active);
+            users = userManager.Search("", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "  ", EmployeeStatus.Active);
+            users = userManager.Search("  ", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "АбРаМсКй", EmployeeStatus.Active);
+            users = userManager.Search("АбРаМсКй", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "АбРаМсКий", EmployeeStatus.Active);
+            users = userManager.Search("АбРаМсКий", EmployeeStatus.Active);
             Assert.AreEqual(0, users.Length);//Абрамский уволился
 
-            users = userManager.Search(tenant, "АбРаМсКий", EmployeeStatus.All);
+            users = userManager.Search("АбРаМсКий", EmployeeStatus.All);
             Assert.AreNotEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "иванов николай", EmployeeStatus.Active);
+            users = userManager.Search("иванов николай", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "ведущий програм", EmployeeStatus.Active);
+            users = userManager.Search("ведущий програм", EmployeeStatus.Active);
             Assert.AreNotEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = userManager.Search("баннов лев", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreNotEqual(0, users.Length);
 
-            users = userManager.Search(tenant, "иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
+            users = userManager.Search("иванов николай", EmployeeStatus.Active, new Guid("613fc896-3ddd-4de1-a567-edbbc6cf1fc8"));
             Assert.AreEqual(0, users);
         }
 
@@ -86,25 +86,25 @@ namespace ASC.Core.Common.Tests
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = CoreContext.TenantManager.SetCurrentTenant(1024);
 
-            var deps = userManager.GetDepartments(tenant.TenantId);
-            var users = userManager.GetUsers(tenant);
+            var deps = userManager.GetDepartments();
+            var users = userManager.GetUsers();
 
             var g1 = deps[0];
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
-            _ = userManager.GetCompanyCEO(tenant.TenantId);
-            userManager.SetCompanyCEO(tenant.TenantId, ceo.ID);
-            var ceoTemp = userManager.GetCompanyCEO(tenant.TenantId);
+            _ = userManager.GetCompanyCEO();
+            userManager.SetCompanyCEO(ceo.ID);
+            var ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
             Thread.Sleep(TimeSpan.FromSeconds(6));
-            ceoTemp = userManager.GetCompanyCEO(tenant.TenantId);
+            ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);
 
-            userManager.SetDepartmentManager(tenant.TenantId, g1.ID, u1.ID);
+            userManager.SetDepartmentManager(g1.ID, u1.ID);
 
-            userManager.SetDepartmentManager(tenant.TenantId, g1.ID, u2.ID);
+            userManager.SetDepartmentManager(g1.ID, u2.ID);
         }
 
         [Test]
@@ -115,31 +115,31 @@ namespace ASC.Core.Common.Tests
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(0);
 
-            foreach (var u in userManager.GetUsers(tenant))
+            foreach (var u in userManager.GetUsers())
             {
-                var groups = userManager.GetGroups(tenant.TenantId, Guid.Empty);
+                var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in userManager.GetUserGroups(tenant, u.ID))
+                foreach (var g in userManager.GetUserGroups(u.ID))
                 {
-                    var manager = userManager.GetUsers(tenant.TenantId, userManager.GetDepartmentManager(tenant.TenantId, g.ID)).UserName;
+                    var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }
             }
             var stopwatch = Stopwatch.StartNew();
-            foreach (var u in userManager.GetUsers(tenant))
+            foreach (var u in userManager.GetUsers())
             {
-                var groups = userManager.GetGroups(tenant.TenantId, Guid.Empty);
+                var groups = userManager.GetGroups(Guid.Empty);
                 Assert.IsNotNull(groups);
-                foreach (var g in userManager.GetUserGroups(tenant, u.ID))
+                foreach (var g in userManager.GetUserGroups(u.ID))
                 {
-                    var manager = userManager.GetUsers(tenant.TenantId, userManager.GetDepartmentManager(tenant.TenantId, g.ID)).UserName;
+                    var manager = userManager.GetUsers(userManager.GetDepartmentManager(g.ID)).UserName;
                 }
             }
             stopwatch.Stop();
 
             stopwatch.Restart();
-            var users = userManager.GetUsersByGroup(tenant, Constants.GroupUser.ID);
-            var visitors = userManager.GetUsersByGroup(tenant, Constants.GroupVisitor.ID);
-            var all = userManager.GetUsers(tenant);
+            var users = userManager.GetUsersByGroup(Constants.GroupUser.ID);
+            var visitors = userManager.GetUsersByGroup(Constants.GroupVisitor.ID);
+            var all = userManager.GetUsers();
             Assert.IsNotNull(users);
             Assert.IsNotNull(visitors);
             Assert.IsNotNull(all);

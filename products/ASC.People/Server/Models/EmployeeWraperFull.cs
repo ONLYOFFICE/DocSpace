@@ -174,8 +174,8 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("groups") || context.Check("department"))
             {
-                var groups = userManager.GetUserGroups(context.Tenant, userInfo.ID)
-                    .Select(x => new GroupWrapperSummary(x, context, userManager))
+                var groups = userManager.GetUserGroups(userInfo.ID)
+                    .Select(x => new GroupWrapperSummary(x, userManager))
                     .ToList();
 
                 if (groups.Count > 0)
@@ -193,29 +193,29 @@ namespace ASC.Web.Api.Models
 
             if (context.Check("avatarMax"))
             {
-                AvatarMax = userphotomanager.GetMaxPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarMax = userphotomanager.GetMaxPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatarMedium"))
             {
-                AvatarMedium = userphotomanager.GetMediumPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                AvatarMedium = userphotomanager.GetMediumPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("avatar"))
             {
-                Avatar = userphotomanager.GetBigPhotoURL(context.Tenant.TenantId, userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+                Avatar = userphotomanager.GetBigPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
             }
 
             if (context.Check("listAdminModules"))
             {
-                var listAdminModules = userInfo.GetListAdminModules(context.Tenant, webItemSecurity);
+                var listAdminModules = userInfo.GetListAdminModules(webItemSecurity);
 
                 if (listAdminModules.Any())
                     ListAdminModules = listAdminModules;
             }
 
-            IsVisitor = userInfo.IsVisitor(context.Tenant, userManager);
-            IsAdmin = userInfo.IsAdmin(context.Tenant, userManager);
+            IsVisitor = userInfo.IsVisitor(userManager);
+            IsAdmin = userInfo.IsAdmin(userManager);
             IsOwner = userInfo.IsOwner(context.Tenant);
             IsLDAP = userInfo.IsLDAP();
             IsSSO = userInfo.IsSSO();
@@ -245,7 +245,7 @@ namespace ASC.Web.Api.Models
         {
             try
             {
-                return GetFull(userManager.GetUsers(context.Tenant.TenantId, userId), context, userManager, userPhotoManager, webItemSecurity);
+                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity);
 
             }
             catch (Exception)

@@ -75,14 +75,14 @@ namespace ASC.Web.Studio.Core.Notify
             StudioNotifyHelper = studioNotifyHelper;
         }
 
-        public void SendMsgToAdminAboutProfileUpdated(int tenantId)
+        public void SendMsgToAdminAboutProfileUpdated()
         {
-            client.SendNoticeAsync(tenantId, Actions.SelfProfileUpdated, null);
+            client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
         }
 
-        public void SendMsgToAdminFromNotAuthUser(int tenantId, string email, string message)
+        public void SendMsgToAdminFromNotAuthUser(string email, string message)
         {
-            client.SendNoticeAsync(tenantId, Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
+            client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
         }
 
         public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
@@ -124,14 +124,14 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region Voip
 
-        public void SendToAdminVoipWarning(int tenantId, double balance)
+        public void SendToAdminVoipWarning(double balance)
         {
-            client.SendNoticeAsync(tenantId, Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
+            client.SendNoticeAsync(Actions.VoipWarning, null, new TagValue(Tags.Body, balance));
         }
 
-        public void SendToAdminVoipBlocked(int tenantId)
+        public void SendToAdminVoipBlocked()
         {
-            client.SendNoticeAsync(tenantId, Actions.VoipBlocked, null);
+            client.SendNoticeAsync(Actions.VoipBlocked, null);
         }
 
         #endregion
@@ -280,9 +280,9 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public void UserHasJoin(int tenantId)
+        public void UserHasJoin()
         {
-            client.SendNoticeAsync(tenantId, Actions.UserHasJoin, null);
+            client.SendNoticeAsync(Actions.UserHasJoin, null);
         }
 
         public void SendJoinMsg(int tenantId, string email, EmployeeType emplType)
@@ -480,26 +480,26 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Culture, user.GetCulture().Name));
         }
 
-        public void SendMsgReassignsCompleted(int tenantId, Guid recipientId, UserInfo fromUser, UserInfo toUser)
+        public void SendMsgReassignsCompleted(Guid recipientId, UserInfo fromUser, UserInfo toUser)
         {
             client.SendNoticeToAsync(
                 Actions.ReassignsCompleted,
-                new[] { StudioNotifyHelper.ToRecipient(tenantId, recipientId) },
+                new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, tenantId, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser, UserManager)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
                 new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser, UserManager)));
         }
 
-        public void SendMsgReassignsFailed(int tenantId, Guid recipientId, UserInfo fromUser, UserInfo toUser, string message)
+        public void SendMsgReassignsFailed(Guid recipientId, UserInfo fromUser, UserInfo toUser, string message)
         {
             client.SendNoticeToAsync(
                 Actions.ReassignsFailed,
-                new[] { StudioNotifyHelper.ToRecipient(tenantId, recipientId) },
+                new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, tenantId, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser, UserManager)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
@@ -507,13 +507,13 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.Message, message));
         }
 
-        public void SendMsgRemoveUserDataCompleted(int tenantId, Guid recipientId, UserInfo user, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+        public void SendMsgRemoveUserDataCompleted(Guid recipientId, UserInfo user, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             client.SendNoticeToAsync(
                 CoreContext.Configuration.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
-                new[] { StudioNotifyHelper.ToRecipient(tenantId, recipientId) },
+                new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, tenantId, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user, UserManager)),
                 new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
@@ -522,13 +522,13 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue("TalkSpace", FileSizeComment.FilesSizeToString(talkSpace)));
         }
 
-        public void SendMsgRemoveUserDataFailed(int tenantId, Guid recipientId, UserInfo user, string fromUserName, string message)
+        public void SendMsgRemoveUserDataFailed(Guid recipientId, UserInfo user, string fromUserName, string message)
         {
             client.SendNoticeToAsync(
                 Actions.RemoveUserDataFailed,
-                new[] { StudioNotifyHelper.ToRecipient(tenantId, recipientId) },
+                new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, tenantId, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user, UserManager)),
                 new TagValue(Tags.Message, message));
@@ -586,21 +586,21 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region Backup & Restore
 
-        public void SendMsgBackupCompleted(int tenantId, Guid userId, string link)
+        public void SendMsgBackupCompleted(Guid userId, string link)
         {
             client.SendNoticeToAsync(
                 Actions.BackupCreated,
-                new[] { StudioNotifyHelper.ToRecipient(tenantId, userId) },
+                new[] { StudioNotifyHelper.ToRecipient(userId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, UserManager.GetUsers(tenantId, userId).DisplayUserName(UserManager)));
+                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(UserManager)));
         }
 
         public void SendMsgRestoreStarted(Tenant tenant, bool notifyAllUsers)
         {
-            var owner = UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
+            var owner = UserManager.GetUsers(tenant.OwnerId);
             var users =
                 notifyAllUsers
-                    ? StudioNotifyHelper.RecipientFromEmail(UserManager.GetUsers(tenant, EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToArray(), false)
+                    ? StudioNotifyHelper.RecipientFromEmail(UserManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToArray(), false)
                     : owner.ActivationStatus == EmployeeActivationStatus.Activated ? StudioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
 
             client.SendNoticeToAsync(
@@ -611,12 +611,12 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgRestoreCompleted(Tenant tenant, bool notifyAllUsers)
         {
-            var owner = UserManager.GetUsers(tenant.TenantId, tenant.OwnerId);
+            var owner = UserManager.GetUsers(tenant.OwnerId);
 
             var users =
                 notifyAllUsers
-                    ? UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID)).ToArray()
-                    : new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, owner.ID) };
+                    ? UserManager.GetUsers(EmployeeStatus.Active).Select(u => StudioNotifyHelper.ToRecipient(u.ID)).ToArray()
+                    : new[] { StudioNotifyHelper.ToRecipient(owner.ID) };
 
             client.SendNoticeToAsync(
                 Actions.RestoreCompleted,
@@ -631,7 +631,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgPortalDeactivation(Tenant t, string deactivateUrl, string activateUrl)
         {
-            var u = UserManager.GetUsers(t.TenantId, t.OwnerId);
+            var u = UserManager.GetUsers(t.OwnerId);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
 
@@ -646,7 +646,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgPortalDeletion(Tenant t, string url, bool showAutoRenewText)
         {
-            var u = UserManager.GetUsers(t.TenantId, t.OwnerId);
+            var u = UserManager.GetUsers(t.OwnerId);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
 
@@ -675,7 +675,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgDnsChange(Tenant t, string confirmDnsUpdateUrl, string portalAddress, string portalDns)
         {
-            var u = UserManager.GetUsers(t.TenantId, t.OwnerId);
+            var u = UserManager.GetUsers(t.OwnerId);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
 
@@ -692,7 +692,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgConfirmChangeOwner(Tenant t, string newOwnerName, string confirmOwnerUpdateUrl)
         {
-            var u = UserManager.GetUsers(t.TenantId, t.OwnerId);
+            var u = UserManager.GetUsers(t.OwnerId);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
 
@@ -757,7 +757,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendInvitePersonal(int tenantId, string email, string additionalMember = "", bool analytics = true)
         {
-            var newUserInfo = UserManager.GetUserByEmail(tenantId, email);
+            var newUserInfo = UserManager.GetUserByEmail( email);
             if (UserManager.UserExists(newUserInfo)) return;
 
             var lang = CoreContext.Configuration.CustomMode
@@ -811,9 +811,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         private void MigrationNotify(Tenant tenant, INotifyAction action, string region, string url, bool notify)
         {
-            var users = UserManager.GetUsers(tenant)
+            var users = UserManager.GetUsers()
                 .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
-                .Select(u => StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID))
+                .Select(u => StudioNotifyHelper.ToRecipient(u.ID))
                 .ToArray();
 
             if (users.Any())
@@ -829,7 +829,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
         {
-            var users = UserManager.GetUsers(tenant)
+            var users = UserManager.GetUsers()
                         .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
 
             ThreadPool.QueueUserWorkItem(_ =>
@@ -846,7 +846,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         client.SendNoticeToAsync(
                             Actions.PortalRename,
-                            new[] { StudioNotifyHelper.ToRecipient(tenant.TenantId, u.ID) },
+                            new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
                             new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                             new TagValue(Tags.UserDisplayName, u.DisplayUserName(UserManager)));

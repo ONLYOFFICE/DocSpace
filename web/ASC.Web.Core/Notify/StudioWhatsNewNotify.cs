@@ -91,9 +91,9 @@ namespace ASC.Web.Studio.Core.Notify
                     CoreContext.TenantManager.SetCurrentTenant(tenant);
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
-                    foreach (var user in userManager.GetUsers(tenant))
+                    foreach (var user in userManager.GetUsers())
                     {
-                        if (!studioNotifyHelper.IsSubscribedToNotify(tenant, user, Actions.SendWhatsNew))
+                        if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
                         {
                             continue;
                         }

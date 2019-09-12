@@ -195,7 +195,7 @@ namespace ASC.Core
             {
                 var tenant = CoreContext.TenantManager.GetCurrentTenant();
 
-                var u = UserManager.GetUsers(tenant.TenantId, account.ID);
+                var u = UserManager.GetUsers(account.ID);
 
                 if (u.ID == Users.Constants.LostUser.ID)
                 {
@@ -214,7 +214,7 @@ namespace ASC.Core
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
                 }
-                if (UserManager.IsUserInGroup(tenant, u.ID, Users.Constants.GroupAdmin.ID))
+                if (UserManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
                 {
                     roles.Add(Role.Administrators);
                 }
@@ -256,34 +256,34 @@ namespace ASC.Core
             AuthContext = authContext;
         }
 
-        public bool CheckPermissions(Tenant tenant, params IAction[] actions)
+        public bool CheckPermissions(params IAction[] actions)
         {
-            return PermissionResolver.Check(tenant, AuthContext.CurrentAccount, actions);
+            return PermissionResolver.Check(AuthContext.CurrentAccount, actions);
         }
 
-        public bool CheckPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
+        public bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
         {
-            return CheckPermissions(tenant, securityObject, null, actions);
+            return CheckPermissions(securityObject, null, actions);
         }
 
-        public bool CheckPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            return PermissionResolver.Check(tenant, AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
+            return PermissionResolver.Check(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
         }
 
-        public void DemandPermissions(Tenant tenant, params IAction[] actions)
+        public void DemandPermissions(params IAction[] actions)
         {
-            PermissionResolver.Demand(tenant, AuthContext.CurrentAccount, actions);
+            PermissionResolver.Demand(AuthContext.CurrentAccount, actions);
         }
 
-        public void DemandPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
+        public void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)
         {
-            DemandPermissions(tenant, securityObject, null, actions);
+            DemandPermissions(securityObject, null, actions);
         }
 
-        public void DemandPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            PermissionResolver.Demand(tenant, AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
+            PermissionResolver.Demand(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
         }
     }
 

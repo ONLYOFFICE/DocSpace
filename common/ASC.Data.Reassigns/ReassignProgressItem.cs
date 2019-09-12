@@ -177,10 +177,10 @@ namespace ASC.Data.Reassigns
 
         private void SendSuccessNotify()
         {
-            var fromUser = UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = UserManager.GetUsers(FromUser);
+            var toUser = UserManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
+            StudioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
 
             var fromUserName = fromUser.DisplayUserName(false, UserManager);
             var toUserName = toUser.DisplayUserName(false, UserManager);
@@ -193,19 +193,19 @@ namespace ASC.Data.Reassigns
 
         private void SendErrorNotify(string errorMessage)
         {
-            var fromUser = UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = UserManager.GetUsers(FromUser);
+            var toUser = UserManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
+            StudioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
         private void DeleteUserProfile(Tenant tenant)
         {
-            var user = UserManager.GetUsers(_tenantId, FromUser);
+            var user = UserManager.GetUsers(FromUser);
             var userName = user.DisplayUserName(false, UserManager);
 
-            UserPhotoManager.RemovePhoto(tenant, user.ID);
-            UserManager.DeleteUser(tenant, user.ID);
+            UserPhotoManager.RemovePhoto(user.ID);
+            UserManager.DeleteUser(user.ID);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)

@@ -13,6 +13,7 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
+using ASC.Core.Common.Settings;
 using ASC.Core.Data;
 using ASC.Core.Notify;
 using ASC.Core.Security.Authorizing;
@@ -30,12 +31,10 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -166,6 +165,8 @@ namespace ASC.People
                     .AddScoped<UserPhotoThumbnailSettings>()
                     .AddScoped<TenantCookieSettings>()
                     .AddScoped<WebItemManagerSecurity>()
+                    .AddScoped<DbSettingsManager>()
+                    .AddScoped<SettingsManager>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

@@ -48,22 +48,22 @@ namespace ASC.Common.Security.Authorizing
         }
 
 
-        public bool CheckPermission(Tenant tenant, ISubject subject, IAction action, ISecurityObjectId objectId,
+        public bool CheckPermission(ISubject subject, IAction action, ISecurityObjectId objectId,
                                     ISecurityObjectProvider securityObjProvider, out ISubject denySubject,
                                     out IAction denyAction)
         {
             if (subject == null) throw new ArgumentNullException("subject");
             if (action == null) throw new ArgumentNullException("action");
 
-            var acl = GetAzManagerAcl(tenant, subject, action, objectId, securityObjProvider);
+            var acl = GetAzManagerAcl(subject, action, objectId, securityObjProvider);
             denySubject = acl.DenySubject;
             denyAction = acl.DenyAction;
             return acl.IsAllow;
         }
 
-        internal AzManagerAcl GetAzManagerAcl(Tenant tenant, ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
+        internal AzManagerAcl GetAzManagerAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
-            if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID || roleProvider.IsSubjectInRole(tenant, subject, Constants.Admin)))
+            if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID || roleProvider.IsSubjectInRole(subject, Constants.Admin)))
             {
                 return AzManagerAcl.Allow;
             }
@@ -71,7 +71,7 @@ namespace ASC.Common.Security.Authorizing
             var acl = AzManagerAcl.Default;
             var exit = false;
 
-            foreach (var s in GetSubjects(tenant, subject, objectId, securityObjProvider))
+            foreach (var s in GetSubjects(subject, objectId, securityObjProvider))
             {
                 var aceList = permissionProvider.GetAcl(s, action, objectId, securityObjProvider);
                 foreach (var ace in aceList)
@@ -99,14 +99,14 @@ namespace ASC.Common.Security.Authorizing
             return acl;
         }
 
-        internal IEnumerable<ISubject> GetSubjects(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
+        internal IEnumerable<ISubject> GetSubjects(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
         {
             var subjects = new List<ISubject>
             {
                 subject
             };
             subjects.AddRange(
-                roleProvider.GetRoles(tenant, subject)
+                roleProvider.GetRoles(subject)
                     .ConvertAll(r => { return (ISubject)r; })
                 );
             if (objectId != null)

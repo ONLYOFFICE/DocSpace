@@ -35,11 +35,11 @@ namespace ASC.Web.Api.Models
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperSummary
     {
-        public GroupWrapperSummary(GroupInfo group, ApiContext context, UserManager userManager)
+        public GroupWrapperSummary(GroupInfo group, UserManager userManager)
         {
             Id = group.ID;
             Name = group.Name;
-            Manager = userManager.GetUsers(context.Tenant.TenantId, userManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)).UserName;
+            Manager = userManager.GetUsers(userManager.GetDepartmentManager(group.ID)).UserName;
         }
 
         protected GroupWrapperSummary()

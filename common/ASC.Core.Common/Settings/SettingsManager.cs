@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.Configuration;
 using ASC.Core.Data;
 
@@ -38,9 +39,14 @@ namespace ASC.Core.Common.Settings
         {
         }
 
+        public SettingsManager(IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+
+        }
+
         static SettingsManager()
         {
-            Instance = new SettingsManager(null);
+            Instance = new SettingsManager((ConnectionStringSettings)null);
         }
     }
 }

@@ -40,8 +40,8 @@ namespace ASC.Web.Studio.Core
         public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext)
         {
             var tenant = tenantManager.GetCurrentTenant();
-            var user = userManager.GetUsers(tenant.TenantId, securityContext.CurrentAccount.ID);
-            if (!securityContext.IsAuthenticated || user.IsVisitor(tenant, userManager)) throw new SecurityException();
+            var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
+            if (!securityContext.IsAuthenticated || user.IsVisitor(userManager)) throw new SecurityException();
 
             var loginProfile = new LoginProfile
             {

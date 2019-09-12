@@ -163,7 +163,7 @@ namespace ASC.Web.Core
         public void SetLifeTime(int lifeTime)
         {
             var tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
-            if (!UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
             }
@@ -210,7 +210,7 @@ namespace ASC.Web.Core
         {
             var tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
 
-            if (!UserManager.IsUserInGroup(tenant, SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
             }

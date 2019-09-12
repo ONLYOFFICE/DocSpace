@@ -56,44 +56,44 @@ namespace ASC.Core.Users
             return users;
         }
 
-        public static bool HasAvatar(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
+        public static bool HasAvatar(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.UserHasAvatar(tenant, userInfo.ID);
+            return UserPhotoManager.UserHasAvatar(userInfo.ID);
         }
 
-        public static Size GetPhotoSize(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
+        public static Size GetPhotoSize(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetPhotoSize(tenant, userInfo.ID);
+            return UserPhotoManager.GetPhotoSize(userInfo.ID);
         }
 
-        public static string GetPhotoURL(this UserInfo userInfo, Tenant tenant, UserPhotoManager UserPhotoManager)
+        public static string GetPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, userInfo.ID);
+            return UserPhotoManager.GetPhotoAbsoluteWebPath(userInfo.ID);
         }
 
-        public static string GetRetinaPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
+        public static string GetRetinaPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetRetinaPhotoURL(tenantId, userInfo.ID);
+            return UserPhotoManager.GetRetinaPhotoURL(userInfo.ID);
         }
 
-        public static string GetMaxPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
+        public static string GetMaxPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetMaxPhotoURL(tenantId, userInfo.ID);
+            return UserPhotoManager.GetMaxPhotoURL(userInfo.ID);
         }
 
-        public static string GetBigPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
+        public static string GetBigPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetBigPhotoURL(tenantId, userInfo.ID);
+            return UserPhotoManager.GetBigPhotoURL(userInfo.ID);
         }
 
-        public static string GetMediumPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
+        public static string GetMediumPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetMediumPhotoURL(tenantId, userInfo.ID);
+            return UserPhotoManager.GetMediumPhotoURL(userInfo.ID);
         }
 
-        public static string GetSmallPhotoURL(this UserInfo userInfo, int tenantId, UserPhotoManager UserPhotoManager)
+        public static string GetSmallPhotoURL(this UserInfo userInfo, UserPhotoManager UserPhotoManager)
         {
-            return UserPhotoManager.GetSmallPhotoURL(tenantId, userInfo.ID);
+            return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
         }
 
         public static string RenderProfileLinkBase(this UserInfo userInfo, Tenant tenant, UserManager userManager)

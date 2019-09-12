@@ -44,9 +44,9 @@ namespace ASC.Web.Studio.UserControls.Statistics
             UserManager = userManager;
         }
 
-        public int GetUsersCount(Tenant tenant)
+        public int GetUsersCount()
         {
-            return UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID).Length;
+            return UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
         }
 
         public long GetUsedSize()

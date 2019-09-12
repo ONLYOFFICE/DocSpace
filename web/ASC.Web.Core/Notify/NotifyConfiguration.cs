@@ -141,18 +141,18 @@ namespace ASC.Web.Studio.Core.Notify
 
                              if (guid != default)
                              {
-                                 u = userManager.GetUsers(tenant.TenantId, guid);
+                                 u = userManager.GetUsers(guid);
                              }
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = userManager.GetUserByEmail(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByEmail(r.Recipient.ID);
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = userManager.GetUserByUserName(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByUserName(r.Recipient.ID);
                          }
 
                          if (!Constants.LostUser.Equals(u))
@@ -239,7 +239,7 @@ namespace ASC.Web.Studio.Core.Notify
             if (authContext.IsAuthenticated)
             {
                 aid = authContext.CurrentAccount.ID;
-                var user = userManager.GetUsers(tenant.TenantId, aid);
+                var user = userManager.GetUsers(aid);
                 if (userManager.UserExists(user))
                 {
                     aname = user.DisplayUserName(false, userManager)
@@ -266,7 +266,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenant.TenantId, aid, userManager))));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(aid, userManager))));
             request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));

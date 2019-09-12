@@ -308,7 +308,7 @@ namespace ASC.Notify.Engine
 
                         try
                         {
-                            var recipients = recipientProvider.GetGroupEntries(tenant, request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
+                            var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
                             foreach (var recipient in recipients)
                             {
                                 try
@@ -353,7 +353,7 @@ namespace ASC.Notify.Engine
 
             try
             {
-                PrepareRequestFillSenders(tenant, request);
+                PrepareRequestFillSenders(request);
                 PrepareRequestFillPatterns(request);
                 PrepareRequestFillTags(request);
             }
@@ -421,11 +421,11 @@ namespace ASC.Notify.Engine
             var addresses = recipient.Addresses;
             if (addresses == null || !addresses.Any())
             {
-                addresses = recipientProvider.GetRecipientAddresses(tenantId, request.Recipient as IDirectRecipient, sender);
+                addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
                 recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
             }
 
-            recipient = recipientProvider.FilterRecipientAddresses(tenantId, recipient);
+            recipient = recipientProvider.FilterRecipientAddresses(recipient);
             noticeMessage = request.CreateMessage(recipient);
 
             addresses = recipient.Addresses;
@@ -494,14 +494,14 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillSenders(Tenant tenant, NotifyRequest request)
+        private void PrepareRequestFillSenders( NotifyRequest request)
         {
             if (request.SenderNames == null)
             {
                 var subscriptionProvider = request.NotifySource.GetSubscriptionProvider();
 
                 var senderNames = new List<string>();
-                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(tenant, request.NotifyAction, request.Recipient) ?? new string[0]);
+                senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? new string[0]);
                 senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
                 request.SenderNames = senderNames.ToArray();

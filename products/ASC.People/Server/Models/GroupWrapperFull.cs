@@ -44,11 +44,11 @@ namespace ASC.Web.Api.Models
             Category = group.CategoryID;
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
             Name = group.Name;
-            Manager = EmployeeWraper.Get(userManager.GetUsers(context.Tenant.TenantId, userManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)), context, userManager, userPhotoManager);
+            Manager = EmployeeWraper.Get(userManager.GetUsers(userManager.GetDepartmentManager(group.ID)), context, userManager, userPhotoManager);
 
             if (includeMembers)
             {
-                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(context.Tenant, group.ID).Select(r => EmployeeWraper.Get(r, context, userManager, userPhotoManager)));
+                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(group.ID).Select(r => EmployeeWraper.Get(r, context, userManager, userPhotoManager)));
             }
         }
 

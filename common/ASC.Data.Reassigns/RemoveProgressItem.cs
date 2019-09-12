@@ -239,7 +239,7 @@ namespace ASC.Data.Reassigns
         private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.SendMsgRemoveUserDataCompleted(_tenantId, _currentUserId, User, _userName,
+                StudioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
@@ -252,7 +252,7 @@ namespace ASC.Data.Reassigns
         {
             if (!_notify) return;
 
-            StudioNotifyService.SendMsgRemoveUserDataFailed(_tenantId, _currentUserId, User, _userName, errorMessage);
+            StudioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, _userName, errorMessage);
         }
     }
 }

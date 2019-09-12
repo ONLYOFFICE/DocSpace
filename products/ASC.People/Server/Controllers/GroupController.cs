@@ -22,7 +22,6 @@ namespace ASC.Employee.Core.Controllers
     {
         public Common.Logging.LogManager LogManager { get; }
         public ApiContext ApiContext { get; }
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
         public MessageService MessageService { get; }
 
         public UserManager UserManager { get; }
@@ -51,7 +50,7 @@ namespace ASC.Employee.Core.Controllers
         [Read]
         public IEnumerable<GroupWrapperSummary> GetAll()
         {
-            return UserManager.GetDepartments(Tenant.TenantId).Select(x => new GroupWrapperSummary(x, ApiContext, UserManager));
+            return UserManager.GetDepartments().Select(x => new GroupWrapperSummary(x, UserManager));
         }
 
         [Read("{groupid}")]
@@ -63,15 +62,15 @@ namespace ASC.Employee.Core.Controllers
         [Read("user/{userid}")]
         public IEnumerable<GroupWrapperSummary> GetByUserId(Guid userid)
         {
-            return UserManager.GetUserGroups(Tenant, userid).Select(x => new GroupWrapperSummary(x, ApiContext, UserManager));
+            return UserManager.GetUserGroups(userid).Select(x => new GroupWrapperSummary(x, UserManager));
         }
 
         [Create]
         public GroupWrapperFull AddGroup(Guid groupManager, string groupName, IEnumerable<Guid> members)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
-            var group = UserManager.SaveGroupInfo(Tenant, new GroupInfo { Name = groupName });
+            var group = UserManager.SaveGroupInfo(new GroupInfo { Name = groupName });
 
             TransferUserToDepartment(groupManager, @group, true);
             if (members != null)
@@ -90,17 +89,17 @@ namespace ASC.Employee.Core.Controllers
         [Update("{groupid}")]
         public GroupWrapperFull UpdateGroup(Guid groupid, Guid groupManager, string groupName, IEnumerable<Guid> members)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = UserManager.GetGroups(Tenant.TenantId).SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
             if (group.ID == Constants.LostGroupInfo.ID)
             {
                 throw new ItemNotFoundException("group not found");
             }
 
             group.Name = groupName ?? group.Name;
-            UserManager.SaveGroupInfo(Tenant, group);
+            UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(Tenant, groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !members.Contains(id)));
+            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !members.Contains(id)));
 
             TransferUserToDepartment(groupManager, @group, true);
             if (members != null)
@@ -119,11 +118,11 @@ namespace ASC.Employee.Core.Controllers
         [Delete("{groupid}")]
         public GroupWrapperFull DeleteGroup(Guid groupid)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var @group = GetGroupInfo(groupid);
             var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager);
 
-            UserManager.DeleteGroup(Tenant, groupid);
+            UserManager.DeleteGroup(groupid);
 
             MessageService.Send(MessageAction.GroupDeleted, MessageTarget.Create(group.ID), group.Name);
 
@@ -132,7 +131,7 @@ namespace ASC.Employee.Core.Controllers
 
         private GroupInfo GetGroupInfo(Guid groupid)
         {
-            var group = UserManager.GetGroups(Tenant.TenantId).SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
             if (group.ID == Constants.LostGroupInfo.ID)
                 throw new ItemNotFoundException("group not found");
             return @group;
@@ -141,12 +140,12 @@ namespace ASC.Employee.Core.Controllers
         [Update("{groupid}/members/{newgroupid}")]
         public GroupWrapperFull TransferMembersTo(Guid groupid, Guid newgroupid)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var oldgroup = GetGroupInfo(groupid);
 
             var newgroup = GetGroupInfo(newgroupid);
 
-            var users = UserManager.GetUsersByGroup(Tenant, oldgroup.ID);
+            var users = UserManager.GetUsersByGroup(oldgroup.ID);
             foreach (var userInfo in users)
             {
                 TransferUserToDepartment(userInfo.ID, newgroup, false);
@@ -157,7 +156,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("{groupid}/members")]
         public GroupWrapperFull SetMembersTo(Guid groupid, IEnumerable<Guid> members)
         {
-            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(Tenant, groupid).Select(x => x.ID));
+            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(groupid).Select(x => x.ID));
             AddMembersTo(groupid, members);
             return GetById(groupid);
         }
@@ -165,7 +164,7 @@ namespace ASC.Employee.Core.Controllers
         [Update("{groupid}/members")]
         public GroupWrapperFull AddMembersTo(Guid groupid, IEnumerable<Guid> members)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = GetGroupInfo(groupid);
 
             foreach (var userId in members)
@@ -179,9 +178,9 @@ namespace ASC.Employee.Core.Controllers
         public GroupWrapperFull SetManager(Guid groupid, Guid userid)
         {
             var group = GetGroupInfo(groupid);
-            if (UserManager.UserExists(Tenant.TenantId, userid))
+            if (UserManager.UserExists(userid))
             {
-                UserManager.SetDepartmentManager(Tenant.TenantId, group.ID, userid);
+                UserManager.SetDepartmentManager(group.ID, userid);
             }
             else
             {
@@ -193,7 +192,7 @@ namespace ASC.Employee.Core.Controllers
         [Delete("{groupid}/members")]
         public GroupWrapperFull RemoveMembersFrom(Guid groupid, IEnumerable<Guid> members)
         {
-            PermissionContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
+            PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = GetGroupInfo(groupid);
 
             foreach (var userId in members)
@@ -205,22 +204,22 @@ namespace ASC.Employee.Core.Controllers
 
         private void RemoveUserFromDepartment(Guid userId, GroupInfo @group)
         {
-            if (!UserManager.UserExists(Tenant.TenantId, userId)) return;
+            if (!UserManager.UserExists(userId)) return;
 
-            var user = UserManager.GetUsers(Tenant.TenantId, userId);
-            UserManager.RemoveUserFromGroup(Tenant, user.ID, @group.ID);
-            UserManager.SaveUserInfo(Tenant, user);
+            var user = UserManager.GetUsers(userId);
+            UserManager.RemoveUserFromGroup(user.ID, @group.ID);
+            UserManager.SaveUserInfo(user);
         }
 
         private void TransferUserToDepartment(Guid userId, GroupInfo group, bool setAsManager)
         {
-            if (!UserManager.UserExists(Tenant.TenantId, userId) && userId != Guid.Empty) return;
+            if (!UserManager.UserExists(userId) && userId != Guid.Empty) return;
 
             if (setAsManager)
             {
-                UserManager.SetDepartmentManager(Tenant.TenantId, @group.ID, userId);
+                UserManager.SetDepartmentManager(@group.ID, userId);
             }
-            UserManager.AddUserIntoGroup(Tenant, userId, @group.ID);
+            UserManager.AddUserIntoGroup(userId, @group.ID);
         }
     }
 }

@@ -52,9 +52,14 @@ namespace ASC.Web.Core.WhiteLabel
         public TenantWhiteLabelSettings()
         {
         }
-        public TenantWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, WebImageSupplier webImageSupplier) : base(authContext, settingsManager)
+        public TenantWhiteLabelSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            WebImageSupplier webImageSupplier,
+            UserPhotoManager userPhotoManager) : base(authContext, settingsManager)
         {
             WebImageSupplier = webImageSupplier;
+            UserPhotoManager = userPhotoManager;
         }
 
         #region Logos information: extension, isDefault, text for img auto generating
@@ -220,7 +225,7 @@ namespace ASC.Web.Core.WhiteLabel
             ResizeLogo(type, generalFileName, data, -1, generalSize, store);
         }
 
-        public void SetLogo(int tenantId, Dictionary<int, string> logo)
+        public void SetLogo(Dictionary<int, string> logo)
         {
             var xStart = @"data:image/png;base64,";
 
@@ -238,10 +243,10 @@ namespace ASC.Web.Core.WhiteLabel
                     {
                         var fileName = Path.GetFileName(currentLogoPath);
                         fileExt = fileName.Split('.').Last();
-                        data = UserPhotoManager.GetTempPhotoData(tenantId, fileName);
+                        data = UserPhotoManager.GetTempPhotoData(fileName);
                         try
                         {
-                            UserPhotoManager.RemoveTempPhoto(tenantId, fileName);
+                            UserPhotoManager.RemoveTempPhoto(fileName);
                         }
                         catch (Exception ex)
                         {
@@ -506,6 +511,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public WebImageSupplier WebImageSupplier { get; }
+        public UserPhotoManager UserPhotoManager { get; }
 
         #region Save for Resource replacement
 

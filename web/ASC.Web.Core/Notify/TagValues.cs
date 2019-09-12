@@ -162,7 +162,7 @@ namespace ASC.Web.Studio.Core.Notify
             return new TagValue(CommonTags.SendFrom,
                                 authContext.IsAuthenticated && authContext.CurrentAccount is IUserAccount
                                     ? DisplayUserSettings.GetFullUserName(userManager,
-                                        userManager.GetUsers(tenantId, authContext.CurrentAccount.ID), false)
+                                        userManager.GetUsers(authContext.CurrentAccount.ID), false)
                                                          .Replace(">", "&#62")
                                                          .Replace("<", "&#60")
                                     : CoreContext.TenantManager.GetCurrentTenant().Name);

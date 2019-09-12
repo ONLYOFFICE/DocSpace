@@ -48,7 +48,7 @@ namespace ASC.Core
 
         public IUserAccount[] GetUserAccounts(Tenant tenant)
         {
-            return UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
+            return UserManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
         }
 
         public void SetUserPassword(int tenantId, Guid userID, string password)
@@ -66,7 +66,7 @@ namespace ASC.Core
             var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
             if (s != null) return s;
 
-            var u = UserManager.GetUsers(tenantId, id);
+            var u = UserManager.GetUsers(id);
             return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }
 

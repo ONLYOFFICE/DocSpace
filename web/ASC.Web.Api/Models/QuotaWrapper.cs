@@ -104,7 +104,7 @@ namespace ASC.Web.Studio.Core.Quota
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
             MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
-            UsersCount = CoreContext.Configuration.Personal ? 1 : TenantStatisticsProvider.GetUsersCount(tenant);
+            UsersCount = CoreContext.Configuration.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
 
             StorageUsage = quotaRows
                     .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
