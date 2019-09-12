@@ -13,6 +13,7 @@ const SimpleLink = ({
   type,
   color,
   title,
+  containerWidth,
   ...props
 }) => <a {...props} />;
 

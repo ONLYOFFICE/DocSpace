@@ -88,7 +88,7 @@ TextInput.propTypes = {
     maxLength: PropTypes.number,
     placeholder: PropTypes.string,
     tabIndex: PropTypes.number,
-    mask: PropTypes.array,
+    mask: PropTypes.oneOfType([ PropTypes.array, PropTypes.func ]),
     keepCharPositions: PropTypes.bool,
 
     size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),

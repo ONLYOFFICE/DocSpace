@@ -1,35 +1,44 @@
-import React from 'react'
-import { FieldContainer, DateInput } from 'asc-web-components'
+import React from "react";
+import isEqual from "lodash/isEqual";
+import { FieldContainer, DatePicker } from "asc-web-components";
 
-const DateField = React.memo((props) => {
-  const {
-    isRequired,
-    hasError,
-    labelText,
+class DateField extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-    inputName,
-    inputValue,
-    inputIsDisabled,
-    inputOnChange,
-    inputTabIndex
-  } = props;
+  render() {
+    console.log("DateField render");
 
-  return (
-    <FieldContainer
-      isRequired={isRequired}
-      hasError={hasError}
-      labelText={labelText}
-    >
-      <DateInput
-        name={inputName}
-        selected={inputValue}
-        disabled={inputIsDisabled}
-        onChange={inputOnChange}
+    const {
+      isRequired,
+      hasError,
+      labelText,
+
+      inputName,
+      inputValue,
+      inputIsDisabled,
+      inputOnChange,
+      inputTabIndex
+    } = this.props;
+
+    return (
+      <FieldContainer
+        isRequired={isRequired}
         hasError={hasError}
-        tabIndex={inputTabIndex}
-      />
-    </FieldContainer>
-  );
-});
+        labelText={labelText}
+      >
+        <DatePicker
+          name={inputName}
+          selectedDate={inputValue}
+          disabled={inputIsDisabled}
+          onChange={inputOnChange}
+          hasError={hasError}
+          tabIndex={inputTabIndex}
+        />
+      </FieldContainer>
+    );
+  }
+}
 
-export default DateField
+export default DateField;

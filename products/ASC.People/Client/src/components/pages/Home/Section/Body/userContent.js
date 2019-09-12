@@ -37,7 +37,11 @@ const UserContent = ({ user, history, settings }) => {
 
   const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
   const sideInfoColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
-  const t = useTranslation();
+  const { t } = useTranslation();
+
+  const headDepartmentStyle = {
+    width: '80px'
+  }
 
   return (
     <RowContent>
@@ -47,12 +51,21 @@ const UserContent = ({ user, history, settings }) => {
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
       {headDepartment
-        ? <Link type='page' title={t('CustomHeadOfDepartment', { headOfDepartment })} fontSize={12} color={sideInfoColor} onClick={onHeadDepartmentClick} >{t('CustomHeadOfDepartment', { headOfDepartment })}</Link>
-        : <></>
+        ? <Link
+          containerWidth='80px'
+          type='page'
+          title={t('CustomHeadOfDepartment', { headOfDepartment })}
+          fontSize={12}
+          color={sideInfoColor}
+          onClick={onHeadDepartmentClick}
+        >
+          {t('CustomHeadOfDepartment', { headOfDepartment })}
+        </Link>
+        : <div style={headDepartmentStyle}></div>
       }
-      <Link type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
+      <Link containerWidth='160px' type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
       <Link type='page' title={mobilePhone} fontSize={12} color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
-      <Link type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
+      <Link containerWidth='220px' type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
     </RowContent>
   );
 };

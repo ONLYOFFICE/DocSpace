@@ -6,15 +6,39 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import DatePicker from '.';
 import Section from '../../../.storybook/decorators/section';
-import moment from 'moment';
-import 'moment/min/locales'
 
 function myDateKnob(name, defaultValue) {
   const stringTimestamp = date(name, defaultValue)
   return new Date(stringTimestamp)
 }
 
-const locales = moment.locales();
+const locales = [
+  "az",
+  "zh-cn",
+  "cs",
+  "nl",
+  "en-gb",
+  "en",
+  "fi",
+  "fr",
+  "de",
+  "de-ch",
+  "el",
+  "it",
+  "ja",
+  "ko",
+  "lv",
+  "pl",
+  "pt",
+  "pt-br",
+  "ru",
+  "sk",
+  "sl",
+  "es",
+  "tr",
+  "uk",
+  "vi"
+];
 
 storiesOf('Components|DatePicker', module)
   .addDecorator(withKnobs)
@@ -31,10 +55,10 @@ storiesOf('Components|DatePicker', module)
         isDisabled={boolean("isDisabled", false)}
         isReadOnly={boolean("isReadOnly", false)}
         hasError={boolean("hasError", false)}
-        hasWarning={boolean("hasWarning", false)}
+        //hasWarning={boolean("hasWarning", false)}
         isOpen={boolean('isOpen', false)}
         themeColor={color('themeColor', '#ED7309')}
-        locale={select('location', locales, moment.locale())}
+        locale={select('locale', locales, "en")}
       />
     </Section>
   ));

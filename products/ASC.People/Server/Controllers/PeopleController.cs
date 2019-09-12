@@ -315,8 +315,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
+        [Authorize(AuthenticationSchemes = "confirm")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
+            if (HttpContext.User.IsInRole(ASC.Common.Security.Authorizing.Role.System))
+            {
+                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            }
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             if (string.IsNullOrEmpty(memberModel.Password))
@@ -1177,7 +1182,7 @@ namespace ASC.Employee.Core.Controllers
                 user.Contacts.Clear();
             }
 
-            foreach (var contact in contacts)
+            foreach (var contact in contacts.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
                 user.Contacts.Add(contact.Type);
                 user.Contacts.Add(contact.Value);

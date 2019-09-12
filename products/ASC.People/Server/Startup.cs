@@ -1,4 +1,5 @@
 using ASC.Api.Core;
+using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
@@ -53,12 +54,12 @@ namespace ASC.People
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-            services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
+            services.AddAuthentication("cookie")
+                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
+                .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
             var builder = services.AddMvc(config =>
             {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
                 config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
@@ -108,6 +109,8 @@ namespace ASC.People
             app.UseSession();
 
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseCultureMiddleware();
 

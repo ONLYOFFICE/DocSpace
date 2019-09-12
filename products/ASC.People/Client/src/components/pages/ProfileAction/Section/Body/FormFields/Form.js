@@ -6,7 +6,8 @@ const MainContainer = styled.div`
   flex-direction: row;
 
   .field-input {
-    width: 320px;
+    width: 100%;
+    max-width: 320px;
   }
 
   .radio-group {
@@ -15,6 +16,16 @@ const MainContainer = styled.div`
 
     label:not(:first-child) {
         margin-left: 33px;
+    }
+  }
+
+  .departments-field {
+    .department-add-btn {
+      margin: 0 8px 8px 0;
+      float: left;
+    }
+    .department-item {
+      margin: 0 8px 8px 0;
     }
   }
 

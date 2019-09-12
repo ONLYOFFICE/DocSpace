@@ -57,7 +57,7 @@ const SideContainerWrapper = styled.div`
   ${commonCss};
 
   align-self: center;
-  width: 160px;
+  width: ${props => props.containerWidth ? props.containerWidth : '100px'};
   color: ${props => props.color && props.color};
 
   @media ${tablet} {
@@ -114,7 +114,7 @@ const RowContent = props => {
       {children.map((element, index) => {
         if (index > 1) {
           return (
-            <SideContainerWrapper key={'side-' + index} >
+            <SideContainerWrapper key={'side-' + index} containerWidth={element.props && element.props.containerWidth} >
               {element}
             </SideContainerWrapper>
           );

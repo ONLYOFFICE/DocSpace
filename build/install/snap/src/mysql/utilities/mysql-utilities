@@ -2,7 +2,7 @@
 
 export MYSQL_PIDFILE="/tmp/pids/mysql.pid"
 export MYSQL_SOCKET="/tmp/sockets/mysql.sock"
-export ONLYOFFICE_PASSWORD_FILE="$SNAP_DATA/mysql/onlyoffice_password"
+export APP_PASSWORD_FILE="$SNAP_DATA/mysql/app_password"
 MYSQL_SETUP_LOCKFILE="/tmp/locks/mysql-setup"
 
 mkdir -p "$(dirname "$MYSQL_PIDFILE")"
@@ -55,18 +55,18 @@ mysql_pid()
 	fi
 }
 
-mysql_set_onlyoffice_password()
+mysql_set_app_password()
 {
-	echo "$1" > "$ONLYOFFICE_PASSWORD_FILE"
-	chmod 600 "$ONLYOFFICE_PASSWORD_FILE"
+	echo "$1" > "$APP_PASSWORD_FILE"
+	chmod 600 "$APP_PASSWORD_FILE"
 }
 
-mysql_get_onlyoffice_password()
+mysql_get_app_password()
 {
-	if [ -f "$ONLYOFFICE_PASSWORD_FILE" ]; then
-		cat "$ONLYOFFICE_PASSWORD_FILE"
+	if [ -f "$APP_PASSWORD_FILE" ]; then
+		cat "$APP_PASSWORD_FILE"
 	else
-		echo "MySQL ONLYOFFICE password has not yet been generated" >&2
+		echo "MySQL APP password has not yet been generated" >&2
 		echo ""
 	fi
 }
