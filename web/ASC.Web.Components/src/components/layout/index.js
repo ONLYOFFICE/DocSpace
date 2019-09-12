@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Backdrop from '../backdrop'
-import Header from './sub-components/header'
-import Nav from './sub-components/nav'
-import Aside from './sub-components/aside'
-import Main from './sub-components/main'
-import HeaderNav from './sub-components/header-nav'
-import NavLogoItem from './sub-components/nav-logo-item'
-import NavItem from './sub-components/nav-item'
+import React from "react";
+import PropTypes from "prop-types";
+import Backdrop from "../backdrop";
+import Header from "./sub-components/header";
+import Nav from "./sub-components/nav";
+import Aside from "./sub-components/aside";
+import Main from "./sub-components/main";
+import HeaderNav from "./sub-components/header-nav";
+import NavLogoItem from "./sub-components/nav-logo-item";
+import NavItem from "./sub-components/nav-item";
 
 class Layout extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class Layout extends React.Component {
     return false;
   }*/
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     //console.log("Layout componentDidUpdate");
     let currentHash = this.getPropsHash(this.props);
     let prevHash = this.getPropsHash(prevProps);
@@ -30,44 +30,41 @@ class Layout extends React.Component {
     }
   }
 
-  getPropsHash = (props) => {
+  getPropsHash = props => {
     let hash = "";
     if (props.currentModuleId) {
-      hash+=props.currentModuleId;
+      hash += props.currentModuleId;
     }
     if (props.currentUser) {
-      hash+=props.currentUser.id;
+      hash += props.currentUser.id;
     }
     if (props.availableModules) {
-      for (let i=0, l=props.availableModules.length; i<l; i++)
-      {
+      for (let i = 0, l = props.availableModules.length; i < l; i++) {
         let item = props.availableModules[i];
-        hash+=item.id + item.notifications;
+        hash += item.id + item.notifications;
       }
     }
     return hash;
-  }
+  };
 
-  mapPropsToState = (props) => {
+  mapPropsToState = props => {
     let currentModule = null,
-        isolateModules = [],
-        mainModules = [],
-        totalNotifications = 0,
-        item = null;
+      isolateModules = [],
+      mainModules = [],
+      totalNotifications = 0,
+      item = null;
 
-    for (let i=0, l=props.availableModules.length; i<l; i++)
-    {
+    for (let i = 0, l = props.availableModules.length; i < l; i++) {
       item = props.availableModules[i];
 
-      if (item.id == props.currentModuleId)
-        currentModule = item;
+      if (item.id == props.currentModuleId) currentModule = item;
 
       if (item.isolateMode) {
         isolateModules.push(item);
       } else {
         mainModules.push(item);
         if (item.separator) continue;
-        totalNotifications+=item.notifications;
+        totalNotifications += item.notifications;
       }
     }
 
@@ -100,7 +97,7 @@ class Layout extends React.Component {
     };
 
     return newState;
-  }
+  };
 
   backdropClick = () => {
     this.setState({
@@ -130,12 +127,12 @@ class Layout extends React.Component {
         isAsideVisible: false
       });
     }, 300);
-  }
+  };
 
   handleNavMouseLeave = () => {
     if (!this.state.isNavHoverEnabled) return;
 
-    if (this.timeout != null) { 
+    if (this.timeout != null) {
       clearTimeout(this.timeout);
       this.timeout = null;
     }
@@ -145,7 +142,7 @@ class Layout extends React.Component {
       isNavOpened: false,
       isAsideVisible: false
     });
-  }
+  };
 
   toggleAside = () => {
     this.setState({
@@ -158,31 +155,30 @@ class Layout extends React.Component {
 
   render() {
     //console.log("Layout render");
-    
+
     return (
       <>
-        {
-          this.state.isBackdropAvailable &&
-          <Backdrop visible={this.state.isBackdropVisible} onClick={this.backdropClick}/>
-        }
-        {
-          this.state.isHeaderNavAvailable &&
+        {this.state.isBackdropAvailable && (
+          <Backdrop
+            visible={this.state.isBackdropVisible}
+            onClick={this.backdropClick}
+          />
+        )}
+        {this.state.isHeaderNavAvailable && (
           <HeaderNav
             modules={this.state.isolateModules}
             user={this.state.currentUser}
             userActions={this.state.currentUserActions}
           />
-        }
-        {
-          this.state.isHeaderAvailable &&
+        )}
+        {this.state.isHeaderAvailable && (
           <Header
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             currentModule={this.state.currentModule}
           />
-        }
-        {
-          this.state.isNavAvailable &&
+        )}
+        {this.state.isNavAvailable && (
           <Nav
             opened={this.state.isNavOpened}
             onMouseEnter={this.handleNavMouseEnter}
@@ -192,29 +188,36 @@ class Layout extends React.Component {
               opened={this.state.isNavOpened}
               onClick={this.state.onLogoClick}
             />
-            {
-              this.state.mainModules.map(item => 
-                <NavItem
-                  separator={!!item.separator}
-                  key={item.id}
-                  opened={this.state.isNavOpened}
-                  active={item.id == this.state.currentModuleId}
-                  iconName={item.iconName}
-                  badgeNumber={item.notifications}
-                  onClick={item.onClick}
-                  onBadgeClick={(e)=>{item.onBadgeClick(e); this.toggleAside();}}
-                >
-                  {item.title}
-                </NavItem>
-              )
-            }
+            {this.state.mainModules.map(item => (
+              <NavItem
+                separator={!!item.separator}
+                key={item.id}
+                opened={this.state.isNavOpened}
+                active={item.id == this.state.currentModuleId}
+                iconName={item.iconName}
+                badgeNumber={item.notifications}
+                onClick={item.onClick}
+                onBadgeClick={e => {
+                  item.onBadgeClick(e);
+                  this.toggleAside();
+                }}
+              >
+                {item.title}
+              </NavItem>
+            ))}
           </Nav>
-        }
-        {
-          this.state.isAsideAvailable &&
-          <Aside visible={this.state.isAsideVisible} onClick={this.backdropClick}>{this.state.asideContent}</Aside>
-        }
-        <Main fullscreen={!this.state.isNavAvailable}>{this.props.children}</Main>
+        )}
+        {this.state.isAsideAvailable && (
+          <Aside
+            visible={this.state.isAsideVisible}
+            onClick={this.backdropClick}
+          >
+            {this.state.asideContent}
+          </Aside>
+        )}
+        <Main fullscreen={!this.state.isNavAvailable}>
+          {this.props.children}
+        </Main>
       </>
     );
   }
@@ -227,7 +230,14 @@ Layout.propTypes = {
   isAsideVisible: PropTypes.bool,
 
   onLogoClick: PropTypes.func,
-  asideContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  asideContent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
 
   currentUser: PropTypes.object,
   currentUserActions: PropTypes.array,
@@ -243,7 +253,7 @@ Layout.defaultProps = {
 
   currentUser: null,
   currentUserActions: [],
-  availableModules: [],
+  availableModules: []
 };
 
 export default Layout;
