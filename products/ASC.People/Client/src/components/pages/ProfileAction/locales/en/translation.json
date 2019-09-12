@@ -12,7 +12,11 @@
   "CancelButton": "Cancel",
   "CopyEmailAndPassword": "Copy e-mail & password",
   "UserType": "Type",
-  
+  "AddButton": "Add",
+  "ContactInformation": "Contact Information",
+  "AddContact": "Add contact",
+  "SocialProfiles": "Social Profiles",
+
   "ActivationLink": "Activation link",
   "AddPhoto": "Add photo",
   "TemporaryPassword": "Temporary password",

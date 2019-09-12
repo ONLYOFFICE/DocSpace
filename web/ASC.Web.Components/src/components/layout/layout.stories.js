@@ -45,8 +45,8 @@ const currentUserActions = [
 
 const availableModules = [
   {
-    seporator: true,
-    id: 'nav-seporator-1'
+    separator: true,
+    id: 'nav-separator-1'
   },
   {
     id: '11111111-1111-1111-1111-111111111111',
@@ -84,8 +84,8 @@ const availableModules = [
     onBadgeClick: (e) => action('ProjectsIconBadge Clicked')(e)
   },
   {
-    seporator: true,
-    id: 'nav-seporator-2'
+    separator: true,
+    id: 'nav-separator-2'
   },
   {
     id: '55555555-5555-5555-5555-555555555555',
