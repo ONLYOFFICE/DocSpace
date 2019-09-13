@@ -58,7 +58,7 @@ class DepartmentField extends React.Component {
           placeholder={selectorSearchPlaceholder}
           onSearchChanged={selectorOnSearchGroups}
           options={selectorOptions}
-          selected={selectorSelectedOptions}
+          selectedOptions={selectorSelectedOptions}
           isMultiSelect={true}
           buttonLabel={selectorAddButtonText}
           selectAllLabel={selectorSelectAllText}
