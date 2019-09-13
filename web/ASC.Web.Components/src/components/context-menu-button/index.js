@@ -12,7 +12,7 @@ const StyledOuther = styled.div`
   cursor: pointer;
 `;
 
-class ContextMenuButton extends React.PureComponent {
+class ContextMenuButton extends React.Component {
   constructor(props) {
     super(props);
 
@@ -68,6 +68,13 @@ class ContextMenuButton extends React.PureComponent {
   onDropDownItemClick = (item) => {
     item.onClick && item.onClick();
     this.toggle(!this.state.isOpen);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.opened === nextProps.opened && this.state.isOpen === nextState.isOpen) {
+      return false;
+    }
+    return true;
   }
 
   render() {
