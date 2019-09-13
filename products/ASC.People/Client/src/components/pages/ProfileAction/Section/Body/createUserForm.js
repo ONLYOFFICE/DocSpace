@@ -13,7 +13,7 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { department, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
 
 class CreateUserForm extends React.Component {
 
@@ -340,7 +340,7 @@ class CreateUserForm extends React.Component {
               selectorSearchPlaceholder={t("Search")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorAddButtonText={t("AddDepartments")}
+              selectorAddButtonText={t("CustomAddDepartments", { departments })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}
