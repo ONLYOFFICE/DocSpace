@@ -1,10 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
-import { updateProfile } from '../../../../../store/profile/actions';
+import { updateProfile, updateAvatar } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -43,6 +43,12 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+
+    this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.onSaveAvatar = this.onSaveAvatar.bind(this);
+    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
+
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -59,6 +65,7 @@ class UpdateUserForm extends React.Component {
         lastName: false,
       },
       profile: toEmployeeWrapper(props.profile),
+      visibleAvatarEditor: false,
       dialog: {
         visible: false,
         header: "",
@@ -268,6 +275,34 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  openAvatarEditor(){
+    this.setState({
+      visibleAvatarEditor: true,
+    });
+  }
+  onSaveAvatar(result) {
+    this.props.updateAvatar(this.state.profile.id, result)
+      .then((result) => {
+        let stateCopy = Object.assign({}, this.state);
+        stateCopy.visibleAvatarEditor = false;
+        if(result.data.response.success){
+          stateCopy.profile.avatarMax = result.data.response.data.max;
+        }else{
+          stateCopy.profile.avatarMax = result.data.response.max && result.data.response.max;
+        }
+        toastr.success("Success");
+        this.setState(stateCopy);
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+      });
+  }
+  onCloseAvatarEditor() {
+    this.setState({
+      visibleAvatarEditor: false,
+    });
+  }
+
   render() {
     const { isLoading, errors, profile, dialog } = this.state;
     const { t } = this.props;
@@ -286,7 +321,13 @@ class UpdateUserForm extends React.Component {
               userName={profile.displayName}
               editing={true}
               editLabel={t("EditPhoto")}
+              editAction={this.openAvatarEditor}
             />
+            <AvatarEditor 
+              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
+              visible={this.state.visibleAvatarEditor} 
+              onClose={this.onCloseAvatarEditor} 
+              onSave={this.onSaveAvatar} />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
@@ -452,6 +493,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    updateProfile
+    updateProfile,
+    updateAvatar
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

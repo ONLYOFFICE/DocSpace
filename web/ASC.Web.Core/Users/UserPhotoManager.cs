@@ -462,6 +462,10 @@ namespace ASC.Web.Core.Users
         {
             return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out _);
         }
+        public static string SaveOrUpdateCroppedPhoto(Tenant tenant, Guid userID, byte[] data, byte[] defaultData)
+        {
+            return SaveOrUpdateCroppedPhoto(tenant, userID, data, defaultData, -1, OriginalFotoSize, true, out _);
+        }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
         {
@@ -480,6 +484,49 @@ namespace ASC.Web.Core.Users
             {
                 CoreContext.UserManager.SaveUserPhoto(tenant, userID, data);
                 SetUserPhotoThumbnailSettings(userID, width, height);
+                ClearCache(userID);
+            }
+
+            var store = GetDataStore(tenant.TenantId);
+
+            var photoUrl = GetDefaultPhotoAbsoluteWebPath();
+            if (data != null && data.Length > 0)
+            {
+                using (var stream = new MemoryStream(data))
+                {
+                    photoUrl = store.Save(fileName, stream).ToString();
+                }
+                //Queue resizing
+                SizePhoto(tenant.TenantId, userID, data, -1, SmallFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MediumFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, BigFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MaxFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, RetinaFotoSize, true);
+            }
+            return photoUrl;
+        }
+        private static string SaveOrUpdateCroppedPhoto(Tenant tenant, Guid userID, byte[] data, byte[] defaultData, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
+        {
+            data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
+
+            var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+            fileName = string.Format("{0}_orig_{1}-{2}.{3}", userID, width, height, widening);
+
+            if (saveInCoreContext)
+            {
+                CoreContext.UserManager.SaveUserPhoto(tenant, userID, defaultData);
+
+                var max = Math.Max(Math.Max(width, height), SmallFotoSize.Width);
+                var min = Math.Max(Math.Min(width, height), SmallFotoSize.Width);
+
+                var pos = (max - min) / 2;
+
+                var settings = new UserPhotoThumbnailSettings(
+                    width >= height ? new Point(pos, 0) : new Point(0, pos),
+                    new Size(min, min));
+
+                settings.SaveForUser(userID);
+
                 ClearCache(userID);
             }
 
