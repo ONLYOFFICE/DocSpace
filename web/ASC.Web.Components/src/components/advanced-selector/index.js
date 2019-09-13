@@ -7,9 +7,9 @@ import { FixedSizeList } from "react-window";
 import Link from "../link";
 import Checkbox from "../checkbox";
 import Button from "../button";
-import { Icons } from '../icons';
+import { Icons } from "../icons";
 import ComboBox from "../combobox";
-import { Text } from '../text';
+import { Text } from "../text";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
 import isEqual from "lodash/isEqual";
@@ -40,6 +40,9 @@ const Container = ({
   isDropDown,
   containerWidth,
   containerHeight,
+  allowCreation,
+  onAddNewClick,
+  allowAnyClickClose,
   ...props
 }) => <div {...props} />;
 /* eslint-enable react/prop-types */
@@ -59,22 +62,29 @@ const StyledContainer = styled(Container)`
     margin: 16px 16px -5px 16px;
 
     .options_searcher {
-      ${props =>  props.isDropDown && props.size === "full" && props.groups && props.groups.length > 0 &&
-      css`
-        display: inline-block;
-        width: 272px;
-        margin-right: 8px;
-      `}
+      display: inline-block;
+      ${props =>
+        props.allowCreation ?
+        css`
+          width: 272px;
+          margin-right: 8px;
+        `
+        : css`width: 313px;`
+        }
     }
 
     .add_new_btn {
-      ${props =>  props.isDropDown && props.size === "full" && props.groups && props.groups.length > 0 &&
-      css`
-        display: inline-block;
-        vertical-align: top;
-        height: 32px;
-        width: 32px;
-      `}
+      ${props =>
+        props.allowCreation &&
+        css`
+          display: inline-block;
+          vertical-align: top;
+          height: 32px;
+          width: 32px;
+        `}
+    }
+
+    .create_new_user_modal {
     }
 
     .options_group_selector {
@@ -107,7 +117,7 @@ const StyledContainer = styled(Container)`
           }
 
           &:hover {
-            background-color: #F8F9F9;
+            background-color: #f8f9f9;
           }
         }
       }
@@ -119,7 +129,7 @@ const StyledContainer = styled(Container)`
           ? css`
               width: 50%;
               display: inline-block;
-              border-left: 1px solid #ECEEF1;
+              border-left: 1px solid #eceef1;
             `
           : ""}
 
@@ -130,12 +140,11 @@ const StyledContainer = styled(Container)`
       }
 
       .group_list {
-        /*margin-left: 8px;
-        margin-left: -8px;*/
+        margin-left: 8px;
 
         .option {
           line-height: 32px;
-          padding-left: 16px;
+          padding-left: 8px;
           cursor: pointer;
 
           .option_checkbox {
@@ -147,7 +156,7 @@ const StyledContainer = styled(Container)`
           }
 
           &:hover {
-            background-color: #ECEEF1;
+            background-color: #eceef1;
           }
         }
       }
@@ -177,7 +186,8 @@ class AdvancedSelector extends React.Component {
       selectedOptions: this.props.selectedOptions || [],
       selectedAll: this.props.selectedAll || false,
       groups: groups,
-      currentGroup: currentGroup
+      currentGroup: currentGroup,
+      modalVisible: false
     };
 
     if (props.isOpen) handleAnyClick(true, this.handleClick);
@@ -186,6 +196,9 @@ class AdvancedSelector extends React.Component {
   handleClick = e => {
     if (
       this.props.isOpen &&
+      this.props.allowAnyClickClose &&
+      this.ref &&
+      this.ref.current &&
       !this.ref.current.contains(e.target) &&
       e.target.className.indexOf("option_checkbox") === -1
     ) {
@@ -202,6 +215,14 @@ class AdvancedSelector extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.isOpen !== prevProps.isOpen) {
+      handleAnyClick(this.props.isOpen, this.handleClick);
+    }
+
+    if(this.props.allowAnyClickClose !== prevProps.allowAnyClickClose) {
+      handleAnyClick(this.props.allowAnyClickClose, this.handleClick);
+    }
+
     let newState = {};
 
     if (!isEqual(this.props.selectedOptions, prevProps.selectedOptions)) {
@@ -232,10 +253,6 @@ class AdvancedSelector extends React.Component {
     if (!isEmpty(newState)) {
       this.setState({ ...this.state, ...newState });
     }
-
-    if (this.props.isOpen !== prevProps.isOpen) {
-      handleAnyClick(this.props.isOpen, this.handleClick);
-    }
   }
 
   convertGroups = groups => {
@@ -258,10 +275,7 @@ class AdvancedSelector extends React.Component {
     const currentGroup = groups.length > 0 ? groups[0] : "No groups";
     return currentGroup;
   };
-
-  onAddNewClick = () => {
-    
-  };
+  
   onButtonClick = () => {
     this.props.onSelect &&
       this.props.onSelect(
@@ -343,10 +357,17 @@ class AdvancedSelector extends React.Component {
       buttonLabel,
       selectAllLabel,
       size,
-      isDropDown
+      isDropDown,
+      onAddNewClick,
+      allowCreation
     } = this.props;
 
-    const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
+    const {
+      selectedOptions,
+      selectedAll,
+      currentGroup,
+      groups,
+    } = this.state;
 
     const containerHeight =
       size === "compact" ? (!groups || !groups.length ? 336 : 326) : 614;
@@ -384,14 +405,20 @@ class AdvancedSelector extends React.Component {
                 onChange={onSearchChanged}
                 onClearSearch={onSearchChanged.bind(this, "")}
               />
-              {isDropDown && size === "full" && groups && groups.length > 0 && (
+              {allowCreation && (
                 <Button
                   className="add_new_btn"
                   primary={false}
-                  size="size"
+                  size="base"
                   label=""
-                  icon={<Icons.PlusIcon size="medium" isfill={true} color="#D8D8D8" />}
-                  onClick={this.onAddNewClick}
+                  icon={
+                    <Icons.PlusIcon
+                      size="medium"
+                      isfill={true}
+                      color="#D8D8D8"
+                    />
+                  }
+                  onClick={onAddNewClick}
                 />
               )}
               {isDropDown &&
@@ -434,7 +461,14 @@ class AdvancedSelector extends React.Component {
             </div>
             {isDropDown && size === "full" && groups && groups.length > 0 && (
               <div className="data_column_two">
-                <Text.Body as="p" className="group_header" fontSize={15} isBold={true}>Groups</Text.Body>
+                <Text.Body
+                  as="p"
+                  className="group_header"
+                  fontSize={15}
+                  isBold={true}
+                >
+                  Groups
+                </Text.Body>
                 <FixedSizeList
                   className="group_list"
                   height={listHeight}
@@ -500,14 +534,18 @@ AdvancedSelector.propTypes = {
   onChangeGroup: PropTypes.func,
   onCancel: PropTypes.func,
   isDropDown: PropTypes.bool,
-  isOpen: PropTypes.bool
+  isOpen: PropTypes.bool,
+  allowCreation: PropTypes.bool,
+  onAddNewClick: PropTypes.func,
+  allowAnyClickClose: PropTypes.bool
 };
 
 AdvancedSelector.defaultProps = {
   isMultiSelect: false,
   size: "compact",
   buttonLabel: "Add members",
-  selectAllLabel: "Select all"
+  selectAllLabel: "Select all",
+  allowAnyClickClose: true
 };
 
 export default AdvancedSelector;
