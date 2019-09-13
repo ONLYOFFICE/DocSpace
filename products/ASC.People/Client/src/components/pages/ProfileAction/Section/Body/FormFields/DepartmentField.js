@@ -3,7 +3,8 @@ import isEqual from "lodash/isEqual";
 import {
   FieldContainer,
   SelectorAddButton,
-  SelectedItem
+  SelectedItem,
+  AdvancedSelector
 } from "asc-web-components";
 
 class DepartmentField extends React.Component {
@@ -19,10 +20,21 @@ class DepartmentField extends React.Component {
       isDisabled,
       hasError,
       labelText,
-      addButtonTitle,
-      departments,
-      onAddDepartment,
-      onRemoveDepartment
+
+      showGroupSelectorButtonTitle,
+
+      onShowGroupSelector,
+      onCloseGroupSelector,
+      onRemoveGroup,
+
+      selectorIsVisible,
+      selectorSearchPlaceholder,
+      selectorOptions,
+      selectorSelectedOptions,
+      selectorAddButtonText,
+      selectorSelectAllText,
+      selectorOnSearchGroups,
+      selectorOnSelectGroups
     } = this.props;
 
     return (
@@ -34,16 +46,31 @@ class DepartmentField extends React.Component {
       >
         <SelectorAddButton
           isDisabled={isDisabled}
-          title={addButtonTitle}
-          onClick={onAddDepartment}
+          title={showGroupSelectorButtonTitle}
+          onClick={onShowGroupSelector}
           className="department-add-btn"
         />
-        {departments.map(department => (
+        <AdvancedSelector
+          isDropDown={true}
+          isOpen={selectorIsVisible}
+          maxHeight={336}
+          width={379}
+          placeholder={selectorSearchPlaceholder}
+          onSearchChanged={selectorOnSearchGroups}
+          options={selectorOptions}
+          selected={selectorSelectedOptions}
+          isMultiSelect={true}
+          buttonLabel={selectorAddButtonText}
+          selectAllLabel={selectorSelectAllText}
+          onSelect={selectorOnSelectGroups}
+          onCancel={onCloseGroupSelector}
+        />
+        {selectorSelectedOptions.map(option => (
             <SelectedItem
-              key={`department_${department.id}`}
-              text={department.name}
+              key={`department_${option.key}`}
+              text={option.label}
               onClose={() => {
-                onRemoveDepartment(department.id);
+                onRemoveGroup(option.key);
               }}
               isInline={true}
               className="department-item"
