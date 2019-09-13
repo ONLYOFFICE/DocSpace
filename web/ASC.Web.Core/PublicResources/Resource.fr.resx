@@ -94,6 +94,9 @@
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Le champ Email est vide</value>
   </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>L'adresse email actuelle et la nouvelle adresse sont les mêmes</value>
+  </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Le fichier chargé ne peut pas être trouvé</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Trop d'opérations LDAP.</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
   </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>Les instructions de changement de mot de passe ont été envoyées à {0}</value>

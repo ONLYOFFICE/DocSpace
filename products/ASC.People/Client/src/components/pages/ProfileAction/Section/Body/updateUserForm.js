@@ -5,7 +5,7 @@ import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from '
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
-import { sendInstructionsToChangePassword } from "../../../../../store/services/api";
+import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -73,7 +73,7 @@ class UpdateUserForm extends React.Component {
         header: "",
         body: "",
         buttons: [],
-        newEmail: "",
+        newEmail: profile.email,
       },
       selector: {
         visible: false,
@@ -150,6 +150,10 @@ class UpdateUserForm extends React.Component {
   }
 
   onEmailChange(event) {
+    const emailRegex = /.+@.+\..+/;
+    const newEmail = event.target.value || this.state.dialog.newEmail;
+    const hasError = !emailRegex.test(newEmail);
+
     const dialog = { 
       visible: true,
       header: "Change email",
@@ -160,8 +164,9 @@ class UpdateUserForm extends React.Component {
             id="new-email"
             scale={true}
             isAutoFocussed={true}
-            value={event.target.value}
+            value={newEmail}
             onChange={this.onEmailChange}
+            hasError={hasError}
           />
         </Text.Body>
       ),
@@ -172,16 +177,21 @@ class UpdateUserForm extends React.Component {
           size="medium"
           primary={true}
           onClick={this.onSendEmailChangeInstructions}
+          isDisabled={hasError}
         />
       ],
-      newEmail: event.target.value
+      newEmail: newEmail
      };
     this.setState({ dialog: dialog })
   }
 
   onSendEmailChangeInstructions() {
-    toastr.success("Context action: Change email");
-    this.onDialogClose();
+    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
+      .then((res) => {
+        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+      })
+      .catch((error) => toastr.error(error.message))
+      .finally(this.onDialogClose);
   }
 
   onPasswordChange() {
@@ -208,7 +218,9 @@ class UpdateUserForm extends React.Component {
 
   onSendPasswordChangeInstructions() {
     sendInstructionsToChangePassword(this.state.profile.email)
-      .then((res) => toastr.success(res.data.response))
+      .then((res) => {
+        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+      })
       .catch((error) => toastr.error(error.message))
       .finally(this.onDialogClose);
   }
@@ -241,7 +253,7 @@ class UpdateUserForm extends React.Component {
   }
 
   onDialogClose() {
-    const dialog = { visible: false }; 
+    const dialog = { visible: false, newEmail: this.state.profile.email }; 
     this.setState({ dialog: dialog })
   }
 
