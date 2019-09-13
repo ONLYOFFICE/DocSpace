@@ -1,10 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
-import { updateProfile } from '../../../../../store/profile/actions';
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
+import { updateProfile, updateAvatar } from '../../../../../store/profile/actions';
+import { sendInstructionsToChangePassword } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -13,7 +14,7 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
+import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 
 class UpdateUserForm extends React.Component {
 
@@ -28,8 +29,6 @@ class UpdateUserForm extends React.Component {
     this.onUserTypeChange = this.onUserTypeChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
-    this.onAddGroup = this.onAddGroup.bind(this);
-    this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
 
     this.onEmailChange = this.onEmailChange.bind(this);
@@ -43,6 +42,18 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+
+    this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.onSaveAvatar = this.onSaveAvatar.bind(this);
+    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
+
+
+
+    this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
+    this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
+    this.onSearchGroups = this.onSearchGroups.bind(this);
+    this.onSelectGroups = this.onSelectGroups.bind(this);
+    this.onRemoveGroup = this.onRemoveGroup.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -52,19 +63,30 @@ class UpdateUserForm extends React.Component {
   }
 
   mapPropsToState = (props) => {
-     const newState = {
+    var profile = toEmployeeWrapper(props.profile);
+    var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
+    var selected = mapGroupsToGroupSelectorOptions(profile.groups); 
+
+    const newState = {
       isLoading: false,
       errors: {
         firstName: false,
         lastName: false,
       },
-      profile: toEmployeeWrapper(props.profile),
+      profile: profile,
+      visibleAvatarEditor: false,
       dialog: {
         visible: false,
         header: "",
         body: "",
         buttons: [],
         newEmail: "",
+      },
+      selector: {
+        visible: false,
+        allOptions: allOptions,
+        options: [...allOptions],
+        selected: selected
       }
     };
 
@@ -99,16 +121,6 @@ class UpdateUserForm extends React.Component {
   onWorkFromDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
-    this.setState(stateCopy)
-  }
-
-  onAddGroup() {
-    console.log("onAddGroup")
-  }
-
-  onGroupClose(id) {
-    var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.groups = this.state.profile.groups.filter((group) => group.id !== id);
     this.setState(stateCopy)
   }
 
@@ -185,7 +197,7 @@ class UpdateUserForm extends React.Component {
       header: "Change password",
       body: (
         <Text.Body>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>${this.state.profile.email}</a> email address
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
         </Text.Body>
       ),
       buttons: [
@@ -202,8 +214,10 @@ class UpdateUserForm extends React.Component {
   }
 
   onSendPasswordChangeInstructions() {
-    toastr.success("Context action: Change password");
-    this.onDialogClose();
+    sendInstructionsToChangePassword(this.state.profile.email)
+      .then((res) => toastr.success(res.data.response))
+      .catch((error) => toastr.error(error.message))
+      .finally(this.onDialogClose);
   }
 
   onPhoneChange() {
@@ -268,8 +282,69 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  openAvatarEditor(){
+    this.setState({
+      visibleAvatarEditor: true,
+    });
+  }
+  onSaveAvatar(result) {
+    this.props.updateAvatar(this.state.profile.id, result)
+      .then((result) => {
+        let stateCopy = Object.assign({}, this.state);
+        stateCopy.visibleAvatarEditor = false;
+        if(result.data.response.success){
+          stateCopy.profile.avatarMax = result.data.response.data.max;
+        }else{
+          stateCopy.profile.avatarMax = result.data.response.max && result.data.response.max;
+        }
+        toastr.success("Success");
+        this.setState(stateCopy);
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+      });
+  }
+  onCloseAvatarEditor() {
+    this.setState({
+      visibleAvatarEditor: false,
+    });
+  }
+
+  onShowGroupSelector() {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.visible = true;
+    this.setState(stateCopy);
+  }
+
+  onCloseGroupSelector() {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.visible = false;
+    this.setState(stateCopy);
+  }
+
+  onSearchGroups(template) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.options = filterGroupSelectorOptions(stateCopy.selector.allOptions, template);
+    this.setState(stateCopy);
+  }
+
+  onSelectGroups(selected) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
+    stateCopy.selector.selected = selected;
+    stateCopy.selector.visible = false;
+    this.setState(stateCopy);
+  }
+
+  onRemoveGroup(id) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.groups = stateCopy.profile.groups.filter(group => group.id !== id);
+    stateCopy.selector.selected = stateCopy.selector.selected.filter(option => option.key !== id);
+    this.setState(stateCopy)
+  }
+
   render() {
-    const { isLoading, errors, profile, dialog } = this.state;
+    const { isLoading, errors, profile, dialog, selector } = this.state;
     const { t } = this.props;
 
     const pattern = getUserContactsPattern();
@@ -286,7 +361,13 @@ class UpdateUserForm extends React.Component {
               userName={profile.displayName}
               editing={true}
               editLabel={t("EditPhoto")}
+              editAction={this.openAvatarEditor}
             />
+            <AvatarEditor 
+              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
+              visible={this.state.visibleAvatarEditor} 
+              onClose={this.onCloseAvatarEditor} 
+              onSave={this.onSaveAvatar} />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
@@ -394,10 +475,18 @@ class UpdateUserForm extends React.Component {
             <DepartmentField
               labelText={`${t("CustomDepartment", { department })}:`}
               isDisabled={isLoading}
-              departments={profile.groups}
-              addButtonTitle={t("AddButton")}
-              onAddDepartment={this.onAddGroup}
-              onRemoveDepartment={this.onGroupClose}
+              showGroupSelectorButtonTitle={t("AddButton")}
+              onShowGroupSelector={this.onShowGroupSelector}
+              onCloseGroupSelector={this.onCloseGroupSelector}
+              onRemoveGroup={this.onRemoveGroup}
+              selectorIsVisible={selector.visible}
+              selectorSearchPlaceholder={t("Search")}
+              selectorOptions={selector.options}
+              selectorSelectedOptions={selector.selected}
+              selectorAddButtonText={t("CustomAddDepartments", { departments })}
+              selectorSelectAllText={t("SelectAll")}
+              selectorOnSearchGroups={this.onSearchGroups}
+              selectorOnSelectGroups={this.onSelectGroups}
             />
           </MainFieldsContainer>
         </MainContainer>
@@ -445,13 +534,15 @@ class UpdateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   return {
     profile: state.profile.targetUser,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    groups: state.people.groups
   }
 };
 
 export default connect(
   mapStateToProps,
   {
-    updateProfile
+    updateProfile,
+    updateAvatar
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

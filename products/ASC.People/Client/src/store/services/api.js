@@ -68,6 +68,17 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
+export function updateAvatar(profileId, data) {
+  return IS_FAKE
+    ? fakeApi.updateAvatar()
+    : axios.post(`${API_URL}/people/${profileId}/photo/cropped`, data);
+}
+export function deleteAvatar(profileId) {
+
+  return IS_FAKE
+    ? fakeApi.deleteAvatar()
+    : axios.delete(`${API_URL}/people/${profileId}/photo`, profileId);
+}
 
 export function getInitInfo() {
   return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(

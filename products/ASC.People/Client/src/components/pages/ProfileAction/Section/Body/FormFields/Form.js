@@ -20,6 +20,8 @@ const MainContainer = styled.div`
   }
 
   .departments-field {
+    position: relative;
+
     .department-add-btn {
       margin: 0 8px 8px 0;
       float: left;

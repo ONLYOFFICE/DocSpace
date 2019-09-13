@@ -16,6 +16,8 @@
   "ContactInformation": "Contact Information",
   "AddContact": "Add contact",
   "SocialProfiles": "Social Profiles",
+  "Search": "Search",
+  "SelectAll": "Select all",
 
   "ActivationLink": "Activation link",
   "AddPhoto": "Add photo",
@@ -32,5 +34,6 @@
   "CustomTypeGuest": "{{typeGuest}}",
   "CustomTypeUser": "{{typeUser}}",
   "CustomNewEmployee": "New {{typeUser, lowercase}}",
-  "CustomNewGuest": "New {{typeGuest, lowercase}}"
+  "CustomNewGuest": "New {{typeGuest, lowercase}}",
+  "CustomAddDepartments": "Add {{departments, lowercase}}"
 }

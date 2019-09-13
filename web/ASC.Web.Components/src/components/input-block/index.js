@@ -50,10 +50,10 @@ class InputBlock extends React.Component {
 
   }
   onIconClick(e) {
-    this.props.onIconClick(e);
+    if(typeof this.props.onIconClick === "function") this.props.onIconClick(e);
   }
   onChange(e) {
-    this.props.onChange(e);
+    if(typeof this.props.onChange === "function") this.props.onChange(e);
   }
 
   render() {
