@@ -5,6 +5,7 @@ import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from '
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
+import { sendInstructionsToChangePassword } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -189,7 +190,7 @@ class UpdateUserForm extends React.Component {
       header: "Change password",
       body: (
         <Text.Body>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>${this.state.profile.email}</a> email address
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
         </Text.Body>
       ),
       buttons: [
@@ -206,8 +207,10 @@ class UpdateUserForm extends React.Component {
   }
 
   onSendPasswordChangeInstructions() {
-    toastr.success("Context action: Change password");
-    this.onDialogClose();
+    sendInstructionsToChangePassword(this.state.profile.email)
+      .then((res) => toastr.success(res.data.response))
+      .catch((error) => toastr.error(error.message))
+      .finally(this.onDialogClose);
   }
 
   onPhoneChange() {
