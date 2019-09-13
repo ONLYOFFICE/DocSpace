@@ -9,6 +9,7 @@ import Checkbox from "../checkbox";
 import Button from "../button";
 import { Icons } from '../icons';
 import ComboBox from "../combobox";
+import { Text } from '../text';
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
 import isEqual from "lodash/isEqual";
@@ -90,7 +91,7 @@ const StyledContainer = styled(Container)`
           : ""}
 
       .options_list {
-        margin-top: 12px;
+        margin-top: 4px;
         margin-left: -8px;
         .option {
           line-height: 32px;
@@ -106,7 +107,7 @@ const StyledContainer = styled(Container)`
           }
 
           &:hover {
-            background-color: #eceef1;
+            background-color: #F8F9F9;
           }
         }
       }
@@ -118,9 +119,15 @@ const StyledContainer = styled(Container)`
           ? css`
               width: 50%;
               display: inline-block;
-              border-left: 1px solid #eceef1;
+              border-left: 1px solid #ECEEF1;
             `
           : ""}
+
+      .group_header {
+        font-weight: 600;
+        padding-left: 16px;
+        padding-bottom: 14px;
+      }
 
       .group_list {
         /*margin-left: 8px;
@@ -128,7 +135,7 @@ const StyledContainer = styled(Container)`
 
         .option {
           line-height: 32px;
-          padding-left: 8px;
+          padding-left: 16px;
           cursor: pointer;
 
           .option_checkbox {
@@ -140,7 +147,7 @@ const StyledContainer = styled(Container)`
           }
 
           &:hover {
-            background-color: #eceef1;
+            background-color: #ECEEF1;
           }
         }
       }
@@ -342,7 +349,7 @@ class AdvancedSelector extends React.Component {
     const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
 
     const containerHeight =
-      size === "compact" ? (!groups || !groups.length ? 336 : 326) : 545;
+      size === "compact" ? (!groups || !groups.length ? 336 : 326) : 614;
     const containerWidth =
       size === "compact" ? (!groups || !groups.length ? 325 : 326) : 690;
     const listHeight =
@@ -352,7 +359,7 @@ class AdvancedSelector extends React.Component {
             ? 176
             : 226
           : 120
-        : 416;
+        : 488;
     const listWidth = 320;
 
     const itemHeight = 32;
@@ -427,6 +434,7 @@ class AdvancedSelector extends React.Component {
             </div>
             {isDropDown && size === "full" && groups && groups.length > 0 && (
               <div className="data_column_two">
+                <Text.Body as="p" className="group_header" fontSize={15} isBold={true}>Groups</Text.Body>
                 <FixedSizeList
                   className="group_list"
                   height={listHeight}
