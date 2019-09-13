@@ -20,7 +20,6 @@ import { NewCalendar } from "asc-web-components";
   minDate={new Date("1970/01/01")}
   maxDate={new Date("3000/01/01")}
   locale="ru"
-  scaled={false}
 />;
 ```
 
@@ -36,4 +35,4 @@ import { NewCalendar } from "asc-web-components";
 | `minDate`      | `date`   |    -     | -      | `new Date("1970/01/01")` | Minimum date that the user can select.                       |
 | `maxDate`      | `date`   |    -     | -      | `new Date("3000/01/01")` | Maximum date that the user can select.                       |
 | `locale`       | `string` |    -     | -      | User's browser settings  | Browser locale                                               |
-| `scaled`       | `bool`   |    -     |        |                          | Selected calendar size                                       |
+

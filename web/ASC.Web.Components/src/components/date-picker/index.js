@@ -140,6 +140,12 @@ class DatePicker extends Component {
     return mask;
   };
 
+  compareDates = (date1, date2) => {
+    return moment(date1)
+      .startOf("day")
+      .diff(moment(date2).startOf("day"), "days");
+  };
+
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
   }
@@ -159,7 +165,8 @@ class DatePicker extends Component {
 
     if (selectedDate !== prevProps.selectedDate) {
       newState = Object.assign({}, newState, {
-        selectedDate
+        selectedDate,
+        value: moment(selectedDate).format("L")
       });
     }
 
@@ -182,19 +189,25 @@ class DatePicker extends Component {
 
     const date = new Date(value);
     if (
-      selectedDate < maxDate &&
-      selectedDate > minDate &&
+      this.compareDates(selectedDate, maxDate) <= 0 &&
+      this.compareDates(selectedDate, minDate) >= 0 &&
       hasError &&
-      date < maxDate &&
-      date > minDate &&
+      this.compareDates(date, maxDate) <= 0 &&
+      this.compareDates(date, minDate) >= 0 &&
       !this.props.hasError
     ) {
       newState = Object.assign({}, newState, {
-        hasError: false
+        hasError: false,
+        selectedDate,
+        value: moment(selectedDate).format("L")
       });
     }
 
-    if ((selectedDate > maxDate || selectedDate < minDate) && !hasError) {
+    if (
+      (this.compareDates(selectedDate, maxDate) > 0 ||
+        this.compareDates(selectedDate, minDate) < 0) &&
+      !hasError
+    ) {
       newState = Object.assign({}, newState, {
         hasError: true,
         isOpen: false

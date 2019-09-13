@@ -45,6 +45,7 @@ const Form = props => {
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { login, match, location, history } = props;
+    const { params } = match;
 
     const onSubmit = useCallback((e) => {
         //e.preventDefault();
@@ -93,6 +94,7 @@ const Form = props => {
     }, [onSubmit]);
 
     useEffect(() => {
+        params.error && setErrorText(params.error);
         window.addEventListener('keydown', onKeyPress);
         window.addEventListener('keyup', onKeyPress);
         // Remove event listeners on cleanup
@@ -100,7 +102,7 @@ const Form = props => {
             window.removeEventListener('keydown', onKeyPress);
             window.removeEventListener('keyup', onKeyPress);
         };
-    }, [onKeyPress]);
+    }, [onKeyPress, params.error]);
 
     return (
         <FormContainer>

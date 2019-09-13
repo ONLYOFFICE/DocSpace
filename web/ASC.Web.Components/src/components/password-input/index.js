@@ -174,6 +174,7 @@ class PasswordInput extends React.Component {
 
     const newPassword = this.getNewPassword();
     this.checkPassword(newPassword);
+    this.props.onChange && this.props.onChange({ target: { value: newPassword } });
   }
 
   getNewPassword = () => {

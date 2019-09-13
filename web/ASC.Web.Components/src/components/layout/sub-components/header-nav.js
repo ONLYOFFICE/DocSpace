@@ -1,7 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import NavItem from './nav-item'
-import ProfileActions from './profile-actions'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import NavItem from "./nav-item";
+import ProfileActions from "./profile-actions";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -22,9 +23,8 @@ const StyledNav = styled.nav`
 const HeaderNav = React.memo(props => {
   //console.log("HeaderNav render");
   return (
-  <StyledNav>
-    {
-      props.modules.map(module => 
+    <StyledNav>
+      {props.modules.map(module => (
         <NavItem
           key={module.id}
           iconName={module.iconName}
@@ -32,13 +32,20 @@ const HeaderNav = React.memo(props => {
           onClick={module.onClick}
           onBadgeClick={module.onBadgeClick}
         />
-      )
-    }
-    {
-      props.user && <ProfileActions userActions={props.userActions} user={props.user}/>
-    }
-  </StyledNav>
+      ))}
+      {props.user && (
+        <ProfileActions userActions={props.userActions} user={props.user} />
+      )}
+    </StyledNav>
   );
 });
+
+HeaderNav.displayName = "HeaderNav";
+
+HeaderNav.propTypes = {
+  modules: PropTypes.array,
+  user: PropTypes.object,
+  userActions: PropTypes.array
+};
 
 export default HeaderNav;

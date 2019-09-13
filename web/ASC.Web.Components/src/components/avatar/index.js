@@ -1,8 +1,9 @@
-import React, { memo } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 import Link from '../link'
+import isEqual from "lodash/isEqual";
 
 const whiteColor = '#FFFFFF';
 const avatarBackground = '#ECEEF1';
@@ -87,10 +88,10 @@ const NamedAvatar = styled.div`
     transform: translate(-50%, -50%);
     font-weight: 600;
     font-size: ${props =>
-      (props.size === 'max' && '72px') ||
-      (props.size === 'big' && '34px') ||
-      (props.size === 'medium' && '20px') ||
-      (props.size === 'small' && '12px')
+    (props.size === 'max' && '72px') ||
+    (props.size === 'big' && '34px') ||
+    (props.size === 'medium' && '20px') ||
+    (props.size === 'small' && '12px')
   };
     color: ${whiteColor};
 
@@ -144,12 +145,10 @@ const getRoleIcon = role => {
 };
 
 const getInitials = userName =>
-  typeof userName === 'string'
-    ? userName
-      .split(/\s/)
-      .reduce((response, word) => response += word.slice(0, 1), '')
-      .substring(0, 2)
-    : '';
+  userName
+    .split(/\s/)
+    .reduce((response, word) => response += word.slice(0, 1), '')
+    .substring(0, 2);
 
 const Initials = props => (
   <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>
@@ -160,44 +159,51 @@ Initials.propTypes = {
 };
 
 // eslint-disable-next-line react/display-name
-const Avatar = memo(props => {
-  //console.log("Avatar render");
-  const { size, source, userName, role, editing, editLabel, editAction } = props;
+class Avatar extends React.Component {
 
-  const avatarContent = source
-    ? <ImageStyled src={source} />
-    : userName
-      ? <Initials userName={userName} size={size} />
-      : <EmptyIcon size='scale' />;
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+  }
 
-  const roleIcon = getRoleIcon(role);
+  render() {
+    //console.log("Avatar render");
+    const { size, source, userName, role, editing, editLabel, editAction } = this.props;
 
-  return (
-    <StyledAvatar {...props}>
-      <AvatarWrapper source={source} userName={userName}>
-        {avatarContent}
-      </AvatarWrapper>
-      {editing && (size === 'max') &&
-        <EditContainer>
-          <EditLink>
-            <Link
-              type='action'
-              title={editLabel}
-              isTextOverflow={true}
-              fontSize={14}
-              color={whiteColor}
-              onClick={editAction}
-            >
-              {editLabel}
-            </Link>
-          </EditLink>
-        </EditContainer>}
-      <RoleWrapper size={size}>
-        {roleIcon}
-      </RoleWrapper>
-    </StyledAvatar>
-  );
-});
+    const avatarContent = source
+      ? <ImageStyled src={source} />
+      : userName
+        ? <Initials userName={userName} size={size} />
+        : <EmptyIcon size='scale' />;
+
+    const roleIcon = getRoleIcon(role);
+
+    return (
+      <StyledAvatar {...this.props}>
+        <AvatarWrapper source={source} userName={userName}>
+          {avatarContent}
+        </AvatarWrapper>
+        {editing && (size === 'max') &&
+          <EditContainer>
+            <EditLink>
+              <Link
+                type='action'
+                title={editLabel}
+                isTextOverflow={true}
+                fontSize={14}
+                color={whiteColor}
+                onClick={editAction}
+              >
+                {editLabel}
+              </Link>
+            </EditLink>
+          </EditContainer>}
+        <RoleWrapper size={size}>
+          {roleIcon}
+        </RoleWrapper>
+      </StyledAvatar>
+    );
+  }
+}
 
 Avatar.propTypes = {
   size: PropTypes.oneOf(['max', 'big', 'medium', 'small']),

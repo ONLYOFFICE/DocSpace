@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components'
-import Scrollbar from '../../scrollbar'
+import styled from "styled-components";
+import Scrollbar from "../../scrollbar";
 
 const StyledArticleBody = styled.div`
   margin: 16px 0;
@@ -10,15 +10,13 @@ const StyledArticleBody = styled.div`
   height: 100%;
 `;
 
-const ArticleBody = React.memo(props => { 
+const ArticleBody = React.memo(props => {
   //console.log("PageLayout ArticleBody render");
   const { children } = props;
 
   return (
     <StyledArticleBody>
-      <Scrollbar>
-        {children}
-      </Scrollbar>
+      <Scrollbar>{children}</Scrollbar>
     </StyledArticleBody>
   );
 });

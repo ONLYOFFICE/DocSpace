@@ -603,15 +603,16 @@ class Calendar extends Component {
       isDisabled
     } = this.props;
 
-    const { hasError } = this.state;
+    const { hasError, optionsDays } = this.state;
 
     if (
       this.compareDates(selectedDate, nextProps.selectedDate) === 0 &&
       this.compareDates(openToDate, nextProps.openToDate) === 0 &&
       this.compareDates(minDate, nextProps.minDate) === 0 &&
       this.compareDates(maxDate, nextProps.maxDate) === 0 &&
-      isDisabled !== nextProps.isDisabled &&
-      hasError !== nextState.hasError
+      isDisabled === nextProps.isDisabled &&
+      hasError === nextState.hasError &&
+      optionsDays === nextState.optionsDays
     ) {
       return false;
     }

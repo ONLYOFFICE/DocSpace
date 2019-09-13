@@ -5,6 +5,7 @@ import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
 import { Icons } from '../icons'
 import { handleAnyClick } from '../../utils/event';
+import isEqual from 'lodash/isEqual';
 
 const StyledComboBox = styled.div`
   color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
@@ -106,7 +107,7 @@ const StyledArrowIcon = styled.div`
   `}
 `;
 
-class ComboBox extends React.PureComponent {
+class ComboBox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -146,6 +147,10 @@ class ComboBox extends React.PureComponent {
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
+  }
+
+  shouldComponentUpdate(nextProps,nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
   componentDidUpdate(prevProps, prevState) {
