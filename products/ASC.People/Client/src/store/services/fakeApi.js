@@ -277,6 +277,13 @@ export function updateUser(data) {
   return fakeResponse(data);
 }
 
+export function updateAvatar(data) {
+  return fakeResponse(data);
+}
+export function deleteAvatar(data) {
+  return fakeResponse(data);
+}
+
 export function updateUserStatus(status, userIds) {
   return fakeResponse([
     {

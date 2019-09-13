@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
 import Link from '../link'
-import isEqual from "lodash/isEqual";
 
 const whiteColor = '#FFFFFF';
 const avatarBackground = '#ECEEF1';
@@ -159,51 +158,44 @@ Initials.propTypes = {
 };
 
 // eslint-disable-next-line react/display-name
-class Avatar extends React.Component {
+const Avatar = memo(props => {
+  //console.log("Avatar render");
+  const { size, source, userName, role, editing, editLabel, editAction } = props;
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
-  }
+  const avatarContent = source
+    ? <ImageStyled src={source} />
+    : userName
+      ? <Initials userName={userName} size={size} />
+      : <EmptyIcon size='scale' />;
 
-  render() {
-    //console.log("Avatar render");
-    const { size, source, userName, role, editing, editLabel, editAction } = this.props;
+  const roleIcon = getRoleIcon(role);
 
-    const avatarContent = source
-      ? <ImageStyled src={source} />
-      : userName
-        ? <Initials userName={userName} size={size} />
-        : <EmptyIcon size='scale' />;
-
-    const roleIcon = getRoleIcon(role);
-
-    return (
-      <StyledAvatar {...this.props}>
-        <AvatarWrapper source={source} userName={userName}>
-          {avatarContent}
-        </AvatarWrapper>
-        {editing && (size === 'max') &&
-          <EditContainer>
-            <EditLink>
-              <Link
-                type='action'
-                title={editLabel}
-                isTextOverflow={true}
-                fontSize={14}
-                color={whiteColor}
-                onClick={editAction}
-              >
-                {editLabel}
-              </Link>
-            </EditLink>
-          </EditContainer>}
-        <RoleWrapper size={size}>
-          {roleIcon}
-        </RoleWrapper>
-      </StyledAvatar>
-    );
-  }
-}
+  return (
+    <StyledAvatar {...props}>
+      <AvatarWrapper source={source} userName={userName}>
+        {avatarContent}
+      </AvatarWrapper>
+      {editing && (size === 'max') &&
+        <EditContainer>
+          <EditLink>
+            <Link
+              type='action'
+              title={editLabel}
+              isTextOverflow={true}
+              fontSize={14}
+              color={whiteColor}
+              onClick={editAction}
+            >
+              {editLabel}
+            </Link>
+          </EditLink>
+        </EditContainer>}
+      <RoleWrapper size={size}>
+        {roleIcon}
+      </RoleWrapper>
+    </StyledAvatar>
+  );
+});
 
 Avatar.propTypes = {
   size: PropTypes.oneOf(['max', 'big', 'medium', 'small']),

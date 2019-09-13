@@ -1,21 +1,23 @@
-import React from "react";
+import React, { memo } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { Text } from "../text";
 
-const SimpleLink = ({
-  rel,
-  isBold,
-  fontSize,
-  isTextOverflow,
-  isHovered,
-  isSemitransparent,
-  type,
-  color,
-  title,
-  containerWidth,
-  ...props
-}) => <a {...props} />;
+// eslint-disable-next-line no-unused-vars
+const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, title, containerWidth, ...props }) => <a {...props} />;
+
+SimpleLink.propTypes = {
+  color: PropTypes.string,
+  fontSize: PropTypes.number,
+  isBold: PropTypes.bool,
+  isHovered: PropTypes.bool,
+  isSemitransparent: PropTypes.bool,
+  isTextOverflow: PropTypes.bool,
+  rel: PropTypes.string,
+  title: PropTypes.string,
+  type: PropTypes.oneOf(["action", "page"]),
+  containerWidth: PropTypes.string
+};
 
 
 const colorCss = css`
@@ -45,7 +47,8 @@ const StyledLink = styled(SimpleLink)`
   ${props => props.isHovered && hoveredCss}
 `;
 
-const Link = props => {
+// eslint-disable-next-line react/display-name
+const Link = memo(props => {
   const {
     isBold,
     title,
@@ -70,7 +73,7 @@ const Link = props => {
       </Text.Body>
     </StyledLink>
   );
-};
+});
 
 Link.propTypes = {
   color: PropTypes.string,
@@ -86,6 +89,7 @@ Link.propTypes = {
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
+  children: PropTypes.string
 };
 
 Link.defaultProps = {
