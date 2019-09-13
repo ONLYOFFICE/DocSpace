@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -46,40 +46,13 @@ class CreateUserForm extends React.Component {
     }
   }
 
-  mapGroupsToGroupSelectorOptions = groups => {
-    return groups.map(group => {
-      return {
-        key: group.id,
-        label: group.name,
-        manager: group.manager,
-        total: 0
-      }
-    });
-  }
-
-  mapGroupSelectorOptionsToGroups = options => {
-    return options.map(option => {
-      return {
-        id: option.key,
-        name: option.label,
-        manager: option.manager
-      }
-    });
-  }
-
-  filterGroupSelectorOptions = (options, template) => { 
-      return options.filter(option => {
-        return template ? option.label.indexOf(template) > -1 : true;
-      })
-  }
-
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper({
       isVisitor: props.match.params.type === "guest",
       passwordType: "link"
     });
-    var allOptions = this.mapGroupsToGroupSelectorOptions(props.groups);
-    var selected = this.mapGroupsToGroupSelectorOptions(profile.groups);
+    var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
+    var selected = mapGroupsToGroupSelectorOptions(profile.groups);
 
     return {
       isLoading: false,
@@ -196,13 +169,13 @@ class CreateUserForm extends React.Component {
 
   onSearchGroups(template) {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.selector.options = this.filterGroupSelectorOptions(stateCopy.selector.allOptions, template);
+    stateCopy.selector.options = filterGroupSelectorOptions(stateCopy.selector.allOptions, template);
     this.setState(stateCopy);
   }
 
   onSelectGroups(selected) {
     var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.groups = this.mapGroupSelectorOptionsToGroups(selected);
+    stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
     stateCopy.selector.selected = selected;
     stateCopy.selector.visible = false;
     this.setState(stateCopy);
@@ -384,7 +357,7 @@ class CreateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
-    groups: state.people.groups,
+    groups: state.people.groups
   }
 };
 
