@@ -98,8 +98,8 @@ export function updateAvatar(profileId, images) {
                 profileId,
                 {
                     autosave: true,
-                    croppedImage: images.croppedImage.split(',')[1],
-                    defaultImage: images.defaultImage.split(',')[1]
+                    base64CroppedImage: images.croppedImage.split(',')[1],
+                    base64DefaultImage: images.defaultImage.split(',')[1]
                 }
             ).then(res => {
                 checkResponseError(res);
