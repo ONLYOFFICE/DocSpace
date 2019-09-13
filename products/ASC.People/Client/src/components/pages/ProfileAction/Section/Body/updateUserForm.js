@@ -1,10 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile } from '../../../../../store/profile/actions';
+import { updateProfile, updateAvatar } from '../../../../../store/profile/actions';
+import { sendInstructionsToChangePassword } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -42,6 +43,12 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
 
+    this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.onSaveAvatar = this.onSaveAvatar.bind(this);
+    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
+
+
+
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
     this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
     this.onSearchGroups = this.onSearchGroups.bind(this);
@@ -67,6 +74,7 @@ class UpdateUserForm extends React.Component {
         lastName: false,
       },
       profile: profile,
+      visibleAvatarEditor: false,
       dialog: {
         visible: false,
         header: "",
@@ -189,7 +197,7 @@ class UpdateUserForm extends React.Component {
       header: "Change password",
       body: (
         <Text.Body>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>${this.state.profile.email}</a> email address
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
         </Text.Body>
       ),
       buttons: [
@@ -206,8 +214,10 @@ class UpdateUserForm extends React.Component {
   }
 
   onSendPasswordChangeInstructions() {
-    toastr.success("Context action: Change password");
-    this.onDialogClose();
+    sendInstructionsToChangePassword(this.state.profile.email)
+      .then((res) => toastr.success(res.data.response))
+      .catch((error) => toastr.error(error.message))
+      .finally(this.onDialogClose);
   }
 
   onPhoneChange() {
@@ -272,6 +282,34 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  openAvatarEditor(){
+    this.setState({
+      visibleAvatarEditor: true,
+    });
+  }
+  onSaveAvatar(result) {
+    this.props.updateAvatar(this.state.profile.id, result)
+      .then((result) => {
+        let stateCopy = Object.assign({}, this.state);
+        stateCopy.visibleAvatarEditor = false;
+        if(result.data.response.success){
+          stateCopy.profile.avatarMax = result.data.response.data.max;
+        }else{
+          stateCopy.profile.avatarMax = result.data.response.max && result.data.response.max;
+        }
+        toastr.success("Success");
+        this.setState(stateCopy);
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+      });
+  }
+  onCloseAvatarEditor() {
+    this.setState({
+      visibleAvatarEditor: false,
+    });
+  }
+
   onShowGroupSelector() {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = true;
@@ -323,7 +361,13 @@ class UpdateUserForm extends React.Component {
               userName={profile.displayName}
               editing={true}
               editLabel={t("EditPhoto")}
+              editAction={this.openAvatarEditor}
             />
+            <AvatarEditor 
+              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
+              visible={this.state.visibleAvatarEditor} 
+              onClose={this.onCloseAvatarEditor} 
+              onSave={this.onSaveAvatar} />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
@@ -498,6 +542,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    updateProfile
+    updateProfile,
+    updateAvatar
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
@@ -40,6 +40,7 @@ const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
   margin-right: 8px;
+  margin-left: 2px;
   user-select: none;
 `;
 
@@ -50,54 +51,39 @@ const StyledOptionButton = styled.div`
   margin-right: 16px;
 `;
 
-class Row extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      checked: this.props.checked
-    }
-  }
-
-  changeCheckbox = (e) => {
-    this.props.onSelect && this.props.onSelect(e.target.checked, this.props.data);
+// eslint-disable-next-line react/display-name
+const Row = props => {
+  const changeCheckbox = (e) => {
+    props.onSelect && props.onSelect(e.target.checked, props.data);
   };
 
-  getOptions = () => this.props.contextOptions;
+  const getOptions = () => props.contextOptions;
+  //console.log("Row render");
+  const { checked, element, children, contextOptions } = props;
 
-  componentDidUpdate(prevProps) {
-    if (this.props.checked !== prevProps.checked) {
-      this.setState({ checked: this.props.checked });
-    }
-  }
-  
-  render() {
-    //console.log("Row render");
-    const { checked, element, children, contextOptions } = this.props;
-
-    return (
-      <StyledRow ref={this.rowRef} {...this.props}>
-        {Object.prototype.hasOwnProperty.call(this.props, 'checked') &&
-          <StyledCheckbox>
-            <Checkbox isChecked={checked} onChange={this.changeCheckbox} />
-          </StyledCheckbox>
+  return (
+    <StyledRow {...props}>
+      {Object.prototype.hasOwnProperty.call(props, 'checked') &&
+        <StyledCheckbox>
+          <Checkbox isChecked={checked} onChange={changeCheckbox} />
+        </StyledCheckbox>
+      }
+      {Object.prototype.hasOwnProperty.call(props, 'element') &&
+        <StyledElement>
+          {element}
+        </StyledElement>
+      }
+      <StyledContent>
+        {children}
+      </StyledContent>
+      <StyledOptionButton>
+        {Object.prototype.hasOwnProperty.call(props, 'contextOptions') && contextOptions.length > 0 &&
+          <ContextMenuButton directionX='right' getData={getOptions} />
         }
-        {Object.prototype.hasOwnProperty.call(this.props, 'element') &&
-          <StyledElement>
-            {element}
-          </StyledElement>
-        }
-        <StyledContent>
-          {children}
-        </StyledContent>
-        <StyledOptionButton>
-          {Object.prototype.hasOwnProperty.call(this.props, 'contextOptions') && contextOptions.length > 0 &&
-            <ContextMenuButton directionX='right' getData={this.getOptions} />
-          }
-        </StyledOptionButton>
-      </StyledRow>
-    );
-  }
-}
+      </StyledOptionButton>
+    </StyledRow>
+  );
+};
 
 Row.propTypes = {
   checked: PropTypes.bool,

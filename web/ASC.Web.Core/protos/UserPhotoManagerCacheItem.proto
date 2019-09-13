@@ -8,6 +8,8 @@ message UserPhotoManagerCacheItem {
     CacheSize Size  = 2;
 
     string FileName = 3;
+
+    int32 TenantId = 4;
 }
 
 enum CacheSize {

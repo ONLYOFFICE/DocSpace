@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import Avatar from '.';
 
 const baseProps = {
@@ -96,6 +96,7 @@ describe('<Avatar />', () => {
     expect(wrapper.prop('editing')).toEqual(true);
   });
 
+  /*
   it('not re-render test', () => {
     const wrapper = shallow(<Avatar {...baseProps} />).instance();
 
@@ -119,4 +120,5 @@ describe('<Avatar />', () => {
 
     expect(shouldUpdate).toBe(true);
   });
+  */
 });
