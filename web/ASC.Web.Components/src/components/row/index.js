@@ -40,6 +40,7 @@ const StyledElement = styled.div`
   flex: 0 0 auto;
   display: flex;
   margin-right: 8px;
+  margin-left: 2px;
   user-select: none;
 `;
 
