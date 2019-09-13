@@ -87,6 +87,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                       action("onSelect")(selectedOptions);
                       toggle();
                     }}
+                    onCancel={toggle}
                   />
                 )}
               </ArrayValue>
