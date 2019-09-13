@@ -96,11 +96,11 @@ export function createConfirmUser(registerData, loginData, key) {
             .then(res => {
                 checkResponseError(res);
                 console.log('register success:', res.data.response);
-                return api.login(data);
+                return api.login(loginData);
 
             })
             .then(res => {
-                console.error("log in, result:", res);
+                console.log("log in, result:", res);
                 checkResponseError(res);
                 const token = res.data.response.token;
                 setAuthorizationToken(token);

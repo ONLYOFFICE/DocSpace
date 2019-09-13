@@ -71,7 +71,7 @@ const ModalDialog = props => {
 
   return (
     <>
-      <Backdrop visible={visible}>
+      <Backdrop visible={visible} zIndex={310} >
         <Dialog>
           <Content>
             <Header>
