@@ -185,6 +185,7 @@ storiesOf("Components|AdvancedSelector", module)
                       isMultiSelect={boolean("isMultiSelect", true)}
                       buttonLabel={text("buttonLabel", "Add members")}
                       selectAllLabel={text("selectAllLabel", "Select all")}
+                      allowCreation={false}
                       onSelect={selectedOptions => {
                         action("onSelect")(selectedOptions);
                         toggle();
