@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -590,7 +588,110 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
+        
+        public FormFile Base64ToImage(string base64String, string fileName)
+        {
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length);
 
+            ms.Write(imageBytes, 0, imageBytes.Length);
+            return new FormFile(ms, 0, ms.Length, fileName, fileName);
+        }
+
+        [Create("{userid}/photo/cropped")]
+        public FileUploadResult UploadCroppedMemberPhoto(string userid, UploadCroppedPhotoModel model)
+        {
+            var result = new FileUploadResult();
+
+            try
+            {
+                Guid userId;
+                try
+                {
+                    userId = new Guid(userid);
+                }
+                catch
+                {
+                    userId = SecurityContext.CurrentAccount.ID;
+                }
+
+                SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
+
+                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_"+ userId.ToString());
+                var defaultUserPhoto = Base64ToImage(model.base64DefaultImage, "defaultPhoto" + userId.ToString());
+
+                if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
+                {
+                    result.Success = false;
+                    result.Message = FileSizeComment.FileImageSizeExceptionString;
+                    return result;
+                }
+
+                var data = new byte[userPhoto.Length];
+                using var inputStream = userPhoto.OpenReadStream();
+
+                var br = new BinaryReader(inputStream);
+                br.Read(data, 0, (int)userPhoto.Length);
+                br.Close();
+
+                var defaultData = new byte[defaultUserPhoto.Length];
+                using var defaultInputStream = defaultUserPhoto.OpenReadStream();
+
+                var defaultBr = new BinaryReader(defaultInputStream);
+                defaultBr.Read(defaultData, 0, (int)defaultUserPhoto.Length);
+                defaultBr.Close();
+
+                //CheckImgFormat(data);
+
+                if (model.Autosave)
+                {
+                    if (data.Length > SetupInfo.MaxImageUploadSize)
+                        throw new ImageSizeLimitException();
+
+                    var mainPhoto = UserPhotoManager.SaveOrUpdateCroppedPhoto(Tenant, userId, data, defaultData);
+
+                    result.Data =
+                        new
+                        {
+                            main = mainPhoto,
+                            retina = UserPhotoManager.GetRetinaPhotoURL(Tenant.TenantId, userId),
+                            max = UserPhotoManager.GetMaxPhotoURL(Tenant.TenantId, userId),
+                            big = UserPhotoManager.GetBigPhotoURL(Tenant.TenantId, userId),
+                            medium = UserPhotoManager.GetMediumPhotoURL(Tenant.TenantId, userId),
+                            small = UserPhotoManager.GetSmallPhotoURL(Tenant.TenantId, userId),
+                        };
+                }
+                else
+                {
+                    result.Data = UserPhotoManager.SaveTempPhoto(Tenant.TenantId, data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                }
+
+                result.Success = true;
+
+            }
+            catch (UnknownImageFormatException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorUnknownFileImageType;
+            }
+            catch (ImageWeightLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageWeightLimit;
+            }
+            catch (ImageSizeLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageSizetLimit;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = ex.Message.HtmlEncode();
+            }
+
+            return result;
+        }
         [Create("{userid}/photo")]
         public FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
         {
@@ -627,7 +728,7 @@ namespace ASC.Employee.Core.Controllers
                     br.Read(data, 0, (int)userPhoto.Length);
                     br.Close();
 
-                    CheckImgFormat(data);
+                    //CheckImgFormat(data);
 
                     if (model.Autosave)
                     {
@@ -1231,29 +1332,30 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, imageByteArray);
         }
 
-        private static void CheckImgFormat(byte[] data)
-        {
-            ImageFormat imgFormat;
+        //not working under unix
+        //private static void CheckImgFormat(byte[] data)
+        //{
+        //    ImageFormat imgFormat;
 
-            try
-            {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
-            }
-            catch (OutOfMemoryException)
-            {
-                throw new ImageSizeLimitException();
-            }
-            catch (ArgumentException error)
-            {
-                throw new UnknownImageFormatException(error);
-            }
+        //    try
+        //    {
+        //        using var stream = new MemoryStream(data);
+        //        using var img = new Bitmap(stream);
+        //        imgFormat = img.RawFormat;
+        //    }
+        //    catch (OutOfMemoryException)
+        //    {
+        //        throw new ImageSizeLimitException();
+        //    }
+        //    catch (ArgumentException error)
+        //    {
+        //        throw new UnknownImageFormatException(error);
+        //    }
 
-            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
-            {
-                throw new UnknownImageFormatException();
-            }
-        }
+        //    if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+        //    {
+        //        throw new UnknownImageFormatException();
+        //    }
+        //}
     }
 }

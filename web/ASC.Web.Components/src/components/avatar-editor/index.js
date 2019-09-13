@@ -127,7 +127,7 @@ class AvatarEditor extends React.Component {
     }
     onSaveButtonClick() {
         this.props.onSave({
-            defaultImage: this.state.defaultImage,
+            defaultImage: this.state.defaultImage ? this.state.defaultImage : this.props.image,
             croppedImage: this.state.croppedImage
         });
         this.setState({ visible: false });

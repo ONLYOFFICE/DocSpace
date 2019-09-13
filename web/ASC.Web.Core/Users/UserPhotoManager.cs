@@ -118,11 +118,12 @@ namespace ASC.Web.Core.Users
 
                     try
                     {
-                        Photofiles.TryGetValue(data.Size, out var dict);
-                        dict?.TryRemove(userId, out _);
-                        //var storage = GetDataStore();
-                        //storage.DeleteFiles("", data.UserID + "*.*", false);
-                        //SetCacheLoadedForTenant(false);
+                        foreach(var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
+                        {
+                            Photofiles.TryGetValue(s, out var dict);
+                            dict?.TryRemove(userId, out _);
+                        }
+                        SetCacheLoadedForTenant(false, data.TenantId);
                     }
                     catch { }
                 }, CacheNotifyAction.Remove);
@@ -356,9 +357,9 @@ namespace ASC.Web.Core.Users
             return TenantDiskCache.Contains(tenantId);
         }
 
-        private static bool SetCacheLoadedForTenant(bool isLoaded)
+        private static bool SetCacheLoadedForTenant(bool isLoaded, int tenantId)
         {
-            return isLoaded ? TenantDiskCache.Add(TenantProvider.CurrentTenantID) : TenantDiskCache.Remove(TenantProvider.CurrentTenantID);
+            return isLoaded ? TenantDiskCache.Add(tenantId) : TenantDiskCache.Remove(tenantId);
         }
 
 
@@ -426,7 +427,7 @@ namespace ASC.Web.Core.Users
                                 }
                             }
                         }
-                        SetCacheLoadedForTenant(true);
+                        SetCacheLoadedForTenant(true, tenantId);
                     }
                     catch (Exception err)
                     {
@@ -462,9 +463,16 @@ namespace ASC.Web.Core.Users
         {
             return SaveOrUpdatePhoto(tenant, userID, data, -1, OriginalFotoSize, true, out _);
         }
+        public static string SaveOrUpdateCroppedPhoto(Tenant tenant, Guid userID, byte[] data, byte[] defaultData)
+        {
+            return SaveOrUpdateCroppedPhoto(tenant, userID, data, defaultData, -1, OriginalFotoSize, true, out _);
+        }
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
         {
+            var storage = GetDataStore(tenant.TenantId);
+            storage.DeleteFiles("", idUser + "*.*", false);
+
             CoreContext.UserManager.SaveUserPhoto(tenant, idUser, null);
             ClearCache(idUser);
         }
@@ -480,6 +488,49 @@ namespace ASC.Web.Core.Users
             {
                 CoreContext.UserManager.SaveUserPhoto(tenant, userID, data);
                 SetUserPhotoThumbnailSettings(userID, width, height);
+                ClearCache(userID);
+            }
+
+            var store = GetDataStore(tenant.TenantId);
+
+            var photoUrl = GetDefaultPhotoAbsoluteWebPath();
+            if (data != null && data.Length > 0)
+            {
+                using (var stream = new MemoryStream(data))
+                {
+                    photoUrl = store.Save(fileName, stream).ToString();
+                }
+                //Queue resizing
+                SizePhoto(tenant.TenantId, userID, data, -1, SmallFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MediumFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, BigFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, MaxFotoSize, true);
+                SizePhoto(tenant.TenantId, userID, data, -1, RetinaFotoSize, true);
+            }
+            return photoUrl;
+        }
+        private static string SaveOrUpdateCroppedPhoto(Tenant tenant, Guid userID, byte[] data, byte[] defaultData, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
+        {
+            data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
+
+            var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
+            fileName = string.Format("{0}_orig_{1}-{2}.{3}", userID, width, height, widening);
+
+            if (saveInCoreContext)
+            {
+                CoreContext.UserManager.SaveUserPhoto(tenant, userID, defaultData);
+
+                var max = Math.Max(Math.Max(width, height), SmallFotoSize.Width);
+                var min = Math.Max(Math.Min(width, height), SmallFotoSize.Width);
+
+                var pos = (max - min) / 2;
+
+                var settings = new UserPhotoThumbnailSettings(
+                    width >= height ? new Point(pos, 0) : new Point(0, pos),
+                    new Size(min, min));
+
+                settings.SaveForUser(userID);
+
                 ClearCache(userID);
             }
 
