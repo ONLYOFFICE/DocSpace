@@ -1,8 +1,9 @@
-import React from 'react';
+/* eslint-disable react/display-name */
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-list';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList as List, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import ContextMenu from '../context-menu';
 
@@ -35,6 +36,16 @@ class RowContainer extends React.PureComponent {
     window.removeEventListener('contextmenu', this.onRowContextClick);
   }
 
+  renderRow = memo(({ data, index, style }) => {
+    const options = data[index].props.contextOptions;
+    
+    return (
+      <div onContextMenu={this.onRowContextClick.bind(this, options)} style={style}>
+        {data[index]}
+      </div>
+    )
+  }, areEqual);
+
   render() {
     const { manualHeight, itemHeight, children } = this.props;
 
@@ -48,21 +59,9 @@ class RowContainer extends React.PureComponent {
         itemData={children}
         outerElementType={CustomScrollbarsVirtualList}
       >
-        {RenderRow}
+        {this.renderRow}
       </List>
     );
-
-
-    const RenderRow = ({ data, index, style }) => {
-
-      const options = data[index].props.contextOptions;
-      
-      return (
-        <div onContextMenu={this.onRowContextClick.bind(this, options)} style={style}>
-          {data[index]}
-        </div>
-      )
-    };
 
     return (
       <StyledRowContainer id='rowContainer' manualHeight={manualHeight}>
