@@ -58,6 +58,11 @@ const baseDayProps = {
   size: "base"
 };
 
+const selectedDate = new Date("09/12/2019");
+const openToDate = new Date("09/12/2019");
+const minDate = new Date("01/01/1970");
+const maxDate = new Date("01/01/2020");
+
 describe("Weekdays tests:", () => {
   it("Weekdays renders without error", () => {
     const wrapper = mount(<Weekdays {...baseWeekdaysProps} />);
@@ -127,13 +132,11 @@ describe("Calendar tests:", () => {
     expect(wrapper).toExist();
   });
 
-  /*
   it("Calendar has rendered content.", () => {
     const wrapper = mount(<NewCalendar {...baseCalendarProps} />);
-    //expect(wrapper.find('span')).toExist();
+    expect(wrapper.find("div")).toExist();
     expect(wrapper.find("ul")).not.toExist();
   });
-*/
 
   it("Calendar not re-render test", () => {
     const wrapper = shallow(<NewCalendar {...baseCalendarProps} />).instance();
@@ -142,6 +145,48 @@ describe("Calendar tests:", () => {
       wrapper.state
     );
     expect(shouldUpdate).toBe(false);
+  });
+
+  it("Calendar selectedDate test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} selectedDate={selectedDate} />
+    );
+    expect(wrapper.props().selectedDate).toEqual(selectedDate);
+  });
+
+  it("Calendar openToDate test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} openToDate={openToDate} />
+    );
+    expect(wrapper.props().openToDate).toEqual(openToDate);
+  });
+
+  it("Calendar minDate test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} minDate={minDate} />
+    );
+    expect(wrapper.props().minDate).toEqual(minDate);
+  });
+
+  it("Calendar maxDate test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} maxDate={maxDate} />
+    );
+    expect(wrapper.props().maxDate).toEqual(maxDate);
+  });
+
+  it("Calendar themeColor test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} themeColor={"#fff"} />
+    );
+    expect(wrapper.props().themeColor).toEqual("#fff");
+  });
+
+  it("Calendar locale test", () => {
+    const wrapper = mount(
+      <NewCalendar {...baseCalendarProps} locale={"en-GB"} />
+    );
+    expect(wrapper.prop("locale")).toEqual("en-GB");
   });
 
   it("Calendar disabled when isDisabled is passed", () => {

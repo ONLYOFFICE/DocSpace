@@ -600,7 +600,9 @@ class Calendar extends Component {
       openToDate,
       minDate,
       maxDate,
-      isDisabled
+      isDisabled,
+      locale,
+      themeColor
     } = this.props;
 
     const { hasError, optionsDays } = this.state;
@@ -612,7 +614,9 @@ class Calendar extends Component {
       this.compareDates(maxDate, nextProps.maxDate) === 0 &&
       isDisabled === nextProps.isDisabled &&
       hasError === nextState.hasError &&
-      optionsDays === nextState.optionsDays
+      optionsDays === nextState.optionsDays &&
+      locale === nextProps.locale &&
+      themeColor === nextProps.themeColor
     ) {
       return false;
     }
