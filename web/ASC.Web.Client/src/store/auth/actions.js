@@ -7,6 +7,7 @@ export const SET_MODULES = 'SET_MODULES';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
+export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 
 export function setCurrentUser(user) {
     return {
@@ -43,6 +44,14 @@ export function setLogout() {
     };
 };
 
+export function setPasswordSettings(password) {
+    return {
+        type: SET_PASSWORD_SETTINGS,
+        password
+    };
+};
+
+
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
@@ -71,3 +80,38 @@ export function logout() {
         return dispatch(setLogout());
     };
 };
+
+export function getPasswordSettings(token) {
+    return dispatch => {
+        return api.getPasswordSettings(token)
+            .then((res) => dispatch(setPasswordSettings(res.data.response)))
+            .then(() => dispatch(setIsLoaded(true)));
+    }
+};
+
+export function createConfirmUser(registerData, loginData, key) {
+    const data = Object.assign({}, registerData, loginData);
+    return dispatch => {
+        return api.createUser(data, key)
+            .then(res => {
+                checkResponseError(res);
+                console.log('register success:', res.data.response);
+                return api.login(data);
+
+            })
+            .then(res => {
+                console.error("log in, result:", res);
+                checkResponseError(res);
+                const token = res.data.response.token;
+                setAuthorizationToken(token);
+                return getUserInfo(dispatch);
+            });
+    };
+};
+
+export function checkResponseError(res) {
+    if (res && res.data && res.data.error) {
+        console.error(res.data.error);
+        throw new Error(res.data.error.message);
+    }
+}

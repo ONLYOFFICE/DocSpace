@@ -145,12 +145,10 @@ const getRoleIcon = role => {
 };
 
 const getInitials = userName =>
-  typeof userName === 'string'
-    ? userName
-      .split(/\s/)
-      .reduce((response, word) => response += word.slice(0, 1), '')
-      .substring(0, 2)
-    : '';
+  userName
+    .split(/\s/)
+    .reduce((response, word) => response += word.slice(0, 1), '')
+    .substring(0, 2);
 
 const Initials = props => (
   <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>
@@ -163,7 +161,7 @@ Initials.propTypes = {
 // eslint-disable-next-line react/display-name
 class Avatar extends React.Component {
 
-  shouldComponentUpdate(nextProps,nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
