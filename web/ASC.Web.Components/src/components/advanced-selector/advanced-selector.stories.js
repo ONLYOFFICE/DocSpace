@@ -77,6 +77,8 @@ const groups = [
   }
 ];
 
+const sizes = ["compact", "full"];
+
 storiesOf("Components|AdvancedSelector", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
@@ -101,7 +103,7 @@ storiesOf("Components|AdvancedSelector", module)
         >
           {({ value, set }) => (
             <AdvancedSelector
-              size={select("size", ["compact", "full"], "compact")}
+              size={select("size", sizes, "full")}
               placeholder={text("placeholder", "Search users")}
               onSearchChanged={value => {
                 action("onSearchChanged")(value);
@@ -165,7 +167,7 @@ storiesOf("Components|AdvancedSelector", module)
                 >
                   {({ value, set }) => (
                     <AdvancedSelector
-                      size={select("size", ["compact", "full"], "compact")}
+                      size={select("size", sizes, "full")}
                       isDropDown={true}
                       isOpen={isOpen}
                       placeholder={text("placeholder", "Search users")}
