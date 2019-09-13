@@ -91,3 +91,25 @@ export function updateProfile(profile) {
         });
     };
 };
+export function updateAvatar(profileId, images) {
+    return (dispatch, getState) => {
+        if (images.croppedImage) {
+            return api.updateAvatar(
+                profileId,
+                {
+                    autosave: true,
+                    base64CroppedImage: images.croppedImage.split(',')[1],
+                    base64DefaultImage: images.defaultImage.split(',')[1]
+                }
+            ).then(res => {
+                checkResponseError(res);
+                return Promise.resolve(res);
+            });
+        } else {
+            return api.deleteAvatar(profileId).then(res => {
+                checkResponseError(res);
+                return Promise.resolve(res);
+            });
+        }
+    };
+};
