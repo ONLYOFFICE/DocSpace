@@ -27,7 +27,7 @@ Backdrop.propTypes = {
 
 Backdrop.defaultProps = {
   visible: false,
-  zIndex: 500
+  zIndex: 200
 };
 
 export default Backdrop;

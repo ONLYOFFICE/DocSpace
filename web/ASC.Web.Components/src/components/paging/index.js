@@ -14,7 +14,7 @@ const StyledPaging = styled.div`
 
   & > button {
     margin-right: 8px;
-    width: 110px;
+    max-width: 110px;
   }
 `;
 
@@ -22,7 +22,7 @@ const StyledOnPage = styled.div`
   margin-left: auto;
   margin-right: 0px;
 
-  @media ${mobile} {
+  @media (max-width: 450px) {
     display: none;
   }
 `;
