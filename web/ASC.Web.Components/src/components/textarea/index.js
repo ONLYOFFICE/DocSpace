@@ -49,7 +49,7 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 class Textarea extends React.PureComponent {
 
   render() {
-    // console.log('Textarea render');
+    console.log('Textarea render');
     return (
       <StyledScrollbar
         className={this.props.className}
@@ -66,7 +66,7 @@ class Textarea extends React.PureComponent {
           isDisabled={this.props.isDisabled}
           disabled={this.props.isDisabled}
           readOnly={this.props.isReadOnly}
-          defaultValue={this.props.value}
+          value={this.props.value}
         />
       </StyledScrollbar>
     )
