@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
-import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts } from "../../../../../store/people/selectors";
+import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -13,7 +13,7 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { department, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
 
 class CreateUserForm extends React.Component {
 
@@ -27,13 +27,17 @@ class CreateUserForm extends React.Component {
     this.onInputChange = this.onInputChange.bind(this);
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
-    this.onAddGroup = this.onAddGroup.bind(this);
-    this.onGroupClose = this.onGroupClose.bind(this);
     this.onCancel = this.onCancel.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+
+    this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
+    this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
+    this.onSearchGroups = this.onSearchGroups.bind(this);
+    this.onSelectGroups = this.onSelectGroups.bind(this);
+    this.onRemoveGroup = this.onRemoveGroup.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -43,6 +47,13 @@ class CreateUserForm extends React.Component {
   }
 
   mapPropsToState = (props) => {
+    var profile = toEmployeeWrapper({
+      isVisitor: props.match.params.type === "guest",
+      passwordType: "link"
+    });
+    var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
+    var selected = mapGroupsToGroupSelectorOptions(profile.groups);
+
     return {
       isLoading: false,
       errors: {
@@ -51,10 +62,13 @@ class CreateUserForm extends React.Component {
         email: false,
         password: false,
       },
-      profile: toEmployeeWrapper({
-        isVisitor: props.match.params.type === "guest",
-        passwordType: "link"
-      })
+      profile: profile,
+      selector: {
+        visible: false,
+        allOptions: allOptions,
+        options: [...allOptions],
+        selected: selected
+      }
     };
   }
 
@@ -73,16 +87,6 @@ class CreateUserForm extends React.Component {
   onWorkFromDateChange(value) {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.profile.workFrom = value ? value.toJSON() : null;
-    this.setState(stateCopy)
-  }
-
-  onAddGroup() {
-    console.log("onAddGroup")
-  }
-
-  onGroupClose(id) {
-    var stateCopy = Object.assign({}, this.state);
-    stateCopy.profile.groups = this.state.profile.groups.filter((group) => group.id !== id);
     this.setState(stateCopy)
   }
 
@@ -151,8 +155,41 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  onShowGroupSelector() {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.visible = true;
+    this.setState(stateCopy);
+  }
+
+  onCloseGroupSelector() {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.visible = false;
+    this.setState(stateCopy);
+  }
+
+  onSearchGroups(template) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.selector.options = filterGroupSelectorOptions(stateCopy.selector.allOptions, template);
+    this.setState(stateCopy);
+  }
+
+  onSelectGroups(selected) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.groups = mapGroupSelectorOptionsToGroups(selected);
+    stateCopy.selector.selected = selected;
+    stateCopy.selector.visible = false;
+    this.setState(stateCopy);
+  }
+
+  onRemoveGroup(id) {
+    var stateCopy = Object.assign({}, this.state);
+    stateCopy.profile.groups = stateCopy.profile.groups.filter(group => group.id !== id);
+    stateCopy.selector.selected = stateCopy.selector.selected.filter(option => option.key !== id);
+    this.setState(stateCopy)
+  }
+
   render() {
-    const { isLoading, errors, profile } = this.state;
+    const { isLoading, errors, profile, selector } = this.state;
     const { t, settings } = this.props;
 
     const pattern = getUserContactsPattern();
@@ -268,10 +305,18 @@ class CreateUserForm extends React.Component {
             <DepartmentField
               labelText={`${t("CustomDepartment", { department })}:`}
               isDisabled={isLoading}
-              departments={profile.groups}
-              addButtonTitle={t("AddButton")}
-              onAddDepartment={this.onAddGroup}
-              onRemoveDepartment={this.onGroupClose}
+              showGroupSelectorButtonTitle={t("AddButton")}
+              onShowGroupSelector={this.onShowGroupSelector}
+              onCloseGroupSelector={this.onCloseGroupSelector}
+              onRemoveGroup={this.onRemoveGroup}
+              selectorIsVisible={selector.visible}
+              selectorSearchPlaceholder={t("Search")}
+              selectorOptions={selector.options}
+              selectorSelectedOptions={selector.selected}
+              selectorAddButtonText={t("CustomAddDepartments", { departments })}
+              selectorSelectAllText={t("SelectAll")}
+              selectorOnSearchGroups={this.onSearchGroups}
+              selectorOnSelectGroups={this.onSelectGroups}
             />
           </MainFieldsContainer>
         </MainContainer>
@@ -311,7 +356,8 @@ class CreateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    groups: state.people.groups
   }
 };
 
