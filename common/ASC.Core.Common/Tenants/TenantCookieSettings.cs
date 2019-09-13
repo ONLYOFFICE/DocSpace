@@ -47,7 +47,8 @@ namespace ASC.Core.Tenants
         public TenantCookieSettings()
         {
         }
-        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager) : base(authContext, settingsManager)
+        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+            base(authContext, settingsManager, tenantManager)
         {
         }
 
@@ -82,7 +83,7 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static TenantCookieSettings GetForTenant(int tenantId)
+        public TenantCookieSettings GetForTenant(int tenantId)
         {
             return IsVisibleSettings
                        ? LoadForTenant(tenantId)
@@ -102,10 +103,10 @@ namespace ASC.Core.Tenants
                        : GetInstance();
         }
 
-        public static TenantCookieSettings GetForUser(int tenantId, Guid userId)
+        public TenantCookieSettings GetForUser(int tenantId, Guid userId)
         {
             return IsVisibleSettings
-                       ? SettingsManager.Instance.LoadSettingsFor<TenantCookieSettings>(tenantId, userId)
+                       ? SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId)
                        : GetInstance();
         }
 
@@ -115,7 +116,7 @@ namespace ASC.Core.Tenants
             (settings ?? GetInstance()).SaveForUser(userId);
         }
 
-        public static DateTime GetExpiresTime(int tenantId)
+        public DateTime GetExpiresTime(int tenantId)
         {
             var settingsTenant = GetForTenant(tenantId);
             var expires = settingsTenant.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(settingsTenant.LifeTime);

@@ -27,6 +27,7 @@
 using System;
 using System.Drawing;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
@@ -64,6 +65,10 @@ namespace ASC.Web.Core.Users
 
         [DataMember(Name = "IsDefault")]
         public bool IsDefault { get; private set; }
+
+        public UserPhotoThumbnailSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override ISettings GetDefault()
         {

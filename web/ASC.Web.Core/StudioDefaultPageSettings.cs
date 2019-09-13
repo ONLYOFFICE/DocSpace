@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
@@ -45,6 +46,15 @@ namespace ASC.Web.Studio.Core
         public Guid FeedModuleID
         {
             get { return new Guid("{48328C27-4C85-4987-BA0E-D6BB17356B10}"); }
+        }
+
+        public StudioDefaultPageSettings()
+        {
+
+        }
+
+        public StudioDefaultPageSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
         }
 
         public override ISettings GetDefault()

@@ -43,9 +43,19 @@ namespace ASC.Core.Tenants
         [DataMember(Name = "AuditTrailLifeTime")]
         public int AuditTrailLifeTime { get; set; }
 
+        public static Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");
         public override Guid ID
         {
-            get { return new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}"); }
+            get { return Guid; }
+        }
+
+        public TenantAuditSettings()
+        {
+
+        }
+
+        public TenantAuditSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
         }
 
         public override ISettings GetDefault()

@@ -72,12 +72,14 @@ namespace ASC.Web.Studio.Core.TFA
         private static readonly ICache Cache = AscCache.Memory;
 
         public TfaAppUserSettings TfaAppUserSettings { get; }
+        public TfaAppAuthSettings TfaAppAuthSettings { get; }
         public SecurityContext SecurityContext { get; }
         public CookiesManager CookiesManager { get; }
 
-        public TfaManager(TfaAppUserSettings tfaAppUserSettings, SecurityContext securityContext, CookiesManager cookiesManager)
+        public TfaManager(TfaAppUserSettings tfaAppUserSettings, TfaAppAuthSettings tfaAppAuthSettings, SecurityContext securityContext, CookiesManager cookiesManager)
         {
             TfaAppUserSettings = tfaAppUserSettings;
+            TfaAppAuthSettings = tfaAppAuthSettings;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
         }

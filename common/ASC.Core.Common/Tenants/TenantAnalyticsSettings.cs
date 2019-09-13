@@ -42,6 +42,15 @@ namespace ASC.Core.Tenants
             get { return new Guid("{02943039-F399-421E-A552-23D70651AEBD}"); }
         }
 
+        public TenantAnalyticsSettings()
+        {
+                
+        }
+
+        public TenantAnalyticsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new TenantAnalyticsSettings

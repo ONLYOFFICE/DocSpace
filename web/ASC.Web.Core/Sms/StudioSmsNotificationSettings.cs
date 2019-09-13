@@ -42,6 +42,15 @@ namespace ASC.Web.Studio.Core.SMS
             get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
         }
 
+        public StudioSmsNotificationSettings()
+        {
+
+        }
+
+        public StudioSmsNotificationSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new StudioSmsNotificationSettings { EnableSetting = false, };
@@ -51,7 +60,7 @@ namespace ASC.Web.Studio.Core.SMS
         public bool EnableSetting { get; set; }
 
 
-        public static bool Enable
+        public bool Enable
         {
             get { return Load().EnableSetting && SmsProviderManager.Enabled(); }
             set

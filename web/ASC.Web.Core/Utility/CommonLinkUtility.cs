@@ -472,7 +472,7 @@ namespace ASC.Web.Studio.Utility
 
         #region Help Centr
 
-        public static string GetHelpLink(bool inCurrentCulture = true)
+        public static string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings,  bool inCurrentCulture = true)
         {
             if (!AdditionalWhiteLabelSettings.Instance.HelpCenterEnabled)
                 return string.Empty;

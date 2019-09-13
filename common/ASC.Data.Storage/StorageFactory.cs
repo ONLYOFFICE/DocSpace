@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.Configuration;
@@ -38,102 +37,50 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
-    public static class StorageFactory
+    public class StorageFactoryListener
     {
-        private const string DefaultTenantName = "default";
-        private static readonly ICacheNotify<DataStoreCacheItem> Cache;
-        private static readonly Lazy<Configuration.Storage> Section;
-
-        static StorageFactory()
+        private readonly ICacheNotify<DataStoreCacheItem> Cache;
+        public StorageFactoryListener()
         {
             Cache = new KafkaCache<DataStoreCacheItem>();
             Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
-            Section = new Lazy<Configuration.Storage>(() => CommonServiceProvider.GetService<Configuration.Storage>(), true);
+        }
+    }
+
+    public class StorageFactoryConfig
+    {
+        public Configuration.Storage Section { get; }
+
+        public StorageFactoryConfig(IServiceProvider serviceProvider)
+        {
+            Section = serviceProvider.GetService<Configuration.Storage>();
         }
 
-        public static IDataStore GetStorage(string tenant, string module)
+        public IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
         {
-            return GetStorage(string.Empty, tenant, module);
-        }
-
-        public static IDataStore GetStorage(string configpath, string tenant, string module)
-        {
-            int.TryParse(tenant, out var tenantId);
-            return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId));
-        }
-
-        public static IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
-        {
-            var tenantId = -2;
-            if (string.IsNullOrEmpty(tenant))
-            {
-                tenant = DefaultTenantName;
-            }
-            else
-            {
-                tenantId = Convert.ToInt32(tenant);
-            }
-
-            //Make tennant path
-            tenant = TennantPath.CreatePath(tenant);
-
-            var store = DataStoreCache.Get(tenant, module);
-            if (store == null)
-            {
-                var section = Section.Value;
-                if (section == null)
-                {
-                    throw new InvalidOperationException("config section not found");
-                }
-
-                var settings = StorageSettings.LoadForTenant(tenantId);
-
-                store = GetStoreAndCache(tenant, module, settings.DataStoreConsumer, controller);
-            }
-            return store;
-        }
-
-        public static IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
-        {
-            if (tenant == null) tenant = DefaultTenantName;
-
-            //Make tennant path
-            tenant = TennantPath.CreatePath(tenant);
-
-            var section = Section.Value;
-            if (section == null)
-            {
-                throw new InvalidOperationException("config section not found");
-            }
-
-            int.TryParse(tenant, out var tenantId);
-            return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId));
-        }
-
-        public static IEnumerable<string> GetModuleList(string configpath, bool exceptDisabledMigration = false)
-        {
-            var section = Section.Value;
-            return section.Module
+            return Section.Module
                 .Where(x => x.Visible)
                 .Where(x => !exceptDisabledMigration || !x.DisableMigrate)
                 .Select(x => x.Name);
         }
 
-        public static IEnumerable<string> GetDomainList(string configpath, string modulename)
+        public IEnumerable<string> GetDomainList(string configpath, string modulename)
         {
-            var section = Section.Value;
-            if (section == null)
+            if (Section == null)
             {
                 throw new ArgumentException("config section not found");
             }
             return
-                section.Module
+                Section.Module
                     .Single(x => x.Name.Equals(modulename, StringComparison.OrdinalIgnoreCase))
                     .Domain
                     .Where(x => x.Visible)
                     .Select(x => x.Name);
         }
+    }
 
+    public static class StorageFactoryExtenstion
+    {
         public static void InitializeHttpHandlers(this IEndpointRouteBuilder builder, string config = null)
         {
             //TODO:
@@ -197,18 +144,84 @@ namespace ASC.Data.Storage
                 }
             }
         }
+    }
 
-        internal static void ClearCache()
+
+    public class StorageFactory
+    {
+        private const string DefaultTenantName = "default";
+
+        public StorageFactoryListener StorageFactoryListener { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
+        public StorageSettings StorageSettings { get; }
+
+        public StorageFactory(StorageFactoryListener storageFactoryListener, StorageFactoryConfig storageFactoryConfig, StorageSettings storageSettings)
         {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString();
-            var path = TennantPath.CreatePath(tenantId);
-            foreach (var module in GetModuleList("", true))
-            {
-                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
-            }
+            StorageFactoryListener = storageFactoryListener;
+            StorageFactoryConfig = storageFactoryConfig;
+            StorageSettings = storageSettings;
         }
 
-        private static IDataStore GetStoreAndCache(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
+        public IDataStore GetStorage(string tenant, string module)
+        {
+            return GetStorage(string.Empty, tenant, module);
+        }
+
+        public IDataStore GetStorage(string configpath, string tenant, string module)
+        {
+            int.TryParse(tenant, out var tenantId);
+            return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId));
+        }
+
+        public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
+        {
+            var tenantId = -2;
+            if (string.IsNullOrEmpty(tenant))
+            {
+                tenant = DefaultTenantName;
+            }
+            else
+            {
+                tenantId = Convert.ToInt32(tenant);
+            }
+
+            //Make tennant path
+            tenant = TennantPath.CreatePath(tenant);
+
+            var store = DataStoreCache.Get(tenant, module);
+            if (store == null)
+            {
+                var section = StorageFactoryConfig.Section;
+                if (section == null)
+                {
+                    throw new InvalidOperationException("config section not found");
+                }
+
+                var settings = StorageSettings.LoadForTenant(tenantId);
+
+                store = GetStoreAndCache(tenant, module, settings.DataStoreConsumer, controller);
+            }
+            return store;
+        }
+
+        public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
+        {
+            if (tenant == null) tenant = DefaultTenantName;
+
+            //Make tennant path
+            tenant = TennantPath.CreatePath(tenant);
+
+            var section = StorageFactoryConfig.Section;
+            if (section == null)
+            {
+                throw new InvalidOperationException("config section not found");
+            }
+
+            int.TryParse(tenant, out var tenantId);
+            return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId));
+        }
+
+        private IDataStore GetStoreAndCache(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
         {
             var store = GetDataStore(tenant, module, consumer, controller);
             if (store != null)
@@ -218,9 +231,9 @@ namespace ASC.Data.Storage
             return store;
         }
 
-        private static IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
+        private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
         {
-            var storage = Section.Value;
+            var storage = StorageFactoryConfig.Section;
             var moduleElement = storage.GetModuleElement(module);
             if (moduleElement == null)
             {

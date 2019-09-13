@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
@@ -45,6 +46,15 @@ namespace ASC.Web.Core.Users
 
         [DataMember(Name = "IsNewUser")]
         public bool IsNewUser { get; set; }
+
+        public UserHelpTourSettings()
+        {
+
+        }
+
+        public UserHelpTourSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override ISettings GetDefault()
         {

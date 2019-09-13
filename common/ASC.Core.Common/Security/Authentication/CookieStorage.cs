@@ -77,7 +77,7 @@ namespace ASC.Core.Security.Authentication
         }
 
 
-        public static string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
+        public static string EncryptCookie(TenantCookieSettings TenantCookieSettings, int tenant, Guid userid, string login = null, string password = null)
         {
             var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
             var expires = TenantCookieSettings.GetExpiresTime(tenant);

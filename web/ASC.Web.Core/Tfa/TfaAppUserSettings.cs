@@ -49,6 +49,15 @@ namespace ASC.Web.Studio.Core.TFA
             get { return new Guid("{EAF10611-BE1E-4634-B7A1-57F913042F78}"); }
         }
 
+        public TfaAppUserSettings()
+        {
+
+        }
+
+        public TfaAppUserSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new TfaAppUserSettings

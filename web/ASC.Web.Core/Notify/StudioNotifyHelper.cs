@@ -32,6 +32,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -48,9 +49,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         public UserManager UserManager { get; }
 
-        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager)
+        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager, AdditionalWhiteLabelSettings additionalWhiteLabelSettings)
         {
-            Helplink = CommonLinkUtility.GetHelpLink(false);
+            Helplink = CommonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
             NotifySource = studioNotifySource;
             UserManager = userManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();

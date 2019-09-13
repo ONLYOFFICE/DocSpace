@@ -40,15 +40,17 @@ namespace ASC.Web.Studio.Core.SMS
         public UserManager UserManager { get; }
         public TenantExtra TenantExtra { get; }
         public SecurityContext SecurityContext { get; }
+        public StudioSmsNotificationSettings StudioSmsNotificationSettings { get; }
 
-        public SmsManager(UserManager userManager, TenantExtra tenantExtra, SecurityContext securityContext)
+        public SmsManager(UserManager userManager, TenantExtra tenantExtra, SecurityContext securityContext, StudioSmsNotificationSettings studioSmsNotificationSettings)
         {
             UserManager = userManager;
             TenantExtra = tenantExtra;
             SecurityContext = securityContext;
+            StudioSmsNotificationSettings = studioSmsNotificationSettings;
         }
 
-        public string SaveMobilePhone(Tenant tenant, UserInfo user, string mobilePhone)
+        public string SaveMobilePhone(UserInfo user, string mobilePhone)
         {
             mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 

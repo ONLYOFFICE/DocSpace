@@ -56,10 +56,13 @@ namespace ASC.Web.Core.WhiteLabel
             AuthContext authContext, 
             SettingsManager settingsManager, 
             WebImageSupplier webImageSupplier,
-            UserPhotoManager userPhotoManager) : base(authContext, settingsManager)
+            UserPhotoManager userPhotoManager,
+            TenantManager tenantManager,
+            StorageFactory storageFactory) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;
+            StorageFactory = storageFactory;
         }
 
         #region Logos information: extension, isDefault, text for img auto generating
@@ -390,7 +393,7 @@ namespace ASC.Web.Core.WhiteLabel
             };
         }
 
-        private static string GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool general)
+        private string GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool general)
         {
             var partnerSettings = LoadForDefaultTenant();
 
@@ -512,12 +515,13 @@ namespace ASC.Web.Core.WhiteLabel
 
         public WebImageSupplier WebImageSupplier { get; }
         public UserPhotoManager UserPhotoManager { get; }
+        public StorageFactory StorageFactory { get; }
 
         #region Save for Resource replacement
 
         private static readonly List<int> AppliedTenants = new List<int>();
 
-        public static void Apply(int tenantId)
+        public void Apply(int tenantId)
         {
             if (!DBResourceManager.ResourcesFromDataBase) return;
 

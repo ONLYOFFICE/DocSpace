@@ -28,6 +28,7 @@ using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -91,6 +92,15 @@ namespace ASC.Web.Core.WhiteLabel
                        LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
                        LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
             }
+        }
+
+        public AdditionalWhiteLabelSettings()
+        {
+
+        }
+
+        public AdditionalWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
         }
 
         #region ISettings Members
@@ -187,7 +197,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public static AdditionalWhiteLabelSettings Instance
+        public AdditionalWhiteLabelSettings Instance
         {
             get
             {

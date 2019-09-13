@@ -44,12 +44,14 @@ namespace ASC.Web.Studio.Utility
         public UserManager UserManager { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
         public AuthContext AuthContext { get; }
+        public TenantAccessSettings TenantAccessSettings { get; }
 
-        public TenantExtra(UserManager userManager, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext)
+        public TenantExtra(UserManager userManager, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, TenantAccessSettings tenantAccessSettings)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
             AuthContext = authContext;
+            TenantAccessSettings = tenantAccessSettings;
         }
 
         public bool EnableTarrifSettings

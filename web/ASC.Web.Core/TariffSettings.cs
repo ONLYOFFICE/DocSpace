@@ -27,6 +27,7 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.UserControls.Management
@@ -48,6 +49,15 @@ namespace ASC.Web.Studio.UserControls.Management
 
         [DataMember(Name = "LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
+
+        public TariffSettings()
+        {
+
+        }
+
+        public TariffSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override ISettings GetDefault()
         {
@@ -87,7 +97,7 @@ namespace ASC.Web.Studio.UserControls.Management
             }
         }
 
-        public static bool HidePricingPage
+        public bool HidePricingPage
         {
             get { return Load().HidePricingPageForUsers; }
             set
@@ -98,7 +108,7 @@ namespace ASC.Web.Studio.UserControls.Management
             }
         }
 
-        public static bool LicenseAccept
+        public bool LicenseAccept
         {
             get
             {

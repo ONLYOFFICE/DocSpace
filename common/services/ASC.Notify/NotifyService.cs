@@ -31,6 +31,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify
 {
@@ -42,9 +43,12 @@ namespace ASC.Notify
 
         private readonly DbWorker db;
 
-        public NotifyService(DbWorker db)
+        public IServiceProvider ServiceProvider { get; }
+
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider)
         {
             this.db = db;
+            ServiceProvider = serviceProvider;
             cacheNotify = new KafkaCache<NotifyMessage>();
         }
 
@@ -87,8 +91,11 @@ namespace ASC.Notify
                 throw new Exception("Method not found.");
             }
 
-            CoreContext.TenantManager.SetCurrentTenant(tenant);
-            TenantWhiteLabelSettings.Apply(tenant);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenantWhiteLabelSettings = scope.ServiceProvider.GetService<TenantWhiteLabelSettings>();
+            tenantManager.SetCurrentTenant(tenant);
+            tenantWhiteLabelSettings.Apply(tenant);
             methodInfo.Invoke(instance, parameters);
         }
 

@@ -62,12 +62,5 @@ namespace ASC.Web.Core
         Guid IWebItem.ID { get { return ProductID; } }
 
         public abstract string ApiURL { get; }
-
-        //public virtual ClientScriptLocalization ClientScriptLocalization { get; protected set; }
-
-        public string GetResourcePath(string relativePath)
-        {
-            return WebPath.GetPath(Path.Combine(StartURL, relativePath));
-        }
     }
 }

@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.Serialization;
 using ASC.Common.Utils;
+using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 
@@ -71,6 +72,16 @@ namespace ASC.Web.Core.WhiteLabel
                        DemotUrl == defaultSettings.DemotUrl &&
                        SiteUrl == defaultSettings.SiteUrl;
             }
+        }
+
+        public MailWhiteLabelSettings()
+        {
+
+        }
+
+        public MailWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+            base(authContext, settingsManager, tenantManager)
+        {
         }
 
         #region ISettings Members
@@ -145,7 +156,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public static MailWhiteLabelSettings Instance
+        public MailWhiteLabelSettings Instance
         {
             get
             {

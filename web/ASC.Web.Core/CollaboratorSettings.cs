@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
@@ -42,6 +43,15 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{73537E08-17F6-4706-BFDA-1414108AA7D2}"); }
         }
 
+        public CollaboratorSettings()
+        {
+
+        }
+
+        public CollaboratorSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+            base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override ISettings GetDefault()
         {

@@ -31,9 +31,40 @@ using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Configuration
 {
+    public class BaseStorageSettingsListener
+    {
+        private readonly ICacheNotify<ConsumerCacheItem> Cache;
+        public BaseStorageSettingsListener(IServiceProvider serviceProvider)
+        {
+            Cache = new KafkaCache<ConsumerCacheItem>();
+            ServiceProvider = serviceProvider;
+            Cache.Subscribe((i) =>
+            {
+                var scope = ServiceProvider.CreateScope();
+
+                var storageSettings = scope.ServiceProvider.GetService<StorageSettings>();
+                var settings = storageSettings.LoadForTenant(i.TenantId);
+                if (i.Name == settings.Module)
+                {
+                    settings.Clear();
+                }
+
+                var cdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
+                var cdnSettings = cdnStorageSettings.LoadForTenant(i.TenantId);
+                if (i.Name == cdnSettings.Module)
+                {
+                    cdnSettings.Clear();
+                }
+            }, CacheNotifyAction.Remove);
+        }
+
+        public IServiceProvider ServiceProvider { get; }
+    }
+
     [Serializable]
     [DataContract]
     public abstract class BaseStorageSettings<T> : BaseSettings<T> where T : class, ISettings, new()
@@ -44,36 +75,44 @@ namespace ASC.Data.Storage.Configuration
         [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
+        public BaseStorageSettings()
+        {
+
+        }
+
+        public BaseStorageSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager, 
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig) : 
+            base(authContext, settingsManager, tenantManager)
+        {
+            Cache = new KafkaCache<DataStoreCacheItem>();
+            BaseStorageSettingsListener = baseStorageSettingsListener;
+            StorageFactoryConfig = storageFactoryConfig;
+        }
+
         public override ISettings GetDefault()
         {
             return new T();
         }
 
-        private static readonly ICacheNotify<ConsumerCacheItem> Cache;
-        static BaseStorageSettings()
-        {
-            Cache = new KafkaCache<ConsumerCacheItem>();
-            Cache.Subscribe((i) =>
-            {
-                var settings = StorageSettings.Load();
-                if (i.Name == settings.Module)
-                {
-                    settings.Clear();
-                }
-
-                var cdnSettings = CdnStorageSettings.Load();
-                if (i.Name == cdnSettings.Module)
-                {
-                    cdnSettings.Clear();
-                }
-            }, CacheNotifyAction.Remove);
-        }
-
         public override bool Save()
         {
-            StorageFactory.ClearCache();
+            ClearDataStoreCache();
             dataStoreConsumer = null;
             return base.Save();
+        }
+
+        internal void ClearDataStoreCache()
+        {
+            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString();
+            var path = TennantPath.CreatePath(tenantId);
+            foreach (var module in StorageFactoryConfig.GetModuleList("", true))
+            {
+                Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);
+            }
         }
 
         public virtual void Clear()
@@ -121,12 +160,32 @@ namespace ASC.Data.Storage.Configuration
         }
 
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
+
+        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
+
+        private readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
 
     [Serializable]
     [DataContract]
     public class StorageSettings : BaseStorageSettings<StorageSettings>
     {
+        public StorageSettings()
+        {
+
+        }
+
+        public StorageSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager, 
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig)
+        {
+        }
+
         public override Guid ID
         {
             get { return new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B"); }
@@ -137,6 +196,21 @@ namespace ASC.Data.Storage.Configuration
     [DataContract]
     public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
     {
+        public CdnStorageSettings()
+        {
+
+        }
+
+        public CdnStorageSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager, 
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig)
+        {
+        }
+
         public override Guid ID
         {
             get { return new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2"); }

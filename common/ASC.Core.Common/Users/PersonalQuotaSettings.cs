@@ -42,6 +42,16 @@ namespace ASC.Core.Tenants
             get { return new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}"); }
         }
 
+        public PersonalQuotaSettings()
+        {
+
+        }
+
+        public PersonalQuotaSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+            base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new PersonalQuotaSettings

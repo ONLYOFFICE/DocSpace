@@ -45,15 +45,16 @@ namespace ASC.Core.Common.Settings
 
         }
 
-        public BaseSettings(AuthContext authContext, SettingsManager settingsManager)
+        public BaseSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager)
         {
             AuthContext = authContext;
             SettingsManager = settingsManager;
+            TenantManager = tenantManager;
         }
 
-        private static int TenantID
+        private int TenantID
         {
-            get { return CoreContext.TenantManager.GetCurrentTenant().TenantId; }
+            get { return TenantManager.GetCurrentTenant().TenantId; }
         }
         //
         private Guid CurrentUserID
@@ -61,14 +62,9 @@ namespace ASC.Core.Common.Settings
             get { return AuthContext.CurrentAccount.ID; }
         }
 
-        private static SettingsManager SettingsManagerInstance
+        public T Load()
         {
-            get { return SettingsManager.Instance; }
-        }
-
-        public static T Load()
-        {
-            return SettingsManagerInstance.LoadSettings<T>(TenantID);
+            return SettingsManager.LoadSettings<T>(TenantID);
         }
 
         public T LoadForCurrentUser()
@@ -81,14 +77,14 @@ namespace ASC.Core.Common.Settings
             return SettingsManager.LoadSettingsFor<T>(TenantID, userId);
         }
 
-        public static T LoadForDefaultTenant()
+        public T LoadForDefaultTenant()
         {
             return LoadForTenant(Tenant.DEFAULT_TENANT);
         }
 
-        public static T LoadForTenant(int tenantId)
+        public T LoadForTenant(int tenantId)
         {
-            return SettingsManagerInstance.LoadSettings<T>(tenantId);
+            return SettingsManager.LoadSettings<T>(tenantId);
         }
 
         public virtual bool Save()
@@ -103,7 +99,7 @@ namespace ASC.Core.Common.Settings
 
         public bool SaveForUser(Guid userId)
         {
-            return SettingsManagerInstance.SaveSettingsFor(this, userId);
+            return SettingsManager.SaveSettingsFor(this, userId);
         }
 
         public bool SaveForDefaultTenant()
@@ -113,17 +109,18 @@ namespace ASC.Core.Common.Settings
 
         public bool SaveForTenant(int tenantId)
         {
-            return SettingsManagerInstance.SaveSettings(this, tenantId);
+            return SettingsManager.SaveSettings(this, tenantId);
         }
 
         public void ClearCache()
         {
-            SettingsManagerInstance.ClearCache<T>();
+            SettingsManager.ClearCache<T>();
         }
 
         public abstract Guid ID { get; }
         public AuthContext AuthContext { get; }
         public SettingsManager SettingsManager { get; }
+        public TenantManager TenantManager { get; }
 
         public abstract ISettings GetDefault();
     }

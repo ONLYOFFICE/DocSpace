@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using ASC.Common.DependencyInjection;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,15 @@ namespace ASC.Web.Core.Utility
         [DataMember(Name = "FirstRequest")]
         public bool FirstRequest { get; set; }
 
+        public ColorThemesSettings()
+        {
+
+        }
+
+        public ColorThemesSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new ColorThemesSettings
@@ -62,7 +72,7 @@ namespace ASC.Web.Core.Utility
             get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }
         }
 
-        public static string GetThemeFolderName(string path)
+        public string GetThemeFolderName(string path)
         {
             var folderName = GetColorThemesSettings();
             var resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, folderName);
@@ -94,7 +104,7 @@ namespace ASC.Web.Core.Utility
             return resolvedPath;
         }
 
-        public static string GetColorThemesSettings()
+        public string GetColorThemesSettings()
         {
             var colorTheme = Load();
             var colorThemeName = colorTheme.ColorThemeName;

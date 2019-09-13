@@ -44,6 +44,7 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Migration;
 using ASC.IPSecurity;
@@ -106,6 +107,20 @@ namespace ASC.Api.Settings
         public TfaManager TfaManager { get; }
         public WebItemManager WebItemManager { get; }
         public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        public CdnStorageSettings CdnStorageSettings { get; }
+        public StorageSettings StorageSettings { get; }
+        public WizardSettings WizardSettings { get; }
+        public CustomNavigationSettings CustomNavigationSettings { get; }
+        public TenantInfoSettings TenantInfoSettings { get; }
+        public PasswordSettings PasswordSettings { get; }
+        public StudioDefaultPageSettings StudioDefaultPageSettings { get; }
+        public TenantWhiteLabelSettings TenantWhiteLabelSettings { get; }
+        public StudioSmsNotificationSettings StudioSmsNotificationSettings { get; }
+        public TfaAppAuthSettings TfaAppAuthSettings { get; }
+        public CompanyWhiteLabelSettings CompanyWhiteLabelSettings { get; }
+        public StorageHelper StorageHelper { get; }
+        public StorageFactory StorageFactory { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
@@ -127,7 +142,21 @@ namespace ASC.Api.Settings
             PersonalQuotaSettings personalQuotaSettings,
             TfaManager tfaManager,
             WebItemManager webItemManager,
-            WebItemManagerSecurity webItemManagerSecurity)
+            WebItemManagerSecurity webItemManagerSecurity,
+            CdnStorageSettings cdnStorageSettings,
+            StorageSettings storageSettings,
+            WizardSettings wizardSettings,
+            CustomNavigationSettings customNavigationSettings,
+            TenantInfoSettings tenantInfoSettings,
+            PasswordSettings passwordSettings,
+            StudioDefaultPageSettings studioDefaultPageSettings,
+            TenantWhiteLabelSettings tenantWhiteLabelSettings,
+            StudioSmsNotificationSettings studioSmsNotificationSettings,
+            TfaAppAuthSettings tfaAppAuthSettings,
+            CompanyWhiteLabelSettings companyWhiteLabelSettings,
+            StorageHelper storageHelper,
+            StorageFactory storageFactory,
+            StorageFactoryConfig storageFactoryConfig)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -150,6 +179,20 @@ namespace ASC.Api.Settings
             TfaManager = tfaManager;
             WebItemManager = webItemManager;
             WebItemManagerSecurity = webItemManagerSecurity;
+            CdnStorageSettings = cdnStorageSettings;
+            StorageSettings = storageSettings;
+            WizardSettings = wizardSettings;
+            CustomNavigationSettings = customNavigationSettings;
+            TenantInfoSettings = tenantInfoSettings;
+            PasswordSettings = passwordSettings;
+            StudioDefaultPageSettings = studioDefaultPageSettings;
+            TenantWhiteLabelSettings = tenantWhiteLabelSettings;
+            StudioSmsNotificationSettings = studioSmsNotificationSettings;
+            TfaAppAuthSettings = tfaAppAuthSettings;
+            CompanyWhiteLabelSettings = companyWhiteLabelSettings;
+            StorageHelper = storageHelper;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
         }
 
         [Read("")]
@@ -193,7 +236,7 @@ namespace ASC.Api.Settings
                 throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
             }
 
-            var op = new QuotaSync(Tenant.TenantId);
+            var op = new QuotaSync(Tenant.TenantId, StorageFactory, StorageFactoryConfig);
 
             quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
         }
@@ -892,13 +935,13 @@ namespace ASC.Api.Settings
                 if (existItem.SmallImg != item.SmallImg)
                 {
                     StorageHelper.DeleteLogo(existItem.SmallImg);
-                    existItem.SmallImg = StorageHelper.SaveTmpLogo(UserPhotoManager, item.SmallImg);
+                    existItem.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
                 }
 
                 if (existItem.BigImg != item.BigImg)
                 {
                     StorageHelper.DeleteLogo(existItem.BigImg);
-                    existItem.BigImg = StorageHelper.SaveTmpLogo(UserPhotoManager, item.BigImg);
+                    existItem.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
                 }
 
                 exist = true;
@@ -908,8 +951,8 @@ namespace ASC.Api.Settings
             if (!exist)
             {
                 item.Id = Guid.NewGuid();
-                item.SmallImg = StorageHelper.SaveTmpLogo(UserPhotoManager, item.SmallImg);
-                item.BigImg = StorageHelper.SaveTmpLogo(UserPhotoManager, item.BigImg);
+                item.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
+                item.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
 
                 settings.Items.Add(item);
             }

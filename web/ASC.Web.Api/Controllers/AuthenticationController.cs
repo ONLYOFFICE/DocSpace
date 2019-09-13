@@ -18,15 +18,18 @@ namespace ASC.Web.Api.Controllers
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
+        public TenantCookieSettings TenantCookieSettings { get; }
 
         public AuthenticationController(
             UserManager userManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            TenantCookieSettings tenantCookieSettings)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
+            TenantCookieSettings = tenantCookieSettings;
         }
 
         [Create(false)]

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
@@ -37,6 +38,14 @@ namespace ASC.Web.Studio.Core
     {
         [DataMember]
         public List<CustomNavigationItem> Items { get; set; }
+        public CustomNavigationSettings()
+        {
+
+        }
+
+        public CustomNavigationSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override Guid ID
         {

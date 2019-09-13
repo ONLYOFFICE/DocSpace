@@ -69,6 +69,16 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
+        public CompanyWhiteLabelSettings()
+        {
+
+        }
+
+        public CompanyWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+            base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         #region ISettings Members
 
         public override Guid ID
@@ -91,7 +101,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public static CompanyWhiteLabelSettings Instance
+        public CompanyWhiteLabelSettings Instance
         {
             get
             {

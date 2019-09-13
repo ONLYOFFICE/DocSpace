@@ -221,7 +221,7 @@ namespace ASC.Core
                 roles.Add(Role.Users);
 
                 account = new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId);
-                cookie = CookieStorage.EncryptCookie(CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = CookieStorage.EncryptCookie(TenantCookieSettings, CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             AuthContext.Principal = new GenericPrincipal(account, roles.ToArray());

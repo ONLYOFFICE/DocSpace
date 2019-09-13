@@ -37,10 +37,14 @@ namespace ASC.Web.Studio.Core.Quota
         public const string TenantIdKey = "tenantID";
         protected DistributedTask TaskInfo { get; private set; }
         private int TenantId { get; set; }
+        public StorageFactory StorageFactory { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
 
-        public QuotaSync(int tenantId)
+        public QuotaSync(int tenantId, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
         {
             TenantId = tenantId;
+            StorageFactory = storageFactory;
+            StorageFactoryConfig = storageFactoryConfig;
             TaskInfo = new DistributedTask();
         }
 
@@ -48,14 +52,14 @@ namespace ASC.Web.Studio.Core.Quota
         {
             CoreContext.TenantManager.SetCurrentTenant(TenantId);
 
-            var storageModules = StorageFactory.GetModuleList(string.Empty).ToList();
+            var storageModules = StorageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
                 var storage = StorageFactory.GetStorage(TenantId.ToString(), module);
                 storage.ResetQuota("");
 
-                var domains = StorageFactory.GetDomainList(string.Empty, module).ToList();
+                var domains = StorageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
                     storage.ResetQuota(domain);

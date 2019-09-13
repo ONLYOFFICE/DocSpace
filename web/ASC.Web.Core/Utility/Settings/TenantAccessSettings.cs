@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Utility.Settings
@@ -39,6 +40,15 @@ namespace ASC.Web.Core.Utility.Settings
 
         [DataMember(Name = "RegisterUsersImmediately")]
         public bool RegisterUsersImmediately { get; set; }
+
+        public TenantAccessSettings()
+        {
+
+        }
+
+        public TenantAccessSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         #region ISettings Members
 

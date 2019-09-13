@@ -137,6 +137,7 @@ namespace ASC.Web.Core.Users
         public WebImageSupplier WebImageSupplier { get; }
         public UserPhotoThumbnailSettings UserPhotoThumbnailSettings { get; }
         public TenantManager TenantManager { get; }
+        public StorageFactory StorageFactory { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -145,12 +146,14 @@ namespace ASC.Web.Core.Users
             UserManager userManager, 
             WebImageSupplier webImageSupplier, 
             UserPhotoThumbnailSettings userPhotoThumbnailSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            StorageFactory storageFactory)
         {
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             UserPhotoThumbnailSettings = userPhotoThumbnailSettings;
             TenantManager = tenantManager;
+            StorageFactory = storageFactory;
         }
 
         public string GetDefaultPhotoAbsoluteWebPath()

@@ -51,6 +51,11 @@ namespace ASC.Web.Core.Users
         public SecurityContext SecurityContext { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
+        public PasswordSettings PasswordSettings { get; }
+        public MessageService MessageService { get; }
+        public IPRestrictionsSettings IPRestrictionsSettings { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public CustomNamingPeople CustomNamingPeople { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -60,7 +65,12 @@ namespace ASC.Web.Core.Users
             UserManager userManager, 
             SecurityContext securityContext, 
             AuthContext authContext,
-            TenantManager tenantManager
+            TenantManager tenantManager,
+            PasswordSettings passwordSettings,
+            MessageService messageService, 
+            IPRestrictionsSettings iPRestrictionsSettings,
+            IHttpContextAccessor httpContextAccessor,
+            CustomNamingPeople customNamingPeople
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -68,6 +78,11 @@ namespace ASC.Web.Core.Users
             SecurityContext = securityContext;
             AuthContext = authContext;
             TenantManager = tenantManager;
+            PasswordSettings = passwordSettings;
+            MessageService = messageService;
+            IPRestrictionsSettings = iPRestrictionsSettings;
+            HttpContextAccessor = httpContextAccessor;
+            CustomNamingPeople = customNamingPeople;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -176,7 +191,7 @@ namespace ASC.Web.Core.Users
 
         #region Password
 
-        public static void CheckPasswordPolicy(string password)
+        public void CheckPasswordPolicy(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception(Resource.ErrorPasswordEmpty);
@@ -187,14 +202,14 @@ namespace ASC.Web.Core.Users
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 
-        public UserInfo SendUserPassword(string email, MessageService messageService, HttpContext context)
+        public UserInfo SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.IPSecurity.Verify(context, tenant, AuthContext))
+            if (settings.Enable && !IPSecurity.IPSecurity.Verify(HttpContextAccessor.HttpContext, tenant, AuthContext))
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
@@ -220,14 +235,14 @@ namespace ASC.Web.Core.Users
             StudioNotifyService.UserPasswordChange(Tenant.TenantId, userInfo);
 
             var displayUserName = userInfo.DisplayUserName(false, UserManager);
-            messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
+            MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;
         }
 
         private const string Noise = "1234567890mnbasdflkjqwerpoiqweyuvcxnzhdkqpsdk_-()=";
 
-        public static string GeneratePassword()
+        public string GeneratePassword()
         {
             var ps = PasswordSettings.Load();
 
@@ -274,7 +289,7 @@ namespace ASC.Web.Core.Users
             return error.ToString();
         }
 
-        public static string GetPasswordHelpMessage()
+        public static string GetPasswordHelpMessage(PasswordSettings PasswordSettings)
         {
             var info = new StringBuilder();
             var passwordSettings = PasswordSettings.Load();

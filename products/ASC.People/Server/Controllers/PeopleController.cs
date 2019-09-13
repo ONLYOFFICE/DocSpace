@@ -26,6 +26,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
@@ -62,6 +63,7 @@ namespace ASC.Employee.Core.Controllers
         public PermissionContext PermissionContext { get; }
         public AuthContext AuthContext { get; }
         public WebItemManager WebItemManager { get; }
+        public PasswordSettings PasswordSettings { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -79,7 +81,8 @@ namespace ASC.Employee.Core.Controllers
             WebItemSecurity webItemSecurity,
             PermissionContext permissionContext,
             AuthContext authContext,
-            WebItemManager webItemManager)
+            WebItemManager webItemManager,
+            PasswordSettings passwordSettings)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -98,6 +101,7 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext = permissionContext;
             AuthContext = authContext;
             WebItemManager = webItemManager;
+            PasswordSettings = passwordSettings;
         }
 
         [Read("info")]
@@ -623,9 +627,9 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create("{userid}/photo")]
-        public FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        public ASC.People.Models.FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
         {
-            var result = new FileUploadResult();
+            var result = new ASC.People.Models.FileUploadResult();
             try
             {
                 if (model.Files.Count != 0)
@@ -791,7 +795,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("password", false)]
         public string SendUserPassword(MemberModel memberModel)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(memberModel.Email, MessageService, HttpContext);
+            var userInfo = UserManagerWrapper.SendUserPassword(memberModel.Email);
 
             return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
         }

@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core.TFA
@@ -39,6 +40,15 @@ namespace ASC.Web.Studio.Core.TFA
             get { return new Guid("{822CA059-AA8F-4588-BEE3-6CD2AA920CDB}"); }
         }
 
+        public TfaAppAuthSettings()
+        {
+
+        }
+
+        public TfaAppAuthSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             return new TfaAppAuthSettings { EnableSetting = false, };
@@ -48,7 +58,7 @@ namespace ASC.Web.Studio.Core.TFA
         public bool EnableSetting { get; set; }
 
 
-        public static bool Enable
+        public bool Enable
         {
             get { return Load().EnableSetting; }
             set

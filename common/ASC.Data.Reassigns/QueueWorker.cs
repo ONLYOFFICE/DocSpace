@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.MessagingSystem;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
@@ -150,17 +151,20 @@ namespace ASC.Data.Reassigns
             UserManager userManager,
             SecurityContext securityContext,
             WebItemSecurity webItemSecurity,
-            WebItemManagerSecurity webItemManagerSecurity) : 
+            WebItemManagerSecurity webItemManagerSecurity,
+            StorageFactory storageFactory) : 
             base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity)
         {
             WebItemManagerSecurity = webItemManagerSecurity;
+            StorageFactory = storageFactory;
         }
 
         public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        public StorageFactory StorageFactory { get; }
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, SecurityContext, WebItemManagerSecurity, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, SecurityContext, WebItemManagerSecurity, StorageFactory, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
         }
     }
 }

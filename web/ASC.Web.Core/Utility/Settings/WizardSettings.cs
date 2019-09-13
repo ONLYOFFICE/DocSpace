@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Utility.Settings
@@ -39,6 +40,15 @@ namespace ASC.Web.Core.Utility.Settings
 
         [DataMember(Name = "Completed")]
         public bool Completed { get; set; }
+
+        public WizardSettings()
+        {
+
+        }
+
+        public WizardSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override Guid ID
         {

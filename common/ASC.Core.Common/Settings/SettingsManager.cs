@@ -32,8 +32,6 @@ namespace ASC.Core.Common.Settings
 {
     public class SettingsManager : DbSettingsManager
     {
-        public static SettingsManager Instance { get; private set; }
-
         private SettingsManager(ConnectionStringSettings connectionString)
             : base(connectionString)
         {
@@ -42,11 +40,6 @@ namespace ASC.Core.Common.Settings
         public SettingsManager(IServiceProvider serviceProvider) : base(serviceProvider)
         {
 
-        }
-
-        static SettingsManager()
-        {
-            Instance = new SettingsManager((ConnectionStringSettings)null);
         }
     }
 }

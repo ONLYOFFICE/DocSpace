@@ -51,6 +51,7 @@ namespace ASC.Web.Core
         public PermissionContext PermissionContext { get; }
         public AuthManager Authentication { get; }
         public WebItemManager WebItemManager { get; }
+        public TenantAccessSettings TenantAccessSettings { get; }
 
         static WebItemSecurity()
         {
@@ -69,13 +70,20 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemSecurity(UserManager userManager, AuthContext  authContext,PermissionContext permissionContext, AuthManager authentication, WebItemManager webItemManager)
+        public WebItemSecurity(
+            UserManager userManager, 
+            AuthContext  authContext,
+            PermissionContext permissionContext, 
+            AuthManager authentication, 
+            WebItemManager webItemManager,
+            TenantAccessSettings tenantAccessSettings)
         {
             UserManager = userManager;
             AuthContext = authContext;
             PermissionContext = permissionContext;
             Authentication = authentication;
             WebItemManager = webItemManager;
+            TenantAccessSettings = tenantAccessSettings;
         }
 
         //

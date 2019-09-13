@@ -64,7 +64,7 @@ namespace ASC.Data.Storage
             ServiceProvider = serviceProvider;
         }
 
-        public void Start(int tenantId, StorageSettings newStorageSettings)
+        public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
         {
             if (TokenSource.Token.IsCancellationRequested) return;
 
@@ -75,7 +75,7 @@ namespace ASC.Data.Storage
                 migrateOperation = Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(ServiceProvider, tenantId, newStorageSettings);
+                migrateOperation = new MigrateOperation(ServiceProvider, tenantId, newStorageSettings, storageFactoryConfig);
                 Cache.Insert(GetCacheKey(tenantId), migrateOperation, DateTime.MaxValue);
             }
 
@@ -118,7 +118,7 @@ namespace ASC.Data.Storage
     {
         private static readonly ILog Log;
         private static readonly string ConfigPath;
-        private static readonly IEnumerable<string> Modules;
+        private readonly IEnumerable<string> Modules;
         private readonly StorageSettings settings;
         private readonly int tenantId;
 
@@ -126,18 +126,20 @@ namespace ASC.Data.Storage
         {
             Log = LogManager.GetLogger("ASC");
             ConfigPath = "";
-            Modules = StorageFactory.GetModuleList(ConfigPath, true);
         }
 
-        public MigrateOperation(IServiceProvider serviceProvider, int tenantId, StorageSettings settings)
+        public MigrateOperation(IServiceProvider serviceProvider, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
         {
             ServiceProvider = serviceProvider;
             this.tenantId = tenantId;
             this.settings = settings;
+            StorageFactoryConfig = storageFactoryConfig;
+            Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             StepCount = Modules.Count();
         }
 
         public IServiceProvider ServiceProvider { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
 
         protected override void DoJob()
         {
@@ -146,15 +148,17 @@ namespace ASC.Data.Storage
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+
                 var tenant = CoreContext.TenantManager.GetTenant(tenantId);
                 CoreContext.TenantManager.SetCurrentTenant(tenant);
                 SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
-                    var oldStore = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = StorageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, settings.DataStoreConsumer);
-                    var domains = StorageFactory.GetDomainList(ConfigPath, module).ToList();
+                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, settings.DataStoreConsumer);
+                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                     var crossModuleTransferUtility = new CrossModuleTransferUtility(oldStore, store);
 

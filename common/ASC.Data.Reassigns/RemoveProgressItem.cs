@@ -74,6 +74,7 @@ namespace ASC.Data.Reassigns
         public WebItemSecurity WebItemSecurity { get; }
         public AuthContext AuthContext { get; }
         public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        public StorageFactory StorageFactory { get; }
 
         public RemoveProgressItem(
             HttpContext context,
@@ -82,6 +83,7 @@ namespace ASC.Data.Reassigns
             StudioNotifyService studioNotifyService,
             SecurityContext securityContext,
             WebItemManagerSecurity webItemManagerSecurity,
+            StorageFactory storageFactory,
             int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             _context = context;
@@ -89,6 +91,7 @@ namespace ASC.Data.Reassigns
             StudioNotifyService = studioNotifyService;
             SecurityContext = securityContext;
             WebItemManagerSecurity = webItemManagerSecurity;
+            StorageFactory = storageFactory;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;

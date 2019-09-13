@@ -58,6 +58,8 @@ namespace ASC.Web.Studio.Core.Notify
         public TenantExtra TenantExtra { get; }
         public AuthManager Authentication { get; }
         public AuthContext AuthContext { get; }
+        public MailWhiteLabelSettings MailWhiteLabelSettings { get; }
+        public AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
 
         public StudioNotifyService(
             UserManager userManager, 
@@ -65,12 +67,16 @@ namespace ASC.Web.Studio.Core.Notify
             StudioNotifyServiceHelper studioNotifyServiceHelper,
             TenantExtra tenantExtra,
             AuthManager authentication,
-            AuthContext authContext)
+            AuthContext authContext,
+            MailWhiteLabelSettings mailWhiteLabelSettings,
+            AdditionalWhiteLabelSettings additionalWhiteLabelSettings)
         {
             client = studioNotifyServiceHelper;
             TenantExtra = tenantExtra;
             Authentication = authentication;
             AuthContext = authContext;
+            MailWhiteLabelSettings = mailWhiteLabelSettings;
+            AdditionalWhiteLabelSettings = additionalWhiteLabelSettings;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }

@@ -53,9 +53,15 @@ namespace ASC.Web.Core.WhiteLabel
         public TenantInfoSettings()
         {
         }
-        public TenantInfoSettings(AuthContext authContext, SettingsManager settingsManager, WebImageSupplier webImageSupplier) : base(authContext, settingsManager)
+        public TenantInfoSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            WebImageSupplier webImageSupplier, 
+            TenantManager tenantManager,
+            StorageFactory storageFactory) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
+            StorageFactory = storageFactory;
         }
 
         #region ISettings Members
@@ -158,6 +164,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public WebImageSupplier WebImageSupplier { get; }
+        public StorageFactory StorageFactory { get; }
 
         #endregion
     }

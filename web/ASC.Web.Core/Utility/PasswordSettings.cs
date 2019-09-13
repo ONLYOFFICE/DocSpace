@@ -71,6 +71,15 @@ namespace ASC.Web.Core.Utility
 
         private static PasswordSettings _default;
 
+        public PasswordSettings()
+        {
+
+        }
+
+        public PasswordSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
+
         public override ISettings GetDefault()
         {
             if (_default == null)

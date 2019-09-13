@@ -109,7 +109,16 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         private const string Base64Start = "data:image/png;base64,";
 
-        public static string SaveTmpLogo(UserPhotoManager userPhotoManager, string tmpLogoPath)
+        public UserPhotoManager UserPhotoManager { get; }
+        public StorageFactory StorageFactory { get; }
+
+        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory)
+        {
+            UserPhotoManager = userPhotoManager;
+            StorageFactory = storageFactory;
+        }
+
+        public string SaveTmpLogo(string tmpLogoPath)
         {
             if (string.IsNullOrEmpty(tmpLogoPath)) return null;
 
@@ -126,9 +135,9 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
                 var fileName = Path.GetFileName(tmpLogoPath);
 
-                data = userPhotoManager.GetTempPhotoData(fileName);
+                data = UserPhotoManager.GetTempPhotoData(fileName);
 
-                userPhotoManager.RemoveTempPhoto(fileName);
+                UserPhotoManager.RemoveTempPhoto(fileName);
 
                 return SaveLogo(fileName, data);
             }
@@ -139,14 +148,13 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             }
         }
 
-        public static void DeleteLogo(string logoPath)
+        public void DeleteLogo(string logoPath)
         {
             if (string.IsNullOrEmpty(logoPath)) return;
 
             try
             {
-                var store = StorageFactory.GetStorage(
-                    TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);
+                var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);
 
                 var fileName = Path.GetFileName(logoPath);
 
@@ -161,7 +169,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             }
         }
 
-        private static string SaveLogo(string fileName, byte[] data)
+        private string SaveLogo(string fileName, byte[] data)
         {
             var store = StorageFactory.GetStorage(
                 TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);

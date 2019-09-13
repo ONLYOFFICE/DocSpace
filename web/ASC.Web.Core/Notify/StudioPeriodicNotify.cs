@@ -512,8 +512,6 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start SendTariffEnterpriseLetters");
 
-            var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
-
             var activeTenants = CoreContext.TenantManager.GetTenants();
 
             if (activeTenants.Count <= 0)
@@ -528,6 +526,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = serviceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var defaultRebranding = scope.ServiceProvider.GetService<MailWhiteLabelSettings>().Instance.IsDefault;
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
 

@@ -60,8 +60,13 @@ namespace ASC.Web.Core.WhiteLabel
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
+        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings)
+        {
+            TenantWhiteLabelSettings = tenantWhiteLabelSettings;
+            TenantInfoSettings = tenantInfoSettings;
+        }
 
-        public static string GetFavicon(bool general, bool timeParam)
+        public string GetFavicon(bool general, bool timeParam)
         {
             string faviconPath;
             var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
@@ -82,7 +87,7 @@ namespace ASC.Web.Core.WhiteLabel
             return faviconPath;
         }
 
-        public static string GetTopLogo(bool general)//LogoLightSmall
+        public string GetTopLogo(bool general)//LogoLightSmall
         {
             var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
 
@@ -93,7 +98,7 @@ namespace ASC.Web.Core.WhiteLabel
             return tenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
         }
 
-        public static string GetLogoDark(bool general)
+        public string GetLogoDark(bool general)
         {
             if (WhiteLabelEnabled)
             {
@@ -107,7 +112,7 @@ namespace ASC.Web.Core.WhiteLabel
             /***/
         }
 
-        public static string GetLogoDocsEditor(bool general)
+        public string GetLogoDocsEditor(bool general)
         {
             var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
 
@@ -118,7 +123,7 @@ namespace ASC.Web.Core.WhiteLabel
             return tenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
         }
 
-        public static string GetLogoText()
+        public string GetLogoText()
         {
             if (WhiteLabelEnabled)
             {
@@ -129,7 +134,7 @@ namespace ASC.Web.Core.WhiteLabel
             return TenantWhiteLabelSettings.DefaultLogoText;
         }
 
-        public static bool IsRetina(HttpRequest request)
+        public bool IsRetina(HttpRequest request)
         {
             var isRetina = false;
             if (request != null)
@@ -154,10 +159,13 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
+        public TenantWhiteLabelSettings TenantWhiteLabelSettings { get; }
+        public TenantInfoSettings TenantInfoSettings { get; }
+
         /// <summary>
         /// Get logo stream or null in case of default logo
         /// </summary>
-        public static Stream GetWhitelabelMailLogo()
+        public Stream GetWhitelabelMailLogo()
         {
             if (WhiteLabelEnabled)
             {

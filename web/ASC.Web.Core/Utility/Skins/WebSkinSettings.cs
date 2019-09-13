@@ -36,12 +36,6 @@ namespace ASC.Web.Core.Utility.Skins
 {
     public class WebSkin
     {
-        public static string BaseCSSFileAbsoluteWebPath
-        {
-            get { return WebPath.GetPath("/skins/default/common_style.css"); }
-        }
-
-
         private static readonly HashSet<string> BaseCultureCss = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         public static bool HasCurrentCultureCssFile

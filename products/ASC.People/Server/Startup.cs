@@ -19,13 +19,18 @@ using ASC.Core.Notify;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Data.Reassigns;
+using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
+using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Notify.Recipients;
 using ASC.Web.Core;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
+using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Core.Utility.Skins;
+using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -167,6 +172,22 @@ namespace ASC.People
                     .AddScoped<WebItemManagerSecurity>()
                     .AddScoped<DbSettingsManager>()
                     .AddScoped<SettingsManager>()
+                    .AddScoped<WebPath>()
+                    .AddScoped<AdditionalWhiteLabelSettings>()
+                    .AddScoped<TenantAccessSettings>()
+                    .AddScoped<MailWhiteLabelSettings>()
+                    .AddScoped<PasswordSettings>()
+                    .AddScoped<StaticUploader>()
+                    .AddScoped<CdnStorageSettings>()
+                    .AddScoped<StorageFactory>()
+                    .AddSingleton<StorageFactoryListener>()
+                    .AddSingleton<StorageFactoryConfig>()
+                    .AddScoped<StorageSettings>()
+                    .AddScoped<IPRestrictionsSettings>()
+                    .AddScoped<CustomNamingPeople>()
+                    .AddScoped<PeopleNamesSettings>()
+                    .AddSingleton<WebPathSettings>()
+                    .AddSingleton<BaseStorageSettingsListener>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

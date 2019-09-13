@@ -35,10 +35,14 @@ namespace ASC.Web.Core.Utility.Skins
     {
         private static string FolderName { get; } = ConfigurationManager.AppSettings["web:images"];
         public WebItemManager WebItemManager { get; }
+        public WebPath WebPath { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public WebImageSupplier(WebItemManager webItemManager)
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor)
         {
             WebItemManager = webItemManager;
+            WebPath = webPath;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public string GetAbsoluteWebPath(string imgFileName)
@@ -51,14 +55,14 @@ namespace ASC.Web.Core.Utility.Skins
             return GetImageAbsoluteWebPath(imgFileName, moduleID);
         }
 
-        public string GetImageFolderAbsoluteWebPath(HttpContext httpContext)
+        public string GetImageFolderAbsoluteWebPath()
         {
-            return GetImageFolderAbsoluteWebPath(httpContext, Guid.Empty);
+            return GetImageFolderAbsoluteWebPath(Guid.Empty);
         }
 
-        public string GetImageFolderAbsoluteWebPath(HttpContext httpContext, Guid moduleID)
+        public string GetImageFolderAbsoluteWebPath(Guid moduleID)
         {
-            if (httpContext == null) return string.Empty;
+            if (HttpContextAccessor?.HttpContext == null) return string.Empty;
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
             return WebPath.GetPath(currentThemePath.ToLower());

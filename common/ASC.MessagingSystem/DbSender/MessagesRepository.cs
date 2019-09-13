@@ -261,7 +261,7 @@ namespace ASC.MessagingSystem.DbSender
 
         private static void GetOldEvents(string table, string settings)
         {
-            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.LoadForDefaultTenant().ID, TenantAuditSettings.MaxLifeTime);
+            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.Guid, TenantAuditSettings.MaxLifeTime);
             var query = new SqlQuery(table + " t1")
                 .Select("t1.id")
                 .Select(sqlQueryLimit)

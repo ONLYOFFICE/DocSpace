@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.IPSecurity
@@ -40,6 +41,15 @@ namespace ASC.IPSecurity
         public override Guid ID
         {
             get { return new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}"); }
+        }
+
+        public IPRestrictionsSettings()
+        {
+
+        }
+
+        public IPRestrictionsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
         }
 
         public override ISettings GetDefault()

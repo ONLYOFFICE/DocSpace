@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
@@ -36,6 +37,15 @@ namespace ASC.Web.Studio.Core
     {
         [DataMember(Name = "Show")]
         public bool Show { get; set; }
+
+        public TipsSettings()
+        {
+
+        }
+
+        public TipsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        {
+        }
 
         public override Guid ID
         {

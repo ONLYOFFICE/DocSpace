@@ -50,7 +50,7 @@ namespace ASC.Web.Core.Utility.Settings
             SettingsCollection = new List<WebItemOption>();
         }
 
-        public WebItemSettings(AuthContext authContext, SettingsManager settingsManager, WebItemManager webItemManager) : base(authContext, settingsManager)
+        public WebItemSettings(AuthContext authContext, SettingsManager settingsManager, WebItemManager webItemManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
         {
             SettingsCollection = new List<WebItemOption>();
             WebItemManager = webItemManager;

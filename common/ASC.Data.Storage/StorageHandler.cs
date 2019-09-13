@@ -63,6 +63,7 @@ namespace ASC.Data.Storage.DiscStorage
         {
             using var scope = ServiceProvider.CreateScope();
             var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var StorageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
             if (_checkAuth && !SecurityContext.IsAuthenticated)
             {

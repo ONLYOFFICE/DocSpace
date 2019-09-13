@@ -30,30 +30,31 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using ASC.Common;
-using ASC.Common.DependencyInjection;
+
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
 {
-    public static class WebPath
+    public class WebPathSettings
     {
-        private static readonly IEnumerable<Appender> Appenders;
-        private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
+        private readonly IEnumerable<Appender> Appenders;
 
 
-        static WebPath()
+        public WebPathSettings(IServiceProvider serviceProvider)
         {
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            var section = serviceProvider.GetService<Configuration.Storage>();
             if (section != null)
             {
                 Appenders = section.Appender;
             }
         }
 
-        public static string GetRelativePath(string absolutePath)
+        public string GetRelativePath(string absolutePath)
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
@@ -70,7 +71,7 @@ namespace ASC.Data.Storage
                 absolutePath.Remove(0, appender.Append.Length);
         }
 
-        public static string GetPath(string relativePath)
+        public string GetPath(string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
@@ -79,19 +80,6 @@ namespace ASC.Data.Storage
 
             var result = relativePath;
             var ext = Path.GetExtension(relativePath).ToLowerInvariant();
-
-            if (CoreContext.Configuration.Standalone && StaticUploader.CanUpload())
-            {
-                try
-                {
-                    result = CdnStorageSettings.Load().DataStore.GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                    if (!string.IsNullOrEmpty(result)) return result;
-                }
-                catch (Exception)
-                {
-
-                }
-            }
 
             if (Appenders.Any())
             {
@@ -148,16 +136,64 @@ namespace ASC.Data.Storage
             //To LOWER! cause Amazon is CASE SENSITIVE!
             return result.ToLowerInvariant();
         }
+    }
 
-        public static bool Exists(string relativePath)
+    public class WebPath
+    {
+        private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
+
+        public WebPathSettings WebPathSettings { get; }
+        public StaticUploader StaticUploader { get; }
+        public CdnStorageSettings CdnStorageSettings { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
+        public WebPath(
+            WebPathSettings webPathSettings, 
+            StaticUploader staticUploader, 
+            CdnStorageSettings cdnStorageSettings, 
+            IHttpContextAccessor httpContextAccessor,
+            IWebHostEnvironment webHostEnvironment)
+        {
+            WebPathSettings = webPathSettings;
+            StaticUploader = staticUploader;
+            CdnStorageSettings = cdnStorageSettings;
+            HttpContextAccessor = httpContextAccessor;
+            WebHostEnvironment = webHostEnvironment;
+        }
+
+        public string GetPath(string relativePath)
+        {
+            if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
+            {
+                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+            }
+
+            if (CoreContext.Configuration.Standalone && StaticUploader.CanUpload())
+            {
+                try
+                {
+                    var result = CdnStorageSettings.Load().DataStore.GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    if (!string.IsNullOrEmpty(result)) return result;
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return WebPathSettings.GetPath(relativePath);
+        }
+
+        public bool Exists(string relativePath)
         {
             var path = GetPath(relativePath);
             if (!Existing.ContainsKey(path))
             {
-                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContext.Current != null)
+                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, path));
+                    Existing[path] = File.Exists(Path.Combine(WebHostEnvironment.ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {
@@ -168,7 +204,7 @@ namespace ASC.Data.Storage
             return Existing[path];
         }
 
-        private static bool CheckWebPath(string path)
+        private bool CheckWebPath(string path)
         {
             try
             {
