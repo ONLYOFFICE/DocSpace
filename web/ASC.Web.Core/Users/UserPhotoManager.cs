@@ -118,11 +118,12 @@ namespace ASC.Web.Core.Users
 
                     try
                     {
-                        Photofiles.TryGetValue(data.Size, out var dict);
-                        dict?.TryRemove(userId, out _);
-                        //var storage = GetDataStore();
-                        //storage.DeleteFiles("", data.UserID + "*.*", false);
-                        //SetCacheLoadedForTenant(false);
+                        foreach(var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
+                        {
+                            Photofiles.TryGetValue(s, out var dict);
+                            dict?.TryRemove(userId, out _);
+                        }
+                        SetCacheLoadedForTenant(false, data.TenantId);
                     }
                     catch { }
                 }, CacheNotifyAction.Remove);
@@ -356,9 +357,9 @@ namespace ASC.Web.Core.Users
             return TenantDiskCache.Contains(tenantId);
         }
 
-        private static bool SetCacheLoadedForTenant(bool isLoaded)
+        private static bool SetCacheLoadedForTenant(bool isLoaded, int tenantId)
         {
-            return isLoaded ? TenantDiskCache.Add(TenantProvider.CurrentTenantID) : TenantDiskCache.Remove(TenantProvider.CurrentTenantID);
+            return isLoaded ? TenantDiskCache.Add(tenantId) : TenantDiskCache.Remove(tenantId);
         }
 
 
@@ -426,7 +427,7 @@ namespace ASC.Web.Core.Users
                                 }
                             }
                         }
-                        SetCacheLoadedForTenant(true);
+                        SetCacheLoadedForTenant(true, tenantId);
                     }
                     catch (Exception err)
                     {
@@ -469,6 +470,9 @@ namespace ASC.Web.Core.Users
 
         public static void RemovePhoto(Tenant tenant, Guid idUser)
         {
+            var storage = GetDataStore(tenant.TenantId);
+            storage.DeleteFiles("", idUser + "*.*", false);
+
             CoreContext.UserManager.SaveUserPhoto(tenant, idUser, null);
             ClearCache(idUser);
         }
