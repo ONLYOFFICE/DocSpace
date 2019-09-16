@@ -52,36 +52,52 @@ const StyledContainer = styled(Container)`
   display: flex;
   flex-direction: column;
 
-  ${props => (props.containerWidth ? `width: ${props.containerWidth}px;` : "")}
+  ${props => (props.containerWidth ? `width: ${props.containerWidth};` : "")}
   ${props =>
     props.containerHeight
-      ? `height: ${props.containerHeight}px;`
+      ? `height: ${props.containerHeight};`
       : ""}
 
   .data_container {
     margin: 16px 16px -5px 16px;
 
-    .options_searcher {
-      display: inline-block;
-      ${props =>
-        props.allowCreation ?
-        css`
-          width: 272px;
-          margin-right: 8px;
-        `
-        : css`width: 313px;`
-        }
-    }
+    .head_container {
+      display: flex;
+      margin-bottom: ${props => props.isDropDown ? 8 : 16}px;
 
-    .add_new_btn {
-      ${props =>
-        props.allowCreation &&
-        css`
-          display: inline-block;
-          vertical-align: top;
-          height: 32px;
-          width: 32px;
+      .options_searcher {
+        display: inline-block;
+        width: 100%;
+
+        ${props => props.isDropDown && props.size === "full" && css`
+          margin-right: ${props =>
+            props.allowCreation ?
+            8 : 16
+            }px;
         `}
+        /*${props =>
+          props.allowCreation ?
+          css`
+            width: 272px;
+            margin-right: 8px;
+          `
+          : css`width: ${props => props.isDropDown ? '313px' : '100%'};`
+          }*/
+      }
+
+      .add_new_btn {
+        ${props =>
+          props.allowCreation &&
+          css`
+            display: inline-block;
+            vertical-align: top;
+            height: 32px;
+            width: 36px;
+            margin-right: 16px;
+            line-height: 18px;
+          `}
+      }
+
     }
 
     .options_group_selector {
@@ -102,7 +118,7 @@ const StyledContainer = styled(Container)`
         margin-left: -8px;
         .option {
           line-height: 32px;
-          padding-left: 8px;
+          padding-left: ${props => props.isMultiSelect ? 8 : 0}px;
           cursor: pointer;
 
           .option_checkbox {
@@ -365,10 +381,10 @@ class AdvancedSelector extends React.Component {
       groups,
     } = this.state;
 
-    const containerHeight =
+    /*const containerHeight =
       size === "compact" ? (!groups || !groups.length ? 336 : 326) : 614;
     const containerWidth =
-      size === "compact" ? (!groups || !groups.length ? 325 : 326) : 690;
+      size === "compact" ? (!groups || !groups.length ? 325 : 326) : isDropDown ? 690 : 326;
     const listHeight =
       size === "compact"
         ? !groups || !groups.length
@@ -377,9 +393,30 @@ class AdvancedSelector extends React.Component {
             : 226
           : 120
         : 488;
-    const listWidth = 320;
+    const listWidth = isDropDown ? 320 : "100%";*/
 
+    let containerHeight;
+    let containerWidth;
+    let listHeight;
+    let listWidth;
     const itemHeight = 32;
+    const hasGroups = groups && groups.length > 0;
+
+    switch (size) {
+      case "compact":
+          containerHeight = hasGroups ? "326px" : "100%";
+          containerWidth = "379px";
+          listWidth = isDropDown ? 356 : 356;
+          listHeight = hasGroups ? 488 : isMultiSelect ? 176 : 226;
+        break;
+      case "full":
+      default:
+          containerHeight = "100%";
+          containerWidth = isDropDown ? "690px" : "326px";
+          listWidth = isDropDown ? 320 : 302;
+          listHeight = 488;
+        break;
+    }
 
     return (
       <StyledContainer
@@ -390,6 +427,7 @@ class AdvancedSelector extends React.Component {
         <div ref={this.ref}>
           <div className="data_container">
             <div className="data_column_one">
+              <div className="head_container">
               <SearchInput
                 className="options_searcher"
                 isDisabled={isDisabled}
@@ -417,8 +455,8 @@ class AdvancedSelector extends React.Component {
                   onClick={onAddNewClick}
                 />
               )}
-              {isDropDown &&
-                size === "compact" &&
+              </div>
+              {!isDropDown &&
                 groups &&
                 groups.length > 0 && (
                   <ComboBox
