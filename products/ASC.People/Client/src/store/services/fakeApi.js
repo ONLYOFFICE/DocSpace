@@ -527,6 +527,10 @@ export function sendInstructionsToChangePassword() {
   return fakeResponse("Instruction has been sent successfully");
 }
 
+export function sendInstructionsToChangeEmail() {
+  return fakeResponse("Instruction has been sent successfully");
+}
+
 export function getGroup(groupId) {
   return fakeResponse({
     id: "06448c0a-7f10-4c6d-9ad4-f94de2235778",

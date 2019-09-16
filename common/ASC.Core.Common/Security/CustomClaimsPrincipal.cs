@@ -1,5 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Security.Principal;
+using ASC.Common.Security.Authentication;
 
 namespace ASC.Core.Common.Security
 {
@@ -15,9 +19,9 @@ namespace ASC.Core.Common.Security
             }
         }
 
-        public CustomClaimsPrincipal(IPrincipal genericPrincipal) : base(genericPrincipal)
+        public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity): base(claimsIdentity)
         {
-            identity = genericPrincipal.Identity;
+            this.identity = identity;
         }
     }
 }

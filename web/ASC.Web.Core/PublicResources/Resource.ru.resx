@@ -94,6 +94,9 @@
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Не заполнено поле адреса электронной почты</value>
   </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Текущий адрес электронной почты совпадает с новым адресом</value>
+  </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Загружаемый файл не найден</value>
   </data>
@@ -153,6 +156,9 @@
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Слишком много операций LDAP.</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Инструкции по изменению электронной почты были успешно отправлены</value>
   </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>Инструкции по изменению пароля были высланы на email {0}</value>
