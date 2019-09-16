@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using System.Security.Claims;
 using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
@@ -208,7 +209,14 @@ namespace ASC.Api.Core
                                  SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
         }
 
-
+        public void AuthByClaim()
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
+            if (Guid.TryParse(id?.Value, out var userId))
+            {
+                _ = SecurityContext.AuthenticateMe(Tenant.TenantId, userId);
+            }
+        }
 
         public static implicit operator ApiContext(HttpContext httpContext)
         {
