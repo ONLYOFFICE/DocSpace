@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -643,7 +641,7 @@ namespace ASC.Employee.Core.Controllers
                 defaultBr.Read(defaultData, 0, (int)defaultUserPhoto.Length);
                 defaultBr.Close();
 
-                CheckImgFormat(data);
+                //CheckImgFormat(data);
 
                 if (model.Autosave)
                 {
@@ -730,7 +728,7 @@ namespace ASC.Employee.Core.Controllers
                     br.Read(data, 0, (int)userPhoto.Length);
                     br.Close();
 
-                    CheckImgFormat(data);
+                    //CheckImgFormat(data);
 
                     if (model.Autosave)
                     {
@@ -901,6 +899,54 @@ namespace ASC.Employee.Core.Controllers
             }
 
             return new EmployeeWraperFull(GetUserInfo(userid.ToString()), ApiContext);
+        }
+
+
+        [Create("email", false)]
+        public string SendEmailChangeInstructions(UpdateMemberModel model)
+        {
+            Guid.TryParse(model.UserId, out Guid userid);
+
+            if (userid == Guid.Empty) throw new ArgumentNullException("userid");
+
+            var email = (model.Email ?? "").Trim();
+
+            if (string.IsNullOrEmpty(email)) throw new Exception(Resource.ErrorEmailEmpty);
+
+            if (!email.TestEmailRegex()) throw new Exception(Resource.ErrorNotCorrectEmail);
+
+            var viewer = CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID);
+            var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userid);
+
+            if (user == null)
+                throw new Exception(Resource.ErrorUserNotFound);
+
+            if (viewer == null || (user.IsOwner(Tenant) && viewer.ID != user.ID))
+                throw new Exception(Resource.ErrorAccessDenied);
+
+            var existentUser = CoreContext.UserManager.GetUserByEmail(Tenant.TenantId, email);
+
+            if (existentUser.ID != Constants.LostUser.ID)
+                throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+
+            if (!viewer.IsAdmin(Tenant))
+            {
+                StudioNotifyService.SendEmailChangeInstructions(Tenant.TenantId, user, email);
+            }
+            else
+            {
+                if (email == user.Email)
+                    throw new Exception(Resource.ErrorEmailsAreTheSame);
+
+                user.Email = email;
+                user.ActivationStatus = EmployeeActivationStatus.NotActivated;
+                CoreContext.UserManager.SaveUserInfo(Tenant, user);
+                StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, email);
+            }
+
+            MessageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false));
+
+            return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
         }
 
         private UserInfo GetUserInfo(string userNameOrId)
@@ -1334,29 +1380,30 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, imageByteArray);
         }
 
-        private static void CheckImgFormat(byte[] data)
-        {
-            ImageFormat imgFormat;
+        //not working under unix
+        //private static void CheckImgFormat(byte[] data)
+        //{
+        //    ImageFormat imgFormat;
 
-            try
-            {
-                using var stream = new MemoryStream(data);
-                using var img = new Bitmap(stream);
-                imgFormat = img.RawFormat;
-            }
-            catch (OutOfMemoryException)
-            {
-                throw new ImageSizeLimitException();
-            }
-            catch (ArgumentException error)
-            {
-                throw new UnknownImageFormatException(error);
-            }
+        //    try
+        //    {
+        //        using var stream = new MemoryStream(data);
+        //        using var img = new Bitmap(stream);
+        //        imgFormat = img.RawFormat;
+        //    }
+        //    catch (OutOfMemoryException)
+        //    {
+        //        throw new ImageSizeLimitException();
+        //    }
+        //    catch (ArgumentException error)
+        //    {
+        //        throw new UnknownImageFormatException(error);
+        //    }
 
-            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
-            {
-                throw new UnknownImageFormatException();
-            }
-        }
+        //    if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+        //    {
+        //        throw new UnknownImageFormatException();
+        //    }
+        //}
     }
 }

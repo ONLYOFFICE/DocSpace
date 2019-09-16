@@ -94,6 +94,9 @@
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Campo de correo electrónico está vacío</value>
   </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>El correo electrónico actual y el nuevo correo electrónico son iguales</value>
+  </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Imposible encontrar el archivo subido</value>
   </data>
@@ -153,6 +156,9 @@
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Demasiado muchas operaciones LDAP.</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Las instrucciones para cambiar el correo electrónico se han enviado con éxito</value>
   </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>La contraseña de usuario ha sido enviada al e-mail {0}</value>
