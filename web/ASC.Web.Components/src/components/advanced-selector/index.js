@@ -84,9 +84,6 @@ const StyledContainer = styled(Container)`
         `}
     }
 
-    .create_new_user_modal {
-    }
-
     .options_group_selector {
       margin-bottom: 12px;
     }
@@ -186,8 +183,7 @@ class AdvancedSelector extends React.Component {
       selectedOptions: this.props.selectedOptions || [],
       selectedAll: this.props.selectedAll || false,
       groups: groups,
-      currentGroup: currentGroup,
-      modalVisible: false
+      currentGroup: currentGroup
     };
 
     if (props.isOpen) handleAnyClick(true, this.handleClick);
