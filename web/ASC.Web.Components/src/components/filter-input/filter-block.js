@@ -12,7 +12,7 @@ const StyledFilterBlock = styled.div`
 `;
 
 const StyledFilterItem = styled.div`
-  display:  ${props => props.block ? 'block' : 'inline-block'};
+  display:  ${props => props.block ? 'flex' : 'inline-block'};
   margin-bottom: ${props => props.block ? '3px' : '0'};
   position: relative;
   height: 100%;
@@ -43,6 +43,7 @@ const StyledCloseButtonBlock = styled.div`
 const StyledComboBox = styled(ComboBox)`
   display: inline-block;
   background: transparent;
+  max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
 `;
