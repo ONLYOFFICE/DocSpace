@@ -26,8 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Security.Authentication;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
@@ -213,7 +215,14 @@ namespace ASC.Core
                 cookie = CookieStorage.EncryptCookie(CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
-            Principal = new GenericPrincipal(account, roles.ToArray());
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Sid, account.ID.ToString()),
+                new Claim(ClaimTypes.Name, account.Name)
+            };
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
 
             return cookie;
         }
@@ -265,14 +274,13 @@ namespace ASC.Core
         }
 
 
-        private static IPrincipal Principal
+        private static ClaimsPrincipal Principal
         {
-            get => Thread.CurrentPrincipal ?? HttpContext.Current?.User;
+            get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContext.Current?.User;
             set
             {
-                var principal = new CustomClaimsPrincipal(value);
-                Thread.CurrentPrincipal = principal;
-                if (HttpContext.Current != null) HttpContext.Current.User = principal;
+                Thread.CurrentPrincipal = value;
+                if (HttpContext.Current != null) HttpContext.Current.User = value;
             }
         }
     }

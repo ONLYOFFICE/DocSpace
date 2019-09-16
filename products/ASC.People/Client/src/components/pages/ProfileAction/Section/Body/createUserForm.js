@@ -1,10 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, toastr } from 'asc-web-components'
+import { Avatar, Button, Textarea, toastr, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile } from '../../../../../store/profile/actions';
+import { createProfile, updateAvatar } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -38,6 +38,44 @@ class CreateUserForm extends React.Component {
     this.onSearchGroups = this.onSearchGroups.bind(this);
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
+
+    this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.onSaveAvatar = this.onSaveAvatar.bind(this);
+    this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
+    this.createAvatar = this.createAvatar.bind(this);
+  }
+
+  createAvatar(userId,userName){
+    this.props.updateAvatar(
+        userId,
+        {
+          croppedImage:  this.state.croppedAvatarImage,
+          defaultImage:  this.state.defaultAvatarImage
+        })
+      .then((result) => {
+        toastr.success("Success");
+        this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+        this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
+      });
+  }
+  openAvatarEditor(){
+    this.setState({
+      visibleAvatarEditor: true,
+    });
+  }
+  onSaveAvatar(result){
+    this.setState({
+      croppedAvatarImage: result.croppedImage,
+      defaultAvatarImage: result.defaultImage,
+    })
+  }
+  onCloseAvatarEditor(){
+    this.setState({
+      visibleAvatarEditor: false,
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -55,6 +93,9 @@ class CreateUserForm extends React.Component {
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
 
     return {
+      visibleAvatarEditor: false,
+      croppedAvatarImage: "",
+      defaultAvatarImage: "",
       isLoading: false,
       errors: {
         firstName: false,
@@ -112,8 +153,9 @@ class CreateUserForm extends React.Component {
 
     this.props.createProfile(this.state.profile)
       .then((profile) => {
-        toastr.success("Success");
-        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+        //toastr.success("Success");
+        //this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+        if(this.state.defaultImage !== '') this.createAvatar(profile.id,profile.userName);
       })
       .catch((error) => {
         toastr.error(error.message)
@@ -203,8 +245,15 @@ class CreateUserForm extends React.Component {
               size="max"
               role={getUserRole(profile)}
               editing={true}
+              source={this.state.croppedAvatarImage}
               editLabel={t("AddPhoto")}
+              editAction={this.openAvatarEditor}
             />
+           <AvatarEditor 
+              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
+              visible={this.state.visibleAvatarEditor} 
+              onClose={this.onCloseAvatarEditor} 
+              onSave={this.onSaveAvatar} />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextField
@@ -364,6 +413,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    createProfile
+    createProfile,
+    updateAvatar
   }
 )(withRouter(withTranslation()(CreateUserForm)));

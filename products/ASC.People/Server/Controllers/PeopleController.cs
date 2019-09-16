@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -316,10 +318,8 @@ namespace ASC.Employee.Core.Controllers
         [Authorize(AuthenticationSchemes = "confirm")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
-            if (HttpContext.User.IsInRole(ASC.Common.Security.Authorizing.Role.System))
-            {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-            }
+            ApiContext.AuthByClaim();
+
             SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
 
             if (string.IsNullOrEmpty(memberModel.Password))
@@ -641,7 +641,7 @@ namespace ASC.Employee.Core.Controllers
                 defaultBr.Read(defaultData, 0, (int)defaultUserPhoto.Length);
                 defaultBr.Close();
 
-                //CheckImgFormat(data);
+                CheckImgFormat(data);
 
                 if (model.Autosave)
                 {
@@ -728,7 +728,7 @@ namespace ASC.Employee.Core.Controllers
                     br.Read(data, 0, (int)userPhoto.Length);
                     br.Close();
 
-                    //CheckImgFormat(data);
+                    CheckImgFormat(data);
 
                     if (model.Autosave)
                     {
@@ -1380,30 +1380,29 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager.SaveOrUpdatePhoto(Tenant, user.ID, imageByteArray);
         }
 
-        //not working under unix
-        //private static void CheckImgFormat(byte[] data)
-        //{
-        //    ImageFormat imgFormat;
+        private static void CheckImgFormat(byte[] data)
+        {
+            ImageFormat imgFormat;
 
-        //    try
-        //    {
-        //        using var stream = new MemoryStream(data);
-        //        using var img = new Bitmap(stream);
-        //        imgFormat = img.RawFormat;
-        //    }
-        //    catch (OutOfMemoryException)
-        //    {
-        //        throw new ImageSizeLimitException();
-        //    }
-        //    catch (ArgumentException error)
-        //    {
-        //        throw new UnknownImageFormatException(error);
-        //    }
+            try
+            {
+                using var stream = new MemoryStream(data);
+                using var img = new Bitmap(stream);
+                imgFormat = img.RawFormat;
+            }
+            catch (OutOfMemoryException)
+            {
+                throw new ImageSizeLimitException();
+            }
+            catch (ArgumentException error)
+            {
+                throw new UnknownImageFormatException(error);
+            }
 
-        //    if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
-        //    {
-        //        throw new UnknownImageFormatException();
-        //    }
-        //}
+            if (!imgFormat.Equals(ImageFormat.Png) && !imgFormat.Equals(ImageFormat.Jpeg))
+            {
+                throw new UnknownImageFormatException();
+            }
+        }
     }
 }
