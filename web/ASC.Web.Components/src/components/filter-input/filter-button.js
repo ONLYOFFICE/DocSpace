@@ -1,10 +1,11 @@
 import React from "react";
 import ContextMenuButton from '../context-menu-button';
+import PropTypes from 'prop-types';
 
-class FilterButton extends React.PureComponent{
-  render(){
+class FilterButton extends React.PureComponent {
+  render() {
     //console.log('render FilterButton)
-    return(
+    return (
       <ContextMenuButton
         title='Actions'
         iconName='RectangleFilterIcon'
@@ -18,5 +19,9 @@ class FilterButton extends React.PureComponent{
     )
   }
 }
-
+FilterButton.propTypes = {
+  iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  isDisabled: PropTypes.bool,
+  getData: PropTypes.func
+}
 export default FilterButton
