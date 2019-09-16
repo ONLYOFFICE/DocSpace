@@ -19,7 +19,7 @@ const App = () => {
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
           <Switch>
-            <PublicRoute exact path="/login" component={Login} />
+            <PublicRoute exact path={["/login","/login/:error"]} component={Login} />
             <PublicRoute path="/confirm" component={Confirm} />
             <PrivateRoute exact path="/" component={Home} />
             <PrivateRoute exact path="/about" component={About} />

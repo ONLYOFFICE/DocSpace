@@ -6,7 +6,7 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import AdvancedSelector from "./";
 import Section from "../../../.storybook/decorators/section";
-import { boolean } from "@storybook/addon-knobs/dist/deprecated";
+import { boolean, select } from "@storybook/addon-knobs/dist/deprecated";
 import { ArrayValue, BooleanValue } from "react-values";
 import Button from "../button";
 
@@ -14,50 +14,74 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+const groups = [
+  {
+    key: "group-all",
+    label: "All groups",
+    total: 0
+  },
+  {
+    key: "group-dev",
+    label: "Development",
+    total: 0
+  },
+  {
+    key: "group-management",
+    label: "Management",
+    total: 0
+  },
+  {
+    key: "group-marketing",
+    label: "Marketing",
+    total: 0
+  },
+  {
+    key: "group-mobile",
+    label: "Mobile",
+    total: 0
+  },
+  {
+    key: "group-support",
+    label: "Support",
+    total: 0
+  },
+  {
+    key: "group-web",
+    label: "Web",
+    total: 0
+  },
+  {
+    key: "group-1",
+    label: "Group1",
+    total: 0
+  },
+  {
+    key: "group-2",
+    label: "Group2",
+    total: 0
+  },
+  {
+    key: "group-3",
+    label: "Group3",
+    total: 0
+  },
+  {
+    key: "group-4",
+    label: "Group4",
+    total: 0
+  },
+  {
+    key: "group-5",
+    label: "Group5",
+    total: 0
+  }
+];
+
 storiesOf("Components|AdvancedSelector", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => {
     const optionsCount = number("Users count", 1000);
-
-    const groups = [
-      {
-        key: "group-all",
-        label: "All groups",
-        total: 0
-      },
-      {
-        key: "group-dev",
-        label: "Development",
-        total: 0
-      },
-      {
-        key: "group-management",
-        label: "Management",
-        total: 0
-      },
-      {
-        key: "group-marketing",
-        label: "Marketing",
-        total: 0
-      },
-      {
-        key: "group-mobile",
-        label: "Mobile",
-        total: 0
-      },
-      {
-        key: "group-support",
-        label: "Support",
-        total: 0
-      },
-      {
-        key: "group-web",
-        label: "Web",
-        total: 0
-      }
-    ];
-
     const options = Array.from({ length: optionsCount }, (v, index) => {
       const additional_group = groups[getRandomInt(1, 6)];
       groups[0].total++;
@@ -77,6 +101,7 @@ storiesOf("Components|AdvancedSelector", module)
         >
           {({ value, set }) => (
             <AdvancedSelector
+              size={select("size", ["compact", "full"], "compact")}
               placeholder={text("placeholder", "Search users")}
               onSearchChanged={value => {
                 action("onSearchChanged")(value);
@@ -114,45 +139,6 @@ storiesOf("Components|AdvancedSelector", module)
   })
   .add("drop down", () => {
     const optionsCount = number("Users count", 1000);
-
-    const groups = [
-      {
-        key: "group-all",
-        label: "All groups",
-        total: 0
-      },
-      {
-        key: "group-dev",
-        label: "Development",
-        total: 0
-      },
-      {
-        key: "group-management",
-        label: "Management",
-        total: 0
-      },
-      {
-        key: "group-marketing",
-        label: "Marketing",
-        total: 0
-      },
-      {
-        key: "group-mobile",
-        label: "Mobile",
-        total: 0
-      },
-      {
-        key: "group-support",
-        label: "Support",
-        total: 0
-      },
-      {
-        key: "group-web",
-        label: "Web",
-        total: 0
-      }
-    ];
-
     const options = Array.from({ length: optionsCount }, (v, index) => {
       const additional_group = groups[getRandomInt(1, 6)];
       groups[0].total++;
@@ -179,6 +165,7 @@ storiesOf("Components|AdvancedSelector", module)
                 >
                   {({ value, set }) => (
                     <AdvancedSelector
+                      size={select("size", ["compact", "full"], "compact")}
                       isDropDown={true}
                       isOpen={isOpen}
                       placeholder={text("placeholder", "Search users")}
@@ -200,6 +187,7 @@ storiesOf("Components|AdvancedSelector", module)
                         action("onSelect")(selectedOptions);
                         toggle();
                       }}
+                      onCancel={toggle}
                       onChangeGroup={group => {
                         set(
                           options.filter(option => {

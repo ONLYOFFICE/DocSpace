@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import PasswordInput from '.';
 
 const basePasswordSettings = {
@@ -95,5 +95,45 @@ describe('<PasswordInput />', () => {
     const wrapper = mount(<PasswordInput {...baseProps} isDisabled={true} />);
 
     expect(wrapper.prop('isDisabled')).toEqual(true);
+  });
+
+  it('not re-render test', () => {
+    const wrapper = shallow(<PasswordInput {...baseProps} />).instance();
+
+    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
+
+    expect(shouldUpdate).toBe(false);
+  });
+
+  it('re-render test', () => {
+    const wrapper = shallow(<PasswordInput {...baseProps} />).instance();
+
+    const shouldUpdate = wrapper.shouldComponentUpdate({
+      inputName: 'demoPasswordInput',
+      emailInputName: 'demoEmailInput',
+      inputValue: '',
+      clipActionResource: 'Copy e-mail and password',
+      clipEmailResource: 'E-mail: ',
+      clipPasswordResource: 'Password: ',
+      tooltipPasswordTitle: 'Password must contain:',
+      tooltipPasswordLength: 'from 6 to 30 characters',
+      tooltipPasswordDigits: 'digits',
+      tooltipPasswordCapital: 'capital letters',
+      tooltipPasswordSpecial: 'special characters (!@#$%^&*)',
+      generatorSpecial: '!@#$%^&*',
+      passwordSettings: {
+        minLength: 8,
+        upperCase: false,
+        digits: false,
+        specSymbols: false
+      },
+      isDisabled: false,
+      placeholder: 'password',
+      onChange: () => jest.fn(),
+      onValidateInput: () => jest.fn(),
+      onCopyToClipboard: () => jest.fn()
+    }, wrapper.state);
+
+    expect(shouldUpdate).toBe(true);
   });
 });

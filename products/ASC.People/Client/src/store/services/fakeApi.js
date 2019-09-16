@@ -277,6 +277,13 @@ export function updateUser(data) {
   return fakeResponse(data);
 }
 
+export function updateAvatar(data) {
+  return fakeResponse(data);
+}
+export function deleteAvatar(data) {
+  return fakeResponse(data);
+}
+
 export function updateUserStatus(status, userIds) {
   return fakeResponse([
     {
@@ -517,6 +524,10 @@ export function sendInstructionsToDelete() {
 }
 
 export function sendInstructionsToChangePassword() {
+  return fakeResponse("Instruction has been sent successfully");
+}
+
+export function sendInstructionsToChangeEmail() {
   return fakeResponse("Instruction has been sent successfully");
 }
 

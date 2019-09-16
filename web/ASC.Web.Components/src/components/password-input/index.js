@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import isEqual from "lodash/isEqual";
 
 import { tablet } from '../../utils/device';
 import InputBlock from '../input-block'
@@ -66,16 +67,18 @@ const StyledTooltipItem = styled(Text.Body)`
   color: ${props => props.valid ? '#44bb00' : '#B40404'};
 `;
 
-class PasswordInput extends React.PureComponent {
+class PasswordInput extends React.Component {
 
   constructor(props) {
     super(props);
 
+    const { inputValue, inputType } = props;
+
     this.state = {
-      type: props.inputType,
+      type: inputType,
       progressColor: 'transparent',
       progressWidth: 0,
-      inputValue: '',
+      inputValue: inputValue,
       displayTooltip: false,
       validLength: false,
       validDigits: false,
@@ -171,6 +174,7 @@ class PasswordInput extends React.PureComponent {
 
     const newPassword = this.getNewPassword();
     this.checkPassword(newPassword);
+    this.props.onChange && this.props.onChange({ target: { value: newPassword } });
   }
 
   getNewPassword = () => {
@@ -235,6 +239,10 @@ class PasswordInput extends React.PureComponent {
     textField.remove();
 
     onCopyToClipboard && onCopyToClipboard(formattedText);
+  }
+
+  shouldComponentUpdate(nextProps,nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
   render() {

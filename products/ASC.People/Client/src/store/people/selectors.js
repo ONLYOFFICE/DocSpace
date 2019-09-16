@@ -1,4 +1,4 @@
-import { find, filter } from "lodash";
+import { find, filter, cloneDeep } from "lodash";
 import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
 
 export function getSelectedUser(selection, userId) {
@@ -141,5 +141,32 @@ export function toEmployeeWrapper(profile) {
         contacts: []
     };
 
-    return { ...emptyData, ...profile };
+    return cloneDeep({ ...emptyData, ...profile });
+}
+
+export function mapGroupsToGroupSelectorOptions(groups) {
+    return groups.map(group => {
+        return {
+            key: group.id,
+            label: group.name,
+            manager: group.manager,
+            total: 0
+        }
+    });
+}
+
+export function mapGroupSelectorOptionsToGroups(options) {
+    return options.map(option => {
+        return {
+            id: option.key,
+            name: option.label,
+            manager: option.manager
+        }
+    });
+}
+
+export function filterGroupSelectorOptions(options, template) { 
+    return options.filter(option => {
+        return template ? option.label.indexOf(template) > -1 : true;
+    })
 }

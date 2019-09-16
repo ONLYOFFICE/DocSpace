@@ -30,7 +30,7 @@ const StyledChildrenBlock = styled.div`
 
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
   <InputGroup {...props}></InputGroup>
-)
+);
 const StyledInputGroup = styled(CustomInputGroup)`
   ${commonInputStyle}
   :focus-within{
@@ -41,88 +41,95 @@ const StyledInputGroup = styled(CustomInputGroup)`
       margin: 0;
   }
 `;
+class InputBlock extends React.Component {
+  constructor(props) {
+    super(props);
 
-const InputBlock = React.forwardRef((props, ref) => {
-  //console.log("InputBlock render");
-  const { onChange, value, children, size } = props;
+    this.onIconClick = this.onIconClick.bind(this);
+    this.onChange = this.onChange.bind(this);
 
-  let iconButtonSize = 0;
-
-  if (typeof props.iconSize == "number" && props.iconSize > 0) {
-    iconButtonSize = props.iconSize;
-  } else {
-    switch (size) {
-      case 'base':
-        iconButtonSize = 15;
-        break;
-      case 'middle':
-        iconButtonSize = 18;
-        break;
-      case 'big':
-        iconButtonSize = 21;
-        break;
-      case 'huge':
-        iconButtonSize = 24;
-        break;
-
-      default:
-        break;
-    }
+  }
+  onIconClick(e) {
+    if(typeof this.props.onIconClick === "function") this.props.onIconClick(e);
+  }
+  onChange(e) {
+    if(typeof this.props.onChange === "function") this.props.onChange(e);
   }
 
-  const onIconClick = (e) => {
-    props.onIconClick(e, value);
-  }
+  render() {
+    let iconButtonSize = 0;
 
-  return (
-    <StyledInputGroup hasError={props.hasError} hasWarning={props.hasWarning} isDisabled={props.isDisabled} scale={props.scale} size={props.size}>
-      <InputGroupAddon addonType="prepend">
-        <StyledChildrenBlock>
-          {children}
-        </StyledChildrenBlock>
-      </InputGroupAddon>
-      <TextInput
-        id={props.id}
-        name={props.name}
-        type={props.type}
-        value={value}
-        isDisabled={props.isDisabled}
-        hasError={props.hasError}
-        hasWarning={props.hasWarning}
-        placeholder={props.placeholder}
-        tabIndex={props.tabIndex}
-        type={props.type}
-        maxLength={props.maxLength}
-        onBlur={props.onBlur}
-        onFocus={props.onFocus}
-        isReadOnly={props.isReadOnly}
-        autoFocus={props.autoFocus}
-        autoComplete={props.autoComplete}
-        size={props.size}
-        scale={props.scale}
-        onChange={onChange}
-        withBorder={false}
-        mask={props.mask}
-        keepCharPositions={props.keepCharPositions}
-      />
-      {
-        iconNames.includes(props.iconName)
-        &&
-        <InputGroupAddon addonType="append">
-          <StyledIconBlock>
-            <IconButton
-              size={iconButtonSize}
-              color={props.iconColor}
-              iconName={props.iconName}
-              isFill={props.isIconFill}
-              isDisabled={props.isDisabled}
-              onClick={typeof props.onIconClick == 'function' ? onIconClick : undefined} />
-          </StyledIconBlock>
-        </InputGroupAddon>
+    if (typeof this.props.iconSize == "number" && this.props.iconSize > 0) {
+      iconButtonSize = this.props.iconSize;
+    } else {
+      switch (this.props.size) {
+        case 'base':
+          iconButtonSize = 15;
+          break;
+        case 'middle':
+          iconButtonSize = 18;
+          break;
+        case 'big':
+          iconButtonSize = 21;
+          break;
+        case 'huge':
+          iconButtonSize = 24;
+          break;
+
+        default:
+          break;
       }
-    </StyledInputGroup>
-  );
-});
+    }
+
+    return (
+      <StyledInputGroup hasError={this.props.hasError} hasWarning={this.props.hasWarning} isDisabled={this.props.isDisabled} scale={this.props.scale} size={this.props.size}>
+        <InputGroupAddon addonType="prepend">
+          <StyledChildrenBlock>
+            {this.props.children}
+          </StyledChildrenBlock>
+        </InputGroupAddon>
+        <TextInput
+          id={this.props.id}
+          name={this.props.name}
+          type={this.props.type}
+          value={this.props.value}
+          isDisabled={this.props.isDisabled}
+          hasError={this.props.hasError}
+          hasWarning={this.props.hasWarning}
+          placeholder={this.props.placeholder}
+          tabIndex={this.props.tabIndex}
+          maxLength={this.props.maxLength}
+          onBlur={this.props.onBlur}
+          onFocus={this.props.onFocus}
+          isReadOnly={this.props.isReadOnly}
+          isAutoFocussed={this.props.isAutoFocussed}
+          autoComplete={this.props.autoComplete}
+          size={this.props.size}
+          scale={this.props.scale}
+          onChange={this.onChange}
+          withBorder={false}
+          mask={this.props.mask}
+          keepCharPositions={this.props.keepCharPositions}
+        />
+        {
+          iconNames.includes(this.props.iconName)
+          &&
+          <InputGroupAddon addonType="append">
+            <StyledIconBlock>
+              <IconButton
+                size={iconButtonSize}
+                color={this.props.iconColor}
+                iconName={this.props.iconName}
+                isFill={this.props.isIconFill}
+                isDisabled={this.props.isDisabled}
+                onClick={this.onIconClick} />
+            </StyledIconBlock>
+          </InputGroupAddon>
+        }
+      </StyledInputGroup>
+    );
+  }
+}
 
 InputBlock.propTypes = {
 
@@ -132,7 +139,7 @@ InputBlock.propTypes = {
   maxLength: PropTypes.number,
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
-  mask: PropTypes.oneOfType([ PropTypes.array, PropTypes.func ]),
+  mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
   keepCharPositions: PropTypes.bool,
 
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
@@ -148,15 +155,12 @@ InputBlock.propTypes = {
   hasError: PropTypes.bool,
   hasWarning: PropTypes.bool,
   autoComplete: PropTypes.string,
-
   value: PropTypes.string,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
   iconSize: PropTypes.number,
   isIconFill: PropTypes.bool,
-  isDisabled: PropTypes.bool,
   onIconClick: PropTypes.func,
-  onChange: PropTypes.func,
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),

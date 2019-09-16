@@ -8,6 +8,12 @@ namespace ASC.People.Models
         public List<IFormFile> Files { get; set; }
         public bool Autosave { get; set; }
     }
+    public class UploadCroppedPhotoModel
+    {
+        public string base64CroppedImage { get; set; }
+        public string base64DefaultImage { get; set; }
+        public bool Autosave { get; set; }
+    }
 
     public class FileUploadResult
     {

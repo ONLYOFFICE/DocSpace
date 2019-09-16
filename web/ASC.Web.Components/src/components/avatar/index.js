@@ -87,10 +87,10 @@ const NamedAvatar = styled.div`
     transform: translate(-50%, -50%);
     font-weight: 600;
     font-size: ${props =>
-      (props.size === 'max' && '72px') ||
-      (props.size === 'big' && '34px') ||
-      (props.size === 'medium' && '20px') ||
-      (props.size === 'small' && '12px')
+    (props.size === 'max' && '72px') ||
+    (props.size === 'big' && '34px') ||
+    (props.size === 'medium' && '20px') ||
+    (props.size === 'small' && '12px')
   };
     color: ${whiteColor};
 
@@ -144,12 +144,10 @@ const getRoleIcon = role => {
 };
 
 const getInitials = userName =>
-  typeof userName === 'string'
-    ? userName
-      .split(/\s/)
-      .reduce((response, word) => response += word.slice(0, 1), '')
-      .substring(0, 2)
-    : '';
+  userName
+    .split(/\s/)
+    .reduce((response, word) => response += word.slice(0, 1), '')
+    .substring(0, 2);
 
 const Initials = props => (
   <NamedAvatar {...props}>{getInitials(props.userName)}</NamedAvatar>

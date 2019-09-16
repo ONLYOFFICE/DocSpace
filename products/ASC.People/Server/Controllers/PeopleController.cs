@@ -64,6 +64,7 @@ namespace ASC.Employee.Core.Controllers
         public AuthContext AuthContext { get; }
         public WebItemManager WebItemManager { get; }
         public PasswordSettings PasswordSettings { get; }
+        public CustomNamingPeople CustomNamingPeople { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -82,7 +83,8 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext permissionContext,
             AuthContext authContext,
             WebItemManager webItemManager,
-            PasswordSettings passwordSettings)
+            PasswordSettings passwordSettings,
+            CustomNamingPeople customNamingPeople)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -102,6 +104,7 @@ namespace ASC.Employee.Core.Controllers
             AuthContext = authContext;
             WebItemManager = webItemManager;
             PasswordSettings = passwordSettings;
+            CustomNamingPeople = customNamingPeople;
         }
 
         [Read("info")]
@@ -353,10 +356,8 @@ namespace ASC.Employee.Core.Controllers
         [Authorize(AuthenticationSchemes = "confirm")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
-            if (HttpContext.User.IsInRole(ASC.Common.Security.Authorizing.Role.System))
-            {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-            }
+            ApiContext.AuthByClaim();
+
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
             if (string.IsNullOrEmpty(memberModel.Password))
@@ -625,11 +626,114 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
-
-        [Create("{userid}/photo")]
-        public ASC.People.Models.FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        
+        public FormFile Base64ToImage(string base64String, string fileName)
         {
-            var result = new ASC.People.Models.FileUploadResult();
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length);
+
+            ms.Write(imageBytes, 0, imageBytes.Length);
+            return new FormFile(ms, 0, ms.Length, fileName, fileName);
+        }
+
+        [Create("{userid}/photo/cropped")]
+        public People.Models.FileUploadResult UploadCroppedMemberPhoto(string userid, UploadCroppedPhotoModel model)
+        {
+            var result = new People.Models.FileUploadResult();
+
+            try
+            {
+                Guid userId;
+                try
+                {
+                    userId = new Guid(userid);
+                }
+                catch
+                {
+                    userId = SecurityContext.CurrentAccount.ID;
+                }
+
+                PermissionContext.DemandPermissions(new UserSecurityProvider(userId), Constants.Action_EditUser);
+
+                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_"+ userId.ToString());
+                var defaultUserPhoto = Base64ToImage(model.base64DefaultImage, "defaultPhoto" + userId.ToString());
+
+                if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
+                {
+                    result.Success = false;
+                    result.Message = FileSizeComment.FileImageSizeExceptionString;
+                    return result;
+                }
+
+                var data = new byte[userPhoto.Length];
+                using var inputStream = userPhoto.OpenReadStream();
+
+                var br = new BinaryReader(inputStream);
+                br.Read(data, 0, (int)userPhoto.Length);
+                br.Close();
+
+                var defaultData = new byte[defaultUserPhoto.Length];
+                using var defaultInputStream = defaultUserPhoto.OpenReadStream();
+
+                var defaultBr = new BinaryReader(defaultInputStream);
+                defaultBr.Read(defaultData, 0, (int)defaultUserPhoto.Length);
+                defaultBr.Close();
+
+                CheckImgFormat(data);
+
+                if (model.Autosave)
+                {
+                    if (data.Length > SetupInfo.MaxImageUploadSize)
+                        throw new ImageSizeLimitException();
+
+                    var mainPhoto = UserPhotoManager.SaveOrUpdateCroppedPhoto(userId, data, defaultData);
+
+                    result.Data =
+                        new
+                        {
+                            main = mainPhoto,
+                            retina = UserPhotoManager.GetRetinaPhotoURL(userId),
+                            max = UserPhotoManager.GetMaxPhotoURL(userId),
+                            big = UserPhotoManager.GetBigPhotoURL(userId),
+                            medium = UserPhotoManager.GetMediumPhotoURL(userId),
+                            small = UserPhotoManager.GetSmallPhotoURL(userId),
+                        };
+                }
+                else
+                {
+                    result.Data = UserPhotoManager.SaveTempPhoto(data, SetupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                }
+
+                result.Success = true;
+
+            }
+            catch (UnknownImageFormatException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorUnknownFileImageType;
+            }
+            catch (ImageWeightLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageWeightLimit;
+            }
+            catch (ImageSizeLimitException)
+            {
+                result.Success = false;
+                result.Message = PeopleResource.ErrorImageSizetLimit;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = ex.Message.HtmlEncode();
+            }
+
+            return result;
+        }
+        [Create("{userid}/photo")]
+        public People.Models.FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        {
+            var result = new People.Models.FileUploadResult();
             try
             {
                 if (model.Files.Count != 0)
@@ -833,6 +937,54 @@ namespace ASC.Employee.Core.Controllers
             }
 
             return new EmployeeWraperFull(GetUserInfo(userid.ToString()), ApiContext, UserManager, UserPhotoManager, WebItemSecurity);
+        }
+
+
+        [Create("email", false)]
+        public string SendEmailChangeInstructions(UpdateMemberModel model)
+        {
+            Guid.TryParse(model.UserId, out var userid);
+
+            if (userid == Guid.Empty) throw new ArgumentNullException("userid");
+
+            var email = (model.Email ?? "").Trim();
+
+            if (string.IsNullOrEmpty(email)) throw new Exception(Resource.ErrorEmailEmpty);
+
+            if (!email.TestEmailRegex()) throw new Exception(Resource.ErrorNotCorrectEmail);
+
+            var viewer = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var user = UserManager.GetUsers(userid);
+
+            if (user == null)
+                throw new Exception(Resource.ErrorUserNotFound);
+
+            if (viewer == null || (user.IsOwner(Tenant) && viewer.ID != user.ID))
+                throw new Exception(Resource.ErrorAccessDenied);
+
+            var existentUser = UserManager.GetUserByEmail(email);
+
+            if (existentUser.ID != Constants.LostUser.ID)
+                throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
+
+            if (!viewer.IsAdmin(UserManager))
+            {
+                StudioNotifyService.SendEmailChangeInstructions(Tenant.TenantId, user, email);
+            }
+            else
+            {
+                if (email == user.Email)
+                    throw new Exception(Resource.ErrorEmailsAreTheSame);
+
+                user.Email = email;
+                user.ActivationStatus = EmployeeActivationStatus.NotActivated;
+                UserManager.SaveUserInfo(user);
+                StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, email);
+            }
+
+            MessageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, UserManager));
+
+            return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
         }
 
         private UserInfo GetUserInfo(string userNameOrId)

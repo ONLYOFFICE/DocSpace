@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using System.Security.Claims;
 using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
@@ -38,7 +39,7 @@ namespace ASC.Api.Core
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
 
-        public ApiContext(IHttpContextAccessor httpContextAccessor)
+        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext)
         {
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
             HttpContext = httpContextAccessor.HttpContext;
@@ -79,6 +80,8 @@ namespace ASC.Api.Core
             {
                 UpdatedSince = Convert.ToDateTime(updatedSince);
             }
+
+            SecurityContext = securityContext;
         }
 
         public string[] Fields { get; set; }
@@ -191,6 +194,9 @@ namespace ASC.Api.Core
                 }
             }
         }
+
+        public SecurityContext SecurityContext { get; }
+
         public ApiContext SetCount(int count)
         {
             HttpContext.Items[nameof(Count)] = count;
@@ -206,6 +212,15 @@ namespace ASC.Api.Core
         {
             return string.Format("C:{0},S:{1},So:{2},Sd:{3},Fb;{4},Fo:{5},Fv:{6},Us:{7},Ftt:{8}", Count, StartIndex,
                                  SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
+        }
+
+        public void AuthByClaim()
+        {
+            var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
+            if (Guid.TryParse(id?.Value, out var userId))
+            {
+                _ = SecurityContext.AuthenticateMe(Tenant.TenantId, userId);
+            }
         }
     }
 

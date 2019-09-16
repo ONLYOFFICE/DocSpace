@@ -68,6 +68,17 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
+export function updateAvatar(profileId, data) {
+  return IS_FAKE
+    ? fakeApi.updateAvatar()
+    : axios.post(`${API_URL}/people/${profileId}/photo/cropped`, data);
+}
+export function deleteAvatar(profileId) {
+
+  return IS_FAKE
+    ? fakeApi.deleteAvatar()
+    : axios.delete(`${API_URL}/people/${profileId}/photo`, profileId);
+}
 
 export function getInitInfo() {
   return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(
@@ -111,8 +122,14 @@ export function sendInstructionsToDelete() {
 
 export function sendInstructionsToChangePassword(email) {
   return IS_FAKE
-    ? fakeApi.sendInstructionsToChangePassword(email)
+    ? fakeApi.sendInstructionsToChangePassword()
     : axios.post(`${API_URL}/people/password.json`, { email });
+}
+
+export function sendInstructionsToChangeEmail(userId, email) {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToChangeEmail()
+    : axios.post(`${API_URL}/people/email.json`, { userId, email });
 }
 
 export function deleteUser(userId) {

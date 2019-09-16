@@ -26,8 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Security.Authentication;
+using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
@@ -224,7 +226,14 @@ namespace ASC.Core
                 cookie = CookieStorage.EncryptCookie(TenantCookieSettings, CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
-            AuthContext.Principal = new GenericPrincipal(account, roles.ToArray());
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Sid, account.ID.ToString()),
+                new Claim(ClaimTypes.Name, account.Name)
+            };
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            AuthContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
 
             return cookie;
         }
@@ -306,14 +315,13 @@ namespace ASC.Core
 
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        internal IPrincipal Principal
+        internal ClaimsPrincipal Principal
         {
-            get => Thread.CurrentPrincipal ?? HttpContextAccessor?.HttpContext?.User;
+            get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
             set
             {
-                var principal = new CustomClaimsPrincipal(value);
-                Thread.CurrentPrincipal = principal;
-                if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = principal;
+                Thread.CurrentPrincipal = value;
+                if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
             }
         }
     }

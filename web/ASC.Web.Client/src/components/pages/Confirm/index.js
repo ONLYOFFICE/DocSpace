@@ -1,10 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import { withRouter } from "react-router";
-import { useTranslation } from 'react-i18next';
+import { I18nextProvider, withTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
+import { Collapse } from 'reactstrap';
+import { connect } from 'react-redux';
+import { getPasswordSettings, createConfirmUser } from '../../../store/auth/actions';
 
 const inputWidth = '400px';
 
@@ -12,272 +15,316 @@ const ConfirmContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: 200px;
 
-    .confirm-block-title {
-        margin: 20px 0px;
+    @media (max-width: 830px) {
+            margin-left: 40px;
+        }
+
+    .start-basis {
+        align-items: flex-start;
+    }
+    
+    .margin-left {
+        margin-left: 20px;
     }
 
-    .login-row {
+    .full-width {
+        width: ${inputWidth}
+    }
+
+    .confirm-row {
         margin: 23px 0 0;
     }
 
-    .input-container {
-
-        margin-left: 13%;
-
-        @media (max-width: 1500px) {
-            margin-left: 22%;
-        }
-    
-
-        @media (max-width: 768px) {
-            margin-left: 5%;
-        }
-        
-
-        input {
-            width: ${inputWidth};
-        }
+    .break-word {
+        word-break: break-word;
     }
 
-    .join-button {
-        align-self: baseline;
-    }
 `;
 
-const passwordSettings = {
-    minLength: 6,
-    upperCase: true,
-    digits: true,
-    specSymbols: true
-};
 
 const emailInputName = 'email';
 const passwordInputName = 'password';
 
-const isLoaded = true;
+const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+const validationEmail = new RegExp(emailRegex);
 
-const Confirm = (props) => {
-    const { t } = useTranslation('translation', { i18n });
-    const [email, setEmail] = useState('');
-    const [emailValid, setEmailValid] = useState(true);
-    const [firstName, setFirstName] = useState('');
-    const [firstNameValid, setFirstNameValid] = useState(true);
-    const [lastName, setLastName] = useState('');
-    const [lastNameValid, setLastNameValid] = useState(true);
-    const [password, setPassword] = useState('');
-    const [passwordValid, setPasswordValid] = useState(true);
-    const [errorText, setErrorText] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+class Confirm extends React.PureComponent {
 
-    const queryString = window.location.search.slice(1);
-    const queryParams = queryString.split('&');
-    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-    // const linkParams = Object.fromEntries(arrayOfQueryParams);
-    const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-    const validationEmail = new RegExp(emailRegex);
+    constructor(props) {
+        super(props);
 
-    const onSubmit = useCallback((e) => {
-        //e.preventDefault();
+        this.state = {
+            email: '',
+            emailValid: true,
+            firstName: '',
+            firstNameValid: true,
+            lastName: '',
+            lastNameValid: true,
+            password: '',
+            passwordValid: true,
+            errorText: '',
+            isLoading: false,
+        };
+    }
 
-        errorText && setErrorText("");
+    onSubmit = (e) => {
+
+        const { location, history, createConfirmUser } = this.props;
+        const queryString = location.search.slice(1);
+        const queryParams = queryString.split('&');
+        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+        const linkParams = Object.fromEntries(arrayOfQueryParams);
+        const isVisitor = parseInt(linkParams.emplType) === 2;
+
+        this.state.errorText && this.setState({ errorText: "" });
 
         let hasError = false;
 
-        if (!firstName.trim()) {
+        if (!this.state.firstName.trim()) {
             hasError = true;
-            setFirstNameValid(!hasError);
+            this.setState({ firstNameValid: !hasError });
         }
 
-        if (!lastName.trim()) {
+        if (!this.state.lastName.trim()) {
             hasError = true;
-            setLastNameValid(!hasError);
+            this.setState({ lastNameValid: !hasError });
         }
 
-        if (!validationEmail.test(email.trim())) {
+        if (!validationEmail.test(this.state.email.trim())) {
             hasError = true;
-            setEmailValid(!hasError);
+            this.setState({ emailValid: !hasError });
         }
-        const passwordValue = (document.getElementsByName(passwordInputName)[0].value);
-        if (!passwordValue || !passwordValid) {
+
+        if (!this.state.passwordValid) {
             hasError = true;
-            setPasswordValid(!hasError);
+            this.setState({ passwordValid: !hasError });
         }
 
         if (hasError)
             return false;
 
-        setIsLoading(true);
+        this.setState({ isLoading: true });
 
-
-    }, [errorText, email, firstName, lastName, validationEmail, passwordValid]);
-
-    const onKeyPress = useCallback((target) => {
-        if (target.code === "Enter") {
-            onSubmit();
+        const loginData = {
+            userName: this.state.email,
+            password: this.state.password
         }
-    }, [onSubmit]);
-
-
-    useEffect(() => {
-        window.addEventListener('keydown', onKeyPress);
-        window.addEventListener('keyup', onKeyPress);
-        // Remove event listeners on cleanup
-        return () => {
-            window.removeEventListener('keydown', onKeyPress);
-            window.removeEventListener('keyup', onKeyPress);
+        const registerData = {
+            firstname: this.state.firstName,
+            lastname: this.state.lastName,
+            email: this.state.email,
+            isVisitor: isVisitor
         };
-    }, [onKeyPress]);
+        createConfirmUser(registerData, loginData, queryString)
+            .then(() => history.push('/'))
+            .catch(e => {
+                console.error("confirm error", e);
+                this.setState({ errorText: e.message });
+                this.setState({ isLoading: false });
+            });
+    };
 
-    const onCopyToClipboard = () => toastr.success(t('EmailAndPasswordCopiedToClipboard'));
-    const validatePassword = (value) => setPasswordValid(value);
+    onKeyPress = (target) => {
+        if (target.code === "Enter") {
+            this.onSubmit();
+        }
+    };
 
-    return (
-        !isLoaded
-            ? (
-                <Loader className="pageLoader" type="rombs" size={40} />
+    onCopyToClipboard = () => toastr.success(this.props.t('EmailAndPasswordCopiedToClipboard'));
+    validatePassword = (value) => this.setState({ passwordValid: value });
+
+    componentDidMount() {
+        const { getPasswordSettings, history, location } = this.props;
+        const queryString = location.search.slice(1);
+
+        getPasswordSettings(queryString)
+            .then(
+                function () {
+                    console.log("get settings success");
+                }
             )
-            : (
-                <ConfirmContainer>
+            .catch(e => {
+                console.error("get settings error", e);
+                history.push(`/login/${e}`);
+            });
 
-                    <Text.Body className='confirm-block-title' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
+        window.addEventListener('keydown', this.onKeyPress);
+        window.addEventListener('keyup', this.onKeyPress);
+    }
 
-                    <div className='login-row'>
-                        <a href='/login'>
-                            <img src="images/dark_general.png" alt="Logo" />
-                        </a>
-                        <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
-                    </div>
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.onKeyPress);
+        window.removeEventListener('keyup', this.onKeyPress);
+    }
 
-                    <div className='input-container login-row'>
+    render() {
+        const { settings, isLoaded, t } = this.props;
+        return (
+            !isLoaded
+                ? (
+                    <Loader className="pageLoader" type="rombs" size={40} />
+                )
+                : (
+                    <ConfirmContainer>
+                        <div className='start-basis'>
+                            <div className='margin-left'>
+                                <Text.Body className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
 
-                        <FieldContainer isVertical={true} className=''>
-                            <TextInput
-                                id='name'
-                                name='name'
-                                value={firstName}
-                                placeholder={t('FirstName')}
-                                size='huge'
-                                scale={true}
-                                tabIndex={1}
-                                isAutoFocussed={true}
-                                autoComplete='given-name'
-                                isDisabled={isLoading}
-                                hasError={!firstNameValid}
-                                onChange={event => {
-                                    setFirstName(event.target.value);
-                                    !firstNameValid && setFirstNameValid(true);
-                                    errorText && setErrorText("");
-                                }}
-                                onKeyDown={event => onKeyPress(event.target)}
-                            />
+                                <div className='confirm-row full-width break-word'>
+                                    <a href='/login'>
+                                        <img src="images/dark_general.png" alt="Logo" />
+                                    </a>
+                                    <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+                                </div>
+                            </div>
 
-                        </FieldContainer>
+                            <div className='confirm-row'>
+                                <div className='full-width'>
+                                    <FieldContainer isVertical={true} className=''>
+                                        <TextInput
+                                            id='name'
+                                            name='name'
+                                            value={this.state.firstName}
+                                            placeholder={t('FirstName')}
+                                            size='huge'
+                                            scale={true}
+                                            tabIndex={1}
+                                            isAutoFocussed={true}
+                                            autoComplete='given-name'
+                                            isDisabled={this.state.isLoading}
+                                            hasError={!this.state.firstNameValid}
+                                            onChange={event => {
+                                                this.setState({ firstName: event.target.value });
+                                                !this.state.firstNameValid && this.setState({ firstNameValid: event.target.value });
+                                                this.state.errorText && this.setState({ errorText: "" });
+                                            }}
+                                            onKeyDown={event => this.onKeyPress(event.target)}
+                                        />
+                                    </FieldContainer>
 
-                        <FieldContainer isVertical={true} className=''>
+                                    <FieldContainer isVertical={true} className=''>
+                                        <TextInput
+                                            id='surname'
+                                            name='surname'
+                                            value={this.state.lastName}
+                                            placeholder={t('LastName')}
+                                            size='huge'
+                                            scale={true}
+                                            tabIndex={2}
+                                            autoComplete='family-name'
+                                            isDisabled={this.state.isLoading}
+                                            hasError={!this.state.lastNameValid}
+                                            onChange={event => {
+                                                this.setState({ lastName: event.target.value });
+                                                !this.state.lastNameValid && this.setState({ lastNameValid: true });
+                                                this.state.errorText && this.setState({ errorText: "" });;
+                                            }}
+                                            onKeyDown={event => this.onKeyPress(event.target)}
+                                        />
+                                    </FieldContainer>
 
-                            <TextInput
-                                id='surname'
-                                name='surname'
-                                value={lastName}
-                                placeholder={t('LastName')}
-                                size='huge'
-                                scale={true}
-                                tabIndex={2}
-                                autoComplete='family-name'
-                                isDisabled={isLoading}
-                                hasError={!lastNameValid}
-                                onChange={event => {
-                                    setLastName(event.target.value);
-                                    !lastNameValid && setLastNameValid(true);
-                                    errorText && setErrorText("");
-                                }}
-                                onKeyDown={event => onKeyPress(event.target)}
-                            />
+                                    <FieldContainer isVertical={true} className=''>
+                                        <TextInput
+                                            id='email'
+                                            name={emailInputName}
+                                            value={this.state.email}
+                                            placeholder={t('Email')}
+                                            size='huge'
+                                            scale={true}
+                                            tabIndex={3}
+                                            autoComplete='email'
+                                            isDisabled={this.state.isLoading}
+                                            hasError={!this.state.emailValid}
+                                            onChange={event => {
+                                                this.setState({ email: event.target.value });
+                                                !this.state.emailValid && this.setState({ emailValid: true });
+                                                this.state.errorText && this.setState({ errorText: "" });;
+                                            }}
+                                            onKeyDown={event => this.onKeyPress(event.target)}
+                                        />
 
-                        </FieldContainer>
+                                    </FieldContainer>
+                                </div>
 
-                        <FieldContainer isVertical={true} className=''>
-                            <TextInput
-                                id='email'
-                                name={emailInputName}
-                                value={email}
-                                placeholder={t('Email')}
-                                size='huge'
-                                scale={true}
-                                tabIndex={3}
-                                autoComplete='email'
-                                isDisabled={isLoading}
-                                hasError={!emailValid}
-                                onChange={event => {
-                                    setEmail(event.target.value);
-                                    !emailValid && setEmailValid(true);
-                                    errorText && setErrorText("");
-                                }}
-                                onKeyDown={event => onKeyPress(event.target)}
-                            />
+                                <FieldContainer isVertical={true} className=''>
+                                    <PasswordInput
+                                        inputName={passwordInputName}
+                                        emailInputName={emailInputName}
+                                        inputValue={this.state.password}
+                                        placeholder={t('InvitePassword')}
+                                        size='huge'
+                                        scale={true}
+                                        tabIndex={4}
+                                        maxLength={30}
+                                        inputWidth={inputWidth}
+                                        hasError={!this.state.passwordValid && !this.state.password.trim()}
+                                        onChange={event => {
+                                            this.setState({ password: event.target.value });
+                                            !this.state.passwordValid && this.setState({ passwordValid: true });
+                                            this.state.errorText && this.setState({ errorText: "" });
+                                            this.onKeyPress(event.target);
+                                        }}
+                                        onCopyToClipboard={this.onCopyToClipboard}
+                                        onValidateInput={this.validatePassword}
+                                        clipActionResource={t('CopyEmailAndPassword')}
+                                        clipEmailResource={`${t('Email')}: `}
+                                        clipPasswordResource={`${t('InvitePassword')}: `}
+                                        tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+                                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
+                                        tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+                                        tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+                                        tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
+                                        generatorSpecial="!@#$%^&*"
+                                        passwordSettings={settings}
+                                        isDisabled={this.state.isLoading}
+                                    />
+                                </FieldContainer>
 
-                        </FieldContainer>
+                                <Button
+                                    primary
+                                    size='big'
+                                    label={t('LoginRegistryButton')}
+                                    tabIndex={5}
+                                    isDisabled={this.state.isLoading}
+                                    isLoading={this.state.isLoading}
+                                    onClick={this.onSubmit}
+                                />
 
-                        <FieldContainer isVertical={true} className=''>
-                            <PasswordInput
-                                inputName={passwordInputName}
-                                emailInputName={emailInputName}
-                                inputValue={password}
-                                placeholder={t('InvitePassword')}
-                                size='huge'
-                                scale={true}
-                                tabIndex={4}
-                                maxLength={30}
-                                inputWidth={inputWidth}
-                                hasError={!passwordValid}
-                                onChange={event => {
-                                    setPassword(event.target.value);
-                                    !passwordValid && setPasswordValid(true);
-                                    errorText && setErrorText("");
-                                    onKeyPress(event.target);
-                                }}
-                                onCopyToClipboard={onCopyToClipboard}
-                                onValidateInput={validatePassword}
-                                clipActionResource={t('CopyEmailAndPassword')}
-                                clipEmailResource={`${t('Email')}: `}
-                                clipPasswordResource={`${t('InvitePassword')}: `}
-                                tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                                tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
-                                tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
-                                tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
-                                tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
-                                generatorSpecial="!@#$%^&*"
-                                passwordSettings={passwordSettings}
-                                isDisabled={isLoading}
-                            />
-                        </FieldContainer>
+                            </div>
 
-                        <div className='login-row join-button'>
-                            <Button
-                                primary
-                                size='big'
-                                label={t('LoginRegistryButton')}
-                                tabIndex={5}
-                                isDisabled={isLoading}
-                                isLoading={isLoading}
-                                onClick={onSubmit}
-                            />
-                        </div>
-
-                    </div>
-
-                    {/*             <Row className='login-row'>
+                            {/*             <Row className='confirm-row'>
 
                     <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
 
             </Row>
  */}
-                </ConfirmContainer>
-            )
-    );
+                            <Collapse className='confirm-row'
+                                isOpen={!!this.state.errorText}>
+                                <div className="alert alert-danger">{this.state.errorText}</div>
+                            </Collapse>
+                        </div>
+                    </ConfirmContainer>
+                )
+        );
+    }
 }
 
-const ConfirmForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...props} />} />);
+const ConfirmWrapper = withTranslation()(Confirm);
 
-export default withRouter(ConfirmForm);
+const ConfirmWithTrans = (props) => <I18nextProvider i18n={i18n}><ConfirmWrapper {...props} /></I18nextProvider>;
+
+ConfirmWithTrans.propTypes = {
+};
+const ConfirmForm = (props) => (<PageLayout sectionBodyContent={<ConfirmWithTrans {...props} />} />);
+
+
+function mapStateToProps(state) {
+    return {
+        isLoaded: state.auth.isLoaded,
+        settings: state.auth.password
+    };
+}
+
+export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(ConfirmForm));

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
 
-const ClearScrollbar = ({isDisabled, ...props}) => <Scrollbar {...props} />
+const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
     :focus-within {
@@ -23,7 +23,7 @@ const StyledScrollbar = styled(ClearScrollbar)`
 }
 
 `;
-const ClearTextareaAutosize = ({isDisabled, ...props}) => <TextareaAutosize {...props} />
+const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {...props} />
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
@@ -49,9 +49,10 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 class Textarea extends React.PureComponent {
 
   render() {
-    // console.log('Textarea render');
+    console.log('Textarea render');
     return (
       <StyledScrollbar
+        className={this.props.className}
         stype='preMediumBlack'
         isDisabled={this.props.isDisabled}
       >
@@ -65,7 +66,7 @@ class Textarea extends React.PureComponent {
           isDisabled={this.props.isDisabled}
           disabled={this.props.isDisabled}
           readOnly={this.props.isReadOnly}
-          defaultValue={this.props.value}
+          value={this.props.value}
         />
       </StyledScrollbar>
     )
@@ -81,7 +82,8 @@ Textarea.propTypes = {
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
-  value: PropTypes.string
+  value: PropTypes.string,
+  className: PropTypes.string
 }
 
 Textarea.defaultProps = {
@@ -90,6 +92,7 @@ Textarea.defaultProps = {
   placeholder: '',
   value: '',
   tabIndex: -1,
+  className: ''
 }
 
 export default Textarea;
