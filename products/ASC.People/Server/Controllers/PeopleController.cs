@@ -522,7 +522,7 @@ namespace ASC.Employee.Core.Controllers
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
                 UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                WebItemSecurity.ClearCache();
+                WebItemSecurity.ClearCache(Tenant.TenantId);
             }
 
             if (!self && !memberModel.IsVisitor && user.IsVisitor(UserManager))
@@ -531,7 +531,7 @@ namespace ASC.Employee.Core.Controllers
                 if (TenantStatisticsProvider.GetUsersCount() < usersQuota)
                 {
                     UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                    WebItemSecurity.ClearCache();
+                    WebItemSecurity.ClearCache(Tenant.TenantId);
                 }
                 else
                 {
@@ -1044,13 +1044,13 @@ namespace ASC.Employee.Core.Controllers
                             if (TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers)
                             {
                                 UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                                WebItemSecurity.ClearCache();
+                                WebItemSecurity.ClearCache(Tenant.TenantId);
                             }
                         }
                         break;
                     case EmployeeType.Visitor:
                         UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                        WebItemSecurity.ClearCache();
+                        WebItemSecurity.ClearCache(Tenant.TenantId);
                         break;
                 }
             }

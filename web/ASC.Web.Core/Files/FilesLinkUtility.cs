@@ -335,13 +335,13 @@ namespace ASC.Web.Core.Files
             return FileRedirectPreviewUrlString + "&" + (isFile ? FileId : FolderId) + "=" + HttpUtility.UrlEncode(enrtyId.ToString());
         }
 
-        public static string GetInitiateUploadSessionUrl(object folderId, object fileId, string fileName, long contentLength, SecurityContext securityContext)
+        public static string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, SecurityContext securityContext)
         {
             var queryString = string.Format("?initiate=true&{0}={1}&fileSize={2}&tid={3}&userid={4}&culture={5}",
                                             FileTitle,
                                             HttpUtility.UrlEncode(fileName),
                                             contentLength,
-                                            TenantProvider.CurrentTenantID,
+                                            tenantId,
                                             HttpUtility.UrlEncode(InstanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
                                             Thread.CurrentThread.CurrentUICulture.Name);
 

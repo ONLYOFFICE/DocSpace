@@ -124,7 +124,7 @@ namespace ASC.Data.Reassigns
                 SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
 
                 long crmSpace;
-                GetUsageSpace(tenant, out var docsSpace, out var mailSpace, out var talkSpace);
+                GetUsageSpace(out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", FromUser);
 
@@ -184,11 +184,11 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void GetUsageSpace(Tenant tenant, out long docsSpace, out long mailSpace, out long talkSpace)
+        private void GetUsageSpace(out long docsSpace, out long mailSpace, out long talkSpace)
         {
             docsSpace = mailSpace = talkSpace = 0;
 
-            var webItems = WebItemManagerSecurity.GetItems(tenant, Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
+            var webItems = WebItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var item in webItems)
             {

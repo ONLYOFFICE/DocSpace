@@ -38,10 +38,12 @@ namespace ASC.Web.Studio.UserControls.Statistics
     public class TenantStatisticsProvider
     {
         public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
 
-        public TenantStatisticsProvider(UserManager userManager)
+        public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
         {
             UserManager = userManager;
+            TenantManager = tenantManager;
         }
 
         public int GetUsersCount()
@@ -51,7 +53,7 @@ namespace ASC.Web.Studio.UserControls.Statistics
 
         public long GetUsedSize()
         {
-            return GetUsedSize(TenantProvider.CurrentTenantID);
+            return GetUsedSize(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public long GetUsedSize(int tenant)
@@ -61,7 +63,7 @@ namespace ASC.Web.Studio.UserControls.Statistics
 
         public long GetUsedSize(Guid moduleId)
         {
-            return GetQuotaRows(TenantProvider.CurrentTenantID).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
+            return GetQuotaRows(TenantManager.GetCurrentTenant().TenantId).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
         }
 
         public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)

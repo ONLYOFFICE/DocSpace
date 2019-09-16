@@ -74,10 +74,10 @@ namespace ASC.Web.Core.WhiteLabel
             };
         }
 
-        public void RestoreDefault()
+        public void RestoreDefault(TenantLogoManager tenantLogoManager)
         {
             RestoreDefaultTenantName();
-            RestoreDefaultLogo();
+            RestoreDefaultLogo(tenantLogoManager);
         }
 
         public void RestoreDefaultTenantName()
@@ -87,11 +87,11 @@ namespace ASC.Web.Core.WhiteLabel
             CoreContext.TenantManager.SaveTenant(currentTenant);
         }
 
-        public void RestoreDefaultLogo()
+        public void RestoreDefaultLogo(TenantLogoManager tenantLogoManager)
         {
             _isDefault = true;
 
-            var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), "logo");
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
             try
             {
                 store.DeleteFiles("", "*", false);
@@ -101,12 +101,12 @@ namespace ASC.Web.Core.WhiteLabel
             }
             CompanyLogoSize = default;
 
-            TenantLogoManager.RemoveMailLogoDataFromCache();
+            tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
-        public void SetCompanyLogo(string companyLogoFileName, byte[] data)
+        public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantLogoManager tenantLogoManager)
         {
-            var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), "logo");
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
 
             if (!_isDefault)
             {
@@ -128,7 +128,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
             _isDefault = false;
 
-            TenantLogoManager.RemoveMailLogoDataFromCache();
+            tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
         public string GetAbsoluteCompanyLogoPath()
@@ -138,7 +138,7 @@ namespace ASC.Web.Core.WhiteLabel
                 return WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark_general.png");
             }
 
-            var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), "logo");
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
             return store.GetUri(_companyLogoFileName ?? "").ToString();
         }
 
@@ -149,7 +149,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             if (_isDefault) return null;
 
-            var storage = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), "logo");
+            var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), "logo");
 
             if (storage == null) return null;
 

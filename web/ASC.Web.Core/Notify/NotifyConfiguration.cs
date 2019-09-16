@@ -175,7 +175,7 @@ namespace ASC.Web.Studio.Core.Notify
                              }
                              if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                              {
-                                 return !webItemSecurity.IsAvailableForUser(tenant, productId, u.ID);
+                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
                              }
                          }
 
@@ -255,7 +255,7 @@ namespace ASC.Web.Studio.Core.Notify
             var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
             var additionalWhiteLabelSettings = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettings>();
 
-            CommonLinkUtility.GetLocationByRequest(tenant, webItemManagerSecurity, webItemManager, out var product, out var module, null);
+            CommonLinkUtility.GetLocationByRequest(webItemManagerSecurity, webItemManager, out var product, out var module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
@@ -295,7 +295,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    var logoData = TenantLogoManager.GetMailLogoDataFromCache();
+                    var logoData = tenantLogoManager.GetMailLogoDataFromCache();
 
                     if (logoData == null)
                     {
@@ -303,7 +303,7 @@ namespace ASC.Web.Studio.Core.Notify
                         logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
 
                         if (logoData != null)
-                            TenantLogoManager.InsertMailLogoDataToCache(logoData);
+                            tenantLogoManager.InsertMailLogoDataToCache(logoData);
                     }
 
                     if (logoData != null)

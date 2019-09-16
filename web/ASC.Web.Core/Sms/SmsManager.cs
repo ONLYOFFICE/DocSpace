@@ -40,13 +40,20 @@ namespace ASC.Web.Studio.Core.SMS
         public UserManager UserManager { get; }
         public TenantExtra TenantExtra { get; }
         public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
         public StudioSmsNotificationSettings StudioSmsNotificationSettings { get; }
 
-        public SmsManager(UserManager userManager, TenantExtra tenantExtra, SecurityContext securityContext, StudioSmsNotificationSettings studioSmsNotificationSettings)
+        public SmsManager(
+            UserManager userManager,
+            TenantExtra tenantExtra,
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            StudioSmsNotificationSettings studioSmsNotificationSettings)
         {
             UserManager = userManager;
             TenantExtra = tenantExtra;
             SecurityContext = securityContext;
+            TenantManager = tenantManager;
             StudioSmsNotificationSettings = studioSmsNotificationSettings;
         }
 
@@ -98,7 +105,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
             if (SmsSender.SendSMS(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
-                CoreContext.TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantProvider.CurrentTenantID, Path = "/sms", Counter = 1 }, true);
+                TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
             }
         }
 

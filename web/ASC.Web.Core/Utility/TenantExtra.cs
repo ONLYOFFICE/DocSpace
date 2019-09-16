@@ -45,13 +45,20 @@ namespace ASC.Web.Studio.Utility
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
         public AuthContext AuthContext { get; }
         public TenantAccessSettings TenantAccessSettings { get; }
+        public TenantManager TenantManager { get; }
 
-        public TenantExtra(UserManager userManager, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, TenantAccessSettings tenantAccessSettings)
+        public TenantExtra(
+            UserManager userManager, 
+            TenantStatisticsProvider tenantStatisticsProvider, 
+            AuthContext authContext, 
+            TenantAccessSettings tenantAccessSettings,
+            TenantManager tenantManager)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
             AuthContext = authContext;
             TenantAccessSettings = tenantAccessSettings;
+            TenantManager = tenantManager;
         }
 
         public bool EnableTarrifSettings
@@ -112,22 +119,22 @@ namespace ASC.Web.Studio.Utility
 
         public Tariff GetCurrentTariff()
         {
-            return CoreContext.PaymentManager.GetTariff(TenantProvider.CurrentTenantID);
+            return CoreContext.PaymentManager.GetTariff(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public TenantQuota GetTenantQuota()
         {
-            return GetTenantQuota(TenantProvider.CurrentTenantID);
+            return GetTenantQuota(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public TenantQuota GetTenantQuota(int tenant)
         {
-            return CoreContext.TenantManager.GetTenantQuota(tenant);
+            return TenantManager.GetTenantQuota(tenant);
         }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            return CoreContext.TenantManager.GetTenantQuotas();
+            return TenantManager.GetTenantQuotas();
         }
 
         private TenantQuota GetPrevQuota(TenantQuota curQuota)
@@ -175,7 +182,7 @@ namespace ASC.Web.Studio.Utility
         public void TrialRequest()
         {
             CoreContext.PaymentManager.SendTrialRequest(
-                TenantProvider.CurrentTenantID,
+                TenantManager.GetCurrentTenant().TenantId,
                 UserManager.GetUsers(AuthContext.CurrentAccount.ID));
         }
 

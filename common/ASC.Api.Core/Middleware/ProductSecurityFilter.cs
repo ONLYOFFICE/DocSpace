@@ -82,7 +82,7 @@ namespace ASC.Api.Core.Middleware
                     {
                         CallContext.SetData("asc.web.product_id", pid);
                     }
-                    if (!WebItemSecurity.IsAvailableForMe(TenantManager.GetCurrentTenant(context.HttpContext), pid))
+                    if (!WebItemSecurity.IsAvailableForMe(pid))
                     {
                         context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                         log.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, AuthContext.CurrentAccount);

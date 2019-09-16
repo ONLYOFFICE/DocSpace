@@ -229,20 +229,20 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID(Tenant tenant, HttpContext context, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager)
+        public static Guid GetProductID(HttpContext context, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager)
         {
             var productID = Guid.Empty;
 
             if (context != null)
             {
-                GetLocationByRequest(tenant, webItemManagerSecurity, webItemManager, out var product, out _, context);
+                GetLocationByRequest(webItemManagerSecurity, webItemManager, out var product, out _, context);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(Tenant tenant, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule, HttpContext context)
+        public static void GetLocationByRequest(WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule, HttpContext context)
         {
             var currentURL = string.Empty;
             if (context != null && context.Request != null)
@@ -257,7 +257,7 @@ namespace ASC.Web.Studio.Utility
                 //}
             }
 
-            GetLocationByUrl(tenant, currentURL, webItemManagerSecurity, webItemManager, out currentProduct, out currentModule);
+            GetLocationByUrl(currentURL, webItemManagerSecurity, webItemManager, out currentProduct, out currentModule);
         }
 
         public static IWebItem GetWebItemByUrl(string currentURL, WebItemManager webItemManager)
@@ -301,7 +301,7 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        public static void GetLocationByUrl(Tenant tenant, string currentURL, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule)
+        public static void GetLocationByUrl(string currentURL, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule)
         {
             currentProduct = null;
             currentModule = null;
@@ -340,7 +340,7 @@ namespace ASC.Web.Studio.Utility
 
                             if (!string.IsNullOrEmpty(moduleName))
                             {
-                                foreach (var module in webItemManagerSecurity.GetSubItems(tenant, product.ID).OfType<IModule>())
+                                foreach (var module in webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
@@ -355,7 +355,7 @@ namespace ASC.Web.Studio.Utility
                             }
                             else
                             {
-                                foreach (var module in webItemManagerSecurity.GetSubItems(tenant, product.ID).OfType<IModule>())
+                                foreach (var module in webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                                 {
                                     if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
                                     {

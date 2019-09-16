@@ -35,7 +35,6 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.Utility;
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
@@ -52,6 +51,7 @@ namespace ASC.Web.Core
         public AuthManager Authentication { get; }
         public WebItemManager WebItemManager { get; }
         public TenantAccessSettings TenantAccessSettings { get; }
+        public TenantManager TenantManager { get; }
 
         static WebItemSecurity()
         {
@@ -61,7 +61,7 @@ namespace ASC.Web.Core
                 cacheNotify = new KafkaCache<WebItemSecurityNotifier>();
                 cacheNotify.Subscribe((r) =>
                 {
-                    ClearCache();
+                    ClearCache(r.Tenant);
                 }, CacheNotifyAction.Any);
             }
             catch
@@ -76,7 +76,8 @@ namespace ASC.Web.Core
             PermissionContext permissionContext, 
             AuthManager authentication, 
             WebItemManager webItemManager,
-            TenantAccessSettings tenantAccessSettings)
+            TenantAccessSettings tenantAccessSettings,
+            TenantManager tenantManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -84,20 +85,22 @@ namespace ASC.Web.Core
             Authentication = authentication;
             WebItemManager = webItemManager;
             TenantAccessSettings = tenantAccessSettings;
+            TenantManager = tenantManager;
         }
 
         //
-        public bool IsAvailableForMe(Tenant tenant, Guid id)
+        public bool IsAvailableForMe(Guid id)
         {
-            return IsAvailableForUser(tenant, id, AuthContext.CurrentAccount.ID);
+            return IsAvailableForUser(id, AuthContext.CurrentAccount.ID);
         }
 
-        public bool IsAvailableForUser(Tenant tenant, Guid itemId, Guid @for)
+        public bool IsAvailableForUser(Guid itemId, Guid @for)
         {
             var id = itemId.ToString();
             var result = false;
 
-            var key = GetCacheKey();
+            var tenant = TenantManager.GetCurrentTenant();
+            var key = GetCacheKey(tenant.TenantId);
             var dic = cache.Get<Dictionary<string, bool>>(key);
             if (dic == null)
             {
@@ -147,7 +150,7 @@ namespace ASC.Web.Core
                     else if (webitem is IModule)
                     {
                         result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) &&
-                            IsAvailableForUser(tenant, WebItemManager.GetParentItemID(webitem.ID), @for);
+                            IsAvailableForUser(WebItemManager.GetParentItemID(webitem.ID), @for);
                     }
                     else
                     {
@@ -201,7 +204,7 @@ namespace ASC.Web.Core
                 CoreContext.AuthorizationManager.AddAce(a);
             }
 
-            cacheNotify.Publish(new WebItemSecurityNotifier(), CacheNotifyAction.Any);
+            cacheNotify.Publish(new WebItemSecurityNotifier() { Tenant = TenantManager.GetCurrentTenant().TenantId }, CacheNotifyAction.Any);
         }
 
         public WebItemSecurityInfo GetSecurityInfo(string id)
@@ -286,7 +289,7 @@ namespace ASC.Web.Core
                 UserManager.RemoveUserFromGroup(userid, productid);
             }
 
-            cacheNotify.Publish(new WebItemSecurityNotifier(), CacheNotifyAction.Any);
+            cacheNotify.Publish(new WebItemSecurityNotifier { Tenant = TenantManager.GetCurrentTenant().TenantId }, CacheNotifyAction.Any);
         }
 
         public bool IsProductAdministrator(Guid productid, Guid userid)
@@ -317,14 +320,14 @@ namespace ASC.Web.Core
             return users.ToList();
         }
 
-        public static void ClearCache()
+        public static void ClearCache(int tenantId)
         {
-            cache.Remove(GetCacheKey());
+            cache.Remove(GetCacheKey(tenantId));
         }
 
-        private static string GetCacheKey()
+        private static string GetCacheKey(int tenantId)
         {
-            return string.Format("{0}:{1}", TenantProvider.CurrentTenantID, "webitemsecurity");
+            return $"{tenantId}:webitemsecurity";
         }
 
         private static IEnumerable<AzRecord> GetPeopleModuleActions(Guid userid)

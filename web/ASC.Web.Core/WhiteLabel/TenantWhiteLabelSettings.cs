@@ -140,7 +140,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Restore default
 
-        public void RestoreDefault()
+        public void RestoreDefault(TenantLogoManager tenantLogoManager)
         {
             _logoLightSmallExt = null;
             _logoDarkExt = null;
@@ -154,7 +154,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             LogoText = null;
 
-            var tenantId = TenantProvider.CurrentTenantID;
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var store = StorageFactory.GetStorage(tenantId.ToString(), moduleName);
             try
             {
@@ -165,7 +165,7 @@ namespace ASC.Web.Core.WhiteLabel
                 LogManager.GetLogger("ASC").Error(e);
             }
 
-            Save(tenantId, true);
+            Save(tenantId, tenantLogoManager, true);
         }
 
         public void RestoreDefault(WhiteLabelLogoTypeEnum type)
@@ -175,7 +175,7 @@ namespace ASC.Web.Core.WhiteLabel
                 try
                 {
                     SetIsDefault(type, true);
-                    var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), moduleName);
+                    var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
                     DeleteLogoFromStore(store, type);
                 }
                 catch (Exception e)
@@ -191,7 +191,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void SetLogo(WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data)
         {
-            var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), moduleName);
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
 
             #region delete from storage if already exists
 
@@ -367,7 +367,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         private string GetAbsoluteStorageLogoPath(WhiteLabelLogoTypeEnum type, bool general)
         {
-            var store = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), moduleName);
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), moduleName);
             var fileName = BuildLogoFileName(type, GetExt(type), general);
 
             if (store.IsFile(fileName))
@@ -425,7 +425,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         private Stream GetStorageLogoData(WhiteLabelLogoTypeEnum type, bool general)
         {
-            var storage = StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), moduleName);
+            var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), moduleName);
 
             if (storage == null) return null;
 
@@ -533,12 +533,12 @@ namespace ASC.Web.Core.WhiteLabel
             if (!AppliedTenants.Contains(tenantId)) AppliedTenants.Add(tenantId);
         }
 
-        public void Save(int tenantId, bool restore = false)
+        public void Save(int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
         {
             SaveForTenant(tenantId);
             SetNewLogoText(tenantId, restore);
 
-            TenantLogoManager.RemoveMailLogoDataFromCache();
+            tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
         private void SetNewLogoText(int tenantId, bool restore = false)

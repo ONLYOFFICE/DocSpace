@@ -112,14 +112,14 @@ namespace ASC.Web.Core
         }
 
 
-        public static bool IsDisabled(this IWebItem item, Tenant tenant, WebItemSecurity webItemSecurity, AuthContext authContext)
+        public static bool IsDisabled(this IWebItem item, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
-            return item.IsDisabled(tenant, authContext.CurrentAccount.ID, webItemSecurity);
+            return item.IsDisabled(authContext.CurrentAccount.ID, webItemSecurity);
         }
 
-        public static bool IsDisabled(this IWebItem item, Tenant tenant, Guid userID, WebItemSecurity webItemSecurity)
+        public static bool IsDisabled(this IWebItem item, Guid userID, WebItemSecurity webItemSecurity)
         {
-            return item != null && (!webItemSecurity.IsAvailableForUser(tenant, item.ID, userID) || !item.Visible);
+            return item != null && (!webItemSecurity.IsAvailableForUser(item.ID, userID) || !item.Visible);
         }
 
         public static bool IsSubItem(this IWebItem item)

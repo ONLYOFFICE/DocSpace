@@ -30,7 +30,7 @@ namespace ASC.Web.Api.Controllers
         {
             var result = new List<string>();
 
-            foreach (var a in WebItemManagerSecurity.GetItems(TenantManager.GetCurrentTenant(), WebZoneType.StartProductList))
+            foreach (var a in WebItemManagerSecurity.GetItems(WebZoneType.StartProductList))
             {
                 result.Add(a.ApiURL);
             }

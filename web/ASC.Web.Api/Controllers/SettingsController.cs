@@ -121,6 +121,7 @@ namespace ASC.Api.Settings
         public StorageHelper StorageHelper { get; }
         public StorageFactory StorageFactory { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
+        public TenantLogoManager TenantLogoManager { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
@@ -156,7 +157,8 @@ namespace ASC.Api.Settings
             CompanyWhiteLabelSettings companyWhiteLabelSettings,
             StorageHelper storageHelper,
             StorageFactory storageFactory,
-            StorageFactoryConfig storageFactoryConfig)
+            StorageFactoryConfig storageFactoryConfig,
+            TenantLogoManager tenantLogoManager)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -193,6 +195,7 @@ namespace ASC.Api.Settings
             StorageHelper = storageHelper;
             StorageFactory = storageFactory;
             StorageFactoryConfig = storageFactoryConfig;
+            TenantLogoManager = tenantLogoManager;
         }
 
         [Read("")]
@@ -307,13 +310,13 @@ namespace ASC.Api.Settings
         {
             var module = WebItemManager[id];
 
-            return module != null && !module.IsDisabled(Tenant, WebItemSecurity, AuthContext);
+            return module != null && !module.IsDisabled(WebItemSecurity, AuthContext);
         }
 
         [Read("security/modules")]
         public object GetEnabledModules()
         {
-            var EnabledModules = WebItemManagerSecurity.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal)
+            var EnabledModules = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.Normal)
                                         .Where(item => !item.IsSubItem() && item.Visible)
                                         .ToList()
                                         .Select(item => new
@@ -482,7 +485,7 @@ namespace ASC.Api.Settings
             }
 
             _tenantWhiteLabelSettings.LogoText = model.LogoText;
-            _tenantWhiteLabelSettings.Save(Tenant.TenantId);
+            _tenantWhiteLabelSettings.Save(Tenant.TenantId, TenantLogoManager);
 
         }
 
@@ -504,7 +507,7 @@ namespace ASC.Api.Settings
                     using var inputStream = f.OpenReadStream();
                     _tenantWhiteLabelSettings.SetLogoFromStream(logoType, fileExt, inputStream);
                 }
-                _tenantWhiteLabelSettings.Save(Tenant.TenantId);
+                _tenantWhiteLabelSettings.Save(Tenant.TenantId, TenantLogoManager);
             }
             else
             {
@@ -588,10 +591,10 @@ namespace ASC.Api.Settings
             }
 
             var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-            _tenantWhiteLabelSettings.RestoreDefault();
+            _tenantWhiteLabelSettings.RestoreDefault(TenantLogoManager);
 
             var _tenantInfoSettings = TenantInfoSettings.Load();
-            _tenantInfoSettings.RestoreDefaultLogo();
+            _tenantInfoSettings.RestoreDefaultLogo(TenantLogoManager);
             _tenantInfoSettings.Save();
         }
 
@@ -1017,7 +1020,7 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManagerSecurity.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All)
+            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&

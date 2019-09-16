@@ -40,9 +40,9 @@ namespace ASC.Web.Core.WhiteLabel
         private static readonly ICache Cache = AscCache.Memory;
         private static readonly ICacheNotify<TenantLogoCacheItem> CacheNotify;
 
-        private static string CacheKey
+        private string CacheKey
         {
-            get { return "letterlogodata" + TenantProvider.CurrentTenantID; }
+            get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
         }
 
         public static bool WhiteLabelEnabled
@@ -60,10 +60,11 @@ namespace ASC.Web.Core.WhiteLabel
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings)
+        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings, TenantManager tenantManager)
         {
             TenantWhiteLabelSettings = tenantWhiteLabelSettings;
             TenantInfoSettings = tenantInfoSettings;
+            TenantManager = tenantManager;
         }
 
         public string GetFavicon(bool general, bool timeParam)
@@ -151,16 +152,17 @@ namespace ASC.Web.Core.WhiteLabel
             return isRetina;
         }
 
-        public static bool WhiteLabelPaid
+        public bool WhiteLabelPaid
         {
             get
             {
-                return CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).WhiteLabel;
+                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).WhiteLabel;
             }
         }
 
         public TenantWhiteLabelSettings TenantWhiteLabelSettings { get; }
         public TenantInfoSettings TenantInfoSettings { get; }
+        public TenantManager TenantManager { get; }
 
         /// <summary>
         /// Get logo stream or null in case of default logo
@@ -180,17 +182,17 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
 
-        public static byte[] GetMailLogoDataFromCache()
+        public byte[] GetMailLogoDataFromCache()
         {
             return Cache.Get<byte[]>(CacheKey);
         }
 
-        public static void InsertMailLogoDataToCache(byte[] data)
+        public void InsertMailLogoDataToCache(byte[] data)
         {
             Cache.Insert(CacheKey, data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
         }
 
-        public static void RemoveMailLogoDataFromCache()
+        public void RemoveMailLogoDataFromCache()
         {
             CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
         }
