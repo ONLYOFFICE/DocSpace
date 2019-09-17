@@ -85,8 +85,7 @@ describe("DatePicker tests", () => {
     wrapper.simulate("change", { target: { value: "09/09/2019" } });
     expect(onChange).toHaveBeenCalledWith(new Date("09/09/2019"));
   });
-
-  /*
+  
   it("check DatePicker popup open", () => {
     const onFocus = jest.fn(() => true);
     const wrapper = mount(<DatePicker onFocus={onFocus} isOpen={false} />)
@@ -94,7 +93,8 @@ describe("DatePicker tests", () => {
       "input"
     );
     input.simulate("focus");
-    expect(wrapper.props().inOpen).toEqual(true);
+
+    const instance = wrapper.instance();
+    expect(instance.state.isOpen).toEqual(true);
   });
-  */
 });
