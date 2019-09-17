@@ -63,6 +63,13 @@ describe("DatePicker tests", () => {
     expect(wrapper.props().themeColor).toEqual("#fff");
   });
 
+  it("DatePicker input mask test", () => {
+    const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
+    const wrapper = mount(<InputBlock mask={mask} />);
+    expect(wrapper.props().mask).toBe(mask);
+    expect(wrapper.props().mask).toEqual(mask);
+  });
+
   it("DatePicker locale test", () => {
     const wrapper = mount(<DatePicker locale={"en-GB"} />);
     expect(wrapper.prop("locale")).toEqual("en-GB");
@@ -85,16 +92,4 @@ describe("DatePicker tests", () => {
     wrapper.simulate("change", { target: { value: "09/09/2019" } });
     expect(onChange).toHaveBeenCalledWith(new Date("09/09/2019"));
   });
-
-  /*
-  it("check DatePicker popup open", () => {
-    const onFocus = jest.fn(() => true);
-    const wrapper = mount(<DatePicker onFocus={onFocus} isOpen={false} />)
-    const input = wrapper.find(
-      "input"
-    );
-    input.simulate("focus");
-    expect(wrapper.props().inOpen).toEqual(true);
-  });
-  */
 });
