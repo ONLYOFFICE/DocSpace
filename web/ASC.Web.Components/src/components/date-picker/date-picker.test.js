@@ -63,6 +63,13 @@ describe("DatePicker tests", () => {
     expect(wrapper.props().themeColor).toEqual("#fff");
   });
 
+  it("DatePicker input mask test", () => {
+    const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
+    const wrapper = mount(<InputBlock mask={mask} />);
+    expect(wrapper.props().mask).toBe(mask);
+    expect(wrapper.props().mask).toEqual(mask);
+  });
+
   it("DatePicker locale test", () => {
     const wrapper = mount(<DatePicker locale={"en-GB"} />);
     expect(wrapper.prop("locale")).toEqual("en-GB");
