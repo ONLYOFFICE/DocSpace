@@ -22,17 +22,17 @@ const LoginForm = props => {
             return onSubmit(event, { login, password });
 
         return false;
-    }, []);
+    }, [login, password]);
 
     const onLoginChange = useCallback(event => {
         setLogin(event.target.value);
         setLoginValid(true);
-    }, [])
+    }, [login])
 
     const onPasswordChange = useCallback(event => {
         setPassword(event.target.value);
         setPasswordValid(true);
-    }, []);
+    }, [password]);
 
     return (
         <Container>
