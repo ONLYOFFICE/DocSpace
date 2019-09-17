@@ -97,4 +97,20 @@ describe("DatePicker tests", () => {
     const instance = wrapper.instance();
     expect(instance.state.isOpen).toEqual(true);
   });
+
+  it("DatePicker check the Calendar onChange callback", () => {
+    const onChange = jest.fn();
+    const props = {
+      value: "03/03/2000",
+      isOpen: true,
+      onChange
+    };
+    const wrapper = mount(<DatePicker {...props} />);
+
+    const days = wrapper.find(".calendar-month");
+
+    days.first().simulate("click", { target: { value: 1 } });
+
+    expect(onChange).toHaveBeenCalled();
+  });
 });
