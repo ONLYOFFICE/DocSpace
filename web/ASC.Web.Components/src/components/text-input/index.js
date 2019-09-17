@@ -3,9 +3,14 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import commonInputStyle from '../text-input/common-input-styles';
 import MaskedInput from 'react-text-mask'
+import isEqual from "lodash/isEqual";
 
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder, keepCharPositions,  ...props }) => 
     (props.mask != null) ? <MaskedInput keepCharPositions {...props}/> : <input {...props}/>;
+/* eslint-enable react/prop-types */
+/* eslint-enable no-unused-vars */
 
 const StyledInput = styled(Input).attrs((props) => ({
     id: props.id,
@@ -75,9 +80,15 @@ const StyledInput = styled(Input).attrs((props) => ({
     ${props => !props.withBorder && `border: none;`}
 `;
 
-const TextInput = props => { 
-    //console.log("TextInput render");
-    return (<StyledInput {...props} />);
+class TextInput extends React.Component { 
+    shouldComponentUpdate(nextProps) {
+        return !isEqual(this.props, nextProps);
+    }
+
+    render() {
+        // console.log(`TextInput render id=${this.props.id}`);
+        return (<StyledInput {...this.props} />);
+    }
 }
 
 TextInput.propTypes = {

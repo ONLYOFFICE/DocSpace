@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Collapse, Container, Row, Col } from 'reactstrap';
 import { storiesOf } from '@storybook/react';
 import TextInput from '../text-input';
@@ -11,7 +11,7 @@ const LoginForm = props => {
     const [password, setPassword] = useState('');
     const [passwordValid, setPasswordValid] = useState(true);
 
-    const validateAndSubmit = (event) => {
+    const validateAndSubmit = useCallback((event) => {
         if (!login.trim())
             setLoginValid(false);
 
@@ -22,7 +22,17 @@ const LoginForm = props => {
             return onSubmit(event, { login, password });
 
         return false;
-    };
+    }, [login, password]);
+
+    const onLoginChange = useCallback(event => {
+        setLogin(event.target.value);
+        setLoginValid(true);
+    }, [login])
+
+    const onPasswordChange = useCallback(event => {
+        setPassword(event.target.value);
+        setPasswordValid(true);
+    }, [password]);
 
     return (
         <Container>
@@ -38,10 +48,7 @@ const LoginForm = props => {
                         scale={true}
                         isAutoFocussed={true}
                         tabIndex={1}
-                        onChange={event => {
-                            setLogin(event.target.value);
-                            setLoginValid(true);
-                        }} />
+                        onChange={onLoginChange} />
                 </Col>
             </Row>
             <Row style={{ margin: "23px 0 0" }}>
@@ -56,10 +63,8 @@ const LoginForm = props => {
                         size='huge'
                         scale={true}
                         tabIndex={2}
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            setPasswordValid(true);
-                        }} />
+                        onChange={onPasswordChange} 
+                    />
                 </Col>
             </Row>
             <Row style={{ margin: "23px 0 0" }}>

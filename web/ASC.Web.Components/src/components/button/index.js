@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Loader from '../loader';
+import isEqual from "lodash/isEqual";
 
 const activeCss = css`
   background-color: ${props => (props.primary ? '#1F97CA' : '#ECEEF1')};
@@ -198,20 +199,27 @@ Icon.defaultProps = {
   icon: null
 };
 
-const Button = props => {
-  //console.log("Button render");
-  const { isLoading, label, primary, size, icon } = props;
-  return (
-    <StyledButton {...props}>
-        {(isLoading || icon) && 
-          isLoading 
-            ? <Loader type="oval" size={size === "big" ? 16 : 14} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
-            : <Icon {...props} />
-        }
-        {label}
-    </StyledButton>
-  );
-};
+class Button extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+}
+
+  render() {
+    // console.log("Button render");
+    const { isLoading, label, primary, size, icon } = this.props;
+    return (
+      <StyledButton {...this.props}>
+          {(isLoading || icon) && 
+            isLoading 
+              ? <Loader type="oval" size={size === "big" ? 16 : 14} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+              : <Icon {...this.props} />
+          }
+          {label}
+      </StyledButton>
+    );
+  }
+}
 
 Button.propTypes = {
   label: PropTypes.string,

@@ -206,23 +206,20 @@ describe("Calendar tests:", () => {
     expect(wrapper).toExist(<ComboBox {...baseComboBoxProps} />);
   });
 
-  /*
   it("Calendar check the onChange callback", () => {
     const onChange = jest.fn();
     const props = {
       selectedDate: new Date("03/03/2000"),
       onChange
     };
-    const wrapper = shallow(<NewCalendar {...props} />);
-    //expect(<NewCalendar {...props} />).toMatchSnapshot();
-    wrapper.simulate("change", {
-      selectedDate: { date: new Date("09/09/2019") }
+    const wrapper = shallow(<NewCalendar {...props} />).instance();
+    wrapper.onDayClick({
+      value: 1,
+      disableClass: "",
+      className: "",
+      dayState: ""
     });
-    expect(onChange).toHaveBeenCalledWith(new Date("09/09/2019"));
-    //expect(<NewCalendar {...props} />).toMatchSnapshot();
-    //expect(onChange).toBeCalled();
-  });
-  */
-});
 
-//expect(<NewCalendar />).toMatchSnapshot();
+    expect(onChange).toBeCalled();
+  });
+});
