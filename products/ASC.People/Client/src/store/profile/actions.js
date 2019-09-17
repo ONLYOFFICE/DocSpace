@@ -31,7 +31,7 @@ export function employeeWrapperToMemberModel(profile) {
     const department = profile.groups ? profile.groups.map(group => group.id) : [];
     const worksFrom = profile.workFrom;
 
-    return {...profile, comment, department, worksFrom};
+    return { ...profile, comment, department, worksFrom };
 }
 
 export function fetchProfile(userName) {
@@ -56,8 +56,8 @@ export function fetchProfile(userName) {
 
 export function createProfile(profile) {
     return (dispatch, getState) => {
-        const {people} = getState();
-        const {filter} = people;
+        const { people } = getState();
+        const { filter } = people;
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
@@ -75,8 +75,8 @@ export function createProfile(profile) {
 
 export function updateProfile(profile) {
     return (dispatch, getState) => {
-        const {people} = getState();
-        const {filter} = people;
+        const { people } = getState();
+        const { filter } = people;
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
@@ -113,3 +113,23 @@ export function updateAvatar(profileId, images) {
         }
     };
 };
+
+export function getInvitationLink(isGuest = false) {
+    return dispatch => {
+        return api.getInvitationLink(isGuest)
+            .then(res => {
+                checkResponseError(res);
+                return Promise.resolve(res);
+            });
+    }
+}
+
+export function getShortenedLink(link) {
+    return dispatch => {
+        return api.getShortenedLink(link)
+            .then(res => {
+                checkResponseError(res);
+                return Promise.resolve(res);
+            });
+    }
+}

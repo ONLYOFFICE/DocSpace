@@ -16,11 +16,7 @@ import {
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
-import {
-  toEmployeeWrapper,
-  getUserRole,
-  getUserContacts
-} from "../../../../../store/people/selectors";
+import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 
 const ProfileWrapper = styled.div`
@@ -448,6 +444,7 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
+              scale={true}
               label={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
