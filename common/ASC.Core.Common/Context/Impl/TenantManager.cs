@@ -47,7 +47,7 @@ namespace ASC.Core
         private readonly ITariffService tariffService;
         private static List<string> thisCompAddresses = new List<string>();
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        public HttpContext HttpContext { get; }
 
         static TenantManager()
         {
@@ -69,7 +69,7 @@ namespace ASC.Core
             this.tenantService = tenantService;
             this.quotaService = quotaService;
             this.tariffService = tariffService;
-            HttpContextAccessor = httpContextAccessor;
+            HttpContext = httpContextAccessor?.HttpContext;
         }
 
 
@@ -176,7 +176,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
+            return GetCurrentTenant(throwIfNotFound, HttpContext ?? ASC.Common.HttpContext.Current);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -184,9 +184,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CallContext.SetData(CURRENT_TENANT, tenant);
-                if (HttpContextAccessor?.HttpContext != null)
+                if (HttpContext != null)
                 {
-                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
+                    HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
