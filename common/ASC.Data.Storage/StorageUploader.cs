@@ -147,11 +147,13 @@ namespace ASC.Data.Storage
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
                 using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
+
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
-                var tenant = CoreContext.TenantManager.GetTenant(tenantId);
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
                 SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
 
                 foreach (var module in Modules)
@@ -193,7 +195,7 @@ namespace ASC.Data.Storage
 
                 settings.Save();
                 tenant.SetStatus(TenantStatus.Active);
-                CoreContext.TenantManager.SaveTenant(tenant);
+                tenantManager.SaveTenant(tenant);
             }
             catch (Exception e)
             {

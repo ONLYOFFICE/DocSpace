@@ -51,13 +51,20 @@ namespace ASC.Web.Core
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
         public TenantCookieSettings TenantCookieSettings { get; }
+        public TenantManager TenantManager { get; }
 
-        public CookiesManager(IHttpContextAccessor httpContextAccessor, UserManager userManager, SecurityContext securityContext, TenantCookieSettings tenantCookieSettings)
+        public CookiesManager(
+            IHttpContextAccessor httpContextAccessor,
+            UserManager userManager,
+            SecurityContext securityContext,
+            TenantCookieSettings tenantCookieSettings,
+            TenantManager tenantManager)
         {
             HttpContextAccessor = httpContextAccessor;
             UserManager = userManager;
             SecurityContext = securityContext;
             TenantCookieSettings = tenantCookieSettings;
+            TenantManager = tenantManager;
         }
 
         private static string GetCookiesName(CookiesType type)
@@ -153,7 +160,7 @@ namespace ASC.Web.Core
 
             if (!session)
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().TenantId;
                 expires = TenantCookieSettings.GetExpiresTime(tenant);
             }
 
@@ -208,7 +215,7 @@ namespace ASC.Web.Core
 
         public void ResetTenantCookie()
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
+            var tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
 
             if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {

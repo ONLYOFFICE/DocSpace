@@ -11,10 +11,13 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public TenantStatusFilter(LogManager logManager)
+        public TenantStatusFilter(LogManager logManager, TenantManager tenantManager)
         {
             log = logManager.Get("Api");
+            TenantManager = tenantManager;
         }
+
+        public TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -22,7 +25,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            var tenant = TenantManager.GetCurrentTenant(false);
             if (tenant == null)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);

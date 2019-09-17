@@ -66,6 +66,7 @@ namespace ASC.Core
         public AuthManager Authentication { get; }
         public AuthContext AuthContext { get; }
         public TenantCookieSettings TenantCookieSettings { get; }
+        public TenantManager TenantManager { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -73,13 +74,15 @@ namespace ASC.Core
             UserManager userManager,
             AuthManager authentication,
             AuthContext authContext,
-            TenantCookieSettings tenantCookieSettings
+            TenantCookieSettings tenantCookieSettings,
+            TenantManager tenantManager
             )
         {
             UserManager = userManager;
             Authentication = authentication;
             AuthContext = authContext;
             TenantCookieSettings = tenantCookieSettings;
+            TenantManager = tenantManager;
             HttpContextAccessor = httpContextAccessor;
         }
 
@@ -89,7 +92,7 @@ namespace ASC.Core
             if (login == null) throw new ArgumentNullException("login");
             if (password == null) throw new ArgumentNullException("password");
 
-            var tenantid = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            var tenantid = TenantManager.GetCurrentTenant().TenantId;
             var u = UserManager.GetUsers(tenantid, login, Hasher.Base64Hash(password, HashAlg.SHA256));
 
             return AuthenticateMe(new UserAccount(u, tenantid));
@@ -114,7 +117,7 @@ namespace ASC.Core
                 }
                 else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
                 {
-                    if (tenant != CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    if (tenant != TenantManager.GetCurrentTenant().TenantId)
                     {
                         return false;
                     }
@@ -195,7 +198,7 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
 
                 var u = UserManager.GetUsers(account.ID);
 
@@ -211,7 +214,7 @@ namespace ASC.Core
                 // for LDAP users only
                 if (u.Sid != null)
                 {
-                    if (!CoreContext.TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
+                    if (!TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
                     {
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
@@ -222,8 +225,8 @@ namespace ASC.Core
                 }
                 roles.Add(Role.Users);
 
-                account = new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId);
-                cookie = CookieStorage.EncryptCookie(TenantCookieSettings, CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
+                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId);
+                cookie = CookieStorage.EncryptCookie(TenantCookieSettings, TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             var claims = new List<Claim>

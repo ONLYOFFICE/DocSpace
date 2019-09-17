@@ -43,10 +43,12 @@ namespace ASC.MessagingSystem
         private const string refererHeader = "Referer";
 
         public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
 
-        public MessageFactory(AuthContext authContext)
+        public MessageFactory(AuthContext authContext, TenantManager tenantManager)
         {
             AuthContext = authContext;
+            TenantManager = tenantManager;
         }
 
         public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
@@ -58,7 +60,7 @@ namespace ASC.MessagingSystem
                     IP = request != null ? request.Headers[forwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
                     UserId = AuthContext.CurrentAccount.ID,
                     Page = request?.GetTypedHeaders().Referer.ToString(),
                     Action = action,
@@ -81,7 +83,7 @@ namespace ASC.MessagingSystem
                 var message = new EventMessage
                 {
                     Date = DateTime.UtcNow,
-                    TenantId = userData == null ? CoreContext.TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
+                    TenantId = userData == null ? TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
                     UserId = userData == null ? AuthContext.CurrentAccount.ID : userData.UserId,
                     Action = action,
                     Description = description,
@@ -117,7 +119,7 @@ namespace ASC.MessagingSystem
                 {
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
                     Action = action,
                     Description = description,
                     Target = target

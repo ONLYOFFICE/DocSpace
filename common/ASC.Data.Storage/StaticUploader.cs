@@ -51,6 +51,8 @@ namespace ASC.Data.Storage
         private static readonly object Locker;
 
         public IServiceProvider ServiceProvider { get; }
+        public TenantManager TenantManager { get; }
+        public CdnStorageSettings CdnStorageSettings { get; }
 
         static StaticUploader()
         {
@@ -60,9 +62,11 @@ namespace ASC.Data.Storage
             TokenSource = new CancellationTokenSource();
         }
 
-        public StaticUploader(IServiceProvider serviceProvider)
+        public StaticUploader(IServiceProvider serviceProvider, TenantManager tenantManager, CdnStorageSettings cdnStorageSettings)
         {
             ServiceProvider = serviceProvider;
+            TenantManager = tenantManager;
+            CdnStorageSettings = cdnStorageSettings;
         }
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -71,7 +75,7 @@ namespace ASC.Data.Storage
             if (!CanUpload()) return null;
             if (!File.Exists(mappedPath)) return null;
 
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             UploadOperation uploadOperation;
             var key = GetCacheKey(tenantId.ToString(), relativePath);
 
@@ -95,11 +99,14 @@ namespace ASC.Data.Storage
 
         public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var task = new Task<string>(() =>
             {
-                CoreContext.TenantManager.SetCurrentTenant(tenantId);
-                return UploadFile(relativePath, mappedPath, onComplete);
+                var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
+                tenantManager.SetCurrentTenant(tenantId);
+                return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
             task.ConfigureAwait(false);
@@ -114,7 +121,7 @@ namespace ASC.Data.Storage
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
             UploadOperationProgress uploadOperation;
 
@@ -129,17 +136,17 @@ namespace ASC.Data.Storage
 
 
             tenant.SetStatus(TenantStatus.Migrating);
-            CoreContext.TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
 
             await uploadOperation.RunJobAsync();
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
-            CoreContext.TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
         }
 
         public bool CanUpload()
         {
-            var current = ServiceProvider.GetService<CdnStorageSettings>().Load().DataStoreConsumer;
+            var current = CdnStorageSettings.Load().DataStoreConsumer;
             if (current == null || !current.IsSet || (string.IsNullOrEmpty(current["cnamessl"]) && string.IsNullOrEmpty(current["cname"])))
             {
                 return false;
@@ -191,10 +198,12 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
+
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var CdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
-                var tenant = CoreContext.TenantManager.GetTenant(tenantId);
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
                 SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
 
                 var dataStore = CdnStorageSettings.Load().DataStore;

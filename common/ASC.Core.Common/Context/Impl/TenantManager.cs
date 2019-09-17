@@ -176,7 +176,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext ?? ASC.Common.HttpContext.Current);
+            return GetCurrentTenant(throwIfNotFound, HttpContextAccessor?.HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -184,9 +184,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CallContext.SetData(CURRENT_TENANT, tenant);
-                if (ASC.Common.HttpContext.Current != null)
+                if (HttpContextAccessor?.HttpContext != null)
                 {
-                    ASC.Common.HttpContext.Current.Items[CURRENT_TENANT] = tenant;
+                    HttpContextAccessor.HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();

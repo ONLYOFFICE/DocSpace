@@ -876,18 +876,6 @@ namespace ASC.Web.Core.Users
             return StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
         }
 
-        private static Size FromCahe(CacheSize cacheSize) =>
-            cacheSize switch
-            {
-                CacheSize.Big => BigFotoSize,
-                CacheSize.Max => MaxFotoSize,
-                CacheSize.Medium => MediumFotoSize,
-                CacheSize.Original => OriginalFotoSize,
-                CacheSize.Retina => RetinaFotoSize,
-                CacheSize.Small => SmallFotoSize,
-                _ => OriginalFotoSize,
-            };
-
         private static CacheSize ToCache(Size size) =>
             size switch
             {

@@ -37,9 +37,9 @@ namespace ASC.Api.Core
     {
         public HttpContext HttpContext { get; set; }
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
+        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
 
-        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext)
+        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
             HttpContext = httpContextAccessor.HttpContext;
@@ -82,6 +82,7 @@ namespace ASC.Api.Core
             }
 
             SecurityContext = securityContext;
+            TenantManager = tenantManager;
         }
 
         public string[] Fields { get; set; }
@@ -196,6 +197,7 @@ namespace ASC.Api.Core
         }
 
         public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
 
         public ApiContext SetCount(int count)
         {

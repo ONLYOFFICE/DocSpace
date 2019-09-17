@@ -54,9 +54,10 @@ namespace ASC.Core.Billing
             LicensePathTemp = LicensePath + ".tmp";
         }
 
-        public LicenseReader(UserManager userManager)
+        public LicenseReader(UserManager userManager, TenantManager tenantManager)
         {
             UserManager = userManager;
+            TenantManager = tenantManager;
         }
 
         public static string CustomerId
@@ -186,9 +187,9 @@ namespace ASC.Core.Billing
 
             if (license.PortalCount <= 0)
             {
-                license.PortalCount = CoreContext.TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
+                license.PortalCount = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
             }
-            var activePortals = CoreContext.TenantManager.GetTenants().Count();
+            var activePortals = TenantManager.GetTenants().Count();
             if (activePortals > 1 && license.PortalCount < activePortals)
             {
                 throw new LicensePortalException("License portal count", license.OriginalLicense);
@@ -203,7 +204,7 @@ namespace ASC.Core.Billing
 
             CustomerId = license.CustomerId;
 
-            var defaultQuota = CoreContext.TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
+            var defaultQuota = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
 
             var quota = new TenantQuota(-1000)
             {
@@ -223,12 +224,13 @@ namespace ASC.Core.Billing
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
             };
-            CoreContext.TenantManager.SaveTenantQuota(quota);
+            
+            TenantManager.SaveTenantQuota(quota);
 
             if (defaultQuota.CountPortals != license.PortalCount)
             {
                 defaultQuota.CountPortals = license.PortalCount;
-                CoreContext.TenantManager.SaveTenantQuota(defaultQuota);
+                TenantManager.SaveTenantQuota(defaultQuota);
             }
 
             var tariff = new Tariff
@@ -241,9 +243,9 @@ namespace ASC.Core.Billing
 
             if (!string.IsNullOrEmpty(license.AffiliateId))
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
                 tenant.AffiliateId = license.AffiliateId;
-                CoreContext.TenantManager.SaveTenant(tenant);
+                TenantManager.SaveTenant(tenant);
             }
         }
 
@@ -321,5 +323,6 @@ namespace ASC.Core.Billing
         }
 
         public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
     }
 }

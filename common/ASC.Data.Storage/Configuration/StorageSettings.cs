@@ -107,7 +107,7 @@ namespace ASC.Data.Storage.Configuration
 
         internal void ClearDataStoreCache()
         {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString();
+            var tenantId = TenantManager.GetCurrentTenant().TenantId.ToString();
             var path = TennantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
@@ -154,7 +154,7 @@ namespace ASC.Data.Storage.Configuration
                 if (DataStoreConsumer.HandlerType == null) return null;
 
                 return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString()))
+                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager.GetCurrentTenant().TenantId.ToString()))
                     .Configure(DataStoreConsumer);
             }
         }

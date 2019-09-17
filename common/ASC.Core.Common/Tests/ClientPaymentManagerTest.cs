@@ -32,7 +32,7 @@ namespace ASC.Core.Common.Tests
     [TestFixture]
     public class ClientPaymentManagerTest
     {
-        private readonly PaymentManager paymentManager = new PaymentManager(null, null, null);
+        private readonly PaymentManager paymentManager = new PaymentManager(null, null, null, null);
 
 
         [Test]

@@ -25,6 +25,7 @@ namespace ASC.Web.Api.Controllers
         public ApiContext ApiContext { get; }
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -36,7 +37,8 @@ namespace ASC.Web.Api.Controllers
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
             UserManager userManager,
-            AuthContext authContext
+            AuthContext authContext,
+            TenantManager tenantManager
             )
         {
             LogManager = logManager;
@@ -45,6 +47,7 @@ namespace ASC.Web.Api.Controllers
             ApiContext = apiContext;
             UserManager = userManager;
             AuthContext = authContext;
+            TenantManager = tenantManager;
         }
 
         [Read("")]
@@ -85,7 +88,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
+                TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -106,7 +109,7 @@ namespace ASC.Web.Api.Controllers
         [Read("quota")]
         public TenantQuota GetQuota()
         {
-            return CoreContext.TenantManager.GetTenantQuota(Tenant.TenantId);
+            return TenantManager.GetTenantQuota(Tenant.TenantId);
         }
 
         [Read("quota/right")]
@@ -115,7 +118,7 @@ namespace ASC.Web.Api.Controllers
             var usedSpace = GetUsedSpace();
             var needUsersCount = GetUsersCount();
 
-            return CoreContext.TenantManager.GetTenantQuotas().OrderBy(r => r.Price)
+            return TenantManager.GetTenantQuotas().OrderBy(r => r.Price)
                               .FirstOrDefault(quota =>
                                               quota.ActiveUsers > needUsersCount
                                               && quota.MaxTotalSize > usedSpace

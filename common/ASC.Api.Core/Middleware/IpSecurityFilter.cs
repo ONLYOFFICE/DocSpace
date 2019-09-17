@@ -11,15 +11,21 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public IpSecurityFilter(LogManager logManager, AuthContext authContext, IPRestrictionsSettings iPRestrictionsSettings)
+        public IpSecurityFilter(
+            LogManager logManager,
+            AuthContext authContext,
+            IPRestrictionsSettings iPRestrictionsSettings,
+            TenantManager tenantManager)
         {
             log = logManager.Get("Api");
             AuthContext = authContext;
             IPRestrictionsSettings = iPRestrictionsSettings;
+            TenantManager = tenantManager;
         }
 
         public AuthContext AuthContext { get; }
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
+        public TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -27,7 +33,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(context.HttpContext);
+            var tenant = TenantManager.GetCurrentTenant(context.HttpContext);
             var settings = IPRestrictionsSettings.Load();
             if (settings.Enable && AuthContext.IsAuthenticated && !IPSecurity.IPSecurity.Verify(context.HttpContext, tenant, AuthContext))
             {
