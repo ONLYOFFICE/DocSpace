@@ -1,6 +1,8 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import DatePicker from "./";
+import NewCalendar from "../calendar-new";
+import InputBlock from "../input-block";
 import moment from "moment";
 
 const selectedDate = new Date("09/12/2019");
@@ -20,6 +22,15 @@ describe("DatePicker tests", () => {
   it("DatePicker opened when inOpen is passed", () => {
     const wrapper = mount(<DatePicker inOpen={true} />);
     expect(wrapper.prop("inOpen")).toEqual(true);
+  });
+
+  it("DatePicker  has rendered content NewCalendar", () => {
+    const wrapper = mount(<DatePicker inOpen={true} />);
+    expect(wrapper).toExist(<NewCalendar />);
+  });
+  it("DatePicker has rendered content InputBlock", () => {
+    const wrapper = mount(<DatePicker />);
+    expect(wrapper).toExist(<InputBlock />);
   });
 
   it("DatePicker hasError is passed", () => {
@@ -47,36 +58,43 @@ describe("DatePicker tests", () => {
     expect(wrapper.props().selectedDate).toEqual(selectedDate);
   });
 
-  it("DatePicker locale test", () => {
-    const wrapper = mount(<DatePicker locale={"en-GB"} />);
-    expect(wrapper.prop("locale")).toEqual("en-GB");
-  });
-
   it("DatePicker themeColor test", () => {
     const wrapper = mount(<DatePicker themeColor={"#fff"} />);
     expect(wrapper.props().themeColor).toEqual("#fff");
   });
 
-  it("DatePicker call onChange when changing value", () => {
-    const onChange = jest.fn(event => {
-      expect(event.target.value).toEqual("03/03/2000");
-    });
-    const event = { target: { value: moment("2000-03-03") } };
-    const wrapper = mount(<DatePicker onChange={onChange} />);
-    wrapper.simulate("change", event);
+  it("DatePicker locale test", () => {
+    const wrapper = mount(<DatePicker locale={"en-GB"} />);
+    expect(wrapper.prop("locale")).toEqual("en-GB");
   });
 
-  it("DatePicker test click event", () => {
-    const onClick = jest.fn(event => {
-      expect(event.inOpen).toEqual(true);
-    });
-    const wrapper = shallow(<DatePicker onClick={onClick} />);
-    wrapper.simulate("click");
+  it("DatePicker input value with locale test", () => {
+    moment.locale("ru");
+    const value = moment(selectedDate).format("L");
+    const wrapper = mount(<DatePicker value={value} />);
+    expect(wrapper.props().value).toEqual("12.09.2019");
   });
 
-  it("DatePicker onFocus test", () => {
-    const onFocus = jest.fn;
-    const wrapper = mount(<DatePicker onFocus={onFocus} />);
-    wrapper.simulate("focus");
+  it("DatePicker check the onChange callback", () => {
+    const onChange = jest.fn();
+    const props = {
+      value: "03/03/2000",
+      onChange
+    };
+    const wrapper = mount(<DatePicker {...props} />).find("input");
+    wrapper.simulate("change", { target: { value: "09/09/2019" } });
+    expect(onChange).toHaveBeenCalledWith(new Date("09/09/2019"));
   });
+
+  /*
+  it("check DatePicker popup open", () => {
+    const onFocus = jest.fn(() => true);
+    const wrapper = mount(<DatePicker onFocus={onFocus} isOpen={false} />)
+    const input = wrapper.find(
+      "input"
+    );
+    input.simulate("focus");
+    expect(wrapper.props().inOpen).toEqual(true);
+  });
+  */
 });

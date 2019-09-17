@@ -23,7 +23,6 @@ class DatePicker extends Component {
 
     moment.locale(props.locale);
     this.ref = React.createRef();
-    this.newRef = React.createRef();
 
     const { isOpen, selectedDate, hasError } = this.props;
 
@@ -47,7 +46,7 @@ class DatePicker extends Component {
   };
 
   handleChange = e => {
-    const { value, hasError } = this.state;
+    const { value } = this.state;
 
     const targetValue = e.target.value;
     if (value != targetValue) {
@@ -290,7 +289,8 @@ DatePicker.propTypes = {
 
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
-  maxDate: new Date(new Date().getFullYear() + 1, 1, 1)
+  maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
+  selectedDate: moment(new Date()).toDate()
 };
 
 export default DatePicker;

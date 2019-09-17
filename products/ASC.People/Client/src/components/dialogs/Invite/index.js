@@ -104,7 +104,6 @@ class PureInviteDialog extends React.Component {
                         peopleInvitationLink: res.data.response,
                         isLoading: false
                     });
-                    this.onCopyLinkToClipboard();
                 })
                 .catch(e => {
                     console.error("getInvitationLinkPeople error", e);
