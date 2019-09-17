@@ -8,6 +8,7 @@ import { welcomePageTitle } from './../../../helpers/customNames';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { getPasswordSettings, createConfirmUser } from '../../../store/auth/actions';
+import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
 
