@@ -24,6 +24,7 @@ using ASC.Data.Storage.Configuration;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Notify.Recipients;
+using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.Users;
@@ -186,6 +187,8 @@ namespace ASC.People
                     .AddScoped<IPRestrictionsSettings>()
                     .AddScoped<CustomNamingPeople>()
                     .AddScoped<PeopleNamesSettings>()
+                    .AddScoped<EmailValidationKeyProvider>()
+                    .AddScoped<TenantUtil>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))

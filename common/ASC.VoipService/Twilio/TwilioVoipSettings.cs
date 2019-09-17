@@ -30,15 +30,27 @@ using System.Web;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Tenants;
 using Uri = System.Uri;
 
 namespace ASC.VoipService.Twilio
 {
     public class TwilioVoipSettings : VoipSettings
     {
-        public TwilioVoipSettings(AuthContext authContext) : base(authContext) { }
+        public TwilioVoipSettings(
+            AuthContext authContext, 
+            TenantUtil tenantUtil, 
+            SecurityContext securityContext, 
+            TenantManager tenantManager) : 
+            base(authContext, tenantUtil, securityContext, tenantManager) { }
 
-        public TwilioVoipSettings(Uri voiceUrl, AuthContext authContext) : this(authContext)
+        public TwilioVoipSettings(
+            Uri voiceUrl, 
+            AuthContext authContext, 
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            TenantManager tenantManager) : 
+            this(authContext, tenantUtil, securityContext, tenantManager)
         {
             if (string.IsNullOrEmpty(voiceUrl.Query)) return;
 
@@ -71,7 +83,7 @@ namespace ASC.VoipService.Twilio
 
         private string GetEcho(string method, bool user = true)
         {
-            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, ""), AuthContext).GetEcho(method, user);
+            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, ""), AuthContext, TenantUtil, SecurityContext, TenantManager).GetEcho(method, user);
         }
     }
 }

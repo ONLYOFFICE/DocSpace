@@ -132,7 +132,7 @@ namespace ASC.Feed.Data
             tx.Commit();
         }
 
-        public static List<FeedResultItem> GetFeeds(FeedApiFilter filter, AuthContext authContext)
+        public static List<FeedResultItem> GetFeeds(FeedApiFilter filter, AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)
         {
             var filterOffset = filter.Offset;
             var filterLimit = filter.Max > 0 && filter.Max < 1000 ? filter.Max : 1000;
@@ -143,7 +143,7 @@ namespace ASC.Feed.Data
             List<FeedResultItem> feedsIteration;
             do
             {
-                feedsIteration = GetFeedsInternal(filter, authContext);
+                feedsIteration = GetFeedsInternal(filter, authContext, tenantManager, tenantUtil);
                 foreach (var feed in feedsIteration)
                 {
                     if (feeds.ContainsKey(feed.GroupId))
@@ -164,12 +164,12 @@ namespace ASC.Feed.Data
             return feeds.Take(filterLimit).SelectMany(group => group.Value).ToList();
         }
 
-        private static List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter, AuthContext authContext)
+        private static List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter, AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)
         {
             var query = new SqlQuery("feed_aggregate a")
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
-                .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("a.tenant", tenantManager.GetCurrentTenant().TenantId)
                 .Where(
                     !Exp.Eq("a.modified_by", authContext.CurrentAccount.ID) &
                     Exp.Eq("u.user_id", authContext.CurrentAccount.ID)
@@ -213,24 +213,25 @@ namespace ASC.Feed.Data
 
             using var db = new DbManager(Constants.FeedDbId);
             var news = db
-.ExecuteList(query)
-.ConvertAll(r => new FeedResultItem(
-Convert.ToString(r[0]),
-Convert.ToString(r[1]),
-new Guid(Convert.ToString(r[2])),
-new Guid(Convert.ToString(r[3])),
-Convert.ToString(r[4]),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
+                        .ExecuteList(query)
+                        .ConvertAll(r => new FeedResultItem(
+                        Convert.ToString(r[0]),
+                        Convert.ToString(r[1]),
+                        new Guid(Convert.ToString(r[2])),
+                        new Guid(Convert.ToString(r[3])),
+                        Convert.ToString(r[4]),
+                        tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
+                        tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
+                        tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7])),
+                        tenantUtil));
             return news;
         }
 
-        public static int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext)
+        public static int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
         {
             var q = new SqlQuery("feed_aggregate a")
                 .Select("id")
-                .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("a.tenant", tenantManager.GetCurrentTenant().TenantId)
                 .Where(!Exp.Eq("a.modified_by", authContext.CurrentAccount.ID))
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
                 .Where("u.user_id", authContext.CurrentAccount.ID)
@@ -255,7 +256,7 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
             return db.ExecuteList(q).ConvertAll(r => Convert.ToInt32(r[0]));
         }
 
-        public static FeedResultItem GetFeedItem(string id)
+        public static FeedResultItem GetFeedItem(string id, TenantUtil tenantUtil)
         {
             var query = new SqlQuery("feed_aggregate a")
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
@@ -263,16 +264,17 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
 
             using var db = new DbManager(Constants.FeedDbId);
             var news = db
-.ExecuteList(query)
-.ConvertAll(r => new FeedResultItem(
-Convert.ToString(r[0]),
-Convert.ToString(r[1]),
-new Guid(Convert.ToString(r[2])),
-new Guid(Convert.ToString(r[3])),
-Convert.ToString(r[4]),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
+                    .ExecuteList(query)
+                    .ConvertAll(r => new FeedResultItem(
+                    Convert.ToString(r[0]),
+                    Convert.ToString(r[1]),
+                    new Guid(Convert.ToString(r[2])),
+                    new Guid(Convert.ToString(r[3])),
+                    Convert.ToString(r[4]),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7])),
+                    tenantUtil));
 
             return news.FirstOrDefault();
         }
@@ -305,9 +307,10 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
             string groupId,
             DateTime createdDate,
             DateTime modifiedDate,
-            DateTime aggregatedDate)
+            DateTime aggregatedDate,
+            TenantUtil tenantUtil)
         {
-            var now = TenantUtil.DateTimeFromUtc(DateTime.UtcNow);
+            var now = tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
 
             Json = json;
             Module = module;

@@ -276,7 +276,7 @@ namespace ASC.Web.Core.Sms
             return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
         }
 
-        public bool ValidateKeys(AuthContext authContext)
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
         {
             return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
@@ -390,11 +390,11 @@ namespace ASC.Web.Core.Sms
         }
 
 
-        public bool ValidateKeys(AuthContext authContext)
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext).GetExistingPhoneNumbers();
+                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -403,13 +403,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(AuthContext authContext)
+        public void ClearOldNumbers(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
-            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext);
+            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager);
 
-            var dao = new CachedVoipDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, authContext);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, tenantManager);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {

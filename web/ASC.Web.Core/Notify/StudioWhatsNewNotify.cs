@@ -73,13 +73,9 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
-                    var tenant = CoreContext.TenantManager.GetTenant(tenantid);
+                    var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
                         !TimeToSendWhatsNew(TenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
@@ -88,7 +84,14 @@ namespace ASC.Web.Studio.Core.Notify
                         continue;
                     }
 
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    tenantManager.SetCurrentTenant(tenant);
+
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
+                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
+                    var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
                     foreach (var user in userManager.GetUsers())
@@ -110,7 +113,7 @@ namespace ASC.Web.Studio.Core.Notify
                             From = scheduleDate.Date.AddDays(-1),
                             To = scheduleDate.Date.AddSeconds(-1),
                             Max = 100,
-                        }, authContext);
+                        }, authContext, tenantManager, tenantUtil);
 
                         var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
 

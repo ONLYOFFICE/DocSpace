@@ -30,6 +30,13 @@ namespace ASC.Core.Tenants
 {
     public class TenantUtil
     {
+        public TenantManager TenantManager { get; }
+
+        public TenantUtil(TenantManager tenantManager)
+        {
+            TenantManager = tenantManager;
+        }
+
         public static string GetBaseDomain(string hostedRegion)
         {
             var baseHost = CoreContext.Configuration.BaseDomain;
@@ -43,9 +50,9 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static DateTime DateTimeFromUtc(DateTime utc)
+        public DateTime DateTimeFromUtc(DateTime utc)
         {
-            return DateTimeFromUtc(CoreContext.TenantManager.GetCurrentTenant().TimeZone, utc);
+            return DateTimeFromUtc(TenantManager.GetCurrentTenant().TimeZone, utc);
         }
 
         public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
@@ -64,9 +71,9 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static DateTime DateTimeToUtc(DateTime local)
+        public DateTime DateTimeToUtc(DateTime local)
         {
-            return DateTimeToUtc(CoreContext.TenantManager.GetCurrentTenant().TimeZone, local);
+            return DateTimeToUtc(TenantManager.GetCurrentTenant().TimeZone, local);
         }
 
         public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
@@ -87,9 +94,9 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static DateTime DateTimeNow()
+        public DateTime DateTimeNow()
         {
-            return DateTimeNow(CoreContext.TenantManager.GetCurrentTenant().TimeZone);
+            return DateTimeNow(TenantManager.GetCurrentTenant().TimeZone);
         }
 
         public static DateTime DateTimeNow(TimeZoneInfo timeZone)

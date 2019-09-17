@@ -7,6 +7,7 @@ using ASC.Core.Billing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
+using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
@@ -26,6 +27,7 @@ namespace ASC.Web.Api.Controllers
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -38,7 +40,8 @@ namespace ASC.Web.Api.Controllers
             ApiContext apiContext,
             UserManager userManager,
             AuthContext authContext,
-            TenantManager tenantManager
+            TenantManager tenantManager,
+            EmailValidationKeyProvider emailValidationKeyProvider
             )
         {
             LogManager = logManager;
@@ -48,6 +51,7 @@ namespace ASC.Web.Api.Controllers
             UserManager = userManager;
             AuthContext = authContext;
             TenantManager = tenantManager;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
 
         [Read("")]
@@ -65,7 +69,7 @@ namespace ASC.Web.Api.Controllers
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
+            return CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 

@@ -26,6 +26,7 @@
 
 using System;
 using ASC.Core;
+using ASC.Core.Tenants;
 
 namespace ASC.VoipService
 {
@@ -40,9 +41,9 @@ namespace ASC.VoipService
             get { return Settings.Caller; }
         }
 
-        public VoipPhone(AuthContext authContext)
+        public VoipPhone(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
         {
-            Settings = new VoipSettings(authContext);
+            Settings = new VoipSettings(authContext, tenantUtil, securityContext, tenantManager);
         }
 
         public virtual VoipCall Call(string to, string contactId = null)

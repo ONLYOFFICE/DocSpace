@@ -82,7 +82,7 @@ namespace ASC.Core
             Configuration = new CoreConfiguration(tenantService);
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null);
             PaymentManager = new PaymentManager(Configuration, TenantManager, quotaService, tariffService);
-            AuthorizationManager = new AuthorizationManager(azService);
+            AuthorizationManager = new AuthorizationManager(azService, TenantManager);
             SubscriptionManager = new SubscriptionManager(subService);
         }
     }

@@ -58,6 +58,7 @@ namespace ASC.Api.Settings
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
         public PermissionContext PermissionContext { get; }
+        public TenantManager TenantManager { get; }
         public LogManager LogManager { get; }
 
         public MessageService MessageService { get; }
@@ -73,7 +74,8 @@ namespace ASC.Api.Settings
             ApiContext apiContext,
             UserManager userManager,
             SecurityContext securityContext,
-            PermissionContext permissionContext)
+            PermissionContext permissionContext,
+            TenantManager tenantManager)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -82,6 +84,7 @@ namespace ASC.Api.Settings
             UserManager = userManager;
             SecurityContext = securityContext;
             PermissionContext = permissionContext;
+            TenantManager = tenantManager;
         }
 
 
@@ -139,7 +142,7 @@ namespace ASC.Api.Settings
 
             var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings);
 
-            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext);
+            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager);
 
             SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
 

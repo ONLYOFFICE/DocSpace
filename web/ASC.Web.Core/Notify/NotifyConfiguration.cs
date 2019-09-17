@@ -254,6 +254,7 @@ namespace ASC.Web.Studio.Core.Notify
             var mailWhiteLabelSettings = scope.ServiceProvider.GetService<MailWhiteLabelSettings>();
             var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
             var additionalWhiteLabelSettings = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettings>();
+            var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
 
             CommonLinkUtility.GetLocationByRequest(webItemManagerSecurity, webItemManager, out var product, out var module, null);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
@@ -274,7 +275,7 @@ namespace ASC.Web.Studio.Core.Notify
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ProductUrl, CommonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
-            request.Arguments.Add(new TagValue(CommonTags.DateTime, TenantUtil.DateTimeNow()));
+            request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
             request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff())));
             request.Arguments.Add(new TagValue(CommonTags.HelpLink, CommonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false)));

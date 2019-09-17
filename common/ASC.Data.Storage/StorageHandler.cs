@@ -62,16 +62,18 @@ namespace ASC.Data.Storage.DiscStorage
         public async Task Invoke(HttpContext context)
         {
             using var scope = ServiceProvider.CreateScope();
-            var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var StorageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+            var emailValidationKeyProvider = scope.ServiceProvider.GetService<EmailValidationKeyProvider>();
 
-            if (_checkAuth && !SecurityContext.IsAuthenticated)
+            if (_checkAuth && !securityContext.IsAuthenticated)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
 
-            var storage = StorageFactory.GetStorage(CoreContext.TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
+            var storage = storageFactory.GetStorage(tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), _module);
             var path = Path.Combine(_path, GetRouteValue("pathInfo").Replace('/', Path.DirectorySeparatorChar));
             var header = context.Request.Query[Constants.QUERY_HEADER].FirstOrDefault() ?? "";
 
@@ -83,7 +85,7 @@ namespace ASC.Data.Storage.DiscStorage
                 var expire = context.Request.Query[Constants.QUERY_EXPIRE];
                 if (string.IsNullOrEmpty(expire)) expire = storageExpire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
-                var validateResult = EmailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
+                var validateResult = emailValidationKeyProvider.ValidateEmailKey(path + "." + header + "." + expire, auth ?? "", TimeSpan.FromMinutes(Convert.ToDouble(expire)));
                 if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;

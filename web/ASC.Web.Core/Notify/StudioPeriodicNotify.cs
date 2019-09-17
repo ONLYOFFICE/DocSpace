@@ -59,18 +59,27 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start SendSaasTariffLetters");
 
-            var activeTenants = CoreContext.TenantManager.GetTenants().ToList();
+            var activeTenants = new List<Tenant>();
+            var monthQuotasIds = new List<int>();
 
-            if (activeTenants.Count <= 0)
+            using (var scope = serviceProvider.CreateScope())
             {
-                log.Info("End SendSaasTariffLetters");
-                return;
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                activeTenants = tenantManager.GetTenants().ToList();
+
+                if (activeTenants.Count <= 0)
+                {
+                    log.Info("End SendSaasTariffLetters");
+                    return;
+                }
+
+                monthQuotasIds = tenantManager.GetTenantQuotas()
+                                .Where(r => !r.Trial && r.Visible && !r.Year && !r.Year3 && !r.Free && !r.NonProfit)
+                                .Select(q => q.Id)
+                                .ToList();
             }
 
-            var monthQuotasIds = CoreContext.TenantManager.GetTenantQuotas()
-                            .Where(r => !r.Trial && r.Visible && !r.Year && !r.Year3 && !r.Free && !r.NonProfit)
-                            .Select(q => q.Id)
-                            .ToArray();
 
             foreach (var tenant in activeTenants)
             {
@@ -180,7 +189,7 @@ namespace ASC.Web.Studio.Core.Notify
                             var query = new SqlQuery("feed_aggregate")
                                 .Select(new SqlExp("cast(created_date as date) as short_date"))
 
-                                .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                                .Where("tenant", tenantManager.GetCurrentTenant().TenantId)
                                 .Where(Exp.Le("created_date", now.AddDays(-1)))
                                 .GroupBy("short_date");
 
@@ -364,7 +373,7 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
                         {
-                            CoreContext.TenantManager.RemoveTenant(tenant.TenantId, true);
+                            tenantManager.RemoveTenant(tenant.TenantId, true);
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
@@ -438,7 +447,7 @@ namespace ASC.Web.Studio.Core.Notify
                         }
                         else if (tariff.State == TariffState.NotPaid && duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
                         {
-                            CoreContext.TenantManager.RemoveTenant(tenant.TenantId, true);
+                            tenantManager.RemoveTenant(tenant.TenantId, true);
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
@@ -512,12 +521,19 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start SendTariffEnterpriseLetters");
 
-            var activeTenants = CoreContext.TenantManager.GetTenants();
+            var activeTenants = new List<Tenant>();
 
-            if (activeTenants.Count <= 0)
+            using (var scope = serviceProvider.CreateScope())
             {
-                log.Info("End SendTariffEnterpriseLetters");
-                return;
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                activeTenants = tenantManager.GetTenants().ToList();
+
+                if (activeTenants.Count <= 0)
+                {
+                    log.Info("End SendTariffEnterpriseLetters");
+                    return;
+                }
             }
 
             foreach (var tenant in activeTenants)
@@ -658,7 +674,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             var query = new SqlQuery("feed_aggregate")
                                 .Select(new SqlExp("cast(created_date as date) as short_date"))
-                                .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                                .Where("tenant", tenantManager.GetCurrentTenant().TenantId)
                                 .Where(Exp.Le("created_date", now.AddDays(-1)))
                                 .GroupBy("short_date");
 
@@ -896,12 +912,19 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start SendOpensourceTariffLetters");
 
-            var activeTenants = CoreContext.TenantManager.GetTenants();
+            var activeTenants = new List<Tenant>();
 
-            if (activeTenants.Count <= 0)
+            using (var scope = serviceProvider.CreateScope())
             {
-                log.Info("End SendOpensourceTariffLetters");
-                return;
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                activeTenants = tenantManager.GetTenants().ToList();
+
+                if (activeTenants.Count <= 0)
+                {
+                    log.Info("End SendOpensourceTariffLetters");
+                    return;
+                }
             }
 
             foreach (var tenant in activeTenants)
@@ -1074,7 +1097,17 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start SendLettersPersonal...");
 
-            foreach (var tenant in CoreContext.TenantManager.GetTenants())
+
+            var activeTenants = new List<Tenant>();
+
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
+                activeTenants = tenantManager.GetTenants().ToList();
+            }
+
+            foreach (var tenant in activeTenants)
             {
                 try
                 {

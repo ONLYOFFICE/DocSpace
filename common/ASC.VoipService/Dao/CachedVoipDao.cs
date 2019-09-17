@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
 {
@@ -53,8 +54,8 @@ namespace ASC.VoipService.Dao
         }
 
 
-        public CachedVoipDao(int tenantID, AuthContext authContext)
-            : base(tenantID, authContext)
+        public CachedVoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+            : base(tenantID, authContext, tenantUtil, securityContext, tenantManager)
         {
         }
 

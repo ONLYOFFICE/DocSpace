@@ -82,9 +82,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RestoreDefaultTenantName()
         {
-            var currentTenant = CoreContext.TenantManager.GetCurrentTenant();
+            var currentTenant = TenantManager.GetCurrentTenant();
             currentTenant.Name = ConfigurationManager.AppSettings["web:portal-name"] ?? "Cloud Office Applications";
-            CoreContext.TenantManager.SaveTenant(currentTenant);
+            TenantManager.SaveTenant(currentTenant);
         }
 
         public void RestoreDefaultLogo(TenantLogoManager tenantLogoManager)

@@ -56,6 +56,7 @@ namespace ASC.Web.Core.Users
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
+        public TenantUtil TenantUtil { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -70,7 +71,8 @@ namespace ASC.Web.Core.Users
             MessageService messageService, 
             IPRestrictionsSettings iPRestrictionsSettings,
             IHttpContextAccessor httpContextAccessor,
-            CustomNamingPeople customNamingPeople
+            CustomNamingPeople customNamingPeople,
+            TenantUtil tenantUtil
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -83,6 +85,7 @@ namespace ASC.Web.Core.Users
             IPRestrictionsSettings = iPRestrictionsSettings;
             HttpContextAccessor = httpContextAccessor;
             CustomNamingPeople = customNamingPeople;
+            TenantUtil = tenantUtil;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -163,7 +166,7 @@ namespace ASC.Web.Core.Users
 
                     if (fromInviteLink)
                     {
-                        StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, newUserInfo, newUserInfo.Email);
+                        StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                     }
                 }
                 else
@@ -207,7 +210,7 @@ namespace ASC.Web.Core.Users
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
             if (settings.Enable && !IPSecurity.IPSecurity.Verify(HttpContextAccessor.HttpContext, tenant, AuthContext))
             {

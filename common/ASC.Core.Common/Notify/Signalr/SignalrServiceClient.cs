@@ -52,6 +52,8 @@ namespace ASC.Core.Notify.Signalr
 
         private readonly string hub;
 
+        public TenantManager TenantManager { get; }
+
         static SignalrServiceClient()
         {
             Timeout = TimeSpan.FromSeconds(1);
@@ -79,9 +81,10 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public SignalrServiceClient(string hub)
+        public SignalrServiceClient(string hub, TenantManager tenantManager)
         {
             this.hub = hub.Trim('/');
+            TenantManager = tenantManager;
         }
 
         public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
@@ -91,8 +94,8 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
                 var tenant = tenantId == -1
-                    ? CoreContext.TenantManager.GetTenant(domain)
-                    : CoreContext.TenantManager.GetTenant(tenantId);
+                    ? TenantManager.GetTenant(domain)
+                    : TenantManager.GetTenant(tenantId);
                 var isTenantUser = callerUserName == string.Empty;
                 var message = new MessageClass
                 {
@@ -114,7 +117,7 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
 
-                var tenant = CoreContext.TenantManager.GetTenant(domain);
+                var tenant = TenantManager.GetTenant(domain);
 
                 var message = new MessageClass
                 {
@@ -138,7 +141,7 @@ namespace ASC.Core.Notify.Signalr
 
                 if (tenantId == -1)
                 {
-                    tenantId = CoreContext.TenantManager.GetTenant(domain).TenantId;
+                    tenantId = TenantManager.GetTenant(domain).TenantId;
                 }
 
                 MakeRequest("setState", new { tenantId, from, state });
@@ -167,7 +170,7 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
 
-                var tenant = CoreContext.TenantManager.GetTenant(domain);
+                var tenant = TenantManager.GetTenant(domain);
 
                 MakeRequest("sendUnreadCounts", new { tenantId = tenant.TenantId, unreadCounts });
             }
@@ -253,7 +256,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                var numberRoom = CoreContext.TenantManager.GetCurrentTenant().TenantId + numberId;
+                var numberRoom = TenantManager.GetCurrentTenant().TenantId + numberId;
                 MakeRequest("reload", new { numberRoom, agentId });
             }
             catch (Exception error)

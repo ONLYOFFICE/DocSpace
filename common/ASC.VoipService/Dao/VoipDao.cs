@@ -38,10 +38,13 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID, AuthContext authContext)
+        public VoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
             : base(tenantID)
         {
             AuthContext = authContext;
+            TenantUtil = tenantUtil;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
         }
 
         public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -290,10 +293,10 @@ namespace ASC.VoipService.Dao
 
         private VoipPhone ToPhone(object[] r)
         {
-            return GetProvider(AuthContext).GetPhone(r);
+            return GetProvider(AuthContext, TenantUtil, SecurityContext, TenantManager).GetPhone(r);
         }
 
-        private static VoipCall ToCall(object[] r)
+        private VoipCall ToCall(object[] r)
         {
             var call = new VoipCall
             {
@@ -333,9 +336,9 @@ namespace ASC.VoipService.Dao
             get { return ConsumerFactory.GetByName("twilio"); }
         }
 
-        public static TwilioProvider GetProvider(AuthContext authContext)
+        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, tenantManager);
         }
 
         public static bool ConfigSettingsExist
@@ -348,6 +351,9 @@ namespace ASC.VoipService.Dao
         }
 
         public AuthContext AuthContext { get; }
+        public TenantUtil TenantUtil { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
 
         #endregion
     }

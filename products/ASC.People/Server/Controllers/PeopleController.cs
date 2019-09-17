@@ -65,6 +65,7 @@ namespace ASC.Employee.Core.Controllers
         public WebItemManager WebItemManager { get; }
         public PasswordSettings PasswordSettings { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
+        public TenantUtil TenantUtil { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -84,7 +85,8 @@ namespace ASC.Employee.Core.Controllers
             AuthContext authContext,
             WebItemManager webItemManager,
             PasswordSettings passwordSettings,
-            CustomNamingPeople customNamingPeople)
+            CustomNamingPeople customNamingPeople,
+            TenantUtil tenantUtil)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -105,6 +107,7 @@ namespace ASC.Employee.Core.Controllers
             WebItemManager = webItemManager;
             PasswordSettings = passwordSettings;
             CustomNamingPeople = customNamingPeople;
+            TenantUtil = tenantUtil;
         }
 
         [Read("info")]
@@ -969,7 +972,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (!viewer.IsAdmin(UserManager))
             {
-                StudioNotifyService.SendEmailChangeInstructions(Tenant.TenantId, user, email);
+                StudioNotifyService.SendEmailChangeInstructions(user, email);
             }
             else
             {
@@ -979,7 +982,7 @@ namespace ASC.Employee.Core.Controllers
                 user.Email = email;
                 user.ActivationStatus = EmployeeActivationStatus.NotActivated;
                 UserManager.SaveUserInfo(user);
-                StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, email);
+                StudioNotifyService.SendEmailActivationInstructions(user, email);
             }
 
             MessageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, UserManager));
@@ -1127,7 +1130,7 @@ namespace ASC.Employee.Core.Controllers
                 }
                 else
                 {
-                    StudioNotifyService.SendEmailActivationInstructions(Tenant.TenantId, user, user.Email);
+                    StudioNotifyService.SendEmailActivationInstructions(user, user.Email);
                 }
             }
 
@@ -1172,7 +1175,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
+            StudioNotifyService.SendMsgProfileDeletion(user);
             MessageService.Send(MessageAction.UserSentDeleteInstructions);
 
             return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");

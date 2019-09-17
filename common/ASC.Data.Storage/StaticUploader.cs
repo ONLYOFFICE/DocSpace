@@ -102,10 +102,10 @@ namespace ASC.Data.Storage
             var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var task = new Task<string>(() =>
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
                 tenantManager.SetCurrentTenant(tenantId);
+                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 

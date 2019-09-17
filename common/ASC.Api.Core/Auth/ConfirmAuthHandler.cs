@@ -19,12 +19,21 @@ namespace ASC.Api.Core.Auth
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
-        public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, SecurityContext securityContext) : base(options, logger, encoder, clock)
+        public ConfirmAuthHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options, 
+            ILoggerFactory logger, 
+            UrlEncoder encoder, 
+            ISystemClock clock, 
+            SecurityContext securityContext,
+            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
 
         public SecurityContext SecurityContext { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

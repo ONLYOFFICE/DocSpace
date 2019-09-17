@@ -506,14 +506,14 @@ namespace ASC.Web.Studio.Utility
 
         #region confirm links
 
-        public static string GetConfirmationUrl(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        public static string GetConfirmationUrl(EmailValidationKeyProvider emailValidationKeyProvider, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetFullAbsolutePath(GetConfirmationUrlRelative(tenantId, email, confirmType, postfix, userId));
+            return GetFullAbsolutePath(GetConfirmationUrlRelative(emailValidationKeyProvider, email, confirmType, postfix, userId));
         }
 
-        public static string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        public static string GetConfirmationUrlRelative(EmailValidationKeyProvider emailValidationKeyProvider, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            var validationKey = EmailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
+            var validationKey = emailValidationKeyProvider.GetEmailKey(email + confirmType + (postfix ?? ""));
 
             var link = $"confirm?key={validationKey}&type={confirmType}";
 

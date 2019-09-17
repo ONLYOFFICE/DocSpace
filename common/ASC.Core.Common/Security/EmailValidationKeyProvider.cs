@@ -44,9 +44,16 @@ namespace ASC.Security.Cryptography
         private static readonly ILog log = LogManager.GetLogger("ASC.KeyValidation.EmailSignature");
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
 
-        public static string GetEmailKey(string email)
+        public TenantManager TenantManager { get; }
+
+        public EmailValidationKeyProvider(TenantManager tenantManager)
         {
-            return GetEmailKey(CoreContext.TenantManager.GetCurrentTenant().TenantId, email);
+            TenantManager = tenantManager;
+        }
+
+        public string GetEmailKey(string email)
+        {
+            return GetEmailKey(TenantManager.GetCurrentTenant().TenantId, email);
         }
 
         public static string GetEmailKey(int tenantId, string email)
@@ -74,25 +81,25 @@ namespace ASC.Security.Cryptography
             }
         }
 
-        public static ValidationResult ValidateEmailKey(string email, string key)
+        public ValidationResult ValidateEmailKey(string email, string key)
         {
             return ValidateEmailKey(email, key, TimeSpan.MaxValue);
         }
 
-        public static ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
+        public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
         {
             var result = ValidateEmailKeyInternal(email, key, validInterval);
-            log.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            log.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, TenantManager.GetCurrentTenant().TenantId);
             return result;
         }
 
 
-        private static ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
+        private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
             if (key == null) throw new ArgumentNullException("key");
 
-            email = FormatEmail(CoreContext.TenantManager.GetCurrentTenant().TenantId, email);
+            email = FormatEmail(TenantManager.GetCurrentTenant().TenantId, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2) return ValidationResult.Invalid;
 

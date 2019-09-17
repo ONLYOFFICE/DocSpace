@@ -169,7 +169,7 @@ namespace ASC.Web.Core
 
         public void SetLifeTime(int lifeTime)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
+            var tenant = TenantManager.GetCurrentTenant();
             if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {
                 throw new SecurityException();
@@ -215,7 +215,7 @@ namespace ASC.Web.Core
 
         public void ResetTenantCookie()
         {
-            var tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext);
+            var tenant = TenantManager.GetCurrentTenant();
 
             if (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
             {

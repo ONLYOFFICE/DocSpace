@@ -68,6 +68,7 @@ namespace ASC.Api.Settings.Smtp
         protected Guid CurrentUser { get; private set; }
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
         protected ILog Logger { get; private set; }
 
         public SmtpSettingsWrapper SmtpSettings { get; private set; }
@@ -76,13 +77,20 @@ namespace ASC.Api.Settings.Smtp
 
         private readonly string messageBody;
 
-        public SmtpOperation(SmtpSettingsWrapper smtpSettings, int tenant, Guid user, UserManager userManager, SecurityContext securityContext)
+        public SmtpOperation(
+            SmtpSettingsWrapper smtpSettings, 
+            int tenant, 
+            Guid user, 
+            UserManager userManager, 
+            SecurityContext securityContext,
+            TenantManager tenantManager)
         {
             SmtpSettings = smtpSettings;
             CurrentTenant = tenant;
             CurrentUser = user;
             UserManager = userManager;
             SecurityContext = securityContext;
+            TenantManager = tenantManager;
 
             //todo
             //messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
@@ -107,7 +115,7 @@ namespace ASC.Api.Settings.Smtp
 
                 SetProgress(5, "Setup tenant");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SetProgress(10, "Setup user");
 

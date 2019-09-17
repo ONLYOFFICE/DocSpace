@@ -33,7 +33,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = TenantManager.GetCurrentTenant(context.HttpContext);
+            var tenant = TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
             if (settings.Enable && AuthContext.IsAuthenticated && !IPSecurity.IPSecurity.Verify(context.HttpContext, tenant, AuthContext))
             {

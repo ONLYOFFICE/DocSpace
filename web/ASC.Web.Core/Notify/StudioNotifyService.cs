@@ -44,6 +44,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -60,6 +61,9 @@ namespace ASC.Web.Studio.Core.Notify
         public AuthContext AuthContext { get; }
         public MailWhiteLabelSettings MailWhiteLabelSettings { get; }
         public AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public TenantManager TenantManager { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public StudioNotifyService(
             UserManager userManager, 
@@ -69,7 +73,10 @@ namespace ASC.Web.Studio.Core.Notify
             AuthManager authentication,
             AuthContext authContext,
             MailWhiteLabelSettings mailWhiteLabelSettings,
-            AdditionalWhiteLabelSettings additionalWhiteLabelSettings)
+            AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            TenantManager tenantManager,
+            IServiceProvider serviceProvider)
         {
             client = studioNotifyServiceHelper;
             TenantExtra = tenantExtra;
@@ -77,6 +84,9 @@ namespace ASC.Web.Studio.Core.Notify
             AuthContext = authContext;
             MailWhiteLabelSettings = mailWhiteLabelSettings;
             AdditionalWhiteLabelSettings = additionalWhiteLabelSettings;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            TenantManager = tenantManager;
+            ServiceProvider = serviceProvider;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -147,7 +157,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(int tenantId, UserInfo userInfo)
         {
             var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(tenantId, userInfo.ID));
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, userInfo.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email, ConfirmType.PasswordChange, hash);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -166,9 +176,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region User Email
 
-        public void SendEmailChangeInstructions(int tenantId, UserInfo user, string email)
+        public void SendEmailChangeInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmailChange, AuthContext.CurrentAccount.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmailChange, AuthContext.CurrentAccount.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
@@ -184,9 +194,9 @@ namespace ASC.Web.Studio.Core.Notify
                         new TagValue(CommonTags.Culture, user.GetCulture().Name));
         }
 
-        public void SendEmailActivationInstructions(int tenantId, UserInfo user, string email)
+        public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmailActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmailActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -259,9 +269,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         #endregion
 
-        public void SendMsgMobilePhoneChange(int tenantId, UserInfo userInfo)
+        public void SendMsgMobilePhoneChange(UserInfo userInfo)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
@@ -272,9 +282,9 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
         }
 
-        public void SendMsgTfaReset(int tenantId, UserInfo userInfo)
+        public void SendMsgTfaReset(UserInfo userInfo)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, userInfo.Email.ToLower(), ConfirmType.TfaActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
@@ -293,7 +303,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendJoinMsg(int tenantId, string email, EmployeeType emplType)
         {
-            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
+            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
                             + string.Format("&emplType={0}", emplType);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
@@ -377,7 +387,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasGuestWelcomeV10;
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
                 analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, false, false, true);
             }
 
@@ -417,7 +427,7 @@ namespace ASC.Web.Studio.Core.Notify
                 analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, true, false);
             }
 
-            var confirmationUrl = GenerateActivationConfirmUrl(tenantId, newUserInfo);
+            var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
@@ -453,7 +463,7 @@ namespace ASC.Web.Studio.Core.Notify
                 analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, false, true);
             }
 
-            var confirmationUrl = GenerateActivationConfirmUrl(tenantId, newUserInfo);
+            var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
@@ -468,9 +478,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
-        public void SendMsgProfileDeletion(int tenantId, UserInfo user)
+        public void SendMsgProfileDeletion(UserInfo user)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.ProfileRemove);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.ProfileRemove);
 
             static string greenButtonText() => CoreContext.Configuration.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
@@ -563,7 +573,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
 
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
                 var analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, true, false, false);
                 tagValues.Add(new TagValue(CommonTags.Analytics, analytics));
 
@@ -712,7 +722,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public void SendCongratulations(int tenantId, UserInfo u)
+        public void SendCongratulations(UserInfo u)
         {
             try
             {
@@ -734,11 +744,11 @@ namespace ASC.Web.Studio.Core.Notify
                 else
                 {
                     notifyAction = Actions.SaasAdminActivationV10;
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                    var tenant = TenantManager.GetCurrentTenant();
                     analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, true, false, false);
                 }
 
-                var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, u.Email, ConfirmType.EmailActivation);
+                var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, u.Email, ConfirmType.EmailActivation);
                 confirmationUrl += "&first=true";
 
                 static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
@@ -761,7 +771,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region Personal
 
-        public void SendInvitePersonal(int tenantId, string email, string additionalMember = "", bool analytics = true)
+        public void SendInvitePersonal(string email, string additionalMember = "", bool analytics = true)
         {
             var newUserInfo = UserManager.GetUserByEmail( email);
             if (UserManager.UserExists(newUserInfo)) return;
@@ -770,7 +780,7 @@ namespace ASC.Web.Studio.Core.Notify
                            ? "ru-RU"
                            : Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmpInvite, (int)EmployeeType.User)
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmpInvite, (int)EmployeeType.User)
                              + "&emplType=" + (int)EmployeeType.User
                              + "&analytics=" + analytics
                              + "&lang=" + lang
@@ -842,7 +852,9 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    var scope = ServiceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    TenantManager.SetCurrentTenant(tenant);
 
                     foreach (var u in users)
                     {
@@ -885,9 +897,9 @@ namespace ASC.Web.Studio.Core.Notify
             return !string.IsNullOrEmpty(url) && !url.StartsWith(httpPrefix) ? httpPrefix + url : url;
         }
 
-        private string GenerateActivationConfirmUrl(int tenantId, UserInfo user)
+        private string GenerateActivationConfirmUrl(UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.Activation);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.Activation);
 
             return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
                                               AuthContext.CurrentAccount.ID,

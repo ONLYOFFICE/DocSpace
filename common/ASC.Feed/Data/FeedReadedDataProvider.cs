@@ -38,10 +38,12 @@ namespace ASC.Feed.Data
         private const string dbId = Constants.FeedDbId;
 
         public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
 
-        public FeedReadedDataProvider(AuthContext authContext)
+        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager)
         {
             AuthContext = authContext;
+            TenantManager = tenantManager;
         }
 
         public DateTime GetTimeReaded()
@@ -116,9 +118,9 @@ namespace ASC.Feed.Data
             return new DbManager(dbId);
         }
 
-        private static int GetTenant()
+        private int GetTenant()
         {
-            return CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
 
         private Guid GetUser()

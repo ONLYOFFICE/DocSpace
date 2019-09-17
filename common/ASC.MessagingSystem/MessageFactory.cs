@@ -111,7 +111,7 @@ namespace ASC.MessagingSystem
             }
         }
 
-        public static EventMessage Create(string initiator, MessageAction action, MessageTarget target, params string[] description)
+        public EventMessage Create(string initiator, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {

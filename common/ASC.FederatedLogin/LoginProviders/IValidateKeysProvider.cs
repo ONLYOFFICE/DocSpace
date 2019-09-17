@@ -25,11 +25,12 @@
 
 
 using ASC.Core;
+using ASC.Core.Tenants;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public interface IValidateKeysProvider
     {
-        bool ValidateKeys(AuthContext authContext);
+        bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager);
     }
 }

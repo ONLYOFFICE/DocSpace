@@ -49,6 +49,7 @@ using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Migration;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
+using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -122,6 +123,8 @@ namespace ASC.Api.Settings
         public StorageFactory StorageFactory { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public TenantLogoManager TenantLogoManager { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public TenantUtil TenantUtil { get; }
 
         public SettingsController(LogManager logManager,
             MessageService messageService,
@@ -158,7 +161,9 @@ namespace ASC.Api.Settings
             StorageHelper storageHelper,
             StorageFactory storageFactory,
             StorageFactoryConfig storageFactoryConfig,
-            TenantLogoManager tenantLogoManager)
+            TenantLogoManager tenantLogoManager,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            TenantUtil tenantUtil)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -196,6 +201,8 @@ namespace ASC.Api.Settings
             StorageFactory = storageFactory;
             StorageFactoryConfig = storageFactoryConfig;
             TenantLogoManager = tenantLogoManager;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            TenantUtil = tenantUtil;
         }
 
         [Read("")]
@@ -796,10 +803,10 @@ namespace ASC.Api.Settings
 
             if (isMe)
             {
-                return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, user.Email, ConfirmType.TfaActivation);
+                return CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.TfaActivation);
             }
 
-            StudioNotifyService.SendMsgTfaReset(Tenant.TenantId, user);
+            StudioNotifyService.SendMsgTfaReset(user);
             return string.Empty;
         }
 
