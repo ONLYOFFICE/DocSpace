@@ -1,15 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  Text,
-  IconButton,
-  ContextMenuButton,
-  toastr
-} from "asc-web-components";
+import { Text, IconButton, ContextMenuButton, toastr } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
 import { useTranslation } from 'react-i18next';
+import { resendUserInvites } from "../../../../../store/services/api";
+import { EmployeeStatus } from "../../../../../helpers/constants";
+import { updateUserStatus } from "../../../../../store/people/actions";
 
 const wrapperStyle = {
   display: "flex",
@@ -22,10 +20,12 @@ const textStyle = {
 };
 
 const SectionHeaderContent = props => {
-  const { profile, history, settings, isAdmin, viewer } = props;
+  const { profile, history, settings, isAdmin, viewer, updateUserStatus } = props;
 
-  const onEditClick = user => {
-    history.push(`${settings.homepage}/edit/${user.userName}`);
+  const selectedUserIds = new Array(profile.id);
+
+  const onEditClick = () => {
+    history.push(`${settings.homepage}/edit/${profile.userName}`);
   };
 
   const onChangePasswordClick = () => {
@@ -41,7 +41,8 @@ const SectionHeaderContent = props => {
   };
 
   const onDisableClick = () => {
-    toastr.success("Context action: Disable");
+    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
+    toastr.success(t("SuccessChangeUserStatus"));
   };
 
   const onEditPhoto = () => {
@@ -49,31 +50,33 @@ const SectionHeaderContent = props => {
   };
 
   const onEnableClick = () => {
-    toastr.success("Context action: Enable");
+    updateUserStatus(EmployeeStatus.Active, selectedUserIds);
+    toastr.success(t("SuccessChangeUserStatus"));
   };
-  
+
   const onReassignDataClick = () => {
     toastr.success("Context action: Reassign data");
   };
-  
-  const onDeletePersonalDataClick = user => {
+
+  const onDeletePersonalDataClick = () => {
     toastr.success("Context action: Delete personal data");
   };
-  
+
   const onDeleteProfileClick = () => {
     toastr.success("Context action: Delete profile");
   };
-  
-  const onInviteAgainClick = () => {
-    toastr.success("Context action: Invite again");
-  };
 
+  const onInviteAgainClick = () => {
+    resendUserInvites(selectedUserIds)
+      .then(() => toastr.success("The invitation was successfully sent"))
+      .catch(e => toastr.error("ERROR"));
+  };
   const getUserContextOptions = (user, viewer, t) => {
 
     let status = "";
 
-    if(isAdmin|| (!isAdmin && isMe(user, viewer.userName))) {
-      status = getUserStatus(user); 
+    if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
+      status = getUserStatus(user);
     }
 
     switch (status) {
@@ -83,7 +86,7 @@ const SectionHeaderContent = props => {
           {
             key: "edit",
             label: t('EditUserDialogTitle'),
-            onClick: onEditClick.bind(this, user)
+            onClick: onEditClick
           },
           {
             key: "edit-photo",
@@ -131,7 +134,7 @@ const SectionHeaderContent = props => {
           {
             key: "delete-personal-data",
             label: t('RemoveData'),
-            onClick: onDeletePersonalDataClick.bind(this, user)
+            onClick: onDeletePersonalDataClick
           },
           {
             key: "delete-profile",
@@ -144,7 +147,7 @@ const SectionHeaderContent = props => {
           {
             key: "edit",
             label: t('EditButton'),
-            onClick: onEditClick.bind(this, user)
+            onClick: onEditClick
           },
           {
             key: "edit-photo",
@@ -157,7 +160,7 @@ const SectionHeaderContent = props => {
             onClick: onInviteAgainClick
           },
           {
-            key: "key5",
+            key: "disable",
             label: t('DisableUserButton'),
             onClick: onDisableClick
           }
@@ -207,4 +210,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(SectionHeaderContent));
+export default connect(mapStateToProps, { updateUserStatus })(withRouter(SectionHeaderContent));

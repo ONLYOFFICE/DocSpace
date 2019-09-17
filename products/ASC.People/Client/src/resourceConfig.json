@@ -9,6 +9,22 @@
       "ImportPeople"
     ]
   },
+  "dialogs": {
+    "Invite": {
+      "Resource": [
+        "HelpAnswerLinkInviteSettings",
+        "CopyToClipboard",
+        "CloseButton",
+        "GetShortenLink",
+        "LoadingProcessing",
+        "InviteUsersAsCollaborators",
+        "InviteLinkTitle"
+      ],
+    "ResourceJS": [
+      "LinkCopySuccess"
+    ]
+  }
+},
   "pages": {
     "Profile": {
       "Resource": [

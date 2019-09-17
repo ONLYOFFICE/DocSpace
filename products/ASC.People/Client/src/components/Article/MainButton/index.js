@@ -7,12 +7,20 @@ import {
     DropDownItem,
     toastr
 } from "asc-web-components";
+import InviteDialog from './../../dialogs/Invite';
 import { isAdmin } from '../../../store/auth/selectors';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 import { typeUser, typeGuest, department } from './../../../helpers/customNames';
 
 class PureArticleMainButtonContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dialogVisible: false,
+        }
+    }
+
     onDropDownItemClick = (link) => {
         this.props.history.push(link);
     };
@@ -21,48 +29,57 @@ class PureArticleMainButtonContent extends React.Component {
         toastr.success(text);
     };
 
+    toggleDialogVisible = () => this.setState({ dialogVisible: !this.state.dialogVisible });
+
     render() {
         console.log("People ArticleMainButtonContent render");
         const { isAdmin, settings, t } = this.props;
         return (
             isAdmin ?
-                <MainButton
-                    isDisabled={false}
-                    isDropdown={true}
-                    text={t('Actions')}
-                >
-                    <DropDownItem
-                        icon="CatalogEmployeeIcon"
-                        label={t('CustomNewEmployee', { typeUser })}
-                        onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/user`)}
+                <>
+                    <MainButton
+                        isDisabled={false}
+                        isDropdown={true}
+                        text={t('Actions')}
+                    >
+                        <DropDownItem
+                            icon="CatalogEmployeeIcon"
+                            label={t('CustomNewEmployee', { typeUser })}
+                            onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/user`)}
+                        />
+                        <DropDownItem
+                            icon="CatalogGuestIcon"
+                            label={t('CustomNewGuest', { typeGuest })}
+                            onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/guest`)}
+                        />
+                        <DropDownItem
+                            icon="CatalogDepartmentsIcon"
+                            label={t('CustomNewDepartment', { department })}
+                            onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/group/create`)}
+                        />
+                        <DropDownItem isSeparator />
+                        <DropDownItem
+                            icon="InvitationLinkIcon"
+                            label={t('InviteLinkTitle')}
+                            onClick={this.toggleDialogVisible}
+                        />
+                        <DropDownItem
+                            icon="PlaneIcon"
+                            label={t('LblInviteAgain')}
+                            onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
+                        />
+                        <DropDownItem
+                            icon="ImportIcon"
+                            label={t('ImportPeople')}
+                            onClick={this.onNotImplementedClick.bind(this, "Import people action")}
+                        />
+                    </MainButton>
+                    <InviteDialog
+                        visible={this.state.dialogVisible}
+                        onClose={this.toggleDialogVisible}
+                        onCloseButton={this.toggleDialogVisible}
                     />
-                    <DropDownItem
-                        icon="CatalogGuestIcon"
-                        label={t('CustomNewGuest', { typeGuest })}
-                        onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/guest`)}
-                    />
-                    <DropDownItem
-                        icon="CatalogDepartmentsIcon"
-                        label={t('CustomNewDepartment', { department })}
-                        onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/group/create`)}
-                    />
-                    <DropDownItem isSeparator />
-                    <DropDownItem
-                        icon="InvitationLinkIcon"
-                        label={t('InviteLinkTitle')}
-                        onClick={this.onNotImplementedClick.bind(this, "Invitation link action")}
-                    />
-                    <DropDownItem
-                        icon="PlaneIcon"
-                        label={t('LblInviteAgain')}
-                        onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
-                    />
-                    <DropDownItem
-                        icon="ImportIcon"
-                        label={t('ImportPeople')}
-                        onClick={this.onNotImplementedClick.bind(this, "Import people action")}
-                    />
-                </MainButton>
+                </>
                 :
                 <></>
         );

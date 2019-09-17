@@ -152,6 +152,20 @@ export function getGroup(groupId) {
     : axios.get(`${API_URL}/group/${groupId}.json`);
 }
 
+export function getInvitationLink(isGuest) {
+  return IS_FAKE
+    ? fakeApi.getInvitationLink(isGuest)
+    : isGuest 
+      ? axios.get(`${API_URL}/portal/users/invite/2.json`)
+      : axios.get(`${API_URL}/portal/users/invite/1.json`);
+}
+
+export function getShortenedLink(link) {
+  return IS_FAKE
+    ? fakeApi.getShortenedLink(link)
+    : axios.put(`${API_URL}/portal/getshortenlink.json`, link);
+}
+
 function CheckError(res) {
   if (res.data && res.data.error) {
     const error = res.data.error.message || "Unknown error has happened";
