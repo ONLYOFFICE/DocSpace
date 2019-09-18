@@ -212,6 +212,8 @@ class AdvancedSelector extends React.Component {
       this.ref &&
       this.ref.current &&
       !this.ref.current.contains(e.target) &&
+      e && e.target && e.target.className &&
+      typeof e.target.className.indexOf === "function" &&
       e.target.className.indexOf("option_checkbox") === -1
     ) {
       this.props.onCancel && this.props.onCancel();
