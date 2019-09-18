@@ -198,9 +198,7 @@ describe("Calendar tests:", () => {
   });
 
   it("Calendar locale test", () => {
-    const wrapper = mount(
-      <Calendar {...baseCalendarProps} locale={"en-GB"} />
-    );
+    const wrapper = mount(<Calendar {...baseCalendarProps} locale={"en-GB"} />);
     expect(wrapper.prop("locale")).toEqual("en-GB");
   });
 
@@ -260,14 +258,25 @@ describe("Calendar tests:", () => {
     expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
   });
 
-  it("Calendar check getDays function", () => {
-    const props = {
-      openToDate: new Date("01/01/2000"),
-      selectedDate: new Date("01/01/2000")
-    };
-    const wrapper = shallow(<Calendar {...props} />).instance();
-    wrapper.getDays(minDate, maxDate, openToDate, selectedDate);
-    expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
+  it("Calendar check Compare dates function", () => {
+    const date = new Date();
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />).instance();
+    expect(wrapper.compareDates(date, date) === 0).toEqual(true);
+    expect(wrapper.compareDates(date, new Date("01/01/2000")) === 0).toEqual(
+      false
+    );
   });
- 
+
+  it("Calendar error date test", () => {
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />)
+    wrapper.setState({hasError: true, isDisabled: true});
+    expect(wrapper.instance().state.hasError).toEqual(true);
+    expect(wrapper.instance().state.isDisabled).toEqual(true);
+  });
+
+  it("Calendar not error date test", () => {
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />)
+    wrapper.setState({hasError: false, isDisabled: false});
+    expect(wrapper.instance().state.hasError).toEqual(false);
+  });
 });

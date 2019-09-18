@@ -120,4 +120,21 @@ describe("DatePicker tests", () => {
 
     expect(onChange).toHaveBeenCalled();
   });
+
+  it("Calendar check Compare date function", () => {
+    const date = new Date();
+    const errorDate = new Date("01/01/3000");
+    const wrapper = shallow(<DatePicker />).instance();
+    expect(wrapper.compareDate(date)).toEqual(true);
+    expect(wrapper.compareDate(errorDate)).toEqual(false);
+  });
+
+  it("Calendar check Compare dates function", () => {
+    const date = new Date();
+    const wrapper = shallow(<DatePicker />).instance();
+    expect(wrapper.compareDates(date, date) === 0).toEqual(true);
+    expect(wrapper.compareDates(date, new Date("01/01/2000")) === 0).toEqual(
+      false
+    );
+  });
 });
