@@ -57,7 +57,7 @@ class DatePicker extends Component {
 
       if (
         !isNaN(date) &&
-        this.compareDates(date) &&
+        this.compareDate(date) &&
         targetValue.indexOf("_") === -1
       ) {
         //console.log("Mask complete");
@@ -94,7 +94,7 @@ class DatePicker extends Component {
     }
   };
 
-  compareDates = date => {
+  compareDate = date => {
     const { minDate, maxDate } = this.props;
     if (date < minDate || date > maxDate) {
       return false;
