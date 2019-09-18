@@ -146,7 +146,6 @@ storiesOf('Components|Input', module)
                 >
                   <Icons.NavLogoIcon size="medium" key='comboIcon' />
                 </ComboBox>
-
               </td>
             </tr>
           </tbody>
