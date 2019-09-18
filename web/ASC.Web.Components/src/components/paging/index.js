@@ -81,7 +81,8 @@ const Paging = props => {
       {countItems &&
         <StyledOnPage>
           <ComboBox 
-            directionY={openDirection} 
+            directionY={openDirection}
+            directionX='right'
             options={countItems} 
             onSelect={onSelectCountAction} 
             selectedOption={selectedCountItem}/>
