@@ -55,13 +55,12 @@ namespace ASC.Core.Billing
         private static readonly ILog log = LogManager.GetLogger("ASC");
         private readonly IQuotaService quotaService;
         private readonly ITenantService tenantService;
-        private readonly CoreConfiguration config;
         private readonly bool test;
         private readonly int paymentDelay;
 
 
         public TimeSpan CacheExpiration { get; set; }
-
+        public CoreSettings CoreSettings { get; }
 
         static TariffService()
         {
@@ -91,13 +90,17 @@ namespace ASC.Core.Billing
         }
 
 
-        public TariffService(System.Configuration.ConnectionStringSettings connectionString, IQuotaService quotaService, ITenantService tenantService)
+        public TariffService(
+            System.Configuration.ConnectionStringSettings connectionString,
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreSettings coreSettings
+            )
             : base(connectionString, "tenant")
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;
-            var coreSettings = new CoreSettings(tenantService);
-            config = new CoreConfiguration(coreSettings);
+            CoreSettings = coreSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
             int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);
@@ -107,7 +110,7 @@ namespace ASC.Core.Billing
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
             //single tariff for all portals
-            if (CoreContext.Configuration.Standalone)
+            if (CoreSettings.Standalone)
                 tenantId = -1;
 
             var key = GetTariffCacheKey(tenantId);
@@ -478,7 +481,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             {
                 tariff.State = TariffState.NotPaid;
 
-                if ((q == null || !q.Trial) && config.Standalone)
+                if ((q == null || !q.Trial) && CoreSettings.Standalone)
                 {
                     if (q != null)
                     {
@@ -532,17 +535,17 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private string GetPortalId(int tenant)
         {
-            return config.GetKey(tenant);
+            return CoreSettings.GetKey(tenant);
         }
 
         private string GetAffiliateId(int tenant)
         {
-            return config.GetAffiliateId(tenant);
+            return CoreSettings.GetAffiliateId(tenant);
         }
 
         private TimeSpan GetCacheExpiration()
         {
-            if (config.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
+            if (CoreSettings.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
             {
                 CacheExpiration = CacheExpiration.Add(TimeSpan.FromSeconds(30));
             }
@@ -551,7 +554,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private void ResetCacheExpiration()
         {
-            if (config.Standalone)
+            if (CoreSettings.Standalone)
             {
                 CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             }

@@ -161,9 +161,10 @@ namespace ASC.Core
     {
         private long? personalMaxSpace;
 
-        public CoreConfiguration(CoreSettings coreSettings)
+        public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager)
         {
             CoreSettings = coreSettings;
+            TenantManager = tenantManager;
         }
 
         public bool Standalone
@@ -205,7 +206,7 @@ namespace ASC.Core
             get
             {
                 var isDefaultSettings = false;
-                var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                var tenant = TenantManager.GetCurrentTenant(false);
 
                 if (tenant != null)
                 {
@@ -229,7 +230,7 @@ namespace ASC.Core
                     return settings;
                 }
             }
-            set { SaveSetting("SmtpSettings", value?.Serialize(), CoreContext.TenantManager.GetCurrentTenant().TenantId); }
+            set { SaveSetting("SmtpSettings", value?.Serialize(), TenantManager.GetCurrentTenant().TenantId); }
         }
 
         public string BaseDomain
@@ -239,6 +240,7 @@ namespace ASC.Core
         }
 
         public CoreSettings CoreSettings { get; }
+        public TenantManager TenantManager { get; }
 
         #region Methods Get/Save Setting
 
@@ -266,7 +268,7 @@ namespace ASC.Core
 
         public T GetSection<T>(string sectionName) where T : class
         {
-            return GetSection<T>(CoreContext.TenantManager.GetCurrentTenant().TenantId, sectionName);
+            return GetSection<T>(TenantManager.GetCurrentTenant().TenantId, sectionName);
         }
 
         public T GetSection<T>(int tenantId, string sectionName) where T : class
@@ -281,7 +283,7 @@ namespace ASC.Core
 
         public void SaveSection<T>(string sectionName, T section) where T : class
         {
-            SaveSection(CoreContext.TenantManager.GetCurrentTenant().TenantId, sectionName, section);
+            SaveSection(TenantManager.GetCurrentTenant().TenantId, sectionName, section);
         }
 
         public void SaveSection<T>(T section) where T : class

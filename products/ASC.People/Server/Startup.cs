@@ -143,7 +143,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>());
+                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreSettings>());
                     })
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
@@ -189,7 +189,7 @@ namespace ASC.People
                     .AddScoped<PeopleNamesSettings>()
                     .AddScoped<EmailValidationKeyProvider>()
                     .AddScoped<TenantUtil>()
-                    .AddScoped<CoreSettings>()
+                    .AddSingleton<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))

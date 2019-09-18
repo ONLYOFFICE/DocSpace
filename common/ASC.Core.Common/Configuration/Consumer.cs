@@ -77,6 +77,9 @@ namespace ASC.Core.Common.Configuration
 
         private static readonly bool OnlyDefault;
 
+        public TenantManager TenantManager { get; set; }
+        public CoreSettings CoreSettings { get; set; }
+
         public bool IsSet
         {
             get { return Props.Any() && !Props.All(r => string.IsNullOrEmpty(this[r.Key])); }
@@ -194,11 +197,11 @@ namespace ASC.Core.Common.Configuration
 
             if (!OnlyDefault && CanSet)
             {
-                var tenant = CoreContext.Configuration.Standalone
+                var tenant = CoreSettings.Standalone
                                  ? Tenant.DEFAULT_TENANT
-                                 : CoreContext.TenantManager.GetCurrentTenant().TenantId;
+                                 : TenantManager.GetCurrentTenant().TenantId;
 
-                value = CoreContext.Configuration.GetSetting(GetSettingsKey(name), tenant);
+                value = CoreSettings.GetSetting(GetSettingsKey(name), tenant);
             }
 
             if (string.IsNullOrEmpty(value))
@@ -232,10 +235,10 @@ namespace ASC.Core.Common.Configuration
                 return;
             }
 
-            var tenant = CoreContext.Configuration.Standalone
+            var tenant = CoreSettings.Standalone
                              ? Tenant.DEFAULT_TENANT
-                             : CoreContext.TenantManager.GetCurrentTenant().TenantId;
-            CoreContext.Configuration.SaveSetting(GetSettingsKey(name), value, tenant);
+                             : TenantManager.GetCurrentTenant().TenantId;
+            CoreSettings.SaveSetting(GetSettingsKey(name), value, tenant);
         }
 
         protected virtual string GetSettingsKey(string name)

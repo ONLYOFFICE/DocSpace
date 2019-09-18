@@ -25,6 +25,8 @@
 
 
 #if DEBUG
+using System;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
@@ -33,12 +35,15 @@ namespace ASC.Core.Common.Tests
     public class ClientPaymentManagerTest
     {
         private readonly PaymentManager paymentManager = new PaymentManager(null, null, null, null);
-
+        private IServiceProvider serviceProvider;
 
         [Test]
         public void ActivateCuponTest()
         {
-            CoreContext.TenantManager.SetCurrentTenant(0);
+            using var scope = serviceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(0);
+
             paymentManager.ActivateKey("IAALKCPBRY9ZSDLJZ4E2");
         }
     }

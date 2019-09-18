@@ -73,14 +73,14 @@ namespace ASC.Core
             }
 
             var tenantService = new CachedTenantService(new DbTenantService(cs));
+            var coreSettings = new CoreSettings(tenantService);
             var azService = new CachedAzService(new DbAzService(cs));
             var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
             var subService = new CachedSubscriptionService(new DbSubscriptionService(cs));
-            var tariffService = new TariffService(cs, quotaService, tenantService);
-
-            var coreSettings = new CoreSettings(tenantService);
-            Configuration = new CoreConfiguration(coreSettings);
+            var tariffService = new TariffService(cs, quotaService, tenantService, coreSettings);
+            
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreSettings);
+            Configuration = new CoreConfiguration(coreSettings, TenantManager);
             PaymentManager = new PaymentManager(Configuration, TenantManager, quotaService, tariffService);
             AuthorizationManager = new AuthorizationManager(azService, TenantManager);
             SubscriptionManager = new SubscriptionManager(subService);

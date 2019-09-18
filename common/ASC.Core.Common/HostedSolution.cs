@@ -67,10 +67,11 @@ namespace ASC.Core
         public HostedSolution(ConnectionStringSettings connectionString, string region)
         {
             tenantService = new DbTenantService(connectionString);
+            var coreSettings = new CoreSettings(tenantService);
+
             userService = new DbUserService(connectionString);
             quotaService = new DbQuotaService(connectionString);
-            tariffService = new TariffService(connectionString, quotaService, tenantService);
-            var coreSettings = new CoreSettings(tenantService);
+            tariffService = new TariffService(connectionString, quotaService, tenantService, coreSettings);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;
