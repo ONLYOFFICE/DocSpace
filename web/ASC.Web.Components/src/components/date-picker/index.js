@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
-import NewCalendar from "../calendar-new";
+import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
@@ -96,9 +96,7 @@ class DatePicker extends Component {
 
   compareDates = date => {
     const { minDate, maxDate } = this.props;
-    const selectedDate = date;
-
-    if (selectedDate < minDate || selectedDate > maxDate) {
+    if (date < minDate || date > maxDate) {
       return false;
     }
     return true;
@@ -253,7 +251,7 @@ class DatePicker extends Component {
           <DropDownStyle>
             <DropDown opened={isOpen}>
               {
-                <NewCalendar
+                <Calendar
                   locale={locale}
                   themeColor={themeColor}
                   minDate={minDate}
