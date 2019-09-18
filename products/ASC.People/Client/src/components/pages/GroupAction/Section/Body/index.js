@@ -1,6 +1,7 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
+import styled from 'styled-components';
 import PropTypes from "prop-types";
 import {
   Button,
@@ -11,7 +12,8 @@ import {
   AdvancedSelector,
   FieldContainer,
   ComboBox,
-  ModalDialog
+  ModalDialog,
+  SearchInput
 } from "asc-web-components";
 import {
   department,
@@ -20,6 +22,42 @@ import {
 } from "../../../../../helpers/customNames";
 import { connect } from "react-redux";
 import { resetGroup } from "../../../../../store/group/actions";
+
+const StyledBodyContainer = styled.div`
+  .group-name_input {
+    width: 320px;
+  }
+
+  .head_container,
+  .members_container { 
+    margin-top: 16px; 
+    position: "relative";
+  }
+
+  .search_container {
+    margin-top: 16px;
+  }
+
+  .selected-members_container { 
+    margin-top: 16px;
+    display: "flex";
+    flex-wrap: "wrap";
+    flex-direction: "row";
+
+    .selected-item { 
+      margin-right: 8px; 
+      margin-bottom: 8px;
+    }
+  }
+
+  .buttons_container { 
+    margin-top: 60px;
+
+    .cancel-button { 
+      margin-left: 8px;
+    }
+  }
+`;
 
 class SectionBodyContent extends React.Component {
   constructor(props) {
@@ -30,6 +68,7 @@ class SectionBodyContent extends React.Component {
     this.state = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
+      searchValue: "",
       error: null,
       inLoading: false,
       isHeaderSelectorOpen: false,
@@ -53,6 +92,12 @@ class SectionBodyContent extends React.Component {
   onGroupChange = e => {
     this.setState({
       groupName: e.target.value
+    });
+  };
+
+  onSearchChange = e => {
+    this.setState({
+      searchValue: e.target.value
     });
   };
 
@@ -92,18 +137,19 @@ class SectionBodyContent extends React.Component {
       isUsersSelectorOpen,
       modalVisible,
       inLoading,
-      error
+      error,
+      searchValue
     } = this.state;
 
     return (
-      <>
+      <StyledBodyContainer>
         <div>
           <label htmlFor="group-name">
             <Text.Body as="span" isBold={true}>
               {t("CustomDepartmentName", { department })}:
             </Text.Body>
           </label>
-          <div style={{ width: "320px" }}>
+          <div className="group-name_input">
             <TextInput
               id="group-name"
               name="group-name"
@@ -115,7 +161,7 @@ class SectionBodyContent extends React.Component {
             />
           </div>
         </div>
-        <div style={{ marginTop: "16px", position: "relative" }}>
+        <div className="head_container">
           <label htmlFor="head-selector">
             <Text.Body as="span" isBold={true}>
               {t("CustomHeadOfDepartment", { headOfDepartment })}:
@@ -167,7 +213,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboBox>
         </div>
-        <div style={{ marginTop: "16px", position: "relative" }}>
+        <div className="members_container">
           <label htmlFor="employee-selector">
             <Text.Body as="span" isBold={true}>
               Members:
@@ -311,14 +357,18 @@ class SectionBodyContent extends React.Component {
             onClose={this.toggleModalVisible}
           />
         </div>
-        <div
-          style={{
-            marginTop: "16px",
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row"
-          }}
-        >
+        <div className="search_container">
+          <SearchInput
+            id="member-search"
+            isDisabled={inLoading}
+            size='base'
+            scale={true}
+            placeholder='Search'
+            value={searchValue}
+            onChange={this.onSearchChange}
+          />
+        </div>
+        <div className="selected-members_container">
           {groupMembers.map(member => (
             <SelectedItem
               key={member.id}
@@ -326,12 +376,12 @@ class SectionBodyContent extends React.Component {
               onClick={e => console.log("onClick", e.target)}
               onClose={e => console.log("onClose", e.target)}
               isInline={true}
-              style={{ marginRight: "8px", marginBottom: "8px" }}
+              className="selected-item"
             />
           ))}
         </div>
         <div>{error && <strong>{error}</strong>}</div>
-        <div style={{ marginTop: "60px" }}>
+        <div className="buttons_container">
           <Button
             label={t("SaveButton")}
             primary
@@ -342,14 +392,14 @@ class SectionBodyContent extends React.Component {
           />
           <Button
             label={t("CancelButton")}
-            style={{ marginLeft: "8px" }}
+            className="cancel-button"
             size="big"
             isDisabled={inLoading}
             onClick={this.onCancel}
             tabIndex={5}
           />
         </div>
-      </>
+      </StyledBodyContainer>
     );
   }
 }
