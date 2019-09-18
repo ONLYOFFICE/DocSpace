@@ -1,7 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import DatePicker from "./";
-import NewCalendar from "../calendar-new";
+import NewCalendar from "../calendar";
 import InputBlock from "../input-block";
 import moment from "moment";
 
@@ -119,5 +119,22 @@ describe("DatePicker tests", () => {
     days.first().simulate("click", { target: { value: 1 } });
 
     expect(onChange).toHaveBeenCalled();
+  });
+
+  it("Calendar check Compare date function", () => {
+    const date = new Date();
+    const errorDate = new Date("01/01/3000");
+    const wrapper = shallow(<DatePicker />).instance();
+    expect(wrapper.compareDate(date)).toEqual(true);
+    expect(wrapper.compareDate(errorDate)).toEqual(false);
+  });
+
+  it("Calendar check Compare dates function", () => {
+    const date = new Date();
+    const wrapper = shallow(<DatePicker />).instance();
+    expect(wrapper.compareDates(date, date) === 0).toEqual(true);
+    expect(wrapper.compareDates(date, new Date("01/01/2000")) === 0).toEqual(
+      false
+    );
   });
 });

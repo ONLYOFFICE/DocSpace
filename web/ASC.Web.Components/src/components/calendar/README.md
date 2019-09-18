@@ -7,9 +7,9 @@ Custom calendar
 #### Usage
 
 ```js
-import { NewCalendar } from "asc-web-components";
+import { Calendar } from "asc-web-components";
 
-<NewCalendar
+<Calendar
   onChange={date => {
     console.log("Selected date:", date);
   }}
