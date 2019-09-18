@@ -1,8 +1,9 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { mount, shallow, render } from "enzyme";
 import { Weekdays, Days, Day } from "./sub-components/";
-import NewCalendar from "./";
+import Calendar from "./";
 import ComboBox from "../combobox";
+import moment from "moment";
 
 const baseCalendarProps = {
   isDisabled: false,
@@ -72,6 +73,7 @@ const selectedDate = new Date("09/12/2019");
 const openToDate = new Date("09/12/2019");
 const minDate = new Date("01/01/1970");
 const maxDate = new Date("01/01/2020");
+const months = moment.months();
 
 describe("Weekdays tests:", () => {
   it("Weekdays renders without error", () => {
@@ -83,6 +85,15 @@ describe("Weekdays tests:", () => {
     const wrapper = shallow(<Weekdays {...baseWeekdaysProps} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props);
     expect(shouldUpdate).toBe(false);
+  });
+
+  it("Weekdays render test", () => {
+    const wrapper = shallow(<Weekdays {...baseWeekdaysProps} />).instance();
+    const shouldUpdate = wrapper.shouldComponentUpdate({
+      ...wrapper.props,
+      size: "big"
+    });
+    expect(shouldUpdate).toBe(true);
   });
 
   it("Weekdays property size passed", () => {
@@ -103,19 +114,19 @@ describe("Days tests:", () => {
     expect(shouldUpdate).toBe(false);
   });
 
+  it("Days render test", () => {
+    const wrapper = shallow(<Days {...baseDaysProps} />).instance();
+    const shouldUpdate = wrapper.shouldComponentUpdate({
+      ...wrapper.props,
+      size: "big"
+    });
+    expect(shouldUpdate).toBe(true);
+  });
+
   it("Days property size passed", () => {
     const wrapper = mount(<Days {...baseDaysProps} size={"big"} />);
     expect(wrapper.prop("size")).toEqual("big");
   });
-  /*
-  it("Days click event", () => {
-    const mockCallBack = jest.fn();
-
-    const button = shallow(<Days {...baseDaysProps} />);
-    button.find("DayContent").simulate("click");
-    expect(mockCallBack.mock.calls.length).toEqual(1);
-  });
-*/
 });
 
 describe("Day tests:", () => {
@@ -130,6 +141,15 @@ describe("Day tests:", () => {
     expect(shouldUpdate).toBe(false);
   });
 
+  it("Day render test", () => {
+    const wrapper = shallow(<Day {...baseDayProps} />).instance();
+    const shouldUpdate = wrapper.shouldComponentUpdate({
+      ...wrapper.props,
+      size: "big"
+    });
+    expect(shouldUpdate).toBe(true);
+  });
+
   it("Day property size passed", () => {
     const wrapper = mount(<Day {...baseDayProps} size={"big"} />);
     expect(wrapper.prop("size")).toEqual("big");
@@ -138,71 +158,60 @@ describe("Day tests:", () => {
 
 describe("Calendar tests:", () => {
   it("Calendar renders without error", () => {
-    const wrapper = mount(<NewCalendar {...baseCalendarProps} />);
+    const wrapper = mount(<Calendar {...baseCalendarProps} />);
     expect(wrapper).toExist();
   });
 
-  /*
-  it("Calendar not re-render test", () => {
-    const wrapper = shallow(<NewCalendar {...baseCalendarProps} />).instance();
-    const shouldUpdate = wrapper.shouldComponentUpdate(
-      wrapper.props,
-      wrapper.state
-    );
-    expect(shouldUpdate).toBe(false);
-  });
-*/
-
   it("Calendar selectedDate test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} selectedDate={selectedDate} />
+      <Calendar {...baseCalendarProps} selectedDate={selectedDate} />
     );
     expect(wrapper.props().selectedDate).toEqual(selectedDate);
   });
 
   it("Calendar openToDate test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} openToDate={openToDate} />
+      <Calendar {...baseCalendarProps} openToDate={openToDate} />
     );
     expect(wrapper.props().openToDate).toEqual(openToDate);
   });
 
   it("Calendar minDate test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} minDate={minDate} />
+      <Calendar {...baseCalendarProps} minDate={minDate} />
     );
     expect(wrapper.props().minDate).toEqual(minDate);
   });
 
   it("Calendar maxDate test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} maxDate={maxDate} />
+      <Calendar {...baseCalendarProps} maxDate={maxDate} />
     );
     expect(wrapper.props().maxDate).toEqual(maxDate);
   });
 
   it("Calendar themeColor test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} themeColor={"#fff"} />
+      <Calendar {...baseCalendarProps} themeColor={"#fff"} />
     );
     expect(wrapper.props().themeColor).toEqual("#fff");
   });
 
   it("Calendar locale test", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} locale={"en-GB"} />
+      <Calendar {...baseCalendarProps} locale={"en-GB"} />
     );
     expect(wrapper.prop("locale")).toEqual("en-GB");
   });
 
   it("Calendar disabled when isDisabled is passed", () => {
     const wrapper = mount(
-      <NewCalendar {...baseCalendarProps} isDisabled={true} />
+      <Calendar {...baseCalendarProps} isDisabled={true} />
     );
     expect(wrapper.prop("isDisabled")).toEqual(true);
   });
   it("Calendar has rendered content ComboBox", () => {
-    const wrapper = mount(<NewCalendar {...baseCalendarProps} />);
+    const wrapper = mount(<Calendar {...baseCalendarProps} />);
     expect(wrapper).toExist(<ComboBox {...baseComboBoxProps} />);
   });
 
@@ -212,7 +221,7 @@ describe("Calendar tests:", () => {
       selectedDate: new Date("03/03/2000"),
       onChange
     };
-    const wrapper = shallow(<NewCalendar {...props} />).instance();
+    const wrapper = shallow(<Calendar {...props} />).instance();
     wrapper.onDayClick({
       value: 1,
       disableClass: "",
@@ -222,4 +231,43 @@ describe("Calendar tests:", () => {
 
     expect(onChange).toBeCalled();
   });
+
+  it("Calendar check onSelectYear function", () => {
+    const props = {
+      openToDate: new Date("05/01/2000"),
+      selectedDate: new Date("01/01/2000"),
+      minDate: new Date("01/01/1970"),
+      maxDate: new Date("01/01/2020")
+    };
+
+    const wrapper = shallow(<Calendar {...props} />).instance();
+    wrapper.onSelectYear({
+      key: 2020,
+      value: 2020
+    });
+
+    expect(wrapper.state.openToDate).toEqual(new Date("01/01/2020"));
+  });
+
+  it("Calendar check onSelectMonth function", () => {
+    const props = {
+      openToDate: new Date("01/01/2000"),
+      selectedDate: new Date("01/01/2000")
+    };
+    const wrapper = shallow(<Calendar {...props} />).instance();
+    wrapper.onSelectMonth({ key: "1", label: "February", disabled: false });
+
+    expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
+  });
+
+  it("Calendar check getDays function", () => {
+    const props = {
+      openToDate: new Date("01/01/2000"),
+      selectedDate: new Date("01/01/2000")
+    };
+    const wrapper = shallow(<Calendar {...props} />).instance();
+    wrapper.getDays(minDate, maxDate, openToDate, selectedDate);
+    expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
+  });
+ 
 });

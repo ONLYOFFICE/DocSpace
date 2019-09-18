@@ -1,7 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import DatePicker from "./";
-import NewCalendar from "../calendar-new";
+import NewCalendar from "../calendar";
 import InputBlock from "../input-block";
 import moment from "moment";
 
