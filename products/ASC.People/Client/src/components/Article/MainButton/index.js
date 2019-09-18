@@ -29,8 +29,13 @@ class PureArticleMainButtonContent extends React.Component {
         toastr.success(text);
     };
 
-    toggleDialogVisible = () => this.setState({ dialogVisible: !this.state.dialogVisible });
+    toggleDialogVisible = () => {
+        this.setState({ dialogVisible: !this.state.dialogVisible }, function () {
+            this.state.dialogVisible && this.clickChild();
+        });
+    }
 
+    onSetInviteDialogClick = click => this.clickChild = click;
     render() {
         console.log("People ArticleMainButtonContent render");
         const { isAdmin, settings, t } = this.props;
@@ -75,6 +80,7 @@ class PureArticleMainButtonContent extends React.Component {
                         />
                     </MainButton>
                     <InviteDialog
+                        setClick={this.onSetInviteDialogClick}
                         visible={this.state.dialogVisible}
                         onClose={this.toggleDialogVisible}
                         onCloseButton={this.toggleDialogVisible}
