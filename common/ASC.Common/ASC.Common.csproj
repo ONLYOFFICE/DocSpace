@@ -32,19 +32,19 @@
     <PackageReference Include="ARSoft.Tools.NetStandard.DXSdata" Version="1.0.0" />
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="Autofac.Configuration" Version="4.1.0" />
-    <PackageReference Include="Confluent.Kafka" Version="1.2.0-RC2" />
-    <PackageReference Include="Google.Protobuf" Version="3.9.1" />
-    <PackageReference Include="Grpc" Version="2.23.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.23.0">
+    <PackageReference Include="Confluent.Kafka" Version="1.2.0-RC4" />
+    <PackageReference Include="Google.Protobuf" Version="3.10.0-rc1" />
+    <PackageReference Include="Grpc" Version="2.24.0-pre1" />
+    <PackageReference Include="Grpc.Tools" Version="2.24.0-pre1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.0.0-preview9.19424.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.0.0-rc1.19457.4" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <!-- <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.4">
+<!-- <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference> -->
@@ -54,11 +54,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference> -->
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.0.0-preview9.19421.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0-rc1.19456.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0-rc1.19456.10" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.0.0-rc1.19456.4" />
     <PackageReference Include="MySql.Data" Version="8.0.17" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta1" />
     <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />

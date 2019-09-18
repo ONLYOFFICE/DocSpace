@@ -20,4 +20,5 @@ import { ModalDialog } from 'asc-web-components';
 | `headerContent` | `string/element/elements` |          |        |         | Header content                                   |
 | `bodyContent`   | `string/element/elements` |          |        |         | Body content                                     |
 | `footerContent` | `string/element/elements` |          |        |         | Footer content                                   |
+| `zIndex`        | `number`                  |          |        |   310   | CSS z-index                                      |
 | `onClose`       | `func`                    |          |        |         | Will be triggered when a close button is clicked |

@@ -12,7 +12,8 @@ const Caret = styled.div`
 `;
 const StyledPopover = styled(Popover)`
   .popover{
-    border: none
+    border: none;
+    max-width: 320px;
   }
 `;
 const StyledHideFilterButton = styled.div`

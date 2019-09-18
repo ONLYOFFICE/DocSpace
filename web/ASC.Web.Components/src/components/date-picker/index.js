@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
-import NewCalendar from "../calendar-new";
+import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
@@ -23,7 +23,6 @@ class DatePicker extends Component {
 
     moment.locale(props.locale);
     this.ref = React.createRef();
-    this.newRef = React.createRef();
 
     const { isOpen, selectedDate, hasError } = this.props;
 
@@ -47,7 +46,7 @@ class DatePicker extends Component {
   };
 
   handleChange = e => {
-    const { value, hasError } = this.state;
+    const { value } = this.state;
 
     const targetValue = e.target.value;
     if (value != targetValue) {
@@ -97,9 +96,7 @@ class DatePicker extends Component {
 
   compareDates = date => {
     const { minDate, maxDate } = this.props;
-    const selectedDate = date;
-
-    if (selectedDate < minDate || selectedDate > maxDate) {
+    if (date < minDate || date > maxDate) {
       return false;
     }
     return true;
@@ -254,7 +251,7 @@ class DatePicker extends Component {
           <DropDownStyle>
             <DropDown opened={isOpen}>
               {
-                <NewCalendar
+                <Calendar
                   locale={locale}
                   themeColor={themeColor}
                   minDate={minDate}
@@ -290,7 +287,8 @@ DatePicker.propTypes = {
 
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
-  maxDate: new Date(new Date().getFullYear() + 1, 1, 1)
+  maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
+  selectedDate: moment(new Date()).toDate()
 };
 
 export default DatePicker;

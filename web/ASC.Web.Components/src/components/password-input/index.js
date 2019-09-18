@@ -241,7 +241,7 @@ class PasswordInput extends React.Component {
     onCopyToClipboard && onCopyToClipboard(formattedText);
   }
 
-  shouldComponentUpdate(nextProps,nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
@@ -266,7 +266,10 @@ class PasswordInput extends React.Component {
       placeholder,
       tabIndex,
       maxLength,
-      onValidateInput
+      onValidateInput,
+      id,
+      autoComplete,
+      className
     } = this.props;
     const {
       type,
@@ -308,9 +311,10 @@ class PasswordInput extends React.Component {
     );
 
     return (
-      <StyledInput onValidateInput={onValidateInput}>
+      <StyledInput onValidateInput={onValidateInput} className={className}>
         <PasswordProgress inputWidth={inputWidth}>
           <InputBlock
+            id={id}
             name={inputName}
             hasError={hasError}
             isDisabled={isDisabled}
@@ -329,7 +333,7 @@ class PasswordInput extends React.Component {
             placeholder={placeholder}
             tabIndex={tabIndex}
             maxLength={maxLength}
-            autoComplete='new-password'
+            autoComplete={autoComplete}
           >
             {displayTooltip &&
               <DropDown directionY='top' manualY='150%' isOpen={true}>
@@ -375,6 +379,7 @@ PasswordInput.propTypes = {
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
   maxLength: PropTypes.number,
+  className: PropTypes.string,
 
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
@@ -400,6 +405,7 @@ PasswordInput.propTypes = {
 PasswordInput.defaultProps = {
   inputType: 'password',
   inputName: 'passwordInput',
+  autoComplete: 'new-password',
 
   isDisabled: false,
   size: 'base',
@@ -408,7 +414,8 @@ PasswordInput.defaultProps = {
   clipEmailResource: 'E-mail ',
   clipPasswordResource: 'Password ',
 
-  generatorSpecial: '!@#$%^&*'
+  generatorSpecial: '!@#$%^&*',
+  className: ''
 }
 
 export default PasswordInput;

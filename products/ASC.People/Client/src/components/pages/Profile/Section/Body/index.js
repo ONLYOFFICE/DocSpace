@@ -2,20 +2,21 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import {
   Text,
+  TextInput,
   Avatar,
   Button,
   ToggleContent,
   IconButton,
-  Link
+  Link,
+  toastr,
+  ModalDialog
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
-import {
-  getUserRole,
-  getUserContacts
-} from "../../../../../store/people/selectors";
+import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 
 const ProfileWrapper = styled.div`
@@ -126,154 +127,288 @@ const createContacts = contacts => {
   return styledContacts;
 };
 
-const ProfileInfo = (props) => {
-  const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = props.profile;
-  const isAdmin = props.isAdmin;
-  const isSelf = props.isSelf;
-  const t = props.t;
+class ProfileInfo extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = this.mapPropsToState(props);
+  }
 
-  const type = isVisitor ? "Guest" : "Employee";
-  const language = cultureName || currentCulture;
-  const workFromDate = new Date(workFrom).toLocaleDateString(language);
-  const birthDayDate = new Date(birthday).toLocaleDateString(language);
-  const formatedSex = capitalizeFirstLetter(sex);
-  const formatedDepartments = getFormattedDepartments(department);
+  mapPropsToState = (props) => {
+    const newState = {
+      profile: props.profile,
+      dialog: {
+        visible: false,
+        header: "",
+        body: "",
+        buttons: [],
+        newEmail: props.profile.email,
+      }
+    };
 
-  const onEmailClick = useCallback(
-    () => window.open("mailto:" + email),
-    [email]
-  );
+    return newState;
+  };
 
-  return (
-    <InfoContainer>
-      <InfoItem>
-        <InfoItemLabel>
-          {t('UserType')}:
+  onEmailChange = e => {
+    const emailRegex = /.+@.+\..+/;
+    const newEmail = e.target.value || this.state.dialog.newEmail;
+    const hasError = !emailRegex.test(newEmail);
+
+    const dialog = {
+      visible: true,
+      header: "Change email",
+      body: (
+        <Text.Body>
+          <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
+          <TextInput
+            id="new-email"
+            scale={true}
+            isAutoFocussed={true}
+            value={newEmail}
+            onChange={this.onEmailChange}
+            hasError={hasError}
+          />
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendEmailChangeInstructions}
+          isDisabled={hasError}
+        />
+      ],
+      value: newEmail
+    };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendEmailChangeInstructions = () => {
+    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.value)
+      .then((res) => {
+        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+      })
+      .catch((error) => toastr.error(error.message))
+      .finally(this.onDialogClose);
+  }
+
+  onSentInviteAgain = id => {
+    resendUserInvites(new Array(id))
+      .then(() => toastr.success("The invitation was successfully sent"))
+      .catch(e => toastr.error("ERROR"));
+  };
+
+  onPhoneChange = () => {
+    const dialog = {
+      visible: true,
+      header: "Change phone",
+      body: (
+        <Text.Body>
+          The instructions on how to change the user mobile number will be sent to the user email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={this.onSendPhoneChangeInstructions}
+        />
+      ]
+    };
+    this.setState({ dialog: dialog })
+  }
+
+  onSendPhoneChangeInstructions = () => {
+    toastr.success("Context action: Change phone");
+    this.onDialogClose();
+  }
+
+  onDialogClose = value => {
+    const dialog = { visible: false, value: value };
+    this.setState({ dialog: dialog })
+  }
+
+  onEmailClick = (e, email) => {
+    if (e.target.title)
+      window.open("mailto:" + email);
+  }
+
+  render() {
+    const { dialog } = this.state;
+    const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
+    const isAdmin = this.props.isAdmin;
+    const isSelf = this.props.isSelf;
+    const t = this.props.t;
+
+    const type = isVisitor ? "Guest" : "Employee";
+    const language = cultureName || currentCulture;
+    const workFromDate = new Date(workFrom).toLocaleDateString(language);
+    const birthDayDate = new Date(birthday).toLocaleDateString(language);
+    const formatedSex = capitalizeFirstLetter(sex);
+    const formatedDepartments = getFormattedDepartments(department);
+
+    //window.open("mailto:" + email);
+
+    return (
+      <InfoContainer>
+        <InfoItem>
+          <InfoItemLabel>
+            {t('UserType')}:
         </InfoItemLabel>
-        <InfoItemValue>
-          {type}
-        </InfoItemValue>
-      </InfoItem>
-      {email &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('Email')}:
-          </InfoItemLabel>
           <InfoItemValue>
-            <Link
-              type="page"
-              fontSize={13}
-              isHovered={true}
-              title={email}
-              onClick={onEmailClick}
-            >
-              {activationStatus === 2 && (isAdmin || isSelf) &&
-                <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
-                  <IconButton color='#C96C27' size={16} iconName='DangerIcon' isFill={true} />
-                </IconButtonWrapper>
-              }
-              {email}
+            {type}
+          </InfoItemValue>
+        </InfoItem>
+        {email &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('Email')}:
+          </InfoItemLabel>
+            <InfoItemValue>
+              <Link
+                type="page"
+                fontSize={13}
+                isHovered={true}
+                title={email}
+                onClick={this.onEmailClick.bind(email)}
+              >
+                {activationStatus === 2 && (isAdmin || isSelf) &&
+                  <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
+                    <IconButton
+                      color='#C96C27'
+                      size={16}
+                      iconName='DangerIcon'
+                      isFill={true} />
+                  </IconButtonWrapper>
+                }
+                {email}
+                {(isAdmin || isSelf) &&
+                  <IconButtonWrapper title={t('EmailChangeButton')} >
+                    <IconButton
+                      color="#A3A9AE"
+                      size={16}
+                      iconName='AccessEditIcon'
+                      isFill={true}
+                      onClick={this.onEmailChange} />
+                  </IconButtonWrapper>
+                }
+                {activationStatus === 2 && (isAdmin || isSelf) &&
+                  <IconButtonWrapper title={t('SendInviteAgain')}>
+                    <IconButton
+                      color="#A3A9AE"
+                      size={16}
+                      iconName='FileActionsConvertIcon'
+                      isFill={true}
+                      onClick={this.onSentInviteAgain.bind(this, id)} />
+                  </IconButtonWrapper>
+                }
+              </Link>
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {department &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomDepartment", { department: departmentName })}:
+          </InfoItemLabel>
+            <InfoItemValue>
+              {formatedDepartments}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {title &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomPosition", { position })}:
+          </InfoItemLabel>
+            <InfoItemValue>
+              {title}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {(mobilePhone || isSelf) &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('PhoneLbl')}:
+          </InfoItemLabel>
+            <InfoItemValue>
+              {mobilePhone}
               {(isAdmin || isSelf) &&
-                <IconButtonWrapper title={t('EmailChangeButton')} >
-                  <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
+                <IconButtonWrapper title={t('PhoneChange')} >
+                  <IconButton
+                    color="#A3A9AE"
+                    size={16}
+                    iconName='AccessEditIcon'
+                    isFill={true}
+                    onClick={this.onPhoneChange} />
                 </IconButtonWrapper>
               }
-              {activationStatus === 2 && (isAdmin || isSelf) &&
-                <IconButtonWrapper title={t('SendInviteAgain')}>
-                  <IconButton color="#A3A9AE" size={16} iconName='FileActionsConvertIcon' isFill={true} />
-                </IconButtonWrapper>
-              }
-            </Link>
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {department &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t("CustomDepartment", { department: departmentName })}:
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {sex &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('Sex')}:
           </InfoItemLabel>
-          <InfoItemValue>
-            {formatedDepartments}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {title &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t("CustomPosition", { position })}:
+            <InfoItemValue>
+              {formatedSex}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {workFrom &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomEmployedSinceDate", { employedSinceDate })}:
           </InfoItemLabel>
-          <InfoItemValue>
-            {title}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {(mobilePhone || isSelf) &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('PhoneLbl')}:
+            <InfoItemValue>
+              {workFromDate}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {birthday &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('Birthdate')}:
           </InfoItemLabel>
-          <InfoItemValue>
-            {mobilePhone}
-            {(isAdmin || isSelf) &&
-              <IconButtonWrapper title={t('PhoneChange')} >
-                <IconButton color="#A3A9AE" size={16} iconName='AccessEditIcon' isFill={true} />
-              </IconButtonWrapper>
-            }
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {sex &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('Sex')}:
+            <InfoItemValue>
+              {birthDayDate}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {location &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('Location')}:
           </InfoItemLabel>
-          <InfoItemValue>
-            {formatedSex}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {workFrom &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t("CustomEmployedSinceDate", { employedSinceDate })}:
+            <InfoItemValue>
+              {location}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {isSelf &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t('Language')}:
           </InfoItemLabel>
-          <InfoItemValue>
-            {workFromDate}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {birthday &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('Birthdate')}:
-          </InfoItemLabel>
-          <InfoItemValue>
-            {birthDayDate}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {location &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('Location')}:
-          </InfoItemLabel>
-          <InfoItemValue>
-            {location}
-          </InfoItemValue>
-        </InfoItem>
-      }
-      {isSelf &&
-        <InfoItem>
-          <InfoItemLabel>
-            {t('Language')}:
-          </InfoItemLabel>
-          <InfoItemValue>
-            {language}
-          </InfoItemValue>
-        </InfoItem>
-      }
-    </InfoContainer>
-  );
+            <InfoItemValue>
+              {language}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        <ModalDialog
+          visible={dialog.visible}
+          headerContent={dialog.header}
+          bodyContent={dialog.body}
+          footerContent={dialog.buttons}
+          onClose={this.onDialogClose.bind(this, email)}
+        />
+      </InfoContainer>
+    );
+  }
 };
 
 const SectionBodyContent = props => {
@@ -309,6 +444,7 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
+              scale={true}
               label={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
