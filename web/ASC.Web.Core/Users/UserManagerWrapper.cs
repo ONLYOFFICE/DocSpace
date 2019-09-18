@@ -146,7 +146,7 @@ namespace ASC.Web.Core.Users
 
             if (CoreContext.Configuration.Personal)
             {
-                StudioNotifyService.SendUserWelcomePersonal(Tenant.TenantId, newUserInfo);
+                StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
                 return newUserInfo;
             }
 

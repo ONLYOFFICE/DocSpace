@@ -157,7 +157,7 @@ namespace ASC.Web.Studio.Core.Notify
             return new TagActionValue("TableItem" + number, action);
         }
 
-        public static ITagValue SendFrom(int tenantId, UserManager userManager, AuthContext authContext)
+        public static ITagValue SendFrom(TenantManager tenantManager, UserManager userManager, AuthContext authContext)
         {
             return new TagValue(CommonTags.SendFrom,
                                 authContext.IsAuthenticated && authContext.CurrentAccount is IUserAccount
@@ -165,7 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         userManager.GetUsers(authContext.CurrentAccount.ID), false)
                                                          .Replace(">", "&#62")
                                                          .Replace("<", "&#60")
-                                    : CoreContext.TenantManager.GetCurrentTenant().Name);
+                                    : tenantManager.GetCurrentTenant().Name);
         }
     }
 }

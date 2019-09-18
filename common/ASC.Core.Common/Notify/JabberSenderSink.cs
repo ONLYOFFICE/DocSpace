@@ -53,6 +53,7 @@ namespace ASC.Core.Notify
             {
                 using var scope = ServiceProvider.CreateScope();
                 var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var result = SendResult.OK;
                 var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
@@ -71,7 +72,7 @@ namespace ASC.Core.Notify
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                    var tenant = tenantManager.GetCurrentTenant(false);
                     m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                     sender.Send(m);

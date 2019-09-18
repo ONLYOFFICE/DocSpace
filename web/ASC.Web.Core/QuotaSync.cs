@@ -24,11 +24,13 @@
 */
 
 
+using System;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Data.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Quota
 {
@@ -37,29 +39,32 @@ namespace ASC.Web.Studio.Core.Quota
         public const string TenantIdKey = "tenantID";
         protected DistributedTask TaskInfo { get; private set; }
         private int TenantId { get; set; }
-        public StorageFactory StorageFactory { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public QuotaSync(int tenantId, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig)
+        public QuotaSync(int tenantId, IServiceProvider serviceProvider)
         {
             TenantId = tenantId;
-            StorageFactory = storageFactory;
-            StorageFactoryConfig = storageFactoryConfig;
             TaskInfo = new DistributedTask();
+            ServiceProvider = serviceProvider;
         }
 
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
-            CoreContext.TenantManager.SetCurrentTenant(TenantId);
+            var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(TenantId);
 
-            var storageModules = StorageFactoryConfig.GetModuleList(string.Empty).ToList();
+            var storageFactoryConfig = scope.ServiceProvider.GetService<StorageFactoryConfig>();
+            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+
+            var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(TenantId.ToString(), module);
+                var storage = storageFactory.GetStorage(TenantId.ToString(), module);
                 storage.ResetQuota("");
 
-                var domains = StorageFactoryConfig.GetDomainList(string.Empty, module).ToList();
+                var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
                     storage.ResetQuota(domain);

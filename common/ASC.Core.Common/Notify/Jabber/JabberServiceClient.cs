@@ -39,11 +39,13 @@ namespace ASC.Core.Notify.Jabber
 
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
 
-        public JabberServiceClient(UserManager userManager, AuthContext authContext)
+        public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
+            TenantManager = tenantManager;
         }
 
         private static bool IsServiceProbablyNotAvailable()
@@ -207,9 +209,9 @@ namespace ASC.Core.Notify.Jabber
             }
         }
 
-        private static int GetCurrentTenantId()
+        private int GetCurrentTenantId()
         {
-            return CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
 
         private string GetCurrentUserName()

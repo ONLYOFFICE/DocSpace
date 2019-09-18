@@ -32,7 +32,9 @@ using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.MessagingSystem;
+using ASC.Web.Core;
 //using ASC.Web.CRM.Core;
 using ASC.Web.Core.Users;
 //using ASC.Web.Files.Services.WCFService;
@@ -41,6 +43,7 @@ using ASC.Web.Studio.Core.Notify;
 //using Autofac;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Reassigns
 {
@@ -63,32 +66,19 @@ namespace ASC.Data.Reassigns
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
         public Guid ToUser { get; }
-
-        public MessageService MessageService { get; }
+        public IServiceProvider ServiceProvider { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManager UserManager { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public SecurityContext SecurityContext { get; }
 
         public ReassignProgressItem(
+            IServiceProvider serviceProvider,
             HttpContext context,
-            MessageService messageService,
             QueueWorkerReassign queueWorkerReassign,
             QueueWorkerRemove queueWorkerRemove,
-            StudioNotifyService studioNotifyService,
-            UserManager userManager,
-            UserPhotoManager userPhotoManager,
-            SecurityContext securityContext,
             int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
+            ServiceProvider = serviceProvider;
             _context = context;
-            MessageService = messageService;
             QueueWorkerRemove = queueWorkerRemove;
-            StudioNotifyService = studioNotifyService;
-            UserManager = userManager;
-            UserPhotoManager = userPhotoManager;
-            SecurityContext = securityContext;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -111,13 +101,22 @@ namespace ASC.Data.Reassigns
         {
             var logger = LogManager.GetLogger("ASC.Web");
 
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+
+            var messageService = scope.ServiceProvider.GetService<MessageService>();
+            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
+
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
+                securityContext.AuthenticateMe(_tenantId, _currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
@@ -146,14 +145,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify();
+                SendSuccessNotify(userManager, studioNotifyService, messageService);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(tenant);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService);
                 }
             }
             catch (Exception ex)
@@ -161,7 +160,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(ex.Message);
+                SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
             finally
             {
@@ -175,43 +174,43 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void SendSuccessNotify()
+        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService)
         {
-            var fromUser = UserManager.GetUsers(FromUser);
-            var toUser = UserManager.GetUsers(ToUser);
+            var fromUser = userManager.GetUsers(FromUser);
+            var toUser = userManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
+            studioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
 
-            var fromUserName = fromUser.DisplayUserName(false, UserManager);
-            var toUserName = toUser.DisplayUserName(false, UserManager);
+            var fromUserName = fromUser.DisplayUserName(false, userManager);
+            var toUserName = toUser.DisplayUserName(false, userManager);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
             else
-                MessageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), fromUserName, toUserName);
+                messageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), fromUserName, toUserName);
         }
 
-        private void SendErrorNotify(string errorMessage)
+        private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
         {
-            var fromUser = UserManager.GetUsers(FromUser);
-            var toUser = UserManager.GetUsers(ToUser);
+            var fromUser = userManager.GetUsers(FromUser);
+            var toUser = userManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
+            studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
-        private void DeleteUserProfile(Tenant tenant)
+        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService)
         {
-            var user = UserManager.GetUsers(FromUser);
-            var userName = user.DisplayUserName(false, UserManager);
+            var user = userManager.GetUsers(FromUser);
+            var userName = user.DisplayUserName(false, userManager);
 
-            UserPhotoManager.RemovePhoto(user.ID);
-            UserManager.DeleteUser(user.ID);
+            userPhotoManager.RemovePhoto(user.ID);
+            userManager.DeleteUser(user.ID);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(FromUser), new[] { userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(FromUser), new[] { userName });
             else
-                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(FromUser), userName);
+                messageService.Send(MessageAction.UserDeleted, MessageTarget.Create(FromUser), userName);
         }
     }
 }

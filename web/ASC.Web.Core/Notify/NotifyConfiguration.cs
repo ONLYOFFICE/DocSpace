@@ -123,6 +123,7 @@ namespace ASC.Web.Studio.Core.Notify
                  {
                      try
                      {
+                         //fix
                          using var scope = ServiceProvider.CreateScope();
                          var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
                          // culture

@@ -43,12 +43,12 @@ using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Reassigns
 {
     public class RemoveProgressItem : IProgressItem
     {
-        private readonly HttpContext _context;
         private readonly Dictionary<string, string> _httpHeaders;
 
         private readonly int _tenantId;
@@ -65,35 +65,17 @@ namespace ASC.Data.Reassigns
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
+        public IServiceProvider ServiceProvider { get; }
         public UserInfo User { get; }
 
-        public MessageService MessageService { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
-        public StorageFactory StorageFactory { get; }
-
         public RemoveProgressItem(
+            IServiceProvider serviceProvider,
             HttpContext context,
-            MessageService messageService,
             QueueWorkerRemove queueWorkerRemove,
-            StudioNotifyService studioNotifyService,
-            SecurityContext securityContext,
-            WebItemManagerSecurity webItemManagerSecurity,
-            StorageFactory storageFactory,
             int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            _context = context;
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
-            SecurityContext = securityContext;
-            WebItemManagerSecurity = webItemManagerSecurity;
-            StorageFactory = storageFactory;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
-
+            ServiceProvider = serviceProvider;
             _tenantId = tenantId;
             User = user;
             FromUser = user.ID;
@@ -115,16 +97,25 @@ namespace ASC.Data.Reassigns
         {
             var logger = LogManager.GetLogger("ASC.Web");
 
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+
+            var messageService = scope.ServiceProvider.GetService<MessageService>();
+            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
+            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
+                securityContext.AuthenticateMe(_tenantId, _currentUserId);
 
                 long crmSpace;
-                GetUsageSpace(out var docsSpace, out var mailSpace, out var talkSpace);
+                GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
 
                 logger.InfoFormat("deleting user data for {0} ", FromUser);
 
@@ -158,9 +149,9 @@ namespace ASC.Data.Reassigns
                 logger.Info("deleting of data from talk");
 
                 Percentage = 99;
-                DeleteTalkStorage();
+                DeleteTalkStorage(storageFactory);
 
-                SendSuccessNotify(docsSpace, crmSpace, mailSpace, talkSpace);
+                SendSuccessNotify(studioNotifyService, messageService, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
@@ -170,7 +161,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(ex.Message);
+                SendErrorNotify(studioNotifyService, ex.Message);
             }
             finally
             {
@@ -184,11 +175,11 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void GetUsageSpace(out long docsSpace, out long mailSpace, out long talkSpace)
+        private void GetUsageSpace(WebItemManagerSecurity webItemManagerSecurity, out long docsSpace, out long mailSpace, out long talkSpace)
         {
             docsSpace = mailSpace = talkSpace = 0;
 
-            var webItems = WebItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
+            var webItems = webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var item in webItems)
             {
@@ -217,7 +208,7 @@ namespace ASC.Data.Reassigns
             }
         }
 
-        private void DeleteTalkStorage()
+        private void DeleteTalkStorage(StorageFactory storageFactory)
         {
             using var md5 = MD5.Create();
             var data = md5.ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
@@ -231,7 +222,7 @@ namespace ASC.Data.Reassigns
 
             var md5Hash = sBuilder.ToString();
 
-            var storage = StorageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
+            var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
 
             if (storage != null && storage.IsDirectory(md5Hash))
             {
@@ -239,23 +230,23 @@ namespace ASC.Data.Reassigns
             }
         }
 
-        private void SendSuccessNotify(long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                StudioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, _userName,
+                studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, _userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { _userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { _userName });
             else
-                MessageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), _userName);
+                messageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), _userName);
         }
 
-        private void SendErrorNotify(string errorMessage)
+        private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage)
         {
             if (!_notify) return;
 
-            StudioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, _userName, errorMessage);
+            studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, _userName, errorMessage);
         }
     }
 }

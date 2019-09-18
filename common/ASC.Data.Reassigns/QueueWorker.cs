@@ -51,27 +51,12 @@ namespace ASC.Data.Reassigns
         protected static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromMinutes(5), true);
 
         public IHttpContextAccessor HttpContextAccessor { get; }
-        public MessageService MessageService { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public WebItemSecurity WebItemSecurity { get; }
-        public AuthContext AuthContext { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public QueueWorker(
-            IHttpContextAccessor httpContextAccessor,
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
-            UserManager userManager,
-            SecurityContext securityContext,
-            WebItemSecurity webItemSecurity)
+        public QueueWorker(IHttpContextAccessor httpContextAccessor, IServiceProvider serviceProvider)
         {
             HttpContextAccessor = httpContextAccessor;
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
-            UserManager = userManager;
-            SecurityContext = securityContext;
-            WebItemSecurity = webItemSecurity;
+            ServiceProvider = serviceProvider;
         }
 
         public string GetProgressItemId(int tenantId, Guid userId)
@@ -121,50 +106,33 @@ namespace ASC.Data.Reassigns
 
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
-        public UserPhotoManager UserPhotoManager { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
-            UserManager userManager,
-            UserPhotoManager userPhotoManager,
-            QueueWorkerRemove queueWorkerRemove,
-            SecurityContext securityContext,
-            WebItemSecurity webItemSecurity) : 
-            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity)
+            IServiceProvider serviceProvider,
+            QueueWorkerRemove queueWorkerRemove) : 
+            base(httpContextAccessor, serviceProvider)
         {
-            UserPhotoManager = userPhotoManager;
             QueueWorkerRemove = queueWorkerRemove;
         }
 
         public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
-            return Start(tenantId, fromUserId, () => new ReassignProgressItem(HttpContextAccessor.HttpContext, MessageService, this, QueueWorkerRemove, StudioNotifyService, UserManager, UserPhotoManager, SecurityContext, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
+            return Start(tenantId, fromUserId, () => new ReassignProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, QueueWorkerRemove, tenantId, fromUserId, toUserId, currentUserId, deleteProfile)) as ReassignProgressItem;
         }
     }
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
-        public QueueWorkerRemove(IHttpContextAccessor httpContextAccessor,
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
-            UserManager userManager,
-            SecurityContext securityContext,
-            WebItemSecurity webItemSecurity,
-            WebItemManagerSecurity webItemManagerSecurity,
-            StorageFactory storageFactory) : 
-            base(httpContextAccessor, messageService, studioNotifyService, userManager, securityContext, webItemSecurity)
+        public QueueWorkerRemove(
+            IHttpContextAccessor httpContextAccessor,
+            IServiceProvider serviceProvider) : 
+            base(httpContextAccessor, serviceProvider)
         {
-            WebItemManagerSecurity = webItemManagerSecurity;
-            StorageFactory = storageFactory;
         }
-
-        public WebItemManagerSecurity WebItemManagerSecurity { get; }
-        public StorageFactory StorageFactory { get; }
 
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
-            return Start(tenantId, user.ID, () => new RemoveProgressItem(HttpContextAccessor.HttpContext, MessageService, this, StudioNotifyService, SecurityContext, WebItemManagerSecurity, StorageFactory, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+            return Start(tenantId, user.ID, () => new RemoveProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
         }
     }
 }

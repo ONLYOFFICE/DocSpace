@@ -87,6 +87,7 @@ namespace ASC.Api.Settings
         private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
+        public IServiceProvider ServiceProvider { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -126,7 +127,9 @@ namespace ASC.Api.Settings
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public TenantUtil TenantUtil { get; }
 
-        public SettingsController(LogManager logManager,
+        public SettingsController(
+            IServiceProvider serviceProvider,
+            LogManager logManager,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
@@ -165,6 +168,7 @@ namespace ASC.Api.Settings
             EmailValidationKeyProvider emailValidationKeyProvider,
             TenantUtil tenantUtil)
         {
+            ServiceProvider = serviceProvider;
             LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
@@ -246,7 +250,7 @@ namespace ASC.Api.Settings
                 throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
             }
 
-            var op = new QuotaSync(Tenant.TenantId, StorageFactory, StorageFactoryConfig);
+            var op = new QuotaSync(Tenant.TenantId, ServiceProvider);
 
             quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
         }

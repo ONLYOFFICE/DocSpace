@@ -34,7 +34,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.Web.Core.Sms
 {
-    public static class SmsKeyStorage
+    public class SmsKeyStorage
     {
         public static readonly int KeyLength;
         public static readonly TimeSpan StoreInterval;
@@ -43,6 +43,8 @@ namespace ASC.Web.Core.Sms
         private static readonly ICacheNotify<SmsKeyCacheKey> KeyCacheNotify;
         private static readonly ICache KeyCache = AscCache.Memory;
         private static readonly ICache CheckCache = AscCache.Memory;
+
+        public TenantManager TenantManager { get; }
 
         static SmsKeyStorage()
         {
@@ -66,15 +68,20 @@ namespace ASC.Web.Core.Sms
             KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        private static string BuildCacheKey(string phone)
+        public SmsKeyStorage(TenantManager tenantManager)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            TenantManager = tenantManager;
+        }
+
+        private string BuildCacheKey(string phone)
+        {
+            var tenant = TenantManager.GetCurrentTenant(false);
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
             return "smskey" + phone + tenantCache;
         }
 
 
-        public static bool GenerateKey(string phone, out string key)
+        public bool GenerateKey(string phone, out string key)
         {
             if (string.IsNullOrEmpty(phone))
             {
@@ -99,7 +106,7 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public static bool ExistsKey(string phone)
+        public bool ExistsKey(string phone)
         {
             if (string.IsNullOrEmpty(phone))
             {
@@ -115,7 +122,7 @@ namespace ASC.Web.Core.Sms
         }
 
 
-        public static Result ValidateKey(string phone, string key)
+        public Result ValidateKey(string phone, string key)
         {
             key = (key ?? string.Empty).Trim();
             if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(key))

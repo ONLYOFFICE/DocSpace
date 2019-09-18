@@ -32,6 +32,7 @@ using ASC.Core.Common.Notify.Push;
 using ASC.Core.Configuration;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.Notify
 {
@@ -40,11 +41,20 @@ namespace ASC.Core.Common.Notify
         private readonly ILog _log = LogManager.GetLogger("ASC");
         private bool configured = true;
 
+        public PushSenderSink(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+
                 var notification = new PushNotification
                 {
                     Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
@@ -61,10 +71,10 @@ namespace ASC.Core.Common.Notify
                     {
                         using var pushClient = new PushServiceClient();
                         pushClient.EnqueueNotification(
-CoreContext.TenantManager.GetCurrentTenant().TenantId,
-message.Recipient.ID,
-notification,
-new List<string>());
+                            tenantManager.GetCurrentTenant().TenantId,
+                            message.Recipient.ID,
+                            notification,
+                            new List<string>());
                     }
                     catch (InvalidOperationException)
                     {

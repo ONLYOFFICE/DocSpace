@@ -299,7 +299,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                                     coupon = SetupInfo.IsSecretEmail(userManager.GetUsers(tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
-                                                : CouponManager.CreateCoupon();
+                                                : CouponManager.CreateCoupon(tenantManager);
 
                                     log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.TenantAlias, coupon);
                                 }

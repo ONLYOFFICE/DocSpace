@@ -68,7 +68,7 @@ namespace ASC.Web.Studio.UserControls.Statistics
 
         public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
         {
-            return CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
         }
     }

@@ -39,7 +39,7 @@ namespace ASC.Web.Core.Sms
         private static readonly ILog Log = LogManager.GetLogger("ASC");
 
 
-        public static bool SendSMS(string number, string message)
+        public static bool SendSMS(TenantManager tenantManager, string number, string message)
         {
             if (string.IsNullOrEmpty(number))
             {
@@ -56,7 +56,7 @@ namespace ASC.Web.Core.Sms
 
             if ("log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                var tenant = tenantManager.GetCurrentTenant(false);
                 var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                 Log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);

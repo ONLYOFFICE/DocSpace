@@ -301,7 +301,7 @@ namespace ASC.Web.Studio.Core.Notify
             client.SendNoticeAsync(Actions.UserHasJoin, null);
         }
 
-        public void SendJoinMsg(int tenantId, string email, EmployeeType emplType)
+        public void SendJoinMsg(string email, EmployeeType emplType)
         {
             var inviteUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
                             + string.Format("&emplType={0}", emplType);
@@ -314,7 +314,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, inviteUrl),
                         TagValues.GreenButton(greenButtonText, inviteUrl),
-                        TagValues.SendFrom(tenantId, UserManager, AuthContext));
+                        TagValues.SendFrom(TenantManager, UserManager, AuthContext));
         }
 
         public void UserInfoAddedAfterInvite(int tenantId, UserInfo newUserInfo)
@@ -438,7 +438,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(tenantId, UserManager, AuthContext),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -474,7 +474,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(tenantId, UserManager, AuthContext),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -550,7 +550,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.Message, message));
         }
 
-        public void SendAdminWelcome(UserInfo newUserInfo, int tenantId)
+        public void SendAdminWelcome(UserInfo newUserInfo)
         {
             if (!UserManager.UserExists(newUserInfo)) return;
 
@@ -591,7 +591,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
-            tagValues.Add(TagValues.SendFrom(tenantId, UserManager, AuthContext));
+            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext));
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -795,7 +795,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }
 
-        public void SendUserWelcomePersonal(int tenantId, UserInfo newUserInfo)
+        public void SendUserWelcomePersonal(UserInfo newUserInfo)
         {
             client.SendNoticeToAsync(
                 CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeAfterRegistration1 : Actions.PersonalAfterRegistration1,
@@ -803,7 +803,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(CommonTags.Footer, CoreContext.Configuration.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"),
-                TagValues.SendFrom(tenantId, UserManager, AuthContext));
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext));
         }
 
         #endregion

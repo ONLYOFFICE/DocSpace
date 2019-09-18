@@ -26,6 +26,7 @@
 
 using System;
 using ASC.Common.Caching;
+using ASC.Core;
 using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile
@@ -36,13 +37,16 @@ namespace ASC.Web.Core.Mobile
         private readonly TimeSpan cacheExpiration;
         private readonly IMobileAppInstallRegistrator registrator;
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator)
-            : this(registrator, TimeSpan.FromMinutes(30))
+        public TenantManager TenantManager { get; }
+
+        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TenantManager tenantManager)
+            : this(registrator, TimeSpan.FromMinutes(30), tenantManager)
         {
         }
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TimeSpan cacheExpiration)
+        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager)
         {
+            TenantManager = tenantManager;
             this.registrator = registrator ?? throw new ArgumentNullException("registrator");
             this.cacheExpiration = cacheExpiration;
         }
@@ -72,11 +76,11 @@ namespace ASC.Web.Core.Mobile
             return isRegistered;
         }
 
-        private static string GetCacheKey(string userEmail, MobileAppType? appType)
+        private string GetCacheKey(string userEmail, MobileAppType? appType)
         {
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-            return string.Format("{0}:mobile:{1}", ASC.Core.CoreContext.TenantManager.GetCurrentTenant().TenantId, cacheKey);
+            return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().TenantId, cacheKey);
         }
     }
 }

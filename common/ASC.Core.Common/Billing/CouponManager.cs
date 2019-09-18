@@ -81,17 +81,17 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        public static string CreateCoupon()
+        public static string CreateCoupon(TenantManager tenantManager)
         {
-            return CreatePromotionAsync().Result;
+            return CreatePromotionAsync(tenantManager).Result;
         }
 
-        private static async Task<string> CreatePromotionAsync()
+        private static async Task<string> CreatePromotionAsync(TenantManager tenantManager)
         {
             try
             {
                 using var httpClient = PrepaireClient();
-                using var content = new StringContent(await Promotion.GeneratePromotion(Percent, Schedule), Encoding.Default, "application/json");
+                using var content = new StringContent(await Promotion.GeneratePromotion(tenantManager, Percent, Schedule), Encoding.Default, "application/json");
                 using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
@@ -195,11 +195,11 @@ namespace ASC.Core.Common.Billing
         public int PublishToAffiliatesNetwork { get; set; }
         public int AutoApply { get; set; }
 
-        public static async Task<string> GeneratePromotion(int percent, int schedule)
+        public static async Task<string> GeneratePromotion(TenantManager tenantManager, int percent, int schedule)
         {
             try
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = tenantManager.GetCurrentTenant();
                 var startDate = DateTime.UtcNow.Date;
                 var endDate = startDate.AddDays(schedule);
                 var code = tenant.TenantAlias;
