@@ -92,11 +92,12 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var tariff = CoreContext.PaymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var authContext = scope.ServiceProvider.GetService<AuthContext>();
 
+                    var tariff = paymentManager.GetTariff(tenant.TenantId);
+                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var duedate = tariff.DueDate.Date;
                     var delayDuedate = tariff.DelayDueDate.Date;
 
@@ -548,10 +549,11 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var tariff = CoreContext.PaymentManager.GetTariff(tenant.TenantId);
-                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
+                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
 
+                    var tariff = paymentManager.GetTariff(tenant.TenantId);
+                    var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var duedate = tariff.DueDate.Date;
                     var delayDuedate = tariff.DelayDueDate.Date;
 

@@ -34,12 +34,19 @@ namespace ASC.Core.Security.Authorizing
 {
     public class PermissionProvider : IPermissionProvider
     {
+        public PermissionProvider(AuthorizationManager authorizationManager)
+        {
+            AuthorizationManager = authorizationManager;
+        }
+
+        public AuthorizationManager AuthorizationManager { get; }
+
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
             if (subject == null) throw new ArgumentNullException("subject");
             if (action == null) throw new ArgumentNullException("action");
 
-            return CoreContext.AuthorizationManager
+            return AuthorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
                 .Select(r => new Ace(r.ActionId, r.Reaction));
         }

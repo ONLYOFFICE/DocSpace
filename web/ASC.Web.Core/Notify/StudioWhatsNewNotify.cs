@@ -74,12 +74,13 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
 
                     var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
                         !TimeToSendWhatsNew(TenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                        TariffState.NotPaid <= CoreContext.PaymentManager.GetTariff(tenantid).State)
+                        TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
                     {
                         continue;
                     }

@@ -46,7 +46,7 @@ namespace ASC.Core
 {
     public class PaymentManager
     {
-        private readonly CoreConfiguration config;
+        private readonly CoreSettings config;
         private readonly IQuotaService quotaService;
         private readonly ITariffService tariffService;
         private readonly string partnerUrl;
@@ -54,7 +54,7 @@ namespace ASC.Core
 
         public TenantManager TenantManager { get; }
 
-        public PaymentManager(CoreConfiguration config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService)
+        public PaymentManager(CoreSettings config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService)
         {
             this.config = config;
             TenantManager = tenantManager;

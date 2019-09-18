@@ -54,10 +54,11 @@ namespace ASC.Core.Billing
             LicensePathTemp = LicensePath + ".tmp";
         }
 
-        public LicenseReader(UserManager userManager, TenantManager tenantManager)
+        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
+            PaymentManager = paymentManager;
         }
 
         public static string CustomerId
@@ -74,14 +75,14 @@ namespace ASC.Core.Billing
             return File.OpenRead(path);
         }
 
-        public static void RejectLicense()
+        public void RejectLicense()
         {
             if (File.Exists(LicensePathTemp))
                 File.Delete(LicensePathTemp);
             if (File.Exists(LicensePath))
                 File.Delete(LicensePath);
 
-            CoreContext.PaymentManager.DeleteDefaultTariff();
+            PaymentManager.DeleteDefaultTariff();
         }
 
         public void RefreshLicense()
@@ -239,7 +240,7 @@ namespace ASC.Core.Billing
                 DueDate = license.DueDate,
             };
 
-            CoreContext.PaymentManager.SetTariff(-1, tariff);
+            PaymentManager.SetTariff(-1, tariff);
 
             if (!string.IsNullOrEmpty(license.AffiliateId))
             {
@@ -324,5 +325,6 @@ namespace ASC.Core.Billing
 
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
+        public PaymentManager PaymentManager { get; }
     }
 }

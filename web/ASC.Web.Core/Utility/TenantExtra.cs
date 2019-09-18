@@ -46,19 +46,22 @@ namespace ASC.Web.Studio.Utility
         public AuthContext AuthContext { get; }
         public TenantAccessSettings TenantAccessSettings { get; }
         public TenantManager TenantManager { get; }
+        public PaymentManager PaymentManager { get; }
 
         public TenantExtra(
             UserManager userManager, 
             TenantStatisticsProvider tenantStatisticsProvider, 
             AuthContext authContext, 
             TenantAccessSettings tenantAccessSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            PaymentManager paymentManager)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
             AuthContext = authContext;
             TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
+            PaymentManager = paymentManager;
         }
 
         public bool EnableTarrifSettings
@@ -119,7 +122,7 @@ namespace ASC.Web.Studio.Utility
 
         public Tariff GetCurrentTariff()
         {
-            return CoreContext.PaymentManager.GetTariff(TenantManager.GetCurrentTenant().TenantId);
+            return PaymentManager.GetTariff(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public TenantQuota GetTenantQuota()
@@ -181,7 +184,7 @@ namespace ASC.Web.Studio.Utility
 
         public void TrialRequest()
         {
-            CoreContext.PaymentManager.SendTrialRequest(
+            PaymentManager.SendTrialRequest(
                 TenantManager.GetCurrentTenant().TenantId,
                 UserManager.GetUsers(AuthContext.CurrentAccount.ID));
         }

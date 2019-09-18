@@ -52,6 +52,7 @@ namespace ASC.Web.Core
         public WebItemManager WebItemManager { get; }
         public TenantAccessSettings TenantAccessSettings { get; }
         public TenantManager TenantManager { get; }
+        public AuthorizationManager AuthorizationManager { get; }
 
         static WebItemSecurity()
         {
@@ -77,7 +78,8 @@ namespace ASC.Web.Core
             AuthManager authentication, 
             WebItemManager webItemManager,
             TenantAccessSettings tenantAccessSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            AuthorizationManager authorizationManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -86,6 +88,7 @@ namespace ASC.Web.Core
             WebItemManager = webItemManager;
             TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
+            AuthorizationManager = authorizationManager;
         }
 
         //
@@ -154,7 +157,7 @@ namespace ASC.Web.Core
                     }
                     else
                     {
-                        var hasUsers = CoreContext.AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
+                        var hasUsers = AuthorizationManager.GetAces(Guid.Empty, Read.ID, securityObj).Any(a => a.SubjectId != ASC.Core.Users.Constants.GroupEveryone.ID);
                         result = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(tenant.TenantId, @for), securityObj, null, Read) ||
                                  (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
                     }
@@ -184,9 +187,9 @@ namespace ASC.Web.Core
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
             // remove old aces
-            CoreContext.AuthorizationManager.RemoveAllAces(securityObj);
+            AuthorizationManager.RemoveAllAces(securityObj);
             var allowToAll = new AzRecord(ASC.Core.Users.Constants.GroupEveryone.ID, Read.ID, AceType.Allow, securityObj);
-            CoreContext.AuthorizationManager.RemoveAce(allowToAll);
+            AuthorizationManager.RemoveAce(allowToAll);
 
             // set new aces
             if (subjects == null || subjects.Length == 0 || subjects.Contains(ASC.Core.Users.Constants.GroupEveryone.ID))
@@ -201,7 +204,7 @@ namespace ASC.Web.Core
             foreach (var s in subjects)
             {
                 var a = new AzRecord(s, Read.ID, enabled ? AceType.Allow : AceType.Deny, securityObj);
-                CoreContext.AuthorizationManager.AddAce(a);
+                AuthorizationManager.AddAce(a);
             }
 
             cacheNotify.Publish(new WebItemSecurityNotifier() { Tenant = TenantManager.GetCurrentTenant().TenantId }, CacheNotifyAction.Any);
@@ -230,7 +233,7 @@ namespace ASC.Web.Core
         private IEnumerable<Tuple<Guid, bool>> GetSecurity(string id)
         {
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
-            var result = CoreContext.AuthorizationManager
+            var result = AuthorizationManager
                 .GetAcesWithInherits(Guid.Empty, Read.ID, securityObj, null)
                 .GroupBy(a => a.SubjectId)
                 .Select(a => Tuple.Create(a.Key, a.First().Reaction == AceType.Allow))
@@ -259,7 +262,7 @@ namespace ASC.Web.Core
                 {
                     foreach (var ace in GetPeopleModuleActions(userid))
                     {
-                        CoreContext.AuthorizationManager.AddAce(ace);
+                        AuthorizationManager.AddAce(ace);
                     }
                 }
 
@@ -282,7 +285,7 @@ namespace ASC.Web.Core
                 {
                     foreach (var ace in GetPeopleModuleActions(userid))
                     {
-                        CoreContext.AuthorizationManager.RemoveAce(ace);
+                        AuthorizationManager.RemoveAce(ace);
                     }
                 }
 

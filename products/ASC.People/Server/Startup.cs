@@ -106,6 +106,15 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
+                        return (IAzService)new CachedAzService(new DbAzService(cs));
+                    })
+                    .AddSingleton((r) =>
+                    {
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
                         return (IUserService)new CachedUserService(new DbUserService(cs));
                     })
                     .AddSingleton((r) =>
@@ -189,6 +198,8 @@ namespace ASC.People
                     .AddScoped<PeopleNamesSettings>()
                     .AddScoped<EmailValidationKeyProvider>()
                     .AddScoped<TenantUtil>()
+                    .AddScoped<PaymentManager>()
+                    .AddScoped<AuthorizationManager>()
                     .AddSingleton<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()

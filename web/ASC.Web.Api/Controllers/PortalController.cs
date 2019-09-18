@@ -28,6 +28,7 @@ namespace ASC.Web.Api.Controllers
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public PaymentManager PaymentManager { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -41,7 +42,8 @@ namespace ASC.Web.Api.Controllers
             UserManager userManager,
             AuthContext authContext,
             TenantManager tenantManager,
-            EmailValidationKeyProvider emailValidationKeyProvider
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            PaymentManager paymentManager
             )
         {
             LogManager = logManager;
@@ -52,6 +54,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             TenantManager = tenantManager;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            PaymentManager = paymentManager;
         }
 
         [Read("")]
@@ -107,7 +110,7 @@ namespace ASC.Web.Api.Controllers
         [Read("tariff")]
         public Tariff GetTariff()
         {
-            return CoreContext.PaymentManager.GetTariff(Tenant.TenantId);
+            return PaymentManager.GetTariff(Tenant.TenantId);
         }
 
         [Read("quota")]
