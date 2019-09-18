@@ -8,6 +8,7 @@ export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
+export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 
 export function setCurrentUser(user) {
     return {
@@ -37,6 +38,12 @@ export function setIsLoaded(isLoaded) {
     };
 };
 
+export function setIsConfirmLoaded(isConfirmLoaded) {
+    return {
+        type: SET_IS_CONFIRM_LOADED,
+        isConfirmLoaded
+    };
+};
 
 export function setLogout() {
     return {
@@ -85,7 +92,7 @@ export function getPasswordSettings(token) {
     return dispatch => {
         return api.getPasswordSettings(token)
             .then((res) => dispatch(setPasswordSettings(res.data.response)))
-            .then(() => dispatch(setIsLoaded(true)));
+            .then(() => dispatch(setIsConfirmLoaded(true)));
     }
 };
 

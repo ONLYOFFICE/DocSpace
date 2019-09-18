@@ -1,10 +1,11 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS } from './actions';
+import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
 
 const initialState = {
     isAuthenticated: false,
     isLoaded: false,
+    isConfirmLoaded: false,
     user: {},
     modules: [],
     settings: {
@@ -50,6 +51,10 @@ const authReducer = (state = initialState, action) => {
         case SET_IS_LOADED:
             return Object.assign({}, state, {
                 isLoaded: action.isLoaded
+            });
+        case SET_IS_CONFIRM_LOADED:
+            return Object.assign({}, state, {
+                isConfirmLoaded: action.isConfirmLoaded
             });
         case LOGOUT:
             return initialState;

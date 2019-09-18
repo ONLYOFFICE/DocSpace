@@ -2,12 +2,13 @@ import React from 'react';
 import { withRouter } from "react-router";
 import { I18nextProvider, withTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { Button, TextInput, PageLayout, Text, PasswordInput, FieldContainer, toastr, Loader } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
 import { welcomePageTitle } from './../../../helpers/customNames';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { getPasswordSettings, createConfirmUser } from '../../../store/auth/actions';
+import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
 
@@ -43,7 +44,6 @@ const ConfirmContainer = styled.div`
 
 `;
 
-
 const emailInputName = 'email';
 const passwordInputName = 'password';
 
@@ -52,9 +52,8 @@ const validationEmail = new RegExp(emailRegex);
 
 class Confirm extends React.PureComponent {
 
-    constructor(props) {
-        super(props);
-
+    constructor() {
+        super();
         this.state = {
             email: '',
             emailValid: true,
@@ -66,68 +65,72 @@ class Confirm extends React.PureComponent {
             passwordValid: true,
             errorText: '',
             isLoading: false,
+            passwordEmpty: false
         };
     }
 
     onSubmit = (e) => {
+        this.setState({ isLoading: true }, function () {
+            const { location, history, createConfirmUser } = this.props;
+            const queryString = location.search.slice(1);
+            const queryParams = queryString.split('&');
+            const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+            const linkParams = Object.fromEntries(arrayOfQueryParams);
+            const isVisitor = parseInt(linkParams.emplType) === 2;
 
-        const { location, history, createConfirmUser } = this.props;
-        const queryString = location.search.slice(1);
-        const queryParams = queryString.split('&');
-        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-        const linkParams = Object.fromEntries(arrayOfQueryParams);
-        const isVisitor = parseInt(linkParams.emplType) === 2;
+            this.setState({ errorText: "" });
 
-        this.state.errorText && this.setState({ errorText: "" });
+            let hasError = false;
 
-        let hasError = false;
+            if (!this.state.firstName.trim()) {
+                hasError = true;
+                this.setState({ firstNameValid: !hasError });
+            }
 
-        if (!this.state.firstName.trim()) {
-            hasError = true;
-            this.setState({ firstNameValid: !hasError });
-        }
+            if (!this.state.lastName.trim()) {
+                hasError = true;
+                this.setState({ lastNameValid: !hasError });
+            }
 
-        if (!this.state.lastName.trim()) {
-            hasError = true;
-            this.setState({ lastNameValid: !hasError });
-        }
+            if (!validationEmail.test(this.state.email.trim())) {
+                hasError = true;
+                this.setState({ emailValid: !hasError });
+            }
 
-        if (!validationEmail.test(this.state.email.trim())) {
-            hasError = true;
-            this.setState({ emailValid: !hasError });
-        }
+            if (!this.state.passwordValid) {
+                hasError = true;
+                this.setState({ passwordValid: !hasError });
+            }
 
-        if (!this.state.passwordValid) {
-            hasError = true;
-            this.setState({ passwordValid: !hasError });
-        }
+            !this.state.password.trim() && this.setState({ passwordEmpty: true });
 
-        if (hasError)
-            return false;
-
-        this.setState({ isLoading: true });
-
-        const loginData = {
-            userName: this.state.email,
-            password: this.state.password
-        }
-        const registerData = {
-            firstname: this.state.firstName,
-            lastname: this.state.lastName,
-            email: this.state.email,
-            isVisitor: isVisitor
-        };
-        createConfirmUser(registerData, loginData, queryString)
-            .then(() => history.push('/'))
-            .catch(e => {
-                console.error("confirm error", e);
-                this.setState({ errorText: e.message });
+            if (hasError) {
                 this.setState({ isLoading: false });
-            });
+                return false;
+            }
+
+            const loginData = {
+                userName: this.state.email,
+                password: this.state.password
+            }
+            const registerData = {
+                firstname: this.state.firstName,
+                lastname: this.state.lastName,
+                email: this.state.email,
+                isVisitor: isVisitor
+            };
+            createConfirmUser(registerData, loginData, queryString)
+                .then(() => history.push('/'))
+                .catch(e => {
+                    console.error("confirm error", e);
+                    this.setState({ errorText: e.message });
+                    this.setState({ isLoading: false });
+                });
+        });
     };
 
-    onKeyPress = (target) => {
-        if (target.code === "Enter") {
+    onKeyPress = (event) => {
+        if (event.target.code === "Enter") {
             this.onSubmit();
         }
     };
@@ -159,10 +162,37 @@ class Confirm extends React.PureComponent {
         window.removeEventListener('keyup', this.onKeyPress);
     }
 
+    onChangeName = event => {
+        this.setState({ firstName: event.target.value });
+        !this.state.firstNameValid && this.setState({ firstNameValid: event.target.value });
+        this.state.errorText && this.setState({ errorText: "" });
+    }
+
+    onChangeSurname = event => {
+        this.setState({ lastName: event.target.value });
+        !this.state.lastNameValid && this.setState({ lastNameValid: true });
+        this.state.errorText && this.setState({ errorText: "" });;
+    }
+
+    onChangeEmail = event => {
+        this.setState({ email: event.target.value });
+        !this.state.emailValid && this.setState({ emailValid: true });
+        this.state.errorText && this.setState({ errorText: "" });;
+    }
+
+    onChangePassword = event => {
+        this.setState({ password: event.target.value });
+        !this.state.passwordValid && this.setState({ passwordValid: true });
+        (event.target.value.trim()) && this.setState({ passwordEmpty: false });
+        this.state.errorText && this.setState({ errorText: "" });
+        this.onKeyPress(event);
+    }
+
     render() {
-        const { settings, isLoaded, t } = this.props;
+        console.log('Confirm render');
+        const { settings, isConfirmLoaded, t } = this.props;
         return (
-            !isLoaded
+            !isConfirmLoaded
                 ? (
                     <Loader className="pageLoader" type="rombs" size={40} />
                 )
@@ -180,114 +210,95 @@ class Confirm extends React.PureComponent {
                                 </div>
                             </div>
 
-                            <div className='confirm-row'>
+                            <div>
                                 <div className='full-width'>
-                                    <FieldContainer isVertical={true} className=''>
-                                        <TextInput
-                                            id='name'
-                                            name='name'
-                                            value={this.state.firstName}
-                                            placeholder={t('FirstName')}
-                                            size='huge'
-                                            scale={true}
-                                            tabIndex={1}
-                                            isAutoFocussed={true}
-                                            autoComplete='given-name'
-                                            isDisabled={this.state.isLoading}
-                                            hasError={!this.state.firstNameValid}
-                                            onChange={event => {
-                                                this.setState({ firstName: event.target.value });
-                                                !this.state.firstNameValid && this.setState({ firstNameValid: event.target.value });
-                                                this.state.errorText && this.setState({ errorText: "" });
-                                            }}
-                                            onKeyDown={event => this.onKeyPress(event.target)}
-                                        />
-                                    </FieldContainer>
 
-                                    <FieldContainer isVertical={true} className=''>
-                                        <TextInput
-                                            id='surname'
-                                            name='surname'
-                                            value={this.state.lastName}
-                                            placeholder={t('LastName')}
-                                            size='huge'
-                                            scale={true}
-                                            tabIndex={2}
-                                            autoComplete='family-name'
-                                            isDisabled={this.state.isLoading}
-                                            hasError={!this.state.lastNameValid}
-                                            onChange={event => {
-                                                this.setState({ lastName: event.target.value });
-                                                !this.state.lastNameValid && this.setState({ lastNameValid: true });
-                                                this.state.errorText && this.setState({ errorText: "" });;
-                                            }}
-                                            onKeyDown={event => this.onKeyPress(event.target)}
-                                        />
-                                    </FieldContainer>
-
-                                    <FieldContainer isVertical={true} className=''>
-                                        <TextInput
-                                            id='email'
-                                            name={emailInputName}
-                                            value={this.state.email}
-                                            placeholder={t('Email')}
-                                            size='huge'
-                                            scale={true}
-                                            tabIndex={3}
-                                            autoComplete='email'
-                                            isDisabled={this.state.isLoading}
-                                            hasError={!this.state.emailValid}
-                                            onChange={event => {
-                                                this.setState({ email: event.target.value });
-                                                !this.state.emailValid && this.setState({ emailValid: true });
-                                                this.state.errorText && this.setState({ errorText: "" });;
-                                            }}
-                                            onKeyDown={event => this.onKeyPress(event.target)}
-                                        />
-
-                                    </FieldContainer>
-                                </div>
-
-                                <FieldContainer isVertical={true} className=''>
-                                    <PasswordInput
-                                        inputName={passwordInputName}
-                                        emailInputName={emailInputName}
-                                        inputValue={this.state.password}
-                                        placeholder={t('InvitePassword')}
+                                    <TextInput
+                                        className='confirm-row'
+                                        id='name'
+                                        name='name'
+                                        value={this.state.firstName}
+                                        placeholder={t('FirstName')}
                                         size='huge'
                                         scale={true}
-                                        tabIndex={4}
-                                        maxLength={30}
-                                        inputWidth={inputWidth}
-                                        hasError={!this.state.passwordValid && !this.state.password.trim()}
-                                        onChange={event => {
-                                            this.setState({ password: event.target.value });
-                                            !this.state.passwordValid && this.setState({ passwordValid: true });
-                                            this.state.errorText && this.setState({ errorText: "" });
-                                            this.onKeyPress(event.target);
-                                        }}
-                                        onCopyToClipboard={this.onCopyToClipboard}
-                                        onValidateInput={this.validatePassword}
-                                        clipActionResource={t('CopyEmailAndPassword')}
-                                        clipEmailResource={`${t('Email')}: `}
-                                        clipPasswordResource={`${t('InvitePassword')}: `}
-                                        tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
-                                        tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
-                                        tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
-                                        tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
-                                        tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
-                                        generatorSpecial="!@#$%^&*"
-                                        passwordSettings={settings}
+                                        tabIndex={1}
+                                        isAutoFocussed={true}
+                                        autoComplete='given-name'
                                         isDisabled={this.state.isLoading}
+                                        hasError={!this.state.firstNameValid}
+                                        onChange={this.onChangeName}
+                                        onKeyDown={this.onKeyPress}
                                     />
-                                </FieldContainer>
+
+                                    <TextInput
+                                        className='confirm-row'
+                                        id='surname'
+                                        name='surname'
+                                        value={this.state.lastName}
+                                        placeholder={t('LastName')}
+                                        size='huge'
+                                        scale={true}
+                                        tabIndex={2}
+                                        autoComplete='family-name'
+                                        isDisabled={this.state.isLoading}
+                                        hasError={!this.state.lastNameValid}
+                                        onChange={this.onChangeSurname}
+                                        onKeyDown={this.onKeyPress}
+                                    />
+
+                                    <TextInput
+                                        className='confirm-row'
+                                        id='email'
+                                        name={emailInputName}
+                                        value={this.state.email}
+                                        placeholder={t('Email')}
+                                        size='huge'
+                                        scale={true}
+                                        tabIndex={3}
+                                        autoComplete='email'
+                                        isDisabled={this.state.isLoading}
+                                        hasError={!this.state.emailValid}
+                                        onChange={this.onChangeEmail}
+                                        onKeyDown={this.onKeyPress}
+                                    />
+                                </div>
+
+                                <PasswordInput
+                                    className='confirm-row'
+                                    id='password'
+                                    inputName={passwordInputName}
+                                    emailInputName={emailInputName}
+                                    inputValue={this.state.password}
+                                    placeholder={t('InvitePassword')}
+                                    size='huge'
+                                    scale={true}
+                                    tabIndex={4}
+                                    maxLength={30}
+                                    inputWidth={inputWidth}
+                                    hasError={this.state.passwordEmpty}
+                                    onChange={this.onChangePassword}
+                                    onCopyToClipboard={this.onCopyToClipboard}
+                                    onValidateInput={this.validatePassword}
+                                    clipActionResource={t('CopyEmailAndPassword')}
+                                    clipEmailResource={`${t('Email')}: `}
+                                    clipPasswordResource={`${t('InvitePassword')}: `}
+                                    tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+                                    tooltipPasswordLength={`${t('ErrorPasswordLength', { fromNumber: 6, toNumber: 30 })}:`}
+                                    tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+                                    tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+                                    tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (!@#$%^&*)`}
+                                    generatorSpecial="!@#$%^&*"
+                                    passwordSettings={settings}
+                                    isDisabled={this.state.isLoading}
+                                />
+
 
                                 <Button
+                                    className='confirm-row'
                                     primary
                                     size='big'
                                     label={t('LoginRegistryButton')}
                                     tabIndex={5}
-                                    isDisabled={this.state.isLoading}
                                     isLoading={this.state.isLoading}
                                     onClick={this.onSubmit}
                                 />
@@ -316,13 +327,17 @@ const ConfirmWrapper = withTranslation()(Confirm);
 const ConfirmWithTrans = (props) => <I18nextProvider i18n={i18n}><ConfirmWrapper {...props} /></I18nextProvider>;
 
 ConfirmWithTrans.propTypes = {
+    getPasswordSettings: PropTypes.func.isRequired,
+    createConfirmUser: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
 };
 const ConfirmForm = (props) => (<PageLayout sectionBodyContent={<ConfirmWithTrans {...props} />} />);
 
 
 function mapStateToProps(state) {
     return {
-        isLoaded: state.auth.isLoaded,
+        isConfirmLoaded: state.auth.isConfirmLoaded,
         settings: state.auth.password
     };
 }
