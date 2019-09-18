@@ -78,6 +78,7 @@ namespace ASC.Core.Common.Configuration
         private static readonly bool OnlyDefault;
 
         public TenantManager TenantManager { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
 
         public bool IsSet
@@ -197,7 +198,7 @@ namespace ASC.Core.Common.Configuration
 
             if (!OnlyDefault && CanSet)
             {
-                var tenant = CoreSettings.Standalone
+                var tenant = CoreBaseSettings.Standalone
                                  ? Tenant.DEFAULT_TENANT
                                  : TenantManager.GetCurrentTenant().TenantId;
 
@@ -235,7 +236,7 @@ namespace ASC.Core.Common.Configuration
                 return;
             }
 
-            var tenant = CoreSettings.Standalone
+            var tenant = CoreBaseSettings.Standalone
                              ? Tenant.DEFAULT_TENANT
                              : TenantManager.GetCurrentTenant().TenantId;
             CoreSettings.SaveSetting(GetSettingsKey(name), value, tenant);

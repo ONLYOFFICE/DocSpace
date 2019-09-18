@@ -126,6 +126,7 @@ namespace ASC.Api.Settings
         public TenantLogoManager TenantLogoManager { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public TenantUtil TenantUtil { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -166,7 +167,8 @@ namespace ASC.Api.Settings
             StorageFactoryConfig storageFactoryConfig,
             TenantLogoManager tenantLogoManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            TenantUtil tenantUtil)
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -207,6 +209,7 @@ namespace ASC.Api.Settings
             TenantLogoManager = tenantLogoManager;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         [Read("")]
@@ -904,7 +907,7 @@ namespace ASC.Api.Settings
         [Read("license/refresh")]
         public bool RefreshLicense()
         {
-            if (!CoreContext.Configuration.Standalone) return false;
+            if (!CoreBaseSettings.Standalone) return false;
             LicenseReader.RefreshLicense();
             return true;
         }
@@ -1114,7 +1117,7 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (!CoreContext.Configuration.Standalone) return -1;
+            if (!CoreBaseSettings.Standalone) return -1;
 
             using var migrateClient = new ServiceClient();
             return migrateClient.GetProgress(Tenant.TenantId);
@@ -1124,7 +1127,7 @@ namespace ASC.Api.Settings
         public StorageSettings UpdateStorage(StorageModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            if (!CoreBaseSettings.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
             if (!consumer.IsSet)
@@ -1153,7 +1156,7 @@ namespace ASC.Api.Settings
         public void ResetStorageToDefault()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return;
+            if (!CoreBaseSettings.Standalone) return;
 
             var settings = StorageSettings.Load();
 
@@ -1175,7 +1178,7 @@ namespace ASC.Api.Settings
         public List<StorageWrapper> GetAllCdnStorages()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            if (!CoreBaseSettings.Standalone) return null;
 
             var current = CdnStorageSettings.Load();
             var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null).ToList();
@@ -1186,7 +1189,7 @@ namespace ASC.Api.Settings
         public CdnStorageSettings UpdateCdn(StorageModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            if (!CoreBaseSettings.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
             if (!consumer.IsSet)
@@ -1216,7 +1219,7 @@ namespace ASC.Api.Settings
         public void ResetCdnToDefault()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return;
+            if (!CoreBaseSettings.Standalone) return;
 
             CdnStorageSettings.Load().Clear();
         }

@@ -67,6 +67,7 @@ namespace ASC.Employee.Core.Controllers
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
         public TenantManager TenantManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -88,7 +89,8 @@ namespace ASC.Employee.Core.Controllers
             PasswordSettings passwordSettings,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -111,6 +113,7 @@ namespace ASC.Employee.Core.Controllers
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
             TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         [Read("info")]
@@ -130,7 +133,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("status/{status}")]
         public IEnumerable<EmployeeWraper> GetByStatus(EmployeeStatus status)
         {
-            if (CoreContext.Configuration.Personal) throw new Exception("Method not available");
+            if (CoreBaseSettings.Personal) throw new Exception("Method not available");
             var query = UserManager.GetUsers(status).AsEnumerable();
             if ("group".Equals(ApiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(ApiContext.FilterValue))
             {
@@ -151,7 +154,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("email")]
         public EmployeeWraperFull GetByEmail([FromQuery]string email)
         {
-            if (CoreContext.Configuration.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
+            if (CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
             var user = UserManager.GetUserByEmail(email);
             if (user.ID == Constants.LostUser.ID)
@@ -165,7 +168,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("{username}", order: int.MaxValue)]
         public EmployeeWraperFull GetById(string username)
         {
-            if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
+            if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             var user = UserManager.GetUserByUserName(username);
             if (user.ID == Constants.LostUser.ID)
             {
@@ -190,7 +193,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("@search/{query}")]
         public IEnumerable<EmployeeWraperFull> GetSearch(string query)
         {
-            if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
+            if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             try
             {
                 var groupId = Guid.Empty;
@@ -217,7 +220,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("status/{status}/search")]
         public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery]string query)
         {
-            if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
+            if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             try
             {
                 var list = UserManager.GetUsers(status).AsEnumerable();
@@ -312,7 +315,7 @@ namespace ASC.Employee.Core.Controllers
 
         private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
-            if (CoreContext.Configuration.Personal) throw new MethodAccessException("Method not available");
+            if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             var isAdmin = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(UserManager) ||
                           WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, SecurityContext.CurrentAccount.ID);
 

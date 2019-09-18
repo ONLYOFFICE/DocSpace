@@ -63,6 +63,7 @@ namespace ASC.Web.Studio.Core.Notify
         public AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public TenantManager TenantManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public StudioNotifyService(
@@ -76,6 +77,7 @@ namespace ASC.Web.Studio.Core.Notify
             AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
             EmailValidationKeyProvider emailValidationKeyProvider,
             TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
             IServiceProvider serviceProvider)
         {
             client = studioNotifyServiceHelper;
@@ -86,6 +88,7 @@ namespace ASC.Web.Studio.Core.Notify
             AdditionalWhiteLabelSettings = additionalWhiteLabelSettings;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
@@ -161,8 +164,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
-            var action = CoreContext.Configuration.Personal
-                             ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
+            var action = CoreBaseSettings.Personal
+                             ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModePasswordChange : Actions.PersonalPasswordChange)
                              : Actions.PasswordChange;
 
             client.SendNoticeToAsync(
@@ -182,8 +185,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
-            var action = CoreContext.Configuration.Personal
-                             ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeEmailChange : Actions.PersonalEmailChange)
+            var action = CoreBaseSettings.Personal
+                             ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChange : Actions.PersonalEmailChange)
                              : Actions.EmailChange;
 
             client.SendNoticeToAsync(
@@ -325,9 +328,9 @@ namespace ASC.Web.Studio.Core.Notify
             var footer = "social";
             var analytics = string.Empty;
 
-            if (CoreContext.Configuration.Personal)
+            if (CoreBaseSettings.Personal)
             {
-                if (CoreContext.Configuration.CustomMode)
+                if (CoreBaseSettings.CustomMode)
                 {
                     notifyAction = Actions.PersonalCustomModeAfterRegistration1;
                     footer = "personalCustomMode";
@@ -343,7 +346,7 @@ namespace ASC.Web.Studio.Core.Notify
                 var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
                 notifyAction = defaultRebranding
                                    ? Actions.EnterpriseUserWelcomeV10
-                                   : CoreContext.Configuration.CustomMode
+                                   : CoreBaseSettings.CustomMode
                                          ? Actions.EnterpriseWhitelabelUserWelcomeCustomMode
                                          : Actions.EnterpriseWhitelabelUserWelcomeV10;
                 footer = null;
@@ -366,7 +369,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
                 TagValues.GreenButton(greenButtonText, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')),
                 new TagValue(CommonTags.Footer, footer),
-                new TagValue(CommonTags.MasterTemplate, CoreContext.Configuration.Personal ? "HtmlMasterPersonal" : "HtmlMaster"),
+                new TagValue(CommonTags.MasterTemplate, CoreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -482,10 +485,10 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.ProfileRemove);
 
-            static string greenButtonText() => CoreContext.Configuration.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
+            string greenButtonText() => CoreBaseSettings.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
-            var action = CoreContext.Configuration.Personal
-                             ? (CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeProfileDelete : Actions.PersonalProfileDelete)
+            var action = CoreBaseSettings.Personal
+                             ? (CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeProfileDelete : Actions.PersonalProfileDelete)
                              : Actions.ProfileDelete;
 
             client.SendNoticeToAsync(
@@ -776,7 +779,7 @@ namespace ASC.Web.Studio.Core.Notify
             var newUserInfo = UserManager.GetUserByEmail( email);
             if (UserManager.UserExists(newUserInfo)) return;
 
-            var lang = CoreContext.Configuration.CustomMode
+            var lang = CoreBaseSettings.CustomMode
                            ? "ru-RU"
                            : Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
@@ -787,21 +790,21 @@ namespace ASC.Web.Studio.Core.Notify
                              + additionalMember;
 
             client.SendNoticeToAsync(
-                CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeConfirmation : Actions.PersonalConfirmation,
+                CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeConfirmation : Actions.PersonalConfirmation,
                 StudioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmUrl),
-                new TagValue(CommonTags.Footer, CoreContext.Configuration.CustomMode ? "personalCustomMode" : "personal"),
+                new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
         }
 
         public void SendUserWelcomePersonal(UserInfo newUserInfo)
         {
             client.SendNoticeToAsync(
-                CoreContext.Configuration.CustomMode ? Actions.PersonalCustomModeAfterRegistration1 : Actions.PersonalAfterRegistration1,
+                CoreBaseSettings.CustomMode ? Actions.PersonalCustomModeAfterRegistration1 : Actions.PersonalAfterRegistration1,
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, true),
                 new[] { EMailSenderName },
-                new TagValue(CommonTags.Footer, CoreContext.Configuration.CustomMode ? "personalCustomMode" : "personal"),
+                new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"),
                 TagValues.SendFrom(TenantManager, UserManager, AuthContext));
         }
@@ -855,6 +858,8 @@ namespace ASC.Web.Studio.Core.Notify
                     var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                     TenantManager.SetCurrentTenant(tenant);
+
+                    var client = scope.ServiceProvider.GetService<StudioNotifyServiceHelper>();
 
                     foreach (var u in users)
                     {

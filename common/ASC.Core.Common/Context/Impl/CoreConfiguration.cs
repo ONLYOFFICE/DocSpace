@@ -33,12 +33,11 @@ using Newtonsoft.Json;
 
 namespace ASC.Core
 {
-    public class CoreSettings
+    public class CoreBaseSettings
     {
         private bool? standalone;
         private bool? personal;
         private bool? customMode;
-        private string basedomain;
 
         public bool Standalone
         {
@@ -54,6 +53,11 @@ namespace ASC.Core
         {
             get { return customMode ?? (bool)(customMode = ConfigurationManager.AppSettings["core.custom-mode"] == "true"); }
         }
+    }
+
+    public class CoreSettings
+    {
+        private string basedomain;
 
         public string BaseDomain
         {
@@ -65,7 +69,7 @@ namespace ASC.Core
                 }
 
                 string result;
-                if (Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
                 {
                     result = GetSetting("BaseDomain") ?? basedomain;
                 }
@@ -77,7 +81,7 @@ namespace ASC.Core
             }
             set
             {
-                if (Standalone || string.IsNullOrEmpty(basedomain))
+                if (CoreBaseSettings.Standalone || string.IsNullOrEmpty(basedomain))
                 {
                     SaveSetting("BaseDomain", value);
                 }
@@ -85,10 +89,12 @@ namespace ASC.Core
         }
 
         public ITenantService TenantService { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
-        public CoreSettings(ITenantService tenantService)
+        public CoreSettings(ITenantService tenantService, CoreBaseSettings coreBaseSettings)
         {
             TenantService = tenantService;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
@@ -120,7 +126,7 @@ namespace ASC.Core
 
         public string GetKey(int tenant)
         {
-            if (Standalone)
+            if (CoreBaseSettings.Standalone)
             {
                 var key = GetSetting("PortalId");
                 if (string.IsNullOrEmpty(key))
@@ -161,25 +167,26 @@ namespace ASC.Core
     {
         private long? personalMaxSpace;
 
-        public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager)
+        public CoreConfiguration(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager)
         {
+            CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             TenantManager = tenantManager;
         }
 
         public bool Standalone
         {
-            get  => CoreSettings.Standalone;
+            get  => CoreBaseSettings.Standalone;
         }
 
         public bool Personal
         {
-            get => CoreSettings.Personal;
+            get => CoreBaseSettings.Personal;
         }
 
         public bool CustomMode
         {
-            get => CoreSettings.CustomMode;
+            get => CoreBaseSettings.CustomMode;
         }
 
         public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
@@ -238,7 +245,7 @@ namespace ASC.Core
             get => CoreSettings.BaseDomain;
             set => CoreSettings.BaseDomain = value;
         }
-
+        public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
         public TenantManager TenantManager { get; }
 

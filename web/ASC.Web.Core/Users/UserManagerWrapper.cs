@@ -57,6 +57,7 @@ namespace ASC.Web.Core.Users
         public IHttpContextAccessor HttpContextAccessor { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -72,7 +73,8 @@ namespace ASC.Web.Core.Users
             IPRestrictionsSettings iPRestrictionsSettings,
             IHttpContextAccessor httpContextAccessor,
             CustomNamingPeople customNamingPeople,
-            TenantUtil tenantUtil
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -86,6 +88,7 @@ namespace ASC.Web.Core.Users
             HttpContextAccessor = httpContextAccessor;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -136,7 +139,7 @@ namespace ASC.Web.Core.Users
                 userInfo.WorkFromDate = TenantUtil.DateTimeNow();
             }
 
-            if (!CoreContext.Configuration.Personal && !fromInviteLink)
+            if (!CoreBaseSettings.Personal && !fromInviteLink)
             {
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
@@ -144,7 +147,7 @@ namespace ASC.Web.Core.Users
             var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
             SecurityContext.SetUserPassword(Tenant.TenantId, newUserInfo.ID, password);
 
-            if (CoreContext.Configuration.Personal)
+            if (CoreBaseSettings.Personal)
             {
                 StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
                 return newUserInfo;

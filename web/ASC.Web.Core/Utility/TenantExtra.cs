@@ -47,6 +47,7 @@ namespace ASC.Web.Studio.Utility
         public TenantAccessSettings TenantAccessSettings { get; }
         public TenantManager TenantManager { get; }
         public PaymentManager PaymentManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public TenantExtra(
             UserManager userManager, 
@@ -54,7 +55,8 @@ namespace ASC.Web.Studio.Utility
             AuthContext authContext, 
             TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
-            PaymentManager paymentManager)
+            PaymentManager paymentManager,
+            CoreBaseSettings coreBaseSettings)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -62,6 +64,7 @@ namespace ASC.Web.Studio.Utility
             TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public bool EnableTarrifSettings
@@ -71,23 +74,23 @@ namespace ASC.Web.Studio.Utility
                 return
                     SetupInfo.IsVisibleSettings<TariffSettings>()
                     && !TenantAccessSettings.Load().Anyone
-                    && (!CoreContext.Configuration.Standalone || !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl));
+                    && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl));
             }
         }
 
         public bool Saas
         {
-            get { return !CoreContext.Configuration.Standalone; }
+            get { return !CoreBaseSettings.Standalone; }
         }
 
         public bool Enterprise
         {
-            get { return CoreContext.Configuration.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreBaseSettings.Standalone && !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public bool Opensource
         {
-            get { return CoreContext.Configuration.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
+            get { return CoreBaseSettings.Standalone && string.IsNullOrEmpty(SetupInfo.ControlPanelUrl); }
         }
 
         public bool EnterprisePaid
@@ -199,7 +202,7 @@ namespace ASC.Web.Studio.Utility
             get
             {
                 DateTime licenseDay;
-                return CoreContext.Configuration.Standalone
+                return CoreBaseSettings.Standalone
                        && (licenseDay = GetCurrentTariff().LicenseDate.Date) < DateTime.Today
                        && licenseDay < LicenseReader.VersionReleaseDate;
             }

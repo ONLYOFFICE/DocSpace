@@ -59,12 +59,10 @@ namespace ASC.Api.Settings
         public SecurityContext SecurityContext { get; }
         public PermissionContext PermissionContext { get; }
         public TenantManager TenantManager { get; }
+        public CoreSettings CoreSettings { get; }
         public LogManager LogManager { get; }
-
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
 
 
@@ -75,7 +73,8 @@ namespace ASC.Api.Settings
             UserManager userManager,
             SecurityContext securityContext,
             PermissionContext permissionContext,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            CoreSettings coreSettings)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -85,6 +84,7 @@ namespace ASC.Api.Settings
             SecurityContext = securityContext;
             PermissionContext = permissionContext;
             TenantManager = tenantManager;
+            CoreSettings = coreSettings;
         }
 
 

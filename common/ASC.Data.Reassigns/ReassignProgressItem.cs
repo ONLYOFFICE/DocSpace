@@ -105,6 +105,7 @@ namespace ASC.Data.Reassigns
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
 
+            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var messageService = scope.ServiceProvider.GetService<MessageService>();
             var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
@@ -130,7 +131,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
 
-                if (!CoreContext.Configuration.CustomMode)
+                if (!coreSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 

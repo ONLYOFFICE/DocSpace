@@ -106,6 +106,7 @@ namespace ASC.Data.Reassigns
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
             var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
             var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
 
             try
             {
@@ -124,7 +125,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 25;
                 //_docService.DeleteStorage(_userId);
 
-                if (!CoreContext.Configuration.CustomMode)
+                if (!coreSettings.CustomMode)
                 {
                     logger.Info("deleting of data from crm");
 

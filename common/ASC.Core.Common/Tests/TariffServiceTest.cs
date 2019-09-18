@@ -43,7 +43,8 @@ namespace ASC.Core.Common.Tests
         {
             var cs = ConfigurationManager.ConnectionStrings["core"];
             var tenantService = new DbTenantService(cs);
-            tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, new CoreSettings(tenantService));
+            var baseSettings = new CoreBaseSettings();
+            tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings));
         }
 
 

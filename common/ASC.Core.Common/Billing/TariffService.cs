@@ -60,6 +60,7 @@ namespace ASC.Core.Billing
 
 
         public TimeSpan CacheExpiration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
 
         static TariffService()
@@ -94,13 +95,14 @@ namespace ASC.Core.Billing
             System.Configuration.ConnectionStringSettings connectionString,
             IQuotaService quotaService,
             ITenantService tenantService,
-            CoreSettings coreSettings
-            )
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings)
             : base(connectionString, "tenant")
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
+            CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
             int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);
@@ -110,7 +112,7 @@ namespace ASC.Core.Billing
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
             //single tariff for all portals
-            if (CoreSettings.Standalone)
+            if (CoreBaseSettings.Standalone)
                 tenantId = -1;
 
             var key = GetTariffCacheKey(tenantId);
@@ -481,7 +483,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             {
                 tariff.State = TariffState.NotPaid;
 
-                if ((q == null || !q.Trial) && CoreSettings.Standalone)
+                if ((q == null || !q.Trial) && CoreBaseSettings.Standalone)
                 {
                     if (q != null)
                     {
@@ -545,7 +547,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private TimeSpan GetCacheExpiration()
         {
-            if (CoreSettings.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
+            if (CoreBaseSettings.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
             {
                 CacheExpiration = CacheExpiration.Add(TimeSpan.FromSeconds(30));
             }
@@ -554,7 +556,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private void ResetCacheExpiration()
         {
-            if (CoreSettings.Standalone)
+            if (CoreBaseSettings.Standalone)
             {
                 CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             }

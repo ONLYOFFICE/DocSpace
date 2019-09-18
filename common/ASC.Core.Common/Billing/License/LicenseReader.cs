@@ -54,17 +54,18 @@ namespace ASC.Core.Billing
             LicensePathTemp = LicensePath + ".tmp";
         }
 
-        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager)
+        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager, CoreSettings coreSettings)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
+            CoreSettings = coreSettings;
         }
 
-        public static string CustomerId
+        public string CustomerId
         {
-            get { return CoreContext.Configuration.GetSetting(CustomerIdKey); }
-            private set { CoreContext.Configuration.SaveSetting(CustomerIdKey, value); }
+            get { return CoreSettings.GetSetting(CustomerIdKey); }
+            private set { CoreSettings.SaveSetting(CustomerIdKey, value); }
         }
 
         private static Stream GetLicenseStream(bool temp = false)
@@ -326,5 +327,6 @@ namespace ASC.Core.Billing
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public PaymentManager PaymentManager { get; }
+        public CoreSettings CoreSettings { get; }
     }
 }

@@ -147,19 +147,22 @@ namespace ASC.Data.Storage
         public CdnStorageSettings CdnStorageSettings { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public WebPath(
             WebPathSettings webPathSettings, 
             StaticUploader staticUploader, 
             CdnStorageSettings cdnStorageSettings, 
             IHttpContextAccessor httpContextAccessor,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            CoreBaseSettings coreBaseSettings)
         {
             WebPathSettings = webPathSettings;
             StaticUploader = staticUploader;
             CdnStorageSettings = cdnStorageSettings;
             HttpContextAccessor = httpContextAccessor;
             WebHostEnvironment = webHostEnvironment;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public string GetPath(string relativePath)
@@ -169,7 +172,7 @@ namespace ASC.Data.Storage
                 throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
             }
 
-            if (CoreContext.Configuration.Standalone && StaticUploader.CanUpload())
+            if (CoreBaseSettings.Standalone && StaticUploader.CanUpload())
             {
                 try
                 {
