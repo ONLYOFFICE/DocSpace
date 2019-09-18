@@ -48,6 +48,7 @@ namespace ASC.Core
         private static List<string> thisCompAddresses = new List<string>();
 
         public HttpContext HttpContext { get; }
+        public CoreSettings CoreSettings { get; }
 
         static TenantManager()
         {
@@ -64,11 +65,17 @@ namespace ASC.Core
             }
         }
 
-        public TenantManager(ITenantService tenantService, IQuotaService quotaService, ITariffService tariffService, IHttpContextAccessor httpContextAccessor)
+        public TenantManager(
+            ITenantService tenantService, 
+            IQuotaService quotaService, 
+            ITariffService tariffService, 
+            IHttpContextAccessor httpContextAccessor,
+            CoreSettings coreSettings)
         {
             this.tenantService = tenantService;
             this.quotaService = quotaService;
             this.tariffService = tariffService;
+            CoreSettings = coreSettings;
             HttpContext = httpContextAccessor?.HttpContext;
         }
 
@@ -95,7 +102,7 @@ namespace ASC.Core
             var isAlias = false;
             if (t == null)
             {
-                var baseUrl = CoreContext.Configuration.BaseDomain;
+                var baseUrl = CoreSettings.BaseDomain;
                 if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     isAlias = true;
@@ -106,7 +113,7 @@ namespace ASC.Core
             {
                 t = tenantService.GetTenant(domain);
             }
-            if (t == null && CoreContext.Configuration.Standalone && !isAlias)
+            if (t == null && CoreSettings.Standalone && !isAlias)
             {
                 t = tenantService.GetTenantForStandaloneWithoutAlias(domain);
             }

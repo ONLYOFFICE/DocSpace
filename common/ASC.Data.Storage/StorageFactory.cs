@@ -154,12 +154,18 @@ namespace ASC.Data.Storage
         public StorageFactoryListener StorageFactoryListener { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public StorageSettings StorageSettings { get; }
+        public TenantManager TenantManager { get; }
 
-        public StorageFactory(StorageFactoryListener storageFactoryListener, StorageFactoryConfig storageFactoryConfig, StorageSettings storageSettings)
+        public StorageFactory(
+            StorageFactoryListener storageFactoryListener, 
+            StorageFactoryConfig storageFactoryConfig, 
+            StorageSettings storageSettings,
+            TenantManager tenantManager)
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
             StorageSettings = storageSettings;
+            TenantManager = tenantManager;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -170,7 +176,7 @@ namespace ASC.Data.Storage
         public IDataStore GetStorage(string configpath, string tenant, string module)
         {
             int.TryParse(tenant, out var tenantId);
-            return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId));
+            return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId, TenantManager));
         }
 
         public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -218,7 +224,7 @@ namespace ASC.Data.Storage
             }
 
             int.TryParse(tenant, out var tenantId);
-            return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId));
+            return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId, TenantManager));
         }
 
         private IDataStore GetStoreAndCache(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)

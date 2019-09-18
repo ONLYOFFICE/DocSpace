@@ -37,11 +37,13 @@ namespace ASC.Data.Storage
         private readonly int tenant;
         private long currentSize;
 
+        public TenantManager TenantManager { get; }
 
-        public TennantQuotaController(int tenant)
+        public TennantQuotaController(int tenant, TenantManager tenantManager)
         {
             this.tenant = tenant;
-            currentSize = CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            TenantManager = tenantManager;
+            currentSize = TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => UsedInQuota(r.Tag))
                 .Sum(r => r.Counter);
         }
@@ -82,14 +84,14 @@ namespace ASC.Data.Storage
         public long QuotaUsedGet(string module, string domain)
         {
             var path = string.IsNullOrEmpty(module) ? null : string.Format("/{0}/{1}", module, domain);
-            return CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant).WithPath(path))
+            return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant).WithPath(path))
                 .Where(r => UsedInQuota(r.Tag))
                 .Sum(r => r.Counter);
         }
 
         public void QuotaUsedCheck(long size)
         {
-            var quota = CoreContext.TenantManager.GetTenantQuota(tenant);
+            var quota = TenantManager.GetTenantQuota(tenant);
             if (quota != null)
             {
                 if (quota.MaxFileSize != 0 && quota.MaxFileSize < size)
@@ -112,7 +114,7 @@ namespace ASC.Data.Storage
 
         private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
         {
-            CoreContext.TenantManager.SetTenantQuotaRow(
+            TenantManager.SetTenantQuotaRow(
                 new TenantQuotaRow { Tenant = tenant, Path = string.Format("/{0}/{1}", module, domain), Counter = size, Tag = dataTag },
                 exchange);
         }

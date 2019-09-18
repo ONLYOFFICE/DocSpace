@@ -96,7 +96,8 @@ namespace ASC.Core.Billing
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;
-            config = new CoreConfiguration(tenantService);
+            var coreSettings = new CoreSettings(tenantService);
+            config = new CoreConfiguration(coreSettings);
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
             int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);

@@ -33,20 +33,12 @@ using Newtonsoft.Json;
 
 namespace ASC.Core
 {
-    public class CoreConfiguration
+    public class CoreSettings
     {
-        private readonly ITenantService tenantService;
         private bool? standalone;
         private bool? personal;
         private bool? customMode;
-        private long? personalMaxSpace;
         private string basedomain;
-
-
-        public CoreConfiguration(ITenantService service)
-        {
-            tenantService = service;
-        }
 
         public bool Standalone
         {
@@ -61,6 +53,132 @@ namespace ASC.Core
         public bool CustomMode
         {
             get { return customMode ?? (bool)(customMode = ConfigurationManager.AppSettings["core.custom-mode"] == "true"); }
+        }
+
+        public string BaseDomain
+        {
+            get
+            {
+                if (basedomain == null)
+                {
+                    basedomain = ConfigurationManager.AppSettings["core:base-domain"] ?? string.Empty;
+                }
+
+                string result;
+                if (Standalone || string.IsNullOrEmpty(basedomain))
+                {
+                    result = GetSetting("BaseDomain") ?? basedomain;
+                }
+                else
+                {
+                    result = basedomain;
+                }
+                return result;
+            }
+            set
+            {
+                if (Standalone || string.IsNullOrEmpty(basedomain))
+                {
+                    SaveSetting("BaseDomain", value);
+                }
+            }
+        }
+
+        public ITenantService TenantService { get; }
+
+        public CoreSettings(ITenantService tenantService)
+        {
+            TenantService = tenantService;
+        }
+
+        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException("key");
+            }
+            byte[] bytes = null;
+            if (value != null)
+            {
+                bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
+            }
+            TenantService.SetTenantSettings(tenant, key, bytes);
+        }
+
+        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException("key");
+            }
+            var bytes = TenantService.GetTenantSettings(tenant, key);
+
+            var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
+
+            return result;
+        }
+
+        public string GetKey(int tenant)
+        {
+            if (Standalone)
+            {
+                var key = GetSetting("PortalId");
+                if (string.IsNullOrEmpty(key))
+                {
+                    lock (TenantService)
+                    {
+                        // thread safe
+                        key = GetSetting("PortalId");
+                        if (string.IsNullOrEmpty(key))
+                        {
+                            SaveSetting("PortalId", key = Guid.NewGuid().ToString());
+                        }
+                    }
+                }
+                return key;
+            }
+            else
+            {
+                var t = TenantService.GetTenant(tenant);
+                if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
+                    return t.PaymentId;
+
+                return ConfigurationManager.AppSettings["core:payment:region"] + tenant;
+            }
+        }
+
+        public string GetAffiliateId(int tenant)
+        {
+            var t = TenantService.GetTenant(tenant);
+            if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
+                return t.AffiliateId;
+
+            return null;
+        }
+    }
+
+    public class CoreConfiguration
+    {
+        private long? personalMaxSpace;
+
+        public CoreConfiguration(CoreSettings coreSettings)
+        {
+            CoreSettings = coreSettings;
+        }
+
+        public bool Standalone
+        {
+            get  => CoreSettings.Standalone;
+        }
+
+        public bool Personal
+        {
+            get => CoreSettings.Personal;
+        }
+
+        public bool CustomMode
+        {
+            get => CoreSettings.CustomMode;
         }
 
         public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
@@ -116,101 +234,23 @@ namespace ASC.Core
 
         public string BaseDomain
         {
-            get
-            {
-                if (basedomain == null)
-                {
-                    basedomain = ConfigurationManager.AppSettings["core:base-domain"] ?? string.Empty;
-                }
-
-                string result;
-                if (Standalone || string.IsNullOrEmpty(basedomain))
-                {
-                    result = GetSetting("BaseDomain") ?? basedomain;
-                }
-                else
-                {
-                    result = basedomain;
-                }
-                return result;
-            }
-            set
-            {
-                if (Standalone || string.IsNullOrEmpty(basedomain))
-                {
-                    SaveSetting("BaseDomain", value);
-                }
-            }
+            get => CoreSettings.BaseDomain;
+            set => CoreSettings.BaseDomain = value;
         }
+
+        public CoreSettings CoreSettings { get; }
 
         #region Methods Get/Save Setting
 
-        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
-        {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentNullException("key");
-            }
-            byte[] bytes = null;
-            if (value != null)
-            {
-                bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
-            }
-            tenantService.SetTenantSettings(tenant, key, bytes);
-        }
+        public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.SaveSetting(key, value, tenant);
 
-        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT)
-        {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentNullException("key");
-            }
-            var bytes = tenantService.GetTenantSettings(tenant, key);
-
-            var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
-
-            return result;
-        }
+        public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.GetSetting(key, tenant);
 
         #endregion
 
-        public string GetKey(int tenant)
-        {
-            if (Standalone)
-            {
-                var key = GetSetting("PortalId");
-                if (string.IsNullOrEmpty(key))
-                {
-                    lock (tenantService)
-                    {
-                        // thread safe
-                        key = GetSetting("PortalId");
-                        if (string.IsNullOrEmpty(key))
-                        {
-                            SaveSetting("PortalId", key = Guid.NewGuid().ToString());
-                        }
-                    }
-                }
-                return key;
-            }
-            else
-            {
-                var t = tenantService.GetTenant(tenant);
-                if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
-                    return t.PaymentId;
+        public string GetKey(int tenant) => CoreSettings.GetKey(tenant);
 
-                return ConfigurationManager.AppSettings["core:payment:region"] + tenant;
-            }
-        }
-
-        public string GetAffiliateId(int tenant)
-        {
-            var t = tenantService.GetTenant(tenant);
-            if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
-                return t.AffiliateId;
-
-            return null;
-        }
+        public string GetAffiliateId(int tenant) => CoreSettings.GetAffiliateId(tenant);
 
         #region Methods Get/Set Section
 

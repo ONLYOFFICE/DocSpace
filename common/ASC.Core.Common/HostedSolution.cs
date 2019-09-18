@@ -70,7 +70,8 @@ namespace ASC.Core
             userService = new DbUserService(connectionString);
             quotaService = new DbQuotaService(connectionString);
             tariffService = new TariffService(connectionString, quotaService, tenantService);
-            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null);
+            var coreSettings = new CoreSettings(tenantService);
+            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;
             DbId = connectionString.Name;

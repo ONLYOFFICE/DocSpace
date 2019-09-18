@@ -189,6 +189,7 @@ namespace ASC.People
                     .AddScoped<PeopleNamesSettings>()
                     .AddScoped<EmailValidationKeyProvider>()
                     .AddScoped<TenantUtil>()
+                    .AddScoped<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
