@@ -92,13 +92,14 @@ class ComboBox extends React.Component {
       advancedOptions,
       isDisabled,
       children,
-      noBorder } = this.props;
+      noBorder,
+      scaledOptions } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
       ? { maxHeight: dropDownMaxHeight }
       : {};
-    const dropDownManualWidthProp = scaled
+    const dropDownManualWidthProp = scaledOptions
       ? { manualWidth: '100%' }
       : {};
 
@@ -174,14 +175,16 @@ ComboBox.propTypes = {
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
-  scaled: PropTypes.bool
+  scaled: PropTypes.bool,
+  scaledOptions: PropTypes.bool
 }
 
 ComboBox.defaultProps = {
   noBorder: false,
   isDisabled: false,
   size: 'base',
-  scaled: true
+  scaled: true,
+  scaledOptions: false
 }
 
 export default ComboBox;
