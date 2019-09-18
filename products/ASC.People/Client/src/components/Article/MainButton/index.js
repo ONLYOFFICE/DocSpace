@@ -18,6 +18,7 @@ class PureArticleMainButtonContent extends React.Component {
         super(props);
         this.state = {
             dialogVisible: false,
+            clicked: false
         }
     }
 
@@ -36,6 +37,7 @@ class PureArticleMainButtonContent extends React.Component {
     }
 
     onSetInviteDialogClick = click => this.clickChild = click;
+    onMainButtonClick = () => this.setState({ clicked: true });
     render() {
         console.log("People ArticleMainButtonContent render");
         const { isAdmin, settings, t } = this.props;
@@ -46,6 +48,7 @@ class PureArticleMainButtonContent extends React.Component {
                         isDisabled={false}
                         isDropdown={true}
                         text={t('Actions')}
+                        onClick={this.onMainButtonClick}
                     >
                         <DropDownItem
                             icon="CatalogEmployeeIcon"
@@ -79,12 +82,13 @@ class PureArticleMainButtonContent extends React.Component {
                             onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                         />
                     </MainButton>
-                    <InviteDialog
+                    {this.state.clicked && <InviteDialog
                         setClick={this.onSetInviteDialogClick}
                         visible={this.state.dialogVisible}
                         onClose={this.toggleDialogVisible}
                         onCloseButton={this.toggleDialogVisible}
                     />
+                    }
                 </>
                 :
                 <></>
