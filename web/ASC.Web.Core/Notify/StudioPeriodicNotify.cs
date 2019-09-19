@@ -95,6 +95,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var authContext = scope.ServiceProvider.GetService<AuthContext>();
+                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -176,7 +177,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -251,7 +252,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -316,7 +317,7 @@ namespace ASC.Web.Studio.Core.Notify
                             }
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -378,7 +379,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                ApiSystemHelper.RemoveTenantFromCache(commonLinkUtility, tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -398,7 +399,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -411,7 +412,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -424,7 +425,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonBuyNow;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -452,7 +453,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                             if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                ApiSystemHelper.RemoveTenantFromCache(commonLinkUtility, tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -483,7 +484,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { studioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
+                            new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
                             new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
@@ -552,6 +553,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -650,7 +652,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General));
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetAdministration(ManagementType.General));
                         }
 
                         #endregion
@@ -664,7 +666,7 @@ namespace ASC.Web.Studio.Core.Notify
                             toadmins = true;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                            greenButtonUrl = string.Format("{0}/products/people/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/people/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -738,7 +740,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                            greenButtonUrl = string.Format("{0}/products/files/", CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
+                            greenButtonUrl = string.Format("{0}/products/files/", commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/'));
                         }
 
                         #endregion
@@ -820,7 +822,7 @@ namespace ASC.Web.Studio.Core.Notify
                             }
 
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General));
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetAdministration(ManagementType.General));
                         }
 
                         #endregion
@@ -840,7 +842,7 @@ namespace ASC.Web.Studio.Core.Notify
                                          : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -854,7 +856,7 @@ namespace ASC.Web.Studio.Core.Notify
                                          : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
                             toadmins = true;
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                            greenButtonUrl = CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
+                            greenButtonUrl = commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
                         }
 
                         #endregion
@@ -880,7 +882,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { studioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
                             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, CommonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
+                            new TagValue(Tags.PricingPage, commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
                             new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),

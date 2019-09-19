@@ -215,14 +215,12 @@ namespace ASC.Web.Core
         public WebItemSecurity WebItemSecurity { get; }
         public AuthContext AuthContext { get; }
         public WebItemManager WebItemManager { get; }
-        public TenantManager TenantManager { get; }
 
-        public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager, TenantManager tenantManager)
+        public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
         {
             WebItemSecurity = webItemSecurity;
             AuthContext = authContext;
             WebItemManager = webItemManager;
-            TenantManager = tenantManager;
         }
 
         public List<IWebItem> GetItems(WebZoneType webZone)

@@ -49,9 +49,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         public UserManager UserManager { get; }
 
-        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager, AdditionalWhiteLabelSettings additionalWhiteLabelSettings)
+        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager, AdditionalWhiteLabelSettings additionalWhiteLabelSettings, CommonLinkUtility commonLinkUtility)
         {
-            Helplink = CommonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
+            Helplink = commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
             NotifySource = studioNotifySource;
             UserManager = userManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();

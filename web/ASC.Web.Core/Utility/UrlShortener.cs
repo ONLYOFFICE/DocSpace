@@ -11,7 +11,7 @@ namespace ASC.Web.Core.Utility
 {
     public interface IUrlShortener
     {
-        string GetShortenLink(string shareLink);
+        string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility);
     }
 
     public static class UrlShortener
@@ -46,7 +46,7 @@ namespace ASC.Web.Core.Utility
 
     public class BitLyShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             return BitlyLoginProvider.GetShortenLink(shareLink);
         }
@@ -68,11 +68,11 @@ namespace ASC.Web.Core.Utility
                 url += '/';
         }
 
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             using var client = new WebClient { Encoding = Encoding.UTF8 };
             client.Headers.Add("Authorization", CreateAuthToken());
-            return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
+            return commonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
@@ -86,7 +86,7 @@ namespace ASC.Web.Core.Utility
 
     public class NullShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             return null;
         }

@@ -41,7 +41,7 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext, UserManager userManager, UserPhotoManager userPhotoManager)
+        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext, UserManager userManager, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
         {
             Id = userInfo.ID;
             DisplayName = DisplayUserSettings.GetFullUserName(userManager, userInfo);
@@ -59,8 +59,8 @@ namespace ASC.Web.Api.Models
 
             if (Id != Guid.Empty)
             {
-                var profileUrl = CommonLinkUtility.GetUserProfile(userInfo, userManager, false);
-                ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(httpContext.HttpContext, profileUrl);
+                var profileUrl = commonLinkUtility.GetUserProfile(userInfo, false);
+                ProfileUrl = commonLinkUtility.GetFullAbsolutePath(profileUrl);
             }
         }
 
@@ -79,9 +79,9 @@ namespace ASC.Web.Api.Models
         [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
-        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager)
+        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
         {
-            return new EmployeeWraper(userInfo, context, userManager, userPhotoManager);
+            return new EmployeeWraper(userInfo, context, userManager, userPhotoManager, commonLinkUtility);
         }
 
         public static EmployeeWraper GetSample()

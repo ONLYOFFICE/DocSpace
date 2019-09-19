@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Tenants;
 using Twilio.Clients;
 using Twilio.Http;
@@ -40,11 +41,17 @@ namespace ASC.VoipService.Twilio
     {
         private readonly TwilioRestClient twilio;
 
-        public TwilioPhone(TwilioRestClient twilio, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager) : 
-            base(authContext, tenantUtil, securityContext, tenantManager)
+        public TwilioPhone(
+            TwilioRestClient twilio, 
+            AuthContext authContext, 
+            TenantUtil tenantUtil, 
+            SecurityContext securityContext, 
+            TenantManager tenantManager, 
+            BaseCommonLinkUtility baseCommonLinkUtility) : 
+            base(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility)
         {
             this.twilio = twilio;
-            Settings = new TwilioVoipSettings(authContext, tenantUtil, securityContext, tenantManager);
+            Settings = new TwilioVoipSettings(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
         }
 
         #region Calls

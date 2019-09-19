@@ -33,6 +33,7 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Api.Models
 {
@@ -135,8 +136,9 @@ namespace ASC.Web.Api.Models
             UserManager userManager, 
             UserPhotoManager userphotomanager, 
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager)
-            : base(userInfo, context, userManager, userphotomanager)
+            TenantManager tenantManager, 
+            CommonLinkUtility commonLinkUtility)
+            : base(userInfo, context, userManager, userphotomanager, commonLinkUtility)
         {
             UserName = userInfo.UserName;
             FirstName = userInfo.FirstName;
@@ -258,16 +260,17 @@ namespace ASC.Web.Api.Models
             UserManager userManager, 
             UserPhotoManager userPhotoManager, 
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager)
+            TenantManager tenantManager, 
+            CommonLinkUtility commonLinkUtility)
         {
             try
             {
-                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager);
+                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
 
             }
             catch (Exception)
             {
-                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager);
+                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
             }
         }
 
@@ -277,9 +280,10 @@ namespace ASC.Web.Api.Models
             UserManager userManager, 
             UserPhotoManager userPhotoManager,
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager)
+            TenantManager tenantManager, 
+            CommonLinkUtility commonLinkUtility)
         {
-            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager);
+            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
         }
 
         public new static EmployeeWraperFull GetSample()

@@ -13,6 +13,7 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
+using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 using ASC.Core.Data;
 using ASC.Core.Notify;
@@ -210,6 +211,8 @@ namespace ASC.People
                     .AddScoped<PaymentManager>()
                     .AddScoped<AuthorizationManager>()
                     .AddScoped<CoreConfiguration>()
+                    .AddScoped<BaseCommonLinkUtility>()
+                    .AddScoped<CommonLinkUtility>()
                     .AddSingleton<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()

@@ -96,7 +96,7 @@ namespace ASC.Core.Users
             return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
         }
 
-        public static string RenderProfileLinkBase(this UserInfo userInfo, Tenant tenant, UserManager userManager)
+        public static string RenderProfileLinkBase(this UserInfo userInfo, UserManager userManager, CommonLinkUtility commonLinkUtility)
         {
             var sb = new StringBuilder();
 
@@ -109,7 +109,7 @@ namespace ASC.Core.Users
             {
                 var popupID = Guid.NewGuid();
                 sb.AppendFormat("<span class=\"userLink\" style='white-space:nowrap;' id='{0}' data-uid='{1}'>", popupID, userInfo.ID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(userManager), userInfo.DisplayUserName(userManager));
+                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(commonLinkUtility), userInfo.DisplayUserName(userManager));
                 sb.Append("</span>");
 
                 sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);
@@ -122,9 +122,9 @@ namespace ASC.Core.Users
         /// </summary>
         /// <param name="userInfo"></param>        
         /// <returns></returns>
-        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo, UserManager userManager)
+        private static string GetUserProfilePageURLGeneral(this UserInfo userInfo, CommonLinkUtility commonLinkUtility)
         {
-            return CommonLinkUtility.GetUserProfile(userInfo, userManager);
+            return commonLinkUtility.GetUserProfile(userInfo);
         }
     }
 }

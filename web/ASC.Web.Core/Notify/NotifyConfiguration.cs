@@ -85,6 +85,9 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HTMLContentType)
                     {
+                        var scope = ServiceProvider.CreateScope();
+                        var commonLinkUtility = ServiceProvider.GetService<CommonLinkUtility>();
+
                         var body = r.CurrentMessage.Body;
 
                         body = urlReplacer.Replace(body, m =>
@@ -92,8 +95,8 @@ namespace ASC.Web.Studio.Core.Notify
                             var url = m.Groups["url"].Value;
                             var ind = m.Groups["url"].Index - m.Index;
                             return string.IsNullOrEmpty(url) && ind > 0 ?
-                                m.Value.Insert(ind, CommonLinkUtility.GetFullAbsolutePath(string.Empty)) :
-                                m.Value.Replace(url, CommonLinkUtility.GetFullAbsolutePath(url));
+                                m.Value.Insert(ind, commonLinkUtility.GetFullAbsolutePath(string.Empty)) :
+                                m.Value.Replace(url, commonLinkUtility.GetFullAbsolutePath(url));
                         });
 
                         body = textileLinkReplacer.Replace(body, m =>
@@ -101,8 +104,8 @@ namespace ASC.Web.Studio.Core.Notify
                             var url = m.Groups["link"].Value;
                             var ind = m.Groups["link"].Index - m.Index;
                             return string.IsNullOrEmpty(url) && ind > 0 ?
-                                m.Value.Insert(ind, CommonLinkUtility.GetFullAbsolutePath(string.Empty)) :
-                                m.Value.Replace(url, CommonLinkUtility.GetFullAbsolutePath(url));
+                                m.Value.Insert(ind, commonLinkUtility.GetFullAbsolutePath(string.Empty)) :
+                                m.Value.Replace(url, commonLinkUtility.GetFullAbsolutePath(url));
                         });
 
                         r.CurrentMessage.Body = body;
@@ -257,8 +260,9 @@ namespace ASC.Web.Studio.Core.Notify
             var additionalWhiteLabelSettings = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettings>();
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
-            CommonLinkUtility.GetLocationByRequest(webItemManagerSecurity, webItemManager, out var product, out var module, null);
+            commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
                 product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
@@ -272,15 +276,15 @@ namespace ASC.Web.Studio.Core.Notify
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(aid, userManager))));
-            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetUserProfile(aid))));
+            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
-            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, CommonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
+            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
             request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
-            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff(coreBaseSettings))));
-            request.Arguments.Add(new TagValue(CommonTags.HelpLink, CommonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false)));
+            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
+            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false)));
             request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
             request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, mailWhiteLabelSettings.Instance));
 
@@ -289,10 +293,10 @@ namespace ASC.Web.Studio.Core.Notify
                 request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
             }
 
-            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings);
+            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility);
         }
 
-        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings)
+        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility)
         {
             if (tenantExtra.Enterprise || coreBaseSettings.CustomMode)
             {
@@ -329,7 +333,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-            var logoUrl = CommonLinkUtility.GetFullAbsolutePath(tenantLogoManager.GetLogoDark(true));
+            var logoUrl = commonLinkUtility.GetFullAbsolutePath(tenantLogoManager.GetLogoDark(true));
 
             request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
         }

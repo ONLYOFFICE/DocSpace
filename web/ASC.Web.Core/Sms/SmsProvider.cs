@@ -34,6 +34,7 @@ using System.Web;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
@@ -276,7 +277,7 @@ namespace ASC.Web.Core.Sms
             return !string.IsNullOrEmpty(smsCis) && Regex.IsMatch(number, smsCis);
         }
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
@@ -390,11 +391,11 @@ namespace ASC.Web.Core.Sms
         }
 
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager).GetExistingPhoneNumbers();
+                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -403,13 +404,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public void ClearOldNumbers(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
-            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager);
+            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, tenantManager);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {

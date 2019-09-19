@@ -127,6 +127,7 @@ namespace ASC.Api.Settings
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -168,7 +169,8 @@ namespace ASC.Api.Settings
             TenantLogoManager tenantLogoManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             TenantUtil tenantUtil,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -210,6 +212,7 @@ namespace ASC.Api.Settings
             EmailValidationKeyProvider = emailValidationKeyProvider;
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
         }
 
         [Read("")]
@@ -313,7 +316,7 @@ namespace ASC.Api.Settings
                       {
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
-                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager)),
+                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility)),
                           Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
@@ -436,7 +439,7 @@ namespace ASC.Api.Settings
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
-                                  .Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager))
+                                  .Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility))
                                   .ToList();
         }
 
@@ -569,10 +572,10 @@ namespace ASC.Api.Settings
 
             var result = new Dictionary<int, string>
             {
-                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
+                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
             };
 
             return result;
@@ -810,7 +813,7 @@ namespace ASC.Api.Settings
 
             if (isMe)
             {
-                return CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.TfaActivation);
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
             }
 
             StudioNotifyService.SendMsgTfaReset(user);

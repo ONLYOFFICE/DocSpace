@@ -31,6 +31,7 @@ using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 
@@ -65,7 +66,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             try
             {

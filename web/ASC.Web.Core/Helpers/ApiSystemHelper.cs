@@ -67,12 +67,12 @@ namespace ASC.Web.Core.Helpers
 
         #region system
 
-        public static void ValidatePortalName(string domain, Guid userId)
+        public static void ValidatePortalName(CommonLinkUtility commonLinkUtility, string domain, Guid userId)
         {
             try
             {
                 var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
+                SendToApi(commonLinkUtility, ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
             {
@@ -111,20 +111,20 @@ namespace ASC.Web.Core.Helpers
 
         #region cache
 
-        public static void AddTenantToCache(string domain, Guid userId)
+        public static void AddTenantToCache(CommonLinkUtility commonLinkUtility, string domain, Guid userId)
         {
             var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
+            SendToApi(commonLinkUtility, ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
-        public static void RemoveTenantFromCache(string domain, Guid userId)
+        public static void RemoveTenantFromCache(CommonLinkUtility commonLinkUtility, string domain, Guid userId)
         {
-            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
+            SendToApi(commonLinkUtility, ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
         }
 
-        public static IEnumerable<string> FindTenantsInCache(string domain, Guid userId)
+        public static IEnumerable<string> FindTenantsInCache(CommonLinkUtility commonLinkUtility, string domain, Guid userId)
         {
-            var result = SendToApi(ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
+            var result = SendToApi(commonLinkUtility, ApiCacheUrl, "portal/find?portalname=" + HttpUtility.UrlEncode(domain), WebRequestMethods.Http.Get, userId);
             var resObj = JObject.Parse(result);
 
             var variants = resObj.Value<JArray>("variants");
@@ -133,11 +133,11 @@ namespace ASC.Web.Core.Helpers
 
         #endregion
 
-        private static string SendToApi(string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
+        private static string SendToApi(CommonLinkUtility commonLinkUtility, string absoluteApiUrl, string apiPath, string httpMethod, Guid userId, string data = null)
         {
             if (!Uri.TryCreate(absoluteApiUrl, UriKind.Absolute, out var uri))
             {
-                var appUrl = CommonLinkUtility.GetFullAbsolutePath("/");
+                var appUrl = commonLinkUtility.GetFullAbsolutePath("/");
                 absoluteApiUrl = string.Format("{0}/{1}", appUrl.TrimEnd('/'), absoluteApiUrl.TrimStart('/')).TrimEnd('/');
             }
 

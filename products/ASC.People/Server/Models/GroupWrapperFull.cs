@@ -32,23 +32,24 @@ using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Api.Models
 {
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperFull
     {
-        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager)
+        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
         {
             Id = group.ID;
             Category = group.CategoryID;
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
             Name = group.Name;
-            Manager = EmployeeWraper.Get(userManager.GetUsers(userManager.GetDepartmentManager(group.ID)), context, userManager, userPhotoManager);
+            Manager = EmployeeWraper.Get(userManager.GetUsers(userManager.GetDepartmentManager(group.ID)), context, userManager, userPhotoManager, commonLinkUtility);
 
             if (includeMembers)
             {
-                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(group.ID).Select(r => EmployeeWraper.Get(r, context, userManager, userPhotoManager)));
+                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(group.ID).Select(r => EmployeeWraper.Get(r, context, userManager, userPhotoManager, commonLinkUtility)));
             }
         }
 

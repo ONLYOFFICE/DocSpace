@@ -40,7 +40,8 @@ namespace ASC.Web.Core.Files
         public const string FilesBaseVirtualPath = "~/products/files/";
         public const string EditorPage = "doceditor.aspx";
         private static readonly string FilesUploaderURL = ConfigurationManager.AppSettings["files.uploader.url"] ?? "~";
-
+        //fix di
+        public static CommonLinkUtility CommonLinkUtility { get; set; }
         public static string FilesBaseAbsolutePath
         {
             get { return CommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }

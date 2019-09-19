@@ -64,6 +64,7 @@ namespace ASC.Web.Studio.Core.Notify
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public StudioNotifyService(
@@ -78,6 +79,7 @@ namespace ASC.Web.Studio.Core.Notify
             EmailValidationKeyProvider emailValidationKeyProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
             IServiceProvider serviceProvider)
         {
             client = studioNotifyServiceHelper;
@@ -89,6 +91,7 @@ namespace ASC.Web.Studio.Core.Notify
             EmailValidationKeyProvider = emailValidationKeyProvider;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
@@ -160,7 +163,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(int tenantId, UserInfo userInfo)
         {
             var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(tenantId, userInfo.ID));
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -181,7 +184,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailChangeInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmailChange, AuthContext.CurrentAccount.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailChange, AuthContext.CurrentAccount.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
 
@@ -199,7 +202,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmailActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -274,7 +277,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgMobilePhoneChange(UserInfo userInfo)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
 
@@ -287,7 +290,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgTfaReset(UserInfo userInfo)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, userInfo.Email.ToLower(), ConfirmType.TfaActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
 
@@ -306,7 +309,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendJoinMsg(string email, EmployeeType emplType)
         {
-            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
+            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
                             + string.Format("&emplType={0}", emplType);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
@@ -483,7 +486,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgProfileDeletion(UserInfo user)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.ProfileRemove);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.ProfileRemove);
 
             string greenButtonText() => CoreBaseSettings.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
@@ -507,9 +510,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser, UserManager)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
-                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser, UserManager)));
+                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)));
         }
 
         public void SendMsgReassignsFailed(Guid recipientId, UserInfo fromUser, UserInfo toUser, string message)
@@ -520,9 +523,9 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser, UserManager)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
                 new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
-                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser, UserManager)),
+                new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)),
                 new TagValue(Tags.Message, message));
         }
 
@@ -534,7 +537,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(user, UserManager)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
                 new TagValue("CrmSpace", FileSizeComment.FilesSizeToString(crmSpace)),
                 new TagValue("MailSpace", FileSizeComment.FilesSizeToString(mailSpace)),
@@ -549,7 +552,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
-                new TagValue(Tags.FromUserLink, GetUserProfileLink(user, UserManager)),
+                new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue(Tags.Message, message));
         }
 
@@ -751,7 +754,7 @@ namespace ASC.Web.Studio.Core.Notify
                     analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, true, false, false);
                 }
 
-                var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, u.Email, ConfirmType.EmailActivation);
+                var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);
                 confirmationUrl += "&first=true";
 
                 static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
@@ -783,7 +786,7 @@ namespace ASC.Web.Studio.Core.Notify
                            ? "ru-RU"
                            : Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
 
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, email, ConfirmType.EmpInvite, (int)EmployeeType.User)
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
                              + "&emplType=" + (int)EmployeeType.User
                              + "&analytics=" + analytics
                              + "&lang=" + lang
@@ -888,12 +891,12 @@ namespace ASC.Web.Studio.Core.Notify
 
         private string GetMyStaffLink()
         {
-            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff(CoreBaseSettings));
+            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff());
         }
 
-        private static string GetUserProfileLink(UserInfo userInfo, UserManager userManager)
+        private  string GetUserProfileLink(UserInfo userInfo)
         {
-            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(userInfo, userManager));
+            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(userInfo));
         }
 
         private static string AddHttpToUrl(string url)
@@ -904,7 +907,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         private string GenerateActivationConfirmUrl(UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, user.Email, ConfirmType.Activation);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation);
 
             return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
                                               AuthContext.CurrentAccount.ID,

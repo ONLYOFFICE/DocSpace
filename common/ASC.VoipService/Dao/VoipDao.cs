@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.VoipService.Twilio;
@@ -38,13 +39,14 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public VoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
             : base(tenantID)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
             TenantManager = tenantManager;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
         public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -293,7 +295,7 @@ namespace ASC.VoipService.Dao
 
         private VoipPhone ToPhone(object[] r)
         {
-            return GetProvider(AuthContext, TenantUtil, SecurityContext, TenantManager).GetPhone(r);
+            return GetProvider(AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility).GetPhone(r);
         }
 
         private VoipCall ToCall(object[] r)
@@ -336,9 +338,9 @@ namespace ASC.VoipService.Dao
             get { return ConsumerFactory.GetByName("twilio"); }
         }
 
-        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager)
+        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, tenantManager);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
         }
 
         public static bool ConfigSettingsExist
@@ -354,6 +356,7 @@ namespace ASC.VoipService.Dao
         public TenantUtil TenantUtil { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         #endregion
     }

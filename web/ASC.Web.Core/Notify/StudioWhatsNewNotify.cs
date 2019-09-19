@@ -93,6 +93,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var authContext = scope.ServiceProvider.GetService<AuthContext>();
                     var authentication = scope.ServiceProvider.GetService<AuthManager>();
                     var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
+                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
                     foreach (var user in userManager.GetUsers())
@@ -136,9 +137,9 @@ namespace ASC.Web.Studio.Core.Notify
                             {
                                 Date = f.CreatedDate,
                                 UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
+                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
-                                URL = CommonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
+                                URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
                                 Action = getWhatsNewActionText(f)
                             }).ToList());
@@ -159,9 +160,9 @@ namespace ASC.Web.Studio.Core.Notify
                                         {
                                             Date = prawbc.CreatedDate,
                                             UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
+                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
-                                            URL = CommonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
+                                            URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
                                             Action = getWhatsNewActionText(prawbc)
                                         });
@@ -179,9 +180,9 @@ namespace ASC.Web.Studio.Core.Notify
                                     {
                                         Date = ls.CreatedDate,
                                         UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(userManager)) : string.Empty,
+                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
-                                        URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
+                                        URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
                                         Action = getWhatsNewActionText(ls)
                                     });

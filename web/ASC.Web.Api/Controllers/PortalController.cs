@@ -29,6 +29,7 @@ namespace ASC.Web.Api.Controllers
         public TenantManager TenantManager { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public PaymentManager PaymentManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -43,7 +44,8 @@ namespace ASC.Web.Api.Controllers
             AuthContext authContext,
             TenantManager tenantManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            PaymentManager paymentManager
+            PaymentManager paymentManager,
+            CommonLinkUtility commonLinkUtility
             )
         {
             LogManager = logManager;
@@ -55,6 +57,7 @@ namespace ASC.Web.Api.Controllers
             TenantManager = tenantManager;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             PaymentManager = paymentManager;
+            CommonLinkUtility = commonLinkUtility;
         }
 
         [Read("")]
@@ -72,7 +75,7 @@ namespace ASC.Web.Api.Controllers
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            return CommonLinkUtility.GetConfirmationUrl(EmailValidationKeyProvider, string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }
 
@@ -81,7 +84,7 @@ namespace ASC.Web.Api.Controllers
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(link);
+                return UrlShortener.Instance.GetShortenLink(link, CommonLinkUtility);
             }
             catch (Exception ex)
             {
@@ -136,7 +139,7 @@ namespace ASC.Web.Api.Controllers
         [Read("path")]
         public string GetFullAbsolutePath(string virtualPath)
         {
-            return CommonLinkUtility.GetFullAbsolutePath(ApiContext.HttpContext, virtualPath);
+            return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
     }
 }

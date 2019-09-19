@@ -92,7 +92,7 @@ namespace ASC.Web.Studio.Utility
         TfaAuth
     }
 
-    public static class CommonLinkUtility
+    public class CommonLinkUtility: BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -100,85 +100,82 @@ namespace ASC.Web.Studio.Utility
         public const string ParamName_UserUserName = "user";
         public const string ParamName_UserUserID = "uid";
 
-        public static void Initialize(string serverUri)
+        public CommonLinkUtility(
+            CoreBaseSettings coreBaseSettings, 
+            TenantManager tenantManager, 
+            UserManager userManager, 
+            WebItemManagerSecurity webItemManagerSecurity, 
+            WebItemManager webItemManager,
+            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            this(null, coreBaseSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider)
         {
-            BaseCommonLinkUtility.Initialize(serverUri);
         }
 
-        public static string VirtualRoot
-        {
-            get { return BaseCommonLinkUtility.VirtualRoot; }
-        }
+        public CommonLinkUtility(
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            TenantManager tenantManager,
+            UserManager userManager,
+            WebItemManagerSecurity webItemManagerSecurity,
+            WebItemManager webItemManager,
+            EmailValidationKeyProvider emailValidationKeyProvider) :
+            base(httpContextAccessor, coreBaseSettings, tenantManager) => (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
-        public static string ServerRootPath(HttpContext context)
-        {
-            return BaseCommonLinkUtility.ServerRootPath(context);
-        }
-
-        public static string GetFullAbsolutePath(string virtualPath)
-        {
-            return GetFullAbsolutePath(ASC.Common.HttpContext.Current, virtualPath);
-        }
-        public static string GetFullAbsolutePath(HttpContext context, string virtualPath)
-        {
-            return BaseCommonLinkUtility.GetFullAbsolutePath(context, virtualPath);
-        }
-
-        public static string ToAbsolute(string virtualPath)
-        {
-            return BaseCommonLinkUtility.ToAbsolute(virtualPath);
-        }
-
-        public static string Logout
+        public string Logout
         {
             get { return ToAbsolute("~/auth.aspx") + "?t=logout"; }
         }
 
-        public static string GetDefault()
+        public UserManager UserManager { get; }
+        public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        public WebItemManager WebItemManager { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+
+        public string GetDefault()
         {
             return VirtualRoot;
         }
 
-        public static string GetMyStaff(CoreBaseSettings coreBaseSettings)
+        public string GetMyStaff()
         {
-            return coreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
         }
 
-        public static string GetEmployees()
+        public string GetEmployees()
         {
             return GetEmployees(EmployeeStatus.Active);
         }
 
-        public static string GetEmployees(EmployeeStatus empStatus)
+        public string GetEmployees(EmployeeStatus empStatus)
         {
             return ToAbsolute("~/products/people/") +
                    (empStatus == EmployeeStatus.Terminated ? "#type=disabled" : string.Empty);
         }
 
-        public static string GetDepartment(Guid depId)
+        public string GetDepartment(Guid depId)
         {
             return depId != Guid.Empty ? ToAbsolute("~/products/people/#group=") + depId.ToString() : GetEmployees();
         }
 
         #region user profile link
 
-        public static string GetUserProfile(Guid userID, UserManager userManager)
+        public string GetUserProfile(Guid userID)
         {
-            if (!userManager.UserExists(userID))
+            if (!UserManager.UserExists(userID))
                 return GetEmployees();
 
-            return GetUserProfile(userID.ToString(), userManager);
+            return GetUserProfile(userID.ToString());
         }
 
-        public static string GetUserProfile(UserInfo user, UserManager userManager)
+        public string GetUserProfile(UserInfo user)
         {
-            if (!userManager.UserExists(user))
+            if (!UserManager.UserExists(user))
                 return GetEmployees();
 
-            return GetUserProfile(user, userManager, true);
+            return GetUserProfile(user, true);
         }
 
-        public static string GetUserProfile(string user, UserManager userManager, bool absolute = true)
+        public string GetUserProfile(string user, bool absolute = true)
         {
             var queryParams = "";
 
@@ -196,7 +193,7 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
@@ -206,9 +203,9 @@ namespace ASC.Web.Studio.Utility
             return url;
         }
 
-        public static string GetUserProfile(UserInfo user, UserManager userManager, bool absolute = true)
+        public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user, userManager) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
+            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -216,9 +213,9 @@ namespace ASC.Web.Studio.Utility
 
             return url;
         }
-        public static string GetUserProfile(Guid user, UserManager userManager, bool absolute = true)
+        public string GetUserProfile(Guid user, bool absolute = true)
         {
-            var queryParams = GetUserParamsPair(user, userManager);
+            var queryParams = GetUserParamsPair(user);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
             url += "profile.aspx?";
@@ -229,25 +226,25 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-        public static Guid GetProductID(HttpContext context, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager)
+        public Guid GetProductID()
         {
             var productID = Guid.Empty;
 
-            if (context != null)
+            if (HttpContext != null)
             {
-                GetLocationByRequest(webItemManagerSecurity, webItemManager, out var product, out _, context);
+                GetLocationByRequest(out var product, out _);
                 if (product != null) productID = product.ID;
             }
 
             return productID;
         }
 
-        public static void GetLocationByRequest(WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule, HttpContext context)
+        public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
         {
             var currentURL = string.Empty;
-            if (context != null && context.Request != null)
+            if (HttpContext?.Request != null)
             {
-                currentURL = context.Request.GetUrlRewriter().AbsoluteUri;
+                currentURL = HttpContext.Request.GetUrlRewriter().AbsoluteUri;
 
                 //TODO ?
                 // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx
@@ -257,10 +254,10 @@ namespace ASC.Web.Studio.Utility
                 //}
             }
 
-            GetLocationByUrl(currentURL, webItemManagerSecurity, webItemManager, out currentProduct, out currentModule);
+            GetLocationByUrl(currentURL, out currentProduct, out currentModule);
         }
 
-        public static IWebItem GetWebItemByUrl(string currentURL, WebItemManager webItemManager)
+        public IWebItem GetWebItemByUrl(string currentURL)
         {
             if (!string.IsNullOrEmpty(currentURL))
             {
@@ -268,7 +265,7 @@ namespace ASC.Web.Studio.Utility
                 var itemName = GetWebItemNameFromUrl(currentURL);
                 if (!string.IsNullOrEmpty(itemName))
                 {
-                    foreach (var item in webItemManager.GetItemsAll())
+                    foreach (var item in WebItemManager.GetItemsAll())
                     {
                         var _itemName = GetWebItemNameFromUrl(item.StartURL);
                         if (string.Compare(itemName, _itemName, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -278,7 +275,7 @@ namespace ASC.Web.Studio.Utility
                 else
                 {
                     var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
-                    var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName], webItemManager);
+                    var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
                     var pid = productByName == null ? Guid.Empty : productByName.ID;
 
                     if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
@@ -294,14 +291,14 @@ namespace ASC.Web.Studio.Utility
                     }
 
                     if (pid != Guid.Empty)
-                        return webItemManager[pid];
+                        return WebItemManager[pid];
                 }
             }
 
             return null;
         }
 
-        public static void GetLocationByUrl(string currentURL, WebItemManagerSecurity webItemManagerSecurity, WebItemManager webItemManager, out IProduct currentProduct, out IModule currentModule)
+        public void GetLocationByUrl(string currentURL, out IProduct currentProduct, out IModule currentModule)
         {
             currentProduct = null;
             currentModule = null;
@@ -309,7 +306,7 @@ namespace ASC.Web.Studio.Utility
             if (string.IsNullOrEmpty(currentURL)) return;
 
             var urlParams = HttpUtility.ParseQueryString(new Uri(currentURL).Query);
-            var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName], webItemManager);
+            var productByName = GetProductBySysName(urlParams[ParamName_ProductSysName]);
             var pid = productByName == null ? Guid.Empty : productByName.ID;
 
             if (pid == Guid.Empty && !string.IsNullOrEmpty(urlParams["pid"]))
@@ -329,7 +326,7 @@ namespace ASC.Web.Studio.Utility
 
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(moduleName))
             {
-                foreach (var product in webItemManager.GetItemsAll<IProduct>())
+                foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
                     var _productName = GetProductNameFromUrl(product.StartURL);
                     if (!string.IsNullOrEmpty(_productName))
@@ -340,7 +337,7 @@ namespace ASC.Web.Studio.Utility
 
                             if (!string.IsNullOrEmpty(moduleName))
                             {
-                                foreach (var module in webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                                 {
                                     var _moduleName = GetModuleNameFromUrl(module.StartURL);
                                     if (!string.IsNullOrEmpty(_moduleName))
@@ -355,7 +352,7 @@ namespace ASC.Web.Studio.Utility
                             }
                             else
                             {
-                                foreach (var module in webItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
+                                foreach (var module in WebItemManagerSecurity.GetSubItems(product.ID).OfType<IModule>())
                                 {
                                     if (!module.StartURL.Equals(product.StartURL) && currentURL.Contains(RegFilePathTrim.Replace(module.StartURL, string.Empty)))
                                     {
@@ -372,10 +369,10 @@ namespace ASC.Web.Studio.Utility
             }
 
             if (pid != Guid.Empty)
-                currentProduct = webItemManager[pid] as IProduct;
+                currentProduct = WebItemManager[pid] as IProduct;
         }
 
-        private static string GetWebItemNameFromUrl(string url)
+        private string GetWebItemNameFromUrl(string url)
         {
             var name = GetModuleNameFromUrl(url);
             if (string.IsNullOrEmpty(name))
@@ -404,7 +401,7 @@ namespace ASC.Web.Studio.Utility
             return name;
         }
 
-        private static string GetProductNameFromUrl(string url)
+        private string GetProductNameFromUrl(string url)
         {
             try
             {
@@ -440,12 +437,12 @@ namespace ASC.Web.Studio.Utility
             return null;
         }
 
-        private static IProduct GetProductBySysName(string sysName, WebItemManager webItemManager)
+        private IProduct GetProductBySysName(string sysName)
         {
             IProduct result = null;
 
             if (!string.IsNullOrEmpty(sysName))
-                foreach (var product in webItemManager.GetItemsAll<IProduct>())
+                foreach (var product in WebItemManager.GetItemsAll<IProduct>())
                 {
                     if (string.CompareOrdinal(sysName, WebItemExtension.GetSysName(product as IWebItem)) == 0)
                     {
@@ -457,14 +454,14 @@ namespace ASC.Web.Studio.Utility
             return result;
         }
 
-        public static string GetUserParamsPair(Guid userID, UserManager userManager)
+        public string GetUserParamsPair(Guid userID)
         {
-            return GetUserParamsPair(userManager.GetUsers(userID), userManager);
+            return GetUserParamsPair(UserManager.GetUsers(userID));
         }
 
-        public static string GetUserParamsPair(UserInfo user, UserManager userManager)
+        public string GetUserParamsPair(UserInfo user)
         {
-            if (user == null || string.IsNullOrEmpty(user.UserName) || !userManager.UserExists(user))
+            if (user == null || string.IsNullOrEmpty(user.UserName) || !UserManager.UserExists(user))
                 return "";
 
             return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));
@@ -472,7 +469,7 @@ namespace ASC.Web.Studio.Utility
 
         #region Help Centr
 
-        public static string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings,  bool inCurrentCulture = true)
+        public string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings,  bool inCurrentCulture = true)
         {
             if (!AdditionalWhiteLabelSettings.Instance.HelpCenterEnabled)
                 return string.Empty;
@@ -485,16 +482,11 @@ namespace ASC.Web.Studio.Utility
             return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
         }
 
-        public static string GetRegionalUrl(string url, string lang)
-        {
-            return BaseCommonLinkUtility.GetRegionalUrl(url, lang);
-        }
-
         #endregion
 
         #region management links
 
-        public static string GetAdministration(ManagementType managementType)
+        public string GetAdministration(ManagementType managementType)
         {
             if (managementType == ManagementType.General)
                 return ToAbsolute("~/management.aspx") + string.Empty;
@@ -506,14 +498,14 @@ namespace ASC.Web.Studio.Utility
 
         #region confirm links
 
-        public static string GetConfirmationUrl(EmailValidationKeyProvider emailValidationKeyProvider, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        public string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            return GetFullAbsolutePath(GetConfirmationUrlRelative(emailValidationKeyProvider, email, confirmType, postfix, userId));
+            return GetFullAbsolutePath(GetConfirmationUrlRelative(email, confirmType, postfix, userId));
         }
 
-        public static string GetConfirmationUrlRelative(EmailValidationKeyProvider emailValidationKeyProvider, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+        public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
         {
-            var validationKey = emailValidationKeyProvider.GetEmailKey(email + confirmType + (postfix ?? ""));
+            var validationKey = EmailValidationKeyProvider.GetEmailKey(email + confirmType + (postfix ?? ""));
 
             var link = $"confirm?key={validationKey}&type={confirmType}";
 

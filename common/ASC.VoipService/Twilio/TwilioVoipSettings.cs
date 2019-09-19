@@ -41,16 +41,18 @@ namespace ASC.VoipService.Twilio
             AuthContext authContext, 
             TenantUtil tenantUtil, 
             SecurityContext securityContext, 
-            TenantManager tenantManager) : 
-            base(authContext, tenantUtil, securityContext, tenantManager) { }
+            TenantManager tenantManager,
+            BaseCommonLinkUtility baseCommonLinkUtility) : 
+            base(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility) { }
 
         public TwilioVoipSettings(
             Uri voiceUrl, 
             AuthContext authContext, 
             TenantUtil tenantUtil,
             SecurityContext securityContext,
-            TenantManager tenantManager) : 
-            this(authContext, tenantUtil, securityContext, tenantManager)
+            TenantManager tenantManager,
+            BaseCommonLinkUtility baseCommonLinkUtility) : 
+            this(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility)
         {
             if (string.IsNullOrEmpty(voiceUrl.Query)) return;
 
@@ -83,7 +85,7 @@ namespace ASC.VoipService.Twilio
 
         private string GetEcho(string method, bool user = true)
         {
-            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(HttpContext.Current, ""), AuthContext, TenantUtil, SecurityContext, TenantManager).GetEcho(method, user);
+            return new TwilioResponseHelper(this, BaseCommonLinkUtility.GetFullAbsolutePath(""), AuthContext, TenantUtil, SecurityContext, TenantManager).GetEcho(method, user);
         }
     }
 }

@@ -35,7 +35,7 @@ using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
-
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
@@ -98,7 +98,10 @@ namespace ASC.Notify
 
         private void InitializeNotifySchedulers()
         {
-            CommonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
+            var scope = ServiceProvider.CreateScope();
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            //resolve with options
+            commonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
             DbRegistry.Configure();
             NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();

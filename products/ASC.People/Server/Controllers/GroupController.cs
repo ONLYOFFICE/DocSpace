@@ -5,12 +5,12 @@ using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common.Web;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
+using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -28,6 +28,7 @@ namespace ASC.Employee.Core.Controllers
         public UserPhotoManager UserPhotoManager { get; }
         public SecurityContext SecurityContext { get; }
         public PermissionContext PermissionContext { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
         public GroupController(
             Common.Logging.LogManager logManager,
@@ -36,7 +37,8 @@ namespace ASC.Employee.Core.Controllers
             UserManager userManager,
             UserPhotoManager userPhotoManager,
             SecurityContext securityContext,
-            PermissionContext permissionContext)
+            PermissionContext permissionContext,
+            CommonLinkUtility commonLinkUtility)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -45,6 +47,7 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager = userPhotoManager;
             SecurityContext = securityContext;
             PermissionContext = permissionContext;
+            CommonLinkUtility = commonLinkUtility;
         }
 
         [Read]
@@ -56,7 +59,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("{groupid}")]
         public GroupWrapperFull GetById(Guid groupid)
         {
-            return new GroupWrapperFull(GetGroupInfo(groupid), true, ApiContext, UserManager, UserPhotoManager);
+            return new GroupWrapperFull(GetGroupInfo(groupid), true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
         }
 
         [Read("user/{userid}")]
@@ -83,7 +86,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.GroupCreated, MessageTarget.Create(group.ID), group.Name);
 
-            return new GroupWrapperFull(group, true, ApiContext, UserManager, UserPhotoManager);
+            return new GroupWrapperFull(group, true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
         }
 
         [Update("{groupid}")]
@@ -120,7 +123,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var @group = GetGroupInfo(groupid);
-            var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager);
+            var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
 
             UserManager.DeleteGroup(groupid);
 
