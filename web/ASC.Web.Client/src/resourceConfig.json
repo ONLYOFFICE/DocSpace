@@ -1,6 +1,17 @@
 {
   "pages": {
     "About": {
+      "Resource": [
+        "AboutCompanyTitle",
+        "AboutCompanyVersion",
+        "AboutCompanyLicensor",
+        "AboutCompanyAddressTitle",
+        "AboutCompanyEmailTitle",
+        "AboutCompanyTelTitle"
+      ],
+      "UserControlsCommonResource": [
+        "LicensedUnder"
+      ]
     },
     "Home": {
     },
