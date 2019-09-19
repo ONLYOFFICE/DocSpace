@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
@@ -37,7 +38,11 @@ const getSizeStyle = size => {
 
 export default function createStyledIcon(Component, displayName, fillPath="*", strokePath="*") {
 
-  const Icon = ({ isfill, isStroke, color, stroke, fillPath, strokePath, ...props }) => <Component {...props}></Component>;
+  const Icon = ({ isfill, isStroke, color, stroke, fillPath, strokePath, ...props }) => { 
+    //console.log(`Icon render ${displayName}`);
+    return (<Component {...props}></Component>);
+  };
+
   const StyledIcon = styled(Icon)(
     props => `
     ${props.fillPath} {
