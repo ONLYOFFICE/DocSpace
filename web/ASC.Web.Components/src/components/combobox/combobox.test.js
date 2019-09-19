@@ -76,7 +76,7 @@ describe('<ComboBox />', () => {
     expect(wrapper.prop('opened')).toEqual(true);
   });
 
-  it('not scaled button', () => {
+  it('must contain max height', () => {
     const wrapper = mount(<ComboBox {...baseProps} dropDownMaxHeight={200} />);
 
     expect(wrapper.prop('dropDownMaxHeight')).toEqual(200);
@@ -101,25 +101,25 @@ describe('<ComboBox />', () => {
   });
 
   it('middle size options', () => {
-    const wrapper = mount(<ComboBox {...baseProps} size='middle' />);
+    const wrapper = mount(<ComboBox {...baseProps} scaled={false} size='middle' />);
 
     expect(wrapper.prop('size')).toEqual('middle');
   });
 
   it('big size options', () => {
-    const wrapper = mount(<ComboBox {...baseProps} size='big' />);
+    const wrapper = mount(<ComboBox {...baseProps} scaled={false} size='big' />);
 
     expect(wrapper.prop('size')).toEqual('big');
   });
 
   it('huge size options', () => {
-    const wrapper = mount(<ComboBox {...baseProps} size='huge' />);
+    const wrapper = mount(<ComboBox {...baseProps} scaled={false} size='huge' />);
 
     expect(wrapper.prop('size')).toEqual('huge');
   });
 
   it('content size options', () => {
-    const wrapper = mount(<ComboBox {...baseProps} size='content' />);
+    const wrapper = mount(<ComboBox {...baseProps} scaled={false} size='content' />);
 
     expect(wrapper.prop('size')).toEqual('content');
   });
@@ -141,8 +141,75 @@ describe('<ComboBox />', () => {
   it('re-render test', () => {
     const wrapper = shallow(<ComboBox {...baseProps} />).instance();
 
-    const shouldUpdate = wrapper.shouldComponentUpdate({ noBorder: true }, wrapper.state);
+    const shouldUpdate = wrapper.shouldComponentUpdate({ opened: true }, wrapper.state);
 
     expect(shouldUpdate).toBe(true);
+  });
+
+  it('comboBoxClick() disabled test', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} isDisabled={true} />);
+    const instance = wrapper.instance();
+
+    instance.comboBoxClick();
+
+    expect(wrapper.state('isOpen')).toBe(false);
+  });
+
+  it('comboBoxClick() not disabled test', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} isDisabled={false} />);
+    const instance = wrapper.instance();
+
+    instance.comboBoxClick();
+
+    expect(wrapper.state('isOpen')).toBe(true);
+  });
+
+  it('optionClick() test', () => {
+    const onSelect = jest.fn();
+    const selectedOption = {
+      key: 1,
+      label: "Select"
+    };
+    const wrapper = shallow(<ComboBox {...baseProps} opened={true} onSelect={onSelect} />);
+    const instance = wrapper.instance();
+
+    instance.optionClick(selectedOption);
+
+    expect(wrapper.state('isOpen')).toBe(false);
+    expect(onSelect).toHaveBeenCalledWith(selectedOption);
+  });
+
+  it('handleClick() with simulate test', () => {
+    const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
+
+    wrapper.simulate('click');
+
+    expect(wrapper.state('isOpen')).toBe(false);
+  });
+
+  it('handleClick() with simulate and ComboBox not opened test', () => {
+    const wrapper = mount(<ComboBox {...baseProps} />);
+
+    wrapper.simulate('click');
+
+    expect(wrapper.state('isOpen')).toBe(true);
+  });
+
+  it('componentDidUpdate() lifecycle test', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} opened={true} />);
+    const instance = wrapper.instance();
+
+    instance.componentDidUpdate(wrapper.props, wrapper.state);
+
+    expect(wrapper.props).toBe(wrapper.props);
+    expect(wrapper.state).toBe(wrapper.state);
+  });
+
+  it('componentWillUnmount() lifecycle  test', () => {
+    const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
+    const componentWillUnmount = jest.spyOn(wrapper.instance(), 'componentWillUnmount');
+
+    wrapper.unmount();
+    expect(componentWillUnmount).toHaveBeenCalled();
   });
 });
