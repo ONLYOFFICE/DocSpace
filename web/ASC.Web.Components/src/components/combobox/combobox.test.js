@@ -42,7 +42,7 @@ const baseProps = {
 };
 
 describe('<ComboBox />', () => {
-  it('renders without error', () => {
+  it('rendered without error', () => {
     const wrapper = mount(
       <ComboBox {...baseProps} />
     );
@@ -50,7 +50,7 @@ describe('<ComboBox />', () => {
     expect(wrapper).toExist();
   });
 
-  it('render with advanced options', () => {
+  it('with advanced options', () => {
     const wrapper = mount(
       <ComboBox {...baseProps} options={[]} advancedOptions={advancedOptions} />
     );
@@ -58,37 +58,37 @@ describe('<ComboBox />', () => {
     expect(wrapper).toExist();
   });
 
-  it('disabled when isDisabled is passed', () => {
+  it('disabled', () => {
     const wrapper = mount(<ComboBox {...baseProps} isDisabled={true} />);
 
     expect(wrapper.prop('isDisabled')).toEqual(true);
   });
 
-  it('no border when noBorder is passed', () => {
+  it('without borders', () => {
     const wrapper = mount(<ComboBox {...baseProps} noBorder={true} />);
 
     expect(wrapper.prop('noBorder')).toEqual(true);
   });
 
-  it('opened when opened is passed', () => {
+  it('opened', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
 
     expect(wrapper.prop('opened')).toEqual(true);
   });
 
-  it('must contain max height', () => {
+  it('with DropDown max height', () => {
     const wrapper = mount(<ComboBox {...baseProps} dropDownMaxHeight={200} />);
 
     expect(wrapper.prop('dropDownMaxHeight')).toEqual(200);
   });
 
-  it('not scaled button', () => {
+  it('without scaled', () => {
     const wrapper = mount(<ComboBox {...baseProps} scaled={false} />);
 
     expect(wrapper.prop('scaled')).toEqual(false);
   });
 
-  it('scaled button', () => {
+  it('scaled', () => {
     const wrapper = mount(<ComboBox {...baseProps} scaled={true} />);
 
     expect(wrapper.prop('scaled')).toEqual(true);
@@ -118,7 +118,7 @@ describe('<ComboBox />', () => {
     expect(wrapper.prop('size')).toEqual('huge');
   });
 
-  it('content size options', () => {
+  it('by content size options', () => {
     const wrapper = mount(<ComboBox {...baseProps} scaled={false} size='content' />);
 
     expect(wrapper.prop('size')).toEqual('content');
@@ -130,7 +130,7 @@ describe('<ComboBox />', () => {
     expect(wrapper.contains(<div>demo</div>)).toBe(true)
   });
 
-  it('not re-render test', () => {
+  it('not re-render', () => {
     const wrapper = shallow(<ComboBox {...baseProps} />).instance();
 
     const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
@@ -138,7 +138,7 @@ describe('<ComboBox />', () => {
     expect(shouldUpdate).toBe(false);
   });
 
-  it('re-render test', () => {
+  it('re-render', () => {
     const wrapper = shallow(<ComboBox {...baseProps} />).instance();
 
     const shouldUpdate = wrapper.shouldComponentUpdate({ opened: true }, wrapper.state);
@@ -146,7 +146,7 @@ describe('<ComboBox />', () => {
     expect(shouldUpdate).toBe(true);
   });
 
-  it('comboBoxClick() disabled test', () => {
+  it('causes function comboBoxClick() with disabled prop', () => {
     const wrapper = shallow(<ComboBox {...baseProps} isDisabled={true} />);
     const instance = wrapper.instance();
 
@@ -155,8 +155,8 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('comboBoxClick() not disabled test', () => {
-    const wrapper = shallow(<ComboBox {...baseProps} isDisabled={false} />);
+  it('causes function comboBoxClick()', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} />);
     const instance = wrapper.instance();
 
     instance.comboBoxClick();
@@ -164,7 +164,7 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(true);
   });
 
-  it('optionClick() test', () => {
+  it('causes function optionClick()', () => {
     const onSelect = jest.fn();
     const selectedOption = {
       key: 1,
@@ -179,7 +179,34 @@ describe('<ComboBox />', () => {
     expect(onSelect).toHaveBeenCalledWith(selectedOption);
   });
 
-  it('handleClick() with simulate test', () => {
+  it('causes function stopAction()', () => {
+    const wrapper = mount(<ComboBox {...baseProps} />);
+    const instance = wrapper.instance();
+
+    instance.stopAction(new Event('click'));
+
+    expect(wrapper.state('isOpen')).toBe(false);
+  });
+
+  it('causes function handleClick() with opened prop', () => {
+    const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
+    const instance = wrapper.instance();
+
+    instance.handleClick(new Event('click'));
+
+    expect(wrapper.state('isOpen')).toBe(false);
+  });
+
+  it('causes function handleClick()', () => {
+    const wrapper = mount(<ComboBox {...baseProps} />);
+    const instance = wrapper.instance();
+
+    instance.handleClick(new Event('click'));
+
+    expect(wrapper.state('isOpen')).toBe(false);
+  });
+
+  it('causes function handleClick() with simulate', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
 
     wrapper.simulate('click');
@@ -187,7 +214,7 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('handleClick() with simulate and ComboBox not opened test', () => {
+  it('causes function handleClick() with simulate and ComboBox not opened', () => {
     const wrapper = mount(<ComboBox {...baseProps} />);
 
     wrapper.simulate('click');
@@ -195,14 +222,30 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(true);
   });
 
-  it('componentDidUpdate() lifecycle test', () => {
-    const wrapper = shallow(<ComboBox {...baseProps} opened={true} />);
+  it('componentDidUpdate() state lifecycle test', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} />);
     const instance = wrapper.instance();
 
-    instance.componentDidUpdate(wrapper.props, wrapper.state);
+    wrapper.setState({ isOpen: false });
 
-    expect(wrapper.props).toBe(wrapper.props);
-    expect(wrapper.state).toBe(wrapper.state);
+    instance.componentDidUpdate(wrapper.props(), wrapper.state());
+
+    expect(wrapper.state()).toBe(wrapper.state());
+  });
+
+  it('componentDidUpdate() props lifecycle test', () => {
+    const wrapper = shallow(<ComboBox {...baseProps} />);
+    const instance = wrapper.instance();
+
+    instance.componentDidUpdate({
+      opened: true,
+      selectedOption: {
+        key: 1,
+        label: "Select"
+      }
+    }, wrapper.state());
+
+    expect(wrapper.props()).toBe(wrapper.props());
   });
 
   it('componentWillUnmount() lifecycle  test', () => {
