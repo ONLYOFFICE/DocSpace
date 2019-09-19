@@ -698,7 +698,7 @@ namespace ASC.Api.Settings
             switch (model.Type)
             {
                 case "sms":
-                    if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra))
+                    if (!StudioSmsNotificationSettings.IsVisibleSettings())
                         throw new Exception(Resource.SmsNotAvailable);
 
                     if (!SmsProviderManager.Enabled())
@@ -725,7 +725,7 @@ namespace ASC.Api.Settings
                     TfaAppAuthSettings.Enable = true;
                     action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettings.IsVisibleSettings() && StudioSmsNotificationSettings.Enable)
                     {
                         StudioSmsNotificationSettings.Enable = false;
                     }
@@ -740,7 +740,7 @@ namespace ASC.Api.Settings
                         TfaAppAuthSettings.Enable = false;
                     }
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettings.IsVisibleSettings() && StudioSmsNotificationSettings.Enable)
                     {
                         StudioSmsNotificationSettings.Enable = false;
                     }

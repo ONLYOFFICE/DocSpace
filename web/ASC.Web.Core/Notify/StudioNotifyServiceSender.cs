@@ -106,10 +106,12 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var cron = ConfigurationManager.AppSettings["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
+            using var scope = ServiceProvider.CreateScope();
+            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+
             if (ConfigurationManager.AppSettings["core:notify:tariff"] != "false")
             {
-                using var scope = ServiceProvider.CreateScope();
-                var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                 if (tenantExtra.Enterprise)
                 {
                     client.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
@@ -120,7 +122,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 else if (tenantExtra.Saas)
                 {
-                    if (CoreContext.Configuration.Personal)
+                    if (coreBaseSettings.Personal)
                     {
                         client.RegisterSendMethod(SendLettersPersonal, cron);
                     }
@@ -131,7 +133,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
             }
 
-            if (!CoreContext.Configuration.Personal)
+            if (!coreBaseSettings.Personal)
             {
                 client.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }

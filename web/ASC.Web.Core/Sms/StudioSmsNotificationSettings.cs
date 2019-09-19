@@ -47,8 +47,16 @@ namespace ASC.Web.Studio.Core.SMS
 
         }
 
-        public StudioSmsNotificationSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+
+        public StudioSmsNotificationSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager, 
+            TenantExtra tenantExtra,
+            CoreBaseSettings coreBaseSettings) : base(authContext, settingsManager, tenantManager)
         {
+            TenantExtra = tenantExtra;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public override ISettings GetDefault()
@@ -71,10 +79,13 @@ namespace ASC.Web.Studio.Core.SMS
             }
         }
 
-        public static bool IsVisibleSettings(TenantExtra tenantExtra)
+        public TenantExtra TenantExtra { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+
+        public bool IsVisibleSettings()
         {
-            var quota = tenantExtra.GetTenantQuota();
-            return CoreContext.Configuration.Standalone
+            var quota = TenantExtra.GetTenantQuota();
+            return CoreBaseSettings.Standalone
                     || ((!quota.Trial || SetupInfo.SmsTrial)
                         && !quota.NonProfit
                         && !quota.Free

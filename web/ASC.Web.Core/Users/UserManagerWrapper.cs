@@ -204,7 +204,7 @@ namespace ASC.Web.Core.Users
 
             var passwordSettingsObj = PasswordSettings.Load();
 
-            if (!PasswordSettings.CheckPasswordRegex(passwordSettingsObj, password))
+            if (!PasswordSettings.CheckPasswordRegex(CoreBaseSettings, passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
 

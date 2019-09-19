@@ -96,11 +96,11 @@ namespace ASC.Web.Core.Utility
         }
 
 
-        public static bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        public static bool CheckPasswordRegex(CoreBaseSettings coreBaseSettings, PasswordSettings passwordSettings, string password)
         {
             var pwdBuilder = new StringBuilder();
 
-            if (CoreContext.Configuration.CustomMode)
+            if (coreBaseSettings.CustomMode)
             {
                 pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
 

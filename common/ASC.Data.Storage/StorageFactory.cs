@@ -155,17 +155,20 @@ namespace ASC.Data.Storage
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public StorageSettings StorageSettings { get; }
         public TenantManager TenantManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public StorageFactory(
             StorageFactoryListener storageFactoryListener, 
             StorageFactoryConfig storageFactoryConfig, 
             StorageSettings storageSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings)
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
             StorageSettings = storageSettings;
             TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -250,7 +253,7 @@ namespace ASC.Data.Storage
             Type instanceType;
             IDictionary<string, string> props;
 
-            if (CoreContext.Configuration.Standalone &&
+            if (CoreBaseSettings.Standalone &&
                 !moduleElement.DisableMigrate &&
                 consumer.IsSet)
             {

@@ -56,11 +56,12 @@ namespace ASC.Core.Caching
         public TimeSpan DbExpiration { get; set; }
 
         public TimeSpan PhotoExpiration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
-
-        public CachedUserService(IUserService service)
+        public CachedUserService(IUserService service, CoreBaseSettings coreBaseSettings)
         {
             this.service = service ?? throw new ArgumentNullException("service");
+            CoreBaseSettings = coreBaseSettings;
             cache = AscCache.Memory;
             trustInterval = new TrustInterval();
 
@@ -98,7 +99,7 @@ namespace ASC.Core.Caching
 
         public UserInfo GetUser(int tenant, Guid id)
         {
-            if (CoreContext.Configuration.Personal)
+            if (CoreBaseSettings.Personal)
             {
                 return GetUserForPersonal(tenant, id);
             }
@@ -119,7 +120,7 @@ namespace ASC.Core.Caching
         /// <returns></returns>
         private UserInfo GetUserForPersonal(int tenant, Guid id)
         {
-            if (!CoreContext.Configuration.Personal) return GetUser(tenant, id);
+            if (!CoreBaseSettings.Personal) return GetUser(tenant, id);
 
             var key = GetUserCacheKeyForPersonal(tenant, id);
             var user = cache.Get<UserInfo>(key);
@@ -254,7 +255,7 @@ namespace ASC.Core.Caching
 
         private void InvalidateCache(UserInfoCacheItem userInfo)
         {
-            if (CoreContext.Configuration.Personal && userInfo != null)
+            if (CoreBaseSettings.Personal && userInfo != null)
             {
                 var key = GetUserCacheKeyForPersonal(userInfo.Tenant, userInfo.ID.FromByteString());
                 cache.Remove(key);

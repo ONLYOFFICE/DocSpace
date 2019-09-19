@@ -551,6 +551,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -811,7 +812,7 @@ namespace ASC.Web.Studio.Core.Notify
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
-                            if (!CoreContext.Configuration.CustomMode)
+                            if (!coreBaseSettings.CustomMode)
                             {
                                 tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-3rdparty-100.png";
                                 tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
@@ -1125,8 +1126,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var Authentication = scope.ServiceProvider.GetService<AuthManager>();
+                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
+                    var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
 
                     log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 
@@ -1136,7 +1138,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        SecurityContext.AuthenticateMe(Authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1157,7 +1159,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
 
-                        if (CoreContext.Configuration.CustomMode)
+                        if (coreBaseSettings.CustomMode)
                         {
                             switch (dayAfterRegister)
                             {
@@ -1207,7 +1209,7 @@ namespace ASC.Web.Studio.Core.Notify
                           TagValues.PersonalHeaderStart(),
                           TagValues.PersonalHeaderEnd(),
                           TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                          new TagValue(CommonTags.Footer, CoreContext.Configuration.CustomMode ? "personalCustomMode" : "personal"));
+                          new TagValue(CommonTags.Footer, coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                     }
 
                     log.InfoFormat("Total send count: {0}", sendCount);

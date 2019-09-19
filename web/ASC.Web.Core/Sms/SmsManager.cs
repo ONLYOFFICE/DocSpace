@@ -99,7 +99,7 @@ namespace ASC.Web.Studio.Core.SMS
         {
             if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
 
-            if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra) || !StudioSmsNotificationSettings.Enable) throw new MethodAccessException();
+            if (!StudioSmsNotificationSettings.IsVisibleSettings() || !StudioSmsNotificationSettings.Enable) throw new MethodAccessException();
 
             var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
@@ -114,7 +114,7 @@ namespace ASC.Web.Studio.Core.SMS
 
         public void ValidateSmsCode(Tenant tenant, UserInfo user, string code)
         {
-            if (!StudioSmsNotificationSettings.IsVisibleSettings(TenantExtra)
+            if (!StudioSmsNotificationSettings.IsVisibleSettings()
                 || !StudioSmsNotificationSettings.Enable)
             {
                 return;

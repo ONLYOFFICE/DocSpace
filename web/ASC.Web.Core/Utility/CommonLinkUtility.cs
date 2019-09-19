@@ -139,9 +139,9 @@ namespace ASC.Web.Studio.Utility
             return VirtualRoot;
         }
 
-        public static string GetMyStaff()
+        public static string GetMyStaff(CoreBaseSettings coreBaseSettings)
         {
-            return CoreContext.Configuration.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
+            return coreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
         }
 
         public static string GetEmployees()

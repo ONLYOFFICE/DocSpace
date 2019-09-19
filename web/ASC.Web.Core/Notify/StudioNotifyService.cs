@@ -529,7 +529,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendMsgRemoveUserDataCompleted(Guid recipientId, UserInfo user, string fromUserName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             client.SendNoticeToAsync(
-                CoreContext.Configuration.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
+                CoreBaseSettings.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
                 new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
@@ -886,9 +886,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region Helpers
 
-        private static string GetMyStaffLink()
+        private string GetMyStaffLink()
         {
-            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff());
+            return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff(CoreBaseSettings));
         }
 
         private static string GetUserProfileLink(UserInfo userInfo, UserManager userManager)

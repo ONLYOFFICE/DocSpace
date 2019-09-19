@@ -60,6 +60,7 @@ namespace ASC.Api.Settings
         public PermissionContext PermissionContext { get; }
         public TenantManager TenantManager { get; }
         public CoreSettings CoreSettings { get; }
+        public CoreConfiguration Configuration { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -74,7 +75,8 @@ namespace ASC.Api.Settings
             SecurityContext securityContext,
             PermissionContext permissionContext,
             TenantManager tenantManager,
-            CoreSettings coreSettings)
+            CoreSettings coreSettings,
+            CoreConfiguration configuration)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -85,6 +87,7 @@ namespace ASC.Api.Settings
             PermissionContext = permissionContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
+            Configuration = configuration;
         }
 
 
@@ -93,7 +96,7 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings, true);
+            var settings = ToSmtpSettings(Configuration.SmtpSettings, true);
 
             return settings;
         }
@@ -112,7 +115,7 @@ namespace ASC.Api.Settings
 
             var settingConfig = ToSmtpSettingsConfig(smtpSettings);
 
-            CoreContext.Configuration.SmtpSettings = settingConfig;
+            Configuration.SmtpSettings = settingConfig;
 
             var settings = ToSmtpSettings(settingConfig, true);
 
@@ -124,13 +127,13 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            if (!CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
+            if (!Configuration.SmtpSettings.IsDefaultSettings)
             {
                 PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-                CoreContext.Configuration.SmtpSettings = null;
+                Configuration.SmtpSettings = null;
             }
 
-            var current = CoreContext.Configuration.Standalone ? CoreContext.Configuration.SmtpSettings : SmtpSettings.Empty;
+            var current = Configuration.Standalone ? Configuration.SmtpSettings : SmtpSettings.Empty;
 
             return ToSmtpSettings(current, true);
         }
@@ -140,7 +143,7 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings);
+            var settings = ToSmtpSettings(Configuration.SmtpSettings);
 
             var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager);
 

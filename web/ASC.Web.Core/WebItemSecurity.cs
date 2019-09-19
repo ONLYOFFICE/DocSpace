@@ -53,6 +53,7 @@ namespace ASC.Web.Core
         public TenantAccessSettings TenantAccessSettings { get; }
         public TenantManager TenantManager { get; }
         public AuthorizationManager AuthorizationManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         static WebItemSecurity()
         {
@@ -79,7 +80,8 @@ namespace ASC.Web.Core
             WebItemManager webItemManager,
             TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
-            AuthorizationManager authorizationManager)
+            AuthorizationManager authorizationManager,
+            CoreBaseSettings coreBaseSettings)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -89,6 +91,7 @@ namespace ASC.Web.Core
             TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
             AuthorizationManager = authorizationManager;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         //
@@ -123,7 +126,7 @@ namespace ASC.Web.Core
             // can read or administrator
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
 
-            if (CoreContext.Configuration.Personal
+            if (CoreBaseSettings.Personal
                 && securityObj.WebItemId != WebItemManager.DocumentsProductID)
             {
                 // only files visible in your-docs portal
