@@ -35,10 +35,11 @@ class ComboBox extends React.Component {
       handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) =>
-    this.state.isOpen
-    && !this.ref.current.contains(e.target)
-    && this.toggle(false);
+  handleClick = (e) =>{
+    if (this.state.isOpen && !this.ref.current.contains(e.target)) {
+      this.toggle(false);
+    }
+  }
 
   stopAction = (e) => e.preventDefault();
 
@@ -108,7 +109,6 @@ class ComboBox extends React.Component {
       : 0;
 
     const advancedOptionsLength = advancedOptions
-      && advancedOptions.props.children.length
       ? advancedOptions.props.children.length
       : 0;
 
