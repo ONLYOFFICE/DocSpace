@@ -33,6 +33,7 @@ using ASC.Common.Module;
 using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Billing
 {
@@ -44,9 +45,10 @@ namespace ASC.Core.Billing
         private Timer timer;
 
 
-        public TariffSyncService()
+        public TariffSyncService(IServiceProvider serviceProvider)
         {
             config = TariffSyncServiceSection.GetSection();
+            ServiceProvider = serviceProvider;
         }
 
 
@@ -72,6 +74,8 @@ namespace ASC.Core.Billing
             get { return "Tariffs synchronizer"; }
         }
 
+        public IServiceProvider ServiceProvider { get; }
+
         public void Start()
         {
             if (timer == null)
@@ -94,31 +98,49 @@ namespace ASC.Core.Billing
         {
             try
             {
-                var tenant = CoreContext.TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
-                if (tenant != null)
-                {
-                    using var wcfClient = new TariffSyncClient();
-                    var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings[config.ConnectionStringName]);
+                var scope = ServiceProvider.CreateScope();
+                var tariffSync = scope.ServiceProvider.GetService<TariffSync>();
+                tariffSync.Sync(config);
 
-                    var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
-                    // save new
-                    foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
-                    {
-                        quotaService.SaveTenantQuota(tariff);
-                        oldtariffs.Remove(tariff.Id);
-                    }
-
-                    // remove old
-                    foreach (var tariff in oldtariffs.Values)
-                    {
-                        tariff.Visible = false;
-                        quotaService.SaveTenantQuota(tariff);
-                    }
-                }
             }
             catch (Exception error)
             {
                 log.Error(error);
+            }
+        }
+    }
+
+    class TariffSync
+    {
+        public TariffSync(TenantManager tenantManager)
+        {
+            TenantManager = tenantManager;
+        }
+
+        public TenantManager TenantManager { get; }
+
+        public void Sync(TariffSyncServiceSection config)
+        {
+            var tenant = TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
+            if (tenant != null)
+            {
+                using var wcfClient = new TariffSyncClient();
+                var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings[config.ConnectionStringName]);
+
+                var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
+                // save new
+                foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
+                {
+                    quotaService.SaveTenantQuota(tariff);
+                    oldtariffs.Remove(tariff.Id);
+                }
+
+                // remove old
+                foreach (var tariff in oldtariffs.Values)
+                {
+                    tariff.Visible = false;
+                    quotaService.SaveTenantQuota(tariff);
+                }
             }
         }
     }

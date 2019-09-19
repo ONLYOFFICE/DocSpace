@@ -58,6 +58,7 @@ namespace ASC.Core.Common.Tests
         {
             using var scope = serviceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var subscriptionManager = scope.ServiceProvider.GetService<SubscriptionManager>();
             tenantManager.SetCurrentTenant(tenant);
 
             tenant = new Tenants.Tenant(0, "teamlab");
@@ -69,7 +70,7 @@ namespace ASC.Core.Common.Tests
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
             recProvider = scope.ServiceProvider.GetService<RecipientProviderImpl>();
-            var directSubProvider = new DirectSubscriptionProvider(sourceId, CoreContext.SubscriptionManager, recProvider);
+            var directSubProvider = new DirectSubscriptionProvider(sourceId, subscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
         }
 

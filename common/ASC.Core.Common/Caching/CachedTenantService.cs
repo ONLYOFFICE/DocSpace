@@ -44,11 +44,12 @@ namespace ASC.Core.Caching
         public TimeSpan CacheExpiration { get; set; }
 
         public TimeSpan SettingsExpiration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
-
-        public CachedTenantService(ITenantService service)
+        public CachedTenantService(ITenantService service, CoreBaseSettings coreBaseSettings)
         {
             this.service = service ?? throw new ArgumentNullException("service");
+            CoreBaseSettings = coreBaseSettings;
             cache = AscCache.Memory;
             CacheExpiration = TimeSpan.FromMinutes(2);
             SettingsExpiration = TimeSpan.FromMinutes(2);
@@ -60,7 +61,7 @@ namespace ASC.Core.Caching
             {
                 var tenants = GetTenantStore();
                 tenants.Remove(t.TenantId);
-                tenants.Clear();
+                tenants.Clear(CoreBaseSettings);
             }, CacheNotifyAction.InsertOrUpdate);
 
             cacheNotifySettings.Subscribe((s) =>
@@ -241,9 +242,9 @@ namespace ASC.Core.Caching
                 }
             }
 
-            internal void Clear()
+            internal void Clear(CoreBaseSettings coreBaseSettings)
             {
-                if (!CoreContext.Configuration.Standalone) return;
+                if (!coreBaseSettings.Standalone) return;
                 lock (locker)
                 {
                     byId.Clear();

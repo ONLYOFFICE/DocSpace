@@ -27,6 +27,7 @@
 #if DEBUG
 namespace ASC.Core.Common.Tests
 {
+    using System;
     using System.Linq;
     using ASC.Core.Billing;
     using NUnit.Framework;
@@ -36,10 +37,11 @@ namespace ASC.Core.Common.Tests
     {
         private readonly ITariffSyncService tariffSyncService;
 
+        public IServiceProvider ServiceProvider { get; set; }
 
         public TariffSyncServiceTest()
         {
-            tariffSyncService = new TariffSyncService();
+            tariffSyncService = new TariffSyncService(ServiceProvider);
         }
 
         [Test]

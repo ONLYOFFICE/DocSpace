@@ -106,6 +106,15 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
+                        return (ISubscriptionService)new CachedSubscriptionService(new DbSubscriptionService(cs));
+                    })
+                    .AddSingleton((r) =>
+                    {
+                        var cs = DbRegistry.GetConnectionString("core");
+                        if (cs == null)
+                        {
+                            throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                        }
                         return (IAzService)new CachedAzService(new DbAzService(cs));
                     })
                     .AddSingleton((r) =>
@@ -124,7 +133,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITenantService)new CachedTenantService(new DbTenantService(cs));
+                        return (ITenantService)new CachedTenantService(new DbTenantService(cs), r.GetService<CoreBaseSettings>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -205,6 +214,7 @@ namespace ASC.People
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddSingleton<CoreBaseSettings>()
+                    .AddSingleton<SubscriptionManager>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

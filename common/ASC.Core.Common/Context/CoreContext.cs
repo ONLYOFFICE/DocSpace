@@ -46,8 +46,6 @@ namespace ASC.Core
 
         public static TenantManager TenantManager { get; private set; }
 
-        internal static SubscriptionManager SubscriptionManager { get; private set; }
-
         private static bool QuotaCacheEnabled
         {
             get
@@ -68,16 +66,14 @@ namespace ASC.Core
                 throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
             }
 
-            var tenantService = new CachedTenantService(new DbTenantService(cs));
             var coreBaseSettings = new CoreBaseSettings();
+            var tenantService = new CachedTenantService(new DbTenantService(cs), coreBaseSettings);
             var coreSettings = new CoreSettings(tenantService, coreBaseSettings);
             var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
-            var subService = new CachedSubscriptionService(new DbSubscriptionService(cs));
             var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings);
             
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreBaseSettings, coreSettings);
             Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager);
-            SubscriptionManager = new SubscriptionManager(subService);
         }
     }
 }

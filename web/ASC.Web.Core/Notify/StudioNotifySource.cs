@@ -36,8 +36,8 @@ namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioNotifySource : NotifySource
     {
-        public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider)
-            : base("asc.web.studio", userManager, recipientsProvider)
+        public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : base("asc.web.studio", userManager, recipientsProvider, subscriptionManager)
         {
         }
 
