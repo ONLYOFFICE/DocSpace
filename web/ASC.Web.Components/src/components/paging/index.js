@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 
 import Button from '../button'
 import ComboBox from '../combobox'
-import { mobile } from '../../utils/device'
-
 
 const StyledPaging = styled.div`
   display: flex;
@@ -81,7 +79,8 @@ const Paging = props => {
       {countItems &&
         <StyledOnPage>
           <ComboBox 
-            directionY={openDirection} 
+            directionY={openDirection}
+            directionX='right'
             options={countItems} 
             onSelect={onSelectCountAction} 
             selectedOption={selectedCountItem}/>

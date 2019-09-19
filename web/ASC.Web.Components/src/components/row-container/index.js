@@ -36,7 +36,9 @@ class RowContainer extends React.PureComponent {
     window.removeEventListener('contextmenu', this.onRowContextClick);
   }
 
+  // eslint-disable-next-line react/prop-types
   renderRow = memo(({ data, index, style }) => {
+    // eslint-disable-next-line react/prop-types
     const options = data[index].props.contextOptions;
     
     return (

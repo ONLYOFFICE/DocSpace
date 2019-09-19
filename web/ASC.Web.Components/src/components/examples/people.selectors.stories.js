@@ -264,6 +264,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                                   }}
                                   dropDownMaxHeight={200}
                                   scaled={true}
+                                  scaledOptions={true}
                                   size="content"
                                 />
                               </FieldContainer>
@@ -446,6 +447,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                                   dropDownMaxHeight={200}
                                   scaled={true}
                                   size="content"
+                                  scaledOptions={true}
                                 />
                               </FieldContainer>
                             </div>

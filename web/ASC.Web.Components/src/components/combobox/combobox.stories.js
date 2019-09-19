@@ -58,7 +58,7 @@ storiesOf('Components|Input', module)
     ];
 
     const needScrollDropDown = boolean('Need scroll dropdown', false);
-    const dropDownMaxHeight = needScrollDropDown && number('dropDownMaxHeight', 200);
+    const dropDownMaxHeight = needScrollDropDown ? number('dropDownMaxHeight', 200) : null;
     const optionsMultiSelect = options('children',
       {
         button: 'button',
@@ -125,6 +125,7 @@ storiesOf('Components|Input', module)
                   noBorder={boolean('noBorder', false)}
                   dropDownMaxHeight={dropDownMaxHeight}
                   scaled={boolean('scaled', false)}
+                  scaledOptions={boolean('scaledOptions', false)}
                   size={select('size', sizeOptions, 'content')}
                 >
                   {childrenItems}

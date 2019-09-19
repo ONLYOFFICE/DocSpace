@@ -291,6 +291,7 @@ class SectionBodyContent extends React.Component {
                     }}
                     dropDownMaxHeight={200}
                     scaled={true}
+                    scaledOptions={true}
                     size="content"
                   />
                 </FieldContainer>
