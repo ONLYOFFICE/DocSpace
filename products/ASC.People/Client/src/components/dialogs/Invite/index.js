@@ -51,6 +51,7 @@ class PureInviteDialog extends React.Component {
     }
 
     onCopyLinkToClipboard = () => {
+        // console.log("COPY");
         const { t } = this.props;
         const link = document.getElementsByName(textAreaName)[0];
         link.select();
@@ -91,24 +92,11 @@ class PureInviteDialog extends React.Component {
 
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (!prevProps.visible && !prevState.peopleInvitationLink && !prevState.guestInvitationLink) {
+    componentDidUpdate() {
+        if (this.props.visible && this.state.peopleInvitationLink && !this.state.guestInvitationLink) {
             // console.log('INVITE DIALOG DidUpdate');
             const { getInvitationLink } = this.props;
             const isGuest = true;
-
-            getInvitationLink()
-                .then((res) => {
-                    // console.log("getInvitationLinkPeople success", res.data.response);
-                    this.setState({
-                        peopleInvitationLink: res.data.response,
-                        isLoading: false
-                    });
-                })
-                .catch(e => {
-                    console.error("getInvitationLinkPeople error", e);
-                    this.setState({ isLoading: false });
-                });
 
             getInvitationLink(isGuest)
                 .then((res) => {
@@ -120,6 +108,23 @@ class PureInviteDialog extends React.Component {
                     this.setState({ isLoading: false });
                 });
         };
+    }
+
+    componentDidMount() {
+        this.props.setClick(this.onCopyLinkToClipboard);
+        const { getInvitationLink } = this.props;
+        getInvitationLink()
+            .then((res) => {
+                console.log("getInvitationLinkPeople success", res.data.response);
+                this.setState({
+                    peopleInvitationLink: res.data.response,
+                    isLoading: false
+                });
+            })
+            .catch(e => {
+                console.error("getInvitationLinkPeople error", e);
+                this.setState({ isLoading: false });
+            });
     }
 
     onClickToCloseButton = () => this.props.onCloseButton && this.props.onCloseButton();
