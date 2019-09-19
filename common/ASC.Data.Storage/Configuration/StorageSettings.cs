@@ -75,6 +75,11 @@ namespace ASC.Data.Storage.Configuration
         [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
+        static BaseStorageSettings()
+        {
+            Cache = new KafkaCache<DataStoreCacheItem>();
+        }
+
         public BaseStorageSettings()
         {
 
@@ -88,7 +93,6 @@ namespace ASC.Data.Storage.Configuration
             StorageFactoryConfig storageFactoryConfig) : 
             base(authContext, settingsManager, tenantManager)
         {
-            Cache = new KafkaCache<DataStoreCacheItem>();
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
         }
@@ -164,7 +168,7 @@ namespace ASC.Data.Storage.Configuration
         public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
 
-        private readonly ICacheNotify<DataStoreCacheItem> Cache;
+        private static readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
 
     [Serializable]

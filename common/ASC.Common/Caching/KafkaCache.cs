@@ -24,7 +24,7 @@ namespace ASC.Common.Caching
         private ProtobufDeserializer<T> ValueDeserializer { get; } = new ProtobufDeserializer<T>();
         private ProtobufSerializer<AscCacheItem> KeySerializer { get; } = new ProtobufSerializer<AscCacheItem>();
         private ProtobufDeserializer<AscCacheItem> KeyDeserializer { get; } = new ProtobufDeserializer<AscCacheItem>();
-        private IProducer<AscCacheItem, T> Producer { get; }
+        private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
         public KafkaCache()
         {
@@ -37,13 +37,6 @@ namespace ASC.Common.Caching
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
             {
                 ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
-
-                var config = new ProducerConfig(ClientConfig);
-                Producer = new ProducerBuilder<AscCacheItem, T>(config)
-                .SetErrorHandler((_, e) => Log.Error(e))
-                .SetKeySerializer(KeySerializer)
-                .SetValueSerializer(ValueSerializer)
-                .Build();
             }
             else
             {
@@ -62,6 +55,15 @@ namespace ASC.Common.Caching
 
             try
             {
+                if(Producer == null)
+                {
+                    Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(ClientConfig))
+                    .SetErrorHandler((_, e) => Log.Error(e))
+                    .SetKeySerializer(KeySerializer)
+                    .SetValueSerializer(ValueSerializer)
+                    .Build();
+                }
+
                 var channelName = GetChannelName(cacheNotifyAction);
 
                 if (Actions.TryGetValue(channelName, out var onchange))
@@ -164,7 +166,7 @@ namespace ASC.Common.Caching
         {
             if (!disposedValue)
             {
-                if (disposing)
+                if (disposing && Producer != null)
                 {
                     Producer.Dispose();
                 }
