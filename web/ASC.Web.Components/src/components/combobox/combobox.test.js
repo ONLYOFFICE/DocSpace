@@ -38,7 +38,6 @@ const baseProps = {
   opened: false,
   onSelect: () => jest.fn(),
   size: 'base',
-  dropDownMaxHeight: 200,
   scaled: true
 };
 
@@ -75,6 +74,12 @@ describe('<ComboBox />', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
 
     expect(wrapper.prop('opened')).toEqual(true);
+  });
+
+  it('not scaled button', () => {
+    const wrapper = mount(<ComboBox {...baseProps} dropDownMaxHeight={200} />);
+
+    expect(wrapper.prop('dropDownMaxHeight')).toEqual(200);
   });
 
   it('not scaled button', () => {
