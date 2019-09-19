@@ -45,7 +45,7 @@ class ComboBox extends React.Component {
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   comboBoxClick = (e) => {
-    if (this.props.isDisabled || e.target.closest('.optionalBlock')) return;
+    if (this.props.isDisabled || e && e.target.closest('.optionalBlock')) return;
     this.toggle(!this.state.isOpen);
   };
 

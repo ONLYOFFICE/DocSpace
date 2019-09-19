@@ -46,7 +46,9 @@ const StyledComboButton = styled.div`
 
   :hover{
     border-color: ${props => props.isOpen ? '#2DA7DB' : '#A3A9AE'};
-    cursor: ${props => (props.isDisabled || !props.containOptions) ? (props.advancedOptions) ? 'pointer' : 'default' : 'pointer'};
+    cursor: ${props => (props.isDisabled || (!props.containOptions && !props.withAdvancedOptions))
+      ? 'default'
+      : 'pointer'};
 
     ${props => props.isDisabled && `
       border-color: #ECEEF1;
@@ -126,6 +128,7 @@ class ComboButton extends React.Component {
         isDisabled={isDisabled}
         noBorder={noBorder}
         containOptions={optionsLength}
+        withAdvancedOptions={withAdvancedOptions}
         onClick={onClick}
         scaled={scaled}
         size={size}
