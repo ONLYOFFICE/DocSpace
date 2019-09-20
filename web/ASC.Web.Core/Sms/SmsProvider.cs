@@ -221,9 +221,8 @@ namespace ASC.Web.Core.Sms
                 && !string.IsNullOrEmpty(Secret);
         }
 
-        public string GetBalance(bool eraseCache = false)
+        public string GetBalance(Tenant tenant, bool eraseCache = false)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
             var key = "sms/smsc/" + tenantCache;
@@ -279,7 +278,7 @@ namespace ASC.Web.Core.Sms
 
         public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            return double.TryParse(GetBalance(true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
+            return double.TryParse(GetBalance(tenantManager.GetCurrentTenant(false), true), NumberStyles.Number, CultureInfo.InvariantCulture, out var balance) && balance > 0;
         }
     }
 

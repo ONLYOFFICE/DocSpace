@@ -78,31 +78,20 @@ namespace ASC.Core.Data
             return SaveSettingsFor(settings, tenantId, Guid.Empty);
         }
 
-        public bool SaveSettingsFor<T>(T settings, Guid userId) where T : class, ISettings
-        {
-            return SaveSettingsFor(settings, CoreContext.TenantManager.GetCurrentTenant().TenantId, userId);
-        }
-
         public T LoadSettings<T>(int tenantId) where T : class, ISettings
         {
             return LoadSettingsFor<T>(tenantId, Guid.Empty);
         }
 
-        public T LoadSettingsFor<T>(Guid userId) where T : class, ISettings
+        public void ClearCache<T>(int tenantId) where T : class, ISettings
         {
-            return LoadSettingsFor<T>(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId);
-        }
-
-        public void ClearCache<T>() where T : class, ISettings
-        {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
             var settings = LoadSettings<T>(tenantId);
             var key = settings.ID.ToString() + tenantId + Guid.Empty;
             notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
         }
 
 
-        private bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
+        public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
             if (settings == null) throw new ArgumentNullException("settings");
             try

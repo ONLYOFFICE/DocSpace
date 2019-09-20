@@ -99,7 +99,7 @@ namespace ASC.Core.Common.Settings
 
         public bool SaveForUser(Guid userId)
         {
-            return SettingsManager.SaveSettingsFor(this, userId);
+            return SettingsManager.SaveSettingsFor(this, TenantID, userId);
         }
 
         public bool SaveForDefaultTenant()
@@ -114,7 +114,7 @@ namespace ASC.Core.Common.Settings
 
         public void ClearCache()
         {
-            SettingsManager.ClearCache<T>();
+            SettingsManager.ClearCache<T>(TenantID);
         }
 
         public abstract Guid ID { get; }
