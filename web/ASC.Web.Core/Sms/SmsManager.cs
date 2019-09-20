@@ -112,7 +112,7 @@ namespace ASC.Web.Studio.Core.SMS
             }
         }
 
-        public void ValidateSmsCode(Tenant tenant, UserInfo user, string code)
+        public void ValidateSmsCode(UserInfo user, string code)
         {
             if (!StudioSmsNotificationSettings.IsVisibleSettings()
                 || !StudioSmsNotificationSettings.Enable)
@@ -138,7 +138,7 @@ namespace ASC.Web.Studio.Core.SMS
 
             if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(tenant.TenantId, user.ID);
+                var cookiesKey = SecurityContext.AuthenticateMe(user.ID);
                 //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

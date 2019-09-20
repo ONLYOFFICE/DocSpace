@@ -113,7 +113,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                securityContext.AuthenticateMe(_tenantId, _currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 long crmSpace;
                 GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);

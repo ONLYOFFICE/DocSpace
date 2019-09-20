@@ -241,9 +241,9 @@ namespace ASC.Core
             return cookie;
         }
 
-        public string AuthenticateMe(int tenantId, Guid userId)
+        public string AuthenticateMe(Guid userId)
         {
-            return AuthenticateMe(Authentication.GetAccountByID(tenantId, userId));
+            return AuthenticateMe(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId));
         }
 
         public void Logout()
@@ -251,9 +251,9 @@ namespace ASC.Core
             AuthContext.Principal = null;
         }
 
-        public void SetUserPassword(int tenantId, Guid userID, string password)
+        public void SetUserPassword(Guid userID, string password)
         {
-            Authentication.SetUserPassword(tenantId, userID, password);
+            Authentication.SetUserPassword(TenantManager.GetCurrentTenant().TenantId, userID, password);
         }
     }
 

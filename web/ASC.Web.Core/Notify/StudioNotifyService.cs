@@ -160,9 +160,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         #region User Password
 
-        public void UserPasswordChange(int tenantId, UserInfo userInfo)
+        public void UserPasswordChange(UserInfo userInfo)
         {
-            var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(tenantId, userInfo.ID));
+            var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userInfo.ID));
             var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
@@ -323,7 +323,7 @@ namespace ASC.Web.Studio.Core.Notify
                         TagValues.SendFrom(TenantManager, UserManager, AuthContext));
         }
 
-        public void UserInfoAddedAfterInvite(int tenantId, UserInfo newUserInfo)
+        public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
         {
             if (!UserManager.UserExists(newUserInfo)) return;
 
@@ -357,7 +357,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserWelcomeV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, true, false);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, true, false);
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -412,7 +412,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
-        public void UserInfoActivation(int tenantId, UserInfo newUserInfo)
+        public void UserInfoActivation(UserInfo newUserInfo)
         {
             if (newUserInfo.IsActive)
                 throw new ArgumentException("User is already activated!");
@@ -430,7 +430,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, true, false);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, true, false);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -448,7 +448,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
-        public void GuestInfoActivation(int tenantId, UserInfo newUserInfo)
+        public void GuestInfoActivation(UserInfo newUserInfo)
         {
             if (newUserInfo.IsActive)
                 throw new ArgumentException("User is already activated!");
@@ -466,7 +466,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasGuestActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(tenantId, notifyAction, false, false, false, true);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, false, true);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);

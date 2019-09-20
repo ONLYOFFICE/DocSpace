@@ -14,21 +14,16 @@ namespace ASC.Api.Core.Middleware
         public IpSecurityFilter(
             LogManager logManager,
             AuthContext authContext,
-            IPRestrictionsSettings iPRestrictionsSettings,
-            IPSecurity.IPSecurity IPSecurity,
-            TenantManager tenantManager)
+            IPSecurity.IPSecurity IPSecurity)
         {
             log = logManager.Get("Api");
             AuthContext = authContext;
-            IPRestrictionsSettings = iPRestrictionsSettings;
             this.IPSecurity = IPSecurity;
-            TenantManager = tenantManager;
         }
 
         public AuthContext AuthContext { get; }
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
         public IPSecurity.IPSecurity IPSecurity { get; }
-        public TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -36,12 +31,10 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = TenantManager.GetCurrentTenant();
-            var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && AuthContext.IsAuthenticated && !IPSecurity.Verify(tenant))
+            if (AuthContext.IsAuthenticated && !IPSecurity.Verify())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                log.WarnFormat("IPSecurity: Tenant {0}, user {1}", tenant.TenantId, AuthContext.CurrentAccount.ID);
+                log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
                 return;
             }
         }

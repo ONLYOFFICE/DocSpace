@@ -53,10 +53,9 @@ namespace ASC.VoipService.Twilio
         public AuthContext AuthContext { get; }
         public TenantUtil TenantUtil { get; }
         public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        public TwilioProvider(string accountSid, string authToken, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public TwilioProvider(string accountSid, string authToken, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             if (string.IsNullOrEmpty(accountSid)) throw new ArgumentNullException("accountSid");
             if (string.IsNullOrEmpty(authToken)) throw new ArgumentNullException("authToken");
@@ -65,7 +64,6 @@ namespace ASC.VoipService.Twilio
             AuthContext = authContext;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
-            TenantManager = tenantManager;
             BaseCommonLinkUtility = baseCommonLinkUtility;
             this.accountSid = accountSid;
 
@@ -133,7 +131,7 @@ namespace ASC.VoipService.Twilio
                     PhoneNumber = new PhoneNumber(phoneNumber)
                 }, client);
 
-            return new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) { Id = newNumber.Sid, Number = phoneNumber.Substring(1) };
+            return new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) { Id = newNumber.Sid, Number = phoneNumber.Substring(1) };
         }
 
         public VoipPhone DeleteNumber(VoipPhone phone)
@@ -145,15 +143,15 @@ namespace ASC.VoipService.Twilio
         public IEnumerable<VoipPhone> GetExistingPhoneNumbers()
         {
             var result = IncomingPhoneNumberResource.Read(client: client);
-            return result.Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) { Id = r.Sid, Number = r.PhoneNumber.ToString() });
+            return result.Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) { Id = r.Sid, Number = r.PhoneNumber.ToString() });
         }
 
         public IEnumerable<VoipPhone> GetAvailablePhoneNumbers(PhoneNumberType phoneNumberType, string isoCountryCode)
         {
             return phoneNumberType switch
             {
-                PhoneNumberType.Local => LocalResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) { Number = r.PhoneNumber.ToString() }),
-                PhoneNumberType.TollFree => TollFreeResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) { Number = r.PhoneNumber.ToString() }),
+                PhoneNumberType.Local => LocalResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) { Number = r.PhoneNumber.ToString() }),
+                PhoneNumberType.TollFree => TollFreeResource.Read(isoCountryCode, voiceEnabled: true, client: client).Select(r => new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) { Number = r.PhoneNumber.ToString() }),
 
                 _ => new List<VoipPhone>(),
             };
@@ -163,11 +161,11 @@ namespace ASC.VoipService.Twilio
         {
             var phone = IncomingPhoneNumberResource.Fetch(phoneSid, client: client);
 
-            var result = new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) 
+            var result = new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) 
             { 
                 Id = phone.Sid, 
                 Number = phone.PhoneNumber.ToString(), 
-                Settings = new TwilioVoipSettings(AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) 
+                Settings = new TwilioVoipSettings(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) 
             };
 
             if (phone.VoiceUrl == null)
@@ -180,7 +178,7 @@ namespace ASC.VoipService.Twilio
 
         public VoipPhone GetPhone(object[] data)
         {
-            return new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility)
+            return new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility)
             {
                 Id = (string)data[0],
                 Number = (string)data[1],

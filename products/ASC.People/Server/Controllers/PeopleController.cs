@@ -556,7 +556,7 @@ namespace ASC.Employee.Core.Controllers
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
-                CookiesManager.ResetUserCookie(Tenant.TenantId, user.ID);
+                CookiesManager.ResetUserCookie(user.ID);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -941,10 +941,10 @@ namespace ASC.Employee.Core.Controllers
 
             if (!string.IsNullOrEmpty(memberModel.Password))
             {
-                SecurityContext.SetUserPassword(Tenant.TenantId, userid, memberModel.Password);
+                SecurityContext.SetUserPassword(userid, memberModel.Password);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
-                CookiesManager.ResetUserCookie(Tenant.TenantId, userid);
+                CookiesManager.ResetUserCookie(userid);
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
@@ -1102,7 +1102,7 @@ namespace ASC.Employee.Core.Controllers
                         user.Status = EmployeeStatus.Terminated;
                         UserManager.SaveUserInfo(user);
 
-                        CookiesManager.ResetUserCookie(Tenant.TenantId, user.ID);
+                        CookiesManager.ResetUserCookie(user.ID);
                         MessageService.Send(MessageAction.CookieSettingsUpdated);
                         break;
                 }
@@ -1130,11 +1130,11 @@ namespace ASC.Employee.Core.Controllers
                 {
                     if (user.IsVisitor(UserManager))
                     {
-                        StudioNotifyService.GuestInfoActivation(Tenant.TenantId, user);
+                        StudioNotifyService.GuestInfoActivation(user);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoActivation(Tenant.TenantId, user);
+                        StudioNotifyService.UserInfoActivation(user);
                     }
                 }
                 else

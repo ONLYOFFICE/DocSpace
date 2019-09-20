@@ -111,16 +111,14 @@ namespace ASC.VoipService
         public AuthContext AuthContext { get; }
         public TenantUtil TenantUtil { get; }
         public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        public VoipSettings(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public VoipSettings(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             Operators = new List<Agent>();
             AuthContext = authContext;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
-            TenantManager = tenantManager;
             BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
@@ -152,7 +150,7 @@ namespace ASC.VoipService
 
         public VoipSettings GetSettings(string settings)
         {
-            return new VoipSettings(AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility) { JsonSettings = settings };
+            return new VoipSettings(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) { JsonSettings = settings };
         }
     }
 

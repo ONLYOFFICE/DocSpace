@@ -126,7 +126,7 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(tenantId, user.ID);
+                var cookiesKey = SecurityContext.AuthenticateMe(user.ID);
                 CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 

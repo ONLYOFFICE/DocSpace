@@ -40,7 +40,7 @@ namespace ASC.Web.Api.Controllers
 
             try
             {
-                var token = SecurityContext.AuthenticateMe(tenant.TenantId, user.ID);
+                var token = SecurityContext.AuthenticateMe(user.ID);
                 var expires = TenantCookieSettings.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData

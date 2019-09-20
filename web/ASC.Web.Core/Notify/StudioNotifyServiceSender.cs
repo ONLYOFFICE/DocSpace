@@ -66,7 +66,7 @@ namespace ASC.Web.Studio.Core.Notify
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             tenantManager.SetCurrentTenant(item.TenantId);
-            securityContext.AuthenticateMe(item.TenantId, Guid.Parse(item.UserId));
+            securityContext.AuthenticateMe(Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext);

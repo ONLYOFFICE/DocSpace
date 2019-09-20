@@ -204,7 +204,7 @@ namespace ASC.Data.Storage
 
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var CdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
-                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
+                SecurityContext.AuthenticateMe(tenant.OwnerId);
 
                 var dataStore = CdnStorageSettings.Load().DataStore;
 

@@ -39,13 +39,12 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public VoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
             : base(tenantID)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
-            TenantManager = tenantManager;
             BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
@@ -295,7 +294,7 @@ namespace ASC.VoipService.Dao
 
         private VoipPhone ToPhone(object[] r)
         {
-            return GetProvider(AuthContext, TenantUtil, SecurityContext, TenantManager, BaseCommonLinkUtility).GetPhone(r);
+            return GetProvider(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetPhone(r);
         }
 
         private VoipCall ToCall(object[] r)
@@ -338,9 +337,9 @@ namespace ASC.VoipService.Dao
             get { return ConsumerFactory.GetByName("twilio"); }
         }
 
-        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, baseCommonLinkUtility);
         }
 
         public static bool ConfigSettingsExist

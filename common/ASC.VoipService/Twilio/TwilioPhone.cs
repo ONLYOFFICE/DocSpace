@@ -46,12 +46,11 @@ namespace ASC.VoipService.Twilio
             AuthContext authContext, 
             TenantUtil tenantUtil, 
             SecurityContext securityContext, 
-            TenantManager tenantManager, 
             BaseCommonLinkUtility baseCommonLinkUtility) : 
-            base(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility)
+            base(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
             this.twilio = twilio;
-            Settings = new TwilioVoipSettings(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
+            Settings = new TwilioVoipSettings(authContext, tenantUtil, securityContext, baseCommonLinkUtility);
         }
 
         #region Calls

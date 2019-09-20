@@ -394,7 +394,7 @@ namespace ASC.Web.Core.Sms
         {
             try
             {
-                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility).GetExistingPhoneNumbers();
+                new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility).GetExistingPhoneNumbers();
                 return true;
             }
             catch (Exception)
@@ -407,9 +407,9 @@ namespace ASC.Web.Core.Sms
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
-            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
+            var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {

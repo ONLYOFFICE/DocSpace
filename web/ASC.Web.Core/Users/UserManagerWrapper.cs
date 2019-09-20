@@ -53,26 +53,19 @@ namespace ASC.Web.Core.Users
         public TenantManager TenantManager { get; }
         public PasswordSettings PasswordSettings { get; }
         public MessageService MessageService { get; }
-        public IPRestrictionsSettings IPRestrictionsSettings { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IPSecurity.IPSecurity IPSecurity { get; }
 
-        private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService, 
             UserManager userManager, 
             SecurityContext securityContext, 
             AuthContext authContext,
-            TenantManager tenantManager,
             PasswordSettings passwordSettings,
-            MessageService messageService, 
-            IPRestrictionsSettings iPRestrictionsSettings,
-            IHttpContextAccessor httpContextAccessor,
+            MessageService messageService,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
@@ -83,11 +76,8 @@ namespace ASC.Web.Core.Users
             UserManager = userManager;
             SecurityContext = securityContext;
             AuthContext = authContext;
-            TenantManager = tenantManager;
             PasswordSettings = passwordSettings;
             MessageService = messageService;
-            IPRestrictionsSettings = iPRestrictionsSettings;
-            HttpContextAccessor = httpContextAccessor;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
@@ -148,7 +138,7 @@ namespace ASC.Web.Core.Users
             }
 
             var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
-            SecurityContext.SetUserPassword(Tenant.TenantId, newUserInfo.ID, password);
+            SecurityContext.SetUserPassword(newUserInfo.ID, password);
 
             if (CoreBaseSettings.Personal)
             {
@@ -167,7 +157,7 @@ namespace ASC.Web.Core.Users
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoAddedAfterInvite(Tenant.TenantId, newUserInfo);
+                        StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                     }
 
                     if (fromInviteLink)
@@ -180,11 +170,11 @@ namespace ASC.Web.Core.Users
                     //Send user invite
                     if (isVisitor)
                     {
-                        StudioNotifyService.GuestInfoActivation(Tenant.TenantId, newUserInfo);
+                        StudioNotifyService.GuestInfoActivation(newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoActivation(Tenant.TenantId, newUserInfo);
+                        StudioNotifyService.UserInfoActivation(newUserInfo);
                     }
 
                 }
@@ -216,9 +206,7 @@ namespace ASC.Web.Core.Users
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
 
-            var tenant = TenantManager.GetCurrentTenant();
-            var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.Verify(tenant))
+            if (!IPSecurity.Verify())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
@@ -241,7 +229,7 @@ namespace ASC.Web.Core.Users
                 throw new Exception(Resource.CouldNotRecoverPasswordForSsoUser);
             }
 
-            StudioNotifyService.UserPasswordChange(Tenant.TenantId, userInfo);
+            StudioNotifyService.UserPasswordChange(userInfo);
 
             var displayUserName = userInfo.DisplayUserName(false, UserManager);
             MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);

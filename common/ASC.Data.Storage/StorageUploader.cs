@@ -154,7 +154,7 @@ namespace ASC.Data.Storage
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
 
-                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
+                SecurityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {

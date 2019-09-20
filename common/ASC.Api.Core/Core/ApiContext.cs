@@ -221,7 +221,7 @@ namespace ASC.Api.Core
             var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                _ = SecurityContext.AuthenticateMe(Tenant.TenantId, userId);
+                _ = SecurityContext.AuthenticateMe(userId);
             }
         }
     }

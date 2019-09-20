@@ -55,8 +55,8 @@ namespace ASC.VoipService.Dao
         }
 
 
-        public CachedVoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
-            : base(tenantID, authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility)
+        public CachedVoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext,  BaseCommonLinkUtility baseCommonLinkUtility)
+            : base(tenantID, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
         }
 

@@ -42,9 +42,9 @@ namespace ASC.VoipService
             get { return Settings.Caller; }
         }
 
-        public VoipPhone(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public VoipPhone(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            Settings = new VoipSettings(authContext, tenantUtil, securityContext, tenantManager, baseCommonLinkUtility);
+            Settings = new VoipSettings(authContext, tenantUtil, securityContext, baseCommonLinkUtility);
         }
 
         public virtual VoipCall Call(string to, string contactId = null)

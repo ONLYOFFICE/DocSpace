@@ -119,7 +119,7 @@ namespace ASC.Api.Settings.Smtp
 
                 SetProgress(10, "Setup user");
 
-                SecurityContext.AuthenticateMe(CurrentTenant, CurrentUser); //Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
                 SetProgress(15, "Find user data");
 
