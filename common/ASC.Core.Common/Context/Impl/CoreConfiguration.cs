@@ -29,6 +29,7 @@ using System.Text;
 using ASC.Common.Utils;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace ASC.Core
@@ -39,19 +40,26 @@ namespace ASC.Core
         private bool? personal;
         private bool? customMode;
 
+        public IConfiguration Configuration { get; }
+
+        public CoreBaseSettings(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public bool Standalone
         {
-            get { return standalone ?? (bool)(standalone = ConfigurationManager.AppSettings["core:base-domain"] == "localhost"); }
+            get { return standalone ?? (bool)(standalone = Configuration["core:base-domain"] == "localhost"); }
         }
 
         public bool Personal
         {
-            get { return personal ?? (bool)(personal = ConfigurationManager.AppSettings["core.personal"] == "true"); }
+            get { return personal ?? (bool)(personal = Configuration["core.personal"] == "true"); }
         }
 
         public bool CustomMode
         {
-            get { return customMode ?? (bool)(customMode = ConfigurationManager.AppSettings["core.custom-mode"] == "true"); }
+            get { return customMode ?? (bool)(customMode = Configuration["core.custom-mode"] == "true"); }
         }
     }
 

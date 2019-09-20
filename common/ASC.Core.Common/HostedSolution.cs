@@ -29,12 +29,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security;
+using ASC.Common.DependencyInjection;
 using ASC.Core.Billing;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
 {
@@ -67,7 +69,7 @@ namespace ASC.Core
         public HostedSolution(ConnectionStringSettings connectionString, string region)
         {
             tenantService = new DbTenantService(connectionString);
-            var baseSettings = new CoreBaseSettings();
+            var baseSettings = new CoreBaseSettings(CommonServiceProvider.GetService<IConfiguration>());
             var coreSettings = new CoreSettings(tenantService, baseSettings);
 
             userService = new DbUserService(connectionString);

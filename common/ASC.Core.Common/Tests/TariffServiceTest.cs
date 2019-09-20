@@ -28,9 +28,11 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
+    using ASC.Common.DependencyInjection;
     using ASC.Common.Utils;
     using ASC.Core.Billing;
     using ASC.Core.Data;
+    using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
     [TestFixture]
@@ -43,7 +45,7 @@ namespace ASC.Core.Common.Tests
         {
             var cs = ConfigurationManager.ConnectionStrings["core"];
             var tenantService = new DbTenantService(cs);
-            var baseSettings = new CoreBaseSettings();
+            var baseSettings = new CoreBaseSettings(CommonServiceProvider.GetService<IConfiguration>());
             tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings));
         }
 

@@ -27,10 +27,11 @@
 using System.Configuration;
 
 using ASC.Common.Data;
+using ASC.Common.DependencyInjection;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Data;
-
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
 {
@@ -66,7 +67,7 @@ namespace ASC.Core
                 throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
             }
 
-            var coreBaseSettings = new CoreBaseSettings();
+            var coreBaseSettings = new CoreBaseSettings(CommonServiceProvider.GetService<IConfiguration>());
             var tenantService = new CachedTenantService(new DbTenantService(cs), coreBaseSettings);
             var coreSettings = new CoreSettings(tenantService, coreBaseSettings);
             var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
