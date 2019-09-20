@@ -24,19 +24,28 @@ class DatePicker extends Component {
     moment.locale(props.locale);
     this.ref = React.createRef();
 
-    const { isOpen, selectedDate, hasError } = this.props;
+    const { isOpen, selectedDate, hasError, minDate, maxDate } = this.props;
 
     if (isOpen) {
       handleAnyClick(true, this.handleClick);
     }
 
-    this.state = {
+    let newState = {
       isOpen,
       selectedDate: moment(selectedDate).toDate(),
       value: moment(selectedDate).format("L"),
       mask: this.getMask,
       hasError
     };
+
+    if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
+      newState = Object.assign({}, newState, {
+        hasError: true,
+        isOpen: false
+      });
+    }
+
+    this.state = newState;
   }
 
   handleClick = e => {
@@ -143,6 +152,17 @@ class DatePicker extends Component {
       .diff(moment(date2).startOf("day"), "days");
   };
 
+  isValidDate = (selectedDate, maxDate, minDate, hasError) => {
+    if (
+      (this.compareDates(selectedDate, maxDate) > 0 ||
+        this.compareDates(selectedDate, minDate) < 0) &&
+      !hasError
+    ) {
+      return true;
+    }
+    return false;
+  };
+
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
   }
@@ -200,11 +220,7 @@ class DatePicker extends Component {
       });
     }
 
-    if (
-      (this.compareDates(selectedDate, maxDate) > 0 ||
-        this.compareDates(selectedDate, minDate) < 0) &&
-      !hasError
-    ) {
+    if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
       newState = Object.assign({}, newState, {
         hasError: true,
         isOpen: false
