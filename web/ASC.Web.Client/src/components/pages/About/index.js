@@ -6,6 +6,7 @@ import version from "../../../../package.json";
 import styled from "styled-components";
 
 const BodyStyle = styled.div`
+  margin-top: 24px;
   .text_p {
     text-align: center;
   }
@@ -43,10 +44,6 @@ const BodyStyle = styled.div`
   }
 `;
 
-const TitleStyle = styled.div`
-  padding: 8px;
-`;
-
 const Style = styled.div`
   margin-top: 8px;
   text-align: center;
@@ -55,17 +52,6 @@ const Style = styled.div`
 const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
-
-const Title = () => {
-  const { t } = useTranslation("translation", { i18n });
-  return (
-    <TitleStyle>
-      <Text.Body isBold={true} fontSize={18}>
-        {t("AboutCompanyTitle")}
-      </Text.Body>
-    </TitleStyle>
-  );
-};
 
 const Body = () => {
   const { t } = useTranslation("translation", { i18n });
@@ -104,7 +90,7 @@ const Body = () => {
             as="span"
             color="#A3A9AE"
           >
-            {t("AboutCompanyAddressTitle")}:
+            {t("AboutCompanyAddressTitle")}:{" "}
           </Text.Body>
           20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050
         </Text.Body>
@@ -115,7 +101,7 @@ const Body = () => {
           as="span"
           color="#A3A9AE"
         >
-          {t("AboutCompanyEmailTitle")}:
+          {t("AboutCompanyEmailTitle")}:{" "}
           <Link href="mailto:support@onlyoffice.com" fontSize={12}>
             support@onlyoffice.com
           </Link>
@@ -129,7 +115,7 @@ const Body = () => {
               as="span"
               color="#A3A9AE"
             >
-              {t("AboutCompanyTelTitle")}:
+              {t("AboutCompanyTelTitle")}:{" "}
             </Text.Body>
             +371 660-16425
           </Text.Body>
@@ -168,12 +154,7 @@ const Body = () => {
 };
 
 const About = () => {
-  return (
-    <PageLayout
-      sectionHeaderContent={<Title />}
-      sectionBodyContent={<Body />}
-    />
-  );
+  return <PageLayout sectionBodyContent={<Body />} />;
 };
 
 export default About;
