@@ -186,8 +186,9 @@ class SectionBodyContent extends React.PureComponent {
       .finally(() => onLoading(false));
   };
 
-  onReassignDataClick = () => {
-    toastr.success("Context action: Reassign data");
+  onReassignDataClick = user => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/reassign/${user.userName}`);
   };
 
   onDeletePersonalDataClick = user => {
@@ -390,7 +391,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "reassign-data",
             label: t("ReassignData"),
-            onClick: this.onReassignDataClick
+            onClick: this.onReassignDataClick.bind(this, user)
           },
           {
             key: "delete-personal-data",
