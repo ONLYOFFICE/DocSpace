@@ -17,8 +17,7 @@ class PureArticleMainButtonContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dialogVisible: false,
-            clicked: false
+            dialogVisible: false
         }
     }
 
@@ -30,14 +29,8 @@ class PureArticleMainButtonContent extends React.Component {
         toastr.success(text);
     };
 
-    toggleDialogVisible = () => {
-        this.setState({ dialogVisible: !this.state.dialogVisible }, function () {
-            this.state.dialogVisible && this.clickChild();
-        });
-    }
+    onInvitationDialogClick = () => this.setState({ dialogVisible: !this.state.dialogVisible });
 
-    onSetInviteDialogClick = click => this.clickChild = click;
-    onMainButtonClick = () => this.setState({ clicked: true });
     render() {
         console.log("People ArticleMainButtonContent render");
         const { isAdmin, settings, t } = this.props;
@@ -48,7 +41,6 @@ class PureArticleMainButtonContent extends React.Component {
                         isDisabled={false}
                         isDropdown={true}
                         text={t('Actions')}
-                        onClick={this.onMainButtonClick}
                     >
                         <DropDownItem
                             icon="CatalogEmployeeIcon"
@@ -69,7 +61,7 @@ class PureArticleMainButtonContent extends React.Component {
                         <DropDownItem
                             icon="InvitationLinkIcon"
                             label={t('InviteLinkTitle')}
-                            onClick={this.toggleDialogVisible}
+                            onClick={this.onInvitationDialogClick}
                         />
                         <DropDownItem
                             icon="PlaneIcon"
@@ -82,13 +74,11 @@ class PureArticleMainButtonContent extends React.Component {
                             onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                         />
                     </MainButton>
-                    {this.state.clicked && <InviteDialog
-                        setClick={this.onSetInviteDialogClick}
+                    <InviteDialog
                         visible={this.state.dialogVisible}
-                        onClose={this.toggleDialogVisible}
-                        onCloseButton={this.toggleDialogVisible}
+                        onClose={this.onInvitationDialogClick}
+                        onCloseButton={this.onInvitationDialogClick}
                     />
-                    }
                 </>
                 :
                 <></>
