@@ -33,10 +33,12 @@ namespace ASC.Core
     {
         private readonly ISubscriptionService service;
 
+        public TenantManager TenantManager { get; }
 
-        public SubscriptionManager(ISubscriptionService service)
+        public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager)
         {
             this.service = service ?? throw new ArgumentNullException("subscriptionManager");
+            TenantManager = tenantManager;
         }
 
 
@@ -140,7 +142,7 @@ namespace ASC.Core
 
         private int GetTenant()
         {
-            return CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
     }
 }

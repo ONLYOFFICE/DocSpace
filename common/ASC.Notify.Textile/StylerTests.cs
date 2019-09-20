@@ -52,7 +52,7 @@ namespace ASC.Notify.Textile
         public void TestTextileStyler()
         {
             var message = new NoticeMessage() { Body = pattern };
-            new TextileStyler().ApplyFormating(message);
+            new TextileStyler(null).ApplyFormating(message);
         }
     }
 }

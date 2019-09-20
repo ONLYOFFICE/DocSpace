@@ -24,16 +24,19 @@
 */
 
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using ASC.Common.Module;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Configuration
 {
     public class AmiPublicDnsSyncService : IServiceController
     {
+        public static IServiceProvider ServiceProvider { get; set; }
         public void Start()
         {
             Synchronize();
@@ -46,16 +49,19 @@ namespace ASC.Core.Configuration
 
         public static void Synchronize()
         {
-            if (CoreContext.Configuration.Standalone)
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            if (coreBaseSettings.Standalone)
             {
-                var tenants = CoreContext.TenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
+                var tenants = tenantManager.GetTenants(false).Where(t => MappedDomainNotSettedByUser(t.MappedDomain));
                 if (tenants.Any())
                 {
                     var dnsname = GetAmiPublicDnsName();
                     foreach (var tenant in tenants.Where(t => !string.IsNullOrEmpty(dnsname) && t.MappedDomain != dnsname))
                     {
                         tenant.MappedDomain = dnsname;
-                        CoreContext.TenantManager.SaveTenant(tenant);
+                        tenantManager.SaveTenant(tenant);
                     }
                 }
             }

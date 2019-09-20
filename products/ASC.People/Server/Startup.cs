@@ -217,7 +217,7 @@ namespace ASC.People
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddSingleton<CoreBaseSettings>()
-                    .AddSingleton<SubscriptionManager>()
+                    .AddScoped<SubscriptionManager>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

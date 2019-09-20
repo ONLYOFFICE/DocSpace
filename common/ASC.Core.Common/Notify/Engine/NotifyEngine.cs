@@ -481,6 +481,7 @@ namespace ASC.Notify.Engine
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
+                    //resolve
                     if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);

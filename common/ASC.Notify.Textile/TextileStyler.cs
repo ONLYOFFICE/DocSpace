@@ -47,12 +47,19 @@ namespace ASC.Notify.Textile
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
+        public CoreBaseSettings CoreBaseSettings { get; }
+
         static TextileStyler()
         {
             const string file = "ASC.Notify.Textile.Resources.style.css";
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file);
             using var reader = new StreamReader(stream);
             BlockAttributesParser.Styler = new StyleReader(reader.ReadToEnd().Replace("\n", "").Replace("\r", ""));
+        }
+
+        public TextileStyler(CoreBaseSettings coreBaseSettings)
+        {
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -114,11 +121,11 @@ namespace ASC.Notify.Textile
             return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
-        private static string GetLogoImg(NoticeMessage message)
+        private string GetLogoImg(NoticeMessage message)
         {
             string logoImg;
 
-            if (CoreContext.Configuration.Personal && !CoreContext.Configuration.CustomMode)
+            if (CoreBaseSettings.Personal && !CoreBaseSettings.CustomMode)
             {
                 logoImg = "https://static.onlyoffice.com/media/newsletters/images-v10/mail_logo.png";
             }
@@ -235,7 +242,7 @@ namespace ASC.Notify.Textile
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
         }
 
-        private static string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var withoutUnsubscribe = message.GetArgument("WithoutUnsubscribe");
 
@@ -248,7 +255,7 @@ namespace ASC.Notify.Textile
             if (string.IsNullOrEmpty(rootPath))
                 return string.Empty;
 
-            var unsubscribeLink = CoreContext.Configuration.CustomMode && CoreContext.Configuration.Personal
+            var unsubscribeLink = CoreBaseSettings.CustomMode && CoreBaseSettings.Personal
                                       ? GetSiteUnsubscribeLink(message, settings)
                                       : GetPortalUnsubscribeLink(message, settings);
 
@@ -258,7 +265,7 @@ namespace ASC.Notify.Textile
             return string.Format(NotifyTemplateResource.TextForFooterWithUnsubscribeLink, rootPath, unsubscribeLink);
         }
 
-        private static string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var unsubscribeLinkArgument = message.GetArgument("ProfileUrl");
 
@@ -273,14 +280,14 @@ namespace ASC.Notify.Textile
             return GetSiteUnsubscribeLink(message, settings);
         }
 
-        private static string GetSiteUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetSiteUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var mail = message.Recipient.Addresses.FirstOrDefault(r => r.Contains("@"));
 
             if (string.IsNullOrEmpty(mail))
                 return string.Empty;
 
-            var format = CoreContext.Configuration.CustomMode
+            var format = CoreBaseSettings.CustomMode
                              ? "{0}/unsubscribe/{1}"
                              : "{0}/Unsubscribe.aspx?id={1}";
 

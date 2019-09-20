@@ -42,6 +42,8 @@ namespace ASC.Web.Core.Files
         private static readonly string FilesUploaderURL = ConfigurationManager.AppSettings["files.uploader.url"] ?? "~";
         //fix di
         public static CommonLinkUtility CommonLinkUtility { get; set; }
+        public static CoreBaseSettings CoreBaseSettings { get; set; }
+        public static CoreSettings CoreSettings { get; set; }
         public static string FilesBaseAbsolutePath
         {
             get { return CommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
@@ -375,9 +377,9 @@ namespace ASC.Web.Core.Files
         private static string GetUrlSetting(string key, string appSettingsKey = null)
         {
             var value = string.Empty;
-            if (CoreContext.Configuration.Standalone)
+            if (CoreBaseSettings.Standalone)
             {
-                value = CoreContext.Configuration.GetSetting(GetSettingsKey(key));
+                value = CoreSettings.GetSetting(GetSettingsKey(key));
             }
             if (string.IsNullOrEmpty(value))
             {
@@ -388,14 +390,14 @@ namespace ASC.Web.Core.Files
 
         private static void SetUrlSetting(string key, string value)
         {
-            if (!CoreContext.Configuration.Standalone)
+            if (!CoreBaseSettings.Standalone)
             {
                 throw new NotSupportedException("Method for server edition only.");
             }
             value = (value ?? "").Trim();
             if (string.IsNullOrEmpty(value)) value = null;
             if (GetUrlSetting(key) != value)
-                CoreContext.Configuration.SaveSetting(GetSettingsKey(key), value);
+                CoreSettings.SaveSetting(GetSettingsKey(key), value);
         }
 
         private static string GetSettingsKey(string key)
