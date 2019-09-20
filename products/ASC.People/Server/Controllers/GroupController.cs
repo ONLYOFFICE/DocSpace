@@ -7,6 +7,7 @@ using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
+using ASC.People.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
@@ -69,16 +70,16 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        public GroupWrapperFull AddGroup(Guid groupManager, string groupName, IEnumerable<Guid> members)
+        public GroupWrapperFull AddGroup(GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
-            var group = UserManager.SaveGroupInfo(new GroupInfo { Name = groupName });
+            var group = UserManager.SaveGroupInfo(new GroupInfo { Name = groupModel.GroupName });
 
-            TransferUserToDepartment(groupManager, @group, true);
-            if (members != null)
+            TransferUserToDepartment(groupModel.GroupManager, @group, true);
+            if (groupModel.Members != null)
             {
-                foreach (var member in members)
+                foreach (var member in groupModel.Members)
                 {
                     TransferUserToDepartment(member, group, false);
                 }
@@ -90,24 +91,24 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}")]
-        public GroupWrapperFull UpdateGroup(Guid groupid, Guid groupManager, string groupName, IEnumerable<Guid> members)
+        public GroupWrapperFull UpdateGroup(GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupModel.Groupid).NotFoundIfNull("group not found");
             if (group.ID == Constants.LostGroupInfo.ID)
             {
                 throw new ItemNotFoundException("group not found");
             }
 
-            group.Name = groupName ?? group.Name;
+            group.Name = groupModel.GroupName ?? group.Name;
             UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !members.Contains(id)));
+            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
-            TransferUserToDepartment(groupManager, @group, true);
-            if (members != null)
+            TransferUserToDepartment(groupModel.GroupManager, @group, true);
+            if (groupModel.Members != null)
             {
-                foreach (var member in members)
+                foreach (var member in groupModel.Members)
                 {
                     TransferUserToDepartment(member, group, false);
                 }
@@ -115,7 +116,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(group.ID), group.Name);
 
-            return GetById(groupid);
+            return GetById(groupModel.Groupid);
         }
 
         [Delete("{groupid}")]
@@ -141,36 +142,36 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}/members/{newgroupid}")]
-        public GroupWrapperFull TransferMembersTo(Guid groupid, Guid newgroupid)
+        public GroupWrapperFull TransferMembersTo(TransferGroupMembersModel transferGroupMembersModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var oldgroup = GetGroupInfo(groupid);
+            var oldgroup = GetGroupInfo(transferGroupMembersModel.GroupId);
 
-            var newgroup = GetGroupInfo(newgroupid);
+            var newgroup = GetGroupInfo(transferGroupMembersModel.NewGroupId);
 
             var users = UserManager.GetUsersByGroup(oldgroup.ID);
             foreach (var userInfo in users)
             {
                 TransferUserToDepartment(userInfo.ID, newgroup, false);
             }
-            return GetById(newgroupid);
+            return GetById(transferGroupMembersModel.NewGroupId);
         }
 
         [Create("{groupid}/members")]
-        public GroupWrapperFull SetMembersTo(Guid groupid, IEnumerable<Guid> members)
+        public GroupWrapperFull SetMembersTo(GroupModel groupModel)
         {
-            RemoveMembersFrom(groupid, UserManager.GetUsersByGroup(groupid).Select(x => x.ID));
-            AddMembersTo(groupid, members);
-            return GetById(groupid);
+            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid).Select(x => x.ID) });
+            AddMembersTo(groupModel);
+            return GetById(groupModel.Groupid);
         }
 
         [Update("{groupid}/members")]
-        public GroupWrapperFull AddMembersTo(Guid groupid, IEnumerable<Guid> members)
+        public GroupWrapperFull AddMembersTo(GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = GetGroupInfo(groupid);
+            var group = GetGroupInfo(groupModel.Groupid);
 
-            foreach (var userId in members)
+            foreach (var userId in groupModel.Members)
             {
                 TransferUserToDepartment(userId, group, false);
             }
@@ -178,27 +179,27 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}/manager")]
-        public GroupWrapperFull SetManager(Guid groupid, Guid userid)
+        public GroupWrapperFull SetManager(SetManagerModel setManagerModel)
         {
-            var group = GetGroupInfo(groupid);
-            if (UserManager.UserExists(userid))
+            var group = GetGroupInfo(setManagerModel.GroupId);
+            if (UserManager.UserExists(setManagerModel.UserId))
             {
-                UserManager.SetDepartmentManager(group.ID, userid);
+                UserManager.SetDepartmentManager(group.ID, setManagerModel.UserId);
             }
             else
             {
                 throw new ItemNotFoundException("user not found");
             }
-            return GetById(groupid);
+            return GetById(setManagerModel.GroupId);
         }
 
         [Delete("{groupid}/members")]
-        public GroupWrapperFull RemoveMembersFrom(Guid groupid, IEnumerable<Guid> members)
+        public GroupWrapperFull RemoveMembersFrom(GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = GetGroupInfo(groupid);
+            var group = GetGroupInfo(groupModel.Groupid);
 
-            foreach (var userId in members)
+            foreach (var userId in groupModel.Members)
             {
                 RemoveUserFromDepartment(userId, group);
             }

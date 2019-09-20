@@ -5,13 +5,16 @@ import PropTypes from "prop-types";
 import {
   Button,
   TextInput,
-  Text,
   Icons,
   SelectedItem,
   AdvancedSelector,
   FieldContainer,
   ComboBox,
-  ModalDialog
+  ComboButton,
+  ModalDialog,
+  SearchInput,
+  toastr,
+  utils
 } from "asc-web-components";
 import {
   department,
@@ -19,7 +22,61 @@ import {
   typeUser
 } from "../../../../../helpers/customNames";
 import { connect } from "react-redux";
-import { resetGroup } from "../../../../../store/group/actions";
+import {
+  resetGroup,
+  createGroup,
+  updateGroup
+} from "../../../../../store/group/actions";
+import styled from "styled-components";
+
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  .group-name_container {
+    width: 320px;
+  }
+
+  .head_container {
+    position: relative;
+    width: 320px;
+  }
+
+  .members_container {
+    position: relative;
+    width: 320px;
+  }
+
+  .search_container {
+    margin-top: 16px;
+  }
+
+  .selected-members_container {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    .selected-item {
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+  }
+
+  .buttons_container {
+    margin-top: 60px;
+
+    .cancel-button {
+      margin-left: 8px;
+    }
+  }
+
+  @media ${utils.device.tablet} {
+    .search_container {
+      width: 320px;
+    }
+  }
+`;
 
 class SectionBodyContent extends React.Component {
   constructor(props) {
@@ -30,6 +87,7 @@ class SectionBodyContent extends React.Component {
     this.state = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
+      searchValue: "",
       error: null,
       inLoading: false,
       isHeaderSelectorOpen: false,
@@ -46,13 +104,20 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupMembers: group && group.members ? group.members : []
+      groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
+      groupMembers: group && group.members ? group.members.map(u => u.id) : []
     };
   }
 
   onGroupChange = e => {
     this.setState({
       groupName: e.target.value
+    });
+  };
+
+  onSearchChange = e => {
+    this.setState({
+      searchValue: e.target.value
     });
   };
 
@@ -74,11 +139,134 @@ class SectionBodyContent extends React.Component {
     });
   };
 
+  onSave = () => {
+    const { history, group, createGroup, updateGroup } = this.props;
+    const { groupName, groupManager, groupMembers } = this.state;
+
+    if (!groupName || !groupName.trim().length) return false;
+
+    this.setState({ inLoading: true });
+
+    (group && group.id
+      ? updateGroup(group.id, groupName, groupManager, groupMembers)
+      : createGroup(groupName, groupManager, groupMembers)
+    )
+      .then(() => {
+        toastr.success("Success");
+        this.setState({ inLoading: true });
+        history.goBack();
+      })
+      .catch(error => {
+        toastr.error(error.message);
+        this.setState({ inLoading: false });
+      });
+  };
+
   onCancel = () => {
     const { history, resetGroup } = this.props;
 
     resetGroup();
     history.goBack();
+  };
+
+  renderModal = () => {
+    const { groups, modalVisible } = this.state;
+
+    return (
+      <ModalDialog
+        zIndex={1001}
+        visible={modalVisible}
+        headerContent="New User"
+        bodyContent={
+          <div className="create_new_user_modal">
+            <FieldContainer
+              isVertical={true}
+              isRequired={true}
+              hasError={false}
+              labelText={"First name:"}
+            >
+              <TextInput
+                value={""}
+                hasError={false}
+                className="firstName-input"
+                scale={true}
+                autoComplete="off"
+                onChange={e => {
+                  //set(e.target.value);
+                }}
+              />
+            </FieldContainer>
+            <FieldContainer
+              isVertical={true}
+              isRequired={true}
+              hasError={false}
+              labelText={"Last name:"}
+            >
+              <TextInput
+                value={""}
+                hasError={false}
+                className="lastName-input"
+                scale={true}
+                autoComplete="off"
+                onChange={e => {
+                  //set(e.target.value);
+                }}
+              />
+            </FieldContainer>
+            <FieldContainer
+              isVertical={true}
+              isRequired={true}
+              hasError={false}
+              labelText={"E-mail:"}
+            >
+              <TextInput
+                value={""}
+                hasError={false}
+                className="email-input"
+                scale={true}
+                autoComplete="off"
+                onChange={e => {
+                  //set(e.target.value);
+                }}
+              />
+            </FieldContainer>
+            <FieldContainer
+              isVertical={true}
+              isRequired={true}
+              hasError={false}
+              labelText={"Group:"}
+            >
+              <ComboBox
+                options={groups}
+                className="group-input"
+                onSelect={option => console.log("Selected option", option)}
+                selectedOption={{
+                  key: 0,
+                  label: "Select"
+                }}
+                dropDownMaxHeight={200}
+                scaled={true}
+                scaledOptions={true}
+                size="content"
+              />
+            </FieldContainer>
+          </div>
+        }
+        footerContent={[
+          <Button
+            key="CreateBtn"
+            label="Create"
+            primary={true}
+            size="big"
+            onClick={e => {
+              console.log("CreateBtn click", e);
+              this.toggleModalVisible();
+            }}
+          />
+        ]}
+        onClose={this.toggleModalVisible}
+      />
+    );
   };
 
   render() {
@@ -90,235 +278,148 @@ class SectionBodyContent extends React.Component {
       groupMembers,
       isHeaderSelectorOpen,
       isUsersSelectorOpen,
-      modalVisible,
       inLoading,
-      error
+      error,
+      searchValue,
+      modalVisible
     } = this.state;
-
     return (
-      <>
-        <div>
-          <label htmlFor="group-name">
-            <Text.Body as="span" isBold={true}>
-              {t("CustomDepartmentName", { department })}:
-            </Text.Body>
-          </label>
-          <div style={{ width: "320px" }}>
-            <TextInput
-              id="group-name"
-              name="group-name"
-              scale={true}
-              isAutoFocussed={true}
-              tabIndex={1}
-              value={groupName}
-              onChange={this.onGroupChange}
-            />
-          </div>
+      <MainContainer>
+        <div style={{visibility: "hidden", width: 1, height: 1}}>
+          <Icons.SearchIcon size='base' />
         </div>
-        <div style={{ marginTop: "16px", position: "relative" }}>
-          <label htmlFor="head-selector">
-            <Text.Body as="span" isBold={true}>
-              {t("CustomHeadOfDepartment", { headOfDepartment })}:
-            </Text.Body>
-          </label>
-          <ComboBox
+        <FieldContainer
+          className="group-name_container"
+          isRequired={true}
+          hasError={false}
+          isVertical={true}
+          labelText={t("CustomDepartmentName", { department })}
+        >
+          <TextInput
+            id="group-name"
+            name="group-name"
+            scale={true}
+            isAutoFocussed={true}
+            tabIndex={1}
+            value={groupName}
+            onChange={this.onGroupChange}
+          />
+        </FieldContainer>
+        <FieldContainer
+          className="head_container"
+          isRequired={false}
+          hasError={false}
+          isVertical={true}
+          labelText={t("CustomHeadOfDepartment", { headOfDepartment })}
+        >
+          <ComboButton
             id="head-selector"
             tabIndex={2}
             options={[]}
-            advancedOptions={
-              <AdvancedSelector
-                isDropDown={true}
-                isOpen={true}
-                size="full"
-                placeholder={"Search"}
-                onSearchChanged={value => {
-                  /*setOptions(
-                options.filter(option => {
-                  return option.label.indexOf(value) > -1;
-                })
-              );*/
-                }}
-                options={users}
-                groups={groups}
-                isMultiSelect={false}
-                buttonLabel={t("CustomAddEmployee", { typeUser })}
-                selectAllLabel={"Select all"}
-                onSelect={selectedOptions => {
-                  // action('onSelect')(selectedOptions);
-                  //toggle();
-                }}
-                //onCancel={toggle}
-                allowCreation={false}
-                //onAddNewClick={toggleModalVisible}
-                allowAnyClickClose={true}
-              />
-            }
-            //onSelect={option => action('Selected option')(option)}
+            isOpen={isHeaderSelectorOpen}
             selectedOption={{
               key: 0,
               label: t("CustomAddEmployee", { typeUser })
             }}
-            //</div>isDisabled={boolean('isDisabled', false)}
-            scaled={false}
+            scaled={true}
             size="content"
             opened={isHeaderSelectorOpen}
             onClick={this.onHeaderSelectorClick}
           >
             <Icons.CatalogGuestIcon size="medium" />
-          </ComboBox>
-        </div>
-        <div style={{ marginTop: "16px", position: "relative" }}>
-          <label htmlFor="employee-selector">
-            <Text.Body as="span" isBold={true}>
-              Members:
-            </Text.Body>
-          </label>
-          <ComboBox
-            id="employee-selector"
-            tabIndex={3}
-            options={[]}
-            advancedOptions={
-              <AdvancedSelector
-                isDropDown={true}
-                isOpen={true}
-                size="full"
-                placeholder={"Search"}
-                onSearchChanged={value => {
-                  /*setOptions(
+          </ComboButton>
+          <AdvancedSelector
+            isDropDown={true}
+            isOpen={isHeaderSelectorOpen}
+            size="full"
+            placeholder={"Search"}
+            onSearchChanged={value => {
+              /*setOptions(
                 options.filter(option => {
                   return option.label.indexOf(value) > -1;
                 })
               );*/
-                }}
-                options={users}
-                groups={groups}
-                isMultiSelect={true}
-                buttonLabel={t("CustomAddEmployee", { typeUser })}
-                selectAllLabel={"Select all"}
-                onSelect={selectedOptions => {
-                  /*console.log('onSelect', selectedOptions);
-              toggle();*/
-                }}
-                //onCancel={toggle}
-                allowCreation={false}
-                //onAddNewClick={toggleModalVisible}
-                allowAnyClickClose={true}
-              />
-            }
-            //onSelect={option => action('Selected option')(option)}
+            }}
+            options={users}
+            groups={groups}
+            isMultiSelect={false}
+            buttonLabel={t("CustomAddEmployee", { typeUser })}
+            selectAllLabel={"Select all"}
+            onSelect={selectedOptions => {
+              console.log("onSelect", selectedOptions);
+              // action('onSelect')(selectedOptions);
+              this.onHeaderSelectorClick();
+            }}
+            onCancel={this.onHeaderSelectorClick}
+            allowCreation={false}
+            //onAddNewClick={toggleModalVisible}
+            allowAnyClickClose={true}
+          />
+        </FieldContainer>
+        <FieldContainer
+          className="members_container"
+          isRequired={false}
+          hasError={false}
+          isVertical={true}
+          labelText="Members"
+        >
+          <ComboButton
+            id="employee-selector"
+            tabIndex={3}
+            options={[]}
+            isOpen={isUsersSelectorOpen}
             selectedOption={{
               key: 0,
               label: t("CustomAddEmployee", { typeUser })
             }}
-            //</div>isDisabled={boolean('isDisabled', false)}
-            scaled={false}
+            scaled={true}
             size="content"
             opened={isUsersSelectorOpen}
             onClick={this.onUsersSelectorClick}
           >
             <Icons.CatalogGuestIcon size="medium" />
-          </ComboBox>
-          <ModalDialog
-            zIndex={1001}
-            visible={modalVisible}
-            headerContent="New User"
-            bodyContent={
-              <div className="create_new_user_modal">
-                <FieldContainer
-                  isVertical={true}
-                  isRequired={true}
-                  hasError={false}
-                  labelText={"First name:"}
-                >
-                  <TextInput
-                    value={""}
-                    hasError={false}
-                    className="firstName-input"
-                    scale={true}
-                    autoComplete="off"
-                    onChange={e => {
-                      //set(e.target.value);
-                    }}
-                  />
-                </FieldContainer>
-                <FieldContainer
-                  isVertical={true}
-                  isRequired={true}
-                  hasError={false}
-                  labelText={"Last name:"}
-                >
-                  <TextInput
-                    value={""}
-                    hasError={false}
-                    className="lastName-input"
-                    scale={true}
-                    autoComplete="off"
-                    onChange={e => {
-                      //set(e.target.value);
-                    }}
-                  />
-                </FieldContainer>
-                <FieldContainer
-                  isVertical={true}
-                  isRequired={true}
-                  hasError={false}
-                  labelText={"E-mail:"}
-                >
-                  <TextInput
-                    value={""}
-                    hasError={false}
-                    className="email-input"
-                    scale={true}
-                    autoComplete="off"
-                    onChange={e => {
-                      //set(e.target.value);
-                    }}
-                  />
-                </FieldContainer>
-                <FieldContainer
-                  isVertical={true}
-                  isRequired={true}
-                  hasError={false}
-                  labelText={"Group:"}
-                >
-                  <ComboBox
-                    options={groups}
-                    className="group-input"
-                    onSelect={option => console.log("Selected option", option)}
-                    selectedOption={{
-                      key: 0,
-                      label: "Select"
-                    }}
-                    dropDownMaxHeight={200}
-                    scaled={true}
-                    size="content"
-                  />
-                </FieldContainer>
-              </div>
-            }
-            footerContent={[
-              <Button
-                key="CreateBtn"
-                label="Create"
-                primary={true}
-                size="big"
-                onClick={e => {
-                  console.log("CreateBtn click", e);
-                  this.toggleModalVisible();
-                }}
-              />
-            ]}
-            onClose={this.toggleModalVisible}
+          </ComboButton>
+          <AdvancedSelector
+            isDropDown={true}
+            isOpen={isUsersSelectorOpen}
+            size="full"
+            placeholder={"Search"}
+            onSearchChanged={value => {
+              /*setOptions(
+                options.filter(option => {
+                  return option.label.indexOf(value) > -1;
+                })
+              );*/
+            }}
+            options={users}
+            groups={groups}
+            isMultiSelect={true}
+            buttonLabel={t("CustomAddEmployee", { typeUser })}
+            selectAllLabel={"Select all"}
+            onSelect={selectedOptions => {
+              console.log("onSelect", selectedOptions);
+              this.onUsersSelectorClick();
+            }}
+            onCancel={this.onUsersSelectorClick}
+            allowCreation={true}
+            onAddNewClick={this.toggleModalVisible}
+            allowAnyClickClose={!modalVisible}
           />
-        </div>
-        <div
-          style={{
-            marginTop: "16px",
-            display: "flex",
-            flexWrap: "wrap",
-            flexDirection: "row"
-          }}
-        >
+        </FieldContainer>
+        {groupMembers && groupMembers.length > 0 && (
+          <div className="search_container">
+            <SearchInput
+              id="member-search"
+              isDisabled={inLoading}
+              size="base"
+              scale={true}
+              placeholder="Search"
+              value={searchValue}
+              onChange={this.onSearchChange}
+            />
+          </div>
+        )}
+        <div className="selected-members_container">
           {groupMembers.map(member => (
             <SelectedItem
               key={member.id}
@@ -326,12 +427,12 @@ class SectionBodyContent extends React.Component {
               onClick={e => console.log("onClick", e.target)}
               onClose={e => console.log("onClose", e.target)}
               isInline={true}
-              style={{ marginRight: "8px", marginBottom: "8px" }}
+              className="selected-item"
             />
           ))}
         </div>
         <div>{error && <strong>{error}</strong>}</div>
-        <div style={{ marginTop: "60px" }}>
+        <div className="buttons_container">
           <Button
             label={t("SaveButton")}
             primary
@@ -339,17 +440,19 @@ class SectionBodyContent extends React.Component {
             isLoading={inLoading}
             size="big"
             tabIndex={4}
+            onClick={this.onSave}
           />
           <Button
             label={t("CancelButton")}
-            style={{ marginLeft: "8px" }}
+            className="cancel-button"
             size="big"
             isDisabled={inLoading}
             onClick={this.onCancel}
             tabIndex={5}
           />
         </div>
-      </>
+        {this.renderModal()}
+      </MainContainer>
     );
   }
 }
@@ -397,5 +500,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { resetGroup }
+  { resetGroup, createGroup, updateGroup }
 )(withRouter(withTranslation()(SectionBodyContent)));

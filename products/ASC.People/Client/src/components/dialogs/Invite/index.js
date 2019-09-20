@@ -16,6 +16,7 @@ import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { typeGuests } from './../../../helpers/customNames';
 import styled from 'styled-components'
+import copy from 'copy-to-clipboard';
 
 const ModalDialogContainer = styled.div`
     .margin-text {
@@ -43,40 +44,38 @@ class PureInviteDialog extends React.Component {
         super(props);
         this.state = {
             isGuest: false,
-            peopleInvitationLink: '',
-            guestInvitationLink: '',
-            isLoading: true,
-            isLinkShort: false
+            userInvitationLink: this.props.userInvitationLink,
+            guestInvitationLink: this.props.guestInvitationLink,
+            isLoading: false,
+            isLinkShort: false,
+            visible: false
         }
     }
 
     onCopyLinkToClipboard = () => {
+        // console.log("COPY");
         const { t } = this.props;
-        const link = document.getElementsByName(textAreaName)[0];
-        link.select();
-        document.execCommand('copy');
+        copy(this.state.isGuest ? this.state.guestInvitationLink : this.state.userInvitationLink);
         toastr.success(t('LinkCopySuccess'));
-        window.getSelection().removeAllRanges();
-        link.blur();
     };
 
     onCheckedGuest = () => this.setState({ isGuest: !this.state.isGuest });
 
     onGetShortenedLink = () => {
         this.setState({ isLoading: true });
-        const { getShortenedLink } = this.props;
+        const { getShortenedLink, userInvitationLink, guestInvitationLink } = this.props;
 
-        getShortenedLink(this.state.peopleInvitationLink)
+        getShortenedLink(userInvitationLink)
             .then((res) => {
-                // console.log("getShortInvitationLinkPeople success", res.data.response);
-                this.setState({ peopleInvitationLink: res.data.response });
+                // console.log("getShortInvitationLinkuser success", res.data.response);
+                this.setState({ userInvitationLink: res.data.response });
             })
             .catch(e => {
                 console.error("getShortInvitationLink error", e);
                 this.setState({ isLoading: false });
             });
 
-        getShortenedLink(this.state.guestInvitationLink)
+        getShortenedLink(guestInvitationLink)
             .then((res) => {
                 // console.log("getShortInvitationLinkGuest success", res.data.response);
                 this.setState({
@@ -91,49 +90,25 @@ class PureInviteDialog extends React.Component {
 
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (!prevProps.visible && !prevState.peopleInvitationLink && !prevState.guestInvitationLink) {
-            // console.log('INVITE DIALOG DidUpdate');
-            const { getInvitationLink } = this.props;
-            const isGuest = true;
-
-            getInvitationLink()
-                .then((res) => {
-                    // console.log("getInvitationLinkPeople success", res.data.response);
-                    this.setState({
-                        peopleInvitationLink: res.data.response,
-                        isLoading: false
-                    });
-                })
-                .catch(e => {
-                    console.error("getInvitationLinkPeople error", e);
-                    this.setState({ isLoading: false });
-                });
-
-            getInvitationLink(isGuest)
-                .then((res) => {
-                    // console.log("getInvitationLinkGuest success", res.data.response);
-                    this.setState({ guestInvitationLink: res.data.response });
-                })
-                .catch(e => {
-                    console.error("getInvitationLinkGuest error", e);
-                    this.setState({ isLoading: false });
-                });
-        };
+    componentDidUpdate(prevProps) {
+        console.log('invitelink did UPDATE')
+        if (this.props.visible && !prevProps.visible) {
+            this.onCopyLinkToClipboard();
+        }
     }
 
     onClickToCloseButton = () => this.props.onCloseButton && this.props.onCloseButton();
+    onClose = () => this.props.onClose && this.props.onClose();
 
     render() {
         console.log("InviteDialog render");
-        const { t, visible, onClose } = this.props;
-        const fakeSettings = { hasShortenService: false };
+        const { t, visible, settings } = this.props;
 
         return (
             <ModalDialogContainer>
                 <ModalDialog
                     visible={visible}
-                    onClose={() => onClose && onClose()}
+                    onClose={this.onClose}
 
                     headerContent={t('InviteLinkTitle')}
 
@@ -160,7 +135,7 @@ class PureInviteDialog extends React.Component {
                                         {t('CopyToClipboard')}
                                     </Link>
                                     {
-                                        fakeSettings.hasShortenService && !this.state.isLinkShort &&
+                                        settings && !this.state.isLinkShort &&
                                         <Link type='action'
                                             isHovered={true}
                                             onClick={this.onGetShortenedLink}
@@ -173,6 +148,7 @@ class PureInviteDialog extends React.Component {
                                     label={t('InviteUsersAsCollaborators', { typeGuests })}
                                     isChecked={this.state.isGuest}
                                     onChange={this.onCheckedGuest}
+                                    isDisabled={this.state.isLoading}
                                 />
                             </div>
                             <Textarea
@@ -180,7 +156,7 @@ class PureInviteDialog extends React.Component {
                                 isReadOnly={true}
                                 isDisabled={this.state.isLoading}
                                 name={textAreaName}
-                                value={this.state.isGuest ? this.state.guestInvitationLink : this.state.peopleInvitationLink}
+                                value={this.state.isGuest ? this.state.guestInvitationLink : this.state.userInvitationLink}
                             />
                         </>
                     )}
@@ -206,7 +182,9 @@ class PureInviteDialog extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        settings: state.auth.settings
+        settings: state.auth.settings.hasShortenService,
+        userInvitationLink: state.auth.settings.inviteLinks.userLink,
+        guestInvitationLink: state.auth.settings.inviteLinks.guestLink
     }
 }
 

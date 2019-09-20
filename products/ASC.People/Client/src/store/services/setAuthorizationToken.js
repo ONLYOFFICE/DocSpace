@@ -19,6 +19,7 @@ export default function setAuthorizationToken(token) {
         });
     }
     else {
+        localStorage.clear();
         delete axios.defaults.headers.common["Authorization"];
         cookies.remove(AUTH_KEY, {
             path: '/'

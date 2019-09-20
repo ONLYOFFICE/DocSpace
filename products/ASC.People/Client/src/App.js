@@ -9,6 +9,7 @@ import Profile from './components/pages/Profile';
 import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import { Error404 } from "./components/pages/Error";
+import Reassign from './components/pages/Reassign';
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -47,6 +48,11 @@ const App = ({ settings }) => {
             <PrivateRoute
               path={`${homepage}/group/create`}
               component={GroupAction}
+              restricted
+            />
+            <PrivateRoute
+              path={`${homepage}/reassign/:userId`}
+              component={Reassign}
               restricted
             />
             <PrivateRoute component={Error404} />

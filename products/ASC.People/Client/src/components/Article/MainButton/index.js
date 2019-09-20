@@ -17,7 +17,7 @@ class PureArticleMainButtonContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dialogVisible: false,
+            dialogVisible: false
         }
     }
 
@@ -29,7 +29,7 @@ class PureArticleMainButtonContent extends React.Component {
         toastr.success(text);
     };
 
-    toggleDialogVisible = () => this.setState({ dialogVisible: !this.state.dialogVisible });
+    onInvitationDialogClick = () => this.setState({ dialogVisible: !this.state.dialogVisible });
 
     render() {
         console.log("People ArticleMainButtonContent render");
@@ -61,7 +61,7 @@ class PureArticleMainButtonContent extends React.Component {
                         <DropDownItem
                             icon="InvitationLinkIcon"
                             label={t('InviteLinkTitle')}
-                            onClick={this.toggleDialogVisible}
+                            onClick={this.onInvitationDialogClick}
                         />
                         <DropDownItem
                             icon="PlaneIcon"
@@ -76,8 +76,8 @@ class PureArticleMainButtonContent extends React.Component {
                     </MainButton>
                     <InviteDialog
                         visible={this.state.dialogVisible}
-                        onClose={this.toggleDialogVisible}
-                        onCloseButton={this.toggleDialogVisible}
+                        onClose={this.onInvitationDialogClick}
+                        onCloseButton={this.onInvitationDialogClick}
                     />
                 </>
                 :

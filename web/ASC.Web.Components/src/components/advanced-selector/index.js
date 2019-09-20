@@ -468,6 +468,7 @@ class AdvancedSelector extends React.Component {
                     selectedOption={currentGroup}
                     dropDownMaxHeight={200}
                     scaled={true}
+                    scaledOptions={true}
                     size="content"
                     onSelect={this.onCurrentGroupChange}
                   />

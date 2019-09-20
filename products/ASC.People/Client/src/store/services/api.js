@@ -7,6 +7,7 @@ const VERSION = "2.0";
 const API_URL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 
 const IS_FAKE = false;
+const linkTtl = 6 * 3600 * 1000;
 
 export function login(data) {
   return axios.post(`${API_URL}/authentication`, data);
@@ -16,17 +17,17 @@ export function getModulesList() {
   return IS_FAKE
     ? fakeApi.getModulesList()
     : axios
-        .get(`${API_URL}/modules`)
-        .then(res => {
-          const modules = res.data.response;
-          return axios.all(
-            modules.map(m => axios.get(`${window.location.origin}/${m}`))
-          );
-        })
-        .then(res => {
-          const response = res.map(d => d.data.response);
-          return Promise.resolve({ data: { response } });
-        });
+      .get(`${API_URL}/modules`)
+      .then(res => {
+        const modules = res.data.response;
+        return axios.all(
+          modules.map(m => axios.get(`${window.location.origin}/${m}`))
+        );
+      })
+      .then(res => {
+        const response = res.map(d => d.data.response);
+        return Promise.resolve({ data: { response } });
+      });
 }
 
 export function getSettings() {
@@ -81,8 +82,8 @@ export function deleteAvatar(profileId) {
 }
 
 export function getInitInfo() {
-  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(
-    axios.spread(function(userResp, modulesResp, settingsResp, passwordSettingsResp) {
+  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings(), getInvitationLink(), getInvitationLink(true)]).then(
+    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp, userInvitationLinkResp, guestInvitationLinkResp) {
       let info = {
         user: userResp.data.response,
         modules: modulesResp.data.response,
@@ -90,6 +91,10 @@ export function getInitInfo() {
       };
 
       info.settings.passwordSettings = passwordSettingsResp.data.response;
+      info.settings.inviteLinks = {
+        userLink: userInvitationLinkResp,
+        guestLink: guestInvitationLinkResp
+      }
 
       return Promise.resolve(info);
     })
@@ -153,11 +158,40 @@ export function getGroup(groupId) {
 }
 
 export function getInvitationLink(isGuest) {
-  return IS_FAKE
-    ? fakeApi.getInvitationLink(isGuest)
-    : isGuest 
-      ? axios.get(`${API_URL}/portal/users/invite/2.json`)
-      : axios.get(`${API_URL}/portal/users/invite/1.json`);
+  let localStorageLinkTtl = localStorage.getItem('localStorageLinkTtl');
+
+  if (localStorageLinkTtl === null) {
+    localStorage.setItem('localStorageLinkTtl', +new Date());
+  }
+  else if (+new Date() - localStorageLinkTtl > linkTtl) {
+    localStorage.clear();
+    localStorage.setItem('localStorageLinkTtl', +new Date());
+  }
+
+  if (IS_FAKE) {
+    return fakeApi.getInvitationLink(isGuest);
+  }
+  else
+    if (isGuest) {
+      const guestInvitationLink = localStorage.getItem('guestInvitationLink');
+      return guestInvitationLink
+        ? guestInvitationLink
+        : axios.get(`${API_URL}/portal/users/invite/2.json`)
+          .then(res => {
+            localStorage.setItem('guestInvitationLink', res.data.response);
+            return Promise.resolve(res.data.response);
+          })
+    }
+    else {
+      const userInvitationLink = localStorage.getItem('userInvitationLink');
+      return userInvitationLink
+        ? userInvitationLink
+        : axios.get(`${API_URL}/portal/users/invite/1.json`)
+          .then(res => {
+            localStorage.setItem('userInvitationLink', res.data.response);
+            return Promise.resolve(res.data.response);
+          })
+    }
 }
 
 export function getShortenedLink(link) {
@@ -173,4 +207,14 @@ function CheckError(res) {
     throw error;
   }
   return Promise.resolve(res);
+}
+
+export function createGroup(groupName, groupManager, members) {
+  const group = {groupName, groupManager, members};
+  return axios.post(`${API_URL}/group.json`, group);
+}
+
+export function updateGroup(id, groupName, groupManager, members) {
+  const group = {id, groupName, groupManager, members};
+  return axios.put(`${API_URL}/group/${id}.json`, group);
 }

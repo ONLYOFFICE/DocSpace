@@ -198,10 +198,13 @@ describe("Calendar tests:", () => {
   });
 
   it("Calendar locale test", () => {
-    const wrapper = mount(
-      <Calendar {...baseCalendarProps} locale={"en-GB"} />
-    );
+    const wrapper = mount(<Calendar {...baseCalendarProps} locale={"en-GB"} />);
     expect(wrapper.prop("locale")).toEqual("en-GB");
+  });
+
+  it("Calendar size test", () => {
+    const wrapper = shallow(<Calendar {...baseCalendarProps} size="big" />);
+    expect(wrapper.prop("size")).toEqual("big");
   });
 
   it("Calendar disabled when isDisabled is passed", () => {
@@ -226,9 +229,26 @@ describe("Calendar tests:", () => {
       value: 1,
       disableClass: "",
       className: "",
-      dayState: ""
+      dayState: "prev"
     });
+    expect(onChange).toBeCalled();
 
+    const wrapper2 = shallow(<Calendar {...props} />).instance();
+    wrapper2.onDayClick({
+      value: 1,
+      disableClass: "",
+      className: "",
+      dayState: "next"
+    });
+    expect(onChange).toBeCalled();
+
+    const wrapper3 = shallow(<Calendar {...props} />).instance();
+    wrapper3.onDayClick({
+      value: 1,
+      disableClass: "",
+      className: "",
+      dayState: "now"
+    });
     expect(onChange).toBeCalled();
   });
 
@@ -260,14 +280,40 @@ describe("Calendar tests:", () => {
     expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
   });
 
-  it("Calendar check getDays function", () => {
-    const props = {
-      openToDate: new Date("01/01/2000"),
-      selectedDate: new Date("01/01/2000")
-    };
-    const wrapper = shallow(<Calendar {...props} />).instance();
-    wrapper.getDays(minDate, maxDate, openToDate, selectedDate);
-    expect(wrapper.state.openToDate).toEqual(new Date("02/01/2000"));
+  it("Calendar check Compare dates function", () => {
+    const date = new Date();
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />).instance();
+    expect(wrapper.compareDates(date, date) === 0).toEqual(true);
+    expect(wrapper.compareDates(date, new Date("01/01/2000")) === 0).toEqual(
+      false
+    );
   });
- 
+
+  it("Calendar error date test", () => {
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />);
+    wrapper.setState({ hasError: true, isDisabled: true });
+    expect(wrapper.instance().state.hasError).toEqual(true);
+    expect(wrapper.instance().state.isDisabled).toEqual(true);
+  });
+
+  it("Calendar not error date test", () => {
+    const wrapper = shallow(<Calendar {...baseCalendarProps} />);
+    wrapper.setState({ hasError: false, isDisabled: false });
+    expect(wrapper.instance().state.hasError).toEqual(false);
+  });
+
+  it("Calendar componentDidUpdate() test", () => {
+    const wrapper = mount(<Calendar {...baseCalendarProps} />).instance();
+    wrapper.componentDidUpdate(wrapper.props, wrapper.state);
+
+    const wrapper2 = mount(
+      <Calendar {...baseCalendarProps} selectedDate={new Date("01/01/1910")} />
+    ).instance();
+
+    expect(wrapper.props).toBe(wrapper.props);
+    expect(wrapper.state).toBe(wrapper.state);
+
+    expect(wrapper2.props).toBe(wrapper2.props);
+    expect(wrapper2.state).toBe(wrapper2.state);
+  });
 });
