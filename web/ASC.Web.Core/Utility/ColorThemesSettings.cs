@@ -54,8 +54,16 @@ namespace ASC.Web.Core.Utility
 
         }
 
-        public ColorThemesSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        public ColorThemesSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager,
+            IUrlHelper urlHelper,
+            IWebHostEnvironment webHostEnvironment)
+            : base(authContext, settingsManager, tenantManager)
         {
+            UrlHelper = urlHelper;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public override ISettings GetDefault()
@@ -72,19 +80,21 @@ namespace ASC.Web.Core.Utility
             get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }
         }
 
+        public IUrlHelper UrlHelper { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
         public string GetThemeFolderName(string path)
         {
             var folderName = GetColorThemesSettings();
             var resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, folderName);
 
             //TODO check
-            var urlHelper = CommonServiceProvider.GetService<IUrlHelper>();
-            if (!urlHelper.IsLocalUrl(resolvedPath))
-                resolvedPath = urlHelper.Action(resolvedPath);
+            if (!UrlHelper.IsLocalUrl(resolvedPath))
+                resolvedPath = UrlHelper.Action(resolvedPath);
 
             try
             {
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
             }
@@ -92,10 +102,10 @@ namespace ASC.Web.Core.Utility
             {
                 resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, "default");
 
-                if (!urlHelper.IsLocalUrl(resolvedPath))
-                    resolvedPath = urlHelper.Action(resolvedPath);
+                if (!UrlHelper.IsLocalUrl(resolvedPath))
+                    resolvedPath = UrlHelper.Action(resolvedPath);
 
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
@@ -118,7 +128,7 @@ namespace ASC.Web.Core.Utility
             return colorThemeName;
         }
 
-        public static void SaveColorTheme(string theme)
+        public void SaveColorTheme(string theme)
         {
             var settings = new ColorThemesSettings { ColorThemeName = theme, FirstRequest = false };
             var path = "/skins/" + ThemeFolderTemplate;
@@ -126,7 +136,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
                     settings.Save();

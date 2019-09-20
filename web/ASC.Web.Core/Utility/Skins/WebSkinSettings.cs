@@ -43,11 +43,11 @@ namespace ASC.Web.Core.Utility.Skins
             get { return BaseCultureCss.Contains(CultureInfo.CurrentCulture.Name); }
         }
 
-        static WebSkin()
+        public WebSkin(IWebHostEnvironment webHostEnvironment)
         {
             try
             {
-                var dir = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, "~/skins/default/");
+                var dir = Path.Combine(webHostEnvironment.ContentRootPath, "~/skins/default/");
                 if (!Directory.Exists(dir)) return;
 
                 foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))

@@ -128,6 +128,7 @@ namespace ASC.Api.Settings
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public ColorThemesSettings ColorThemesSettings { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -170,7 +171,8 @@ namespace ASC.Api.Settings
             EmailValidationKeyProvider emailValidationKeyProvider,
             TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            ColorThemesSettings colorThemesSettings)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -213,6 +215,7 @@ namespace ASC.Api.Settings
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
+            ColorThemesSettings = colorThemesSettings;
         }
 
         [Read("")]
