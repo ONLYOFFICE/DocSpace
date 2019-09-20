@@ -162,7 +162,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreBaseSettings>(), r.GetService<CoreSettings>());
+                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreBaseSettings>(), r.GetService<CoreSettings>(), Configuration);
                     })
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
@@ -213,11 +213,13 @@ namespace ASC.People
                     .AddScoped<CoreConfiguration>()
                     .AddScoped<BaseCommonLinkUtility>()
                     .AddScoped<CommonLinkUtility>()
+                    .AddScoped<LicenseReader>()
                     .AddSingleton<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddSingleton<CoreBaseSettings>()
                     .AddScoped<SubscriptionManager>()
+                    .AddScoped<IPSecurity.IPSecurity>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

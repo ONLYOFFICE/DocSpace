@@ -67,14 +67,15 @@ namespace ASC.Core
                 throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
             }
 
-            var coreBaseSettings = new CoreBaseSettings(CommonServiceProvider.GetService<IConfiguration>());
+            var configuration = CommonServiceProvider.GetService<IConfiguration>();
+            var coreBaseSettings = new CoreBaseSettings(configuration);
             var tenantService = new CachedTenantService(new DbTenantService(cs), coreBaseSettings);
-            var coreSettings = new CoreSettings(tenantService, coreBaseSettings);
+            var coreSettings = new CoreSettings(tenantService, coreBaseSettings, configuration);
             var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
-            var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings);
+            var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration);
             
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreBaseSettings, coreSettings);
-            Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager);
+            Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager, configuration);
         }
     }
 }

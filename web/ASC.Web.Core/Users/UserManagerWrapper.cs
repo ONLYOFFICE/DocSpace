@@ -58,6 +58,7 @@ namespace ASC.Web.Core.Users
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IPSecurity.IPSecurity IPSecurity { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -74,7 +75,8 @@ namespace ASC.Web.Core.Users
             IHttpContextAccessor httpContextAccessor,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
-            CoreBaseSettings coreBaseSettings
+            CoreBaseSettings coreBaseSettings,
+            IPSecurity.IPSecurity iPSecurity
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -89,6 +91,7 @@ namespace ASC.Web.Core.Users
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
+            IPSecurity = iPSecurity;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -215,7 +218,7 @@ namespace ASC.Web.Core.Users
 
             var tenant = TenantManager.GetCurrentTenant();
             var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.IPSecurity.Verify(HttpContextAccessor.HttpContext, tenant, AuthContext))
+            if (settings.Enable && !IPSecurity.Verify(tenant))
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }

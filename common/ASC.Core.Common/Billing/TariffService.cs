@@ -39,6 +39,7 @@ using ASC.Common.Utils;
 
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Billing
 {
@@ -96,7 +97,8 @@ namespace ASC.Core.Billing
             IQuotaService quotaService,
             ITenantService tenantService,
             CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings)
+            CoreSettings coreSettings,
+            IConfiguration configuration)
             : base(connectionString, "tenant")
         {
             this.quotaService = quotaService;
@@ -104,8 +106,8 @@ namespace ASC.Core.Billing
             CoreSettings = coreSettings;
             CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
-            test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
-            int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);
+            test = configuration["core:payment:test"] == "true";
+            int.TryParse(configuration["core:payment:delay"], out paymentDelay);
         }
 
 

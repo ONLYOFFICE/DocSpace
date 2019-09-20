@@ -31,35 +31,31 @@ using System.Security.Cryptography;
 using System.Text;
 
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Billing
 {
     public class LicenseReader
     {
         private static readonly ILog Log = LogManager.GetLogger("ASC");
-        private static readonly string LicensePath;
-        private static readonly string LicensePathTemp;
+        private readonly string LicensePath;
+        private readonly string LicensePathTemp;
 
         public const string CustomerIdKey = "CustomerId";
         public const int MaxUserCount = 10000;
 
-
-        static LicenseReader()
-        {
-            LicensePath = ConfigurationManager.AppSettings["license:file:path"];
-            LicensePathTemp = LicensePath + ".tmp";
-        }
-
-        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager, CoreSettings coreSettings)
+        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager, CoreSettings coreSettings, IConfiguration configuration)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
             CoreSettings = coreSettings;
+            Configuration = configuration;
+            LicensePath = Configuration["license:file:path"];
+            LicensePathTemp = LicensePath + ".tmp";
         }
 
         public string CustomerId
@@ -68,7 +64,7 @@ namespace ASC.Core.Billing
             private set { CoreSettings.SaveSetting(CustomerIdKey, value); }
         }
 
-        private static Stream GetLicenseStream(bool temp = false)
+        private Stream GetLicenseStream(bool temp = false)
         {
             var path = temp ? LicensePathTemp : LicensePath;
             if (!File.Exists(path)) throw new BillingNotFoundException("License not found");
@@ -272,7 +268,7 @@ namespace ASC.Core.Billing
 
         private static DateTime _date = DateTime.MinValue;
 
-        public static DateTime VersionReleaseDate
+        public DateTime VersionReleaseDate
         {
             get
             {
@@ -281,8 +277,8 @@ namespace ASC.Core.Billing
                 _date = DateTime.MaxValue;
                 try
                 {
-                    var versionDate = ConfigurationManager.AppSettings["version:release:date"];
-                    var sign = ConfigurationManager.AppSettings["version:release:sign"];
+                    var versionDate = Configuration["version:release:date"];
+                    var sign = Configuration["version:release:sign"];
 
                     if (!sign.StartsWith("ASC "))
                     {
@@ -299,7 +295,7 @@ namespace ASC.Core.Billing
                     var date = splitted[1];
                     var orighash = splitted[2];
 
-                    var skey = ConfigurationManager.AppSettings["core:machinekey"];
+                    var skey = Configuration["core:machinekey"];
 
                     using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
                     {
@@ -328,5 +324,6 @@ namespace ASC.Core.Billing
         public TenantManager TenantManager { get; }
         public PaymentManager PaymentManager { get; }
         public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
     }
 }

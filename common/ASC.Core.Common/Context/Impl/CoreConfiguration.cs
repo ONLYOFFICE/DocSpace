@@ -73,7 +73,7 @@ namespace ASC.Core
             {
                 if (basedomain == null)
                 {
-                    basedomain = ConfigurationManager.AppSettings["core:base-domain"] ?? string.Empty;
+                    basedomain = Configuration["core:base-domain"] ?? string.Empty;
                 }
 
                 string result;
@@ -98,11 +98,13 @@ namespace ASC.Core
 
         public ITenantService TenantService { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
 
-        public CoreSettings(ITenantService tenantService, CoreBaseSettings coreBaseSettings)
+        public CoreSettings(ITenantService tenantService, CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             TenantService = tenantService;
             CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
         }
 
         public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
@@ -157,7 +159,7 @@ namespace ASC.Core
                 if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
                     return t.PaymentId;
 
-                return ConfigurationManager.AppSettings["core:payment:region"] + tenant;
+                return Configuration["core:payment:region"] + tenant;
             }
         }
 
@@ -175,11 +177,12 @@ namespace ASC.Core
     {
         private long? personalMaxSpace;
 
-        public CoreConfiguration(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager)
+        public CoreConfiguration(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
         {
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             TenantManager = tenantManager;
+            Configuration = configuration;
         }
 
         public bool Standalone
@@ -190,11 +193,6 @@ namespace ASC.Core
         public bool Personal
         {
             get => CoreBaseSettings.Personal;
-        }
-
-        public bool CustomMode
-        {
-            get => CoreBaseSettings.CustomMode;
         }
 
         public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
@@ -208,7 +206,7 @@ namespace ASC.Core
                 return personalMaxSpace.Value;
 
 
-            if (!long.TryParse(ConfigurationManager.AppSettings["core.personal.maxspace"], out var value))
+            if (!long.TryParse(Configuration["core.personal.maxspace"], out var value))
                 value = long.MaxValue;
 
             personalMaxSpace = value;
@@ -256,6 +254,7 @@ namespace ASC.Core
         public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
         public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
         #region Methods Get/Save Setting
 

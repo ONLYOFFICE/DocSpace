@@ -48,6 +48,7 @@ namespace ASC.Web.Studio.Utility
         public TenantManager TenantManager { get; }
         public PaymentManager PaymentManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public LicenseReader LicenseReader { get; }
 
         public TenantExtra(
             UserManager userManager, 
@@ -56,7 +57,8 @@ namespace ASC.Web.Studio.Utility
             TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
             PaymentManager paymentManager,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            LicenseReader licenseReader)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -65,6 +67,7 @@ namespace ASC.Web.Studio.Utility
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
             CoreBaseSettings = coreBaseSettings;
+            LicenseReader = licenseReader;
         }
 
         public bool EnableTarrifSettings

@@ -39,6 +39,7 @@ using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 
@@ -53,15 +54,17 @@ namespace ASC.Core
         private readonly string partnerKey;
 
         public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
-        public PaymentManager(CoreSettings config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService)
+        public PaymentManager(CoreSettings config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService, IConfiguration configuration)
         {
             this.config = config;
             TenantManager = tenantManager;
             this.quotaService = quotaService;
             this.tariffService = tariffService;
-            partnerUrl = (ConfigurationManager.AppSettings["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-            partnerKey = (ConfigurationManager.AppSettings["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
+            Configuration = configuration;
+            partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
+            partnerKey = (Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
         }
 
 
@@ -115,7 +118,7 @@ namespace ASC.Core
             var trial = quotaService.GetTenantQuotas().FirstOrDefault(q => q.Trial);
             if (trial != null)
             {
-                var uri = ConfigurationManager.AppSettings["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
+                var uri = Configuration["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
                 uri += uri.Contains('?') ? "&" : "?";
                 uri += "FIRSTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
                     "&LASTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
