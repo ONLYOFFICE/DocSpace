@@ -128,5 +128,25 @@
       "SaveButton",
       "CancelButton"
     ]
+  },
+  "Reassign":{
+    "PeopleResource":[
+      "ReassignmentData",
+      "ReassignsTransferedListHdr",
+      "ReassignsTransferedListItem1",
+      "ReassignsTransferedListItem2",
+      "ReassignsTransferedListItem3",
+      "ReassignsReadMore",
+      "DeleteProfileAfterReassignment",
+      "CancelButton",
+      "ReassignButton",
+      "ReassignsToUser"
+    ],
+    "UserControlsCommonResource.resx":[
+      "NotBeUndone"
+    ],
+    "PeopleJSResource":[
+      "ChooseUser"
+    ]
   }
 }

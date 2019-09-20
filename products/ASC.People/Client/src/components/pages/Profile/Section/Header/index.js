@@ -54,8 +54,9 @@ const SectionHeaderContent = props => {
     toastr.success(t("SuccessChangeUserStatus"));
   };
 
-  const onReassignDataClick = () => {
-    toastr.success("Context action: Reassign data");
+  const onReassignDataClick = user => {
+    const { history, settings } = props;
+    history.push(`${settings.homepage}/reassign/${user.userName}`);
   };
 
   const onDeletePersonalDataClick = () => {
@@ -129,7 +130,7 @@ const SectionHeaderContent = props => {
           {
             key: "reassign-data",
             label: t('ReassignData'),
-            onClick: onReassignDataClick
+            onClick: onReassignDataClick.bind(this, user)
           },
           {
             key: "delete-personal-data",
