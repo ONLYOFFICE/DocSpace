@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -43,8 +44,8 @@ namespace ASC.Data.Storage.RackspaceCloud
         private string _private_container;
         private string _public_container;
         private readonly List<string> _domains = new List<string>();
-        private readonly Dictionary<string, ACL> _domainsAcl;
-        private readonly ACL _moduleAcl;
+        private Dictionary<string, ACL> _domainsAcl;
+        private ACL _moduleAcl;
         private string _subDir;
         private string _username;
         private string _apiKey;
@@ -54,39 +55,8 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
 
-        public RackspaceCloudStorage(string tenant)
+        public RackspaceCloudStorage(TenantManager tenantManager) : base(tenantManager)
         {
-
-            _tenant = tenant;
-            _modulename = string.Empty;
-            _dataList = null;
-
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
-            _domainsAcl = new Dictionary<string, ACL>();
-            _moduleAcl = ACL.Auto;
-        }
-
-        public RackspaceCloudStorage(string tenant, Handler handlerConfig, Module moduleConfig)
-        {
-
-            _tenant = tenant;
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
-
-            _domains.AddRange(
-                moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
-
-            //Make acl
-            _domainsExpires =
-                moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
-                    ToDictionary(x => x.Name,
-                                 y => y.Expires);
-
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-            _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
-            _moduleAcl = moduleConfig.Acl;
-
         }
 
         private string MakePath(string domain, string path)
@@ -129,8 +99,30 @@ namespace ASC.Data.Storage.RackspaceCloud
             return new CloudFilesProvider(cloudIdentity);
         }
 
-        public override IDataStore Configure(IDictionary<string, string> props)
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
+            _tenant = tenant;
+
+            if(moduleConfig != null)
+            {
+                _modulename = moduleConfig.Name;
+                _dataList = new DataList(moduleConfig);
+                _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+                _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+                _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+                _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => y.Acl);
+                _moduleAcl = moduleConfig.Acl;
+            }
+            else
+            {
+                _modulename = string.Empty;
+                _dataList = null;
+                _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+                _domainsAcl = new Dictionary<string, ACL>();
+                _moduleAcl = ACL.Auto;
+            }
+
+
             _private_container = props["private_container"];
             _region = props["region"];
             _apiKey = props["apiKey"];

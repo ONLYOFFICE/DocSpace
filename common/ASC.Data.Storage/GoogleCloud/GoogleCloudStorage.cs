@@ -35,6 +35,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Web;
+using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
@@ -46,8 +47,8 @@ namespace ASC.Data.Storage.GoogleCloud
     public class GoogleCloudStorage : BaseStorage
     {
         private string _subDir = string.Empty;
-        private readonly Dictionary<string, PredefinedObjectAcl> _domainsAcl;
-        private readonly PredefinedObjectAcl _moduleAcl;
+        private Dictionary<string, PredefinedObjectAcl> _domainsAcl;
+        private PredefinedObjectAcl _moduleAcl;
 
         private string _bucket = "";
         private string _jsonPath = "";
@@ -57,40 +58,35 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private bool _lowerCasing = true;
 
-        public GoogleCloudStorage(string tenant)
+        public GoogleCloudStorage(TenantManager tenantManager) : base(tenantManager)
+        {
+        }
+
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
             _tenant = tenant;
 
-            _modulename = string.Empty;
-            _dataList = null;
+            if (moduleConfig != null)
+            {
+                _modulename = moduleConfig.Name;
+                _dataList = new DataList(moduleConfig);
 
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
-            _domainsAcl = new Dictionary<string, PredefinedObjectAcl>();
-            _moduleAcl = PredefinedObjectAcl.PublicRead;
+                _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
 
-        }
+                _domainsExpires.Add(string.Empty, moduleConfig.Expires);
 
-        public GoogleCloudStorage(string tenant, Handler handlerConfig, Module moduleConfig)
-        {
-            _tenant = tenant;
+                _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetGoogleCloudAcl(y.Acl));
+                _moduleAcl = GetGoogleCloudAcl(moduleConfig.Acl);
+            }
+            else
+            {
+                _modulename = string.Empty;
+                _dataList = null;
 
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
-
-            _domainsExpires =
-                moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
-                    ToDictionary(x => x.Name,
-                                 y => y.Expires);
-
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-            _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetGoogleCloudAcl(y.Acl));
-            _moduleAcl = GetGoogleCloudAcl(moduleConfig.Acl);
-
-        }
-
-        public override IDataStore Configure(IDictionary<string, string> props)
-        {
+                _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+                _domainsAcl = new Dictionary<string, PredefinedObjectAcl>();
+                _moduleAcl = PredefinedObjectAcl.PublicRead;
+            }
 
             _bucket = props["bucket"];
 

@@ -27,6 +27,7 @@
 using System;
 using System.Text.RegularExpressions;
 using ASC.Common.Notify.Patterns;
+using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 
@@ -35,6 +36,13 @@ namespace ASC.Notify.Textile
     public class PushStyler : IPatternStyler
     {
         private static readonly Regex VelocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+
+        public PushStyler(CoreBaseSettings coreBaseSettings)
+        {
+            CoreBaseSettings = coreBaseSettings;
+        }
+
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public void ApplyFormating(NoticeMessage message)
         {

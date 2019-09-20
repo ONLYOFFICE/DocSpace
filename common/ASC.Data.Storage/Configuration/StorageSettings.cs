@@ -158,8 +158,8 @@ namespace ASC.Data.Storage.Configuration
                 if (DataStoreConsumer.HandlerType == null) return null;
 
                 return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager.GetCurrentTenant().TenantId.ToString()))
-                    .Configure(DataStoreConsumer);
+                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager))
+                    .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer);
             }
         }
 

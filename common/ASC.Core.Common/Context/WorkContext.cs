@@ -34,6 +34,8 @@ using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
@@ -93,7 +95,7 @@ namespace ASC.Core
             {
                 if (notifyStarted) return;
 
-                NotifyContext = new NotifyContext();
+                NotifyContext = new NotifyContext(serviceProvider.GetService<CoreBaseSettings>());
 
                 INotifySender jabberSender = new NotifyServiceSender();
                 INotifySender emailSender = new NotifyServiceSender();

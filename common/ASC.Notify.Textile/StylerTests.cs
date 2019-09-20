@@ -27,12 +27,14 @@
 #if (DEBUG)
 namespace ASC.Notify.Textile
 {
+    using ASC.Core;
     using ASC.Notify.Messages;
     using NUnit.Framework;
 
     [TestFixture]
     public class StylerTests
     {
+        public CoreBaseSettings CoreBaseSettings { get; set; }
         private readonly string pattern = "h1.New Post in Forum Topic: \"==Project(%: \"Sample Title\"==\":\"==http://sssp.teamlab.com==\"" + System.Environment.NewLine +
             "25/1/2022 \"Jim\":\"http://sssp.teamlab.com/myp.aspx\"" + System.Environment.NewLine +
             "has created a new post in topic:" + System.Environment.NewLine +
@@ -45,7 +47,7 @@ namespace ASC.Notify.Textile
         public void TestJabberStyler()
         {
             var message = new NoticeMessage() { Body = pattern };
-            new JabberStyler().ApplyFormating(message);
+            new JabberStyler(CoreBaseSettings).ApplyFormating(message);
         }
 
         [Test]

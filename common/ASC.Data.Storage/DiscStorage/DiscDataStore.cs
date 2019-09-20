@@ -41,7 +41,7 @@ namespace ASC.Data.Storage.DiscStorage
 
 
 
-        public DiscDataStore(string tenant, Handler handlerConfig, Module moduleConfig)
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
             _tenant = tenant;
             //Fill map path
@@ -60,6 +60,11 @@ namespace ASC.Data.Storage.DiscStorage
                     ToDictionary(x => x.Name,
                                  y => y.Expires);
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            return this;
+        }
+
+        public DiscDataStore(TenantManager tenantManager) : base(tenantManager)
+        {
         }
 
         public string GetPhysicalPath(string domain, string path)

@@ -65,16 +65,17 @@ namespace ASC.Notify.Engine
 
         private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
 
-
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext> BeforeTransferRequest;
 
         public event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
 
 
-        public NotifyEngine(Context context)
+        public NotifyEngine(Context context, CoreBaseSettings coreBaseSettings)
         {
             this.context = context ?? throw new ArgumentNullException("context");
+            CoreBaseSettings = coreBaseSettings;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
@@ -208,6 +209,7 @@ namespace ASC.Notify.Engine
                     }
                     if (request != null)
                     {
+                        //createscope
                         AfterTransferRequest?.Invoke(this, request);
                         try
                         {
@@ -481,8 +483,7 @@ namespace ASC.Notify.Engine
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
-                    //resolve
-                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
+                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true), CoreBaseSettings) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);
                     }

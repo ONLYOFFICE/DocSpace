@@ -38,6 +38,11 @@ namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
+        public BaseStorage(TenantManager tenantManager)
+        {
+            TenantManager = tenantManager;
+        }
+
         #region IDataStore Members
 
         internal string _modulename;
@@ -91,7 +96,7 @@ namespace ASC.Data.Storage
                 var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
                 int currentTenantId;
-                var currentTenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                var currentTenant = TenantManager.GetCurrentTenant(false);
                 if (currentTenant != null)
                 {
                     currentTenantId = currentTenant.TenantId;
@@ -193,6 +198,8 @@ namespace ASC.Data.Storage
         }
 
         public virtual bool IsSupportChunking { get { return false; } }
+
+        public TenantManager TenantManager { get; }
 
         #endregion
 
@@ -305,7 +312,7 @@ namespace ASC.Data.Storage
             CopyDirectory(string.Empty, dir, newdomain, newdir);
         }
 
-        public virtual IDataStore Configure(IDictionary<string, string> props)
+        public virtual IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
             return this;
         }

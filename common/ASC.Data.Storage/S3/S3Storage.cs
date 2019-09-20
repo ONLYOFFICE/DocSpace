@@ -49,8 +49,8 @@ namespace ASC.Data.Storage.S3
     public class S3Storage : BaseStorage
     {
         private readonly List<string> _domains = new List<string>();
-        private readonly Dictionary<string, S3CannedACL> _domainsAcl;
-        private readonly S3CannedACL _moduleAcl;
+        private Dictionary<string, S3CannedACL> _domainsAcl;
+        private S3CannedACL _moduleAcl;
         private string _accessKeyId = "";
         private string _bucket = "";
         private string _recycleDir = "";
@@ -63,36 +63,8 @@ namespace ASC.Data.Storage.S3
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
 
-        public S3Storage(string tenant)
+        public S3Storage(TenantManager tenantManager) : base(tenantManager)
         {
-            _tenant = tenant;
-            _modulename = string.Empty;
-            _dataList = null;
-
-            //Make expires
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
-
-            _domainsAcl = new Dictionary<string, S3CannedACL>();
-            _moduleAcl = S3CannedACL.PublicRead;
-        }
-
-        public S3Storage(string tenant, Handler handlerConfig, Module moduleConfig)
-        {
-            _tenant = tenant;
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
-            _domains.AddRange(
-                moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
-
-            //Make expires
-            _domainsExpires =
-                moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
-                    ToDictionary(x => x.Name,
-                                 y => y.Expires);
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-            _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
-            _moduleAcl = GetS3Acl(moduleConfig.Acl);
         }
 
         private S3CannedACL GetDomainACL(string domain)
@@ -988,8 +960,35 @@ namespace ASC.Data.Storage.S3
         }
 
 
-        public override IDataStore Configure(IDictionary<string, string> props)
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
+            _tenant = tenant;
+
+            if (moduleConfig != null)
+            {
+                _modulename = moduleConfig.Name;
+                _dataList = new DataList(moduleConfig);
+                _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+
+                //Make expires
+                _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+                _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+
+                _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
+                _moduleAcl = GetS3Acl(moduleConfig.Acl);
+            }
+            else
+            {
+                _modulename = string.Empty;
+                _dataList = null;
+
+                //Make expires
+                _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+
+                _domainsAcl = new Dictionary<string, S3CannedACL>();
+                _moduleAcl = S3CannedACL.PublicRead;
+            }
+
             _accessKeyId = props["acesskey"];
             _secretAccessKeyId = props["secretaccesskey"];
             _bucket = props["bucket"];

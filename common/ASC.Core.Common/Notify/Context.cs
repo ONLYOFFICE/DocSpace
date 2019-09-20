@@ -67,9 +67,9 @@ namespace ASC.Notify
         public event Action<Context, INotifyClient, UserManager> NotifyClientRegistration;
 
 
-        public Context()
+        public Context(CoreBaseSettings coreBaseSettings)
         {
-            NotifyEngine = new NotifyEngine(this);
+            NotifyEngine = new NotifyEngine(this, coreBaseSettings);
             DispatchEngine = new DispatchEngine(this);
         }
 
