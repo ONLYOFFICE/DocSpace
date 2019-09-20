@@ -92,13 +92,11 @@ describe("DatePicker tests", () => {
     wrapper.simulate("change", { target: { value: "09/09/2019" } });
     expect(onChange).toHaveBeenCalledWith(new Date("09/09/2019"));
   });
-  
+
   it("check DatePicker popup open", () => {
     const onFocus = jest.fn(() => true);
-    const wrapper = mount(<DatePicker onFocus={onFocus} isOpen={false} />)
-    const input = wrapper.find(
-      "input"
-    );
+    const wrapper = mount(<DatePicker onFocus={onFocus} isOpen={false} />);
+    const input = wrapper.find("input");
     input.simulate("focus");
 
     const instance = wrapper.instance();
@@ -121,7 +119,7 @@ describe("DatePicker tests", () => {
     expect(onChange).toHaveBeenCalled();
   });
 
-  it("Calendar check Compare date function", () => {
+  it("DatePicker check Compare date function", () => {
     const date = new Date();
     const errorDate = new Date("01/01/3000");
     const wrapper = shallow(<DatePicker />).instance();
@@ -129,12 +127,68 @@ describe("DatePicker tests", () => {
     expect(wrapper.compareDate(errorDate)).toEqual(false);
   });
 
-  it("Calendar check Compare dates function", () => {
+  it("DatePicker check Compare dates function", () => {
     const date = new Date();
     const wrapper = shallow(<DatePicker />).instance();
     expect(wrapper.compareDates(date, date) === 0).toEqual(true);
     expect(wrapper.compareDates(date, new Date("01/01/2000")) === 0).toEqual(
       false
     );
+  });
+
+  it("DatePicker check is valid dates function", () => {
+    var date = new Date();
+    date.setFullYear(1);
+    const wrapper = shallow(<DatePicker />).instance();
+    expect(wrapper.isValidDate(selectedDate, maxDate, minDate, false)).toEqual(
+      false
+    );
+    expect(wrapper.isValidDate(date, maxDate, minDate, false)).toEqual(true);
+  });
+
+  it("DatePicker componentDidUpdate() lifecycle test", () => {
+    const props = {
+      selectedDate: new Date(),
+      minDate: new Date("01/01/1970"),
+      maxDate: new Date("01/01/2030"),
+      isOpen: true,
+      isDisabled: false,
+      isReadOnly: false,
+      hasError: false,
+      themeColor: "#ED7309",
+      locale: "en"
+    };
+
+    var date = new Date();
+    date.setFullYear(1);
+
+    const wrapper = mount(<DatePicker {...props} />).instance();
+    wrapper.componentDidUpdate(wrapper.props, wrapper.state);
+
+    expect(wrapper.props).toBe(wrapper.props);
+    expect(wrapper.state).toBe(wrapper.state);
+
+    const wrapper2 = mount(
+      <DatePicker
+        {...props}
+        selectedDate={date}
+        hasError={false}
+        size="big"
+        isDisabled={false}
+      />
+    ).instance();
+
+    wrapper2.componentDidUpdate(wrapper2.props, wrapper2.state);
+
+    expect(wrapper2.props).toBe(wrapper2.props);
+    expect(wrapper2.state).toBe(wrapper2.state);
+  });
+
+  it('componentWillUnmount() lifecycle  test', () => {
+    const wrapper = mount(<DatePicker isOpen={true} />);
+    const componentWillUnmount = jest.spyOn(wrapper.instance(), 'componentWillUnmount');
+
+    wrapper.unmount();
+    expect(componentWillUnmount).toHaveBeenCalled();
   });
 });

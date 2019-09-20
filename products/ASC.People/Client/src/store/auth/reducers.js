@@ -23,7 +23,8 @@ const initialState = {
       datePattern: "mm/dd/yy",
       dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
       timePattern: "h:mm tt"
-    }
+    },
+    hasShortenService: false
   }  
 };
 
