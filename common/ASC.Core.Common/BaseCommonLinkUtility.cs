@@ -90,10 +90,12 @@ namespace ASC.Core.Common
         public CoreBaseSettings CoreBaseSettings { get; }
         public TenantManager TenantManager { get; }
 
+        private string serverRootPath;
         public string ServerRootPath
         {
             get
             {
+                if (!string.IsNullOrEmpty(serverRootPath)) return serverRootPath;
                 UriBuilder result;
                 // first, take from current request
                 if (HttpContext?.Request != null)
@@ -137,7 +139,7 @@ namespace ASC.Core.Common
                     }
                 }
 
-                return result.Uri.ToString().TrimEnd('/');
+                return serverRootPath = result.Uri.ToString().TrimEnd('/');
             }
         }
 
