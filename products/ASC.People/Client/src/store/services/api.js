@@ -174,3 +174,13 @@ function CheckError(res) {
   }
   return Promise.resolve(res);
 }
+
+export function createGroup(groupName, groupManager, members) {
+  const group = {groupName, groupManager, members};
+  return axios.post(`${API_URL}/group.json`, group);
+}
+
+export function updateGroup(id, groupName, groupManager, members) {
+  const group = {id, groupName, groupManager, members};
+  return axios.put(`${API_URL}/group/${id}.json`, group);
+}

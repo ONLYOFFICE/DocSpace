@@ -12,7 +12,9 @@ import {
   ComboBox,
   ComboButton,
   ModalDialog,
-  SearchInput
+  SearchInput,
+  toastr,
+  utils
 } from "asc-web-components";
 import {
   department,
@@ -20,9 +22,12 @@ import {
   typeUser
 } from "../../../../../helpers/customNames";
 import { connect } from "react-redux";
-import { resetGroup } from "../../../../../store/group/actions";
-import styled from 'styled-components';
-import { utils } from 'asc-web-components'
+import {
+  resetGroup,
+  createGroup,
+  updateGroup
+} from "../../../../../store/group/actions";
+import styled from "styled-components";
 
 const MainContainer = styled.div`
   display: flex;
@@ -99,7 +104,8 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupMembers: group && group.members ? group.members : []
+      groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
+      groupMembers: group && group.members ? group.members.map(u => u.id) : []
     };
   }
 
@@ -131,6 +137,29 @@ class SectionBodyContent extends React.Component {
     this.setState({
       modalVisible: !this.state.modalVisible
     });
+  };
+
+  onSave = () => {
+    const { history, group, createGroup, updateGroup } = this.props;
+    const { groupName, groupManager, groupMembers } = this.state;
+
+    if (!groupName || !groupName.trim().length) return false;
+
+    this.setState({ inLoading: true });
+
+    (group && group.id
+      ? updateGroup(group.id, groupName, groupManager, groupMembers)
+      : createGroup(groupName, groupManager, groupMembers)
+    )
+      .then(() => {
+        toastr.success("Success");
+        this.setState({ inLoading: true });
+        history.goBack();
+      })
+      .catch(error => {
+        toastr.error(error.message);
+        this.setState({ inLoading: false });
+      });
   };
 
   onCancel = () => {
@@ -330,7 +359,7 @@ class SectionBodyContent extends React.Component {
           isRequired={false}
           hasError={false}
           isVertical={true}
-          labelText="Members:"
+          labelText="Members"
         >
           <ComboButton
             id="employee-selector"
@@ -375,17 +404,19 @@ class SectionBodyContent extends React.Component {
             allowAnyClickClose={!modalVisible}
           />
         </FieldContainer>
-        <div className="search_container">
-          <SearchInput
-            id="member-search"
-            isDisabled={inLoading}
-            size="base"
-            scale={true}
-            placeholder="Search"
-            value={searchValue}
-            onChange={this.onSearchChange}
-          />
-        </div>
+        {groupMembers && groupMembers.length > 0 && (
+          <div className="search_container">
+            <SearchInput
+              id="member-search"
+              isDisabled={inLoading}
+              size="base"
+              scale={true}
+              placeholder="Search"
+              value={searchValue}
+              onChange={this.onSearchChange}
+            />
+          </div>
+        )}
         <div className="selected-members_container">
           {groupMembers.map(member => (
             <SelectedItem
@@ -407,6 +438,7 @@ class SectionBodyContent extends React.Component {
             isLoading={inLoading}
             size="big"
             tabIndex={4}
+            onClick={this.onSave}
           />
           <Button
             label={t("CancelButton")}
@@ -466,5 +498,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { resetGroup }
+  { resetGroup, createGroup, updateGroup }
 )(withRouter(withTranslation()(SectionBodyContent)));
