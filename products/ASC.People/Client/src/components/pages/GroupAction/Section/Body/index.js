@@ -283,9 +283,11 @@ class SectionBodyContent extends React.Component {
       searchValue,
       modalVisible
     } = this.state;
-
     return (
       <MainContainer>
+        <div style={{visibility: "hidden", width: 1, height: 1}}>
+          <Icons.SearchIcon size='base' />
+        </div>
         <FieldContainer
           className="group-name_container"
           isRequired={true}
