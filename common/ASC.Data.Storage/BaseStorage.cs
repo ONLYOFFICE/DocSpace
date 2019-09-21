@@ -38,9 +38,10 @@ namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
-        public BaseStorage(TenantManager tenantManager)
+        public BaseStorage(TenantManager tenantManager, PathUtils pathUtils)
         {
             TenantManager = tenantManager;
+            PathUtils = pathUtils;
         }
 
         #region IDataStore Members
@@ -200,6 +201,7 @@ namespace ASC.Data.Storage
         public virtual bool IsSupportChunking { get { return false; } }
 
         public TenantManager TenantManager { get; }
+        public PathUtils PathUtils { get; }
 
         #endregion
 

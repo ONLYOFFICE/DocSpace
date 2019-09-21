@@ -90,11 +90,13 @@ namespace ASC.Data.Storage.Configuration
             SettingsManager settingsManager, 
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig) : 
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils) : 
             base(authContext, settingsManager, tenantManager)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
+            PathUtils = pathUtils;
         }
 
         public override ISettings GetDefault()
@@ -158,7 +160,7 @@ namespace ASC.Data.Storage.Configuration
                 if (DataStoreConsumer.HandlerType == null) return null;
 
                 return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager))
+                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils))
                     .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer);
             }
         }
@@ -167,6 +169,7 @@ namespace ASC.Data.Storage.Configuration
 
         public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
+        public PathUtils PathUtils { get; }
 
         private static readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
@@ -185,8 +188,9 @@ namespace ASC.Data.Storage.Configuration
             SettingsManager settingsManager, 
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig)
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils)
         {
         }
 
@@ -210,8 +214,9 @@ namespace ASC.Data.Storage.Configuration
             SettingsManager settingsManager, 
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig)
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils)
         {
         }
 

@@ -49,10 +49,10 @@ namespace ASC.Data.Storage.DiscStorage
             _dataList = new DataList(moduleConfig);
             foreach (var domain in moduleConfig.Domain)
             {
-                _mappedPaths.Add(domain.Name, new MappedPath(tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
+                _mappedPaths.Add(domain.Name, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
             }
             //Add default
-            _mappedPaths.Add(string.Empty, new MappedPath(tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+            _mappedPaths.Add(string.Empty, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
 
             //Make expires
             _domainsExpires =
@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.DiscStorage
             return this;
         }
 
-        public DiscDataStore(TenantManager tenantManager) : base(tenantManager)
+        public DiscDataStore(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
         {
         }
 

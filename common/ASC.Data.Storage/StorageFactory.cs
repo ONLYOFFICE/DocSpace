@@ -32,7 +32,9 @@ using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
@@ -90,6 +92,7 @@ namespace ASC.Data.Storage
             //}
 
             var section = builder.ServiceProvider.GetService<Configuration.Storage>();
+            var pathUtils = builder.ServiceProvider.GetService<PathUtils>();
             if (section != null)
             {
                 //old scheme
@@ -101,8 +104,8 @@ namespace ASC.Data.Storage
                     {
                         if (m.Path.Contains(Constants.STORAGE_ROOT_PARAM))
                             builder.RegisterDiscDataHandler(
-                                PathUtils.ResolveVirtualPath(m.VirtualPath),
-                                PathUtils.ResolvePhysicalPath(m.Path, props),
+                                pathUtils.ResolveVirtualPath(m.VirtualPath),
+                                pathUtils.ResolvePhysicalPath(m.Path, props),
                                 m.Public);
 
                         if (m.Domain != null)
@@ -110,8 +113,8 @@ namespace ASC.Data.Storage
                             foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.STORAGE_ROOT_PARAM)))
                             {
                                 builder.RegisterDiscDataHandler(
-                                    PathUtils.ResolveVirtualPath(d.VirtualPath),
-                                    PathUtils.ResolvePhysicalPath(d.Path, props));
+                                    pathUtils.ResolveVirtualPath(d.VirtualPath),
+                                    pathUtils.ResolvePhysicalPath(d.Path, props));
                             }
                         }
                     }

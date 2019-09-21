@@ -220,6 +220,7 @@ namespace ASC.People
                     .AddSingleton<CoreBaseSettings>()
                     .AddScoped<SubscriptionManager>()
                     .AddScoped<IPSecurity.IPSecurity>()
+                    .AddSingleton<PathUtils>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

@@ -55,7 +55,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
 
-        public RackspaceCloudStorage(TenantManager tenantManager) : base(tenantManager)
+        public RackspaceCloudStorage(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
         {
         }
 

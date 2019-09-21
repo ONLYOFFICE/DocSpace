@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.S3
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
 
-        public S3Storage(TenantManager tenantManager) : base(tenantManager)
+        public S3Storage(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
         {
         }
 

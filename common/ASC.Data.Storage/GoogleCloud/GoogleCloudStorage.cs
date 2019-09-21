@@ -58,7 +58,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private bool _lowerCasing = true;
 
-        public GoogleCloudStorage(TenantManager tenantManager) : base(tenantManager)
+        public GoogleCloudStorage(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
         {
         }
 
