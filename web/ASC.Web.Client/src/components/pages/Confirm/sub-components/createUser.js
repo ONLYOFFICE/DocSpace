@@ -149,7 +149,7 @@ class Confirm extends React.PureComponent {
             )
             .catch(e => {
                 console.error("get settings error", e);
-                history.push(`/login/${e}`);
+                history.push(`/login/error=${e}`);
             });
 
         window.addEventListener('keydown', this.onKeyPress);

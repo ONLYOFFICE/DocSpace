@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
-import { Button, TextInput, PageLayout } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../store/auth/actions';
 import styled from 'styled-components';
@@ -95,6 +95,7 @@ const Form = props => {
 
     useEffect(() => {
         params.error && setErrorText(params.error);
+        params.confirmedEmail && setIdentifier(params.confirmedEmail);
         window.addEventListener('keydown', onKeyPress);
         window.addEventListener('keyup', onKeyPress);
         // Remove event listeners on cleanup
@@ -102,7 +103,7 @@ const Form = props => {
             window.removeEventListener('keydown', onKeyPress);
             window.removeEventListener('keyup', onKeyPress);
         };
-    }, [onKeyPress, params.error]);
+    }, [onKeyPress, params]);
 
     return (
         <FormContainer>
@@ -127,7 +128,7 @@ const Form = props => {
                         isAutoFocussed={true}
                         tabIndex={1}
                         isDisabled={isLoading}
-                        autocomple="username"
+                        autocomplete="username"
                         onChange={event => {
                             setIdentifier(event.target.value);
                             !identifierValid && setIdentifierValid(true);
@@ -149,7 +150,7 @@ const Form = props => {
                         scale={true}
                         tabIndex={2}
                         isDisabled={isLoading}
-                        autocomple="current-password"
+                        autocomplete="current-password"
                         onChange={event => {
                             setPassword(event.target.value);
                             !passwordValid && setPasswordValid(true);
@@ -171,6 +172,12 @@ const Form = props => {
                         onClick={onSubmit} />
                 </Col>
             </Row>
+            {params.confirmedEmail && <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
+                    <Text.Body isBold={true} fontSize={16}>{t('MessageEmailConfirmed')} {t('MessageAuthorize')}</Text.Body>
+                </Col>
+            </Row>
+            }
             <Collapse isOpen={!!errorText}>
                 <Row className="login-row">
                     <Col sm="12" md={mdOptions}>
