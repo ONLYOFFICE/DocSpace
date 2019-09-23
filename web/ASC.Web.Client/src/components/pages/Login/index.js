@@ -38,14 +38,14 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
     const { t } = useTranslation('translation', { i18n });
-    const [identifier, setIdentifier] = useState('');
+    const { login, match, location, history } = props;
+    const { params } = match;
+    const [identifier, setIdentifier] = useState(params.confirmedEmail || '');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
     const [passwordValid, setPasswordValid] = useState(true);
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { login, match, location, history } = props;
-    const { params } = match;
 
     const onSubmit = useCallback((e) => {
         //e.preventDefault();
@@ -95,7 +95,6 @@ const Form = props => {
 
     useEffect(() => {
         params.error && setErrorText(params.error);
-        params.confirmedEmail && setIdentifier(params.confirmedEmail);
         window.addEventListener('keydown', onKeyPress);
         window.addEventListener('keyup', onKeyPress);
         // Remove event listeners on cleanup
@@ -128,7 +127,7 @@ const Form = props => {
                         isAutoFocussed={true}
                         tabIndex={1}
                         isDisabled={isLoading}
-                        autocomplete="username"
+                        autoComplete="username"
                         onChange={event => {
                             setIdentifier(event.target.value);
                             !identifierValid && setIdentifierValid(true);
@@ -150,7 +149,7 @@ const Form = props => {
                         scale={true}
                         tabIndex={2}
                         isDisabled={isLoading}
-                        autocomplete="current-password"
+                        autoComplete="current-password"
                         onChange={event => {
                             setPassword(event.target.value);
                             !passwordValid && setPasswordValid(true);
