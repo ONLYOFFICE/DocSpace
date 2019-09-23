@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import styled from 'styled-components';
 
@@ -10,7 +10,7 @@ const InfoContainer = styled.div`
 `;
 
 const SectionBodyContent = props => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <InfoContainer>
