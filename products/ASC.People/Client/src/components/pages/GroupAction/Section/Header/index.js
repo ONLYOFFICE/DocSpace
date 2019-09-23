@@ -1,11 +1,11 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton, Text } from 'asc-web-components';
-import { useTranslation } from 'react-i18next';
-import { department } from './../../../../../helpers/customNames';
-
+import { IconButton, Text } from "asc-web-components";
+import { withTranslation } from "react-i18next";
+import { department } from "./../../../../../helpers/customNames";
+import { resetGroup } from "../../../../../store/group/actions";
 
 const wrapperStyle = {
   display: "flex",
@@ -16,19 +16,31 @@ const textStyle = {
   marginLeft: "16px"
 };
 
-const SectionHeaderContent = (props) => {
-  const {group, history, settings} = props;
-  const { t } = useTranslation();
+class SectionHeaderContent extends React.Component {
+  onBackClick = () => {
+    const { history, settings, resetGroup } = this.props;
 
-  const headerText = group ? t('CustomEditDepartment', { department }) : t('CustomNewDepartment', { department });
+    resetGroup();
+    history.push(settings.homepage);
+  };
 
-  return (
-    <div style={wrapperStyle}>
-      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={() => history.push(settings.homepage)}/>
-      <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
-    </div>
-  );
-};
+  render() {
+    const { group, t } = this.props;
+    const headerText = group
+      ? t("CustomEditDepartment", { department })
+      : t("CustomNewDepartment", { department });
+    return (
+      <div style={wrapperStyle}>
+        <IconButton
+          iconName={"ArrowPathIcon"}
+          size="16"
+          onClick={this.onBackClick}
+        />
+        <Text.ContentHeader style={textStyle}>{headerText}</Text.ContentHeader>
+      </div>
+    );
+  }
+}
 
 SectionHeaderContent.propTypes = {
   group: PropTypes.object,
@@ -44,6 +56,9 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup
   };
-};
+}
 
-export default connect(mapStateToProps)(withRouter(SectionHeaderContent));
+export default connect(
+  mapStateToProps,
+  { resetGroup }
+)(withTranslation()(withRouter(SectionHeaderContent)));
