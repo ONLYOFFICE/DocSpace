@@ -3,6 +3,8 @@
   "LoginButton": "Sign In",
   "Password": "Password",
   "RegistrationEmailWatermark": "Your registration email",
+  "MessageEmailConfirmed": "Your email was activated successfully.",
+  "MessageAuthorize": "Please authorize yourself.",
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"
 }

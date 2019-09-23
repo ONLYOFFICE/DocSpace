@@ -72,11 +72,11 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}")]
-        public GroupWrapperFull UpdateGroup(GroupModel groupModel)
+        public GroupWrapperFull UpdateGroup(Guid groupid, GroupModel groupModel)
         {
             SecurityContext.DemandPermissions(Tenant, Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = CoreContext.UserManager.GetGroups(Tenant.TenantId).SingleOrDefault(x => x.ID == groupModel.Groupid).NotFoundIfNull("group not found");
-            if (group.ID == Constants.LostGroupInfo.ID)
+            var group = CoreContext.UserManager.GetGroups(Tenant.TenantId).SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+            if (groupid == Constants.LostGroupInfo.ID)
             {
                 throw new ItemNotFoundException("group not found");
             }
@@ -84,7 +84,7 @@ namespace ASC.Employee.Core.Controllers
             group.Name = groupModel.GroupName ?? group.Name;
             CoreContext.UserManager.SaveGroupInfo(Tenant, group);
 
-            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = CoreContext.UserManager.GetUsersByGroup(Tenant, groupModel.Groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(new GroupModel { Groupid = groupid, Members = CoreContext.UserManager.GetUsersByGroup(Tenant, groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -95,7 +95,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(group.ID), group.Name);
+            MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(groupid), group.Name);
 
             return GetById(groupModel.Groupid);
         }
