@@ -286,7 +286,7 @@ class SectionBodyContent extends React.Component {
     return (
       <MainContainer>
         <div style={{visibility: "hidden", width: 1, height: 1}}>
-          <Icons.SearchIcon size='base' />
+          <Icons.SearchIcon size='small' />
         </div>
         <FieldContainer
           className="group-name_container"
@@ -411,7 +411,6 @@ class SectionBodyContent extends React.Component {
             <SearchInput
               id="member-search"
               isDisabled={inLoading}
-              size="small"
               scale={true}
               placeholder="Search"
               value={searchValue}
