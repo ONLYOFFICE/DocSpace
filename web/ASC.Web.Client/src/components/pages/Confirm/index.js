@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
-import { Switch, Redirect } from "react-router-dom";
+import { Switch, Redirect, Route } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import { PublicRoute } from "../../../helpers/publicRoute";
+import PublicRoute from "../../../helpers/publicRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 
@@ -23,17 +23,17 @@ const Confirm = ({ match }) => {
               path={`${match.path}/type=LinkInvite`}
               component={CreateUserForm}
             />
-            <PublicRoute
+            <Route
               exact
               path={`${match.path}/type=EmailActivation`}
               component={ActivateEmailForm}
             />
-            <PublicRoute
+            <Route
               exact
               path={`${match.path}/type=PasswordChange`}
               component={ChangePasswordForm}
             />
-            <PublicRoute
+            <Route
               exact
               path={`${match.path}/type=PhoneActivation`}
               component={ChangePhoneForm}

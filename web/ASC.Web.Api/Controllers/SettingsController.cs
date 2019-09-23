@@ -252,6 +252,13 @@ namespace ASC.Api.Settings
             return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings, WebItemManager);
         }
 
+        [AllowAnonymous]
+        [Read("cultures")]
+        public List<CultureInfo> GetSupportedCultures()
+        {
+            return SetupInfo.EnabledCultures;
+        }
+
         [Read("recalculatequota")]
         public void RecalculateQuota()
         {

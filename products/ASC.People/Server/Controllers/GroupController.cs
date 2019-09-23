@@ -91,11 +91,11 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}")]
-        public GroupWrapperFull UpdateGroup(GroupModel groupModel)
+        public GroupWrapperFull UpdateGroup(Guid groupid, GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupModel.Groupid).NotFoundIfNull("group not found");
-            if (group.ID == Constants.LostGroupInfo.ID)
+            var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
+            if (groupid == Constants.LostGroupInfo.ID)
             {
                 throw new ItemNotFoundException("group not found");
             }
@@ -103,7 +103,7 @@ namespace ASC.Employee.Core.Controllers
             group.Name = groupModel.GroupName ?? group.Name;
             UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(new GroupModel { Groupid = groupid, Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -114,7 +114,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(group.ID), group.Name);
+            MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(groupid), group.Name);
 
             return GetById(groupModel.Groupid);
         }

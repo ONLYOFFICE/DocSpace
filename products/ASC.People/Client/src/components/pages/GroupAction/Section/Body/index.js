@@ -28,6 +28,7 @@ import {
   updateGroup
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
+import { fetchSelectorUsers } from "../../../../../store/people/actions";
 
 const MainContainer = styled.div`
   display: flex;
@@ -105,8 +106,12 @@ class SectionBodyContent extends React.Component {
             label: t("CustomAddEmployee", { typeUser })
           },
       groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
-      groupMembers: group && group.members ? group.members.map(u => u.id) : []
+      groupMembers: group && group.members ? group.members : []
     };
+  }
+
+  componentDidMount() {
+    this.props.fetchSelectorUsers();
   }
 
   onGroupChange = e => {
@@ -148,8 +153,8 @@ class SectionBodyContent extends React.Component {
     this.setState({ inLoading: true });
 
     (group && group.id
-      ? updateGroup(group.id, groupName, groupManager, groupMembers)
-      : createGroup(groupName, groupManager, groupMembers)
+      ? updateGroup(group.id, groupName, groupManager, groupMembers.map(u => u.id))
+      : createGroup(groupName, groupManager, groupMembers.map(u => u.id))
     )
       .then(() => {
         toastr.success("Success");
@@ -286,7 +291,7 @@ class SectionBodyContent extends React.Component {
     return (
       <MainContainer>
         <div style={{visibility: "hidden", width: 1, height: 1}}>
-          <Icons.SearchIcon size='base' />
+          <Icons.SearchIcon size='small' />
         </div>
         <FieldContainer
           className="group-name_container"
@@ -411,7 +416,6 @@ class SectionBodyContent extends React.Component {
             <SearchInput
               id="member-search"
               isDisabled={inLoading}
-              size="base"
               scale={true}
               placeholder="Search"
               value={searchValue}
@@ -470,7 +474,7 @@ const convertUsers = users => {
     ? users.map(u => {
         return {
           key: u.id,
-          groups: [],
+          groups: u.groups || [],
           label: u.displayName
         };
       })
@@ -494,11 +498,11 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.users) //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
   };
 }
 
 export default connect(
   mapStateToProps,
-  { resetGroup, createGroup, updateGroup }
+  { resetGroup, createGroup, updateGroup, fetchSelectorUsers }
 )(withRouter(withTranslation()(SectionBodyContent)));

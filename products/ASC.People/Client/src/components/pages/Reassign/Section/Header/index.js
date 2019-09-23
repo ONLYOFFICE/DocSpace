@@ -15,8 +15,7 @@ const textStyle = {
 };
 
 const SectionHeaderContent = props => {
-  const { profile, history, settings, match } = props;
-  const { type } = match.params;
+  const { history, settings } = props;
   const { t } = useTranslation();
 
   return (

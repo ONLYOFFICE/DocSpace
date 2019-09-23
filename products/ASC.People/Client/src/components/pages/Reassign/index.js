@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { PageLayout, Loader } from "asc-web-components";
+// import PropTypes from "prop-types";
+import { PageLayout } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 // import { SectionHeaderContent } from './Section';
-import { fetchProfile } from '../../../store/profile/actions';
+// import { fetchProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { SectionHeaderContent, SectionBodyContent } from './Section';
