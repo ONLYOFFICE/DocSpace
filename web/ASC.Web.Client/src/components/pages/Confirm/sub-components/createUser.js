@@ -321,17 +321,14 @@ class Confirm extends React.PureComponent {
     }
 }
 
-const ConfirmWrapper = withTranslation()(Confirm);
 
-const ConfirmWithTrans = (props) =><ConfirmWrapper {...props} />;
-
-ConfirmWithTrans.propTypes = {
+Confirm.propTypes = {
     getPasswordSettings: PropTypes.func.isRequired,
     createConfirmUser: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
 };
-const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<ConfirmWithTrans {...props} />} />);
+const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...props} />} />);
 
 
 function mapStateToProps(state) {
@@ -341,4 +338,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(CreateUserForm));
+export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
