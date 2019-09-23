@@ -411,7 +411,7 @@ class SectionBodyContent extends React.Component {
             <SearchInput
               id="member-search"
               isDisabled={inLoading}
-              size="base"
+              size="small"
               scale={true}
               placeholder="Search"
               value={searchValue}
