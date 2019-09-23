@@ -32,9 +32,8 @@ using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
-using Microsoft.AspNetCore.Hosting;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage
@@ -159,19 +158,25 @@ namespace ASC.Data.Storage
         public StorageSettings StorageSettings { get; }
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public PathUtils PathUtils { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public StorageFactory(
             StorageFactoryListener storageFactoryListener, 
             StorageFactoryConfig storageFactoryConfig, 
             StorageSettings storageSettings,
             TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider)
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
             StorageSettings = storageSettings;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
+            PathUtils = pathUtils;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -269,7 +274,7 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager))
+            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);

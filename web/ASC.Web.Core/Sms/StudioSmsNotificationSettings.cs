@@ -53,10 +53,12 @@ namespace ASC.Web.Studio.Core.SMS
             SettingsManager settingsManager, 
             TenantManager tenantManager, 
             TenantExtra tenantExtra,
-            CoreBaseSettings coreBaseSettings) : base(authContext, settingsManager, tenantManager)
+            CoreBaseSettings coreBaseSettings,
+            SetupInfo setupInfo) : base(authContext, settingsManager, tenantManager)
         {
             TenantExtra = tenantExtra;
             CoreBaseSettings = coreBaseSettings;
+            SetupInfo = setupInfo;
         }
 
         public override ISettings GetDefault()
@@ -81,6 +83,7 @@ namespace ASC.Web.Studio.Core.SMS
 
         public TenantExtra TenantExtra { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public SetupInfo SetupInfo { get; }
 
         public bool IsVisibleSettings()
         {

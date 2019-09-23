@@ -26,10 +26,10 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -79,9 +79,10 @@ namespace ASC.Web.Core.WhiteLabel
 
         }
 
-        public MailWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+        public MailWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : 
             base(authContext, settingsManager, tenantManager)
         {
+            Configuration = configuration;
         }
 
         #region ISettings Members
@@ -109,47 +110,47 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Default values
 
-        public static string DefaultMailSupportUrl
+        public string DefaultMailSupportUrl
         {
             get
             {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web:support-feedback"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:support-feedback"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://support.onlyoffice.com";
             }
         }
 
-        public static string DefaultMailSupportEmail
+        public string DefaultMailSupportEmail
         {
             get
             {
-                var email = ConfigurationManager.AppSettings["web:support:email"];
+                var email = Configuration["web:support:email"];
                 return !string.IsNullOrEmpty(email) ? email : "support@onlyoffice.com";
             }
         }
 
-        public static string DefaultMailSalesEmail
+        public string DefaultMailSalesEmail
         {
             get
             {
-                var email = ConfigurationManager.AppSettings["web:payment:email"];
+                var email = Configuration["web:payment:email"];
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
 
-        public static string DefaultMailDemotUrl
+        public string DefaultMailDemotUrl
         {
             get
             {
-                var url = BaseCommonLinkUtility.GetRegionalUrl(ConfigurationManager.AppSettings["web:demo-order"] ?? string.Empty, null);
+                var url = BaseCommonLinkUtility.GetRegionalUrl(Configuration["web:demo-order"] ?? string.Empty, null);
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com/demo-order.aspx";
             }
         }
 
-        public static string DefaultMailSiteUrl
+        public string DefaultMailSiteUrl
         {
             get
             {
-                var url = ConfigurationManager.AppSettings["web:teamlab-site"];
+                var url = Configuration["web:teamlab-site"];
                 return !string.IsNullOrEmpty(url) ? url : "http://www.onlyoffice.com";
             }
         }
@@ -163,5 +164,7 @@ namespace ASC.Web.Core.WhiteLabel
                 return LoadForDefaultTenant();
             }
         }
+
+        public IConfiguration Configuration { get; }
     }
 }

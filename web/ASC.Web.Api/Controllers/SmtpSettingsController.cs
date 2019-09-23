@@ -43,6 +43,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
@@ -60,7 +61,8 @@ namespace ASC.Api.Settings
         public PermissionContext PermissionContext { get; }
         public TenantManager TenantManager { get; }
         public CoreSettings CoreSettings { get; }
-        public CoreConfiguration Configuration { get; }
+        public CoreConfiguration CoreConfiguration { get; }
+        public IConfiguration Configuration { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -76,7 +78,8 @@ namespace ASC.Api.Settings
             PermissionContext permissionContext,
             TenantManager tenantManager,
             CoreSettings coreSettings,
-            CoreConfiguration configuration)
+            CoreConfiguration coreConfiguration,
+            IConfiguration configuration)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -87,6 +90,7 @@ namespace ASC.Api.Settings
             PermissionContext = permissionContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
+            CoreConfiguration = coreConfiguration;
             Configuration = configuration;
         }
 
@@ -96,7 +100,7 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(Configuration.SmtpSettings, true);
+            var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings, true);
 
             return settings;
         }
@@ -115,7 +119,7 @@ namespace ASC.Api.Settings
 
             var settingConfig = ToSmtpSettingsConfig(smtpSettings);
 
-            Configuration.SmtpSettings = settingConfig;
+            CoreConfiguration.SmtpSettings = settingConfig;
 
             var settings = ToSmtpSettings(settingConfig, true);
 
@@ -127,13 +131,13 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            if (!Configuration.SmtpSettings.IsDefaultSettings)
+            if (!CoreConfiguration.SmtpSettings.IsDefaultSettings)
             {
                 PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-                Configuration.SmtpSettings = null;
+                CoreConfiguration.SmtpSettings = null;
             }
 
-            var current = Configuration.Standalone ? Configuration.SmtpSettings : SmtpSettings.Empty;
+            var current = CoreConfiguration.Standalone ? CoreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
             return ToSmtpSettings(current, true);
         }
@@ -143,9 +147,10 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(Configuration.SmtpSettings);
+            var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
 
-            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager);
+            //add resolve
+            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
 
             SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
 

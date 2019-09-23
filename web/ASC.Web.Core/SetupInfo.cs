@@ -30,158 +30,40 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ASC.Common.Utils;
 using ASC.Common.Web;
-using ASC.Web.Studio.UserControls.Statistics;
-using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core
 {
-    public static class SetupInfo
+    public class SetupInfo
     {
         private static string web_autotest_secret_email;
         private static string[] web_display_mobapps_banner;
         private static string[] hideSettings;
 
-
-        public static string MetaImageURL
-        {
-            get;
-            private set;
-        }
-
-        public static string StatisticTrackURL
-        {
-            get;
-            private set;
-        }
-
-        public static string UserVoiceURL
-        {
-            get;
-            private set;
-        }
-
-        public static string MainLogoURL
-        {
-            get;
-            private set;
-        }
-
-        public static string MainLogoMailTmplURL
-        {
-            get;
-            private set;
-        }
-
-        public static List<CultureInfo> EnabledCultures
-        {
-            get;
-            private set;
-        }
-
-        public static List<CultureInfo> EnabledCulturesPersonal
-        {
-            get;
-            private set;
-        }
-
-        public static decimal ExchangeRateRuble
-        {
-            get;
-            private set;
-        }
-
-        public static long MaxImageUploadSize
-        {
-            get;
-            private set;
-        }
-        public static long AvailableFileSize
-        {
-            get { return 100L * 1024L * 1024L; }
-        }
-
-        public static string TeamlabSiteRedirect
-        {
-            get;
-            private set;
-        }
-
-        public static long ChunkUploadSize
-        {
-            get;
-            private set;
-        }
-
-        public static bool ThirdPartyAuthEnabled
-        {
-            get;
-            private set;
-        }
-
-        public static string NoTenantRedirectURL
-        {
-            get;
-            private set;
-        }
-
-        public static string[] CustomScripts
-        {
-            get;
-            private set;
-        }
-
-        public static string NotifyAddress
-        {
-            get;
-            private set;
-        }
-
-        public static string TipsAddress
-        {
-            get;
-            private set;
-        }
-
-        public static string UserForum
-        {
-            get;
-            private set;
-        }
-
-        public static string SupportFeedback
-        {
-            get;
-            private set;
-        }
-
-        public static string WebApiBaseUrl
-        {
-            get
-            {
-                return VirtualPathUtility.ToAbsolute(GetAppSettings("api.url", "~/api/2.0/"));
-            }
-        }
-
-        public static TimeSpan ValidEmailKeyInterval
-        {
-            get;
-            private set;
-        }
-
-        public static TimeSpan ValidAuthKeyInterval
-        {
-            get;
-            private set;
-        }
-
-        public static string SalesEmail
-        {
-            get;
-            private set;
-        }
-
+        public string MetaImageURL { get; private set; }
+        public string StatisticTrackURL { get; private set; }
+        public string UserVoiceURL { get; private set; }
+        public string MainLogoURL { get; private set; }
+        public string MainLogoMailTmplURL { get; private set; }
+        public List<CultureInfo> EnabledCultures { get; private set; }
+        public List<CultureInfo> EnabledCulturesPersonal { get; private set; }
+        public decimal ExchangeRateRuble { get; private set; }
+        public long MaxImageUploadSize { get; private set; }
+        public static long AvailableFileSize { get { return 100L * 1024L * 1024L; } }
+        public string TeamlabSiteRedirect { get; private set; }
+        public long ChunkUploadSize { get; private set; }
+        public bool ThirdPartyAuthEnabled { get; private set; }
+        public string NoTenantRedirectURL { get; private set; }
+        public string[] CustomScripts { get; private set; }
+        public string NotifyAddress { get; private set; }
+        public string TipsAddress { get; private set; }
+        public string UserForum { get; private set; }
+        public string SupportFeedback { get; private set; }
+        public string WebApiBaseUrl { get { return VirtualPathUtility.ToAbsolute(GetAppSettings("api.url", "~/api/2.0/")); } }
+        public TimeSpan ValidEmailKeyInterval { get; private set; }
+        public TimeSpan ValidAuthKeyInterval { get; private set; }
+        public string SalesEmail { get; private set; }
         public static bool IsSecretEmail(string email)
         {
             var s = web_autotest_secret_email;
@@ -195,149 +77,32 @@ namespace ASC.Web.Studio.Core
             return web_display_mobapps_banner.Contains(product, StringComparer.InvariantCultureIgnoreCase);
         }
 
-        public static bool DisplayPersonalBanners
-        {
-            get;
-            private set;
-        }
+        public bool DisplayPersonalBanners { get; private set; }
+        public string ShareTwitterUrl { get; private set; }
+        public string ShareFacebookUrl { get; private set; }
+        public string ControlPanelUrl { get; private set; }
+        public string FontOpenSansUrl { get; private set; }
+        public string VoipEnabled { get; private set; }
+        public string StartProductList { get; private set; }
+        public string SsoSamlLoginUrl { get; private set; }
+        public string DownloadForDesktopUrl { get; private set; }
+        public string DownloadForIosDocuments { get; private set; }
+        public string DownloadForIosProjects { get; private set; }
+        public string DownloadForAndroidDocuments { get; private set; }
+        public string SsoSamlLogoutUrl { get; private set; }
+        public bool SmsTrial { get; private set; }
+        public string TfaRegistration { get; private set; }
+        public int TfaAppBackupCodeLength { get; private set; }
+        public int TfaAppBackupCodeCount { get; private set; }
+        public string TfaAppSender { get; private set; }
+        public string NotifyAnalyticsUrl { get; private set; }
+        public string RecaptchaPublicKey { get; private set; }
+        public string RecaptchaPrivateKey { get; private set; }
+        public string RecaptchaVerifyUrl { get; private set; }
+        public int LoginThreshold { get; private set; }
+        public IConfiguration Configuration { get; }
 
-        public static string ShareTwitterUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string ShareFacebookUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string ControlPanelUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string FontOpenSansUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string VoipEnabled
-        {
-            get;
-            private set;
-        }
-
-
-        public static string StartProductList
-        {
-            get;
-            private set;
-        }
-
-        public static string SsoSamlLoginUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string DownloadForDesktopUrl
-        {
-            get;
-            private set;
-        }
-        public static string DownloadForIosDocuments
-        {
-            get;
-            private set;
-        }
-        public static string DownloadForIosProjects
-        {
-            get;
-            private set;
-        }
-        public static string DownloadForAndroidDocuments
-        {
-            get;
-            private set;
-        }
-
-        public static string SsoSamlLogoutUrl
-        {
-            get;
-            private set;
-        }
-
-
-        public static bool SmsTrial
-        {
-            get;
-            private set;
-        }
-
-        public static string TfaRegistration
-        {
-            get;
-            private set;
-        }
-
-        public static int TfaAppBackupCodeLength
-        {
-            get;
-            private set;
-        }
-
-        public static int TfaAppBackupCodeCount
-        {
-            get;
-            private set;
-        }
-
-        public static string TfaAppSender
-        {
-            get;
-            private set;
-        }
-
-        public static string NotifyAnalyticsUrl
-        {
-            get;
-            private set;
-        }
-
-        public static string RecaptchaPublicKey
-        {
-            get;
-            private set;
-        }
-
-        public static string RecaptchaPrivateKey
-        {
-            get;
-            private set;
-        }
-
-        public static string RecaptchaVerifyUrl
-        {
-            get;
-            private set;
-        }
-
-        public static int LoginThreshold
-        {
-            get;
-            private set;
-        }
-
-        static SetupInfo()
-        {
-            Refresh();
-        }
-
-        public static void Refresh()
+        public SetupInfo(IConfiguration configuration)
         {
             MetaImageURL = GetAppSettings("web.meta-image-url", "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg");
             StatisticTrackURL = GetAppSettings("web.track-url", string.Empty);
@@ -378,7 +143,7 @@ namespace ASC.Web.Studio.Core
             ValidAuthKeyInterval = GetAppSettings("auth.validinterval", TimeSpan.FromHours(1));
 
             SalesEmail = GetAppSettings("web.payment.email", "sales@onlyoffice.com");
-            web_autotest_secret_email = (ConfigurationManager.AppSettings["web.autotest.secret-email"] ?? "").Trim();
+            web_autotest_secret_email = (configuration["web.autotest.secret-email"] ?? "").Trim();
 
             RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
@@ -386,7 +151,7 @@ namespace ASC.Web.Studio.Core
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
             if (LoginThreshold < 1) LoginThreshold = 5;
 
-            web_display_mobapps_banner = (ConfigurationManager.AppSettings["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            web_display_mobapps_banner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             DisplayPersonalBanners = GetAppSettings("web.display.personal.banners", false);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
             ShareFacebookUrl = GetAppSettings("web.share.facebook", "http://www.facebook.com/sharer.php?s=100&p[url]={0}&p[title]={1}&p[images][0]={2}&p[summary]={3}");
@@ -408,6 +173,7 @@ namespace ASC.Web.Studio.Core
             TfaAppSender = GetAppSettings("web.tfaapp.backup.title", "ONLYOFFICE");
 
             NotifyAnalyticsUrl = GetAppSettings("core.notify.analytics.url", "");
+            Configuration = configuration;
         }
 
 
@@ -422,9 +188,9 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        private static string GetAppSettings(string key, string defaultValue)
+        private string GetAppSettings(string key, string defaultValue)
         {
-            var result = ConfigurationManager.AppSettings[key] ?? defaultValue;
+            var result = Configuration[key] ?? defaultValue;
 
             if (!string.IsNullOrEmpty(result))
                 result = result.Trim();
@@ -433,9 +199,9 @@ namespace ASC.Web.Studio.Core
 
         }
 
-        private static T GetAppSettings<T>(string key, T defaultValue)
+        private T GetAppSettings<T>(string key, T defaultValue)
         {
-            var configSetting = ConfigurationManager.AppSettings[key];
+            var configSetting = Configuration[key];
             if (!string.IsNullOrEmpty(configSetting))
             {
                 configSetting = configSetting.Trim();

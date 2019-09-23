@@ -34,10 +34,12 @@ namespace ASC.Web.Studio.Core
     public class FileSizeComment
     {
         public TenantExtra TenantExtra { get; }
+        public SetupInfo SetupInfo { get; }
 
-        public FileSizeComment(TenantExtra tenantExtra)
+        public FileSizeComment(TenantExtra tenantExtra, SetupInfo setupInfo)
         {
             TenantExtra = tenantExtra;
+            SetupInfo = setupInfo;
         }
 
         public string FileSizeExceptionString
@@ -45,7 +47,7 @@ namespace ASC.Web.Studio.Core
             get { return GetFileSizeExceptionString(TenantExtra.MaxUploadSize); }
         }
 
-        public static string FileImageSizeExceptionString
+        public string FileImageSizeExceptionString
         {
             get { return GetFileSizeExceptionString(SetupInfo.MaxImageUploadSize); }
         }
@@ -71,7 +73,7 @@ namespace ASC.Web.Studio.Core
         /// <summary>
         /// The maximum file size is exceeded (1 MB).
         /// </summary>
-        public static Exception FileImageSizeException
+        public Exception FileImageSizeException
         {
             get { return new TenantQuotaException(FileImageSizeExceptionString); }
         }
@@ -126,7 +128,7 @@ namespace ASC.Web.Studio.Core
         /// <param name="note">Resource fromat of note</param>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 1 MB</returns>
-        public static string GetFileImageSizeNote(string note, bool withHtmlStrong)
+        public string GetFileImageSizeNote(string note, bool withHtmlStrong)
         {
             return
                 string.Format(note,

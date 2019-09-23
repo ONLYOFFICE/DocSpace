@@ -38,7 +38,6 @@ using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -73,6 +72,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
@@ -129,6 +129,8 @@ namespace ASC.Api.Settings
         public CoreBaseSettings CoreBaseSettings { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public ColorThemesSettings ColorThemesSettings { get; }
+        public IConfiguration Configuration { get; }
+        public SetupInfo SetupInfo { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -172,7 +174,9 @@ namespace ASC.Api.Settings
             TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
-            ColorThemesSettings colorThemesSettings)
+            ColorThemesSettings colorThemesSettings,
+            IConfiguration configuration,
+            SetupInfo setupInfo)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -216,6 +220,8 @@ namespace ASC.Api.Settings
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
             ColorThemesSettings = colorThemesSettings;
+            Configuration = configuration;
+            SetupInfo = setupInfo;
         }
 
         [Read("")]
@@ -1264,7 +1270,7 @@ namespace ASC.Api.Settings
         [Read("socket")]
         public object GetSocketSettings()
         {
-            var hubUrl = ConfigurationManager.AppSettings["web:hub"] ?? string.Empty;
+            var hubUrl = Configuration["web:hub"] ?? string.Empty;
             if (hubUrl != string.Empty)
             {
                 if (!hubUrl.EndsWith("/"))

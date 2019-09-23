@@ -25,8 +25,6 @@
 
 
 using System;
-using ASC.Core;
-using ASC.Core.Users;
 
 namespace ASC.Web.Studio.Core.Statistic
 {

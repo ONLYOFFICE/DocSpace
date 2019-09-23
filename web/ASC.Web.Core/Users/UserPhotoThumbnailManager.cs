@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using ASC.Core.Tenants;
 
 namespace ASC.Web.Core.Users
 {

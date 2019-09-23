@@ -32,19 +32,30 @@ using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
-    public static class FilesLinkUtility
+    public class FilesLinkUtility
     {
         public const string FilesBaseVirtualPath = "~/products/files/";
         public const string EditorPage = "doceditor.aspx";
-        private static readonly string FilesUploaderURL = ConfigurationManager.AppSettings["files.uploader.url"] ?? "~";
-        //fix di
-        public static CommonLinkUtility CommonLinkUtility { get; set; }
-        public static CoreBaseSettings CoreBaseSettings { get; set; }
-        public static CoreSettings CoreSettings { get; set; }
-        public static string FilesBaseAbsolutePath
+        private readonly string FilesUploaderURL;
+        public CommonLinkUtility CommonLinkUtility { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public CoreSettings CoreSettings { get; set; }
+        public IConfiguration Configuration { get; }
+
+        public FilesLinkUtility(CommonLinkUtility commonLinkUtility, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration)
+        {
+            CommonLinkUtility = commonLinkUtility;
+            CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            FilesUploaderURL = Configuration["files.uploader.url"] ?? "~";
+        }
+
+        public string FilesBaseAbsolutePath
         {
             get { return CommonLinkUtility.ToAbsolute(FilesBaseVirtualPath); }
         }
@@ -61,12 +72,12 @@ namespace ASC.Web.Core.Files
         public const string OutType = "outputtype";
         public const string AuthKey = "stream_auth";
 
-        public static string FileHandlerPath
+        public string FileHandlerPath
         {
             get { return FilesBaseAbsolutePath + "httphandlers/filehandler.ashx"; }
         }
 
-        public static string DocServiceUrl
+        public string DocServiceUrl
         {
             get
             {
@@ -95,7 +106,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceUrlInternal
+        public string DocServiceUrlInternal
         {
             get
             {
@@ -131,7 +142,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceApiUrl
+        public string DocServiceApiUrl
         {
             get
             {
@@ -148,7 +159,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceConverterUrl
+        public string DocServiceConverterUrl
         {
             get
             {
@@ -165,7 +176,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceCommandUrl
+        public string DocServiceCommandUrl
         {
             get
             {
@@ -182,7 +193,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceDocbuilderUrl
+        public string DocServiceDocbuilderUrl
         {
             get
             {
@@ -199,7 +210,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServiceHealthcheckUrl
+        public string DocServiceHealthcheckUrl
         {
             get
             {
@@ -216,7 +227,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string DocServicePortalUrl
+        public string DocServicePortalUrl
         {
             get { return GetUrlSetting("portal"); }
             set
@@ -235,34 +246,34 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public static string FileDownloadUrlString
+        public string FileDownloadUrlString
         {
             get { return FileHandlerPath + "?" + Action + "=download&" + FileId + "={0}"; }
         }
 
-        public static string GetFileDownloadUrl(object fileId)
+        public string GetFileDownloadUrl(object fileId)
         {
             return GetFileDownloadUrl(fileId, 0, string.Empty);
         }
 
-        public static string GetFileDownloadUrl(object fileId, int fileVersion, string convertToExtension)
+        public string GetFileDownloadUrl(object fileId, int fileVersion, string convertToExtension)
         {
             return string.Format(FileDownloadUrlString, HttpUtility.UrlEncode(fileId.ToString()))
                    + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty)
                    + (string.IsNullOrEmpty(convertToExtension) ? string.Empty : "&" + OutType + "=" + convertToExtension);
         }
 
-        public static string GetFileWebMediaViewUrl(object fileId)
+        public string GetFileWebMediaViewUrl(object fileId)
         {
             return FilesBaseAbsolutePath + "#preview/" + HttpUtility.UrlEncode(fileId.ToString());
         }
 
-        public static string FileWebViewerUrlString
+        public string FileWebViewerUrlString
         {
             get { return FileWebEditorUrlString + "&" + Action + "=view"; }
         }
 
-        public static string GetFileWebViewerUrlForMobile(object fileId, int fileVersion)
+        public string GetFileWebViewerUrlForMobile(object fileId, int fileVersion)
         {
             var viewerUrl = CommonLinkUtility.ToAbsolute("~/../products/files/") + EditorPage + "?" + FileId + "={0}";
 
@@ -270,42 +281,42 @@ namespace ASC.Web.Core.Files
                    + (fileVersion > 0 ? "&" + Version + "=" + fileVersion : string.Empty);
         }
 
-        public static string FileWebViewerExternalUrlString
+        public string FileWebViewerExternalUrlString
         {
             get { return FilesBaseAbsolutePath + EditorPage + "?" + FileUri + "={0}&" + FileTitle + "={1}&" + FolderUrl + "={2}"; }
         }
 
-        public static string GetFileWebViewerExternalUrl(string fileUri, string fileTitle, string refererUrl = "")
+        public string GetFileWebViewerExternalUrl(string fileUri, string fileTitle, string refererUrl = "")
         {
             return string.Format(FileWebViewerExternalUrlString, HttpUtility.UrlEncode(fileUri), HttpUtility.UrlEncode(fileTitle), HttpUtility.UrlEncode(refererUrl));
         }
 
-        public static string FileWebEditorUrlString
+        public string FileWebEditorUrlString
         {
             get { return FilesBaseAbsolutePath + EditorPage + "?" + FileId + "={0}"; }
         }
 
-        public static string GetFileWebEditorUrl(object fileId)
+        public string GetFileWebEditorUrl(object fileId)
         {
             return string.Format(FileWebEditorUrlString, HttpUtility.UrlEncode(fileId.ToString()));
         }
 
-        public static string GetFileWebEditorTryUrl(FileType fileType)
+        public string GetFileWebEditorTryUrl(FileType fileType)
         {
             return FilesBaseAbsolutePath + EditorPage + "?" + TryParam + "=" + fileType;
         }
 
-        public static string FileWebEditorExternalUrlString
+        public string FileWebEditorExternalUrlString
         {
             get { return FileHandlerPath + "?" + Action + "=create&" + FileUri + "={0}&" + FileTitle + "={1}"; }
         }
 
-        public static string GetFileWebEditorExternalUrl(string fileUri, string fileTitle)
+        public string GetFileWebEditorExternalUrl(string fileUri, string fileTitle)
         {
             return GetFileWebEditorExternalUrl(fileUri, fileTitle, false);
         }
 
-        public static string GetFileWebEditorExternalUrl(string fileUri, string fileTitle, bool openFolder)
+        public string GetFileWebEditorExternalUrl(string fileUri, string fileTitle, bool openFolder)
         {
             var url = string.Format(FileWebEditorExternalUrlString, HttpUtility.UrlEncode(fileUri), HttpUtility.UrlEncode(fileTitle));
             if (openFolder)
@@ -313,14 +324,14 @@ namespace ASC.Web.Core.Files
             return url;
         }
 
-        public static string GetFileWebPreviewUrl(string fileTitle, object fileId)
+        public string GetFileWebPreviewUrl(FileUtility fileUtility, string fileTitle, object fileId)
         {
-            if (FileUtility.CanImageView(fileTitle) || FileUtility.CanMediaView(fileTitle))
+            if (fileUtility.CanImageView(fileTitle) || fileUtility.CanMediaView(fileTitle))
                 return GetFileWebMediaViewUrl(fileId);
 
-            if (FileUtility.CanWebView(fileTitle))
+            if (fileUtility.CanWebView(fileTitle))
             {
-                if (FileUtility.ExtsMustConvert.Contains(FileUtility.GetFileExtension(fileTitle)))
+                if (fileUtility.ExtsMustConvert.Contains(FileUtility.GetFileExtension(fileTitle)))
                     return string.Format(FileWebViewerUrlString, HttpUtility.UrlEncode(fileId.ToString()));
                 return GetFileWebEditorUrl(fileId);
             }
@@ -328,17 +339,17 @@ namespace ASC.Web.Core.Files
             return GetFileDownloadUrl(fileId);
         }
 
-        public static string FileRedirectPreviewUrlString
+        public string FileRedirectPreviewUrlString
         {
             get { return FileHandlerPath + "?" + Action + "=redirect"; }
         }
 
-        public static string GetFileRedirectPreviewUrl(object enrtyId, bool isFile)
+        public string GetFileRedirectPreviewUrl(object enrtyId, bool isFile)
         {
             return FileRedirectPreviewUrlString + "&" + (isFile ? FileId : FolderId) + "=" + HttpUtility.UrlEncode(enrtyId.ToString());
         }
 
-        public static string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, SecurityContext securityContext)
+        public string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, SecurityContext securityContext)
         {
             var queryString = string.Format("?initiate=true&{0}={1}&fileSize={2}&tid={3}&userid={4}&culture={5}",
                                             FileTitle,
@@ -357,24 +368,24 @@ namespace ASC.Web.Core.Files
             return CommonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
         }
 
-        public static string GetUploadChunkLocationUrl(string uploadId)
+        public string GetUploadChunkLocationUrl(string uploadId)
         {
             var queryString = "?uid=" + uploadId;
             return CommonLinkUtility.GetFullAbsolutePath(GetFileUploaderHandlerVirtualPath() + queryString);
         }
 
-        public static bool IsLocalFileUploader
+        public bool IsLocalFileUploader
         {
             get { return !Regex.IsMatch(FilesUploaderURL, "^http(s)?://\\.*"); }
         }
 
-        private static string GetFileUploaderHandlerVirtualPath()
+        private string GetFileUploaderHandlerVirtualPath()
         {
             var virtualPath = FilesUploaderURL;
             return virtualPath.EndsWith(".ashx") ? virtualPath : virtualPath.TrimEnd('/') + "/ChunkedUploader.ashx";
         }
 
-        private static string GetUrlSetting(string key, string appSettingsKey = null)
+        private string GetUrlSetting(string key, string appSettingsKey = null)
         {
             var value = string.Empty;
             if (CoreBaseSettings.Standalone)
@@ -383,12 +394,12 @@ namespace ASC.Web.Core.Files
             }
             if (string.IsNullOrEmpty(value))
             {
-                value = ConfigurationManager.AppSettings["files.docservice.url." + (appSettingsKey ?? key)];
+                value = Configuration["files.docservice.url." + (appSettingsKey ?? key)];
             }
             return value;
         }
 
-        private static void SetUrlSetting(string key, string value)
+        private void SetUrlSetting(string key, string value)
         {
             if (!CoreBaseSettings.Standalone)
             {
@@ -400,7 +411,7 @@ namespace ASC.Web.Core.Files
                 CoreSettings.SaveSetting(GetSettingsKey(key), value);
         }
 
-        private static string GetSettingsKey(string key)
+        private string GetSettingsKey(string key)
         {
             return "DocKey_" + key;
         }

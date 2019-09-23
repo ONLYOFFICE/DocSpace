@@ -69,6 +69,8 @@ namespace ASC.Employee.Core.Controllers
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public SetupInfo SetupInfo { get; }
+        public FileSizeComment FileSizeComment { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -92,7 +94,9 @@ namespace ASC.Employee.Core.Controllers
             TenantUtil tenantUtil,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings, 
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            SetupInfo setupInfo,
+            FileSizeComment fileSizeComment)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -117,6 +121,8 @@ namespace ASC.Employee.Core.Controllers
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
+            SetupInfo = setupInfo;
+            FileSizeComment = fileSizeComment;
         }
 
         [Read("info")]

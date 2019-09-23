@@ -31,6 +31,7 @@ using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
+using ASC.Security.Cryptography;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Configuration
@@ -91,12 +92,14 @@ namespace ASC.Data.Storage.Configuration
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils) : 
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider) : 
             base(authContext, settingsManager, tenantManager)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
             PathUtils = pathUtils;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
 
         public override ISettings GetDefault()
@@ -170,6 +173,7 @@ namespace ASC.Data.Storage.Configuration
         public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public PathUtils PathUtils { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         private static readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
@@ -189,8 +193,9 @@ namespace ASC.Data.Storage.Configuration
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils)
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider)
         {
         }
 
@@ -215,8 +220,9 @@ namespace ASC.Data.Storage.Configuration
             TenantManager tenantManager, 
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils)
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider)
         {
         }
 

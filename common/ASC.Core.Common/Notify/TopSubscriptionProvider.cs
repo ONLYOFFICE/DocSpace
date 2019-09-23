@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.Core.Tenants;
 using ASC.Notify.Recipients;
 
 

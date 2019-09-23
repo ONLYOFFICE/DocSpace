@@ -35,7 +35,7 @@ using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
-using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mail
 {
@@ -43,7 +43,7 @@ namespace ASC.Web.Core.Mail
     {
         public const string ConnectionStringFormat = "Server={0};Database={1};User ID={2};Password={3};Pooling=True;Character Set=utf8";
         public const string MailServiceDbId = "mailservice";
-        public static readonly string DefaultDatabase = GetDefaultDatabase();
+        public readonly string DefaultDatabase;
         public const string DefaultUser = "mail_admin";
         public const string DefaultPassword = "Isadmin123";
         public const string DefaultProtocol = "http";
@@ -56,6 +56,7 @@ namespace ASC.Web.Core.Mail
 
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
+        public IConfiguration Configuration { get; }
 
         static MailServiceHelper()
         {
@@ -63,15 +64,17 @@ namespace ASC.Web.Core.Mail
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        public MailServiceHelper(UserManager userManager, AuthContext authContext)
+        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration)
         {
             UserManager = userManager;
             AuthContext = authContext;
+            Configuration = configuration;
+            DefaultDatabase = GetDefaultDatabase();
         }
 
-        private static string GetDefaultDatabase()
+        private string GetDefaultDatabase()
         {
-            var value = ConfigurationManager.AppSettings["mail:database-name"];
+            var value = Configuration["mail:database-name"];
             return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
         }
 

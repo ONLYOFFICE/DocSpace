@@ -32,6 +32,7 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Security.Cryptography;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using MimeMapping = ASC.Common.Web.MimeMapping;
@@ -55,7 +56,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
 
-        public RackspaceCloudStorage(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
+        public RackspaceCloudStorage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
         {
         }
 

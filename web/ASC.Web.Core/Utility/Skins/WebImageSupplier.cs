@@ -25,24 +25,25 @@
 
 
 using System;
-using ASC.Common.Utils;
 using ASC.Data.Storage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Utility.Skins
 {
     public class WebImageSupplier
     {
-        private static string FolderName { get; } = ConfigurationManager.AppSettings["web:images"];
+        private string FolderName { get; }
         public WebItemManager WebItemManager { get; }
         public WebPath WebPath { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor)
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             WebItemManager = webItemManager;
             WebPath = webPath;
             HttpContextAccessor = httpContextAccessor;
+            FolderName = configuration["web:images"];
         }
 
         public string GetAbsoluteWebPath(string imgFileName)

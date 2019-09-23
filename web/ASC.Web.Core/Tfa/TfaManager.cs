@@ -75,13 +75,20 @@ namespace ASC.Web.Studio.Core.TFA
         public TfaAppAuthSettings TfaAppAuthSettings { get; }
         public SecurityContext SecurityContext { get; }
         public CookiesManager CookiesManager { get; }
+        public SetupInfo SetupInfo { get; }
 
-        public TfaManager(TfaAppUserSettings tfaAppUserSettings, TfaAppAuthSettings tfaAppAuthSettings, SecurityContext securityContext, CookiesManager cookiesManager)
+        public TfaManager(
+            TfaAppUserSettings tfaAppUserSettings, 
+            TfaAppAuthSettings tfaAppAuthSettings, 
+            SecurityContext securityContext, 
+            CookiesManager cookiesManager,
+            SetupInfo setupInfo)
         {
             TfaAppUserSettings = tfaAppUserSettings;
             TfaAppAuthSettings = tfaAppAuthSettings;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
+            SetupInfo = setupInfo;
         }
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)

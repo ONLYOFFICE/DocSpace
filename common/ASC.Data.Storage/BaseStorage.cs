@@ -38,10 +38,11 @@ namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
-        public BaseStorage(TenantManager tenantManager, PathUtils pathUtils)
+        public BaseStorage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
         }
 
         #region IDataStore Members
@@ -202,6 +203,7 @@ namespace ASC.Data.Storage
 
         public TenantManager TenantManager { get; }
         public PathUtils PathUtils { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         #endregion
 

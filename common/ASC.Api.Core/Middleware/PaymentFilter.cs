@@ -3,7 +3,6 @@ using System.Net;
 using System.Web;
 using ASC.Common.Logging;
 using ASC.Web.Api.Routing;
-using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;

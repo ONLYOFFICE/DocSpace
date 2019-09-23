@@ -26,7 +26,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core.Tenants;
 using ASC.Web.Core.Users;
 
 namespace ASC.Web.Api.Models

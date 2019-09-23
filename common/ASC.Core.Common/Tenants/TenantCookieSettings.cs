@@ -27,8 +27,8 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using ASC.Common.Utils;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Tenants
 {
@@ -42,21 +42,17 @@ namespace ASC.Core.Tenants
         [DataMember(Name = "LifeTime")]
         public int LifeTime { get; set; }
 
-        private static readonly bool IsVisibleSettings;
+        private readonly bool IsVisibleSettings;
 
         public TenantCookieSettings()
         {
         }
-        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : 
             base(authContext, settingsManager, tenantManager)
         {
-        }
-
-        static TenantCookieSettings()
-        {
-            IsVisibleSettings = !(ConfigurationManager.AppSettings["web:hide-settings"] ?? string.Empty)
-                        .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Contains("CookieSettings", StringComparer.CurrentCultureIgnoreCase);
+            IsVisibleSettings = !(configuration["web:hide-settings"] ?? string.Empty)
+            .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Contains("CookieSettings", StringComparer.CurrentCultureIgnoreCase);
         }
 
         public override ISettings GetDefault()
@@ -90,7 +86,7 @@ namespace ASC.Core.Tenants
                        : GetInstance();
         }
 
-        public static void SetForTenant(int tenantId, TenantCookieSettings settings = null)
+        public void SetForTenant(int tenantId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
             (settings ?? GetInstance()).SaveForTenant(tenantId);
@@ -110,7 +106,7 @@ namespace ASC.Core.Tenants
                        : GetInstance();
         }
 
-        public static void SetForUser(Guid userId, TenantCookieSettings settings = null)
+        public void SetForUser(Guid userId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
             (settings ?? GetInstance()).SaveForUser(userId);

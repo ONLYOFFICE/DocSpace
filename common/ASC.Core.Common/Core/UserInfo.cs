@@ -27,9 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using ASC.Core.Tenants;
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users

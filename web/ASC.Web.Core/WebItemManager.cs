@@ -27,17 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Web.Core.WebZones;
 
 using Autofac;
-
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core
@@ -55,12 +50,11 @@ namespace ASC.Web.Core
         private static readonly ILog log;
 
         private readonly Dictionary<Guid, IWebItem> items = new Dictionary<Guid, IWebItem>();
-        private static readonly List<string> disableItem;
+        private readonly List<string> disableItem;
 
         static WebItemManager()
         {
             log = LogManager.GetLogger("ASC.Web");
-            disableItem = (ConfigurationManager.AppSettings["web:disabled-items"] ?? "").Split(",").ToList();
         }
 
         public static Guid CommunityProductID
@@ -114,6 +108,7 @@ namespace ASC.Web.Core
         }
 
         public IContainer Container { get; }
+        public IConfiguration Configuration { get; }
 
         public IWebItem this[Guid id]
         {
@@ -124,9 +119,11 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container)
+        public WebItemManager(IContainer container, IConfiguration configuration)
         {
             Container = container;
+            Configuration = configuration;
+            disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
             LoadItems();
         }
 

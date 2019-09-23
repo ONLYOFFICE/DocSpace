@@ -28,8 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using ASC.Common.DependencyInjection;
-using ASC.Data.Storage;
 using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Web.Core.Utility.Skins

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 namespace ASC.Web.Core.Calendars

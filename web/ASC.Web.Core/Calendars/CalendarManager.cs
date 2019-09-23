@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using ASC.Core;
-using ASC.Core.Tenants;
 
 namespace ASC.Web.Core.Calendars
 {

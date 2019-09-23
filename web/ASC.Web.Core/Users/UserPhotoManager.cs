@@ -40,7 +40,6 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Core.Users
 {

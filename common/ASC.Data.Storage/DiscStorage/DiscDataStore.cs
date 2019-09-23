@@ -31,6 +31,7 @@ using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Security.Cryptography;
 
 namespace ASC.Data.Storage.DiscStorage
 {
@@ -63,7 +64,7 @@ namespace ASC.Data.Storage.DiscStorage
             return this;
         }
 
-        public DiscDataStore(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
+        public DiscDataStore(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
         {
         }
 

@@ -28,13 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Threading.Progress;
-using ASC.Core;
 using ASC.Core.Users;
-using ASC.Data.Storage;
-using ASC.MessagingSystem;
-using ASC.Web.Core;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Core.Notify;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.Data.Reassigns

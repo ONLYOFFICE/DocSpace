@@ -32,12 +32,10 @@ using System.Text.RegularExpressions;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
-using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Users
 {
@@ -197,8 +195,51 @@ namespace ASC.Web.Core.Users
 
             var passwordSettingsObj = PasswordSettings.Load();
 
-            if (!PasswordSettings.CheckPasswordRegex(CoreBaseSettings, passwordSettingsObj, password))
+            if (!CheckPasswordRegex(passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
+        }
+        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        {
+            var pwdBuilder = new StringBuilder();
+
+            if (CoreBaseSettings.CustomMode)
+            {
+                pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
+
+                if (passwordSettings.Digits)
+                    pwdBuilder.Append(@"(?=.*\d)");
+
+                if (passwordSettings.UpperCase)
+                    pwdBuilder.Append(@"(?=.*[A-Z])");
+
+                if (passwordSettings.SpecSymbols)
+                    pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
+
+                pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
+            }
+            else
+            {
+                pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
+
+                if (passwordSettings.Digits)
+                    pwdBuilder.Append(@"(?=.*\d)");
+
+                if (passwordSettings.UpperCase)
+                    pwdBuilder.Append(@"(?=.*\p{Lu})");
+
+                if (passwordSettings.SpecSymbols)
+                    pwdBuilder.Append(@"(?=.*[\W])");
+
+                pwdBuilder.Append(@".");
+            }
+
+            pwdBuilder.Append(@"{");
+            pwdBuilder.Append(passwordSettings.MinLength);
+            pwdBuilder.Append(@",");
+            pwdBuilder.Append(PasswordSettings.MaxLength);
+            pwdBuilder.Append(@"}$");
+
+            return new Regex(pwdBuilder.ToString()).IsMatch(password);
         }
 
         public UserInfo SendUserPassword(string email)

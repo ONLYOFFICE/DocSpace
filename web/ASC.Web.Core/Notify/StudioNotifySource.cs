@@ -26,7 +26,6 @@
 
 using ASC.Core;
 using ASC.Core.Notify;
-using ASC.Core.Tenants;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;

@@ -32,6 +32,7 @@ using ASC.Core.Users;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core.SMS
 {
@@ -43,6 +44,7 @@ namespace ASC.Web.Studio.Core.SMS
         public TenantManager TenantManager { get; }
         public StudioSmsNotificationSettings StudioSmsNotificationSettings { get; }
         public SmsKeyStorage SmsKeyStorage { get; }
+        public IConfiguration Configuration { get; }
 
         public SmsManager(
             UserManager userManager,
@@ -50,7 +52,8 @@ namespace ASC.Web.Studio.Core.SMS
             SecurityContext securityContext,
             TenantManager tenantManager,
             StudioSmsNotificationSettings studioSmsNotificationSettings,
-            SmsKeyStorage smsKeyStorage)
+            SmsKeyStorage smsKeyStorage,
+            IConfiguration configuration)
         {
             UserManager = userManager;
             TenantExtra = tenantExtra;
@@ -58,6 +61,7 @@ namespace ASC.Web.Studio.Core.SMS
             TenantManager = tenantManager;
             StudioSmsNotificationSettings = studioSmsNotificationSettings;
             SmsKeyStorage = smsKeyStorage;
+            Configuration = configuration;
         }
 
         public string SaveMobilePhone(UserInfo user, string mobilePhone)
@@ -106,7 +110,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (SmsKeyStorage.ExistsKey(mobilePhone) && !again) return;
 
             if (!SmsKeyStorage.GenerateKey(mobilePhone, out var key)) throw new Exception(Resource.SmsTooMuchError);
-            if (SmsSender.SendSMS(TenantManager, mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
+            if (SmsSender.SendSMS(Configuration, TenantManager, mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
             {
                 TenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = TenantManager.GetCurrentTenant().TenantId, Path = "/sms", Counter = 1 }, true);
             }

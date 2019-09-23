@@ -8,7 +8,6 @@ using ASC.Security.Cryptography;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -25,15 +24,18 @@ namespace ASC.Api.Core.Auth
             UrlEncoder encoder, 
             ISystemClock clock, 
             SecurityContext securityContext,
-            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            SetupInfo setupInfo) : 
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            SetupInfo = setupInfo;
         }
 
         public SecurityContext SecurityContext { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public SetupInfo SetupInfo { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {

@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using ASC.Core.Tenants;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
 

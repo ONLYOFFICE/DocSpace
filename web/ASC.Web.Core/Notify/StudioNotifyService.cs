@@ -65,6 +65,7 @@ namespace ASC.Web.Studio.Core.Notify
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public SetupInfo SetupInfo { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public StudioNotifyService(
@@ -80,6 +81,7 @@ namespace ASC.Web.Studio.Core.Notify
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
+            SetupInfo setupInfo,
             IServiceProvider serviceProvider)
         {
             client = studioNotifyServiceHelper;
@@ -92,6 +94,7 @@ namespace ASC.Web.Studio.Core.Notify
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
+            SetupInfo = setupInfo;
             ServiceProvider = serviceProvider;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
@@ -357,7 +360,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserWelcomeV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, true, false);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, true, false);
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -394,7 +397,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 notifyAction = Actions.SaasGuestWelcomeV10;
                 var tenant = TenantManager.GetCurrentTenant();
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, false, false, true);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, false, true);
             }
 
             string greenButtonText() => TenantExtra.Enterprise
@@ -430,7 +433,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasUserActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, true, false);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, true, false);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -466,7 +469,7 @@ namespace ASC.Web.Studio.Core.Notify
             else
             {
                 notifyAction = Actions.SaasGuestActivationV10;
-                analytics = StudioNotifyHelper.GetNotifyAnalytics(TenantManager.GetCurrentTenant().TenantId, notifyAction, false, false, false, true);
+                analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, false, false, true);
             }
 
             var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -580,7 +583,7 @@ namespace ASC.Web.Studio.Core.Notify
                 tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
 
                 var tenant = TenantManager.GetCurrentTenant();
-                var analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, true, false, false);
+                var analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, true, false, false);
                 tagValues.Add(new TagValue(CommonTags.Analytics, analytics));
 
                 tagValues.Add(TagValues.TableTop());
@@ -751,7 +754,7 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     notifyAction = Actions.SaasAdminActivationV10;
                     var tenant = TenantManager.GetCurrentTenant();
-                    analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, notifyAction, false, true, false, false);
+                    analytics = StudioNotifyHelper.GetNotifyAnalytics(notifyAction, false, true, false, false);
                 }
 
                 var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(u.Email, ConfirmType.EmailActivation);

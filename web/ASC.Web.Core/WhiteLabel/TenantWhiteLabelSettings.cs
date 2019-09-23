@@ -38,7 +38,6 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Studio.Utility;
 using TMResourceData;
 
 namespace ASC.Web.Core.WhiteLabel

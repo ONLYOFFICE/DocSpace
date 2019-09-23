@@ -28,10 +28,9 @@ using System;
 using System.IO;
 using System.Linq;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -45,7 +44,7 @@ namespace ASC.Web.Core.WhiteLabel
             get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
         }
 
-        public static bool WhiteLabelEnabled
+        public bool WhiteLabelEnabled
         {
             get;
             private set;
@@ -54,17 +53,19 @@ namespace ASC.Web.Core.WhiteLabel
 
         static TenantLogoManager()
         {
-            var hideSettings = (ConfigurationManager.AppSettings["web.hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
-            WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
             CacheNotify = new KafkaCache<TenantLogoCacheItem>();
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings, TenantManager tenantManager)
+
+        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings, TenantManager tenantManager, IConfiguration configuration)
         {
             TenantWhiteLabelSettings = tenantWhiteLabelSettings;
             TenantInfoSettings = tenantInfoSettings;
             TenantManager = tenantManager;
+            Configuration = configuration;
+            var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
+            WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
         }
 
         public string GetFavicon(bool general, bool timeParam)
@@ -163,6 +164,7 @@ namespace ASC.Web.Core.WhiteLabel
         public TenantWhiteLabelSettings TenantWhiteLabelSettings { get; }
         public TenantInfoSettings TenantInfoSettings { get; }
         public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
         /// <summary>
         /// Get logo stream or null in case of default logo

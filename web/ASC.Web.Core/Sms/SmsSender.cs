@@ -28,9 +28,9 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Sms
 {
@@ -39,7 +39,7 @@ namespace ASC.Web.Core.Sms
         private static readonly ILog Log = LogManager.GetLogger("ASC");
 
 
-        public static bool SendSMS(TenantManager tenantManager, string number, string message)
+        public static bool SendSMS(IConfiguration configuration, TenantManager tenantManager, string number, string message)
         {
             if (string.IsNullOrEmpty(number))
             {
@@ -54,7 +54,7 @@ namespace ASC.Web.Core.Sms
                 throw new MethodAccessException();
             }
 
-            if ("log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
+            if ("log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
             {
                 var tenant = tenantManager.GetCurrentTenant(false);
                 var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;

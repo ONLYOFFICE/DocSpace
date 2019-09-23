@@ -29,13 +29,13 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -48,12 +48,14 @@ namespace ASC.Web.Studio.Core.Notify
         private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
         public IServiceProvider ServiceProvider { get; }
+        public IConfiguration Configuration { get; }
 
-        public StudioNotifyServiceSender(IServiceProvider serviceProvider)
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration)
         {
             cache = new KafkaCache<NotifyItem>();
             cache.Subscribe(OnMessage, CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
+            Configuration = configuration;
         }
 
         public void OnMessage(NotifyItem item)
@@ -104,13 +106,13 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void RegisterSendMethod()
         {
-            var cron = ConfigurationManager.AppSettings["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
+            var cron = Configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
             using var scope = ServiceProvider.CreateScope();
             var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
 
-            if (ConfigurationManager.AppSettings["core:notify:tariff"] != "false")
+            if (Configuration["core:notify:tariff"] != "false")
             {
                 if (tenantExtra.Enterprise)
                 {

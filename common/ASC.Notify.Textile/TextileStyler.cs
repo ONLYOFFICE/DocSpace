@@ -90,7 +90,7 @@ namespace ASC.Notify.Textile
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
-                                   .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettings.DefaultMailSiteUrl : mailSettings.SiteUrl)
+                                   .Replace("%SITEURL%", mailSettings == null ? mailSettings.DefaultMailSiteUrl : mailSettings.SiteUrl)
                                    .Replace("%FOOTER%", footerContent)
                                    .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                    .Replace("%TEXTFOOTER%", unsubscribeText);
@@ -217,9 +217,9 @@ namespace ASC.Notify.Textile
             {
                 footerContent =
                     NotifyTemplateResource.FooterCommon
-                                          .Replace("%SUPPORTURL%", MailWhiteLabelSettings.DefaultMailSupportUrl)
-                                          .Replace("%SALESEMAIL%", MailWhiteLabelSettings.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettings.DefaultMailDemotUrl);
+                                          .Replace("%SUPPORTURL%", settings.DefaultMailSupportUrl)
+                                          .Replace("%SALESEMAIL%", settings.DefaultMailSalesEmail)
+                                          .Replace("%DEMOURL%", settings.DefaultMailDemotUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
 
             }
@@ -292,7 +292,7 @@ namespace ASC.Notify.Textile
                              : "{0}/Unsubscribe.aspx?id={1}";
 
             var site = settings == null
-                           ? MailWhiteLabelSettings.DefaultMailSiteUrl
+                           ? settings.DefaultMailSiteUrl
                            : settings.SiteUrl;
 
             return string.Format(format,

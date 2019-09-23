@@ -28,17 +28,17 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Sms
 {
     public class SmsKeyStorage
     {
-        public static readonly int KeyLength;
-        public static readonly TimeSpan StoreInterval;
-        public static readonly int AttemptCount;
+        public readonly int KeyLength;
+        public readonly TimeSpan StoreInterval;
+        public readonly int AttemptCount;
         private static readonly object KeyLocker = new object();
         private static readonly ICacheNotify<SmsKeyCacheKey> KeyCacheNotify;
         private static readonly ICache KeyCache = AscCache.Memory;
@@ -48,29 +48,28 @@ namespace ASC.Web.Core.Sms
 
         static SmsKeyStorage()
         {
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keylength"], out KeyLength))
+            KeyCacheNotify = new KafkaCache<SmsKeyCacheKey>();
+            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
+
+        public SmsKeyStorage(TenantManager tenantManager, IConfiguration configuration)
+        {
+            TenantManager = tenantManager;
+            if (!int.TryParse(configuration["sms:keylength"], out KeyLength))
             {
                 KeyLength = 6;
             }
 
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keystore"], out var store))
+            if (!int.TryParse(configuration["sms:keystore"], out var store))
             {
                 store = 10;
             }
             StoreInterval = TimeSpan.FromMinutes(store);
 
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keycount"], out AttemptCount))
+            if (!int.TryParse(configuration["sms:keycount"], out AttemptCount))
             {
                 AttemptCount = 5;
             }
-
-            KeyCacheNotify = new KafkaCache<SmsKeyCacheKey>();
-            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
-        }
-
-        public SmsKeyStorage(TenantManager tenantManager)
-        {
-            TenantManager = tenantManager;
         }
 
         private string BuildCacheKey(string phone)

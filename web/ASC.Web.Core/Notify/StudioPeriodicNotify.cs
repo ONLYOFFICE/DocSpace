@@ -96,6 +96,8 @@ namespace ASC.Web.Studio.Core.Notify
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var authContext = scope.ServiceProvider.GetService<AuthContext>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                    var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
+                    var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -366,7 +368,7 @@ namespace ASC.Web.Studio.Core.Notify
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
                             var owner = userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                            greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
@@ -377,9 +379,9 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             tenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(commonLinkUtility, tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -440,7 +442,7 @@ namespace ASC.Web.Studio.Core.Notify
                             greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
                             var owner = userManager.GetUsers(tenant.OwnerId);
-                            greenButtonUrl = SetupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
+                            greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                           Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
@@ -451,9 +453,9 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             tenantManager.RemoveTenant(tenant.TenantId, true);
 
-                            if (!string.IsNullOrEmpty(ApiSystemHelper.ApiCacheUrl))
+                            if (!string.IsNullOrEmpty(apiSystemHelper.ApiCacheUrl))
                             {
-                                ApiSystemHelper.RemoveTenantFromCache(commonLinkUtility, tenant.TenantAlias, authContext.CurrentAccount.ID);
+                                apiSystemHelper.RemoveTenantFromCache(tenant.TenantAlias, authContext.CurrentAccount.ID);
                             }
                         }
 
@@ -470,7 +472,7 @@ namespace ASC.Web.Studio.Core.Notify
                                     : studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
 
-                    var analytics = StudioNotifyHelper.GetNotifyAnalytics(tenant.TenantId, action, toowner, toadmins, tousers, false);
+                    var analytics = studioNotifyHelper.GetNotifyAnalytics(action, toowner, toadmins, tousers, false);
 
                     foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {

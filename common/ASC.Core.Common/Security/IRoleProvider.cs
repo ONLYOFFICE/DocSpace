@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Tenants;
 
 namespace ASC.Common.Security
 {

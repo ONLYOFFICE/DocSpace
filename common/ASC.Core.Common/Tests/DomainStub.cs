@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Tenants;
 
 namespace ASC.Common.Tests.Security.Authorizing
 {

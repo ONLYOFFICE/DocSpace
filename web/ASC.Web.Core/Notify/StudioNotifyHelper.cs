@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
@@ -48,12 +47,22 @@ namespace ASC.Web.Studio.Core.Notify
         public readonly IRecipientProvider RecipientsProvider;
 
         public UserManager UserManager { get; }
+        public SetupInfo SetupInfo { get; }
+        public TenantManager TenantManager { get; }
 
-        public StudioNotifyHelper(StudioNotifySource studioNotifySource, UserManager userManager, AdditionalWhiteLabelSettings additionalWhiteLabelSettings, CommonLinkUtility commonLinkUtility)
+        public StudioNotifyHelper(
+            StudioNotifySource studioNotifySource, 
+            UserManager userManager, 
+            AdditionalWhiteLabelSettings additionalWhiteLabelSettings, 
+            CommonLinkUtility commonLinkUtility,
+            SetupInfo setupInfo,
+            TenantManager tenantManager)
         {
             Helplink = commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
             NotifySource = studioNotifySource;
             UserManager = userManager;
+            SetupInfo = setupInfo;
+            TenantManager = tenantManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
         }
@@ -119,7 +128,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public static string GetNotifyAnalytics(int tenantId, INotifyAction action, bool toowner, bool toadmins,
+        public string GetNotifyAnalytics(INotifyAction action, bool toowner, bool toadmins,
                                                 bool tousers, bool toguests)
         {
             if (string.IsNullOrEmpty(SetupInfo.NotifyAnalyticsUrl))
@@ -134,7 +143,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             return string.Format("<img src=\"{0}\" width=\"1\" height=\"1\"/>",
                                  string.Format(SetupInfo.NotifyAnalyticsUrl,
-                                               tenantId,
+                                               TenantManager.GetCurrentTenant().TenantId,
                                                target,
                                                action.ID));
         }

@@ -27,8 +27,8 @@
 using System;
 using System.Text;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Security.Cryptography
 {
@@ -45,10 +45,12 @@ namespace ASC.Security.Cryptography
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
 
         public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
-        public EmailValidationKeyProvider(TenantManager tenantManager)
+        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration)
         {
             TenantManager = tenantManager;
+            Configuration = configuration;
         }
 
         public string GetEmailKey(string email)
@@ -56,7 +58,7 @@ namespace ASC.Security.Cryptography
             return GetEmailKey(TenantManager.GetCurrentTenant().TenantId, email);
         }
 
-        public static string GetEmailKey(int tenantId, string email)
+        public string GetEmailKey(int tenantId, string email)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
 
@@ -67,12 +69,12 @@ namespace ASC.Security.Cryptography
             return string.Format("{0}.{1}", ms, DoStringFromBytes(hash));
         }
 
-        private static string FormatEmail(int tenantId, string email)
+        private string FormatEmail(int tenantId, string email)
         {
             if (email == null) throw new ArgumentNullException("email");
             try
             {
-                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, ConfigurationManager.AppSettings["core:machinekey"]);
+                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Configuration["core:machinekey"]);
             }
             catch (Exception e)
             {

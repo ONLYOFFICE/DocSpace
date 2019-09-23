@@ -27,12 +27,15 @@ using ASC.MessagingSystem;
 using ASC.Notify.Recipients;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
+using ASC.Web.Core.Files;
+using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Core.WhiteLabel;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -139,13 +142,13 @@ namespace ASC.People
                     .AddSingleton((r) =>
                     {
                         var quotaCacheEnabled = false;
-                        if (Common.Utils.ConfigurationManager.AppSettings["core:enable-quota-cache"] == null)
+                        if (Configuration["core:enable-quota-cache"] == null)
                         {
                             quotaCacheEnabled = true;
                         }
                         else
                         {
-                            quotaCacheEnabled = !bool.TryParse(Common.Utils.ConfigurationManager.AppSettings["core:enable-quota-cache"], out var enabled) || enabled;
+                            quotaCacheEnabled = !bool.TryParse(Configuration["core:enable-quota-cache"], out var enabled) || enabled;
                         }
 
                         var cs = DbRegistry.GetConnectionString("core");
@@ -213,11 +216,16 @@ namespace ASC.People
                     .AddScoped<CoreConfiguration>()
                     .AddScoped<BaseCommonLinkUtility>()
                     .AddScoped<CommonLinkUtility>()
+                    .AddScoped<FilesLinkUtility>()
+                    .AddScoped<FileUtility>()
                     .AddScoped<LicenseReader>()
+                    .AddScoped<ApiSystemHelper>()
                     .AddSingleton<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
                     .AddSingleton<CoreBaseSettings>()
+                    .AddSingleton<SetupInfo>()
+                    .AddScoped<FileSizeComment>()
                     .AddScoped<SubscriptionManager>()
                     .AddScoped<IPSecurity.IPSecurity>()
                     .AddSingleton<PathUtils>()

@@ -32,11 +32,11 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Core.PublicResources;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -69,6 +69,7 @@ namespace ASC.Api.Settings.Smtp
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
         protected ILog Logger { get; private set; }
 
         public SmtpSettingsWrapper SmtpSettings { get; private set; }
@@ -83,7 +84,8 @@ namespace ASC.Api.Settings.Smtp
             Guid user, 
             UserManager userManager, 
             SecurityContext securityContext,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IConfiguration configuration)
         {
             SmtpSettings = smtpSettings;
             CurrentTenant = tenant;
@@ -91,6 +93,7 @@ namespace ASC.Api.Settings.Smtp
             UserManager = userManager;
             SecurityContext = securityContext;
             TenantManager = tenantManager;
+            Configuration = configuration;
 
             //todo
             //messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
@@ -210,8 +213,8 @@ namespace ASC.Api.Settings.Smtp
 
         public SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = ConfigurationManager.AppSettings["mail.certificate-permit"] != null &&
-                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail.certificate-permit"]);
+            var sslCertificatePermit = Configuration["mail.certificate-permit"] != null &&
+                    Convert.ToBoolean(Configuration["mail.certificate-permit"]);
 
             return new SmtpClient
             {

@@ -37,6 +37,7 @@ using System.Threading;
 using System.Web;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Security.Cryptography;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 using MimeMapping = ASC.Common.Web.MimeMapping;
@@ -58,7 +59,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private bool _lowerCasing = true;
 
-        public GoogleCloudStorage(TenantManager tenantManager, PathUtils pathUtils) : base(tenantManager, pathUtils)
+        public GoogleCloudStorage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
         {
         }
 

@@ -27,7 +27,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using ASC.Common.DependencyInjection;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.AspNetCore.Hosting;

@@ -27,9 +27,9 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -99,8 +99,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         }
 
-        public AdditionalWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        public AdditionalWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
         {
+            Configuration = configuration;
         }
 
         #region ISettings Members
@@ -133,34 +134,34 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region Default values
 
-        public static string DefaultHelpCenterUrl
+        public string DefaultHelpCenterUrl
         {
             get
             {
-                var url = ConfigurationManager.AppSettings["web.help-center"];
+                var url = Configuration["web.help-center"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
 
-        public static string DefaultFeedbackAndSupportUrl
+        public string DefaultFeedbackAndSupportUrl
         {
             get
             {
-                var url = ConfigurationManager.AppSettings["web.support-feedback"];
+                var url = Configuration["web.support-feedback"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
 
-        public static string DefaultUserForumUrl
+        public string DefaultUserForumUrl
         {
             get
             {
-                var url = ConfigurationManager.AppSettings["web.user-forum"];
+                var url = Configuration["web.user-forum"];
                 return string.IsNullOrEmpty(url) ? null : url;
             }
         }
 
-        public static string DefaultVideoGuidesUrl
+        public string DefaultVideoGuidesUrl
         {
             get
             {
@@ -169,20 +170,20 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        public static string DefaultMailSalesEmail
+        public string DefaultMailSalesEmail
         {
             get
             {
-                var email = ConfigurationManager.AppSettings["web.payment.email"];
+                var email = Configuration["web.payment.email"];
                 return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
             }
         }
 
-        public static string DefaultBuyUrl
+        public string DefaultBuyUrl
         {
             get
             {
-                var site = ConfigurationManager.AppSettings["web.teamlab-site"];
+                var site = Configuration["web.teamlab-site"];
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
         }
@@ -204,5 +205,7 @@ namespace ASC.Web.Core.WhiteLabel
                 return LoadForDefaultTenant();
             }
         }
+
+        public IConfiguration Configuration { get; }
     }
 }

@@ -29,12 +29,11 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -58,10 +57,12 @@ namespace ASC.Web.Core.WhiteLabel
             SettingsManager settingsManager, 
             WebImageSupplier webImageSupplier, 
             TenantManager tenantManager,
-            StorageFactory storageFactory) : base(authContext, settingsManager, tenantManager)
+            StorageFactory storageFactory,
+            IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
             StorageFactory = storageFactory;
+            Configuration = configuration;
         }
 
         #region ISettings Members
@@ -83,7 +84,7 @@ namespace ASC.Web.Core.WhiteLabel
         public void RestoreDefaultTenantName()
         {
             var currentTenant = TenantManager.GetCurrentTenant();
-            currentTenant.Name = ConfigurationManager.AppSettings["web:portal-name"] ?? "Cloud Office Applications";
+            currentTenant.Name = Configuration["web:portal-name"] ?? "Cloud Office Applications";
             TenantManager.SaveTenant(currentTenant);
         }
 
@@ -165,6 +166,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public WebImageSupplier WebImageSupplier { get; }
         public StorageFactory StorageFactory { get; }
+        public IConfiguration Configuration { get; }
 
         #endregion
     }

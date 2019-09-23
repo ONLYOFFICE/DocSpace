@@ -42,6 +42,7 @@ using ASC.Notify.Patterns;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -49,9 +50,13 @@ namespace ASC.Web.Studio.Core.Notify
     public class StudioWhatsNewNotify
     {
         public IServiceProvider ServiceProvider { get; }
+        public IConfiguration Confuguration { get; }
 
-        public StudioWhatsNewNotify(IServiceProvider  serviceProvider)
-            => (ServiceProvider) = (serviceProvider);
+        public StudioWhatsNewNotify(IServiceProvider  serviceProvider, IConfiguration confuguration)
+        {
+            ServiceProvider = serviceProvider;
+            Confuguration = confuguration;
+        }
 
         public void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
         {
@@ -262,12 +267,12 @@ namespace ASC.Web.Studio.Core.Notify
             return new FeedAggregateDataProvider().GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
         }
 
-        private static bool TimeToSendWhatsNew(DateTime currentTime)
+        private bool TimeToSendWhatsNew(DateTime currentTime)
         {
             var hourToSend = 7;
-            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.whatsnew-time"]))
+            if (!string.IsNullOrEmpty(Confuguration["web:whatsnew-time"]))
             {
-                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out var hour))
+                if (int.TryParse(Confuguration["web:whatsnew-time"], out var hour))
                 {
                     hourToSend = hour;
                 }

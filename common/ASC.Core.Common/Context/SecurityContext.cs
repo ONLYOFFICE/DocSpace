@@ -30,7 +30,6 @@ using System.Linq;
 using System.Security;
 using System.Security.Authentication;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using ASC.Common.Logging;
