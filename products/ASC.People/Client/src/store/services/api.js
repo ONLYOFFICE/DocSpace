@@ -219,6 +219,6 @@ export function createGroup(groupName, groupManager, members) {
 }
 
 export function updateGroup(id, groupName, groupManager, members) {
-  const group = {id, groupName, groupManager, members};
+  const group = {groupId: id, groupName, groupManager, members};
   return axios.put(`${API_URL}/group/${id}.json`, group);
 }
