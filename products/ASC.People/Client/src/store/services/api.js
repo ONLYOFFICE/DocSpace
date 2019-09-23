@@ -48,6 +48,10 @@ export function getUser(userId) {
     : axios.get(`${API_URL}/people/${userId || "@self"}.json`);
 }
 
+export function getSelectorUserList() {
+  return axios.get(`${API_URL}/people.json?fields=id,displayName,groups`);
+}
+
 export function getUserList(filter = Filter.getDefault()) {
   const params =
     filter && filter instanceof Filter

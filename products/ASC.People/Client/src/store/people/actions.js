@@ -10,6 +10,7 @@ export const DESELECT_USER = "DESELECT_USER";
 export const SET_SELECTED = "SET_SELECTED";
 export const SET_FILTER = "SET_FILTER";
 export const SELECT_GROUP = "SELECT_GROUP";
+export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
 
 export function setUser(user) {
   return {
@@ -76,6 +77,20 @@ export function setFilter(filter) {
   return {
     type: SET_FILTER,
     filter
+  };
+}
+
+export function setSelectorUsers(users) {
+  return {
+    type: SET_SELECTOR_USERS,
+    users
+  };
+}
+
+export function fetchSelectorUsers() {
+  return dispatch => {
+    api.getSelectorUserList()
+    .then(res => dispatch(setSelectorUsers(res.data.response)));
   };
 }
 
