@@ -105,7 +105,7 @@ class SectionBodyContent extends React.Component {
             label: t("CustomAddEmployee", { typeUser })
           },
       groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
-      groupMembers: group && group.members ? group.members.map(u => u.id) : []
+      groupMembers: group && group.members ? group.members : []
     };
   }
 
@@ -148,8 +148,8 @@ class SectionBodyContent extends React.Component {
     this.setState({ inLoading: true });
 
     (group && group.id
-      ? updateGroup(group.id, groupName, groupManager, groupMembers)
-      : createGroup(groupName, groupManager, groupMembers)
+      ? updateGroup(group.id, groupName, groupManager, groupMembers.map(u => u.id))
+      : createGroup(groupName, groupManager, groupMembers.map(u => u.id))
     )
       .then(() => {
         toastr.success("Success");
