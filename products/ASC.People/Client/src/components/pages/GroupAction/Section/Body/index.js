@@ -28,6 +28,7 @@ import {
   updateGroup
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
+import { fetchSelectorUsers } from "../../../../../store/people/actions";
 
 const MainContainer = styled.div`
   display: flex;
@@ -107,6 +108,10 @@ class SectionBodyContent extends React.Component {
       groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
       groupMembers: group && group.members ? group.members : []
     };
+  }
+
+  componentDidMount() {
+    this.props.fetchSelectorUsers();
   }
 
   onGroupChange = e => {
@@ -469,7 +474,7 @@ const convertUsers = users => {
     ? users.map(u => {
         return {
           key: u.id,
-          groups: [],
+          groups: u.groups || [],
           label: u.displayName
         };
       })
@@ -493,11 +498,11 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.users) //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
   };
 }
 
 export default connect(
   mapStateToProps,
-  { resetGroup, createGroup, updateGroup }
+  { resetGroup, createGroup, updateGroup, fetchSelectorUsers }
 )(withRouter(withTranslation()(SectionBodyContent)));
