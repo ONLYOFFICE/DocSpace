@@ -169,7 +169,7 @@ namespace ASC.Core
             return false;
         }
 
-        public static string AuthenticateMe(IAccount account)
+        public static string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
         {
             if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
 
@@ -221,6 +221,11 @@ namespace ASC.Core
                 new Claim(ClaimTypes.Name, account.Name)
             };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+            if(additionalClaims != null)
+            {
+                claims.AddRange(additionalClaims);
+            }
 
             Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
 
