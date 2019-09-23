@@ -46,7 +46,7 @@ const ConfirmContainer = styled.div`
 const emailInputName = 'email';
 const passwordInputName = 'password';
 
-const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+const emailRegex = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$';
 const validationEmail = new RegExp(emailRegex);
 
 class Confirm extends React.PureComponent {
@@ -72,9 +72,8 @@ class Confirm extends React.PureComponent {
 
     onSubmit = (e) => {
         this.setState({ isLoading: true }, function () {
-            const { location, history, createConfirmUser } = this.props;
-            const queryString = location.search.slice(1);
-            const queryParams = queryString.split('&');
+            const { history, createConfirmUser } = this.props;
+            const queryParams = this.state.queryString.split('&');
             const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
             const linkParams = Object.fromEntries(arrayOfQueryParams);
             const isVisitor = parseInt(linkParams.emplType) === 2;
@@ -120,7 +119,7 @@ class Confirm extends React.PureComponent {
                 email: this.state.email,
                 isVisitor: isVisitor
             };
-            createConfirmUser(registerData, loginData, queryString)
+            createConfirmUser(registerData, loginData, this.state.queryString)
                 .then(() => history.push('/'))
                 .catch(e => {
                     console.error("confirm error", e);
@@ -140,8 +139,7 @@ class Confirm extends React.PureComponent {
     validatePassword = (value) => this.setState({ passwordValid: value });
 
     componentDidMount() {
-        const { getPasswordSettings, history, location } = this.props;
-        //const queryString = location.search.slice(1);
+        const { getPasswordSettings, history } = this.props;
 
         getPasswordSettings(this.state.queryString)
             .then(
@@ -323,17 +321,14 @@ class Confirm extends React.PureComponent {
     }
 }
 
-const ConfirmWrapper = withTranslation()(Confirm);
 
-const ConfirmWithTrans = (props) =><ConfirmWrapper {...props} />;
-
-ConfirmWithTrans.propTypes = {
+Confirm.propTypes = {
     getPasswordSettings: PropTypes.func.isRequired,
     createConfirmUser: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
 };
-const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<ConfirmWithTrans {...props} />} />);
+const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...props} />} />);
 
 
 function mapStateToProps(state) {
@@ -343,4 +338,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(CreateUserForm));
+export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));

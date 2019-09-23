@@ -23,7 +23,7 @@ class PurePeopleLayout extends React.Component {
     }
 
     onAboutClick = () => {
-        console.log('About clicked');
+        window.location.href = "/about";
     }
 
     onLogoutClick = () => {
