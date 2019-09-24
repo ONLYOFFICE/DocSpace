@@ -124,6 +124,12 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
+export function validateChangingEmail(data, key) {
+    return dispatch => {
+        return api.validateChangingEmail(data, key);
+    }
+};
+
 export function checkResponseError(res) {
     if (res && res.data && res.data.error) {
         console.error(res.data.error);

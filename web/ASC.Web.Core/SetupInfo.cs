@@ -376,7 +376,7 @@ namespace ASC.Web.Studio.Core
             DownloadForIosProjects = GetAppSettings("web.download.for.ios.proj", "https://itunes.apple.com/app/onlyoffice-projects/id1353395928?mt=8");
             DownloadForAndroidDocuments = GetAppSettings("web.download.for.android.doc", "https://play.google.com/store/apps/details?id=com.onlyoffice.documents");
 
-            EnabledCultures = GetAppSettings("web.cultures", "en-US")
+            EnabledCultures = GetAppSettings("web:cultures", "en-US")
                 .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => CultureInfo.GetCultureInfo(l.Trim()))
                 .OrderBy(l => l.DisplayName)

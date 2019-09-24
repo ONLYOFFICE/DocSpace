@@ -20,6 +20,8 @@
         "LoadingProcessing",
         "Password",
         "RegistrationEmailWatermark",
+        "MessageEmailConfirmed",
+        "MessageAuthorize",
         "LoginButton"
       ]
     },

@@ -315,7 +315,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
@@ -867,8 +867,11 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "EmailChange,Administrators")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
+            ApiContext.AuthByClaim();
+
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userid), Constants.Action_EditUser);
 
             var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userid);

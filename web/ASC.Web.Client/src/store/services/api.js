@@ -48,6 +48,10 @@ export function createUser(data, key) {
         : axios.post(`${API_URL}/people`, data, { headers: { 'confirm' : key } });
     }
 
+export function validateChangingEmail(data, key) {
+    return fakeApi.validateChangingEmail(data, key);        ;
+    }
+
 export function setNewPasswordSettings(data, key) {
     const IS_FAKE = true;
     return IS_FAKE 
