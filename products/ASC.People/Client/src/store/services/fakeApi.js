@@ -277,7 +277,10 @@ export function updateUser(data) {
   return fakeResponse(data);
 }
 
-export function updateAvatar(data) {
+export function loadAvatar(data) {
+  return fakeResponse(data);
+}
+export function createThumbnailsAvatar(data) {
   return fakeResponse(data);
 }
 export function deleteAvatar(data) {

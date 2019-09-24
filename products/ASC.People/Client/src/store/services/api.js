@@ -68,10 +68,15 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
-export function updateAvatar(profileId, data) {
+export function loadAvatar(profileId, data) {
   return IS_FAKE
-    ? fakeApi.updateAvatar()
-    : axios.post(`${API_URL}/people/${profileId}/photo/cropped`, data);
+    ? fakeApi.loadAvatar()
+    : axios.post(`${API_URL}/people/${profileId}/photo`, data);
+}
+export function createThumbnailsAvatar(profileId, data) {
+  return IS_FAKE
+    ? fakeApi.createThumbnailsAvatar()
+    : axios.post(`${API_URL}/people/${profileId}/photo/thumbnails.json`, data);
 }
 export function deleteAvatar(profileId) {
 
