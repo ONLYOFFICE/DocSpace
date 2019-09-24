@@ -588,7 +588,7 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
-        
+
         public FormFile Base64ToImage(string base64String, string fileName)
         {
             byte[] imageBytes = Convert.FromBase64String(base64String);
@@ -617,7 +617,7 @@ namespace ASC.Employee.Core.Controllers
 
                 SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
 
-                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_"+ userId.ToString());
+                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_" + userId.ToString());
                 var defaultUserPhoto = Base64ToImage(model.base64DefaultImage, "defaultPhoto" + userId.ToString());
 
                 if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
@@ -867,7 +867,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "EmailChange,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Administrators")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
