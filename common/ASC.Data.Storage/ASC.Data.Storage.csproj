@@ -25,7 +25,7 @@
     <PackageReference Include="Google.Apis" Version="1.41.1" />
     <PackageReference Include="Google.Apis.Auth" Version="1.41.1" />
     <PackageReference Include="Google.Apis.Core" Version="1.41.1" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.41.1.1684" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.41.1.1716" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="2.4.0-beta03" />
     <PackageReference Include="Grpc.Tools" Version="2.24.0-pre1">
       <PrivateAssets>all</PrivateAssets>
