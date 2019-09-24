@@ -105,7 +105,9 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
+      groupManager: group
+        ? group.manager.id
+        : "00000000-0000-0000-0000-000000000000",
       groupMembers: group && group.members ? group.members : []
     };
   }
@@ -145,7 +147,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onSave = () => {
-    const { history, group, createGroup, updateGroup } = this.props;
+    const { history, group, createGroup, updateGroup, resetGroup } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
     if (!groupName || !groupName.trim().length) return false;
@@ -153,12 +155,18 @@ class SectionBodyContent extends React.Component {
     this.setState({ inLoading: true });
 
     (group && group.id
-      ? updateGroup(group.id, groupName, groupManager, groupMembers.map(u => u.id))
+      ? updateGroup(
+          group.id,
+          groupName,
+          groupManager,
+          groupMembers.map(u => u.id)
+        )
       : createGroup(groupName, groupManager, groupMembers.map(u => u.id))
     )
       .then(() => {
         toastr.success("Success");
         this.setState({ inLoading: true });
+        resetGroup();
         history.goBack();
       })
       .catch(error => {
@@ -290,8 +298,8 @@ class SectionBodyContent extends React.Component {
     } = this.state;
     return (
       <MainContainer>
-        <div style={{visibility: "hidden", width: 1, height: 1}}>
-          <Icons.SearchIcon size='small' />
+        <div style={{ visibility: "hidden", width: 1, height: 1 }}>
+          <Icons.SearchIcon size="small" />
         </div>
         <FieldContainer
           className="group-name_container"
