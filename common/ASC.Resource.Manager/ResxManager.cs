@@ -102,7 +102,7 @@ namespace ASC.Resource.Manager
 
                 using var resXResourceWriter = new ResXResourceWriter(zipFileName);
 
-                foreach (var word in toAdd.Where(r => r != null && !string.IsNullOrEmpty(r.ValueTo)).OrderBy(x => x.Title))
+                foreach (var word in toAdd.Where(r => r != null && (!string.IsNullOrEmpty(r.ValueTo) || language == "Neutral")).OrderBy(x => x.Title))
                 {
                     resXResourceWriter.AddResource(word.Title, word.ValueTo);
                 }
