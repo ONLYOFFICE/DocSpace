@@ -1621,6 +1621,9 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Solicitud de cambio de códigos de respaldo</value>
   </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Cambio de dueño de portal</value>
+  </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio de dirección de portal</value>
   </data>
