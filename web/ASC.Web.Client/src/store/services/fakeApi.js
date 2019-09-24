@@ -127,7 +127,7 @@ export function validateChangingEmail(payload, key) {
     }; 
     return fakeResponse(data);
     }
-    }
+
 
 export function setNewPasswordSettings() {
     const data = {
