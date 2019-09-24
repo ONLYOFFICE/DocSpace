@@ -87,8 +87,8 @@ const Form = props => {
             });
     }, [errorText, history, identifier, location, login, match, password]);
 
-    const onKeyPress = useCallback((target) => {
-        if (target.code === "Enter") {
+    const onKeyPress = useCallback((event) => {
+        if (event.key === "Enter") {
             onSubmit();
         }
     }, [onSubmit]);
@@ -103,6 +103,20 @@ const Form = props => {
             window.removeEventListener('keyup', onKeyPress);
         };
     }, [onKeyPress, params]);
+
+    const onChangePassword = event => {
+        setPassword(event.target.value);
+        !passwordValid && setPasswordValid(true);
+        errorText && setErrorText("");
+    }
+
+    const onChangeLogin = event => {
+        setIdentifier(event.target.value);
+        !identifierValid && setIdentifierValid(true);
+        errorText && setErrorText("");
+    }
+
+    // console.log('Login render');
 
     return (
         <FormContainer>
@@ -128,12 +142,8 @@ const Form = props => {
                         tabIndex={1}
                         isDisabled={isLoading}
                         autoComplete="username"
-                        onChange={event => {
-                            setIdentifier(event.target.value);
-                            !identifierValid && setIdentifierValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)} />
+                        onChange={onChangeLogin}
+                        onKeyDown={onKeyPress} />
                 </Col>
             </Row>
             <Row className="login-row">
@@ -150,13 +160,8 @@ const Form = props => {
                         tabIndex={2}
                         isDisabled={isLoading}
                         autoComplete="current-password"
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            !passwordValid && setPasswordValid(true);
-                            errorText && setErrorText("");
-                            onKeyPress(event.target);
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)} />
+                        onChange={onChangePassword}
+                        onKeyDown={onKeyPress} />
                 </Col>
             </Row>
             <Row className="login-row">
