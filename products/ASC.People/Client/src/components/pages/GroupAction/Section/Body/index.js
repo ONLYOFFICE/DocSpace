@@ -110,7 +110,12 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupMembers: group && group.members ? group.members : [],
+      groupMembers: group && group.members ? group.members.map(m => {
+        return {
+          key: m.id,
+          label: m.displayName
+        }
+      }) : [],
       groupManager: group && group.manager ? {
         key: group.manager.id,
         label: group.manager.displayName
@@ -149,9 +154,48 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onHeaderSelectorClick = () => {
+  onHeadSelectorSearch = value => {
+    /*setOptions(
+      options.filter(option => {
+        return option.label.indexOf(value) > -1;
+      })
+    );*/
+  };
+
+  onHeadSelectorSelect = option => {
+    this.setState({ 
+      groupManager: {
+        key: option.key,
+        label: option.label
+      },
+      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen 
+    });
+  };
+
+  onHeadSelectorClick = () => {
     this.setState({
       isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen
+    });
+  };
+
+  onUsersSelectorSearch = (value) => {
+    /*setOptions(
+      options.filter(option => {
+        return option.label.indexOf(value) > -1;
+      })
+    );*/
+  };
+  onUsersSelectorSelect = (selectedOptions) => {
+    //console.log("onSelect", selectedOptions);
+    //this.onUsersSelectorClick();
+    this.setState({ 
+      groupMembers: selectedOptions.map(option => {
+        return {
+          key: option.key,
+          label: option.label
+        };
+      }),
+      isUsersSelectorOpen: !this.state.isUsersSelectorOpen 
     });
   };
 
@@ -180,9 +224,9 @@ class SectionBodyContent extends React.Component {
           group.id,
           groupName,
           groupManager.key,
-          groupMembers.map(u => u.id)
+          groupMembers.map(u => u.key)
         )
-      : createGroup(groupName, groupManager.key, groupMembers.map(u => u.id))
+      : createGroup(groupName, groupManager.key, groupMembers.map(u => u.key))
     )
       .then(() => {
         toastr.success("Success");
@@ -202,6 +246,12 @@ class SectionBodyContent extends React.Component {
     resetGroup();
     history.goBack();
   };
+
+  onSelectedItemClose = (member) => {
+    this.setState({ 
+      groupMembers: this.state.groupMembers.filter(g => g.key !== member.key)
+    });
+  }
 
   renderModal = () => {
     const { groups, modalVisible } = this.state;
@@ -310,7 +360,7 @@ class SectionBodyContent extends React.Component {
       users,
       groups,
       groupMembers,
-      isHeaderSelectorOpen,
+      isHeaderSelectorOpen: isHeadSelectorOpen,
       isUsersSelectorOpen,
       inLoading,
       error,
@@ -351,43 +401,28 @@ class SectionBodyContent extends React.Component {
             id="head-selector"
             tabIndex={2}
             options={[]}
-            isOpen={isHeaderSelectorOpen}
+            isOpen={isHeadSelectorOpen}
             selectedOption={groupManager}
             scaled={true}
             size="content"
-            opened={isHeaderSelectorOpen}
-            onClick={this.onHeaderSelectorClick}
+            opened={isHeadSelectorOpen}
+            onClick={this.onHeadSelectorClick}
           >
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
             isDropDown={true}
-            isOpen={isHeaderSelectorOpen}
+            isOpen={isHeadSelectorOpen}
             size="full"
             placeholder={"Search"}
-            onSearchChanged={value => {
-              /*setOptions(
-                options.filter(option => {
-                  return option.label.indexOf(value) > -1;
-                })
-              );*/
-            }}
+            onSearchChanged={this.onHeadSelectorSearch}
             options={users}
             groups={groups}
             isMultiSelect={false}
             buttonLabel={t("CustomAddEmployee", { typeUser })}
             selectAllLabel={"Select all"}
-            onSelect={option => {
-              //console.log("onSelect", option);
-              // action('onSelect')(selectedOptions);
-              this.setState({ groupManager: {
-                  key: option.key,
-                  label: option.label
-                } 
-              });
-              this.onHeaderSelectorClick();
-            }}
-            onCancel={this.onHeaderSelectorClick}
+            onSelect={this.onHeadSelectorSelect}
+            onCancel={this.onHeadSelectorClick}
             allowCreation={false}
             //onAddNewClick={toggleModalVisible}
             allowAnyClickClose={true}
@@ -401,7 +436,7 @@ class SectionBodyContent extends React.Component {
           labelText="Members"
         >
           <ComboButton
-            id="employee-selector"
+            id="users-selector"
             tabIndex={3}
             options={[]}
             isOpen={isUsersSelectorOpen}
@@ -421,22 +456,13 @@ class SectionBodyContent extends React.Component {
             isOpen={isUsersSelectorOpen}
             size="full"
             placeholder={"Search"}
-            onSearchChanged={value => {
-              /*setOptions(
-                options.filter(option => {
-                  return option.label.indexOf(value) > -1;
-                })
-              );*/
-            }}
+            onSearchChanged={this.onUsersSelectorSearch}
             options={users}
             groups={groups}
             isMultiSelect={true}
             buttonLabel={t("CustomAddEmployee", { typeUser })}
             selectAllLabel={"Select all"}
-            onSelect={selectedOptions => {
-              console.log("onSelect", selectedOptions);
-              this.onUsersSelectorClick();
-            }}
+            onSelect={this.onUsersSelectorSelect}
             onCancel={this.onUsersSelectorClick}
             allowCreation={true}
             onAddNewClick={this.toggleModalVisible}
@@ -458,10 +484,9 @@ class SectionBodyContent extends React.Component {
         <div className="selected-members_container">
           {groupMembers.map(member => (
             <SelectedItem
-              key={member.id}
-              text={member.displayName}
-              onClick={e => console.log("onClick", e.target)}
-              onClose={e => console.log("onClose", e.target)}
+              key={member.key}
+              text={member.label}
+              onClose={this.onSelectedItemClose.bind(this, member)}
               isInline={true}
               className="selected-item"
             />
