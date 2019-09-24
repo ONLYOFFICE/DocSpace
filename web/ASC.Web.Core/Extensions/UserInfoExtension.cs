@@ -35,15 +35,15 @@ namespace ASC.Core.Users
 {
     public static class UserInfoExtension
     {
-        public static string DisplayUserName(this UserInfo userInfo, UserManager userManager)
+        public static string DisplayUserName(this UserInfo userInfo, DisplayUserSettings displayUserSettings)
         {
-            return DisplayUserName(userInfo, true, userManager);
+            return DisplayUserName(userInfo, true, displayUserSettings);
         }
 
         //fix
-        public static string DisplayUserName(this UserInfo userInfo, bool withHtmlEncode, UserManager userManager)
+        public static string DisplayUserName(this UserInfo userInfo, bool withHtmlEncode, DisplayUserSettings displayUserSettings)
         {
-            return DisplayUserSettings.GetFullUserName(userManager, userInfo, withHtmlEncode);
+            return displayUserSettings.GetFullUserName(userInfo, withHtmlEncode);
         }
 
         public static List<UserInfo> SortByUserName(this IEnumerable<UserInfo> userInfoCollection)
@@ -95,7 +95,7 @@ namespace ASC.Core.Users
             return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
         }
 
-        public static string RenderProfileLinkBase(this UserInfo userInfo, UserManager userManager, CommonLinkUtility commonLinkUtility)
+        public static string RenderProfileLinkBase(this UserInfo userInfo, UserManager userManager, CommonLinkUtility commonLinkUtility, DisplayUserSettings displayUserSettings)
         {
             var sb = new StringBuilder();
 
@@ -108,7 +108,7 @@ namespace ASC.Core.Users
             {
                 var popupID = Guid.NewGuid();
                 sb.AppendFormat("<span class=\"userLink\" style='white-space:nowrap;' id='{0}' data-uid='{1}'>", popupID, userInfo.ID);
-                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(commonLinkUtility), userInfo.DisplayUserName(userManager));
+                sb.AppendFormat("<a class='linkDescribe' href=\"{0}\">{1}</a>", userInfo.GetUserProfilePageURLGeneral(commonLinkUtility), userInfo.DisplayUserName(displayUserSettings));
                 sb.Append("</span>");
 
                 sb.AppendFormat("<script language='javascript'> StudioUserProfileInfo.RegistryElement('{0}','\"{1}\"); </script>", popupID, userInfo.ID);

@@ -3,9 +3,9 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
-using ASC.Common.Utils;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Utility
 {
@@ -14,12 +14,12 @@ namespace ASC.Web.Core.Utility
         string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility);
     }
 
-    public static class UrlShortener
+    public class UrlShortener
     {
-        public static bool Enabled { get { return !(Instance is NullShortener); } }
+        public bool Enabled { get { return !(Instance is NullShortener); } }
 
-        private static IUrlShortener _instance;
-        public static IUrlShortener Instance
+        private IUrlShortener _instance;
+        public IUrlShortener Instance
         {
             get
             {
@@ -29,9 +29,9 @@ namespace ASC.Web.Core.Utility
                     {
                         _instance = new BitLyShortener();
                     }
-                    else if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.url-shortener"]))
+                    else if (!string.IsNullOrEmpty(Configuration["web:url-shortener"]))
                     {
-                        _instance = new OnlyoShortener();
+                        _instance = new OnlyoShortener(Configuration);
                     }
                     else
                     {
@@ -41,6 +41,13 @@ namespace ASC.Web.Core.Utility
 
                 return _instance;
             }
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public UrlShortener(IConfiguration configuration)
+        {
+            Configuration = configuration;
         }
     }
 
@@ -58,11 +65,11 @@ namespace ASC.Web.Core.Utility
         private readonly string internalUrl;
         private readonly string sKey;
 
-        public OnlyoShortener()
+        public OnlyoShortener(IConfiguration configuration)
         {
-            url = ConfigurationManager.AppSettings["web.url-shortener"];
-            internalUrl = ConfigurationManager.AppSettings["web.url-shortener.internal"];
-            sKey = ConfigurationManager.AppSettings["core.machinekey"];
+            url = configuration["web.url-shortener"];
+            internalUrl = configuration["web.url-shortener.internal"];
+            sKey = configuration["core.machinekey"];
 
             if (!url.EndsWith("/"))
                 url += '/';

@@ -43,6 +43,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
@@ -944,6 +945,7 @@ namespace ASC.Web.Studio.Core.Notify
                     tenantManager.SetCurrentTenant(tenant.TenantId);
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
                     INotifyAction action = null;
@@ -1075,7 +1077,7 @@ namespace ASC.Web.Studio.Core.Notify
                             action,
                             new[] { studioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
-                            new TagValue(Tags.UserName, u.DisplayUserName(userManager)),
+                            new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettings)),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
                             TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),

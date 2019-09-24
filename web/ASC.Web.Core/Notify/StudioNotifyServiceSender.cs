@@ -34,6 +34,7 @@ using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,12 +67,13 @@ namespace ASC.Web.Studio.Core.Notify
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
             var authContext = scope.ServiceProvider.GetService<AuthContext>();
             var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
 
             tenantManager.SetCurrentTenant(item.TenantId);
             securityContext.AuthenticateMe(Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext, displayUserSettings);
 
             var tenant = tenantManager.GetCurrentTenant(false);
 

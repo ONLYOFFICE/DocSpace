@@ -69,7 +69,9 @@ namespace ASC.Core
         public HostedSolution(ConnectionStringSettings connectionString, string region)
         {
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
-            tenantService = new DbTenantService(connectionString);
+            var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
+
+            tenantService = new DbTenantService(connectionString, TenantDomainValidator);
             var baseSettings = new CoreBaseSettings(configuration);
             var coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 

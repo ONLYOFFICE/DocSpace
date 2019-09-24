@@ -32,6 +32,7 @@ namespace ASC.Core.Common.Tests
     using ASC.Common.Utils;
     using ASC.Core.Billing;
     using ASC.Core.Data;
+    using ASC.Core.Tenants;
     using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
@@ -44,8 +45,9 @@ namespace ASC.Core.Common.Tests
         public TariffServiceTest()
         {
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
+            var tenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
             var cs = ConfigurationManager.ConnectionStrings["core"];
-            var tenantService = new DbTenantService(cs);
+            var tenantService = new DbTenantService(cs, tenantDomainValidator);
             var baseSettings = new CoreBaseSettings(configuration);
             tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration);
         }

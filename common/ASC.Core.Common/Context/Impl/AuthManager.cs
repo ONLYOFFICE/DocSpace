@@ -38,11 +38,13 @@ namespace ASC.Core
         private readonly IUserService userService;
 
         public UserManager UserManager { get; }
+        public UserFormatter UserFormatter { get; }
 
-        public AuthManager(IUserService service, UserManager userManager)
+        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
         {
             userService = service;
             UserManager = userManager;
+            UserFormatter = userFormatter;
         }
 
 
@@ -73,7 +75,7 @@ namespace ASC.Core
 
         private IUserAccount ToAccount(int tenantId, UserInfo u)
         {
-            return new UserAccount(u, tenantId);
+            return new UserAccount(u, tenantId, UserFormatter);
         }
     }
 }

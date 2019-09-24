@@ -32,8 +32,8 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core.Common.Notify.Jabber;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
@@ -43,12 +43,12 @@ namespace ASC.Core.Notify.Signalr
         private static readonly TimeSpan Timeout;
         private static readonly ILog Log;
         private static DateTime lastErrorTime;
-        public static readonly bool EnableSignalr;
-        private static readonly string CoreMachineKey;
-        private static readonly string Url;
-        private static readonly bool JabberReplaceDomain;
-        private static readonly string JabberReplaceFromDomain;
-        private static readonly string JabberReplaceToDomain;
+        public readonly bool EnableSignalr;
+        private readonly string CoreMachineKey;
+        private readonly string Url;
+        private readonly bool JabberReplaceDomain;
+        private readonly string JabberReplaceFromDomain;
+        private readonly string JabberReplaceToDomain;
 
         private readonly string hub;
 
@@ -58,13 +58,19 @@ namespace ASC.Core.Notify.Signalr
         {
             Timeout = TimeSpan.FromSeconds(1);
             Log = LogManager.GetLogger("ASC");
-            CoreMachineKey = ConfigurationManager.AppSettings["core:machinekey"];
-            Url = ConfigurationManager.AppSettings["web:hub:internal"];
+        }
+
+        public SignalrServiceClient(string hub, TenantManager tenantManager, IConfiguration configuration)
+        {
+            this.hub = hub.Trim('/');
+            TenantManager = tenantManager;
+            CoreMachineKey = configuration["core:machinekey"];
+            Url = configuration["web:hub:internal"];
             EnableSignalr = !string.IsNullOrEmpty(Url);
 
             try
             {
-                var replaceSetting = ConfigurationManager.AppSettings["jabber:replace-domain"];
+                var replaceSetting = configuration["jabber:replace-domain"];
                 if (!string.IsNullOrEmpty(replaceSetting))
                 {
                     JabberReplaceDomain = true;
@@ -79,12 +85,6 @@ namespace ASC.Core.Notify.Signalr
             catch (Exception)
             {
             }
-        }
-
-        public SignalrServiceClient(string hub, TenantManager tenantManager)
-        {
-            this.hub = hub.Trim('/');
-            TenantManager = tenantManager;
         }
 
         public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
@@ -344,7 +344,7 @@ namespace ASC.Core.Notify.Signalr
             return string.Format("{0}/controller/{1}/{2}", Url.TrimEnd('/'), hub, method);
         }
 
-        public static string CreateAuthToken(string pkey = "socketio")
+        public string CreateAuthToken(string pkey = "socketio")
         {
             using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(CoreMachineKey));
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");

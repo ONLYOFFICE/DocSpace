@@ -137,8 +137,9 @@ namespace ASC.Web.Api.Models
             UserPhotoManager userphotomanager, 
             WebItemSecurity webItemSecurity,
             TenantManager tenantManager, 
-            CommonLinkUtility commonLinkUtility)
-            : base(userInfo, context, userManager, userphotomanager, commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettings displayUserSettings)
+            : base(userInfo, context, displayUserSettings, userphotomanager, commonLinkUtility)
         {
             UserName = userInfo.UserName;
             FirstName = userInfo.FirstName;
@@ -261,16 +262,17 @@ namespace ASC.Web.Api.Models
             UserPhotoManager userPhotoManager, 
             WebItemSecurity webItemSecurity,
             TenantManager tenantManager, 
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettings displayUserSettings)
         {
             try
             {
-                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
+                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
 
             }
             catch (Exception)
             {
-                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
+                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
             }
         }
 
@@ -281,9 +283,10 @@ namespace ASC.Web.Api.Models
             UserPhotoManager userPhotoManager,
             WebItemSecurity webItemSecurity,
             TenantManager tenantManager, 
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettings displayUserSettings)
         {
-            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility);
+            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
         }
 
         public new static EmployeeWraperFull GetSample()

@@ -131,6 +131,8 @@ namespace ASC.Api.Settings
         public ColorThemesSettings ColorThemesSettings { get; }
         public IConfiguration Configuration { get; }
         public SetupInfo SetupInfo { get; }
+        public BuildVersion BuildVersion { get; }
+        public DisplayUserSettings DisplayUserSettings { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -176,7 +178,9 @@ namespace ASC.Api.Settings
             CommonLinkUtility commonLinkUtility,
             ColorThemesSettings colorThemesSettings,
             IConfiguration configuration,
-            SetupInfo setupInfo)
+            SetupInfo setupInfo,
+            BuildVersion buildVersion,
+            DisplayUserSettings displayUserSettings)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -222,6 +226,8 @@ namespace ASC.Api.Settings
             ColorThemesSettings = colorThemesSettings;
             Configuration = configuration;
             SetupInfo = setupInfo;
+            BuildVersion = buildVersion;
+            DisplayUserSettings = displayUserSettings;
         }
 
         [Read("")]
@@ -332,7 +338,7 @@ namespace ASC.Api.Settings
                       {
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
-                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility)),
+                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, DisplayUserSettings, UserPhotoManager, CommonLinkUtility)),
                           Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
@@ -455,7 +461,7 @@ namespace ASC.Api.Settings
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
-                                  .Select(r => EmployeeWraper.Get(r, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility))
+                                  .Select(r => EmployeeWraper.Get(r, ApiContext, DisplayUserSettings, UserPhotoManager, CommonLinkUtility))
                                   .ToList();
         }
 
@@ -478,12 +484,12 @@ namespace ASC.Api.Settings
             if (model.ProductId == Guid.Empty)
             {
                 var messageAction = model.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false, UserManager));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false, DisplayUserSettings));
             }
             else
             {
                 var messageAction = model.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false, UserManager));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false, DisplayUserSettings));
             }
 
             return new { model.ProductId, model.UserId, model.Administrator };
@@ -805,7 +811,7 @@ namespace ASC.Api.Settings
                 throw new NotSupportedException("Not available.");
 
             var codes = TfaManager.GenerateBackupCodes(currentUser).Select(r => new { r.IsUsed, r.Code }).ToList();
-            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, UserManager));
+            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettings));
             return codes;
         }
 
@@ -825,7 +831,7 @@ namespace ASC.Api.Settings
                 throw new NotSupportedException("Not available.");
 
             TfaAppUserSettings.DisableForUser(user.ID);
-            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, UserManager));
+            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
 
             if (isMe)
             {

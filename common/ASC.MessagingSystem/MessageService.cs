@@ -42,14 +42,14 @@ namespace ASC.MessagingSystem
 
         public MessageFactory MessageFactory { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory)
+        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender)
         {
             if (configuration["messaging:enabled"] != "true")
             {
                 return;
             }
 
-            sender = new DbMessageSender();
+            this.sender = sender;
             request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
         }

@@ -27,13 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-
-using ASC.Common.Utils;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
-
+using ASC.Web.Core.Users;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Constants = ASC.Core.Configuration.Constants;
@@ -95,12 +94,13 @@ namespace ASC.Core
             {
                 if (notifyStarted) return;
 
-                NotifyContext = new NotifyContext(serviceProvider.GetService<CoreBaseSettings>());
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                NotifyContext = new NotifyContext(serviceProvider.GetService<CoreBaseSettings>(), configuration);
 
                 INotifySender jabberSender = new NotifyServiceSender();
                 INotifySender emailSender = new NotifyServiceSender();
 
-                var postman = ConfigurationManager.AppSettings["core:notify:postman"];
+                var postman = configuration["core:notify:postman"];
 
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -112,14 +112,14 @@ namespace ASC.Core
                     };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        emailSender = new AWSSender();
-                        properties["accessKey"] = ConfigurationManager.AppSettings["ses:accessKey"];
-                        properties["secretKey"] = ConfigurationManager.AppSettings["ses:secretKey"];
-                        properties["refreshTimeout"] = ConfigurationManager.AppSettings["ses:refreshTimeout"];
+                        emailSender = new AWSSender(configuration);
+                        properties["accessKey"] = configuration["ses:accessKey"];
+                        properties["secretKey"] = configuration["ses:secretKey"];
+                        properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
                     {
-                        emailSender = new SmtpSender();
+                        emailSender = new SmtpSender(configuration);
                     }
                     emailSender.Init(properties);
                 }
@@ -133,7 +133,7 @@ namespace ASC.Core
             }
         }
 
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext)
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
         {
             request.Properties.Add("Tenant", CoreContext.TenantManager.GetCurrentTenant(false));
         }

@@ -31,6 +31,8 @@ using ASC.Common.DependencyInjection;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Data;
+using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
@@ -68,8 +70,9 @@ namespace ASC.Core
             }
 
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
+            var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
             var coreBaseSettings = new CoreBaseSettings(configuration);
-            var tenantService = new CachedTenantService(new DbTenantService(cs), coreBaseSettings);
+            var tenantService = new CachedTenantService(new DbTenantService(cs, TenantDomainValidator), coreBaseSettings);
             var coreSettings = new CoreSettings(tenantService, coreBaseSettings, configuration);
             var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
             var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration);

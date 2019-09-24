@@ -39,17 +39,17 @@ namespace ASC.Web.Api.Models
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperFull
     {
-        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
+        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context, UserManager userManager, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility, DisplayUserSettings displayUserSettings)
         {
             Id = group.ID;
             Category = group.CategoryID;
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
             Name = group.Name;
-            Manager = EmployeeWraper.Get(userManager.GetUsers(userManager.GetDepartmentManager(group.ID)), context, userManager, userPhotoManager, commonLinkUtility);
+            Manager = EmployeeWraper.Get(userManager.GetUsers(userManager.GetDepartmentManager(group.ID)), context, displayUserSettings, userPhotoManager, commonLinkUtility);
 
             if (includeMembers)
             {
-                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(group.ID).Select(r => EmployeeWraper.Get(r, context, userManager, userPhotoManager, commonLinkUtility)));
+                Members = new List<EmployeeWraper>(userManager.GetUsersByGroup(group.ID).Select(r => EmployeeWraper.Get(r, context, displayUserSettings, userPhotoManager, commonLinkUtility)));
             }
         }
 

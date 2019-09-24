@@ -27,8 +27,8 @@
 using System;
 
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Engine
 {
@@ -41,10 +41,10 @@ namespace ASC.Notify.Engine
         private readonly bool logOnly;
 
 
-        public DispatchEngine(Context context)
+        public DispatchEngine(Context context, IConfiguration configuration)
         {
             this.context = context ?? throw new ArgumentNullException("context");
-            logOnly = "log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
+            logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }
 

@@ -30,6 +30,7 @@ namespace ASC.Web.Api.Controllers
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public PaymentManager PaymentManager { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public UrlShortener UrlShortener { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -45,7 +46,8 @@ namespace ASC.Web.Api.Controllers
             TenantManager tenantManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             PaymentManager paymentManager,
-            CommonLinkUtility commonLinkUtility
+            CommonLinkUtility commonLinkUtility,
+            UrlShortener urlShortener
             )
         {
             LogManager = logManager;
@@ -58,6 +60,7 @@ namespace ASC.Web.Api.Controllers
             EmailValidationKeyProvider = emailValidationKeyProvider;
             PaymentManager = paymentManager;
             CommonLinkUtility = commonLinkUtility;
+            UrlShortener = urlShortener;
         }
 
         [Read("")]

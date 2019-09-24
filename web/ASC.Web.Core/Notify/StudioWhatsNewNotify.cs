@@ -41,6 +41,7 @@ using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,6 +100,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var authentication = scope.ServiceProvider.GetService<AuthManager>();
                     var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                    var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
                     foreach (var user in userManager.GetUsers())
@@ -141,7 +143,7 @@ namespace ASC.Web.Studio.Core.Notify
                             g => g.Select(f => new WhatsNewUserActivity
                             {
                                 Date = f.CreatedDate,
-                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(displayUserSettings) : string.Empty,
                                 UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
@@ -164,7 +166,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         new WhatsNewUserActivity
                                         {
                                             Date = prawbc.CreatedDate,
-                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(displayUserSettings) : string.Empty,
                                             UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
@@ -184,7 +186,7 @@ namespace ASC.Web.Studio.Core.Notify
                                     new WhatsNewUserActivity
                                     {
                                         Date = ls.CreatedDate,
-                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(userManager) : string.Empty,
+                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(displayUserSettings) : string.Empty,
                                         UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),

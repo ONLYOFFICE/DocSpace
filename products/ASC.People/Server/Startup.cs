@@ -19,11 +19,13 @@ using ASC.Core.Data;
 using ASC.Core.Notify;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
+using ASC.Core.Users;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
+using ASC.MessagingSystem.DbSender;
 using ASC.Notify.Recipients;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
@@ -137,7 +139,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITenantService)new CachedTenantService(new DbTenantService(cs), r.GetService<CoreBaseSettings>());
+                        return (ITenantService)new CachedTenantService(new DbTenantService(cs, r.GetService<TenantDomainValidator>()), r.GetService<CoreBaseSettings>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -229,6 +231,13 @@ namespace ASC.People
                     .AddScoped<SubscriptionManager>()
                     .AddScoped<IPSecurity.IPSecurity>()
                     .AddSingleton<PathUtils>()
+                    .AddSingleton<TenantDomainValidator>()
+                    .AddSingleton<DbMessageSender>()
+                    .AddSingleton<UrlShortener>()
+                    .AddSingleton<UserManagerConstants>()
+                    .AddScoped<DisplayUserSettings>()
+                    .AddSingleton<ASC.Core.Users.Constants>()
+                    .AddSingleton<UserFormatter>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

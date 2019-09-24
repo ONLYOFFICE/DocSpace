@@ -35,6 +35,7 @@ using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using MailKit;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 
 namespace ASC.Core.Notify.Senders
@@ -51,6 +52,7 @@ namespace ASC.Core.Notify.Senders
 </html>";
 
         protected ILog Log { get; private set; }
+        public IConfiguration Configuration { get; }
 
         private string _host;
         private int _port;
@@ -59,9 +61,10 @@ namespace ASC.Core.Notify.Senders
         protected bool _useCoreSettings;
         const int NETWORK_TIMEOUT = 30000;
 
-        public SmtpSender()
+        public SmtpSender(IConfiguration configuration)
         {
             Log = LogManager.GetLogger("ASC.Notify");
+            Configuration = configuration;
         }
 
         public virtual void Init(IDictionary<string, string> properties)
@@ -263,8 +266,8 @@ namespace ASC.Core.Notify.Senders
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = ConfigurationManager.AppSettings["mail:certificate-permit"] != null &&
-                                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail:certificate-permit"]);
+            var sslCertificatePermit = Configuration["mail:certificate-permit"] != null &&
+                                    Convert.ToBoolean(Configuration["mail:certificate-permit"]);
 
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {

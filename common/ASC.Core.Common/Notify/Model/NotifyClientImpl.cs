@@ -29,6 +29,7 @@ using ASC.Core;
 using ASC.Notify.Engine;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.Users;
 
 namespace ASC.Notify.Model
 {
@@ -40,12 +41,14 @@ namespace ASC.Notify.Model
 
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
+        public DisplayUserSettings DisplayUserSettings { get; }
 
-        public NotifyClientImpl(Context context, INotifySource notifySource, UserManager userManager, AuthContext authContext)
+        public NotifyClientImpl(Context context, INotifySource notifySource, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
         {
             this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
             UserManager = userManager;
             AuthContext = authContext;
+            DisplayUserSettings = displayUserSettings;
             ctx = context ?? throw new ArgumentNullException("context");
         }
 
@@ -138,7 +141,7 @@ namespace ASC.Notify.Model
         private void SendAsync(NotifyRequest request)
         {
             request.Interceptors = interceptors.GetAll();
-            ctx.NotifyEngine.QueueRequest(request, UserManager, AuthContext);
+            ctx.NotifyEngine.QueueRequest(request, UserManager, AuthContext, DisplayUserSettings);
         }
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)

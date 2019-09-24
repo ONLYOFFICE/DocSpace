@@ -51,7 +51,6 @@ namespace ASC.Data.Reassigns
         private readonly Dictionary<string, string> _httpHeaders;
 
         private readonly int _tenantId;
-        private readonly string _userName;
         private readonly Guid _currentUserId;
         private readonly bool _notify;
 
@@ -78,7 +77,6 @@ namespace ASC.Data.Reassigns
             _tenantId = tenantId;
             User = user;
             FromUser = user.ID;
-            _userName = UserFormatter.GetUserName(user, DisplayUserNameFormat.Default);
             _currentUserId = currentUserId;
             _notify = notify;
 
@@ -106,6 +104,8 @@ namespace ASC.Data.Reassigns
             var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
             var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
             var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            var userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
+            var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
             {
@@ -151,7 +151,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 99;
                 DeleteTalkStorage(storageFactory);
 
-                SendSuccessNotify(studioNotifyService, messageService, docsSpace, crmSpace, mailSpace, talkSpace);
+                SendSuccessNotify(studioNotifyService, messageService, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
@@ -161,7 +161,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(studioNotifyService, ex.Message);
+                SendErrorNotify(studioNotifyService, ex.Message, userName);
             }
             finally
             {
@@ -230,23 +230,23 @@ namespace ASC.Data.Reassigns
             }
         }
 
-        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
-                studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, _userName,
+                studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
-                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { _userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { userName });
             else
-                messageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), _userName);
+                messageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), userName);
         }
 
-        private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage)
+        private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)
         {
             if (!_notify) return;
 
-            studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, _userName, errorMessage);
+            studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
         }
     }
 }

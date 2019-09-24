@@ -26,15 +26,16 @@
 
 using System;
 using ASC.Core;
+using ASC.Web.Core.Users;
 
 namespace ASC.Notify.Engine
 {
     interface INotifyEngine
     {
-        void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext);
+        void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings);
 
         event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
 
-        event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext> BeforeTransferRequest;
+        event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext, DisplayUserSettings> BeforeTransferRequest;
     }
 }

@@ -38,6 +38,7 @@ using ASC.Notify.Cron;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.Users;
 
 namespace ASC.Notify.Engine
 {
@@ -67,7 +68,7 @@ namespace ASC.Notify.Engine
 
         public CoreBaseSettings CoreBaseSettings { get; }
 
-        public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext> BeforeTransferRequest;
+        public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext, DisplayUserSettings> BeforeTransferRequest;
 
         public event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
 
@@ -81,9 +82,9 @@ namespace ASC.Notify.Engine
         }
 
 
-        public virtual void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext)
+        public virtual void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
         {
-            BeforeTransferRequest?.Invoke(this, request, userManager, authContext);
+            BeforeTransferRequest?.Invoke(this, request, userManager, authContext, displayUserSettings);
             lock (requests)
             {
                 if (!notifySender.IsAlive)

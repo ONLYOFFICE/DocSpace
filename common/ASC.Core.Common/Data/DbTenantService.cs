@@ -44,10 +44,12 @@ namespace ASC.Core.Data
         private static TimeZoneInfo defaultTimeZone;
         private List<string> forbiddenDomains;
 
+        public TenantDomainValidator TenantDomainValidator { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString)
+        public DbTenantService(ConnectionStringSettings connectionString, TenantDomainValidator tenantDomainValidator)
             : base(connectionString, null)
         {
+            TenantDomainValidator = tenantDomainValidator;
         }
 
 

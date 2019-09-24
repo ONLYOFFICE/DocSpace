@@ -66,6 +66,7 @@ namespace ASC.Core
         public AuthContext AuthContext { get; }
         public TenantCookieSettings TenantCookieSettings { get; }
         public TenantManager TenantManager { get; }
+        public UserFormatter UserFormatter { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -74,7 +75,8 @@ namespace ASC.Core
             AuthManager authentication,
             AuthContext authContext,
             TenantCookieSettings tenantCookieSettings,
-            TenantManager tenantManager
+            TenantManager tenantManager,
+            UserFormatter userFormatter
             )
         {
             UserManager = userManager;
@@ -82,6 +84,7 @@ namespace ASC.Core
             AuthContext = authContext;
             TenantCookieSettings = tenantCookieSettings;
             TenantManager = tenantManager;
+            UserFormatter = userFormatter;
             HttpContextAccessor = httpContextAccessor;
         }
 
@@ -94,7 +97,7 @@ namespace ASC.Core
             var tenantid = TenantManager.GetCurrentTenant().TenantId;
             var u = UserManager.GetUsers(tenantid, login, Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            return AuthenticateMe(new UserAccount(u, tenantid));
+            return AuthenticateMe(new UserAccount(u, tenantid, UserFormatter));
         }
 
         public bool AuthenticateMe(string cookie)
@@ -142,7 +145,7 @@ namespace ASC.Core
                                 return false;
                             }
 
-                            AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant));
+                            AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
                         }
                         else
                         {
@@ -224,7 +227,7 @@ namespace ASC.Core
                 }
                 roles.Add(Role.Users);
 
-                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId);
+                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
                 cookie = CookieStorage.EncryptCookie(TenantCookieSettings, TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 

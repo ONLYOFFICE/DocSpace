@@ -104,6 +104,7 @@ namespace ASC.Web.Studio.Core
 
         public SetupInfo(IConfiguration configuration)
         {
+            Configuration = configuration;
             MetaImageURL = GetAppSettings("web.meta-image-url", "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg");
             StatisticTrackURL = GetAppSettings("web.track-url", string.Empty);
             UserVoiceURL = GetAppSettings("web.uservoice", string.Empty);
@@ -173,7 +174,6 @@ namespace ASC.Web.Studio.Core
             TfaAppSender = GetAppSettings("web.tfaapp.backup.title", "ONLYOFFICE");
 
             NotifyAnalyticsUrl = GetAppSettings("core.notify.analytics.url", "");
-            Configuration = configuration;
         }
 
 

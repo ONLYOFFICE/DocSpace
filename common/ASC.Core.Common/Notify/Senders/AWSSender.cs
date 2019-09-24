@@ -37,6 +37,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Notify.Senders
 {
@@ -51,6 +52,10 @@ namespace ASC.Core.Notify.Senders
         private TimeSpan sendWindow = TimeSpan.MinValue;
         private GetSendQuotaResponse quota;
 
+        public AWSSender(IConfiguration configuration): base(configuration)
+        {
+
+        }
 
         public override void Init(IDictionary<string, string> properties)
         {

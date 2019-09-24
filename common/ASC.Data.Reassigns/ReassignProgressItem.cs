@@ -108,6 +108,7 @@ namespace ASC.Data.Reassigns
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
+            var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
 
             try
             {
@@ -143,14 +144,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify(userManager, studioNotifyService, messageService);
+                SendSuccessNotify(userManager, studioNotifyService, messageService, displayUserSettings);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(userManager, userPhotoManager, messageService);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService, displayUserSettings);
                 }
             }
             catch (Exception ex)
@@ -172,15 +173,15 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService)
+        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, DisplayUserSettings displayUserSettings)
         {
             var fromUser = userManager.GetUsers(FromUser);
             var toUser = userManager.GetUsers(ToUser);
 
             studioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
 
-            var fromUserName = fromUser.DisplayUserName(false, userManager);
-            var toUserName = toUser.DisplayUserName(false, userManager);
+            var fromUserName = fromUser.DisplayUserName(false, displayUserSettings);
+            var toUserName = toUser.DisplayUserName(false, displayUserSettings);
 
             if (_httpHeaders != null)
                 messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
@@ -196,10 +197,10 @@ namespace ASC.Data.Reassigns
             studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
-        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService)
+        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, DisplayUserSettings displayUserSettings)
         {
             var user = userManager.GetUsers(FromUser);
-            var userName = user.DisplayUserName(false, userManager);
+            var userName = user.DisplayUserName(false, displayUserSettings);
 
             userPhotoManager.RemovePhoto(user.ID);
             userManager.DeleteUser(user.ID);

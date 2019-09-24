@@ -67,6 +67,7 @@ namespace ASC.Web.Studio.Core.Notify
         public CommonLinkUtility CommonLinkUtility { get; }
         public SetupInfo SetupInfo { get; }
         public IServiceProvider ServiceProvider { get; }
+        public DisplayUserSettings DisplayUserSettings { get; }
 
         public StudioNotifyService(
             UserManager userManager, 
@@ -82,7 +83,8 @@ namespace ASC.Web.Studio.Core.Notify
             CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            DisplayUserSettings displayUserSettings)
         {
             client = studioNotifyServiceHelper;
             TenantExtra = tenantExtra;
@@ -96,6 +98,7 @@ namespace ASC.Web.Studio.Core.Notify
             CommonLinkUtility = commonLinkUtility;
             SetupInfo = setupInfo;
             ServiceProvider = serviceProvider;
+            DisplayUserSettings = displayUserSettings;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -215,7 +218,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, confirmationUrl),
                         TagValues.GreenButton(greenButtonText, confirmationUrl),
-                        new TagValue(Tags.UserDisplayName, (user.DisplayUserName(UserManager) ?? string.Empty).Trim()));
+                        new TagValue(Tags.UserDisplayName, (user.DisplayUserName(DisplayUserSettings) ?? string.Empty).Trim()));
         }
 
         #endregion
@@ -323,7 +326,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, inviteUrl),
                         TagValues.GreenButton(greenButtonText, inviteUrl),
-                        TagValues.SendFrom(TenantManager, UserManager, AuthContext));
+                        TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
         }
 
         public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
@@ -447,7 +450,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -483,7 +486,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -511,10 +514,10 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.ReassignsCompleted,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
-                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
+                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettings)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
-                new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
+                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettings)),
                 new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)));
         }
 
@@ -524,10 +527,10 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.ReassignsFailed,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
-                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(UserManager)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
+                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettings)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
-                new TagValue(Tags.ToUserName, toUser.DisplayUserName(UserManager)),
+                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettings)),
                 new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)),
                 new TagValue(Tags.Message, message));
         }
@@ -538,7 +541,7 @@ namespace ASC.Web.Studio.Core.Notify
                 CoreBaseSettings.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
@@ -553,7 +556,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.RemoveUserDataFailed,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(UserManager, recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue(Tags.Message, message));
@@ -600,7 +603,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
-            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext));
+            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -617,7 +620,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.BackupCreated,
                 new[] { StudioNotifyHelper.ToRecipient(userId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(UserManager)));
+                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettings)));
         }
 
         public void SendMsgRestoreStarted(Tenant tenant, bool notifyAllUsers)
@@ -647,7 +650,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.RestoreCompleted,
                 users,
                 new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(UserManager)));
+                new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettings)));
         }
 
         #endregion
@@ -666,7 +669,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.ActivateUrl, activateUrl),
                         TagValues.GreenButton(greenButtonText, deactivateUrl),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(UserManager)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
         }
 
         public void SendMsgPortalDeletion(Tenant t, string url, bool showAutoRenewText)
@@ -681,7 +684,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, url),
                         new TagValue(Tags.AutoRenew, showAutoRenewText.ToString()),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(UserManager)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
         }
 
         public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
@@ -693,7 +696,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new IRecipient[] { owner },
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, url),
-                        new TagValue(Tags.OwnerName, owner.DisplayUserName(UserManager)));
+                        new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettings)));
         }
 
         #endregion
@@ -711,7 +714,7 @@ namespace ASC.Web.Studio.Core.Notify
                         TagValues.GreenButton(greenButtonText, confirmDnsUpdateUrl),
                         new TagValue("PortalAddress", AddHttpToUrl(portalAddress)),
                         new TagValue("PortalDns", AddHttpToUrl(portalDns ?? string.Empty)),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(UserManager)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
         }
 
 
@@ -727,7 +730,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
                         new TagValue(Tags.UserName, newOwnerName),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(UserManager)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
         }
 
 
@@ -812,7 +815,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext));
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
         }
 
         #endregion
@@ -878,7 +881,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
                             new TagValue(Tags.PortalUrl, oldVirtualRootPath),
-                            new TagValue(Tags.UserDisplayName, u.DisplayUserName(UserManager)));
+                            new TagValue(Tags.UserDisplayName, u.DisplayUserName(DisplayUserSettings)));
                     }
                 }
                 catch (Exception ex)

@@ -35,36 +35,48 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    public class UserManagerConstants
+    {
+        public IDictionary<Guid, UserInfo> SystemUsers { get; }
+        public Constants Constants { get; }
+
+        public UserManagerConstants(Constants constants)
+        {
+            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
+            SystemUsers[Constants.LostUser.ID] = Constants.LostUser;
+            SystemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
+            SystemUsers[constants.NamingPoster.ID] = constants.NamingPoster;
+            Constants = constants;
+        }
+    }
+
     public class UserManager
     {
-        public static IDictionary<Guid, UserInfo> SystemUsers { get; }
+        public IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
 
         public IHttpContextAccessor Accessor { get; }
         public IUserService UserService { get; }
         public TenantManager TenantManager { get; }
         public PermissionContext PermissionContext { get; }
+        public UserManagerConstants UserManagerConstants { get; }
+        public Constants Constants { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
-
-        static UserManager()
-        {
-            SystemUsers = Configuration.Constants.SystemAccounts.ToDictionary(a => a.ID, a => new UserInfo { ID = a.ID, LastName = a.Name });
-            SystemUsers[Constants.LostUser.ID] = Constants.LostUser;
-            SystemUsers[Constants.OutsideUser.ID] = Constants.OutsideUser;
-            SystemUsers[Constants.NamingPoster.ID] = Constants.NamingPoster;
-        }
 
         public UserManager(
             IUserService service, 
             IHttpContextAccessor httpContextAccessor, 
             TenantManager tenantManager,
-            PermissionContext permissionContext)
+            PermissionContext permissionContext,
+            UserManagerConstants userManagerConstants)
         {
             UserService = service;
             Accessor = httpContextAccessor;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
+            UserManagerConstants = userManagerConstants;
+            Constants = UserManagerConstants.Constants;
         }
 
 

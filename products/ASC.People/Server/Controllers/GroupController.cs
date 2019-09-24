@@ -30,6 +30,7 @@ namespace ASC.Employee.Core.Controllers
         public SecurityContext SecurityContext { get; }
         public PermissionContext PermissionContext { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public DisplayUserSettings DisplayUserSettings { get; }
 
         public GroupController(
             Common.Logging.LogManager logManager,
@@ -39,7 +40,8 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager userPhotoManager,
             SecurityContext securityContext,
             PermissionContext permissionContext,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility, 
+            DisplayUserSettings displayUserSettings)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -49,6 +51,7 @@ namespace ASC.Employee.Core.Controllers
             SecurityContext = securityContext;
             PermissionContext = permissionContext;
             CommonLinkUtility = commonLinkUtility;
+            DisplayUserSettings = displayUserSettings;
         }
 
         [Read]
@@ -60,7 +63,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("{groupid}")]
         public GroupWrapperFull GetById(Guid groupid)
         {
-            return new GroupWrapperFull(GetGroupInfo(groupid), true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
+            return new GroupWrapperFull(GetGroupInfo(groupid), true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettings);
         }
 
         [Read("user/{userid}")]
@@ -87,7 +90,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.GroupCreated, MessageTarget.Create(group.ID), group.Name);
 
-            return new GroupWrapperFull(group, true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
+            return new GroupWrapperFull(group, true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettings);
         }
 
         [Update("{groupid}")]
@@ -124,7 +127,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var @group = GetGroupInfo(groupid);
-            var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility);
+            var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettings);
 
             UserManager.DeleteGroup(groupid);
 

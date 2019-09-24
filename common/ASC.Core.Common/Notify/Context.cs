@@ -33,6 +33,8 @@ using ASC.Notify.Channels;
 using ASC.Notify.Engine;
 using ASC.Notify.Model;
 using ASC.Notify.Sinks;
+using ASC.Web.Core.Users;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify
 {
@@ -67,10 +69,10 @@ namespace ASC.Notify
         public event Action<Context, INotifyClient, UserManager> NotifyClientRegistration;
 
 
-        public Context(CoreBaseSettings coreBaseSettings)
+        public Context(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             NotifyEngine = new NotifyEngine(this, coreBaseSettings);
-            DispatchEngine = new DispatchEngine(this);
+            DispatchEngine = new DispatchEngine(this, configuration);
         }
 
 
@@ -99,10 +101,10 @@ namespace ASC.Notify
             }
         }
 
-        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, UserManager userManager, AuthContext authContext)
+        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
         {
             //ValidateNotifySource(source);
-            var client = new NotifyClientImpl(this, source, userManager, authContext);
+            var client = new NotifyClientImpl(this, source, userManager, authContext, displayUserSettings);
             NotifyClientRegistration?.Invoke(this, client, userManager);
             return client;
         }

@@ -26,7 +26,7 @@
 
 using System;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.MessagingSystem.DbSender
 {
@@ -34,14 +34,13 @@ namespace ASC.MessagingSystem.DbSender
     {
         private readonly ILog log = LogManager.GetLogger("ASC.Messaging");
 
-        private static bool MessagingEnabled
+        public DbMessageSender(IConfiguration configuration)
         {
-            get
-            {
-                var setting = ConfigurationManager.AppSettings["messaging:enabled"];
-                return !string.IsNullOrEmpty(setting) && setting == "true";
-            }
+            var setting = configuration["messaging:enabled"];
+            MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
         }
+
+        private bool MessagingEnabled { get; }
 
 
         public void Send(EventMessage message)

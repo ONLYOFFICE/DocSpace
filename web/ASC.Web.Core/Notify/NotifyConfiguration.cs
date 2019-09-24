@@ -41,6 +41,7 @@ using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
@@ -234,7 +235,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
@@ -246,7 +247,7 @@ namespace ASC.Web.Studio.Core.Notify
                 var user = userManager.GetUsers(aid);
                 if (userManager.UserExists(user))
                 {
-                    aname = user.DisplayUserName(false, userManager)
+                    aname = user.DisplayUserName(false, displayUserSettings)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }

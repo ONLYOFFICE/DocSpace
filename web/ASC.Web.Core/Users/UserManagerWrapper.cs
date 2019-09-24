@@ -55,7 +55,7 @@ namespace ASC.Web.Core.Users
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IPSecurity.IPSecurity IPSecurity { get; }
-
+        public DisplayUserSettings DisplayUserSettings { get; }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService, 
@@ -67,7 +67,8 @@ namespace ASC.Web.Core.Users
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
-            IPSecurity.IPSecurity iPSecurity
+            IPSecurity.IPSecurity iPSecurity,
+            DisplayUserSettings displayUserSettings
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -80,6 +81,7 @@ namespace ASC.Web.Core.Users
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
             IPSecurity = iPSecurity;
+            DisplayUserSettings = displayUserSettings;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -272,7 +274,7 @@ namespace ASC.Web.Core.Users
 
             StudioNotifyService.UserPasswordChange(userInfo);
 
-            var displayUserName = userInfo.DisplayUserName(false, UserManager);
+            var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettings);
             MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;

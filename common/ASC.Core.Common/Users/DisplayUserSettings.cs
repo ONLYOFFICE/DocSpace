@@ -26,6 +26,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
@@ -43,14 +44,24 @@ namespace ASC.Web.Core.Users
 
         [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
+        public UserManager UserManager { get; }
+        public UserFormatter UserFormatter { get; }
 
         public DisplayUserSettings()
         {
 
         }
 
-        public DisplayUserSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        public DisplayUserSettings(
+            AuthContext authContext, 
+            SettingsManager settingsManager, 
+            TenantManager tenantManager,
+            UserManager userManager,
+            UserFormatter userFormatter) : 
+            base(authContext, settingsManager, tenantManager)
         {
+            UserManager = userManager;
+            UserFormatter = userFormatter;
         }
 
         public override ISettings GetDefault()
@@ -61,28 +72,32 @@ namespace ASC.Web.Core.Users
             };
         }
 
-        public static string GetFullUserName(UserManager userManager, Guid userID, bool withHtmlEncode = true)
+        public string GetFullUserName( Guid userID, bool withHtmlEncode = true)
         {
-            return GetFullUserName(userManager, userManager.GetUsers(userID), withHtmlEncode);
+            return GetFullUserName(UserManager.GetUsers(userID), withHtmlEncode);
         }
 
-        public static string GetFullUserName(UserManager userManager, UserInfo userInfo, bool withHtmlEncode = true)
+        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
         {
-            return GetFullUserName(userManager, userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
+            return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
         }
 
-        public static string GetFullUserName(UserManager userManager, UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
+        public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
         {
             if (userInfo == null)
             {
                 return string.Empty;
             }
-            if (!userInfo.ID.Equals(Guid.Empty) && !userManager.UserExists(userInfo))
+            if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
             {
                 return "profile removed";
             }
             var result = UserFormatter.GetUserName(userInfo, format);
-            return withHtmlEncode ? result.HtmlEncode() : result;
+            return withHtmlEncode ? HtmlEncode(result) : result;
+        }
+        public string HtmlEncode(string str)
+        {
+            return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
         }
     }
 }
