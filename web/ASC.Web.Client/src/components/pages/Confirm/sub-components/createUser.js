@@ -130,7 +130,7 @@ class Confirm extends React.PureComponent {
     };
 
     onKeyPress = (event) => {
-        if (event.target.code === "Enter") {
+        if (event.key === "Enter") {
             this.onSubmit();
         }
     };
@@ -289,6 +289,7 @@ class Confirm extends React.PureComponent {
                                     generatorSpecial="!@#$%^&*"
                                     passwordSettings={settings}
                                     isDisabled={this.state.isLoading}
+                                    onKeyDown={this.onKeyPress}
                                 />
 
 
