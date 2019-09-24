@@ -13,8 +13,13 @@ import { getUserInfo } from './store/auth/actions';
 var token = (new Cookies()).get(AUTH_KEY);
 
 if (token) {
-    setAuthorizationToken(token);
-    store.dispatch(getUserInfo);
+    if (!window.location.pathname.includes("confirm/type=EmailActivation")) {
+        setAuthorizationToken(token);
+        store.dispatch(getUserInfo);
+    }
+    else {
+        setAuthorizationToken();
+    }
 }
 
 ReactDOM.render(
