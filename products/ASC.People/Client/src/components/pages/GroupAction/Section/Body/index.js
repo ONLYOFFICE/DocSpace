@@ -29,6 +29,8 @@ import {
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
 import { fetchSelectorUsers } from "../../../../../store/people/actions";
+import { GUID_EMPTY } from "../../../../../helpers/constants";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   display: flex;
@@ -82,10 +84,13 @@ const MainContainer = styled.div`
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = this.mapPropsToState();
+  }
 
-    const { group, users, groups, t } = props;
+  mapPropsToState = () => {
+    const { group, users, groups, t } = this.props;
 
-    this.state = {
+    const newState = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
       searchValue: "",
@@ -105,15 +110,28 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupManager: group
-        ? group.manager.id
-        : "00000000-0000-0000-0000-000000000000",
-      groupMembers: group && group.members ? group.members : []
+      groupMembers: group && group.members ? group.members : [],
+      groupManager: group && group.manager ? {
+        key: group.manager.id,
+        label: group.manager.displayName
+      } : {
+        key: GUID_EMPTY,
+        label: t("CustomAddEmployee", { typeUser })
+      }
     };
+
+    return newState;
   }
 
   componentDidMount() {
     this.props.fetchSelectorUsers();
+  }
+
+  componentDidUpdate(prevProps) {
+    //const { users, group } = this.props;
+    if(!isEqual(this.props, prevProps)) {
+      this.setState(this.mapPropsToState());
+    }
   }
 
   onGroupChange = e => {
@@ -158,10 +176,10 @@ class SectionBodyContent extends React.Component {
       ? updateGroup(
           group.id,
           groupName,
-          groupManager,
+          groupManager.id,
           groupMembers.map(u => u.id)
         )
-      : createGroup(groupName, groupManager, groupMembers.map(u => u.id))
+      : createGroup(groupName, groupManager.id, groupMembers.map(u => u.id))
     )
       .then(() => {
         toastr.success("Success");
@@ -294,7 +312,8 @@ class SectionBodyContent extends React.Component {
       inLoading,
       error,
       searchValue,
-      modalVisible
+      modalVisible,
+      groupManager
     } = this.state;
     return (
       <MainContainer>
@@ -330,10 +349,7 @@ class SectionBodyContent extends React.Component {
             tabIndex={2}
             options={[]}
             isOpen={isHeaderSelectorOpen}
-            selectedOption={{
-              key: 0,
-              label: t("CustomAddEmployee", { typeUser })
-            }}
+            selectedOption={groupManager}
             scaled={true}
             size="content"
             opened={isHeaderSelectorOpen}
@@ -358,9 +374,14 @@ class SectionBodyContent extends React.Component {
             isMultiSelect={false}
             buttonLabel={t("CustomAddEmployee", { typeUser })}
             selectAllLabel={"Select all"}
-            onSelect={selectedOptions => {
-              console.log("onSelect", selectedOptions);
+            onSelect={option => {
+              //console.log("onSelect", option);
               // action('onSelect')(selectedOptions);
+              this.setState({ groupManager: {
+                  key: option.key,
+                  label: option.label
+                } 
+              });
               this.onHeaderSelectorClick();
             }}
             onCancel={this.onHeaderSelectorClick}
