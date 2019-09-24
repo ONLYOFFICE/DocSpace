@@ -20,12 +20,22 @@ class AvatarEditorStory extends React.Component  {
     this.openEditor = this.openEditor.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onLoadFile = this.onLoadFile.bind(this)
+    this.onImageChange = this.onImageChange.bind(this)
     
   }
-  onSave(result){
-    action('onSave')(result);
+  onImageChange(img){
+    action('onLoadFile');
     this.setState({
-      userImage: result.croppedImage,
+      userImage: img
+    })
+  }
+  onLoadFile(file){
+    action('onLoadFile')(file);
+  }
+  onSave(isUpdate, data){
+    action('onSave')(isUpdate, data);
+    this.setState({
       isOpen: false
     })
   }
@@ -54,7 +64,8 @@ class AvatarEditorStory extends React.Component  {
           visible={this.state.isOpen}
           onClose={this.onClose}
           onSave={this.onSave}
-        />
+          onImageChange={this.onImageChange}
+          />
       </div>
     )
   }
