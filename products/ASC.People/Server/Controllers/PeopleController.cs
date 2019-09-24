@@ -693,9 +693,11 @@ namespace ASC.Employee.Core.Controllers
             return result;
         }
         [Create("{userid}/photo")]
-        public FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
         {
             var result = new FileUploadResult();
+            bool autosave = Boolean.Parse(model["Autosave"]);
+
             try
             {
                 if (model.Files.Count != 0)
@@ -730,7 +732,7 @@ namespace ASC.Employee.Core.Controllers
 
                     CheckImgFormat(data);
 
-                    if (model.Autosave)
+                    if (autosave)
                     {
                         if (data.Length > SetupInfo.MaxImageUploadSize)
                             throw new ImageSizeLimitException();
