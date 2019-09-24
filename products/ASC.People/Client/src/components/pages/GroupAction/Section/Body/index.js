@@ -176,10 +176,10 @@ class SectionBodyContent extends React.Component {
       ? updateGroup(
           group.id,
           groupName,
-          groupManager.id,
+          groupManager.key,
           groupMembers.map(u => u.id)
         )
-      : createGroup(groupName, groupManager.id, groupMembers.map(u => u.id))
+      : createGroup(groupName, groupManager.key, groupMembers.map(u => u.id))
     )
       .then(() => {
         toastr.success("Success");
