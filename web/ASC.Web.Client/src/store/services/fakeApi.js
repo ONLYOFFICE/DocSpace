@@ -120,3 +120,14 @@ export function createUser() {
     }; 
     return fakeResponse(data);
     }
+
+export function setNewPasswordSettings() {
+    const data = {
+        //minLength: 12,
+        //upperCase: true,
+        //digits: true,
+        //specSymbols: true
+    };
+      
+    return fakeResponse(data);
+}
