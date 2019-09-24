@@ -124,7 +124,10 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchSelectorUsers();
+    const { users, fetchSelectorUsers } = this.props;
+    if(!users || !users.length) {
+      fetchSelectorUsers();
+    }
   }
 
   componentDidUpdate(prevProps) {
