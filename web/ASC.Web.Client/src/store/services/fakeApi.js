@@ -120,3 +120,10 @@ export function createUser() {
     }; 
     return fakeResponse(data);
     }
+
+export function validateChangingEmail(payload, key) {
+    const data = {
+        "email": payload.email
+    }; 
+    return fakeResponse(data);
+    }

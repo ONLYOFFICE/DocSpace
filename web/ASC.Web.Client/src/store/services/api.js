@@ -47,3 +47,7 @@ export function createUser(data, key) {
         ? fakeApi.createUser() 
         : axios.post(`${API_URL}/people`, data, { headers: { 'confirm' : key } });
     }
+
+export function validateChangingEmail(data, key) {
+    return fakeApi.validateChangingEmail(data, key);        ;
+    }
