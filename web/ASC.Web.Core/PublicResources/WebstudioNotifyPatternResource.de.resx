@@ -904,6 +904,9 @@ ONLYOFFICE-Team</value>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>$ {LetterLogoText}. Anfrage zur Änderung der Sicherungscodes</value>
   </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Änderung des Portalsbesitzer</value>
+  </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Änderung der Portaladresse</value>
   </data>
