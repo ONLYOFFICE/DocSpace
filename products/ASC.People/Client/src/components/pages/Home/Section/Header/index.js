@@ -28,7 +28,7 @@ import {
   resendUserInvites,
   deleteUsers
 } from "../../../../../store/services/api";
-
+import { deleteGroup } from '../../../../../store/group/actions';
 
 
 const wrapperStyle = {
@@ -53,7 +53,8 @@ const SectionHeaderContent = props => {
     onLoading, 
     filter,
     history,
-    settings
+    settings,
+    deleteGroup
   } = props;
 
   const selectedUserIds = getSelectionIds(selection);
@@ -150,8 +151,9 @@ const SectionHeaderContent = props => {
   const onEditGroup = useCallback(() =>  history.push(`${settings.homepage}/group/edit/${group.id}`), [history, settings, group]);
 
   const onDeleteGroup = useCallback(() => {
-    toastr.success("Delete group action");
-  }, []);
+    deleteGroup(group.id)
+    .then(() => toastr.success("Group has been removed successfully"));
+  }, [deleteGroup, group]);
 
   const getContextOptions = useCallback(() => {
     return [
@@ -214,5 +216,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, updateUserType, fetchPeople }
+  { updateUserStatus, updateUserType, fetchPeople, deleteGroup }
 )(withTranslation()(withRouter(SectionHeaderContent)));

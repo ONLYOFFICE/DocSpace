@@ -87,3 +87,21 @@ export function updateGroup(id, groupName, groupManager, members) {
       });
   };
 }
+
+export function deleteGroup(id) {
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { groups, filter } = people;
+
+    return api
+      .deleteGroup(id)
+      .then(res => {
+        checkResponseError(res);
+        return dispatch(setGroups(groups.filter(g => g.id !== id)));
+      })
+      .then(() => {
+        const newFilter = filter.clone(true);
+        return fetchPeopleByFilter(dispatch, newFilter);
+      });
+  };
+}
