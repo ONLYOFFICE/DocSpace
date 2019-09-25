@@ -162,7 +162,7 @@ const SectionFilterContent = ({
         label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }) },
+      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }), defaultSelectLabel: t("DefaultSelectLabel") },
       ...groupOptions
     ];
 

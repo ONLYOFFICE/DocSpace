@@ -50,5 +50,7 @@
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
 
   "DirectionAscLabel":"A-Z",
-  "DirectionDescLabel":"Z-A"
+  "DirectionDescLabel":"Z-A",
+
+  "DefaultSelectLabel": "Select"
 }
