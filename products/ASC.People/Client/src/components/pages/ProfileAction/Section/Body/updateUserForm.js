@@ -446,7 +446,11 @@ class UpdateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
-              chooseFileLabel="Drop files here, or click to select files"/>
+              chooseFileLabel ={t("chooseFileLabel")}
+              unknownTypeError={t("unknownTypeError")}
+              maxSizeFileError={t("maxSizeFileError")}
+              unknownError    ={t("unknownError")}
+            />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
