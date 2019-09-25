@@ -588,7 +588,7 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
-        
+
         public FormFile Base64ToImage(string base64String, string fileName)
         {
             byte[] imageBytes = Convert.FromBase64String(base64String);
@@ -617,7 +617,7 @@ namespace ASC.Employee.Core.Controllers
 
                 SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
 
-                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_"+ userId.ToString());
+                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_" + userId.ToString());
                 var defaultUserPhoto = Base64ToImage(model.base64DefaultImage, "defaultPhoto" + userId.ToString());
 
                 if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
@@ -693,9 +693,11 @@ namespace ASC.Employee.Core.Controllers
             return result;
         }
         [Create("{userid}/photo")]
-        public FileUploadResult UploadMemberPhoto(string userid, UploadPhotoModel model)
+        public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
         {
             var result = new FileUploadResult();
+            bool autosave = Boolean.Parse(model["Autosave"]);
+
             try
             {
                 if (model.Files.Count != 0)
@@ -730,7 +732,7 @@ namespace ASC.Employee.Core.Controllers
 
                     CheckImgFormat(data);
 
-                    if (model.Autosave)
+                    if (autosave)
                     {
                         if (data.Length > SetupInfo.MaxImageUploadSize)
                             throw new ImageSizeLimitException();
@@ -867,7 +869,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "EmailChange,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Administrators")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
             ApiContext.AuthByClaim();

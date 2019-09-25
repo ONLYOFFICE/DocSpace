@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.94",
+  "version": "1.0.95",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -103,7 +103,9 @@
     "rc-tree": "^2.1.2",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar-edit": "^0.8.3",
+    "react-avatar-editor": "^11.0.7",
     "react-custom-scrollbars": "^4.2.1",
+    "react-dropzone": "^10.1.8",
     "react-lifecycles-compat": "^3.0.4",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^5.3.2",

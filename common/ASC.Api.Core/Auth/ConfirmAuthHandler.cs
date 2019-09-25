@@ -52,12 +52,24 @@ namespace ASC.Api.Core.Auth
                 case ConfirmType.EmailChange:
                     checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + SecurityContext.CurrentAccount.ID, key, validInterval);
                     break;
+                case ConfirmType.PasswordChange:
+                    var userHash = Request.TryGetValue("p", out var p) && p == "1";
+                    var hash = string.Empty;
+
+                    if (userHash)
+                    {
+                        var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+                        hash = CoreContext.Authentication.GetUserPasswordHash(tenantId, CoreContext.UserManager.GetUserByEmail(tenantId, _email).ID);
+                    }
+
+                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)), key, validInterval);
+                    break;
                 default:
                     checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type, key, validInterval);
                     break;
             }
 
-            var claims = new List<Claim>() 
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Role, _type.ToString())
             };
