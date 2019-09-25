@@ -137,7 +137,7 @@ export function checkResponseError(res) {
     }
 }
 
-export function setNewPassword(res) {
+export function changePassword(res) {
     return dispatch => {
         return api.changePassword(res)
         .then(res => {
