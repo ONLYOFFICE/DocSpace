@@ -139,7 +139,7 @@ export function checkResponseError(res) {
 
 export function setNewPassword(res) {
     return dispatch => {
-        return api.setNewPasswordSettings(res)
+        return api.changePassword(res)
         .then(res => {
             //checkResponseError(res);
             dispatch(setNewPasswordSettings(res.data.response));

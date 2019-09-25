@@ -148,9 +148,9 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onSearchChange = e => {
+  onSearchChange = value => {
     this.setState({
-      searchValue: e.target.value
+      searchValue: value
     });
   };
 
@@ -230,9 +230,9 @@ class SectionBodyContent extends React.Component {
     )
       .then(() => {
         toastr.success("Success");
-        this.setState({ inLoading: true });
-        resetGroup();
+        //this.setState({ inLoading: true });
         history.goBack();
+        resetGroup();
       })
       .catch(error => {
         toastr.error(error.message);
@@ -388,6 +388,7 @@ class SectionBodyContent extends React.Component {
             tabIndex={1}
             value={groupName}
             onChange={this.onGroupChange}
+            isDisabled={inLoading}
           />
         </FieldContainer>
         <FieldContainer
@@ -404,6 +405,7 @@ class SectionBodyContent extends React.Component {
             isOpen={isHeadSelectorOpen}
             selectedOption={groupManager}
             scaled={true}
+            isDisabled={inLoading}
             size="content"
             opened={isHeadSelectorOpen}
             onClick={this.onHeadSelectorClick}
@@ -440,6 +442,7 @@ class SectionBodyContent extends React.Component {
             tabIndex={3}
             options={[]}
             isOpen={isUsersSelectorOpen}
+            isDisabled={inLoading}
             selectedOption={{
               key: 0,
               label: t("CustomAddEmployee", { typeUser })
@@ -489,6 +492,7 @@ class SectionBodyContent extends React.Component {
               onClose={this.onSelectedItemClose.bind(this, member)}
               isInline={true}
               className="selected-item"
+              isDisabled={inLoading}
             />
           ))}
         </div>

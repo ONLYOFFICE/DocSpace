@@ -45,10 +45,15 @@ export function setLogout() {
 
 export async function getUserInfo(dispatch) {
   const { user, modules, settings } = await api.getInitInfo();
+  let newSettings = settings;
+  if (user.isAdmin) {
+    const inviteLinkResp = await api.getInvitationLinks();
+    newSettings = Object.assign(newSettings, inviteLinkResp);
+  }
 
   dispatch(setCurrentUser(user));
   dispatch(setModules(modules));
-  dispatch(setSettings(settings));
+  dispatch(setSettings(newSettings));
 
   const groupResp = await api.getGroupList();
 
