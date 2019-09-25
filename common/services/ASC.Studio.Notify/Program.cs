@@ -27,7 +27,7 @@ namespace ASC.Studio.Notify
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
-                    var env = hostContext.Configuration.GetValue("ASPNETCORE_ENVIRONMENT", "Production");
+                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
