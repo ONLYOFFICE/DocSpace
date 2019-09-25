@@ -176,7 +176,7 @@ namespace ASC.Core
 
         public bool UserExists(Guid id)
         {
-            return !UserExists(GetUsers(id));
+            return UserExists(GetUsers(id));
         }
 
         public bool UserExists(UserInfo user)

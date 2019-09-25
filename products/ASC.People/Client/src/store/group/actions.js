@@ -1,5 +1,5 @@
 import * as api from "../../store/services/api";
-import { setGroups } from '../people/actions';
+import { setGroups, fetchPeopleByFilter } from "../people/actions";
 
 export const SET_GROUP = "SET_GROUP";
 export const CLEAN_GROUP = "CLEAN_GROUP";
@@ -26,8 +26,7 @@ export function checkResponseError(res) {
 
 export function fetchGroup(groupId) {
   return dispatch => {
-    api.getGroup(groupId)
-    .then(res => {
+    api.getGroup(groupId).then(res => {
       checkResponseError(res);
       dispatch(setGroup(res.data.response || null));
     });
@@ -36,46 +35,73 @@ export function fetchGroup(groupId) {
 
 export function createGroup(groupName, groupManager, members) {
   return (dispatch, getState) => {
-      const { people } = getState();
-      const { groups } = people;
+    const { people } = getState();
+    const { groups, filter } = people;
 
-      return api.createGroup(groupName, groupManager, members)
+    let newGroup;
+
+    return api
+      .createGroup(groupName, groupManager, members)
       .then(res => {
-          checkResponseError(res);
-          const newGroup = res.data.response;
+        checkResponseError(res);
+        newGroup = res.data.response;
 
-          dispatch(setGroup(newGroup));
-          dispatch(setGroups([...groups, newGroup]));
-
-          return Promise.resolve(newGroup);
+        //dispatch(setGroup(newGroup));
+        return dispatch(setGroups([...groups, newGroup]));
+      })
+      .then(() => {
+        return fetchPeopleByFilter(dispatch, filter);
+      })
+      .then(() => {
+        return Promise.resolve(newGroup);
       });
   };
-};
+}
 
 export function updateGroup(id, groupName, groupManager, members) {
   return (dispatch, getState) => {
     const { people } = getState();
-    const { groups } = people;
+    const { groups, filter } = people;
 
-      return api.updateGroup(id, groupName, groupManager, members)
+    let newGroup;
+
+    return api
+      .updateGroup(id, groupName, groupManager, members)
       .then(res => {
         checkResponseError(res);
-        const newGroup = res.data.response;
+        newGroup = res.data.response;
 
-        dispatch(setGroup(newGroup));
+        //dispatch(setGroup(newGroup));
 
-        const newGroups = groups.map(g => {
+        const newGroups = groups.map(g =>
+          g.id === newGroup.id ? newGroup : g
+        );
 
-          if(g.id === id) {
-            return newGroup;
-          }
-
-          return g;
-        })
-
-        dispatch(setGroups(newGroups));
-
+        return dispatch(setGroups(newGroups));
+      })
+      .then(() => {
+        return fetchPeopleByFilter(dispatch, filter);
+      })
+      .then(() => {
         return Promise.resolve(newGroup);
-    });;
+      });
   };
-};
+}
+
+export function deleteGroup(id) {
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { groups, filter } = people;
+
+    return api
+      .deleteGroup(id)
+      .then(res => {
+        checkResponseError(res);
+        return dispatch(setGroups(groups.filter(g => g.id !== id)));
+      })
+      .then(() => {
+        const newFilter = filter.clone(true);
+        return fetchPeopleByFilter(dispatch, newFilter);
+      });
+  };
+}

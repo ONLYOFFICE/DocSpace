@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile, updateAvatar } from '../../../../../store/profile/actions';
+import { updateProfile, loadAvatar, createThumbnailsAvatar, deleteAvatar } from '../../../../../store/profile/actions';
 import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -46,14 +46,14 @@ class UpdateUserForm extends React.Component {
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
-
-
+    this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
     this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
     this.onSearchGroups = this.onSearchGroups.bind(this);
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +87,12 @@ class UpdateUserForm extends React.Component {
         allOptions: allOptions,
         options: [...allOptions],
         selected: selected
+      },
+      avatar: {
+        tmpFile:"",
+        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        defaultWidth: 0,
+        defaultHeight: 0
       }
     };
 
@@ -295,26 +301,85 @@ class UpdateUserForm extends React.Component {
   }
 
   openAvatarEditor(){
+    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
+    let _this = this;
+    if(avatarDefault !== null){
+      let img = new Image();
+      img.onload = function () {
+        _this.setState({
+          avatar:{
+            defaultWidth: img.width,
+            defaultHeight: img.height
+          }
+        })
+      };
+      img.src = avatarDefault;
+    }
     this.setState({
       visibleAvatarEditor: true,
     });
   }
-  onSaveAvatar(result) {
-    this.props.updateAvatar(this.state.profile.id, result)
+  onLoadFileAvatar(file) {
+    let data = new FormData();
+    let _this = this;
+    data.append("file", file);
+    data.append("Autosave", false);
+    this.props.loadAvatar(this.state.profile.id, data)
       .then((result) => {
-        let stateCopy = Object.assign({}, this.state);
-        stateCopy.visibleAvatarEditor = false;
-        if(result.data.response.success){
-          stateCopy.profile.avatarMax = result.data.response.data.max;
-        }else{
-          stateCopy.profile.avatarMax = result.data.response.max && result.data.response.max;
-        }
-        toastr.success("Success");
-        this.setState(stateCopy);
+        var img = new Image();
+        img.onload = function () {
+            var stateCopy = Object.assign({}, _this.state);
+            stateCopy.avatar =  {
+              tmpFile: result.data.response.data,
+              image: result.data.response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height
+            }
+            _this.setState(stateCopy);
+        };
+        img.src = result.data.response.data;
       })
       .catch((error) => {
         toastr.error(error.message);
       });
+  }
+  onSaveAvatar(isUpdate, result) {
+    if(isUpdate){
+      this.props.createThumbnailsAvatar(this.state.profile.id, {
+        x: Math.round(result.x*this.state.avatar.defaultWidth - result.width/2),
+        y: Math.round(result.y*this.state.avatar.defaultHeight - result.height/2),
+        width: result.width,
+        height: result.height,
+        tmpFile: this.state.avatar.tmpFile
+      })
+      .then((result) => {
+        if(result.status === 200){
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.avatar.tmpFile = '';
+          stateCopy.profile.avatarMax = result.data.response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
+          toastr.success("Success");
+          this.setState(stateCopy);
+        }
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+      });
+    }else{
+      this.props.deleteAvatar(this.state.profile.id)
+      .then((result) => {
+        if(result.status === 200){
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.profile.avatarMax = result.data.response.big;
+          toastr.success("Success");
+          this.setState(stateCopy);
+        }
+      })
+      .catch((error) => {
+        toastr.error(error.message);
+      });
+    }
   }
   onCloseAvatarEditor() {
     this.setState({
@@ -375,11 +440,17 @@ class UpdateUserForm extends React.Component {
               editLabel={t("EditPhoto")}
               editAction={this.openAvatarEditor}
             />
-            <AvatarEditor 
-              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
-              visible={this.state.visibleAvatarEditor} 
-              onClose={this.onCloseAvatarEditor} 
-              onSave={this.onSaveAvatar} />
+            <AvatarEditor
+              image={this.state.avatar.image}
+              visible={this.state.visibleAvatarEditor}
+              onClose={this.onCloseAvatarEditor}
+              onSave={this.onSaveAvatar}
+              onLoadFile={this.onLoadFileAvatar}
+              chooseFileLabel ={t("chooseFileLabel")}
+              unknownTypeError={t("unknownTypeError")}
+              maxSizeFileError={t("maxSizeFileError")}
+              unknownError    ={t("unknownError")}
+            />
           </AvatarContainer>
           <MainFieldsContainer>
             <TextChangeField
@@ -555,6 +626,8 @@ export default connect(
   mapStateToProps,
   {
     updateProfile,
-    updateAvatar
+    loadAvatar,
+    deleteAvatar,
+    createThumbnailsAvatar
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

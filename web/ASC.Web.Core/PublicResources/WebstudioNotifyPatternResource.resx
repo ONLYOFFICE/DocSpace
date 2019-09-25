@@ -1182,6 +1182,9 @@ h3.Email
 h3.Request content
 $Body</value>
   </data>
+  <data name="pattern_restore_completed" xml:space="preserve">
+    <value />
+  </data>
   <data name="pattern_restore_started" xml:space="preserve">
     <value>h1.Portal restoration started
 
@@ -1633,6 +1636,9 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Backup codes change request</value>
+  </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Change of portal owner</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>

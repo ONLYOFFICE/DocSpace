@@ -12,6 +12,14 @@
 			{
 				"name": "messanger.sender",
 				"type": "ASC.Core.Notify.Senders.JabberSender, ASC.Core.Common"
+			},
+			{
+				"name": "email.sender",
+				"type": "ASC.Core.Notify.Senders.SmtpSender, ASC.Core.Common",
+				"properties" :
+				{
+					"useCoreSettings" : "true"
+				}
 			}
 		],
 		"schedulers": [

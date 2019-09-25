@@ -28,7 +28,6 @@ Required to display user avatar editor on page.
 | `headerLabel`        | `string`   |    -     |                                           | `Edit Photo`       |                                                       |
 | `saveButtonLabel`    | `string`   |    -     |                                           | `Save`             |                                                       |
 | `cancelButtonLabel`  | `string`   |    -     |                                           | `Cancel`           |                                                       |
-| `maxSizeErrorLabel`  | `string`   |    -     |                                           | `File is too big`  |                                                       |
 | `maxSize`            | `number`   |    -     |                                           | `1`                | Max size of image                                     |
 | `onSave`             | `function` |    -     |                                           |                    |                                                       |
 | `onClose`            | `function` |    -     |                                           |                    |                                                       |

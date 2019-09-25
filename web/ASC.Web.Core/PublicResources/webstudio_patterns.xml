@@ -1,5 +1,5 @@
 <patterns>
-  <formatter type="ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Common" />
+  <formatter type="ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Core.Common" />
 
   <!-- self_profile_updated -->
   <pattern id="self_profile_updated" sender="email.sender">
@@ -161,7 +161,7 @@ $activity.Key
 
   <!-- owner_confirm_change -->
   <pattern id="owner_confirm_change">
-    <subject resource="subject_confirm_owner_change|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <subject resource="|subject_confirm_owner_change|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_confirm_owner_change|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 

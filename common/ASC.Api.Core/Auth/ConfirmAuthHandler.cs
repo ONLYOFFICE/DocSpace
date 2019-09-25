@@ -24,23 +24,32 @@ namespace ASC.Api.Core.Auth
         {
         }
         public ConfirmAuthHandler(
-            IOptionsMonitor<AuthenticationSchemeOptions> options, 
-            ILoggerFactory logger, 
-            UrlEncoder encoder, 
-            ISystemClock clock, 
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock,
             SecurityContext securityContext,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            SetupInfo setupInfo) : 
+            SetupInfo setupInfo,
+            TenantManager tenantManager,
+            UserManager userManager,
+            AuthManager authManager) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             SetupInfo = setupInfo;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            AuthManager = authManager;
         }
 
         public SecurityContext SecurityContext { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public SetupInfo SetupInfo { get; }
+        public TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        public AuthManager AuthManager { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -70,12 +79,24 @@ namespace ASC.Api.Core.Auth
                 case ConfirmType.EmailChange:
                     checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + SecurityContext.CurrentAccount.ID, key, validInterval);
                     break;
+                case ConfirmType.PasswordChange:
+                    var userHash = Request.TryGetValue("p", out var p) && p == "1";
+                    var hash = string.Empty;
+
+                    if (userHash)
+                    {
+                        var tenantId = TenantManager.GetCurrentTenant().TenantId;
+                        hash = AuthManager.GetUserPasswordHash(tenantId, UserManager.GetUserByEmail(_email).ID);
+                    }
+
+                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)), key, validInterval);
+                    break;
                 default:
                     checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type, key, validInterval);
                     break;
             }
 
-            var claims = new List<Claim>() 
+            var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Role, _type.ToString())
             };

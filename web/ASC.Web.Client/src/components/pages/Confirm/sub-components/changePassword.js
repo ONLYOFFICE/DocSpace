@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withRouter } from "react-router";
-import { connect } from 'react-redux';
+import { withTranslation } from "react-i18next";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Row, Col, Card, CardImg, CardTitle } from "reactstrap";
-import { Button, TextInput, PageLayout, Text } from "asc-web-components";
+import { Button, PageLayout, Text, PasswordInput } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { welcomePageTitle } from "../../../../helpers/customNames";
-import { login } from '../../../../../src/store/auth/actions';
+import { changePassword } from "../../../../../src/store/auth/actions";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -17,10 +18,10 @@ const BodyStyle = styled.div`
     margin-bottom: 5px;
   }
 
-  .login-row {
+  .password-row {
     margin: 23px 0 0;
 
-    .login-card {
+    .password-card {
       border: none;
 
       .card-img {
@@ -38,29 +39,56 @@ const BodyStyle = styled.div`
   }
 `;
 
-const Form = () => {
+const Form = props => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
-  //const { login, match, location, history } = props;
-  //const { params } = match;
-
+  const { match, location, history, changePassword } = props;
+  const { params } = match;
   const { t } = useTranslation("translation", { i18n });
 
-  const onSubmit = () => {
-    console.log("onSubmit CHANGE");
-  };
+  const onSubmit = useCallback(
+    e => {
+      errorText && setErrorText("");
 
-  const onKeyPress = useCallback(target => {
-    console.log(target.code);
-    if (target.code === "Enter") {
-      onSubmit();
-    }
-  });
-  //}, [onSubmit]);
+      let hasError = false;
 
-  /*
+      if (!password.trim()) {
+        hasError = true;
+        setPasswordValid(!hasError);
+      }
+
+      if (hasError) return false;
+
+      setIsLoading(true);
+      console.log("changePassword onSubmit", match, location, history);
+
+      const key = `type=PasswordChange&${location.search.slice(1)}`;
+      const userId = "f305ea37-da05-11e9-89de-e0cb4e43b8c0"; //TODO: Find real userId by key
+
+      changePassword(userId, password, key)
+        .then(() => {
+          console.log("UPDATE PASSWORD");
+          history.push("/");
+        })
+        .catch(e => {
+          history.push("/");
+          console.log("ERROR UPDATE PASSWORD", e);
+        });
+    },
+    [errorText, history, location, changePassword, match, password]
+  );
+
+  const onKeyPress = useCallback(
+    target => {
+      if (target.key === "Enter") {
+        onSubmit();
+      }
+    },
+    [onSubmit]
+  );
+
   useEffect(() => {
     params.error && setErrorText(params.error);
     window.addEventListener("keydown", onKeyPress);
@@ -71,14 +99,23 @@ const Form = () => {
       window.removeEventListener("keyup", onKeyPress);
     };
   }, [onKeyPress, params.error]);
-  */
+
+  const settings = {
+    minLength: 6,
+    upperCase: false,
+    digits: false,
+    specSymbols: false
+  };
+
+  const tooltipPasswordLength =
+    "from " + settings.minLength + " to 30 characters";
 
   const mdOptions = { size: 6, offset: 3 };
   return (
     <BodyStyle>
-      <Row className="login-row">
+      <Row className="password-row">
         <Col sm="12" md={mdOptions}>
-          <Card className="login-card">
+          <Card className="password-card">
             <CardImg
               className="card-img"
               src="images/dark_general.png"
@@ -91,30 +128,35 @@ const Form = () => {
           </Card>
 
           <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
-          <TextInput
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             size="huge"
             scale={true}
-            isAutoFocussed={true}
+            type="password"
+            isDisabled={isLoading}
+            hasError={!passwordValid}
             tabIndex={1}
-            autocomple="current-password"
-            placeholder={t("PasswordCustomMode")}
+            value={password}
             onChange={event => {
               setPassword(event.target.value);
               !passwordValid && setPasswordValid(true);
               errorText && setErrorText("");
               onKeyPress(event.target);
             }}
-            value={password}
-            hasError={!passwordValid}
-            isDisabled={isLoading}
-            onKeyDown={event => onKeyPress(event.target)}
+            emailInputName="E-mail"
+            passwordSettings={settings}
+            tooltipPasswordTitle="Password must contain:"
+            tooltipPasswordLength={tooltipPasswordLength}
+            placeholder={t("PasswordCustomMode")}
+
+            //isAutoFocussed={true}
+            //autocomple="current-password"
+            //onKeyDown={event => onKeyPress(event.target)}
           />
         </Col>
       </Row>
-      <Row className="login-row">
+      <Row className="password-row">
         <Col sm="12" md={mdOptions}>
           <Button
             primary
@@ -134,7 +176,21 @@ const Form = () => {
 };
 
 const ChangePasswordForm = props => {
-  return <PageLayout sectionBodyContent={<Form />} />;
+  return <PageLayout sectionBodyContent={<Form {...props} />} />;
 };
 
-export default connect(null, { login })(withRouter(ChangePasswordForm));
+ChangePasswordForm.propTypes = {
+  match: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  changePassword: PropTypes.func.isRequired
+};
+
+ChangePasswordForm.defaultProps = {
+  password: ""
+};
+
+export default connect(
+  null,
+  { changePassword }
+)(withRouter(withTranslation()(ChangePasswordForm)));

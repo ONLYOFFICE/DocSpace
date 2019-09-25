@@ -996,6 +996,9 @@ Meilleures salutations,
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Demande de changement des codes de sauvegarde</value>
   </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Changement du propriétaire du portail </value>
+  </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Changement de l'adresse du portail</value>
   </data>

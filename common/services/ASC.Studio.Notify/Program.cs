@@ -27,16 +27,17 @@ namespace ASC.Studio.Notify
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
                     config.SetBasePath(path);
+                    var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
                         .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true)
+                        .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("autofac.products.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{hostContext.HostingEnvironment.EnvironmentName}.json", true);
+                        .AddJsonFile($"kafka.{env}.json", true);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

@@ -9,6 +9,7 @@ export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
+export const SET_NEW_PASSWORD = 'SET_NEW_PASSWORD';
 
 export function setCurrentUser(user) {
     return {
@@ -54,6 +55,13 @@ export function setLogout() {
 export function setPasswordSettings(password) {
     return {
         type: SET_PASSWORD_SETTINGS,
+        password
+    };
+};
+
+export function setNewPasswordSettings(password) {
+    return {
+        type: SET_NEW_PASSWORD,
         password
     };
 };
@@ -116,9 +124,25 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
+export function validateActivatingEmail(data, key) {
+    return dispatch => {
+        return api.validateActivatingEmail(data, key);
+    }
+};
+
 export function checkResponseError(res) {
     if (res && res.data && res.data.error) {
         console.error(res.data.error);
         throw new Error(res.data.error.message);
+    }
+}
+
+export function changePassword(userId, password, key) {
+    return dispatch => {
+        return api.changePassword(userId, password, key)
+        .then(res => {
+            //checkResponseError(res);
+            dispatch(setNewPasswordSettings(res.data.response));
+        }) 
     }
 }

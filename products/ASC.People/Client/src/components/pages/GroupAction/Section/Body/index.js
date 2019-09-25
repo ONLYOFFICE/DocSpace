@@ -29,6 +29,8 @@ import {
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
 import { fetchSelectorUsers } from "../../../../../store/people/actions";
+import { GUID_EMPTY } from "../../../../../helpers/constants";
+import isEqual from "lodash/isEqual";
 
 const MainContainer = styled.div`
   display: flex;
@@ -82,10 +84,13 @@ const MainContainer = styled.div`
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = this.mapPropsToState();
+  }
 
-    const { group, users, groups, t } = props;
+  mapPropsToState = () => {
+    const { group, users, groups, t } = this.props;
 
-    this.state = {
+    const newState = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
       searchValue: "",
@@ -105,13 +110,36 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupManager: group ? group.manager.id : "00000000-0000-0000-0000-000000000000",
-      groupMembers: group && group.members ? group.members : []
+      groupMembers: group && group.members ? group.members.map(m => {
+        return {
+          key: m.id,
+          label: m.displayName
+        }
+      }) : [],
+      groupManager: group && group.manager ? {
+        key: group.manager.id,
+        label: group.manager.displayName
+      } : {
+        key: GUID_EMPTY,
+        label: t("CustomAddEmployee", { typeUser })
+      }
     };
+
+    return newState;
   }
 
   componentDidMount() {
-    this.props.fetchSelectorUsers();
+    const { users, fetchSelectorUsers } = this.props;
+    if(!users || !users.length) {
+      fetchSelectorUsers();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    //const { users, group } = this.props;
+    if(!isEqual(this.props, prevProps)) {
+      this.setState(this.mapPropsToState());
+    }
   }
 
   onGroupChange = e => {
@@ -120,15 +148,54 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onSearchChange = e => {
+  onSearchChange = value => {
     this.setState({
-      searchValue: e.target.value
+      searchValue: value
     });
   };
 
-  onHeaderSelectorClick = () => {
+  onHeadSelectorSearch = value => {
+    /*setOptions(
+      options.filter(option => {
+        return option.label.indexOf(value) > -1;
+      })
+    );*/
+  };
+
+  onHeadSelectorSelect = option => {
+    this.setState({ 
+      groupManager: {
+        key: option.key,
+        label: option.label
+      },
+      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen 
+    });
+  };
+
+  onHeadSelectorClick = () => {
     this.setState({
       isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen
+    });
+  };
+
+  onUsersSelectorSearch = (value) => {
+    /*setOptions(
+      options.filter(option => {
+        return option.label.indexOf(value) > -1;
+      })
+    );*/
+  };
+  onUsersSelectorSelect = (selectedOptions) => {
+    //console.log("onSelect", selectedOptions);
+    //this.onUsersSelectorClick();
+    this.setState({ 
+      groupMembers: selectedOptions.map(option => {
+        return {
+          key: option.key,
+          label: option.label
+        };
+      }),
+      isUsersSelectorOpen: !this.state.isUsersSelectorOpen 
     });
   };
 
@@ -145,7 +212,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onSave = () => {
-    const { history, group, createGroup, updateGroup } = this.props;
+    const { history, group, createGroup, updateGroup, resetGroup } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
     if (!groupName || !groupName.trim().length) return false;
@@ -153,13 +220,19 @@ class SectionBodyContent extends React.Component {
     this.setState({ inLoading: true });
 
     (group && group.id
-      ? updateGroup(group.id, groupName, groupManager, groupMembers.map(u => u.id))
-      : createGroup(groupName, groupManager, groupMembers.map(u => u.id))
+      ? updateGroup(
+          group.id,
+          groupName,
+          groupManager.key,
+          groupMembers.map(u => u.key)
+        )
+      : createGroup(groupName, groupManager.key, groupMembers.map(u => u.key))
     )
       .then(() => {
         toastr.success("Success");
-        this.setState({ inLoading: true });
+        //this.setState({ inLoading: true });
         history.goBack();
+        resetGroup();
       })
       .catch(error => {
         toastr.error(error.message);
@@ -173,6 +246,12 @@ class SectionBodyContent extends React.Component {
     resetGroup();
     history.goBack();
   };
+
+  onSelectedItemClose = (member) => {
+    this.setState({ 
+      groupMembers: this.state.groupMembers.filter(g => g.key !== member.key)
+    });
+  }
 
   renderModal = () => {
     const { groups, modalVisible } = this.state;
@@ -281,17 +360,18 @@ class SectionBodyContent extends React.Component {
       users,
       groups,
       groupMembers,
-      isHeaderSelectorOpen,
+      isHeaderSelectorOpen: isHeadSelectorOpen,
       isUsersSelectorOpen,
       inLoading,
       error,
       searchValue,
-      modalVisible
+      modalVisible,
+      groupManager
     } = this.state;
     return (
       <MainContainer>
-        <div style={{visibility: "hidden", width: 1, height: 1}}>
-          <Icons.SearchIcon size='small' />
+        <div style={{ visibility: "hidden", width: 1, height: 1 }}>
+          <Icons.SearchIcon size="small" />
         </div>
         <FieldContainer
           className="group-name_container"
@@ -308,6 +388,7 @@ class SectionBodyContent extends React.Component {
             tabIndex={1}
             value={groupName}
             onChange={this.onGroupChange}
+            isDisabled={inLoading}
           />
         </FieldContainer>
         <FieldContainer
@@ -321,41 +402,29 @@ class SectionBodyContent extends React.Component {
             id="head-selector"
             tabIndex={2}
             options={[]}
-            isOpen={isHeaderSelectorOpen}
-            selectedOption={{
-              key: 0,
-              label: t("CustomAddEmployee", { typeUser })
-            }}
+            isOpen={isHeadSelectorOpen}
+            selectedOption={groupManager}
             scaled={true}
+            isDisabled={inLoading}
             size="content"
-            opened={isHeaderSelectorOpen}
-            onClick={this.onHeaderSelectorClick}
+            opened={isHeadSelectorOpen}
+            onClick={this.onHeadSelectorClick}
           >
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
             isDropDown={true}
-            isOpen={isHeaderSelectorOpen}
+            isOpen={isHeadSelectorOpen}
             size="full"
             placeholder={"Search"}
-            onSearchChanged={value => {
-              /*setOptions(
-                options.filter(option => {
-                  return option.label.indexOf(value) > -1;
-                })
-              );*/
-            }}
+            onSearchChanged={this.onHeadSelectorSearch}
             options={users}
             groups={groups}
             isMultiSelect={false}
             buttonLabel={t("CustomAddEmployee", { typeUser })}
             selectAllLabel={"Select all"}
-            onSelect={selectedOptions => {
-              console.log("onSelect", selectedOptions);
-              // action('onSelect')(selectedOptions);
-              this.onHeaderSelectorClick();
-            }}
-            onCancel={this.onHeaderSelectorClick}
+            onSelect={this.onHeadSelectorSelect}
+            onCancel={this.onHeadSelectorClick}
             allowCreation={false}
             //onAddNewClick={toggleModalVisible}
             allowAnyClickClose={true}
@@ -369,10 +438,11 @@ class SectionBodyContent extends React.Component {
           labelText="Members"
         >
           <ComboButton
-            id="employee-selector"
+            id="users-selector"
             tabIndex={3}
             options={[]}
             isOpen={isUsersSelectorOpen}
+            isDisabled={inLoading}
             selectedOption={{
               key: 0,
               label: t("CustomAddEmployee", { typeUser })
@@ -389,22 +459,13 @@ class SectionBodyContent extends React.Component {
             isOpen={isUsersSelectorOpen}
             size="full"
             placeholder={"Search"}
-            onSearchChanged={value => {
-              /*setOptions(
-                options.filter(option => {
-                  return option.label.indexOf(value) > -1;
-                })
-              );*/
-            }}
+            onSearchChanged={this.onUsersSelectorSearch}
             options={users}
             groups={groups}
             isMultiSelect={true}
             buttonLabel={t("CustomAddEmployee", { typeUser })}
             selectAllLabel={"Select all"}
-            onSelect={selectedOptions => {
-              console.log("onSelect", selectedOptions);
-              this.onUsersSelectorClick();
-            }}
+            onSelect={this.onUsersSelectorSelect}
             onCancel={this.onUsersSelectorClick}
             allowCreation={true}
             onAddNewClick={this.toggleModalVisible}
@@ -426,12 +487,12 @@ class SectionBodyContent extends React.Component {
         <div className="selected-members_container">
           {groupMembers.map(member => (
             <SelectedItem
-              key={member.id}
-              text={member.displayName}
-              onClick={e => console.log("onClick", e.target)}
-              onClose={e => console.log("onClose", e.target)}
+              key={member.key}
+              text={member.label}
+              onClose={this.onSelectedItemClose.bind(this, member)}
               isInline={true}
               className="selected-item"
+              isDisabled={inLoading}
             />
           ))}
         </div>
