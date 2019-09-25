@@ -49,7 +49,7 @@ export function getUser(userId) {
 }
 
 export function getSelectorUserList() {
-  return axios.get(`${API_URL}/people.json?fields=id,displayName,groups`);
+  return axios.get(`${API_URL}/people/filter.json?fields=id,displayName,groups`);
 }
 
 export function getUserList(filter = Filter.getDefault()) {
