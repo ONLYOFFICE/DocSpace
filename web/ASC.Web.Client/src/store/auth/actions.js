@@ -124,9 +124,9 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
-export function validateChangingEmail(data, key) {
+export function validateActivatingEmail(data, key) {
     return dispatch => {
-        return api.validateChangingEmail(data, key);
+        return api.validateActivatingEmail(data, key);
     }
 };
 

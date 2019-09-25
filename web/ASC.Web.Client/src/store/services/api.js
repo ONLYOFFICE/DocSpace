@@ -54,8 +54,8 @@ export function createUser(data, key) {
     : axios.post(`${API_URL}/people`, data, { headers: { confirm: key } });
 }
 
-export function validateChangingEmail(data, key) {
-  return fakeApi.validateChangingEmail(data, key);
+export function validateActivatingEmail(data, key) {
+  return fakeApi.validateActivatingEmail(data, key);
 }
 
 export function validateConfirmLink(link) {
