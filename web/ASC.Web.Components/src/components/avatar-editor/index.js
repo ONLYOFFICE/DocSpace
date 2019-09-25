@@ -92,6 +92,9 @@ class AvatarEditor extends React.Component {
                         accept={this.props.accept}
                         image={this.props.image}
                         chooseFileLabel={this.props.chooseFileLabel}
+                        unknownTypeError={this.props.unknownTypeError}
+                        maxSizeFileError={this.props.maxSizeFileError}
+                        unknownError={this.props.unknownError}
                     />
                 }
                 footerContent={[
@@ -129,6 +132,9 @@ AvatarEditor.propTypes = {
     onDeleteImage: PropTypes.func,
     onLoadFile: PropTypes.func,
     onImageChange: PropTypes.func,
+    unknownTypeError: PropTypes.string,
+    maxSizeFileError: PropTypes.string,
+    unknownError: PropTypes.string
 };
 
 AvatarEditor.defaultProps = {
@@ -137,7 +143,8 @@ AvatarEditor.defaultProps = {
     headerLabel: 'Edit Photo',
     saveButtonLabel: 'Save',
     cancelButtonLabel: 'Cancel',
-    maxSizeErrorLabel: 'File is too big'
+    maxSizeErrorLabel: 'File is too big',
+    accept: ['image/png', 'image/jpeg'],
 };
 
 export default AvatarEditor;

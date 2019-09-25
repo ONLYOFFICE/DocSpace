@@ -5,8 +5,14 @@ import ReactAvatarEditor from 'react-avatar-editor'
 import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
-
+import {Text} from '../../text'
 import { tablet } from '../../../utils/device';
+
+const StyledErrorContainer = styled.div`
+    p{
+        text-align: center
+    }
+`;
 
 const CloseButton = styled.a`
     cursor: pointer;
@@ -81,7 +87,9 @@ class AvatarEditorBody extends React.Component {
         this.state = {
             image: this.props.image ? this.props.image : "",
             scale: 1,
-            croppedImage: ''
+            croppedImage: '',
+
+            errorText: null
         }
 
         this.setEditorRef = React.createRef();
@@ -100,6 +108,8 @@ class AvatarEditorBody extends React.Component {
         this.deleteImage = this.deleteImage.bind(this);
 
         this.onDropAccepted = this.onDropAccepted.bind(this);
+        this.onDropRejected = this.onDropRejected.bind(this);
+        
 
         this.onPositionChange = this.onPositionChange.bind(this);
 
@@ -116,16 +126,26 @@ class AvatarEditorBody extends React.Component {
     onDropRejected(rejectedFiles) {
         if (!accepts(rejectedFiles[0], this.props.accept)) {
             this.props.onLoadFileError(0);
+            this.setState({
+                errorText: this.props.unknownTypeError
+            })
             return;
         } else if (rejectedFiles[0].size > this.props.maxSize) {
             this.props.onLoadFileError(1);
+            this.setState({
+                errorText: this.props.maxSizeFileError
+            })
             return;
         }
+        this.setState({
+            errorText: this.props.unknownError
+        })
         this.props.onLoadFileError(2);
     }
     onDropAccepted(acceptedFiles) {
         this.setState({
-            image: acceptedFiles[0]
+            image: acceptedFiles[0],
+            errorText: null
         });
         this.props.onLoadFile(acceptedFiles[0]);
     }
@@ -224,7 +244,8 @@ class AvatarEditorBody extends React.Component {
                     <Dropzone
                         onDropAccepted={this.onDropAccepted}
                         onDropRejected={this.onDropRejected}
-                        maxSize={this.props.maxSize}>
+                        maxSize={this.props.maxSize}
+                        accept={this.props.accept}>
                         {({ getRootProps, getInputProps }) => (
                             <DropZoneContainer
                                 {...getRootProps()}
@@ -278,6 +299,15 @@ class AvatarEditorBody extends React.Component {
 
                     </StyledAvatarContainer>
                 }
+                <StyledErrorContainer key="errorMsg">
+                    {this.state.errorText !== null &&
+                        <Text.Body
+                            as="p"
+                            color="#C96C27"
+                            isBold={true}
+                        >{this.state.errorText}</Text.Body>
+                    }
+                </StyledErrorContainer>
             </div>
         );
     }
@@ -293,11 +323,18 @@ AvatarEditorBody.propTypes = {
     image: PropTypes.string,
     accept: PropTypes.arrayOf(PropTypes.string),
     chooseFileLabel: PropTypes.string,
+    unknownTypeError: PropTypes.string,
+    maxSizeFileError: PropTypes.string,
+    unknownError: PropTypes.string
+
 };
 
 AvatarEditorBody.defaultProps = {
     accept: ['image/png', 'image/jpeg'],
     maxSize: Number.MAX_SAFE_INTEGER,
-    chooseFileLabel: "Drop files here, or click to select files"
+    chooseFileLabel: "Drop files here, or click to select files",
+    unknownTypeError: "Unknown image file type",
+    maxSizeFileError: "Maximum file size exceeded",
+    unknownError: "Error"
 };
 export default AvatarEditorBody;
