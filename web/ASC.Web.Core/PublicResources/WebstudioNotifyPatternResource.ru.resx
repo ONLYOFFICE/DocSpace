@@ -1624,6 +1624,9 @@ $GreenButton
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Запрос на изменение резервных кодов</value>
   </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Смена владельца портала</value>
+  </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Изменение адреса портала</value>
   </data>

@@ -351,6 +351,35 @@ Vai su Impostazioni &gt;&gt; Comuni &gt;&gt; Personalizzazione.</value>
   <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
     <value>Suggerimento #2: Regola le impostazioni regionali</value>
   </data>
+  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ci auguriamo che ti piaccia usare ONLYOFFICE. Come sta procedendo con la versione di prova? Gradiremmo molto il tuo feedback!
+
+Per favore, non esitare a contattarci a "support@onlyoffice.com":"mailto: support@onlyoffice.com" tutte le volte che avete domande o idee, suggerimenti.</value>
+  </data>
+  <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+$__AuthorName ti ha invitato come ospite su  "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando il link:
+
+$GreenButton
+
+Il link è valido solo per 7 giorni.
+
+Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sottoscrizioni dalla pagina del tuo profilo in ogni momento e riabilitarle.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+$__AuthorName ti ha invitato come ospite su  "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando il link:
+
+$GreenButton
+
+Il link è valido solo per 7 giorni.
+
+Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sottoscrizioni dalla pagina del tuo profilo in ogni momento e riabilitarle.</value>
+  </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Messaggio dal portale "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -919,6 +948,9 @@ Team di supporto ONLYOFFICE®
   <data name="pattern_saas_admin_user_docs_tips_v10_item_review_hdr" xml:space="preserve">
     <value>Revisiona, commenta e discuti</value>
   </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_share" xml:space="preserve">
+    <value>Condividi documenti a singoli o gruppi di utenti. Scegli il livello di accesso: sola lettura, commento, compilazione modulo, revisione o accesso completo.</value>
+  </data>
   <data name="pattern_saas_admin_user_docs_tips_v10_item_share_hdr" xml:space="preserve">
     <value>Condividi documenti</value>
   </data>
@@ -960,6 +992,17 @@ il team ONLYOFFICE
   <data name="pattern_saas_admin_welcome_v10_item_usertrack" xml:space="preserve">
     <value>Traccia Accesso utenti e altre azioni.</value>
   </data>
+  <data name="pattern_saas_admin_without_activity_v10" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ci auguriamo che ti piaccia usare ONLYOFFICE. Come sta procedendo con la versione di prova? Gradiremmo molto il tuo feedback!
+
+Per favore, non esitare a contattarci a "support@onlyoffice.com":"mailto: support@onlyoffice.com" tutte le volte che avete domande o idee, suggerimenti.
+
+Distinti saluti,
+Squadra ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_saas_guest_activation_v10" xml:space="preserve">
     <value>Salve!
 
@@ -971,6 +1014,25 @@ Ti invieremo anche suggerimenti utili, ultime notizie su ONLYOFFICE e offerte sp
 
 Cordialmente,
 il team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_guest_welcome_v10" xml:space="preserve">
+    <value>Salve!
+
+Il tuo profilo ospite è stato aggiunto con successo a  "${__VirtualRootPath}":"${__VirtualRootPath}". Adesso puoi:
+
+# Modificare il tuo "profilo":"$MyStaffLink".
+# Visualizza e commenta il contenuto disponibile nella "Community":"${__VirtualRootPath}/products/community/" e "Progetti":"${__VirtualRootPath}/products/projects/".
+# Aggiungi e scarica i file disponibili per te in  "Documenti":"${__VirtualRootPath}/products/files/".
+# Organizza il tuo piano con il "Calendario":"${__VirtualRootPath}/addons/calendar/" incorporato.
+# Usa la Use "Chat":"${__VirtualRootPath}/addons/talk/" per scambiare messaggi istantanei.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"${__HelpLink}" o chiedi alla nostra "squadra di supporto":"https://support.onlyoffice.com".
+
+Cordialmente,
+la squadra ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_user_activation_v10" xml:space="preserve">
@@ -1080,6 +1142,9 @@ il team di ONLYOFFICE</value>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Richiesta di modifica dei codici di backup</value>
   </data>
+  <data name="subject_confirm_owner_change" xml:space="preserve">
+    <value>${LetterLogoText}. Cambio del proprietario del portale</value>
+  </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio dell'indirizzo del portale.</value>
   </data>
@@ -1088,6 +1153,9 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
     <value>Personalizza ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
+    <value>Invita i tuoi compagni di squadra</value>
   </data>
   <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Notifica di rinnovo ONLYOFFICE®</value>
@@ -1110,8 +1178,14 @@ il team di ONLYOFFICE</value>
   <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
     <value>Attenzionato dal team ONLYOFFICE </value>
   </data>
+  <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
+  </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Benvenuti sul vostro web-office</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_user_welcome_v10" xml:space="preserve">
     <value>Benvenuti sul vostro web-office</value>
@@ -1131,8 +1205,14 @@ il team di ONLYOFFICE</value>
   <data name="subject_enterprise_whitelabel_admin_welcome_v10" xml:space="preserve">
     <value>Rendi il tuo ufficio online più sicuro</value>
   </data>
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
+  </data>
   <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
     <value>Benvenuti sul vostro web-office</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
     <value>Benvenuti sul vostro web-office</value>
@@ -1260,6 +1340,9 @@ il team di ONLYOFFICE</value>
   <data name="subject_saas_admin_trial_warning_after5_v10" xml:space="preserve">
     <value>Estendi il periodo di prova ONLYOFFICE e ottieni sconti</value>
   </data>
+  <data name="subject_saas_admin_trial_warning_before5_v10" xml:space="preserve">
+    <value>Usa questo sconto prima che il periodo di prova finisca</value>
+  </data>
   <data name="subject_saas_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Ottieni apps di ONLYOFFICE gratis</value>
   </data>
@@ -1275,8 +1358,14 @@ il team di ONLYOFFICE</value>
   <data name="subject_saas_admin_without_activity_v10" xml:space="preserve">
     <value>Attenzionato dal team ONLYOFFICE </value>
   </data>
+  <data name="subject_saas_guest_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
+  </data>
   <data name="subject_saas_guest_welcome_v10" xml:space="preserve">
     <value>Benvenuto nel tuo ONLYOFFICE!</value>
+  </data>
+  <data name="subject_saas_user_activation_v10" xml:space="preserve">
+    <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
   <data name="subject_saas_user_welcome_v10" xml:space="preserve">
     <value>Benvenuto nel tuo ONLYOFFICE!</value>
