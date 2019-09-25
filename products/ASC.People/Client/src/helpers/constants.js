@@ -1,4 +1,5 @@
 export const AUTH_KEY = "asc_auth_key";
+export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";
 
 /**
  * Enum for employee activation status.

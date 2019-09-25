@@ -67,11 +67,11 @@ const Footer = styled.div``;
 
 const ModalDialog = props => {
   //console.log("ModalDialog render");
-  const { visible, headerContent, bodyContent, footerContent, onClose } = props;
+  const { visible, headerContent, bodyContent, footerContent, onClose, zIndex } = props;
 
   return (
     <>
-      <Backdrop visible={visible} zIndex={310} >
+      <Backdrop visible={visible} zIndex={zIndex} >
         <Dialog>
           <Content>
             <Header>
@@ -92,7 +92,12 @@ ModalDialog.propTypes = {
   headerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   bodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   footerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  zIndex: PropTypes.number
+}
+
+ModalDialog.defaultProps = {
+  zIndex: 310
 }
 
 export default ModalDialog

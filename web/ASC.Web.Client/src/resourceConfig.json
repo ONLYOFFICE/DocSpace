@@ -1,6 +1,17 @@
 {
   "pages": {
     "About": {
+      "Resource": [
+        "AboutCompanyTitle",
+        "AboutCompanyVersion",
+        "AboutCompanyLicensor",
+        "AboutCompanyAddressTitle",
+        "AboutCompanyEmailTitle",
+        "AboutCompanyTelTitle"
+      ],
+      "UserControlsCommonResource": [
+        "LicensedUnder"
+      ]
     },
     "Home": {
     },
@@ -9,6 +20,8 @@
         "LoadingProcessing",
         "Password",
         "RegistrationEmailWatermark",
+        "MessageEmailConfirmed",
+        "MessageAuthorize",
         "LoginButton"
       ]
     },

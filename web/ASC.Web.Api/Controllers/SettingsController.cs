@@ -137,6 +137,13 @@ namespace ASC.Api.Settings
             return QuotaWrapper.GetCurrent(Tenant);
         }
 
+        [AllowAnonymous]
+        [Read("cultures")]
+        public List<CultureInfo> GetSupportedCultures()
+        {
+            return SetupInfo.EnabledCultures;
+        }
+
         [Read("recalculatequota")]
         public void RecalculateQuota()
         {

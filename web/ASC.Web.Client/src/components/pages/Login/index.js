@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Collapse, Container, Row, Col, Card, CardTitle, CardImg } from 'reactstrap';
-import { Button, TextInput, PageLayout } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text } from 'asc-web-components';
 import { connect } from 'react-redux';
 import { login } from '../../../store/auth/actions';
 import styled from 'styled-components';
@@ -38,14 +38,14 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
     const { t } = useTranslation('translation', { i18n });
-    const [identifier, setIdentifier] = useState('');
+    const { login, match, location, history } = props;
+    const { params } = match;
+    const [identifier, setIdentifier] = useState(params.confirmedEmail || '');
     const [identifierValid, setIdentifierValid] = useState(true);
     const [password, setPassword] = useState('');
     const [passwordValid, setPasswordValid] = useState(true);
     const [errorText, setErrorText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { login, match, location, history } = props;
-    const { params } = match;
 
     const onSubmit = useCallback((e) => {
         //e.preventDefault();
@@ -87,8 +87,8 @@ const Form = props => {
             });
     }, [errorText, history, identifier, location, login, match, password]);
 
-    const onKeyPress = useCallback((target) => {
-        if (target.code === "Enter") {
+    const onKeyPress = useCallback((event) => {
+        if (event.key === "Enter") {
             onSubmit();
         }
     }, [onSubmit]);
@@ -102,7 +102,21 @@ const Form = props => {
             window.removeEventListener('keydown', onKeyPress);
             window.removeEventListener('keyup', onKeyPress);
         };
-    }, [onKeyPress, params.error]);
+    }, [onKeyPress, params]);
+
+    const onChangePassword = event => {
+        setPassword(event.target.value);
+        !passwordValid && setPasswordValid(true);
+        errorText && setErrorText("");
+    }
+
+    const onChangeLogin = event => {
+        setIdentifier(event.target.value);
+        !identifierValid && setIdentifierValid(true);
+        errorText && setErrorText("");
+    }
+
+    // console.log('Login render');
 
     return (
         <FormContainer>
@@ -127,13 +141,9 @@ const Form = props => {
                         isAutoFocussed={true}
                         tabIndex={1}
                         isDisabled={isLoading}
-                        autocomple="username"
-                        onChange={event => {
-                            setIdentifier(event.target.value);
-                            !identifierValid && setIdentifierValid(true);
-                            errorText && setErrorText("");
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)} />
+                        autoComplete="username"
+                        onChange={onChangeLogin}
+                        onKeyDown={onKeyPress} />
                 </Col>
             </Row>
             <Row className="login-row">
@@ -149,14 +159,9 @@ const Form = props => {
                         scale={true}
                         tabIndex={2}
                         isDisabled={isLoading}
-                        autocomple="current-password"
-                        onChange={event => {
-                            setPassword(event.target.value);
-                            !passwordValid && setPasswordValid(true);
-                            errorText && setErrorText("");
-                            onKeyPress(event.target);
-                        }}
-                        onKeyDown={event => onKeyPress(event.target)} />
+                        autoComplete="current-password"
+                        onChange={onChangePassword}
+                        onKeyDown={onKeyPress} />
                 </Col>
             </Row>
             <Row className="login-row">
@@ -171,6 +176,12 @@ const Form = props => {
                         onClick={onSubmit} />
                 </Col>
             </Row>
+            {params.confirmedEmail && <Row className="login-row">
+                <Col sm="12" md={mdOptions}>
+                    <Text.Body isBold={true} fontSize={16}>{t('MessageEmailConfirmed')} {t('MessageAuthorize')}</Text.Body>
+                </Col>
+            </Row>
+            }
             <Collapse isOpen={!!errorText}>
                 <Row className="login-row">
                     <Col sm="12" md={mdOptions}>

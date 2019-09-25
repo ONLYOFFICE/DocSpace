@@ -10,7 +10,7 @@ import {
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
-import NewCalendar from ".";
+import Calendar from ".";
 
 function myDateKnob(name, defaultValue) {
   const stringTimestamp = date(name, defaultValue);
@@ -51,7 +51,7 @@ storiesOf("Components|Calendar", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
-    <NewCalendar
+    <Calendar
       onChange={date => {
         action("Selected date")(date);
       }}

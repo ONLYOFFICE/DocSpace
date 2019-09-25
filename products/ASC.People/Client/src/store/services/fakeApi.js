@@ -561,3 +561,13 @@ export function getGroup(groupId) {
     ]
   });
 }
+
+export function getInvitationLink(isGuest) {
+  return fakeResponse(isGuest
+    ? "guest invitation link"
+    : "user invitation link");
+}
+
+export function getShortenedLink(link) {
+  return fakeResponse("SHORT LINK: " + link);
+}

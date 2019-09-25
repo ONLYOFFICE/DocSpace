@@ -8,6 +8,8 @@ export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
+export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
+export const SET_NEW_PASSWORD = 'SET_NEW_PASSWORD';
 
 export function setCurrentUser(user) {
     return {
@@ -37,6 +39,12 @@ export function setIsLoaded(isLoaded) {
     };
 };
 
+export function setIsConfirmLoaded(isConfirmLoaded) {
+    return {
+        type: SET_IS_CONFIRM_LOADED,
+        isConfirmLoaded
+    };
+};
 
 export function setLogout() {
     return {
@@ -47,6 +55,13 @@ export function setLogout() {
 export function setPasswordSettings(password) {
     return {
         type: SET_PASSWORD_SETTINGS,
+        password
+    };
+};
+
+export function setNewPasswordSettings(password) {
+    return {
+        type: SET_NEW_PASSWORD,
         password
     };
 };
@@ -85,7 +100,7 @@ export function getPasswordSettings(token) {
     return dispatch => {
         return api.getPasswordSettings(token)
             .then((res) => dispatch(setPasswordSettings(res.data.response)))
-            .then(() => dispatch(setIsLoaded(true)));
+            .then(() => dispatch(setIsConfirmLoaded(true)));
     }
 };
 
@@ -109,9 +124,25 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
+export function validateChangingEmail(data, key) {
+    return dispatch => {
+        return api.validateChangingEmail(data, key);
+    }
+};
+
 export function checkResponseError(res) {
     if (res && res.data && res.data.error) {
         console.error(res.data.error);
         throw new Error(res.data.error.message);
+    }
+}
+
+export function setNewPassword(res) {
+    return dispatch => {
+        return api.setNewPasswordSettings(res)
+        .then(res => {
+            //checkResponseError(res);
+            dispatch(setNewPasswordSettings(res.data.response));
+        }) 
     }
 }

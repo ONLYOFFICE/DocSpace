@@ -102,7 +102,8 @@ namespace ASC.Core.Data
                 var groupQuery = new SqlQuery("core_usergroup cug")
                     .Select("cug.userid")
                     .Where(Exp.EqColumns("cug.tenant", "u.tenant"))
-                    .Where(Exp.EqColumns("u.id", "cug.userid"));
+                    .Where(Exp.EqColumns("u.id", "cug.userid"))
+                    .Where("cug.removed", false);
 
                 foreach (var groups in includeGroups)
                 {

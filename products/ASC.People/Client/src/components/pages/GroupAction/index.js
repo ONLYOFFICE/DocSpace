@@ -37,6 +37,7 @@ class GroupAction extends React.Component {
       <I18nextProvider i18n={i18n}>
         {group || !match.params.groupId
         ? <PageLayout
+          withBodyScroll={false}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}

@@ -207,11 +207,11 @@
 
   <ItemGroup>
     <PackageReference Include="GoogleAuthenticator" Version="1.2.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.23.0-pre1">
+    <PackageReference Include="Grpc.Tools" Version="2.24.0-pre1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0-preview8.19405.3" />
+    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
   </ItemGroup>
   
 </Project>

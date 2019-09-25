@@ -13,6 +13,9 @@
   "ErrorPasswordNoUpperCase": "capital letters",
   "ErrorPasswordNoSpecialSymbols": "special characters",
   "EmailAndPasswordCopiedToClipboard": "Email and password copied to clipboard",
+  "PassworResetTitle": "Now you can create a new password.",  "_comment":"SYNTAX ERROR 'Passwor' Reset Title",
+  "PasswordCustomMode": "Password",
+  "ImportContactsOkButton": "OK",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

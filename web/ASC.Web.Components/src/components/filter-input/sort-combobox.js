@@ -120,10 +120,9 @@ class SortComboBox extends React.Component {
                 advancedOptions={advancedOptions}
                 isDisabled={this.props.isDisabled}
                 selectedOption={this.props.selectedOption}
-                scaled={false}
+                scaled={true}
                 size="content"
                 directionX="right"
-
             >
                 <StyledIconButton sortDirection={!!this.state.sortDirection}>
                     <IconButton

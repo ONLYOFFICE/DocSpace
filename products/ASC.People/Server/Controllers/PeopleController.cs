@@ -315,7 +315,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        [Authorize(AuthenticationSchemes = "confirm")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Administrators")]
         public EmployeeWraperFull AddMember(MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
@@ -342,8 +342,8 @@ namespace ASC.Employee.Core.Controllers
                            ? true
                            : ("female".Equals(memberModel.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
 
-            user.BirthDate = memberModel.Birthday != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
-            user.WorkFromDate = memberModel.Worksfrom != null ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
+            user.BirthDate = memberModel.Birthday != null && memberModel.Birthday != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Birthday)) : (DateTime?)null;
+            user.WorkFromDate = memberModel.Worksfrom != null && memberModel.Worksfrom != DateTime.MinValue ? TenantUtil.DateTimeFromUtc(Convert.ToDateTime(memberModel.Worksfrom)) : DateTime.UtcNow.Date;
 
             UpdateContacts(memberModel.Contacts, user);
 
@@ -588,7 +588,7 @@ namespace ASC.Employee.Core.Controllers
 
             return new ThumbnailsDataWrapper(Tenant, user.ID);
         }
-        
+
         public FormFile Base64ToImage(string base64String, string fileName)
         {
             byte[] imageBytes = Convert.FromBase64String(base64String);
@@ -617,7 +617,7 @@ namespace ASC.Employee.Core.Controllers
 
                 SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userId), Constants.Action_EditUser);
 
-                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_"+ userId.ToString());
+                var userPhoto = Base64ToImage(model.base64CroppedImage, "userPhoto_" + userId.ToString());
                 var defaultUserPhoto = Base64ToImage(model.base64DefaultImage, "defaultPhoto" + userId.ToString());
 
                 if (userPhoto.Length > SetupInfo.MaxImageUploadSize)
@@ -869,8 +869,11 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Administrators")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
+            ApiContext.AuthByClaim();
+
             SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(userid), Constants.Action_EditUser);
 
             var user = CoreContext.UserManager.GetUsers(Tenant.TenantId, userid);

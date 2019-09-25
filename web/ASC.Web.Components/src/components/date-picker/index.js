@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
-import NewCalendar from "../calendar-new";
+import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
@@ -23,21 +23,29 @@ class DatePicker extends Component {
 
     moment.locale(props.locale);
     this.ref = React.createRef();
-    this.newRef = React.createRef();
 
-    const { isOpen, selectedDate, hasError } = this.props;
+    const { isOpen, selectedDate, hasError, minDate, maxDate } = this.props;
 
     if (isOpen) {
       handleAnyClick(true, this.handleClick);
     }
 
-    this.state = {
+    let newState = {
       isOpen,
       selectedDate: moment(selectedDate).toDate(),
       value: moment(selectedDate).format("L"),
       mask: this.getMask,
       hasError
     };
+
+    if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
+      newState = Object.assign({}, newState, {
+        hasError: true,
+        isOpen: false
+      });
+    }
+
+    this.state = newState;
   }
 
   handleClick = e => {
@@ -47,7 +55,7 @@ class DatePicker extends Component {
   };
 
   handleChange = e => {
-    const { value, hasError } = this.state;
+    const { value } = this.state;
 
     const targetValue = e.target.value;
     if (value != targetValue) {
@@ -58,7 +66,7 @@ class DatePicker extends Component {
 
       if (
         !isNaN(date) &&
-        this.compareDates(date) &&
+        this.compareDate(date) &&
         targetValue.indexOf("_") === -1
       ) {
         //console.log("Mask complete");
@@ -95,11 +103,9 @@ class DatePicker extends Component {
     }
   };
 
-  compareDates = date => {
+  compareDate = date => {
     const { minDate, maxDate } = this.props;
-    const selectedDate = date;
-
-    if (selectedDate < minDate || selectedDate > maxDate) {
+    if (date < minDate || date > maxDate) {
       return false;
     }
     return true;
@@ -144,6 +150,17 @@ class DatePicker extends Component {
     return moment(date1)
       .startOf("day")
       .diff(moment(date2).startOf("day"), "days");
+  };
+
+  isValidDate = (selectedDate, maxDate, minDate, hasError) => {
+    if (
+      (this.compareDates(selectedDate, maxDate) > 0 ||
+        this.compareDates(selectedDate, minDate) < 0) &&
+      !hasError
+    ) {
+      return true;
+    }
+    return false;
   };
 
   componentWillUnmount() {
@@ -203,11 +220,7 @@ class DatePicker extends Component {
       });
     }
 
-    if (
-      (this.compareDates(selectedDate, maxDate) > 0 ||
-        this.compareDates(selectedDate, minDate) < 0) &&
-      !hasError
-    ) {
+    if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
       newState = Object.assign({}, newState, {
         hasError: true,
         isOpen: false
@@ -254,7 +267,7 @@ class DatePicker extends Component {
           <DropDownStyle>
             <DropDown opened={isOpen}>
               {
-                <NewCalendar
+                <Calendar
                   locale={locale}
                   themeColor={themeColor}
                   minDate={minDate}
@@ -290,7 +303,8 @@ DatePicker.propTypes = {
 
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
-  maxDate: new Date(new Date().getFullYear() + 1, 1, 1)
+  maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
+  selectedDate: moment(new Date()).toDate()
 };
 
 export default DatePicker;
