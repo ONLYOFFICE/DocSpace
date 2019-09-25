@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { logout, validateChangingEmail } from '../../../../store/auth/actions';
+import { logout, validateActivatingEmail } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 
@@ -17,12 +17,12 @@ class ActivateEmail extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { history, logout, validateChangingEmail } = this.props;
+        const { history, logout, validateActivatingEmail } = this.props;
         const queryParams = this.state.queryString.split('&');
         const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
         const linkParams = Object.fromEntries(arrayOfQueryParams);
         logout();
-        validateChangingEmail(linkParams)
+        validateActivatingEmail(linkParams)
             .then((res) => {
                 const email = decodeURIComponent(res.data.response.email);
                 history.push(`/login/confirmed-email=${email}`);
@@ -47,4 +47,4 @@ ActivateEmail.propTypes = {
 const ActivateEmailForm = (props) => (<PageLayout sectionBodyContent={<ActivateEmail {...props} />} />);
 
 
-export default connect(null, { logout, validateChangingEmail })(withRouter(withTranslation()(ActivateEmailForm)));
+export default connect(null, { logout, validateActivatingEmail })(withRouter(withTranslation()(ActivateEmailForm)));
