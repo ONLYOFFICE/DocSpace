@@ -91,8 +91,8 @@ export function deleteAvatar(profileId) {
 }
 
 export function getInitInfo() {
-  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings(), getInvitationLink(), getInvitationLink(true)]).then(
-    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp, userInvitationLinkResp, guestInvitationLinkResp) {
+  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(
+    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp) {
       let info = {
         user: userResp.data.response,
         modules: modulesResp.data.response,
@@ -100,12 +100,26 @@ export function getInitInfo() {
       };
 
       info.settings.passwordSettings = passwordSettingsResp.data.response;
-      info.settings.inviteLinks = {
+
+      return Promise.resolve(info);
+    })
+  );
+}
+
+export function getInvitationLinks() {
+  const isGuest = true;
+  return axios.all([getInvitationLink(), getInvitationLink(isGuest)]).then(
+    axios.spread(function (userInvitationLinkResp, guestInvitationLinkResp) {
+      let links = {
+        inviteLinks: {}
+      };
+
+      links.inviteLinks = {
         userLink: userInvitationLinkResp,
         guestLink: guestInvitationLinkResp
       }
 
-      return Promise.resolve(info);
+      return Promise.resolve(links);
     })
   );
 }
@@ -156,8 +170,8 @@ export function deleteUsers(userIds) {
   return IS_FAKE
     ? fakeApi.deleteUsers(userIds)
     : axios
-        .put(`${API_URL}/people/delete.json`, { userIds })
-        .then(CheckError);
+      .put(`${API_URL}/people/delete.json`, { userIds })
+      .then(CheckError);
 }
 
 export function getGroup(groupId) {
@@ -219,12 +233,12 @@ function CheckError(res) {
 }
 
 export function createGroup(groupName, groupManager, members) {
-  const group = {groupName, groupManager, members};
+  const group = { groupName, groupManager, members };
   return axios.post(`${API_URL}/group.json`, group);
 }
 
 export function updateGroup(id, groupName, groupManager, members) {
-  const group = {groupId: id, groupName, groupManager, members};
+  const group = { groupId: id, groupName, groupManager, members };
   return axios.put(`${API_URL}/group/${id}.json`, group);
 }
 
