@@ -9,7 +9,7 @@ import { Button, TextInput, PageLayout, Text } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { welcomePageTitle } from "../../../../helpers/customNames";
-import { setNewPassword } from "../../../../../src/store/auth/actions";
+import { changePassword } from "../../../../../src/store/auth/actions";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -44,8 +44,12 @@ const Form = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
-  const { match, location, history, setNewPassword } = props;
+  const { match, location, history, changePassword } = props;
   const { params } = match;
+  /*const { history, createConfirmUser } = this.props;
+            const queryParams = this.state.queryString.split('&');
+            const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+            const linkParams = Object.fromEntries(arrayOfQueryParams);*/
 
   const { t } = useTranslation("translation", { i18n });
 
@@ -62,15 +66,14 @@ const Form = props => {
 
       if (hasError) return false;
 
-      let newPassword = {
-        password: password
-      };
-
       setIsLoading(true);
       console.log("changePassword onSubmit", match, location, history);
 
-      setNewPassword(newPassword)
-        .then(function() {
+      const key = `type=PasswordChange&${location.search.slice(1)}`;
+      const userId = ""; //TODO: Find real userId by key
+
+      changePassword(userId, password, key)
+        .then(() => {
           console.log("UPDATE PASSWORD");
           history.push('/');
         })
@@ -79,7 +82,7 @@ const Form = props => {
           console.log("ERROR UPDATE PASSWORD", e);
         });
     },
-    [errorText, history, location, setNewPassword, match, password]
+    [errorText, history, location, changePassword, match, password]
   );
 
   const onKeyPress = useCallback(
@@ -176,4 +179,4 @@ ChangePasswordForm.defaultProps = {
   password: ""
 };
 
-export default connect(null, { setNewPassword })(withRouter(withTranslation()(ChangePasswordForm)));
+export default connect(null, { changePassword })(withRouter(withTranslation()(ChangePasswordForm)));
