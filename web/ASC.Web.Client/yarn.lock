@@ -1802,13 +1802,12 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.86"
+  version "1.0.95"
   dependencies:
     moment "^2.24.0"
     prop-types "^15.7.2"
     rc-tree "^2.1.2"
     react-autosize-textarea "^7.0.0"
-    react-avatar-edit "^0.8.3"
     react-avatar-editor "^11.0.7"
     react-custom-scrollbars "^4.2.1"
     react-dropzone "^10.1.8"
@@ -6307,11 +6306,6 @@ kleur@^3.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
 
-konva@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/konva/-/konva-2.5.1.tgz#cca611a9522e831e54cf57c508a1aed3f0ceac25"
-  integrity sha512-YdHEWqmbWPieqIZuLx7JFGm9Ui08hSUaSJ2k2Ml8o5giFgJ0WmxAS0DPXIM+Ty2ADRagOHZfXSJ/skwYqqlwgQ==
-
 last-call-webpack-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/last-call-webpack-plugin/-/last-call-webpack-plugin-3.0.0.tgz#9742df0e10e3cf46e5c0381c2de90d3a7a2d7555"
@@ -8744,13 +8738,6 @@ react-autosize-textarea@^7.0.0:
     autosize "^4.0.2"
     line-height "^0.3.1"
     prop-types "^15.5.6"
-
-react-avatar-edit@^0.8.3:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/react-avatar-edit/-/react-avatar-edit-0.8.3.tgz#0ebf21391328fc255429bdfbc782f795827109bf"
-  integrity sha512-QEedh6DjDCSI7AUsUHHtfhxApCWC5hJAoywxUA5PtUdw03iIjEurgVqPOIt1UBHhU/Zk/9amElRF3oepN9JZSg==
-  dependencies:
-    konva "2.5.1"
 
 react-avatar-editor@^11.0.7:
   version "11.0.7"
