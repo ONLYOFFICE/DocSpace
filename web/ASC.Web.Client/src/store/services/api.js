@@ -68,5 +68,5 @@ export function changePassword(userId, password, key) {
     ? fakeApi.changePassword()
     : axios.put(`${API_URL}/${userId}/password`, {password}, {
         headers: { confirm: key }
-      });
+    });
 }

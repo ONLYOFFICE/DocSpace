@@ -137,9 +137,9 @@ export function checkResponseError(res) {
     }
 }
 
-export function changePassword(res) {
+export function changePassword(userId, password, key) {
     return dispatch => {
-        return api.changePassword(res)
+        return api.changePassword(userId, password, key)
         .then(res => {
             //checkResponseError(res);
             dispatch(setNewPasswordSettings(res.data.response));
