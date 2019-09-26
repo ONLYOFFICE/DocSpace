@@ -1,6 +1,7 @@
 import * as api from "../services/api";
 import { setGroups, fetchPeopleAsync } from "../people/actions";
 import setAuthorizationToken from "../../store/services/setAuthorizationToken";
+import { getFilterByLocation } from "../../helpers/converters";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -59,7 +60,9 @@ export async function getUserInfo(dispatch) {
 
   dispatch(setGroups(groupResp.data.response));
 
-  await fetchPeopleAsync(dispatch);
+  const newFilter = getFilterByLocation(window.location);
+
+  await fetchPeopleAsync(dispatch, newFilter);
 
   return dispatch(setIsLoaded(true));
 }

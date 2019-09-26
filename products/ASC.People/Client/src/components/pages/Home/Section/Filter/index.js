@@ -24,6 +24,7 @@ import {
   PAGE,
   PAGE_COUNT
 } from "../../../../../helpers/constants";
+import { getFilterByLocation } from "../../../../../helpers/converters";
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(
@@ -73,61 +74,9 @@ class SectionFilterContent extends React.Component {
   componentDidMount() {
     const { location, filter, onLoading, fetchPeople } = this.props;
 
-    if (!location.search || !location.search.length) return;
+    const newFilter = getFilterByLocation(location);
 
-    const searchUrl = location.search.substring(1);
-    const urlFilter = JSON.parse(
-      '{"' +
-        decodeURI(searchUrl)
-          .replace(/"/g, '\\"')
-          .replace(/&/g, '","')
-          .replace(/=/g, '":"') +
-        '"}'
-    );
-
-    const defaultFilter = Filter.getDefault();
-
-    const employeeStatus =
-      (urlFilter[EMPLOYEE_STATUS] && +urlFilter[EMPLOYEE_STATUS]) ||
-      defaultFilter.employeeStatus;
-    const activationStatus =
-      (urlFilter[ACTIVATION_STATUS] && +urlFilter[ACTIVATION_STATUS]) ||
-      defaultFilter.activationStatus;
-    const role = urlFilter[ROLE] || defaultFilter.role;
-    const group = urlFilter[GROUP] || defaultFilter.group;
-    const search = urlFilter[SEARCH] || defaultFilter.search;
-    const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
-    const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
-    const page = (urlFilter[PAGE] && +urlFilter[PAGE]) || defaultFilter.page;
-    const pageCount =
-      (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
-      defaultFilter.pageCount;
-
-    if (
-      employeeStatus === filter.employeeStatus &&
-      activationStatus === filter.activationStatus &&
-      role === filter.role &&
-      group === filter.group &&
-      search === filter.search &&
-      sortBy === filter.sortBy &&
-      sortOrder === filter.sortOrder &&
-      page === filter.page &&
-      pageCount === filter.pageCount
-    ) {
-      return;
-    }
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.employeeStatus = employeeStatus;
-    newFilter.activationStatus = activationStatus;
-    newFilter.role = role;
-    newFilter.search = search;
-    newFilter.group = group;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
-    newFilter.page = page;
-    newFilter.pageCount = pageCount;
+    if(!newFilter || newFilter.equals(filter)) return;
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
