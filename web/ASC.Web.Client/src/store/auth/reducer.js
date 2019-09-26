@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_PASSWORD } from './actions';
+import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_PASSWORD, SET_NEW_EMAIL } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
 
@@ -59,6 +59,10 @@ const authReducer = (state = initialState, action) => {
         case SET_NEW_PASSWORD:
             return Object.assign({}, state, {
                 password: action.password
+            });   
+        case SET_NEW_EMAIL:
+            return Object.assign({}, state, {
+                email: action.email
             });   
         case LOGOUT:
             return initialState;

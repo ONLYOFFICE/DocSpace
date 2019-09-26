@@ -16,6 +16,7 @@
   "PassworResetTitle": "Now you can create a new password.",  "_comment":"SYNTAX ERROR 'Passwor' Reset Title",
   "PasswordCustomMode": "Password",
   "ImportContactsOkButton": "OK",
+  "LoadingProcessing": "Loading...",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

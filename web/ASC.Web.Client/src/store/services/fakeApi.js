@@ -135,7 +135,7 @@ export function createUser() {
   return fakeResponse(data);
 }
 
-export function validateChangingEmail(payload, key) {
+export function validateActivatingEmail(payload, key) {
   const data = {
     email: payload.email
   };
@@ -150,12 +150,7 @@ export function validateConfirmLink(link) {
 }
 
 export function changePassword() {
-  const data = {
-    //minLength: 12,
-    //upperCase: true,
-    //digits: true,
-    //specSymbols: true
-  };
+  const data = { password: "password" };
 
   return fakeResponse(data);
 }

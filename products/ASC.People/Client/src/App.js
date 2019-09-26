@@ -24,7 +24,7 @@ const App = ({ settings }) => {
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
           <Switch>
-            <PrivateRoute exact path={homepage} component={Home} />
+            <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={Home} />
             <PrivateRoute
               path={`${homepage}/view/:userId`}
               component={Profile}
