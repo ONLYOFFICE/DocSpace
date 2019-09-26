@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import StudioLayout from "./components/Layout/index";
 import Login from "./components/pages/Login";
@@ -27,7 +27,7 @@ const App = () => {
           </Switch>
         </Suspense>
       </StudioLayout>
-    </Router>
+    </BrowserRouter>
   );
 };
 
