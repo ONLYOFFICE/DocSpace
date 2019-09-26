@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Switch, Redirect, Route } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PublicRoute from "../../../helpers/publicRoute";
 import i18n from "./i18n";
@@ -12,44 +12,56 @@ const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 
-const Confirm = ({ match }) => {
-  //console.log("Confirm render");
+const ConfirmType = (props) => {
+  switch (props.type) {
+    case 'LinkInvite':
+      return <PublicRoute
+        component={CreateUserForm}
+      />;
+    case 'EmailActivation':
+      return <Route
+        component={ActivateEmailForm}
+      />;
+    case 'EmailChange':
+      return <Route
+        component={ChangeEmailForm}
+      />;
+    case 'PasswordChange':
+      return <Route
+        component={ChangePasswordForm}
+      />;
+    case 'PhoneActivation':
+      return <Route
+        component={ChangePhoneForm}
+      />;
+    default:
+      return <Redirect to={{ pathname: "/" }} />;
+  }
+}
+class Confirm extends React.Component {
 
-  return (
+  constructor(props) {
+    const queryParams = props.location.search.slice(1).split('&');
+    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+    const linkParams = Object.fromEntries(arrayOfQueryParams);
+    super(props);
+    this.state = {
+      type: linkParams.type
+    };
+  }
+
+  render() {
+    //console.log("Confirm render");
+    return (
       <I18nextProvider i18n={i18n}>
         <Suspense
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
-          <Switch>
-            <PublicRoute
-              path={`${match.path}/type=LinkInvite`}
-              component={CreateUserForm}
-            />
-            <Route
-              exact
-              path={`${match.path}/type=EmailActivation`}
-              component={ActivateEmailForm}
-            />
-            <Route
-              exact
-              path={`${match.path}/type=EmailChange`}
-              component={ChangeEmailForm}
-            />
-            <Route
-              exact
-              path={`${match.path}/type=PasswordChange`}
-              component={ChangePasswordForm}
-            />
-            <Route
-              exact
-              path={`${match.path}/type=PhoneActivation`}
-              component={ChangePhoneForm}
-            />
-            <Redirect to={{ pathname: "/" }} />
-          </Switch>
+          <ConfirmType type={this.state.type} />
         </Suspense>
-      </I18nextProvider>
-  );
-};
+      </I18nextProvider >
+    );
+  };
+}
 
 export default Confirm;

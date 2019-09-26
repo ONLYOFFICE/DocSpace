@@ -12,7 +12,7 @@ class ChangeEmail extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            queryString: `type=EmailChange&${props.location.search.slice(1)}`
+            queryString: props.location.search.slice(1)
         };
     }
 
