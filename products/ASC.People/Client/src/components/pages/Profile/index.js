@@ -1,18 +1,31 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { PageLayout, Loader } from "asc-web-components";
+import { PageLayout, Loader, toastr } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { fetchProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 
-class Profile extends React.Component {
+class PureProfile extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      queryString: `${props.location.search.slice(1)}`
+    };
+  }
 
   componentDidMount() {
-    const { match, fetchProfile } = this.props;
+    const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
+    const queryParams = this.state.queryString.split('&');
+    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
+    const linkParams = Object.fromEntries(arrayOfQueryParams);
+    if (linkParams.email_change && linkParams.email_change === "success"){
+      toastr.success(t('ChangeEmailSuccess'));
+    }
 
     fetchProfile(userId);
   }
@@ -32,8 +45,7 @@ class Profile extends React.Component {
 
     const { profile } = this.props;
     return (
-      <I18nextProvider i18n={i18n}>
-        {profile
+        profile
           ?
           <PageLayout
             articleHeaderContent={<ArticleHeaderContent />}
@@ -53,11 +65,14 @@ class Profile extends React.Component {
             sectionBodyContent={
               <Loader className="pageLoader" type="rombs" size={40} />
             }
-          />}
-      </I18nextProvider>
+          />
     );
   };
 };
+
+const ProfileContainer = withTranslation()(PureProfile);
+
+const Profile = (props) => <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>;
 
 Profile.propTypes = {
   history: PropTypes.object.isRequired,

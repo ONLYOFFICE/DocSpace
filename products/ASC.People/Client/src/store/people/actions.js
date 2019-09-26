@@ -102,6 +102,7 @@ export function fetchPeople(filter) {
 
 export function fetchPeopleByFilter(dispatch, filter) {
   let filterData = (filter && filter.clone()) || Filter.getDefault();
+  
   return api.getUserList(filterData).then(res => {
     filterData.total = res.data.total;
     dispatch(setFilter(filterData));

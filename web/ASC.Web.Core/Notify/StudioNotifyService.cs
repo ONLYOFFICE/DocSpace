@@ -124,7 +124,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(int tenantId, UserInfo userInfo)
         {
             var hash = Hasher.Base64Hash(CoreContext.Authentication.GetUserPasswordHash(tenantId, userInfo.ID));
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, userInfo.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 

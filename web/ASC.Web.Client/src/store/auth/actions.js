@@ -10,6 +10,7 @@ export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_PASSWORD = 'SET_NEW_PASSWORD';
+export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
 
 export function setCurrentUser(user) {
     return {
@@ -63,6 +64,13 @@ export function setNewPasswordSettings(password) {
     return {
         type: SET_NEW_PASSWORD,
         password
+    };
+};
+
+export function setNewEmail(email) {
+    return {
+        type: SET_NEW_EMAIL,
+        email
     };
 };
 
@@ -124,9 +132,9 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
-export function validateChangingEmail(data, key) {
+export function validateActivatingEmail(data, key) {
     return dispatch => {
-        return api.validateChangingEmail(data, key);
+        return api.validateActivatingEmail(data, key);
     }
 };
 
@@ -137,12 +145,21 @@ export function checkResponseError(res) {
     }
 }
 
-export function changePassword(res) {
+export function changePassword(userId, password, key) {
     return dispatch => {
-        return api.changePassword(res)
-        .then(res => {
-            //checkResponseError(res);
-            dispatch(setNewPasswordSettings(res.data.response));
-        }) 
+        return api.changePassword(userId, password, key)
+            .then(res => {
+                //checkResponseError(res);
+                dispatch(setNewPasswordSettings(res.data.response));
+            })
+    }
+}
+
+export function changeEmail(userId, email, key) {
+    return dispatch => {
+        return api.changePassword(userId, email, key)
+            .then(res => {
+                dispatch(setNewEmail(res.data.response.email));
+            })
     }
 }

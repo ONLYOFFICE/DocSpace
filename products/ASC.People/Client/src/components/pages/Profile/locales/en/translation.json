@@ -21,6 +21,7 @@
   "DeleteSelfProfile": "Delete profile",
   "EditButton": "Edit",
   "Actions": "Actions",
+  "ChangeEmailSuccess": "Mail has been successfully changed",
   
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",

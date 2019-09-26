@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withRouter } from "react-router";
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Row, Col, Card, CardImg, CardTitle } from "reactstrap";
-import { Button, TextInput, PageLayout, Text } from "asc-web-components";
+import { Button, PageLayout, Text, PasswordInput } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { welcomePageTitle } from "../../../../helpers/customNames";
@@ -46,11 +46,6 @@ const Form = props => {
   const [passwordValid, setPasswordValid] = useState(true);
   const { match, location, history, changePassword } = props;
   const { params } = match;
-  /*const { history, createConfirmUser } = this.props;
-            const queryParams = this.state.queryString.split('&');
-            const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-            const linkParams = Object.fromEntries(arrayOfQueryParams);*/
-
   const { t } = useTranslation("translation", { i18n });
 
   const onSubmit = useCallback(
@@ -69,16 +64,17 @@ const Form = props => {
       setIsLoading(true);
       console.log("changePassword onSubmit", match, location, history);
 
+      const str = location.search.split("&");
+      const userId = str[1].slice(4);
       const key = `type=PasswordChange&${location.search.slice(1)}`;
-      const userId = ""; //TODO: Find real userId by key
 
-      changePassword(userId, password, key)
+      changePassword(userId, {password}, key)
         .then(() => {
           console.log("UPDATE PASSWORD");
-          history.push('/');
+          history.push("/");
         })
         .catch(e => {
-          history.push('/');
+          history.push("/");
           console.log("ERROR UPDATE PASSWORD", e);
         });
     },
@@ -87,7 +83,7 @@ const Form = props => {
 
   const onKeyPress = useCallback(
     target => {
-      if (target.code === "Enter" || target.code === "NumpadEnter") {
+      if (target.key === "Enter") {
         onSubmit();
       }
     },
@@ -104,6 +100,16 @@ const Form = props => {
       window.removeEventListener("keyup", onKeyPress);
     };
   }, [onKeyPress, params.error]);
+
+  const settings = {
+    minLength: 6,
+    upperCase: false,
+    digits: false,
+    specSymbols: false
+  };
+
+  const tooltipPasswordLength =
+    "from " + settings.minLength + " to 30 characters";
 
   const mdOptions = { size: 6, offset: 3 };
   return (
@@ -123,26 +129,32 @@ const Form = props => {
           </Card>
 
           <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
-          <TextInput
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             size="huge"
             scale={true}
-            isAutoFocussed={true}
+            type="password"
+            isDisabled={isLoading}
+            hasError={!passwordValid}
             tabIndex={1}
-            autocomple="current-password"
-            placeholder={t("PasswordCustomMode")}
+            value={password}
             onChange={event => {
               setPassword(event.target.value);
               !passwordValid && setPasswordValid(true);
               errorText && setErrorText("");
               onKeyPress(event.target);
             }}
-            value={password}
-            hasError={!passwordValid}
-            isDisabled={isLoading}
-            onKeyDown={event => onKeyPress(event.target)}
+            emailInputName="E-mail"
+            passwordSettings={settings}
+            tooltipPasswordTitle="Password must contain:"
+            tooltipPasswordLength={tooltipPasswordLength}
+            placeholder={t("PasswordCustomMode")}
+            maxLength={30}
+
+            //isAutoFocussed={true}
+            //autocomple="current-password"
+            //onKeyDown={event => onKeyPress(event.target)}
           />
         </Col>
       </Row>
@@ -172,11 +184,15 @@ const ChangePasswordForm = props => {
 ChangePasswordForm.propTypes = {
   match: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  changePassword: PropTypes.func.isRequired
 };
 
 ChangePasswordForm.defaultProps = {
   password: ""
 };
 
-export default connect(null, { changePassword })(withRouter(withTranslation()(ChangePasswordForm)));
+export default connect(
+  null,
+  { changePassword }
+)(withRouter(withTranslation()(ChangePasswordForm)));

@@ -65,7 +65,8 @@ const Paging = props => {
           <ComboBox 
             directionY={openDirection} 
             options={pageItems} 
-            onSelect={onSelectPageAction} 
+            onSelect={onSelectPageAction}
+            scaledOptions={pageItems.length > 6}
             selectedOption={selectedPageItem}
             {...setDropDownMaxHeight} />
         </StyledPage>
