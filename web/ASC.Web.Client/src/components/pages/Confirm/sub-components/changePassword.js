@@ -63,12 +63,12 @@ const Form = props => {
 
       setIsLoading(true);
       console.log("changePassword onSubmit", match, location, history);
-      
+
       const str = location.search.split("&");
       const userId = str[1].slice(4);
       const key = `type=PasswordChange&${location.search.slice(1)}`;
 
-      changePassword(userId, password, key)
+      changePassword(userId, {password}, key)
         .then(() => {
           console.log("UPDATE PASSWORD");
           history.push("/");
