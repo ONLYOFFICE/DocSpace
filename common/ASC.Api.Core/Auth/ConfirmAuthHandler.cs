@@ -38,6 +38,9 @@ namespace ASC.Api.Core.Auth
             _ = Request.TryGetValue("key", out var key);
             _ = Request.TryGetValue("emplType", out var emplType);
             _ = Request.TryGetValue("email", out var _email);
+            _ = Request.TryGetValue("uid", out var userIdKey);
+            _ = Guid.TryParse(userIdKey, out var userId);
+
             var validInterval = SetupInfo.ValidEmailKeyInterval;
 
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
@@ -59,10 +62,10 @@ namespace ASC.Api.Core.Auth
                     if (userHash)
                     {
                         var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                        hash = CoreContext.Authentication.GetUserPasswordHash(tenantId, CoreContext.UserManager.GetUserByEmail(tenantId, _email).ID);
+                        hash = CoreContext.Authentication.GetUserPasswordHash(tenantId, userId);
                     }
 
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)), key, validInterval);
+                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + userId, key, validInterval);
                     break;
                 default:
                     checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type, key, validInterval);
