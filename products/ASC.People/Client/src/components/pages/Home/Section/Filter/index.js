@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
@@ -13,6 +13,17 @@ import {
 } from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
 import Filter from "../../../../../store/people/filter";
+import {
+  EMPLOYEE_STATUS,
+  ACTIVATION_STATUS,
+  ROLE,
+  GROUP,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  PAGE,
+  PAGE_COUNT
+} from "../../../../../helpers/constants";
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(
@@ -57,16 +68,6 @@ const getGroup = filterValues => {
 
   return groupId || null;
 };
-
-const EMPLOYEE_STATUS = "employeestatus";
-const ACTIVATION_STATUS = "activationstatus";
-const ROLE = "role";
-const GROUP = "group";
-const SEARCH = "search";
-const SORT_BY = "sortby";
-const SORT_ORDER = "sortorder";
-const PAGE = "page";
-const PAGE_COUNT = "pagecount";
 
 class SectionFilterContent extends React.Component {
   componentDidMount() {
@@ -133,9 +134,7 @@ class SectionFilterContent extends React.Component {
   }
 
   onFilter = data => {
-    const { onLoading, fetchPeople, filter, settings, history } = this.props;
-
-    const defaultFilter = Filter.getDefault();
+    const { onLoading, fetchPeople, filter } = this.props;
 
     const employeeStatus = getEmployeeStatus(data.filterValues);
     const activationStatus = getActivationStatus(data.filterValues);
@@ -155,40 +154,6 @@ class SectionFilterContent extends React.Component {
     newFilter.role = role;
     newFilter.search = search;
     newFilter.group = group;
-
-    const params = [];
-
-    if (employeeStatus) {
-      params.push(`${EMPLOYEE_STATUS}=${employeeStatus}`);
-    }
-
-    if (activationStatus) {
-      params.push(`${ACTIVATION_STATUS}=${activationStatus}`);
-    }
-
-    if (role) {
-      params.push(`${ROLE}=${role}`);
-    }
-
-    if (group) {
-      params.push(`${GROUP}=${group}`);
-    }
-
-    if (search) {
-      params.push(`${SEARCH}=${search}`);
-    }
-
-    if (
-      params.length > 0 ||
-      (sortBy !== defaultFilter.sortBy || sortOrder !== defaultFilter.sortOrder)
-    ) {
-      params.push(`${SORT_BY}=${sortBy}`);
-      params.push(`${SORT_ORDER}=${sortOrder}`);
-    }
-
-    if (params.length > 0) {
-      history.push(`${settings.homepage}/filter?${params.join("&")}`);
-    }
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
@@ -268,7 +233,13 @@ class SectionFilterContent extends React.Component {
         label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }), defaultSelectLabel: t("DefaultSelectLabel") },
+      {
+        key: "filter-type-group",
+        group: "filter-other",
+        subgroup: "filter-group",
+        label: t("CustomDepartment", { department }),
+        defaultSelectLabel: t("DefaultSelectLabel")
+      },
       ...groupOptions
     ];
 
