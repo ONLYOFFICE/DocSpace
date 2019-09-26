@@ -66,7 +66,7 @@ export function changePassword(userId, password, key) {
   const IS_FAKE = true;
   return IS_FAKE
     ? fakeApi.changePassword()
-    : axios.put(`${API_URL}/${userId}/password`, {password}, {
+    : axios.put(`${API_URL}/people/${userId}/password`, {password}, {
         headers: { confirm: key }
     });
 }
