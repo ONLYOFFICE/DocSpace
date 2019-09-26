@@ -4,10 +4,12 @@ import { Loader } from "asc-web-components";
 import PublicRoute from "../../../helpers/publicRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+// import ChangeEmailForm from "./sub-components/changeEmail";
 
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
 const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
 const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
+const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 
 const Confirm = ({ match }) => {
@@ -27,6 +29,11 @@ const Confirm = ({ match }) => {
               exact
               path={`${match.path}/type=EmailActivation`}
               component={ActivateEmailForm}
+            />
+            <Route
+              exact
+              path={`${match.path}/type=EmailChange`}
+              component={ChangeEmailForm}
             />
             <Route
               exact

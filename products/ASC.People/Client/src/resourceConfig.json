@@ -50,6 +50,7 @@
         "RemoveData",
         "DeleteSelfProfile",
         "EditButton",
+        "ChangeEmailSuccess",
         "Actions"
       ]
     },
