@@ -15,17 +15,17 @@ export function getModulesList() {
   return IS_FAKE
     ? fakeApi.getModulesList()
     : axios
-        .get(`${API_URL}/modules`)
-        .then(res => {
-          const modules = res.data.response;
-          return axios.all(
-            modules.map(m => axios.get(`${window.location.origin}/${m}`))
-          );
-        })
-        .then(res => {
-          const response = res.map(d => d.data.response);
-          return Promise.resolve({ data: { response } });
-        });
+      .get(`${API_URL}/modules`)
+      .then(res => {
+        const modules = res.data.response;
+        return axios.all(
+          modules.map(m => axios.get(`${window.location.origin}/${m}`))
+        );
+      })
+      .then(res => {
+        const response = res.map(d => d.data.response);
+        return Promise.resolve({ data: { response } });
+      });
 }
 
 export function getUser() {
@@ -44,8 +44,8 @@ export function getPasswordSettings(key) {
   return IS_FAKE
     ? fakeApi.getPasswordSettings()
     : axios.get(`${API_URL}/settings/security/password`, {
-        headers: { confirm: key }
-      });
+      headers: { confirm: key }
+    });
 }
 
 export function createUser(data, key) {
@@ -63,10 +63,9 @@ export function validateConfirmLink(link) {
 }
 
 export function changePassword(userId, password, key) {
-  const IS_FAKE = true;
   return IS_FAKE
     ? fakeApi.changePassword()
-    : axios.put(`${API_URL}/${userId}/password`, {password}, {
-        headers: { confirm: key }
+    : axios.put(`${API_URL}/people/${userId}/password`, password, {
+      headers: { confirm: key }
     });
 }
