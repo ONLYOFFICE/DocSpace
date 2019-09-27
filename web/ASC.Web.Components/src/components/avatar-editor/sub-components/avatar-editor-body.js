@@ -227,6 +227,7 @@ class AvatarEditorBody extends React.Component {
         this.setState({
             croppedImage: this.setEditorRef.current.getImage().toDataURL()
         });
+        this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
         this.props.onPositionChange({
             x: 0.5,
             y: 0.5,
