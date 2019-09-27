@@ -61,7 +61,7 @@ class Filter {
       activationStatus,
       role,
       search,
-      group,
+      group
     } = this;
 
     let dtoFilter = {
@@ -121,6 +121,21 @@ class Filter {
           this.search,
           this.group
         );
+  }
+
+  equals(filter) {
+    const equals =
+      this.employeeStatus === filter.employeeStatus &&
+      this.activationStatus === filter.activationStatus &&
+      this.role === filter.role &&
+      this.group === filter.group &&
+      this.search === filter.search &&
+      this.sortBy === filter.sortBy &&
+      this.sortOrder === filter.sortOrder &&
+      this.page === filter.page &&
+      this.pageCount === filter.pageCount;
+
+    return equals;
   }
 }
 

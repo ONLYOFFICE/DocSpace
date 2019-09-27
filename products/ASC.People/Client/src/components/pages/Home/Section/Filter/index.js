@@ -1,19 +1,30 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { isAdmin } from "../../../../../store/auth/selectors";
-import { useTranslation } from "react-i18next";
-import { typeGuest, typeUser, department } from './../../../../../helpers/customNames';
-
-const getSortData = ( t ) => {
-  return [
-    { key: "firstname", label: t('ByFirstNameSorting') },
-    { key: "lastname", label: t('ByLastNameSorting') }
-  ];
-};
+import { withTranslation } from "react-i18next";
+import {
+  typeGuest,
+  typeUser,
+  department
+} from "./../../../../../helpers/customNames";
+import { withRouter } from "react-router";
+import Filter from "../../../../../store/people/filter";
+import {
+  EMPLOYEE_STATUS,
+  ACTIVATION_STATUS,
+  ROLE,
+  GROUP,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  PAGE,
+  PAGE_COUNT
+} from "../../../../../helpers/constants";
+import { getFilterByLocation } from "../../../../../helpers/converters";
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(
@@ -59,51 +70,47 @@ const getGroup = filterValues => {
   return groupId || null;
 };
 
-const SectionFilterContent = ({
-  fetchPeople,
-  filter,
-  onLoading,
-  user,
-  groups
-}) => {
-  const { t } = useTranslation();
-  const selectedFilterData = {
-    filterValues: [],
-    sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
-    sortId: filter.sortBy
+class SectionFilterContent extends React.Component {
+  componentDidMount() {
+    const { location, filter, onLoading, fetchPeople } = this.props;
+
+    const newFilter = getFilterByLocation(location);
+
+    if(!newFilter || newFilter.equals(filter)) return;
+
+    onLoading(true);
+    fetchPeople(newFilter).finally(() => onLoading(false));
+  }
+
+  onFilter = data => {
+    const { onLoading, fetchPeople, filter } = this.props;
+
+    const employeeStatus = getEmployeeStatus(data.filterValues);
+    const activationStatus = getActivationStatus(data.filterValues);
+    const role = getRole(data.filterValues);
+    const group = getGroup(data.filterValues);
+    const search = data.inputValue || null;
+    const sortBy = data.sortId;
+    const sortOrder =
+      data.sortDirection === "desc" ? "descending" : "ascending";
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
+    newFilter.employeeStatus = employeeStatus;
+    newFilter.activationStatus = activationStatus;
+    newFilter.role = role;
+    newFilter.search = search;
+    newFilter.group = group;
+
+    onLoading(true);
+    fetchPeople(newFilter).finally(() => onLoading(false));
   };
 
-  selectedFilterData.inputValue = filter.search;
+  getData = () => {
+    const { user, groups, t } = this.props;
 
-  if (filter.employeeStatus) {
-    selectedFilterData.filterValues.push({
-      key: `${filter.employeeStatus}`,
-      group: "filter-status"
-    });
-  }
-
-  if (filter.activationStatus) {
-    selectedFilterData.filterValues.push({
-      key: `${filter.activationStatus}`,
-      group: "filter-email"
-    });
-  }
-
-  if (filter.role) {
-    selectedFilterData.filterValues.push({
-      key: filter.role,
-      group: "filter-type"
-    });
-  }
-
-  if (filter.group) {
-    selectedFilterData.filterValues.push({
-      key: filter.group,
-      group: "filter-group"
-    });
-  }
-
-  const getData = useCallback(() => {
     const options = !isAdmin(user)
       ? []
       : [
@@ -126,7 +133,12 @@ const SectionFilterContent = ({
         ];
 
     const groupOptions = groups.map(group => {
-      return { key: group.id, inSubgroup: true, group: "filter-group", label: group.name };
+      return {
+        key: group.id,
+        inSubgroup: true,
+        group: "filter-group",
+        label: group.name
+      };
     });
 
     const filterOptions = [
@@ -137,10 +149,10 @@ const SectionFilterContent = ({
         label: t("Email"),
         isHeader: true
       },
-      { 
-        key: "1", 
-        group: "filter-email", 
-        label: t("LblActive") 
+      {
+        key: "1",
+        group: "filter-email",
+        label: t("LblActive")
       },
       {
         key: "2",
@@ -153,66 +165,114 @@ const SectionFilterContent = ({
         label: t("UserType"),
         isHeader: true
       },
-      { key: "admin", group: "filter-type", label: t("Administrator")},
-      { key: "user", group: "filter-type", label: t('CustomTypeUser', { typeUser })},
-      { key: "guest", group: "filter-type", label: t('CustomTypeGuest', { typeGuest }) },
+      { key: "admin", group: "filter-type", label: t("Administrator") },
+      {
+        key: "user",
+        group: "filter-type",
+        label: t("CustomTypeUser", { typeUser })
+      },
+      {
+        key: "guest",
+        group: "filter-type",
+        label: t("CustomTypeGuest", { typeGuest })
+      },
       {
         key: "filter-other",
         group: "filter-other",
         label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }), defaultSelectLabel: t("DefaultSelectLabel") },
+      {
+        key: "filter-type-group",
+        group: "filter-other",
+        subgroup: "filter-group",
+        label: t("CustomDepartment", { department }),
+        defaultSelectLabel: t("DefaultSelectLabel")
+      },
       ...groupOptions
     ];
 
     //console.log("getData (filterOptions)", filterOptions);
 
     return filterOptions;
+  };
 
-  }, [user, groups, t]);
+  getSortData = () => {
+    const { t } = this.props;
 
-  const onFilter = useCallback(
-    data => {
-    console.log(data);
+    return [
+      { key: "firstname", label: t("ByFirstNameSorting") },
+      { key: "lastname", label: t("ByLastNameSorting") }
+    ];
+  };
 
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.sortBy = data.sortId;
-    newFilter.sortOrder =
-      data.sortDirection === "desc" ? "descending" : "ascending";
-    newFilter.employeeStatus = getEmployeeStatus(data.filterValues);
-    newFilter.activationStatus = getActivationStatus(data.filterValues);
-    newFilter.role = getRole(data.filterValues);
-    newFilter.search = data.inputValue || null;
-    newFilter.group = getGroup(data.filterValues);
+  getSelectedFilterData = () => {
+    const { filter } = this.props;
+    const selectedFilterData = {
+      filterValues: [],
+      sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
+      sortId: filter.sortBy
+    };
 
-    onLoading(true);
-    fetchPeople(newFilter).finally(() => onLoading(false));
-    },
-    [onLoading, fetchPeople, filter]
-  );
-  return (
-    <FilterInput
-      getFilterData={getData}
-      getSortData={getSortData.bind(this, t)}
-      selectedFilterData={selectedFilterData}
-      onFilter={onFilter}
-      directionAscLabel={t("DirectionAscLabel")}
-      directionDescLabel={t("DirectionDescLabel")}
-    />
-  );
-};
+    selectedFilterData.inputValue = filter.search;
+
+    if (filter.employeeStatus) {
+      selectedFilterData.filterValues.push({
+        key: `${filter.employeeStatus}`,
+        group: "filter-status"
+      });
+    }
+
+    if (filter.activationStatus) {
+      selectedFilterData.filterValues.push({
+        key: `${filter.activationStatus}`,
+        group: "filter-email"
+      });
+    }
+
+    if (filter.role) {
+      selectedFilterData.filterValues.push({
+        key: filter.role,
+        group: "filter-type"
+      });
+    }
+
+    if (filter.group) {
+      selectedFilterData.filterValues.push({
+        key: filter.group,
+        group: "filter-group"
+      });
+    }
+
+    return selectedFilterData;
+  };
+
+  render() {
+    const selectedFilterData = this.getSelectedFilterData();
+    const { t } = this.props;
+    return (
+      <FilterInput
+        getFilterData={this.getData}
+        getSortData={this.getSortData}
+        selectedFilterData={selectedFilterData}
+        onFilter={this.onFilter}
+        directionAscLabel={t("DirectionAscLabel")}
+        directionDescLabel={t("DirectionDescLabel")}
+      />
+    );
+  }
+}
 
 function mapStateToProps(state) {
   return {
     user: state.auth.user,
     groups: state.people.groups,
-    filter: state.people.filter
+    filter: state.people.filter,
+    settings: state.auth.settings
   };
 }
 
 export default connect(
   mapStateToProps,
   { fetchPeople }
-)(SectionFilterContent);
+)(withRouter(withTranslation()(SectionFilterContent)));

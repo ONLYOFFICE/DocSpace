@@ -31,6 +31,7 @@ using System.Threading;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Configuration;
 using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -44,7 +45,7 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly INotifyClient client;
         private readonly ICacheNotify<NotifyItem> cache;
 
-        private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
+        private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
         public StudioNotifyServiceSender()
         {
@@ -56,7 +57,6 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             CoreContext.TenantManager.SetCurrentTenant(item.TenantId);
-            SecurityContext.AuthenticateMe(item.TenantId, Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
             var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
@@ -65,10 +65,14 @@ namespace ASC.Web.Studio.Core.Notify
                 culture = tenant.GetCulture();
             }
 
-            var user = CoreContext.UserManager.GetUsers(item.TenantId, SecurityContext.CurrentAccount.ID);
-            if (!string.IsNullOrEmpty(user.CultureName))
+            if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                culture = CultureInfo.GetCultureInfo(user.CultureName);
+                SecurityContext.AuthenticateMe(item.TenantId, userId);
+                var user = CoreContext.UserManager.GetUsers(item.TenantId, userId);
+                if (!string.IsNullOrEmpty(user.CultureName))
+                {
+                    culture = CultureInfo.GetCultureInfo(user.CultureName);
+                }
             }
 
             if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))

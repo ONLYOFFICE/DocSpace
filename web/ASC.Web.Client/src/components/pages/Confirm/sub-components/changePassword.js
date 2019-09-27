@@ -64,10 +64,11 @@ const Form = props => {
       setIsLoading(true);
       console.log("changePassword onSubmit", match, location, history);
 
+      const str = location.search.split("&");
+      const userId = str[1].slice(4);
       const key = `type=PasswordChange&${location.search.slice(1)}`;
-      const userId = "f305ea37-da05-11e9-89de-e0cb4e43b8c0"; //TODO: Find real userId by key
 
-      changePassword(userId, password, key)
+      changePassword(userId, {password}, key)
         .then(() => {
           console.log("UPDATE PASSWORD");
           history.push("/");
@@ -149,6 +150,7 @@ const Form = props => {
             tooltipPasswordTitle="Password must contain:"
             tooltipPasswordLength={tooltipPasswordLength}
             placeholder={t("PasswordCustomMode")}
+            maxLength={30}
 
             //isAutoFocussed={true}
             //autocomple="current-password"

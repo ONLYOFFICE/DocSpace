@@ -1,5 +1,18 @@
 import * as api from "../services/api";
 import Filter from "./filter";
+import history from "../../history";
+import config from "../../../package.json";
+import {
+  EMPLOYEE_STATUS,
+  ACTIVATION_STATUS,
+  ROLE,
+  GROUP,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  PAGE,
+  PAGE_COUNT
+} from "../../helpers/constants";
 
 export const SET_GROUPS = "SET_GROUPS";
 export const SET_USERS = "SET_USERS";
@@ -74,6 +87,49 @@ export function deselectUser(user) {
 }
 
 export function setFilter(filter) {
+  const defaultFilter = Filter.getDefault();
+  const params = [];
+
+  if (filter.employeeStatus) {
+    params.push(`${EMPLOYEE_STATUS}=${filter.employeeStatus}`);
+  }
+
+  if (filter.activationStatus) {
+    params.push(`${ACTIVATION_STATUS}=${filter.activationStatus}`);
+  }
+
+  if (filter.role) {
+    params.push(`${ROLE}=${filter.role}`);
+  }
+
+  if (filter.group) {
+    params.push(`${GROUP}=${filter.group}`);
+  }
+
+  if (filter.search) {
+    params.push(`${SEARCH}=${filter.search}`);
+  }
+
+  if (filter.page > 0) {
+    params.push(`${PAGE}=${filter.page + 1}`);
+  }
+
+  if (filter.pageCount !== defaultFilter.pageCount) {
+    params.push(`${PAGE_COUNT}=${filter.pageCount}`);
+  }
+
+  if (
+    params.length > 0 ||
+    (filter.sortBy !== defaultFilter.sortBy ||
+      filter.sortOrder !== defaultFilter.sortOrder)
+  ) {
+    params.push(`${SORT_BY}=${filter.sortBy}`);
+    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
+  }
+
+  if (params.length > 0) {
+    history.push(`${config.homepage}/filter?${params.join("&")}`);
+  }
   return {
     type: SET_FILTER,
     filter
@@ -89,8 +145,9 @@ export function setSelectorUsers(users) {
 
 export function fetchSelectorUsers() {
   return dispatch => {
-    api.getSelectorUserList()
-    .then(res => dispatch(setSelectorUsers(res.data.response)));
+    api
+      .getSelectorUserList()
+      .then(res => dispatch(setSelectorUsers(res.data.response)));
   };
 }
 
@@ -102,6 +159,7 @@ export function fetchPeople(filter) {
 
 export function fetchPeopleByFilter(dispatch, filter) {
   let filterData = (filter && filter.clone()) || Filter.getDefault();
+
   return api.getUserList(filterData).then(res => {
     filterData.total = res.data.total;
     dispatch(setFilter(filterData));
