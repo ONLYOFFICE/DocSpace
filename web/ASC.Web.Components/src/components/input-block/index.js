@@ -50,10 +50,10 @@ class InputBlock extends React.Component {
 
   }
   onIconClick(e) {
-    if(typeof this.props.onIconClick === "function") this.props.onIconClick(e);
+    if (typeof this.props.onIconClick === "function") this.props.onIconClick(e);
   }
   onChange(e) {
-    if(typeof this.props.onChange === "function") this.props.onChange(e);
+    if (typeof this.props.onChange === "function") this.props.onChange(e);
   }
 
   render() {
@@ -114,7 +114,7 @@ class InputBlock extends React.Component {
         {
           iconNames.includes(this.props.iconName)
           &&
-          <InputGroupAddon addonType="append">
+          <InputGroupAddon addonType="append" onClick={this.onIconClick}>
             <StyledIconBlock>
               <IconButton
                 size={iconButtonSize}
@@ -122,7 +122,8 @@ class InputBlock extends React.Component {
                 iconName={this.props.iconName}
                 isFill={this.props.isIconFill}
                 isDisabled={this.props.isDisabled}
-                onClick={this.onIconClick} />
+                isClickable={typeof this.props.onIconClick === 'function'}
+              />
             </StyledIconBlock>
           </InputGroupAddon>
         }

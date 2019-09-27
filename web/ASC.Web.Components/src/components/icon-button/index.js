@@ -94,7 +94,7 @@ class IconButton extends React.PureComponent {
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
 
-                isClickable={typeof this.props.onClick === 'function'}
+                isClickable={typeof this.props.onClick === 'function' || this.props.isClickable}
             >
                 {React.createElement(Icons[this.state.currentIconName], { size: "scale", color: this.state.currentIconColor, isfill: this.props.isFill })}
             </StyledOuter>
@@ -109,6 +109,7 @@ IconButton.propTypes = {
     size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     isFill: PropTypes.bool,
     isDisabled: PropTypes.bool,
+    isClickable: PropTypes.bool,
     iconName: PropTypes.string.isRequired,
     iconHoverName: PropTypes.string,
     iconClickName: PropTypes.string,
@@ -123,7 +124,8 @@ IconButton.defaultProps = {
     size: 25,
     isFill: true,
     iconName: "AZSortingIcon",
-    isDisabled: false
+    isDisabled: false,
+    isClickable: false
 };
 
 export default IconButton;
