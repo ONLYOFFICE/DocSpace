@@ -866,7 +866,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.Activation, user.ID, user.ID);
 
-            return confirmUrl + $"firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
+            return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
 
         #endregion
