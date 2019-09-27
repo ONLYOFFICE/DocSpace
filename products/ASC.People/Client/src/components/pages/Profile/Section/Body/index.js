@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
+import { Link as RouterLink} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
 import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
@@ -103,15 +104,13 @@ const IconButtonWrapper = styled.div`
 `;
 
 const getFormattedDepartments = departments => {
-  const splittedDepartments = departments.split(",");
-  const departmentsLength = splittedDepartments.length - 1;
-  const formattedDepartments = splittedDepartments.map((department, index) => {
+  const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="page" fontSize={13} isHovered={true}>
-          {department.trim()}
+        <Link type="page" fontSize={13} isHovered={true} as={RouterLink} to={`/products/people/filter?group=${department.id}`}>
+          {department.name}
         </Link>
-        {departmentsLength !== index ? ", " : ""}
+        {departments.length - 1 !== index ? ", " : ""}
       </span>
     );
   });
@@ -222,7 +221,7 @@ class ProfileInfo extends React.PureComponent {
 
   render() {
     const { dialog } = this.state;
-    const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
+    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
     const t = this.props.t;
@@ -239,7 +238,7 @@ class ProfileInfo extends React.PureComponent {
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
-    const formatedDepartments = getFormattedDepartments(department);
+    const formatedDepartments = getFormattedDepartments(groups);
 
     return (
       <InfoContainer>
