@@ -46,7 +46,7 @@ class AvatarEditor extends React.Component {
 
         this.onDeleteImage = this.onDeleteImage.bind(this);
         this.throttledResize = throttle(this.resize, 300);
-
+        this.popstate = this.popstate.bind(this);
     }
     resize = () => {
         if (this.props.displayType === "auto") {
@@ -81,14 +81,14 @@ class AvatarEditor extends React.Component {
     }
 
     onSaveButtonClick() {
-        this.state.isContainsFile ? 
+        this.state.isContainsFile ?
             this.props.onSave(this.state.isContainsFile, {
                 x: this.state.x,
                 y: this.state.y,
                 width: this.state.width,
                 height: this.state.height
-            },this.state.croppedImage) : 
-            
+            }, this.state.croppedImage) :
+
             this.props.onSave(this.state.isContainsFile);
     }
 
@@ -96,13 +96,20 @@ class AvatarEditor extends React.Component {
         this.setState({ visible: false });
         this.props.onClose();
     }
-
+    popstate() {
+        window.history.go(1);
+        this.onClose();
+        window.removeEventListener('popstate', this.popstate, false);
+    }
     componentDidUpdate(prevProps) {
         if (this.props.visible !== prevProps.visible) {
             this.setState({ visible: this.props.visible });
         }
         if (this.props.displayType !== prevProps.displayType) {
             this.setState({ displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal' });
+        }
+        if (this.state.visible && this.state.displayType === "aside") {
+            window.addEventListener("popstate", this.popstate, false);
         }
     }
     componentDidMount() {
