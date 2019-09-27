@@ -188,7 +188,12 @@ namespace ASC.Security.Cryptography
             var Request = QueryHelpers.ParseQuery(httpRequest.Headers["confirm"]);
 
             _ = Request.TryGetValue("type", out var type);
-            _ = Enum.TryParse<ConfirmType>(type, out var confirmType);
+
+            ConfirmType? cType = null;
+            if (Enum.TryParse<ConfirmType>(type, out var confirmType))
+            {
+                cType = confirmType;
+            }
 
             _ = Request.TryGetValue("key", out var key);
 
@@ -205,7 +210,7 @@ namespace ASC.Security.Cryptography
             return new EmailValidationKeyModel
             {
                 Key = key,
-                Type = confirmType,
+                Type = cType,
                 Email = _email,
                 EmplType = employeeType,
                 UiD = userId,
