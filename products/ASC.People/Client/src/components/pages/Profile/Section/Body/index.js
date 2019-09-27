@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { Link as RouterLink} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
 import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
@@ -20,6 +19,7 @@ import { connect } from "react-redux";
 import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
+import history from "../../../../../history";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -103,11 +103,15 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
+const onGroupClick = (department) => {
+  history.push(`/products/people/filter?group=${department.id}`)
+}
+
 const getFormattedDepartments = departments => {
   const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="page" fontSize={13} isHovered={true} as={RouterLink} to={`/products/people/filter?group=${department.id}`}>
+        <Link type="page" fontSize={13} isHovered={true} onClick={onGroupClick.bind(this, department)}>
           {department.name}
         </Link>
         {departments.length - 1 !== index ? ", " : ""}
