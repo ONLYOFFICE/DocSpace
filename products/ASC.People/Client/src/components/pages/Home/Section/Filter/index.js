@@ -12,18 +12,6 @@ import {
   department
 } from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
-import Filter from "../../../../../store/people/filter";
-import {
-  EMPLOYEE_STATUS,
-  ACTIVATION_STATUS,
-  ROLE,
-  GROUP,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  PAGE,
-  PAGE_COUNT
-} from "../../../../../helpers/constants";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 
 const getEmployeeStatus = filterValues => {
