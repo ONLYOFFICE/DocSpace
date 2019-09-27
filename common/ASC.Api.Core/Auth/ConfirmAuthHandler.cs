@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using ASC.Core;
 using ASC.Security.Cryptography;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -26,9 +25,11 @@ namespace ASC.Api.Core.Auth
         {
             var emailValidationKeyModel = EmailValidationKeyModel.FromRequest(Context.Request);
 
-            if (SecurityContext.IsAuthenticated && emailValidationKeyModel.Type != ConfirmType.EmailChange)
+            if (!emailValidationKeyModel.Type.HasValue)
             {
-                return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
+                return SecurityContext.IsAuthenticated
+                    ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
+                    : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
             }
 
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
