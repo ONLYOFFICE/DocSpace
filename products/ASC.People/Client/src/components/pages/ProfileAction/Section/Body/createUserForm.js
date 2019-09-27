@@ -153,9 +153,9 @@ class CreateUserForm extends React.Component {
 
     this.props.createProfile(this.state.profile)
       .then((profile) => {
-        //toastr.success("Success");
-        //this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
-        if(this.state.defaultImage !== '') this.createAvatar(profile.id,profile.userName);
+        toastr.success("Success");
+        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+        //if(this.state.defaultImage !== '') this.createAvatar(profile.id,profile.userName);
       })
       .catch((error) => {
         toastr.error(error.message)
