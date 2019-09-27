@@ -32,6 +32,7 @@ class AvatarEditor extends React.Component {
             y: 0,
             width: 0,
             height: 0,
+            croppedImage: '',
 
             displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal'
         }
@@ -57,6 +58,9 @@ class AvatarEditor extends React.Component {
         }
     }
     onImageChange(file) {
+        this.setState({
+            croppedImage: file
+        })
         if (typeof this.props.onImageChange === 'function') this.props.onImageChange(file);
     }
     onDeleteImage() {
@@ -69,17 +73,7 @@ class AvatarEditor extends React.Component {
         this.setState(data);
     }
     onLoadFileError(error) {
-        switch (error) {
-            case 0:
-
-                break;
-            case 1:
-
-                break;
-            case 2:
-
-                break;
-        }
+        if (typeof this.props.onLoadFileError === 'function') this.props.onLoadFileError(error);
     }
     onLoadFile(file) {
         if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file);
@@ -87,12 +81,15 @@ class AvatarEditor extends React.Component {
     }
 
     onSaveButtonClick() {
-        this.props.onSave(this.state.isContainsFile, {
-            x: this.state.x,
-            y: this.state.y,
-            width: this.state.width,
-            height: this.state.height
-        });
+        this.state.isContainsFile ? 
+            this.props.onSave(this.state.isContainsFile, {
+                x: this.state.x,
+                y: this.state.y,
+                width: this.state.width,
+                height: this.state.height
+            },this.state.croppedImage) : 
+            
+            this.props.onSave(this.state.isContainsFile);
     }
 
     onClose() {
@@ -204,6 +201,7 @@ AvatarEditor.propTypes = {
     onDeleteImage: PropTypes.func,
     onLoadFile: PropTypes.func,
     onImageChange: PropTypes.func,
+    onLoadFileError: PropTypes.func,
     unknownTypeError: PropTypes.string,
     unknownError: PropTypes.string,
     displayType: PropTypes.oneOf(['auto', 'modal', 'aside']),

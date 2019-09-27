@@ -2,6 +2,7 @@ import * as api from "../services/api";
 import { setGroups, fetchPeopleAsync } from "../people/actions";
 import setAuthorizationToken from "../../store/services/setAuthorizationToken";
 import { getFilterByLocation } from "../../helpers/converters";
+import config from "../../../package.json";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -60,9 +61,14 @@ export async function getUserInfo(dispatch) {
 
   dispatch(setGroups(groupResp.data.response));
 
-  const newFilter = getFilterByLocation(window.location);
+  var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+  const match = window.location.pathname.match(re);
 
-  await fetchPeopleAsync(dispatch, newFilter);
+  if (match && match.length > 0)
+  {
+    const newFilter = getFilterByLocation(window.location);
+    await fetchPeopleAsync(dispatch, newFilter);
+  }
 
   return dispatch(setIsLoaded(true));
 }
