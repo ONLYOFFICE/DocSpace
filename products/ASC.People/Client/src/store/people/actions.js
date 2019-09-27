@@ -11,7 +11,8 @@ import {
   SORT_BY,
   SORT_ORDER,
   PAGE,
-  PAGE_COUNT
+  PAGE_COUNT,
+  EmployeeStatus
 } from "../../helpers/constants";
 
 export const SET_GROUPS = "SET_GROUPS";
@@ -167,7 +168,12 @@ export function fetchPeopleByFilter(dispatch, filter) {
 }
 
 export async function fetchPeopleAsync(dispatch, filter = null) {
-  let filterData = (filter && filter.clone()) || Filter.getDefault();
+  let filterData = (filter && filter.clone());
+
+  if(!filterData) {
+    filterData = Filter.getDefault();
+    filterData.employeeStatus = EmployeeStatus.Active;
+  }
 
   const usersResp = await api.getUserList(filterData);
 
