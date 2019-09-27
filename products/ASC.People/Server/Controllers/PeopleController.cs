@@ -869,7 +869,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{userid}/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PasswordChange,EmailChange,Activation,Administrators")]
         public EmployeeWraperFull ChangeUserPassword(Guid userid, MemberModel memberModel)
         {
             ApiContext.AuthByClaim();
@@ -972,8 +972,11 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("activationstatus/{activationstatus}")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Administrators")]
         public IEnumerable<EmployeeWraperFull> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersModel model)
         {
+            ApiContext.AuthByClaim();
+
             var retuls = new List<EmployeeWraperFull>();
             foreach (var id in model.UserIds.Where(userId => !CoreContext.UserManager.IsSystemUser(userId)))
             {
