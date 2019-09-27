@@ -235,7 +235,7 @@ class ProfileInfo extends React.PureComponent {
       key: "ru-RU",
       label: "Russian (Russia)"
     }];
-    const language = cultureName || currentCulture;
+    const language = cultureName || currentCulture || this.props.culture;
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
@@ -441,7 +441,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} />
+      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
