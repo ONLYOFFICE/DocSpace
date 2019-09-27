@@ -864,12 +864,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static string GenerateActivationConfirmUrl(int tenantId, UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.Activation);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.Activation, user.ID, user.ID);
 
-            return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
-                                              SecurityContext.CurrentAccount.ID,
-                                              HttpUtility.UrlEncode(user.FirstName),
-                                              HttpUtility.UrlEncode(user.LastName));
+            return confirmUrl + $"firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
 
         #endregion

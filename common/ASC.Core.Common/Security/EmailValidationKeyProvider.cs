@@ -172,6 +172,9 @@ namespace ASC.Security.Cryptography
 
                     checkKeyResult = ValidateEmailKey(Email + Type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + UiD, Key, ValidInterval);
                     break;
+                case ConfirmType.Activation:
+                    checkKeyResult = ValidateEmailKey(Email + Type + UiD, Key, ValidInterval);
+                    break;
                 default:
                     checkKeyResult = ValidateEmailKey(Email + Type, Key, ValidInterval);
                     break;
