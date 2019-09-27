@@ -489,7 +489,7 @@ namespace ASC.Web.Studio.Utility
         {
             var validationKey = EmailValidationKeyProvider.GetEmailKey(tenantId, email + confirmType + (postfix ?? ""));
 
-            var link = $"confirm?type={confirmType}&key={validationKey}";
+            var link = $"confirm/{confirmType}?key={validationKey}";
 
             if (!string.IsNullOrEmpty(email))
             {
