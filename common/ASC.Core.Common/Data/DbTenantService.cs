@@ -45,11 +45,13 @@ namespace ASC.Core.Data
         private List<string> forbiddenDomains;
 
         public TenantDomainValidator TenantDomainValidator { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString, TenantDomainValidator tenantDomainValidator)
+        public DbTenantService(ConnectionStringSettings connectionString, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
             : base(connectionString, null)
         {
             TenantDomainValidator = tenantDomainValidator;
+            TimeZoneConverter = timeZoneConverter;
         }
 
 

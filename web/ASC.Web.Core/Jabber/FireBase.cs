@@ -25,7 +25,9 @@
 
 
 using System.Collections.Generic;
+using ASC.Core;
 using ASC.Core.Common.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Jabber
 {
@@ -60,8 +62,9 @@ namespace ASC.Web.Core.Jabber
         {
         }
 
-        public FireBase(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public FireBase(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
     }

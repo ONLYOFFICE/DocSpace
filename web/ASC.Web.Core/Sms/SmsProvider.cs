@@ -39,6 +39,7 @@ using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
+using Microsoft.Extensions.Configuration;
 using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -129,8 +130,9 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        protected SmsProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        protected SmsProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
 
@@ -182,8 +184,8 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        public SmscProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public SmscProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration, string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
 
@@ -311,8 +313,9 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        public ClickatellProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public ClickatellProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
     }
@@ -323,8 +326,9 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        public ClickatellUSAProvider(string name, int order, Dictionary<string, string> additional = null)
-            : base(name, order, null, additional)
+        public ClickatellUSAProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, null, additional)
         {
         }
     }
@@ -384,8 +388,9 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        public TwilioProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public TwilioProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
 
@@ -425,8 +430,8 @@ namespace ASC.Web.Core.Sms
         {
         }
 
-        public TwilioSaaSProvider(string name, int order, Dictionary<string, string> additional = null)
-            : base(name, order, null, additional)
+        public TwilioSaaSProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration, string name, int order, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, null, additional)
         {
         }
     }

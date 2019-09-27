@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -66,7 +68,9 @@ namespace ASC.FederatedLogin.LoginProviders
 
         }
 
-        protected BaseLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null) : base(name, order, props, additional)
+        protected BaseLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
 
         }

@@ -28,7 +28,6 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
-    using ASC.Common.DependencyInjection;
     using ASC.Common.Utils;
     using ASC.Core.Billing;
     using ASC.Core.Data;
@@ -42,12 +41,10 @@ namespace ASC.Core.Common.Tests
         private readonly ITariffService tariffService;
 
 
-        public TariffServiceTest()
+        public TariffServiceTest(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
         {
-            var configuration = CommonServiceProvider.GetService<IConfiguration>();
-            var tenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
             var cs = ConfigurationManager.ConnectionStrings["core"];
-            var tenantService = new DbTenantService(cs, tenantDomainValidator);
+            var tenantService = new DbTenantService(cs, tenantDomainValidator, timeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
             tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration);
         }
@@ -56,7 +53,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void TestShoppingUriBatch()
         {
-            using var bc = new BillingClient(true);
+            using var bc = new BillingClient(true, null);
             var result = bc.GetPaymentUrls("0", new[] { "12", "13", "14", "0", "-2" });
             Assert.AreEqual(5, result.Count);
         }

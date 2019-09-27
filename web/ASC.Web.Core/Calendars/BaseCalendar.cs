@@ -34,11 +34,12 @@ namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseCalendar : ICalendar, ICloneable
     {
-        public BaseCalendar(AuthContext authContext)
+        public BaseCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter)
         {
             this.Context = new CalendarContext();
             this.SharingOptions = new SharingOptions();
             AuthContext = authContext;
+            TimeZoneConverter = timeZoneConverter;
         }
 
         #region ICalendar Members
@@ -61,6 +62,7 @@ namespace ASC.Web.Core.Calendars
 
         public virtual CalendarContext Context { get; set; }
         public AuthContext AuthContext { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
         #endregion
 

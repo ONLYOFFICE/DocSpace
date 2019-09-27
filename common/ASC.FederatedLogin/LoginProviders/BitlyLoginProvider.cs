@@ -34,6 +34,7 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -61,8 +62,9 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public BitlyLoginProvider() { }
 
-        public BitlyLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public BitlyLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
 

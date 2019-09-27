@@ -139,7 +139,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITenantService)new CachedTenantService(new DbTenantService(cs, r.GetService<TenantDomainValidator>()), r.GetService<CoreBaseSettings>());
+                        return (ITenantService)new CachedTenantService(new DbTenantService(cs, r.GetService<TenantDomainValidator>(), r.GetService<TimeZoneConverter>()), r.GetService<CoreBaseSettings>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -238,6 +238,7 @@ namespace ASC.People
                     .AddScoped<DisplayUserSettings>()
                     .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()
+                    .AddSingleton<TimeZoneConverter>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

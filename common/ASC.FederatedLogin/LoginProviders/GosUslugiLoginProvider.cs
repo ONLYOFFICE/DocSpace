@@ -32,11 +32,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Web;
+using ASC.Core;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -87,8 +89,9 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public GosUslugiLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public GosUslugiLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
         }
 

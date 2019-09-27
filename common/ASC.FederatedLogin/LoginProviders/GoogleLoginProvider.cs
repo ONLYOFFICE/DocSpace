@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using ASC.Core;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -58,7 +60,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"; } }
 
         public GoogleLoginProvider() { }
-        public GoogleLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null) : base(name, order, props, additional) { }
+        public GoogleLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {

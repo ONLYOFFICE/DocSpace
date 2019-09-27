@@ -32,26 +32,30 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Utils
 {
     public class TimeZoneConverter
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC.TimeZone");
+        private readonly ILog Log = LogManager.GetLogger("ASC.TimeZone");
 
-        private static IEnumerable<MapZone> _mapZones;
+        private IEnumerable<MapZone> _mapZones;
 
-        private static bool _isR7;
+        private bool _isR7;
 
-        private static Dictionary<string, string> _translations;
+        private Dictionary<string, string> _translations;
 
-        static TimeZoneConverter()
+        public IConfiguration Configuration { get; }
+
+        public TimeZoneConverter(IConfiguration configuration)
         {
             InitMapZones();
             InitTranslations();
+            Configuration = configuration;
         }
 
-        private static void InitMapZones()
+        private void InitMapZones()
         {
             try
             {
@@ -77,7 +81,7 @@ namespace ASC.Common.Utils
             }
         }
 
-        public static string OlsonTzId2WindowsTzId(string olsonTimeZoneId, bool defaultIfNoMatch = true)
+        public string OlsonTzId2WindowsTzId(string olsonTimeZoneId, bool defaultIfNoMatch = true)
         {
             var mapZone = GetMapZoneByWindowsTzId(olsonTimeZoneId);
 
@@ -94,7 +98,7 @@ namespace ASC.Common.Utils
             return defaultIfNoMatch ? "UTC" : null;
         }
 
-        public static string WindowsTzId2OlsonTzId(string windowsTimeZoneId, bool defaultIfNoMatch = true)
+        public string WindowsTzId2OlsonTzId(string windowsTimeZoneId, bool defaultIfNoMatch = true)
         {
             var mapZone = GetMapZoneByOlsonTzId(windowsTimeZoneId);
 
@@ -111,7 +115,7 @@ namespace ASC.Common.Utils
             return defaultIfNoMatch ? "Etc/GMT" : null;
         }
 
-        public static TimeZoneInfo GetTimeZone(string timeZoneId, bool defaultIfNoMatch = true)
+        public TimeZoneInfo GetTimeZone(string timeZoneId, bool defaultIfNoMatch = true)
         {
             try
             {
@@ -151,20 +155,20 @@ namespace ASC.Common.Utils
             }
         }
 
-        private static MapZone GetMapZoneByOlsonTzId(string olsonTimeZoneId)
+        private MapZone GetMapZoneByOlsonTzId(string olsonTimeZoneId)
         {
             return _mapZones.FirstOrDefault(x =>
                                             x.OlsonTimeZoneId.Equals(olsonTimeZoneId, StringComparison.CurrentCultureIgnoreCase));
         }
 
-        private static MapZone GetMapZoneByWindowsTzId(string windowsTimeZoneId)
+        private MapZone GetMapZoneByWindowsTzId(string windowsTimeZoneId)
         {
             return _mapZones.FirstOrDefault(x =>
                                             x.WindowsTimeZoneId.Equals(windowsTimeZoneId, StringComparison.CurrentCultureIgnoreCase) &&
                                             x.Territory.Equals("001", StringComparison.CurrentCultureIgnoreCase));
         }
 
-        private static TimeZoneInfo GetTimeZoneByOffset(string timeZoneId)
+        private TimeZoneInfo GetTimeZoneByOffset(string timeZoneId)
         {
             var systemTimeZones = TimeZoneInfo.GetSystemTimeZones();
 
@@ -188,11 +192,11 @@ namespace ASC.Common.Utils
             return systemTimeZones.FirstOrDefault(tz => tz.BaseUtcOffset == offset);
         }
 
-        private static void InitTranslations()
+        private void InitTranslations()
         {
             try
             {
-                _isR7 = ConfigurationManager.AppSettings["core.r7office"] == "true";
+                _isR7 = Configuration["core.r7office"] == "true";
 
                 if (!_isR7)
                 {
@@ -215,7 +219,7 @@ namespace ASC.Common.Utils
             }
         }
 
-        public static string GetTimeZoneName(TimeZoneInfo timeZone)
+        public string GetTimeZoneName(TimeZoneInfo timeZone)
         {
             if (!_isR7)
                 return timeZone.DisplayName;

@@ -29,13 +29,16 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security;
+
 using ASC.Common.DependencyInjection;
+using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
@@ -70,8 +73,9 @@ namespace ASC.Core
         {
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
             var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
+            var TimeZoneConverter = CommonServiceProvider.GetService<TimeZoneConverter>();
 
-            tenantService = new DbTenantService(connectionString, TenantDomainValidator);
+            tenantService = new DbTenantService(connectionString, TenantDomainValidator, TimeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
             var coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 

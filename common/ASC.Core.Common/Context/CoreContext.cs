@@ -24,10 +24,9 @@
 */
 
 
-using System.Configuration;
-
 using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Data;
@@ -49,16 +48,12 @@ namespace ASC.Core
 
         public static TenantManager TenantManager { get; private set; }
 
-        private static bool QuotaCacheEnabled
+        private static bool QuotaCacheEnabled(IConfiguration configuration)
         {
-            get
-            {
-                if (ConfigurationManager.AppSettings["core.enable-quota-cache"] == null)
-                    return true;
+            if (configuration["core:enable-quota-cache"] == null)
+                return true;
 
-
-                return !bool.TryParse(ConfigurationManager.AppSettings["core.enable-quota-cache"], out var enabled) || enabled;
-            }
+            return !bool.TryParse(configuration["core:enable-quota-cache"], out var enabled) || enabled;
         }
 
         private static void ConfigureCoreContextByDefault()
@@ -66,17 +61,18 @@ namespace ASC.Core
             var cs = DbRegistry.GetConnectionString("core");
             if (cs == null)
             {
-                throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
+                throw new System.Configuration.ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
             }
 
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
-            var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
+            var tenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
+            var timeZoneConverter = CommonServiceProvider.GetService<TimeZoneConverter>();
             var coreBaseSettings = new CoreBaseSettings(configuration);
-            var tenantService = new CachedTenantService(new DbTenantService(cs, TenantDomainValidator), coreBaseSettings);
+            var tenantService = new CachedTenantService(new DbTenantService(cs, tenantDomainValidator, timeZoneConverter), coreBaseSettings);
             var coreSettings = new CoreSettings(tenantService, coreBaseSettings, configuration);
-            var quotaService = QuotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
+            var quotaService = QuotaCacheEnabled(configuration) ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
             var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration);
-            
+
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreBaseSettings, coreSettings);
             Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager, configuration);
         }

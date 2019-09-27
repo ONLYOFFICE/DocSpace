@@ -62,6 +62,7 @@ namespace ASC.Core.Billing
         public TimeSpan CacheExpiration { get; set; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
 
         static TariffService()
         {
@@ -103,6 +104,7 @@ namespace ASC.Core.Billing
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
+            Configuration = configuration;
             CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = configuration["core:payment:test"] == "true";
@@ -520,7 +522,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         {
             try
             {
-                return new BillingClient(test);
+                return new BillingClient(test, Configuration);
             }
             catch (InvalidOperationException ioe)
             {

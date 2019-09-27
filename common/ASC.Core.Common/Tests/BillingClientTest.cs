@@ -30,6 +30,7 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Linq;
     using Core.Billing;
+    using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
     [TestFixture]
@@ -38,9 +39,9 @@ namespace ASC.Core.Common.Tests
         private readonly BillingClient billingClient;
 
 
-        public BillingClientTest()
+        public BillingClientTest(IConfiguration configuration)
         {
-            billingClient = new BillingClient();
+            billingClient = new BillingClient(configuration);
         }
 
 
