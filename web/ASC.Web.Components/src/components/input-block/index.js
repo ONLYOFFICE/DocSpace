@@ -122,6 +122,7 @@ class InputBlock extends React.Component {
                 iconName={this.props.iconName}
                 isFill={this.props.isIconFill}
                 isDisabled={this.props.isDisabled}
+                isClickable={typeof this.props.onIconClick === 'function'}
               />
             </StyledIconBlock>
           </InputGroupAddon>
