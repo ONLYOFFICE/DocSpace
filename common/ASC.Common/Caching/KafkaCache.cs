@@ -127,7 +127,14 @@ namespace ASC.Common.Caching
                             var cr = c.Consume(Cts[channelName].Token);
                             if (cr != null && cr.Value != null && !(new Guid(cr.Key.Id.ToByteArray())).Equals(Key) && Actions.TryGetValue(channelName, out var act))
                             {
-                                act(cr.Value);
+                                try
+                                {
+                                    act(cr.Value);
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Error("Kafka onmessage", e);
+                                }
                             }
                         }
                         catch (ConsumeException e)

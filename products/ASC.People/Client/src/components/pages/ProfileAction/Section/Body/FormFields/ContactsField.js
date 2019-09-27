@@ -98,7 +98,7 @@ class ContactsField extends React.Component {
             value: ""
           }}
           isDisabled={isDisabled}
-          scaled={false}
+          scaled={true}
           className="field-select"
         />
       </Container>

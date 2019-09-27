@@ -31,6 +31,7 @@ namespace ASC.Web.Api.Controllers
         public PaymentManager PaymentManager { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public UrlShortener UrlShortener { get; }
+        public PermissionContext PermissionContext { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
@@ -47,7 +48,8 @@ namespace ASC.Web.Api.Controllers
             EmailValidationKeyProvider emailValidationKeyProvider,
             PaymentManager paymentManager,
             CommonLinkUtility commonLinkUtility,
-            UrlShortener urlShortener
+            UrlShortener urlShortener,
+            PermissionContext permissionContext
             )
         {
             LogManager = logManager;
@@ -61,6 +63,7 @@ namespace ASC.Web.Api.Controllers
             PaymentManager = paymentManager;
             CommonLinkUtility = commonLinkUtility;
             UrlShortener = urlShortener;
+            PermissionContext = permissionContext;
         }
 
         [Read("")]
@@ -78,6 +81,7 @@ namespace ASC.Web.Api.Controllers
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
+            PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
             return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
                    + $"&emplType={employeeType:d}";
         }

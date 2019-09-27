@@ -7,6 +7,7 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -19,17 +20,26 @@ namespace ASC.Web.Api.Controllers
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
         public TenantCookieSettings TenantCookieSettings { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public AuthContext AuthContext { get; }
+        public AuthManager AuthManager { get; }
 
         public AuthenticationController(
             UserManager userManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            TenantCookieSettings tenantCookieSettings)
+            TenantCookieSettings tenantCookieSettings,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            AuthContext authContext,
+            AuthManager authManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             TenantCookieSettings = tenantCookieSettings;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            AuthContext = authContext;
+            AuthManager = authManager;
         }
 
         [Create(false)]
@@ -53,6 +63,13 @@ namespace ASC.Web.Api.Controllers
             {
                 throw new Exception("User authentication failed");
             }
+        }
+
+        [AllowAnonymous]
+        [Create("confirm", false)]
+        public ValidationResult CheckConfirm([FromBody]EmailValidationKeyModel model)
+        {
+            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, AuthManager);
         }
 
         private UserInfo GetUser(int tenantId, string userName, string password)

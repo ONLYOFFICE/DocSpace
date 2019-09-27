@@ -12,7 +12,8 @@ import {
   IconButton,
   Link,
   toastr,
-  ModalDialog
+  ModalDialog,
+  ComboBox
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
@@ -76,6 +77,18 @@ const InfoItemLabel = styled.div`
 
 const InfoItemValue = styled.div`
   width: 220px;
+
+  .language-combo {
+    padding-top: 4px;
+
+    & > div {
+      padding-left: 0px;
+
+      & > div {
+        line-height: 18px;
+      }
+    }
+  }
 `;
 
 const IconButtonWrapper = styled.div`
@@ -150,7 +163,7 @@ class ProfileInfo extends React.PureComponent {
 
   onEmailChange = e => {
     const emailRegex = /.+@.+\..+/;
-    const newEmail = e.target.value || this.state.dialog.newEmail;
+    const newEmail = e.target.value || this.state.dialog.newEmail || this.props.profile.email;
     const hasError = !emailRegex.test(newEmail);
 
     const dialog = {
@@ -199,32 +212,7 @@ class ProfileInfo extends React.PureComponent {
       .catch(e => toastr.error("ERROR"));
   };
 
-  onPhoneChange = () => {
-    const dialog = {
-      visible: true,
-      header: "Change phone",
-      body: (
-        <Text.Body>
-          The instructions on how to change the user mobile number will be sent to the user email address
-        </Text.Body>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPhoneChangeInstructions}
-        />
-      ]
-    };
-    this.setState({ dialog: dialog })
-  }
 
-  onSendPhoneChangeInstructions = () => {
-    toastr.success("Context action: Change phone");
-    this.onDialogClose();
-  }
 
   onDialogClose = value => {
     const dialog = { visible: false, value: value };
@@ -242,15 +230,20 @@ class ProfileInfo extends React.PureComponent {
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
     const t = this.props.t;
-
     const type = isVisitor ? "Guest" : "Employee";
+    const fakeLanguage = [{
+      key: "en-US",
+      label: "English (United States)"
+    },
+    {
+      key: "ru-RU",
+      label: "Russian (Russia)"
+    }];
     const language = cultureName || currentCulture;
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
     const formatedDepartments = getFormattedDepartments(department);
-
-    //window.open("mailto:" + email);
 
     return (
       <InfoContainer>
@@ -336,16 +329,6 @@ class ProfileInfo extends React.PureComponent {
           </InfoItemLabel>
             <InfoItemValue>
               {mobilePhone}
-              {(isAdmin || isSelf) &&
-                <IconButtonWrapper title={t('PhoneChange')} >
-                  <IconButton
-                    color="#A3A9AE"
-                    size={16}
-                    iconName='AccessEditIcon'
-                    isFill={true}
-                    onClick={this.onPhoneChange} />
-                </IconButtonWrapper>
-              }
             </InfoItemValue>
           </InfoItem>
         }
@@ -395,7 +378,18 @@ class ProfileInfo extends React.PureComponent {
               {t('Language')}:
           </InfoItemLabel>
             <InfoItemValue>
-              {language}
+              <ComboBox
+                options={fakeLanguage}
+                onSelect={() => { }}
+                selectedOption={fakeLanguage.find(item => item.key === language)}
+                isDisabled={false}
+                noBorder={true}
+                dropDownMaxHeight={250}
+                scaled={false}
+                scaledOptions={true}
+                size='content'
+                className='language-combo'
+              />
             </InfoItemValue>
           </InfoItem>
         }

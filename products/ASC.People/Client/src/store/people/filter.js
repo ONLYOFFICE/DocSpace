@@ -1,11 +1,12 @@
 import { toUrlParams } from "../services/converter";
+import { EmployeeStatus } from "../../helpers/constants";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "firstname";
 const DEFAULT_SORT_ORDER = "ascending";
-const DEFAULT_EMPLOYEE_STATUS = null;
+const DEFAULT_EMPLOYEE_STATUS = EmployeeStatus.Active;
 const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = null;
@@ -61,7 +62,7 @@ class Filter {
       activationStatus,
       role,
       search,
-      group,
+      group
     } = this;
 
     let dtoFilter = {
@@ -121,6 +122,21 @@ class Filter {
           this.search,
           this.group
         );
+  }
+
+  equals(filter) {
+    const equals =
+      this.employeeStatus === filter.employeeStatus &&
+      this.activationStatus === filter.activationStatus &&
+      this.role === filter.role &&
+      this.group === filter.group &&
+      this.search === filter.search &&
+      this.sortBy === filter.sortBy &&
+      this.sortOrder === filter.sortOrder &&
+      this.page === filter.page &&
+      this.pageCount === filter.pageCount;
+
+    return equals;
   }
 }
 

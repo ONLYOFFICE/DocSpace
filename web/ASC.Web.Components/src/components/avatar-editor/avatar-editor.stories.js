@@ -8,6 +8,7 @@ import AvatarEditor from '.';
 import Avatar from '../avatar';
 import Section from '../../../.storybook/decorators/section';
 
+const displayType = ['auto', 'modal', 'aside'];
 class AvatarEditorStory extends React.Component  {
   constructor(props) {
     super(props);
@@ -22,7 +23,12 @@ class AvatarEditorStory extends React.Component  {
     this.onSave = this.onSave.bind(this);
     this.onLoadFile = this.onLoadFile.bind(this)
     this.onImageChange = this.onImageChange.bind(this)
+    this.onDeleteImage = this.onDeleteImage.bind(this)
+    this.onLoadFile = this.onLoadFile.bind(this)
     
+  }
+  onDeleteImage(){
+    action('onDeleteImage');
   }
   onImageChange(img){
     action('onLoadFile');
@@ -64,7 +70,16 @@ class AvatarEditorStory extends React.Component  {
           visible={this.state.isOpen}
           onClose={this.onClose}
           onSave={this.onSave}
+          onDeleteImage={this.onDeleteImage}
           onImageChange={this.onImageChange}
+          onLoadFile={this.onLoadFile}
+          headerLabel      ={text('headerLabel', 'Edit Photo')}
+          chooseFileLabel  ={text('chooseFileLabel', 'Drop files here, or click to select files')}
+          saveButtonLabel  ={text('saveButtonLabel', 'Save')}
+          maxSizeFileError ={text('maxSizeFileError', 'Maximum file size exceeded')}
+          unknownTypeError ={text('unknownTypeError', 'Unknown image file type')}
+          unknownError     ={text('unknownError', 'Error')}
+          displayType      ={select('displayType', displayType, 'auto')}
           />
       </div>
     )

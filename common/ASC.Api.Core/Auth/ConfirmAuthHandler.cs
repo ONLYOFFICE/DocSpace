@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -12,7 +11,6 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -33,7 +31,8 @@ namespace ASC.Api.Core.Auth
             SetupInfo setupInfo,
             TenantManager tenantManager,
             UserManager userManager,
-            AuthManager authManager) :
+            AuthManager authManager,
+            AuthContext authContext) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
@@ -42,6 +41,7 @@ namespace ASC.Api.Core.Auth
             TenantManager = tenantManager;
             UserManager = userManager;
             AuthManager = authManager;
+            AuthContext = authContext;
         }
 
         public SecurityContext SecurityContext { get; }
@@ -50,60 +50,34 @@ namespace ASC.Api.Core.Auth
         public TenantManager TenantManager { get; }
         public UserManager UserManager { get; }
         public AuthManager AuthManager { get; }
+        public AuthContext AuthContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var Request = QueryHelpers.ParseQuery(Context.Request.Headers["confirm"]);
-            _ = Request.TryGetValue("type", out var type);
-            var _type = typeof(ConfirmType).TryParseEnum(type, ConfirmType.EmpInvite);
+            var emailValidationKeyModel = EmailValidationKeyModel.FromRequest(Context.Request);
 
-            if (SecurityContext.IsAuthenticated && _type != ConfirmType.EmailChange)
+            if (SecurityContext.IsAuthenticated && emailValidationKeyModel.Type != ConfirmType.EmailChange)
             {
                 return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
             }
 
-            _ = Request.TryGetValue("key", out var key);
-            _ = Request.TryGetValue("emplType", out var emplType);
-            _ = Request.TryGetValue("email", out var _email);
-            var validInterval = SetupInfo.ValidEmailKeyInterval;
-
-            EmailValidationKeyProvider.ValidationResult checkKeyResult;
-            switch (_type)
-            {
-                case ConfirmType.EmpInvite:
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + emplType, key, validInterval);
-                    break;
-                case ConfirmType.LinkInvite:
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_type + emplType, key, validInterval);
-                    break;
-                case ConfirmType.EmailChange:
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + SecurityContext.CurrentAccount.ID, key, validInterval);
-                    break;
-                case ConfirmType.PasswordChange:
-                    var userHash = Request.TryGetValue("p", out var p) && p == "1";
-                    var hash = string.Empty;
-
-                    if (userHash)
-                    {
-                        var tenantId = TenantManager.GetCurrentTenant().TenantId;
-                        hash = AuthManager.GetUserPasswordHash(tenantId, UserManager.GetUserByEmail(_email).ID);
-                    }
-
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)), key, validInterval);
-                    break;
-                default:
-                    checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(_email + _type, key, validInterval);
-                    break;
-            }
+            var checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, AuthManager);
 
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Role, _type.ToString())
+                new Claim(ClaimTypes.Role, emailValidationKeyModel.Type.ToString())
             };
 
             if (!SecurityContext.IsAuthenticated)
             {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                if (emailValidationKeyModel.UiD.HasValue)
+                {
+                    SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
+                }
+                else
+                {
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                }
             }
             else
             {

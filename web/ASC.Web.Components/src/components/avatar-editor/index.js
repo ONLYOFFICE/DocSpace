@@ -1,8 +1,25 @@
-import React, { memo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import ModalDialog from '../modal-dialog'
 import Button from '../button'
 import AvatarEditorBody from './sub-components/avatar-editor-body'
+import Aside from "../layout/sub-components/aside";
+import IconButton from '../icon-button'
+import styled from 'styled-components'
+import { desktop } from '../../utils/device';
+import throttle from 'lodash/throttle';
+
+const Header = styled.div`
+    margin-bottom: 10px;
+`;
+
+const StyledAside = styled(Aside)`
+    padding: 10px;
+
+    .aside-save-button{
+        margin-top: 10px;
+    }
+`;
 
 class AvatarEditor extends React.Component {
     constructor(props) {
@@ -14,7 +31,9 @@ class AvatarEditor extends React.Component {
             x: 0,
             y: 0,
             width: 0,
-            height:0
+            height: 0,
+
+            displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal'
         }
 
         this.onClose = this.onClose.bind(this);
@@ -24,19 +43,29 @@ class AvatarEditor extends React.Component {
         this.onLoadFile = this.onLoadFile.bind(this);
         this.onPositionChange = this.onPositionChange.bind(this);
 
-        this.onDeleteImage = this.onDeleteImage.bind(this)
-  
+        this.onDeleteImage = this.onDeleteImage.bind(this);
+        this.throttledResize = throttle(this.resize, 300);
+
     }
-    onImageChange(file){
-        if(typeof this.props.onImageChange === 'function') this.props.onImageChange(file);
+    resize = () => {
+        if (this.props.displayType === "auto") {
+            const type = window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal';
+            if (type !== this.state.displayType)
+                this.setState({
+                    displayType: type
+                });
+        }
     }
-    onDeleteImage(){
+    onImageChange(file) {
+        if (typeof this.props.onImageChange === 'function') this.props.onImageChange(file);
+    }
+    onDeleteImage() {
         this.setState({
             isContainsFile: false
         })
-        if(typeof this.props.onDeleteImage === 'function') this.props.onDeleteImage();
+        if (typeof this.props.onDeleteImage === 'function') this.props.onDeleteImage();
     }
-    onPositionChange(data){
+    onPositionChange(data) {
         this.setState(data);
     }
     onLoadFileError(error) {
@@ -53,10 +82,10 @@ class AvatarEditor extends React.Component {
         }
     }
     onLoadFile(file) {
-        if(typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file);
+        if (typeof this.props.onLoadFile === 'function') this.props.onLoadFile(file);
         this.setState({ isContainsFile: true });
     }
-    
+
     onSaveButtonClick() {
         this.props.onSave(this.state.isContainsFile, {
             x: this.state.x,
@@ -75,13 +104,63 @@ class AvatarEditor extends React.Component {
         if (this.props.visible !== prevProps.visible) {
             this.setState({ visible: this.props.visible });
         }
+        if (this.props.displayType !== prevProps.displayType) {
+            this.setState({ displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal' });
+        }
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.throttledResize);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.throttledResize);
     }
     render() {
+
         return (
-            <ModalDialog
-                visible={this.state.visible}
-                headerContent={this.props.headerLabel}
-                bodyContent={
+            this.state.displayType === "modal" ?
+                <ModalDialog
+                    visible={this.state.visible}
+                    headerContent={this.props.headerLabel}
+                    bodyContent={
+                        <AvatarEditorBody
+                            onImageChange={this.onImageChange}
+                            onPositionChange={this.onPositionChange}
+                            onLoadFileError={this.onLoadFileError}
+                            onLoadFile={this.onLoadFile}
+                            deleteImage={this.onDeleteImage}
+                            maxSize={this.props.maxSize * 1000000} // megabytes to bytes
+                            accept={this.props.accept}
+                            image={this.props.image}
+                            chooseFileLabel={this.props.chooseFileLabel}
+                            unknownTypeError={this.props.unknownTypeError}
+                            maxSizeFileError={this.props.maxSizeFileError}
+                            unknownError={this.props.unknownError}
+                        />
+                    }
+                    footerContent={[
+                        <Button
+                            key="SaveBtn"
+                            label={this.props.saveButtonLabel}
+                            primary={true}
+                            onClick={this.onSaveButtonClick}
+                        />
+                    ]}
+                    onClose={this.props.onClose}
+                />
+                :
+                <StyledAside
+                    visible={this.state.visible}
+                    scale={true}
+                >
+                    <Header>
+                        <IconButton
+                            iconName={"ArrowPathIcon"}
+                            color="#A3A9AE"
+                            size="16"
+                            onClick={this.onClose}
+                        />
+                    </Header>
+
                     <AvatarEditorBody
                         onImageChange={this.onImageChange}
                         onPositionChange={this.onPositionChange}
@@ -96,23 +175,17 @@ class AvatarEditor extends React.Component {
                         maxSizeFileError={this.props.maxSizeFileError}
                         unknownError={this.props.unknownError}
                     />
-                }
-                footerContent={[
+
                     <Button
                         key="SaveBtn"
+                        className="aside-save-button"
                         label={this.props.saveButtonLabel}
                         primary={true}
                         onClick={this.onSaveButtonClick}
-                    />,
-                    <Button
-                        key="CancelBtn"
-                        label={this.props.cancelButtonLabel}
-                        onClick={this.onClose}
-                        style={{ marginLeft: "8px" }}
                     />
-                ]}
-                onClose={this.props.onClose}
-            />
+                </StyledAside>
+
+
         );
     }
 }
@@ -122,9 +195,8 @@ AvatarEditor.propTypes = {
     headerLabel: PropTypes.string,
     chooseFileLabel: PropTypes.string,
     saveButtonLabel: PropTypes.string,
-    maxSizeErrorLabel: PropTypes.string,
+    maxSizeFileError: PropTypes.string,
     image: PropTypes.string,
-    cancelButtonLabel: PropTypes.string,
     maxSize: PropTypes.number,
     accept: PropTypes.arrayOf(PropTypes.string),
     onSave: PropTypes.func,
@@ -133,8 +205,9 @@ AvatarEditor.propTypes = {
     onLoadFile: PropTypes.func,
     onImageChange: PropTypes.func,
     unknownTypeError: PropTypes.string,
-    maxSizeFileError: PropTypes.string,
-    unknownError: PropTypes.string
+    unknownError: PropTypes.string,
+    displayType: PropTypes.oneOf(['auto', 'modal', 'aside']),
+
 };
 
 AvatarEditor.defaultProps = {
@@ -142,9 +215,8 @@ AvatarEditor.defaultProps = {
     maxSize: 1, //1MB
     headerLabel: 'Edit Photo',
     saveButtonLabel: 'Save',
-    cancelButtonLabel: 'Cancel',
-    maxSizeErrorLabel: 'File is too big',
     accept: ['image/png', 'image/jpeg'],
+    displayType: 'auto'
 };
 
 export default AvatarEditor;

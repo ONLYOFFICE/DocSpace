@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Configuration;
 using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -46,7 +47,7 @@ namespace ASC.Web.Studio.Core.Notify
         private readonly INotifyClient client;
         private readonly ICacheNotify<NotifyItem> cache;
 
-        private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
+        private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
@@ -70,7 +71,6 @@ namespace ASC.Web.Studio.Core.Notify
             var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
 
             tenantManager.SetCurrentTenant(item.TenantId);
-            securityContext.AuthenticateMe(Guid.Parse(item.UserId));
             CultureInfo culture = null;
 
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext, displayUserSettings);
@@ -82,10 +82,14 @@ namespace ASC.Web.Studio.Core.Notify
                 culture = tenant.GetCulture();
             }
 
-            var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
-            if (!string.IsNullOrEmpty(user.CultureName))
+            if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                culture = CultureInfo.GetCultureInfo(user.CultureName);
+                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                var user = userManager.GetUsers(userId);
+                if (!string.IsNullOrEmpty(user.CultureName))
+                {
+                    culture = CultureInfo.GetCultureInfo(user.CultureName);
+                }
             }
 
             if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))

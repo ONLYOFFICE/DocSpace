@@ -5,7 +5,7 @@ import ReactAvatarEditor from 'react-avatar-editor'
 import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
-import {Text} from '../../text'
+import { Text } from '../../text'
 import { tablet } from '../../../utils/device';
 
 const StyledErrorContainer = styled.div`
@@ -58,7 +58,8 @@ const StyledAvatarContainer = styled.div`
     text-align: center;
 
     .custom-range{
-        width: 300px;
+        width: 100%;
+        display: block
     }
     .avatar-container{
         display: inline-block;
@@ -66,10 +67,11 @@ const StyledAvatarContainer = styled.div`
     }
     .editor-container{
         display: inline-block;
-        width: calc(100% - 170px);
+        width: auto;
+        padding: 0 30px;
         position: relative;
         @media ${tablet} {
-            width: 100%
+            padding: 0;
         }
     }
 `;
@@ -109,7 +111,7 @@ class AvatarEditorBody extends React.Component {
 
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
-        
+
 
         this.onPositionChange = this.onPositionChange.bind(this);
 

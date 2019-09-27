@@ -70,8 +70,8 @@ namespace ASC.Web.Studio.Core.Notify
         public DisplayUserSettings DisplayUserSettings { get; }
 
         public StudioNotifyService(
-            UserManager userManager, 
-            StudioNotifyHelper studioNotifyHelper, 
+            UserManager userManager,
+            StudioNotifyHelper studioNotifyHelper,
             StudioNotifyServiceHelper studioNotifyServiceHelper,
             TenantExtra tenantExtra,
             AuthManager authentication,
@@ -169,7 +169,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(UserInfo userInfo)
         {
             var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userInfo.ID));
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -785,7 +785,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendInvitePersonal(string email, string additionalMember = "", bool analytics = true)
         {
-            var newUserInfo = UserManager.GetUserByEmail( email);
+            var newUserInfo = UserManager.GetUserByEmail(email);
             if (UserManager.UserExists(newUserInfo)) return;
 
             var lang = CoreBaseSettings.CustomMode
@@ -900,7 +900,7 @@ namespace ASC.Web.Studio.Core.Notify
             return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff());
         }
 
-        private  string GetUserProfileLink(UserInfo userInfo)
+        private string GetUserProfileLink(UserInfo userInfo)
         {
             return CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(userInfo));
         }
@@ -913,12 +913,9 @@ namespace ASC.Web.Studio.Core.Notify
 
         private string GenerateActivationConfirmUrl(UserInfo user)
         {
-            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation);
+            var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.ID, user.ID);
 
-            return confirmUrl + string.Format("&uid={0}&firstname={1}&lastname={2}",
-                                              AuthContext.CurrentAccount.ID,
-                                              HttpUtility.UrlEncode(user.FirstName),
-                                              HttpUtility.UrlEncode(user.LastName));
+            return confirmUrl + $"firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
 
         #endregion

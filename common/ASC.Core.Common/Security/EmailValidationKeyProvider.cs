@@ -28,7 +28,12 @@ using System;
 using System.Text;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Users;
+using ASC.Web.Studio.Utility;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
 {
@@ -43,6 +48,7 @@ namespace ASC.Security.Cryptography
 
         private static readonly ILog log = LogManager.GetLogger("ASC.KeyValidation.EmailSignature");
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+        internal readonly TimeSpan ValidInterval;
 
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
@@ -51,6 +57,12 @@ namespace ASC.Security.Cryptography
         {
             TenantManager = tenantManager;
             Configuration = configuration;
+            if (!TimeSpan.TryParse(configuration["email:validinterval"], out var validInterval))
+            {
+                validInterval = TimeSpan.FromDays(7);
+            }
+
+            ValidInterval = validInterval;
         }
 
         public string GetEmailKey(string email)
@@ -129,5 +141,85 @@ namespace ASC.Security.Cryptography
             Array.Copy(salt, 0, alldata, data.Length, salt.Length);
             return Hasher.Hash(alldata, HashAlg.SHA256);
         }
+    }
+
+    public class EmailValidationKeyModel
+    {
+        public string Key { get; set; }
+        public EmployeeType? EmplType { get; set; }
+        public string Email { get; set; }
+        public Guid? UiD { get; set; }
+        public ConfirmType Type { get; set; }
+        public int? P { get; set; }
+
+        public ValidationResult Validate(EmailValidationKeyProvider provider, AuthContext authContext, TenantManager tenantManager, AuthManager authentication)
+        {
+            ValidationResult checkKeyResult;
+
+            switch (Type)
+            {
+                case ConfirmType.EmpInvite:
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + EmplType, Key, provider.ValidInterval);
+                    break;
+                case ConfirmType.LinkInvite:
+                    checkKeyResult = provider.ValidateEmailKey(Type.ToString() + EmplType.ToString(), Key, provider.ValidInterval);
+                    break;
+                case ConfirmType.EmailChange:
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + authContext.CurrentAccount.ID, Key, provider.ValidInterval);
+                    break;
+                case ConfirmType.PasswordChange:
+                    var hash = string.Empty;
+
+                    if (P == 1)
+                    {
+                        var tenantId = tenantManager.GetCurrentTenant().TenantId;
+                        hash = authentication.GetUserPasswordHash(tenantId, UiD.Value);
+                    }
+
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + UiD, Key, provider.ValidInterval);
+                    break;
+                case ConfirmType.Activation:
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD, Key, provider.ValidInterval);
+                    break;
+                default:
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type, Key, provider.ValidInterval);
+                    break;
+            }
+
+            return checkKeyResult;
+        }
+
+        public static EmailValidationKeyModel FromRequest(HttpRequest httpRequest)
+        {
+            var Request = QueryHelpers.ParseQuery(httpRequest.Headers["confirm"]);
+
+            _ = Request.TryGetValue("type", out var type);
+            _ = Enum.TryParse<ConfirmType>(type, out var confirmType);
+
+            _ = Request.TryGetValue("key", out var key);
+
+            _ = Request.TryGetValue("p", out var pkey);
+            _ = int.TryParse(pkey, out var p);
+
+            _ = Request.TryGetValue("emplType", out var emplType);
+            _ = Enum.TryParse<EmployeeType>(emplType, out var employeeType);
+
+            _ = Request.TryGetValue("email", out var _email);
+            _ = Request.TryGetValue("uid", out var userIdKey);
+            _ = Guid.TryParse(userIdKey, out var userId);
+
+            return new EmailValidationKeyModel
+            {
+                Key = key,
+                Type = confirmType,
+                Email = _email,
+                EmplType = employeeType,
+                UiD = userId,
+                P = p
+            };
+        }
+
+        public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType confirmType, out int? p)
+            => (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
     }
 }

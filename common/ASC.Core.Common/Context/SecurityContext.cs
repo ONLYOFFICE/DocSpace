@@ -238,7 +238,7 @@ namespace ASC.Core
             };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            if(additionalClaims != null)
+            if (additionalClaims != null)
             {
                 claims.AddRange(additionalClaims);
             }
@@ -247,9 +247,9 @@ namespace ASC.Core
             return cookie;
         }
 
-        public string AuthenticateMe(Guid userId)
+        public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
         {
-            return AuthenticateMe(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId));
+            return AuthenticateMe(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId), additionalClaims);
         }
 
         public void Logout()
