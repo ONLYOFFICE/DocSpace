@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import { Text, IconButton, ContextMenuButton, toastr } from "asc-web-components";
 import { withRouter } from "react-router";
@@ -174,6 +174,10 @@ const SectionHeaderContent = props => {
   const { t } = useTranslation();
   const contextOptions = () => getUserContextOptions(profile, viewer, t);
 
+  const onClick = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
   return (
     <div style={wrapperStyle}>
       <div style={{ width: "16px" }}>
@@ -181,7 +185,7 @@ const SectionHeaderContent = props => {
           iconName={"ArrowPathIcon"}
           color="#A3A9AE"
           size="16"
-          onClick={() => history.push(settings.homepage)}
+          onClick={onClick}
         />
       </div>
       <Text.ContentHeader truncate={true} style={textStyle}>

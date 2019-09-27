@@ -29,8 +29,8 @@ const SectionHeaderContent = (props) => {
       : "";
 
   const onClick = useCallback(() => {
-    history.push(settings.homepage)
-  }, [history, settings]);
+    history.goBack();
+  }, [history]);
 
   return (
     <Wrapper>
