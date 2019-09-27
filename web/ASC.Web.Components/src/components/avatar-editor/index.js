@@ -104,6 +104,9 @@ class AvatarEditor extends React.Component {
         if (this.props.visible !== prevProps.visible) {
             this.setState({ visible: this.props.visible });
         }
+        if (this.props.displayType !== prevProps.displayType) {
+            this.setState({ displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal' });
+        }
     }
     componentDidMount() {
         window.addEventListener('resize', this.throttledResize);
@@ -192,9 +195,8 @@ AvatarEditor.propTypes = {
     headerLabel: PropTypes.string,
     chooseFileLabel: PropTypes.string,
     saveButtonLabel: PropTypes.string,
-    maxSizeErrorLabel: PropTypes.string,
+    maxSizeFileError: PropTypes.string,
     image: PropTypes.string,
-    cancelButtonLabel: PropTypes.string,
     maxSize: PropTypes.number,
     accept: PropTypes.arrayOf(PropTypes.string),
     onSave: PropTypes.func,
@@ -203,7 +205,6 @@ AvatarEditor.propTypes = {
     onLoadFile: PropTypes.func,
     onImageChange: PropTypes.func,
     unknownTypeError: PropTypes.string,
-    maxSizeFileError: PropTypes.string,
     unknownError: PropTypes.string,
     displayType: PropTypes.oneOf(['auto', 'modal', 'aside']),
 
@@ -214,8 +215,6 @@ AvatarEditor.defaultProps = {
     maxSize: 1, //1MB
     headerLabel: 'Edit Photo',
     saveButtonLabel: 'Save',
-    cancelButtonLabel: 'Cancel',
-    maxSizeErrorLabel: 'File is too big',
     accept: ['image/png', 'image/jpeg'],
     displayType: 'auto'
 };
