@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { BrowserRouter, Switch } from "react-router-dom";
+import { Router, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PeopleLayout from "./components/Layout/index";
 import Home from "./components/pages/Home";
@@ -10,6 +10,7 @@ import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import { Error404 } from "./components/pages/Error";
 import Reassign from './components/pages/Reassign';
+import history from './history';
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -18,7 +19,7 @@ const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 const App = ({ settings }) => {
   const { homepage } = settings;
   return (
-    <BrowserRouter>
+    <Router history={history}>
       <PeopleLayout>
         <Suspense
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
@@ -59,7 +60,7 @@ const App = ({ settings }) => {
           </Switch>
         </Suspense>
       </PeopleLayout>
-    </BrowserRouter>
+    </Router>
   );
 };
 

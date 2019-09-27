@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
@@ -13,6 +13,18 @@ import {
 } from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
 import Filter from "../../../../../store/people/filter";
+import {
+  EMPLOYEE_STATUS,
+  ACTIVATION_STATUS,
+  ROLE,
+  GROUP,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  PAGE,
+  PAGE_COUNT
+} from "../../../../../helpers/constants";
+import { getFilterByLocation } from "../../../../../helpers/converters";
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(
@@ -58,84 +70,20 @@ const getGroup = filterValues => {
   return groupId || null;
 };
 
-const EMPLOYEE_STATUS = "employeestatus";
-const ACTIVATION_STATUS = "activationstatus";
-const ROLE = "role";
-const GROUP = "group";
-const SEARCH = "search";
-const SORT_BY = "sortby";
-const SORT_ORDER = "sortorder";
-const PAGE = "page";
-const PAGE_COUNT = "pagecount";
-
 class SectionFilterContent extends React.Component {
   componentDidMount() {
     const { location, filter, onLoading, fetchPeople } = this.props;
 
-    if (!location.search || !location.search.length) return;
+    const newFilter = getFilterByLocation(location);
 
-    const searchUrl = location.search.substring(1);
-    const urlFilter = JSON.parse(
-      '{"' +
-        decodeURI(searchUrl)
-          .replace(/"/g, '\\"')
-          .replace(/&/g, '","')
-          .replace(/=/g, '":"') +
-        '"}'
-    );
-
-    const defaultFilter = Filter.getDefault();
-
-    const employeeStatus =
-      (urlFilter[EMPLOYEE_STATUS] && +urlFilter[EMPLOYEE_STATUS]) ||
-      defaultFilter.employeeStatus;
-    const activationStatus =
-      (urlFilter[ACTIVATION_STATUS] && +urlFilter[ACTIVATION_STATUS]) ||
-      defaultFilter.activationStatus;
-    const role = urlFilter[ROLE] || defaultFilter.role;
-    const group = urlFilter[GROUP] || defaultFilter.group;
-    const search = urlFilter[SEARCH] || defaultFilter.search;
-    const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
-    const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
-    const page = (urlFilter[PAGE] && +urlFilter[PAGE]) || defaultFilter.page;
-    const pageCount =
-      (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
-      defaultFilter.pageCount;
-
-    if (
-      employeeStatus === filter.employeeStatus &&
-      activationStatus === filter.activationStatus &&
-      role === filter.role &&
-      group === filter.group &&
-      search === filter.search &&
-      sortBy === filter.sortBy &&
-      sortOrder === filter.sortOrder &&
-      page === filter.page &&
-      pageCount === filter.pageCount
-    ) {
-      return;
-    }
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.employeeStatus = employeeStatus;
-    newFilter.activationStatus = activationStatus;
-    newFilter.role = role;
-    newFilter.search = search;
-    newFilter.group = group;
-    newFilter.sortBy = sortBy;
-    newFilter.sortOrder = sortOrder;
-    newFilter.page = page;
-    newFilter.pageCount = pageCount;
+    if(!newFilter || newFilter.equals(filter)) return;
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
   }
 
   onFilter = data => {
-    const { onLoading, fetchPeople, filter, settings, history } = this.props;
-
-    const defaultFilter = Filter.getDefault();
+    const { onLoading, fetchPeople, filter } = this.props;
 
     const employeeStatus = getEmployeeStatus(data.filterValues);
     const activationStatus = getActivationStatus(data.filterValues);
@@ -155,40 +103,6 @@ class SectionFilterContent extends React.Component {
     newFilter.role = role;
     newFilter.search = search;
     newFilter.group = group;
-
-    const params = [];
-
-    if (employeeStatus) {
-      params.push(`${EMPLOYEE_STATUS}=${employeeStatus}`);
-    }
-
-    if (activationStatus) {
-      params.push(`${ACTIVATION_STATUS}=${activationStatus}`);
-    }
-
-    if (role) {
-      params.push(`${ROLE}=${role}`);
-    }
-
-    if (group) {
-      params.push(`${GROUP}=${group}`);
-    }
-
-    if (search) {
-      params.push(`${SEARCH}=${search}`);
-    }
-
-    if (
-      params.length > 0 ||
-      (sortBy !== defaultFilter.sortBy || sortOrder !== defaultFilter.sortOrder)
-    ) {
-      params.push(`${SORT_BY}=${sortBy}`);
-      params.push(`${SORT_ORDER}=${sortOrder}`);
-    }
-
-    if (params.length > 0) {
-      history.push(`${settings.homepage}/filter?${params.join("&")}`);
-    }
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
@@ -268,7 +182,13 @@ class SectionFilterContent extends React.Component {
         label: t("LblOther"),
         isHeader: true
       },
-      { key: "filter-type-group", group: "filter-other", subgroup: 'filter-group', label: t('CustomDepartment', { department }), defaultSelectLabel: t("DefaultSelectLabel") },
+      {
+        key: "filter-type-group",
+        group: "filter-other",
+        subgroup: "filter-group",
+        label: t("CustomDepartment", { department }),
+        defaultSelectLabel: t("DefaultSelectLabel")
+      },
       ...groupOptions
     ];
 
