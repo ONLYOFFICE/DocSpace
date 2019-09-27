@@ -41,8 +41,9 @@ namespace ASC.MessagingSystem
         private readonly HttpRequest request;
 
         public MessageFactory MessageFactory { get; }
+        public MessagePolicy MessagePolicy { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender)
+        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender, MessagePolicy messagePolicy)
         {
             if (configuration["messaging:enabled"] != "true")
             {
@@ -50,6 +51,7 @@ namespace ASC.MessagingSystem
             }
 
             this.sender = sender;
+            MessagePolicy = messagePolicy;
             request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
         }

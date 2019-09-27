@@ -39,6 +39,7 @@ using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.Users;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Engine
 {
@@ -67,16 +68,18 @@ namespace ASC.Notify.Engine
         private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
 
         public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext, DisplayUserSettings> BeforeTransferRequest;
 
         public event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
 
 
-        public NotifyEngine(Context context, CoreBaseSettings coreBaseSettings)
+        public NotifyEngine(Context context, CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             this.context = context ?? throw new ArgumentNullException("context");
             CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
@@ -484,7 +487,7 @@ namespace ASC.Notify.Engine
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
-                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true), CoreBaseSettings) is IPatternStyler styler)
+                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true), CoreBaseSettings, Configuration) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);
                     }
@@ -497,7 +500,7 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private void PrepareRequestFillSenders( NotifyRequest request)
+        private void PrepareRequestFillSenders(NotifyRequest request)
         {
             if (request.SenderNames == null)
             {

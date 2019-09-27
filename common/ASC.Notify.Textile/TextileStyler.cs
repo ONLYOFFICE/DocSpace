@@ -24,7 +24,6 @@
 */
 
 
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -38,6 +37,7 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Textile.Resources;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Textile;
 using Textile.Blocks;
 
@@ -48,6 +48,7 @@ namespace ASC.Notify.Textile
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
 
         static TextileStyler()
         {
@@ -57,9 +58,10 @@ namespace ASC.Notify.Textile
             BlockAttributesParser.Styler = new StyleReader(reader.ReadToEnd().Replace("\n", "").Replace("\r", ""));
         }
 
-        public TextileStyler(CoreBaseSettings coreBaseSettings)
+        public TextileStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -131,7 +133,7 @@ namespace ASC.Notify.Textile
             }
             else
             {
-                logoImg = ConfigurationManager.AppSettings["web.logo.mail"];
+                logoImg = Configuration["web:logo:mail"];
                 if (string.IsNullOrEmpty(logoImg))
                 {
                     var logo = message.GetArgument("LetterLogo");
@@ -149,9 +151,9 @@ namespace ASC.Notify.Textile
             return logoImg;
         }
 
-        private static string GetLogoText(NoticeMessage message)
+        private string GetLogoText(NoticeMessage message)
         {
-            var logoText = ConfigurationManager.AppSettings["web.logotext.mail"];
+            var logoText = Configuration["web:logotext:mail"];
 
             if (string.IsNullOrEmpty(logoText))
             {

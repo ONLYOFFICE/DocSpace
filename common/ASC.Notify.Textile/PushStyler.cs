@@ -30,6 +30,7 @@ using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {
@@ -37,12 +38,14 @@ namespace ASC.Notify.Textile
     {
         private static readonly Regex VelocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-        public PushStyler(CoreBaseSettings coreBaseSettings)
+        public PushStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
         }
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
 
         public void ApplyFormating(NoticeMessage message)
         {

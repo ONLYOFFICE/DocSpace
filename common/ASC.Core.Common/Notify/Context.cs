@@ -71,7 +71,7 @@ namespace ASC.Notify
 
         public Context(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
-            NotifyEngine = new NotifyEngine(this, coreBaseSettings);
+            NotifyEngine = new NotifyEngine(this, coreBaseSettings, configuration);
             DispatchEngine = new DispatchEngine(this, configuration);
         }
 

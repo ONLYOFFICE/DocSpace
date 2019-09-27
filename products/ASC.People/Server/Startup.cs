@@ -235,6 +235,7 @@ namespace ASC.People
                     .AddSingleton<DbMessageSender>()
                     .AddSingleton<UrlShortener>()
                     .AddSingleton<UserManagerConstants>()
+                    .AddSingleton<MessagePolicy>()
                     .AddScoped<DisplayUserSettings>()
                     .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()

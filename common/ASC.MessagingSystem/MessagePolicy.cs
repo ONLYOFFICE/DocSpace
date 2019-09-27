@@ -25,20 +25,25 @@
 
 
 using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.MessagingSystem
 {
     public class MessagePolicy
     {
-        private static readonly string[] secretIps =
-            ConfigurationManager.AppSettings["messaging.secret-ips"] == null
-                ? new string[] { }
-                : ConfigurationManager.AppSettings["messaging.secret-ips"]
-                      .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        private readonly IEnumerable<string> secretIps;
 
-        public static bool Check(EventMessage message)
+        public MessagePolicy(IConfiguration configuration)
+        {
+            secretIps =
+                configuration["messaging.secret-ips"] == null
+                ? new string[] { }
+                : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public bool Check(EventMessage message)
         {
             if (message == null) return false;
             if (string.IsNullOrEmpty(message.IP)) return true;

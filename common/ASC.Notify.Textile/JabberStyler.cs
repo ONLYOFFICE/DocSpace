@@ -31,6 +31,7 @@ using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {
@@ -45,10 +46,12 @@ namespace ASC.Notify.Textile
         static readonly Regex MultiLineBreaksReplacer = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
 
-        public JabberStyler(CoreBaseSettings coreBaseSettings)
+        public JabberStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
         {
             CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
         }
 
         public void ApplyFormating(NoticeMessage message)
