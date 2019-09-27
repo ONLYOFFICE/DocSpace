@@ -30,7 +30,6 @@ using System.Linq;
 using System.Security;
 using System.Security.Authentication;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using ASC.Common;
@@ -222,7 +221,7 @@ namespace ASC.Core
             };
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            if(additionalClaims != null)
+            if (additionalClaims != null)
             {
                 claims.AddRange(additionalClaims);
             }
@@ -232,9 +231,9 @@ namespace ASC.Core
             return cookie;
         }
 
-        public static string AuthenticateMe(int tenantId, Guid userId)
+        public static string AuthenticateMe(int tenantId, Guid userId, List<Claim> additionalClaims = null)
         {
-            return AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenantId, userId));
+            return AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenantId, userId), additionalClaims);
         }
 
         public static void Logout()
