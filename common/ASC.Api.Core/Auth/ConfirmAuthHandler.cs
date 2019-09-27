@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -37,20 +38,23 @@ namespace ASC.Api.Core.Auth
                 new Claim(ClaimTypes.Role, emailValidationKeyModel.Type.ToString())
             };
 
-            if (!SecurityContext.IsAuthenticated)
+            if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
             {
-                if (emailValidationKeyModel.UiD.HasValue)
+                if (!SecurityContext.IsAuthenticated)
                 {
-                    SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, emailValidationKeyModel.UiD.Value, claims);
+                    if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
+                    {
+                        SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, emailValidationKeyModel.UiD.Value, claims);
+                    }
+                    else
+                    {
+                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                    }
                 }
                 else
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                    SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
                 }
-            }
-            else
-            {
-                SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
             }
 
             var result = checkKeyResult switch

@@ -153,10 +153,10 @@ namespace ASC.Security.Cryptography
             switch (Type)
             {
                 case ConfirmType.EmpInvite:
-                    checkKeyResult = ValidateEmailKey(Email + Type + EmplType, Key, ValidInterval);
+                    checkKeyResult = ValidateEmailKey(Email + Type + (int)EmplType, Key, ValidInterval);
                     break;
                 case ConfirmType.LinkInvite:
-                    checkKeyResult = ValidateEmailKey(Type.ToString() + EmplType.ToString(), Key, ValidInterval);
+                    checkKeyResult = ValidateEmailKey(Type.ToString() + (int)EmplType, Key, ValidInterval);
                     break;
                 case ConfirmType.EmailChange:
                     checkKeyResult = ValidateEmailKey(Email + Type + SecurityContext.CurrentAccount.ID, Key, ValidInterval);
