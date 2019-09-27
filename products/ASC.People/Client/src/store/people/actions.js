@@ -86,7 +86,7 @@ export function deselectUser(user) {
   };
 }
 
-export function setFilter(filter) {
+export function setFilterUrl(filter) {
   const defaultFilter = Filter.getDefault();
   const params = [];
 
@@ -121,6 +121,10 @@ export function setFilter(filter) {
   if (params.length > 0) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
   }
+}
+
+export function setFilter(filter) {
+  setFilterUrl(filter);
   return {
     type: SET_FILTER,
     filter
