@@ -31,7 +31,15 @@ namespace ASC.Api.Core.Auth
                 return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
             }
 
-            var checkKeyResult = emailValidationKeyModel.Validate();
+            EmailValidationKeyProvider.ValidationResult checkKeyResult;
+            try
+            {
+                checkKeyResult = emailValidationKeyModel.Validate();
+            }
+            catch (ArgumentNullException)
+            {
+                checkKeyResult = EmailValidationKeyProvider.ValidationResult.Invalid;
+            }
 
             var claims = new List<Claim>()
             {
