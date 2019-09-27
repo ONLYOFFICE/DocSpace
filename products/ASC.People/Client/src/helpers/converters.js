@@ -45,7 +45,7 @@ export function getFilterByLocation(location) {
   const search = urlFilter[SEARCH] || defaultFilter.search;
   const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
   const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
-  const page = (urlFilter[PAGE] && +urlFilter[PAGE]) || defaultFilter.page;
+  const page = (urlFilter[PAGE] && (+urlFilter[PAGE]-1)) || defaultFilter.page;
   const pageCount =
     (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
     defaultFilter.pageCount;

@@ -110,22 +110,13 @@ export function setFilter(filter) {
     params.push(`${SEARCH}=${filter.search}`);
   }
 
-  if (filter.page > 0) {
-    params.push(`${PAGE}=${filter.page + 1}`);
-  }
-
   if (filter.pageCount !== defaultFilter.pageCount) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
   }
 
-  if (
-    params.length > 0 ||
-    (filter.sortBy !== defaultFilter.sortBy ||
-      filter.sortOrder !== defaultFilter.sortOrder)
-  ) {
-    params.push(`${SORT_BY}=${filter.sortBy}`);
-    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
-  }
+  params.push(`${PAGE}=${filter.page+1}`);
+  params.push(`${SORT_BY}=${filter.sortBy}`);
+  params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
   if (params.length > 0) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
