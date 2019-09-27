@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { logout, changeEmail } from '../../../../store/auth/actions';
+import { changeEmail } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 
@@ -17,12 +17,11 @@ class ChangeEmail extends React.PureComponent {
     }
 
     componentDidUpdate(){
-        const { logout, changeEmail, userId, isLoaded } = this.props;
+        const { changeEmail, userId, isLoaded } = this.props;
         if (isLoaded){
         const queryParams = this.state.queryString.split('&');
         const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
         const linkParams = Object.fromEntries(arrayOfQueryParams);
-        // logout();
         const email = decodeURIComponent(linkParams.email);
         changeEmail(userId, {email}, this.state.queryString)
             .then((res) => {
@@ -46,8 +45,7 @@ class ChangeEmail extends React.PureComponent {
 
 
 ChangeEmail.propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired
 };
 const ChangeEmailForm = (props) => (<PageLayout sectionBodyContent={<ChangeEmail {...props} />} />);
 
@@ -58,4 +56,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { logout, changeEmail })(withRouter(withTranslation()(ChangeEmailForm)));
+export default connect(mapStateToProps, { changeEmail })(withRouter(withTranslation()(ChangeEmailForm)));

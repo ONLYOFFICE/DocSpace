@@ -247,7 +247,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/password")]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,PasswordChange,EmailChange,Activation,Administrators")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
             var UserPasswordSettings = PasswordSettings.Load();

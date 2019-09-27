@@ -154,3 +154,8 @@ export function changePassword() {
 
   return fakeResponse(data);
 }
+
+export function updateActivationStatus() {
+
+  return fakeResponse();
+}

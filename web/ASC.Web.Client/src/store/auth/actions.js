@@ -120,7 +120,6 @@ export function createConfirmUser(registerData, loginData, key) {
                 checkResponseError(res);
                 console.log('register success:', res.data.response);
                 return api.login(loginData);
-
             })
             .then(res => {
                 console.log("log in, result:", res);
@@ -163,3 +162,27 @@ export function changeEmail(userId, email, key) {
             })
     }
 }
+
+export function activateConfirmUser(personalData, loginData, key, userId, activationStatus) {
+    const data = Object.assign({}, personalData, loginData);
+    return dispatch => {
+        return api.changePassword(userId, data, key)
+            .then(res => {
+                checkResponseError(res);
+                console.log('set password success:', res.data.response);
+                return api.updateActivationStatus(activationStatus, userId);
+            })
+            .then(res => {
+                console.log("activation success, result:", res);
+                // checkResponseError(res);
+                return api.login(loginData);
+            })
+            .then(res => {
+                console.log("log in, result:", res);
+                checkResponseError(res);
+                const token = res.data.response.token;
+                setAuthorizationToken(token);
+                return getUserInfo(dispatch);
+            });
+    };
+};
