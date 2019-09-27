@@ -3,7 +3,17 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Scrollbar from "../../scrollbar";
 
-const StyledAside = styled.aside`
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+const Container = ({
+  visible,
+  scale,
+  ...props
+}) => <aside {...props} />;
+/* eslint-enable react/prop-types */
+/* eslint-enable no-unused-vars */
+
+const StyledAside = styled(Container)`
   background-color: #fff;
   height: 100%;
   overflow-x: hidden;
