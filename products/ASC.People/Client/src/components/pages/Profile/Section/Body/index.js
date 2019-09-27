@@ -242,7 +242,7 @@ class ProfileInfo extends React.PureComponent {
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
-    const formatedDepartments = getFormattedDepartments(groups);
+    const formatedDepartments = department && getFormattedDepartments(groups);
 
     return (
       <InfoContainer>
