@@ -100,7 +100,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
               >
                 {({ value, set }) => (
                   <AdvancedSelector
-                    isDropDown={true}
+                    displayType="dropdown"
                     isOpen={isOpen}
                     size="compact"
                     placeholder={text("placeholder", "Search")}
@@ -142,179 +142,6 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
         label: `User${index + 1} (All groups, ${additional_group.label})`
       };
     });
-    return (
-      <Section>
-        <BooleanValue
-          defaultValue={false}
-          onChange={() => action("modalVisible changed")}
-        >
-          {({ value: modalVisible, toggle: toggleModalVisible }) => (
-            <BooleanValue
-              defaultValue={true}
-              onChange={() => action("isOpen changed")}
-            >
-              {({ value: isOpen, toggle }) => (
-                <div style={{ position: "relative" }}>
-                  <Button label="Toggle dropdown" onClick={toggle} />
-                  <ArrayValue
-                    defaultValue={options}
-                    onChange={() => action("options onChange")}
-                  >
-                    {({ value, set }) => (
-                      <>
-                        <AdvancedSelector
-                          isDropDown={true}
-                          isOpen={isOpen}
-                          size="full"
-                          placeholder={text("placeholder", "Search")}
-                          onSearchChanged={value => {
-                            action("onSearchChanged")(value);
-                            set(
-                              options.filter(option => {
-                                return option.label.indexOf(value) > -1;
-                              })
-                            );
-                          }}
-                          options={value}
-                          groups={groups}
-                          isMultiSelect={boolean("isMultiSelect", true)}
-                          buttonLabel={text("buttonLabel", "Add departments")}
-                          selectAllLabel={text("selectAllLabel", "Select all")}
-                          onSelect={selectedOptions => {
-                            action("onSelect")(selectedOptions);
-                            toggle();
-                          }}
-                          onCancel={toggle}
-                          allowCreation={boolean("allowCreation", true)}
-                          onAddNewClick={toggleModalVisible}
-                          allowAnyClickClose={!modalVisible}
-                        />
-                        <ModalDialog
-                          zIndex={1001}
-                          visible={modalVisible}
-                          headerContent="New User"
-                          bodyContent={
-                            <div className="create_new_user_modal">
-                              <FieldContainer
-                                isVertical={true}
-                                isRequired={true}
-                                hasError={false}
-                                labelText={"First name:"}
-                              >
-                                <TextInput
-                                  value={""}
-                                  hasError={false}
-                                  className="firstName-input"
-                                  scale={true}
-                                  autoComplete="off"
-                                  onChange={e => {
-                                    //set(e.target.value);
-                                  }}
-                                />
-                              </FieldContainer>
-                              <FieldContainer
-                                isVertical={true}
-                                isRequired={true}
-                                hasError={false}
-                                labelText={"Last name:"}
-                              >
-                                <TextInput
-                                  value={""}
-                                  hasError={false}
-                                  className="lastName-input"
-                                  scale={true}
-                                  autoComplete="off"
-                                  onChange={e => {
-                                    //set(e.target.value);
-                                  }}
-                                />
-                              </FieldContainer>
-                              <FieldContainer
-                                isVertical={true}
-                                isRequired={true}
-                                hasError={false}
-                                labelText={"E-mail:"}
-                              >
-                                <TextInput
-                                  value={""}
-                                  hasError={false}
-                                  className="email-input"
-                                  scale={true}
-                                  autoComplete="off"
-                                  onChange={e => {
-                                    //set(e.target.value);
-                                  }}
-                                />
-                              </FieldContainer>
-                              <FieldContainer
-                                isVertical={true}
-                                isRequired={true}
-                                hasError={false}
-                                labelText={"Group:"}
-                              >
-                                <ComboBox
-                                  options={groups}
-                                  className="group-input"
-                                  onSelect={option =>
-                                    console.log("Selected option", option)
-                                  }
-                                  selectedOption={{
-                                    key: 0,
-                                    label: "Select"
-                                  }}
-                                  dropDownMaxHeight={200}
-                                  scaled={true}
-                                  scaledOptions={true}
-                                  size="content"
-                                />
-                              </FieldContainer>
-                            </div>
-                          }
-                          footerContent={[
-                            <Button
-                              key="CreateBtn"
-                              label="Create"
-                              primary={true}
-                              size="big"
-                              onClick={e => {
-                                console.log("CreateBtn click", e);
-                                toggleModalVisible();
-                              }}
-                            />
-                          ]}
-                          onClose={toggleModalVisible}
-                        />
-                      </>
-                    )}
-                  </ArrayValue>
-                </div>
-              )}
-            </BooleanValue>
-          )}
-        </BooleanValue>
-      </Section>
-    );
-  })
-  .add("people user selector as advanced ComboBox", () => {
-    const optionsCount = number("Users count", 1000);
-    const options = Array.from({ length: optionsCount }, (v, index) => {
-      const additional_group = groups[getRandomInt(1, 6)];
-      groups[0].total++;
-      additional_group.total++;
-      return {
-        key: `user${index}`,
-        groups: ["group-all", additional_group.key],
-        label: `User${index + 1} (All groups, ${additional_group.label})`
-      };
-    });
-    let selectedOptionsHead = [];
-    const getSelectedOption = (count, maxCount) => {
-      return {
-        key: 0,
-        //icon: 'icon_name', //if you need insert ComboBox styled image 
-        label: `Selected (${count}/${maxCount})`
-      }
-    }
 
     return (
       <Section>
@@ -333,7 +160,11 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                     label="Toggle dropdown"
                     options={options}
                     isOpen={isOpen}
-                    selectedOption={getSelectedOption(selectedOptionsHead.length, options.length)}
+                    selectedOption={{
+                      key: 0,
+                      //icon: 'icon_name', //if you need insert ComboBox styled image 
+                      label: "Add employee"
+                    }}
                     //innerContainer={react.node} // if you need insert custom node element inside ComboBox
                     onClick={toggle}
                   />
@@ -344,7 +175,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                     {({ value, set }) => (
                       <>
                         <AdvancedSelector
-                          isDropDown={true}
+                          displayType="dropdown"
                           isOpen={isOpen}
                           size="full"
                           placeholder={text("placeholder", "Search")}

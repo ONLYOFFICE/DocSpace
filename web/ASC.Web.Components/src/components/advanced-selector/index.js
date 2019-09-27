@@ -16,6 +16,9 @@ import isEqual from "lodash/isEqual";
 import DropDown from "../drop-down";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
+import Aside from "../layout/sub-components/aside";
+
+const displayTypes = ['dropdown', 'aside'];
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -37,7 +40,7 @@ const Container = ({
   selectedGroups,
   onChangeGroup,
   isOpen,
-  isDropDown,
+  displayType,
   containerWidth,
   containerHeight,
   allowCreation,
@@ -63,13 +66,13 @@ const StyledContainer = styled(Container)`
 
     .head_container {
       display: flex;
-      margin-bottom: ${props => props.isDropDown ? 8 : 16}px;
+      margin-bottom: ${props => props.displayType === "dropdown" ? 8 : 16}px;
 
       .options_searcher {
         display: inline-block;
         width: 100%;
 
-        ${props => props.isDropDown && props.size === "full" && css`
+        ${props => props.displayType === "dropdown" && props.size === "full" && css`
           margin-right: ${props =>
             props.allowCreation ?
             8 : 16
@@ -106,7 +109,7 @@ const StyledContainer = styled(Container)`
 
     .data_column_one {
       ${props =>
-        props.isDropDown && props.groups && props.groups.length > 0
+        props.displayType === "dropdown" && props.groups && props.groups.length > 0
           ? css`
               width: 50%;
               display: inline-block;
@@ -138,7 +141,7 @@ const StyledContainer = styled(Container)`
 
     .data_column_two {
       ${props =>
-        props.isDropDown && props.groups && props.groups.length > 0
+        props.displayType === "dropdown" && props.groups && props.groups.length > 0
           ? css`
               width: 50%;
               display: inline-block;
@@ -371,7 +374,7 @@ class AdvancedSelector extends React.Component {
       buttonLabel,
       selectAllLabel,
       size,
-      isDropDown,
+      displayType,
       onAddNewClick,
       allowCreation
     } = this.props;
@@ -408,14 +411,14 @@ class AdvancedSelector extends React.Component {
       case "compact":
           containerHeight = hasGroups ? "326px" : "100%";
           containerWidth = "379px";
-          listWidth = isDropDown ? 356 : 356;
+          listWidth = displayType === "dropdown" ? 356 : 356;
           listHeight = hasGroups ? 488 : isMultiSelect ? 176 : 226;
         break;
       case "full":
       default:
           containerHeight = "100%";
-          containerWidth = isDropDown ? "690px" : "326px";
-          listWidth = isDropDown ? 320 : 302;
+          containerWidth = displayType === "dropdown" ? "690px" : "326px";
+          listWidth = displayType === "dropdown" ? 320 : 302;
           listHeight = 488;
         break;
     }
@@ -458,7 +461,7 @@ class AdvancedSelector extends React.Component {
                 />
               )}
               </div>
-              {!isDropDown &&
+              {displayType === "aside" &&
                 groups &&
                 groups.length > 0 && (
                   <ComboBox
@@ -496,7 +499,7 @@ class AdvancedSelector extends React.Component {
                 {this.renderRow.bind(this)}
               </FixedSizeList>
             </div>
-            {isDropDown && size === "full" && groups && groups.length > 0 && (
+            {displayType === "dropdown" && size === "full" && groups && groups.length > 0 && (
               <div className="data_column_two">
                 <Text.Body
                   as="p"
@@ -541,13 +544,15 @@ class AdvancedSelector extends React.Component {
   };
 
   render() {
-    const { isDropDown, isOpen } = this.props;
+    const { displayType, isOpen } = this.props;
     //console.log("AdvancedSelector render()");
 
-    return isDropDown ? (
+    return displayType === "dropdown" ? (
       <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
     ) : (
-      this.renderBody()
+      <Aside visible={isOpen} scale={false}>
+        {this.renderBody()}
+      </Aside>
     );
   }
 }
@@ -570,11 +575,11 @@ AdvancedSelector.propTypes = {
   onSelect: PropTypes.func,
   onChangeGroup: PropTypes.func,
   onCancel: PropTypes.func,
-  isDropDown: PropTypes.bool,
   isOpen: PropTypes.bool,
   allowCreation: PropTypes.bool,
   onAddNewClick: PropTypes.func,
-  allowAnyClickClose: PropTypes.bool
+  allowAnyClickClose: PropTypes.bool,
+  displayType: PropTypes.oneOf(displayTypes)
 };
 
 AdvancedSelector.defaultProps = {
@@ -582,7 +587,8 @@ AdvancedSelector.defaultProps = {
   size: "compact",
   buttonLabel: "Add members",
   selectAllLabel: "Select all",
-  allowAnyClickClose: true
+  allowAnyClickClose: true,
+  displayType: "dropdown"
 };
 
 export default AdvancedSelector;

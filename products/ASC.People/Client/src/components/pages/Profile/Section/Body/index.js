@@ -76,17 +76,13 @@ const InfoItemLabel = styled.div`
 `;
 
 const InfoItemValue = styled.div`
-  width: 220px;
+  width: 240px;
 
   .language-combo {
     padding-top: 4px;
 
     & > div {
       padding-left: 0px;
-
-      & > div {
-        line-height: 18px;
-      }
     }
   }
 `;
@@ -239,7 +235,7 @@ class ProfileInfo extends React.PureComponent {
       key: "ru-RU",
       label: "Russian (Russia)"
     }];
-    const language = cultureName || currentCulture;
+    const language = cultureName || currentCulture || this.props.culture;
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
@@ -261,13 +257,7 @@ class ProfileInfo extends React.PureComponent {
               {t('Email')}:
           </InfoItemLabel>
             <InfoItemValue>
-              <Link
-                type="page"
-                fontSize={13}
-                isHovered={true}
-                title={email}
-                onClick={this.onEmailClick.bind(email)}
-              >
+              <>
                 {activationStatus === 2 && (isAdmin || isSelf) &&
                   <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
                     <IconButton
@@ -277,7 +267,15 @@ class ProfileInfo extends React.PureComponent {
                       isFill={true} />
                   </IconButtonWrapper>
                 }
-                {email}
+                <Link
+                  type="page"
+                  fontSize={13}
+                  isHovered={true}
+                  title={email}
+                  onClick={this.onEmailClick.bind(email)}
+                >
+                  {email}
+                </Link>
                 {(isAdmin || isSelf) &&
                   <IconButtonWrapper title={t('EmailChangeButton')} >
                     <IconButton
@@ -298,7 +296,7 @@ class ProfileInfo extends React.PureComponent {
                       onClick={this.onSentInviteAgain.bind(this, id)} />
                   </IconButtonWrapper>
                 }
-              </Link>
+              </>
             </InfoItemValue>
           </InfoItem>
         }
@@ -322,7 +320,7 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         }
-        {(mobilePhone || isSelf) &&
+        {(mobilePhone) &&
           <InfoItem>
             <InfoItemLabel>
               {t('PhoneLbl')}:
@@ -380,13 +378,11 @@ class ProfileInfo extends React.PureComponent {
             <InfoItemValue>
               <ComboBox
                 options={fakeLanguage}
-                onSelect={() => { }}
                 selectedOption={fakeLanguage.find(item => item.key === language)}
                 isDisabled={false}
                 noBorder={true}
-                dropDownMaxHeight={250}
                 scaled={false}
-                scaledOptions={true}
+                scaledOptions={false}
                 size='content'
                 className='language-combo'
               />
@@ -445,7 +441,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} />
+      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
