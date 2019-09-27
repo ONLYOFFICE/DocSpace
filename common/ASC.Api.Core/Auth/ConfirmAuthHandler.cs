@@ -39,7 +39,14 @@ namespace ASC.Api.Core.Auth
 
             if (!SecurityContext.IsAuthenticated)
             {
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                if (emailValidationKeyModel.UiD.HasValue)
+                {
+                    SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, emailValidationKeyModel.UiD.Value, claims);
+                }
+                else
+                {
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                }
             }
             else
             {
