@@ -170,7 +170,7 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             .then(res => {
                 checkResponseError(res);
                 console.log('set password success:', res.data.response);
-                return api.updateActivationStatus(activationStatus, userId);
+                return api.updateActivationStatus(activationStatus, userId, key);
             })
             .then(res => {
                 console.log("activation success, result:", res);

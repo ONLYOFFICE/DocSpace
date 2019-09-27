@@ -69,8 +69,9 @@ export function changePassword(userId, password, key) {
       headers: { confirm: key }
     });
 }
-export function updateActivationStatus(activationStatus, userId) {
+export function updateActivationStatus(activationStatus, userId, key) {
   return IS_FAKE
     ? fakeApi.updateActivationStatus()
-    : axios.put(`${API_URL}/people/activationstatus/${activationStatus}.json`, { userIds: [userId] });
+    : axios.put(`${API_URL}/people/activationstatus/${activationStatus}.json`, { userIds: [userId] }, {
+      headers: { confirm: key }});
 }
