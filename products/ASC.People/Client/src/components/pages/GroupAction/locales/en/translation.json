@@ -8,5 +8,6 @@
   "CustomAddEmployee": "Add {{typeUser, lowercase}}",
   "CustomNewDepartment": "New {{department, lowercase}}",
   "CustomEditDepartment": "Edit {{department, lowercase}}",
-  "CustomDepartmentName": "{{department}} name"
+  "CustomDepartmentName": "{{department}} name",
+  "Members": "Members"
 }
