@@ -1,11 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Text } from 'asc-web-components';
-import { useTranslation } from 'react-i18next';
-import i18n from '../i18n';
+import { getCurrentModule } from '../../../store/auth/selectors';
 
-const ArticleHeaderContent = () => {
-  const { t } = useTranslation('translation', { i18n });
-  return <Text.MenuHeader>{t('People')}</Text.MenuHeader>;
+const ArticleHeaderContent = ({currentModuleName}) => {
+  return <Text.MenuHeader>{currentModuleName}</Text.MenuHeader>;
 }
 
-export default ArticleHeaderContent;
+const mapStateToProps = (state) => {
+  return {
+      currentModuleName: getCurrentModule(state.auth.modules, state.auth.settings.currentProductId).title
+  }
+}
+
+export default connect(mapStateToProps)(ArticleHeaderContent);
