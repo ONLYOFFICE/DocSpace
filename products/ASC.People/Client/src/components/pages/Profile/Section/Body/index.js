@@ -450,8 +450,9 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
-              scale={true}
+              scale={false}
               label={t("EditUserDialogTitle")}
+              title={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
           </EditButtonWrapper>
