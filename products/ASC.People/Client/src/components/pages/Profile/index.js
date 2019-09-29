@@ -5,7 +5,6 @@ import { PageLayout, Loader, toastr } from "asc-web-components";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { fetchProfile } from '../../../store/profile/actions';
-//import { getI18nInstance } from "./i18n";
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 
@@ -76,11 +75,8 @@ const ProfileContainer = withTranslation()(PureProfile);
 const Profile = (props) => { 
   const { profile } = props;
   const lng = (profile && profile.cultureName) || "en";
-  //const i18n = getI18nInstance(lng);
-  i18n.changeLanguage(lng)
-  .then((t) => {
-    console.log("OnChangeLanguage, UserType=", t('UserType'));
-  });
+
+  i18n.changeLanguage(lng);
 
   return <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>
 };
