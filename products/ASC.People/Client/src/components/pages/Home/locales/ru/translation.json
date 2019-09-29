@@ -46,7 +46,7 @@
   "CustomMakeUser": "Сделать {{typeUser, lowercase}}",
   "CustomMakeGuest": "Сделать {{typeGuest, lowercase}}",
   "CustomDepartment": "{{department}}",
-  "CountPerPage": "{{count}} нас странице",
+  "CountPerPage": "{{count}} на странице",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
 
   "DirectionAscLabel":"А-Я",
