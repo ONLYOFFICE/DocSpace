@@ -77,6 +77,10 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
+
+export function updateUserCulture(id, cultureName) {
+  return axios.put(`${API_URL}/people/${id}/culture`, { cultureName });
+}
 export function loadAvatar(profileId, data) {
   return IS_FAKE
     ? fakeApi.loadAvatar()

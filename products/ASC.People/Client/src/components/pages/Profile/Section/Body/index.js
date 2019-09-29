@@ -20,7 +20,7 @@ import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import history from "../../../../../history";
-import { updateProfile } from "../../../../../store/profile/actions";
+import { updateProfileCulture } from "../../../../../store/profile/actions";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -226,15 +226,11 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfile } = this.props;
+    const { profile, updateProfileCulture } = this.props;
 
     if(profile.cultureName === language.key) return;
 
-    const newProfile = Object.assign(profile, {
-      cultureName: language.key
-    });
-
-    updateProfile(newProfile);
+    updateProfileCulture(profile.id, language.key);
   }
 
   getLanguages = () => {
@@ -428,7 +424,7 @@ class ProfileInfo extends React.PureComponent {
 
 const SectionBodyContent = props => {
   const { t } = useTranslation();
-  const { profile, updateProfile, history, settings, isAdmin, viewer } = props;
+  const { profile, updateProfileCulture, history, settings, isAdmin, viewer } = props;
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
@@ -466,7 +462,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} updateProfile={updateProfile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
+      <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
@@ -514,4 +510,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { updateProfile })(withRouter(SectionBodyContent));
+export default connect(mapStateToProps, { updateProfileCulture })(withRouter(SectionBodyContent));
