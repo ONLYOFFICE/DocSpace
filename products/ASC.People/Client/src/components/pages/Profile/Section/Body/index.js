@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import history from "../../../../../history";
+import { updateProfile } from "../../../../../store/profile/actions";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -223,13 +224,20 @@ class ProfileInfo extends React.PureComponent {
       window.open("mailto:" + email);
   }
 
-  render() {
-    const { dialog } = this.state;
-    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
-    const isAdmin = this.props.isAdmin;
-    const isSelf = this.props.isSelf;
-    const t = this.props.t;
-    const type = isVisitor ? "Guest" : "Employee";
+  onLanguageSelect = (language) => {
+    console.log("onLanguageSelect", language);
+    const { profile, updateProfile } = this.props;
+
+    if(profile.cultureName === language.key) return;
+
+    const newProfile = Object.assign(profile, {
+      cultureName: language.key
+    });
+
+    updateProfile(newProfile);
+  }
+
+  getLanguages = () => {
     const fakeLanguage = [{
       key: "en-US",
       label: "English (United States)"
@@ -238,7 +246,20 @@ class ProfileInfo extends React.PureComponent {
       key: "ru-RU",
       label: "Russian (Russia)"
     }];
+
+    return fakeLanguage;
+  }
+
+  render() {
+    const { dialog } = this.state;
+    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
+    const isAdmin = this.props.isAdmin;
+    const isSelf = this.props.isSelf;
+    const t = this.props.t;
+    const type = isVisitor ? "Guest" : "Employee";
     const language = cultureName || currentCulture || this.props.culture;
+    const languages = this.getLanguages();
+    const selectedLanguage = languages.find(item => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
@@ -380,8 +401,9 @@ class ProfileInfo extends React.PureComponent {
           </InfoItemLabel>
             <InfoItemValue>
               <ComboBox
-                options={fakeLanguage}
-                selectedOption={fakeLanguage.find(item => item.key === language)}
+                options={languages}
+                selectedOption={selectedLanguage}
+                onSelect={this.onLanguageSelect}
                 isDisabled={false}
                 noBorder={true}
                 scaled={false}
@@ -406,7 +428,7 @@ class ProfileInfo extends React.PureComponent {
 
 const SectionBodyContent = props => {
   const { t } = useTranslation();
-  const { profile, history, settings, isAdmin, viewer } = props;
+  const { profile, updateProfile, history, settings, isAdmin, viewer } = props;
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
@@ -444,7 +466,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
+      <ProfileInfo profile={profile} updateProfile={updateProfile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
@@ -492,4 +514,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(mapStateToProps, { updateProfile })(withRouter(SectionBodyContent));
