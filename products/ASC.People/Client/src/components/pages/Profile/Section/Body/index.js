@@ -423,7 +423,7 @@ const SectionBodyContent = props => {
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
-  const socialContacts = contacts && createContacts(contacts.social);
+  const socialContacts = (contacts && contacts.social && contacts.social.length > 0 && createContacts(contacts.social)) || null;
   const infoContacts = contacts && createContacts(contacts.contact);
   const isSelf = isMe(viewer, profile.userName);
 
@@ -486,7 +486,7 @@ const SectionBodyContent = props => {
           </ToggleContent>
         </ToggleWrapper>
       )}
-      {profile.contacts && (
+      {socialContacts && (
         <ToggleWrapper isContacts={true} >
           <ToggleContent label={t('SocialProfiles')} isOpen={true} >
             <Text.Body as="span">{socialContacts}</Text.Body>
