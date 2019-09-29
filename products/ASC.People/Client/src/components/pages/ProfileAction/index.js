@@ -36,6 +36,9 @@ class ProfileAction extends React.Component {
     const { profile, match } = this.props;
     const { userId, type } = match.params;
 
+    const lng = (profile && profile.cultureName) || "en";
+    i18n.changeLanguage(lng);
+
     if (type) {
       loaded = true;
     } else if (profile) {
