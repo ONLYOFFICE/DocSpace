@@ -108,7 +108,7 @@ export function getInitInfo() {
       };
 
       info.settings.passwordSettings = passwordSettingsResp.data.response;
-      info.settings.cultures = culturesResp.data.response;
+      info.settings.cultures = culturesResp.data.response || [];
 
       return Promise.resolve(info);
     })

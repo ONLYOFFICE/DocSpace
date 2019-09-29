@@ -234,16 +234,11 @@ class ProfileInfo extends React.PureComponent {
   }
 
   getLanguages = () => {
-    const fakeLanguage = [{
-      key: "en-US",
-      label: "English (United States)"
-    },
-    {
-      key: "ru-RU",
-      label: "Russian (Russia)"
-    }];
+    const { cultures, t } = this.props;
 
-    return fakeLanguage;
+    return cultures.map((culture) => {
+      return { key: culture, label: t(`Culture_${culture}`) };
+    });
   }
 
   render() {
@@ -462,7 +457,7 @@ const SectionBodyContent = props => {
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
+      <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} cultures={settings.cultures} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
