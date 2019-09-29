@@ -33,11 +33,10 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render")
 
     let loaded = false;
-    const { profile, match } = this.props;
+    const { profile, match, language } = this.props;
     const { userId, type } = match.params;
 
-    const lng = (profile && profile.cultureName) || "en";
-    i18n.changeLanguage(lng);
+    i18n.changeLanguage(language);
 
     if (type) {
       loaded = true;
@@ -74,7 +73,8 @@ ProfileAction.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 }
 
