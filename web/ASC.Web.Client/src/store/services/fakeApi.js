@@ -159,3 +159,7 @@ export function updateActivationStatus() {
 
   return fakeResponse();
 }
+
+export function updateUser(data) {
+  return fakeResponse(data);
+}

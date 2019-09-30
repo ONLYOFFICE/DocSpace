@@ -163,7 +163,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(int tenantId, UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmailActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, email, ConfirmType.EmailActivation, null, SecurityContext.CurrentAccount.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 

@@ -73,5 +73,12 @@ export function updateActivationStatus(activationStatus, userId, key) {
   return IS_FAKE
     ? fakeApi.updateActivationStatus()
     : axios.put(`${API_URL}/people/activationstatus/${activationStatus}.json`, { userIds: [userId] }, {
-      headers: { confirm: key }});
+      headers: { confirm: key }
+    });
+}
+
+export function updateUser(data) {
+  return IS_FAKE
+    ? fakeApi.updateUser()
+    : axios.put(`${API_URL}/people/${data.id}`, data);
 }

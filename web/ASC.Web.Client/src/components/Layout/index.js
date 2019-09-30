@@ -89,12 +89,18 @@ function mapStateToProps(state) {
     hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
     availableModules: availableModules,
     currentUser: state.auth.user,
-    currentModuleId: state.auth.settings.currentModuleId
+    currentModuleId: state.auth.settings.currentModuleId,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 };
 const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 
-const StudioLayout = (props) => <I18nextProvider i18n={i18n}><StudioLayoutContainer {...props} /></I18nextProvider>;
+const StudioLayout = (props) => { 
+  const { language } = props;
+  i18n.changeLanguage(language);
+  return (<I18nextProvider i18n={i18n}><StudioLayoutContainer {...props} /></I18nextProvider>);
+};
+
 StudioLayout.propTypes = {
   logout: PropTypes.func.isRequired
 };

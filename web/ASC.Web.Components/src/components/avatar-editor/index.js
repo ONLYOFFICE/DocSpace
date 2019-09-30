@@ -34,7 +34,7 @@ class AvatarEditor extends React.Component {
             height: 0,
             croppedImage: '',
 
-            displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal'
+            displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth < desktop.match(/\d+/)[0] ? 'aside' : 'modal'
         }
 
         this.onClose = this.onClose.bind(this);
@@ -50,7 +50,7 @@ class AvatarEditor extends React.Component {
     }
     resize = () => {
         if (this.props.displayType === "auto") {
-            const type = window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal';
+            const type = window.innerWidth < desktop.match(/\d+/)[0] ? 'aside' : 'modal';
             if (type !== this.state.displayType)
                 this.setState({
                     displayType: type
