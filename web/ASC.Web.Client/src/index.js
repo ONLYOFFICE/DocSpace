@@ -8,9 +8,13 @@ import store from './store/store';
 import './custom.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { getUserInfo } from './store/auth/actions';
+import { getUserInfo, getPortalSettings } from './store/auth/actions';
 
 var token = (new Cookies()).get(AUTH_KEY);
+
+if(!token) {
+    store.dispatch(getPortalSettings);
+}
 
 if (token) {
     if (!window.location.pathname.includes("confirm/type=EmailActivation")) {

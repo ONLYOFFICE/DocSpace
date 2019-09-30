@@ -74,12 +74,18 @@ export function setNewEmail(email) {
     };
 };
 
+export function getPortalSettings(dispatch) {
+    return api.getSettings()
+        .then(res => { 
+            checkResponseError(res);
+            return dispatch(setSettings(res.data.response)) 
+        });
+}
 
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(() => api.getSettings())
-        .then(res => dispatch(setSettings(res.data.response)))
+        .then(() => getPortalSettings(dispatch))
         .then(api.getModulesList)
         .then((res) => dispatch(setModules(res.data.response)))
         .then(() => dispatch(setIsLoaded(true)));
@@ -89,6 +95,7 @@ export function login(data) {
     return dispatch => {
         return api.login(data)
             .then(res => {
+                checkResponseError(res);
                 const token = res.data.response.token;
                 setAuthorizationToken(token);
             })
