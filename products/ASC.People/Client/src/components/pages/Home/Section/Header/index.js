@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
   .header-container {
     display: flex;
     align-items: center;
-    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
     .add-group-button {
       margin-left: 8px;
     }
