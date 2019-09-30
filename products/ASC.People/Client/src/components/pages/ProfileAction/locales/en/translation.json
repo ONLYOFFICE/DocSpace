@@ -40,5 +40,6 @@
   "chooseFileLabel":  "Drop file here, or click to select file",
   "unknownTypeError": "Unknown image file type",
   "maxSizeFileError": "Maximum file size exceeded",
-  "unknownError":     "Error"
+  "unknownError":     "Error",
+  "editAvatar": "Edit photo"
 }
