@@ -21,10 +21,10 @@ class ActivateEmail extends React.PureComponent {
         const queryParams = this.state.queryString.split('&');
         const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
         const linkParams = Object.fromEntries(arrayOfQueryParams);
-        logout();
+        const email = decodeURIComponent(linkParams.email);
+        // logout();
         validateActivatingEmail(linkParams)
             .then((res) => {
-                const email = decodeURIComponent(res.data.response.email);
                 history.push(`/login/confirmed-email=${email}`);
                 
             });
