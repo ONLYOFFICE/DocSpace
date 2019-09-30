@@ -37,8 +37,8 @@
   "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
   "CustomAddDepartments": "Добавить {{departments, lowercase}}",
 
-  "chooseFileLabel":  "Drop files here, or click to select files",
-  "unknownTypeError": "Unknown image file type",
-  "maxSizeFileError": "Maximum file size exceeded",
-  "unknownError":     "Error"
+  "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
+  "unknownTypeError": "Неизвестный тип файла изображения",
+  "maxSizeFileError": "Превышен максимальный размер файла",
+  "unknownError":     "Ошибка"
 }
