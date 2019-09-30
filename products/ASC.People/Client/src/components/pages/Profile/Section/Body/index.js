@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import history from "../../../../../history";
+import { updateProfileCulture } from "../../../../../store/profile/actions";
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -223,6 +224,23 @@ class ProfileInfo extends React.PureComponent {
       window.open("mailto:" + email);
   }
 
+  onLanguageSelect = (language) => {
+    console.log("onLanguageSelect", language);
+    const { profile, updateProfileCulture } = this.props;
+
+    if(profile.cultureName === language.key) return;
+
+    updateProfileCulture(profile.id, language.key);
+  }
+
+  getLanguages = () => {
+    const { cultures, t } = this.props;
+
+    return cultures.map((culture) => {
+      return { key: culture, label: t(`Culture_${culture}`) };
+    });
+  }
+
   render() {
     const { dialog } = this.state;
     const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
@@ -230,15 +248,9 @@ class ProfileInfo extends React.PureComponent {
     const isSelf = this.props.isSelf;
     const t = this.props.t;
     const type = isVisitor ? "Guest" : "Employee";
-    const fakeLanguage = [{
-      key: "en-US",
-      label: "English (United States)"
-    },
-    {
-      key: "ru-RU",
-      label: "Russian (Russia)"
-    }];
     const language = cultureName || currentCulture || this.props.culture;
+    const languages = this.getLanguages();
+    const selectedLanguage = languages.find(item => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
@@ -380,8 +392,9 @@ class ProfileInfo extends React.PureComponent {
           </InfoItemLabel>
             <InfoItemValue>
               <ComboBox
-                options={fakeLanguage}
-                selectedOption={fakeLanguage.find(item => item.key === language)}
+                options={languages}
+                selectedOption={selectedLanguage}
+                onSelect={this.onLanguageSelect}
                 isDisabled={false}
                 noBorder={true}
                 scaled={false}
@@ -406,11 +419,11 @@ class ProfileInfo extends React.PureComponent {
 
 const SectionBodyContent = props => {
   const { t } = useTranslation();
-  const { profile, history, settings, isAdmin, viewer } = props;
+  const { profile, updateProfileCulture, history, settings, isAdmin, viewer } = props;
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
-  const socialContacts = contacts && createContacts(contacts.social);
+  const socialContacts = (contacts && contacts.social && contacts.social.length > 0 && createContacts(contacts.social)) || null;
   const infoContacts = contacts && createContacts(contacts.contact);
   const isSelf = isMe(viewer, profile.userName);
 
@@ -437,14 +450,15 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
-              scale={true}
+              scale={false}
               label={t("EditUserDialogTitle")}
+              title={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} culture={settings.culture} />
+      <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} cultures={settings.cultures} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
@@ -473,7 +487,7 @@ const SectionBodyContent = props => {
           </ToggleContent>
         </ToggleWrapper>
       )}
-      {profile.contacts && (
+      {socialContacts && (
         <ToggleWrapper isContacts={true} >
           <ToggleContent label={t('SocialProfiles')} isOpen={true} >
             <Text.Body as="span">{socialContacts}</Text.Body>
@@ -492,4 +506,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(mapStateToProps, { updateProfileCulture })(withRouter(SectionBodyContent));

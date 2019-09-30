@@ -404,6 +404,42 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user, ApiContext);
         }
 
+        [Update("{userid}/culture")]
+        public EmployeeWraperFull UpdateMemberCulture(string userid, UpdateMemberModel memberModel)
+        {
+            var user = GetUserInfo(userid);
+
+            if (CoreContext.UserManager.IsSystemUser(user.ID))
+                throw new SecurityException();
+
+            SecurityContext.DemandPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+
+            var curLng = user.CultureName;
+
+            if (SetupInfo.EnabledCultures.Find(c => string.Equals(c.Name, memberModel.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            {
+                if (curLng != memberModel.CultureName)
+                {
+                    user.CultureName = memberModel.CultureName;
+
+                    try
+                    {
+                        CoreContext.UserManager.SaveUserInfo(Tenant, user);
+                    }
+                    catch (Exception ex)
+                    {
+                        user.CultureName = curLng;
+                        throw ex;
+                    }
+
+                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+
+                }
+            }
+
+            return new EmployeeWraperFull(user, ApiContext);
+        }
+
         [Update("{userid}")]
         public EmployeeWraperFull UpdateMember(string userid, UpdateMemberModel memberModel)
         {

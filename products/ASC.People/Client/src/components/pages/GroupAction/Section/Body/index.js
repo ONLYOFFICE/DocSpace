@@ -435,7 +435,7 @@ class SectionBodyContent extends React.Component {
           isRequired={false}
           hasError={false}
           isVertical={true}
-          labelText="Members"
+          labelText={t("Members")}
         >
           <ComboButton
             id="users-selector"

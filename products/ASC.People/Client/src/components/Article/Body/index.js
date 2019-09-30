@@ -88,7 +88,7 @@ class ArticleBodyContent extends React.Component {
   render() {
     const { data, selectedKeys } = this.props;
 
-    console.log("PeopleTreeMenu", this.props);
+    //console.log("PeopleTreeMenu", this.props);
 
     return (
       <TreeMenu

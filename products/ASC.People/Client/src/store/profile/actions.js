@@ -2,6 +2,7 @@ import * as api from "../../store/services/api";
 import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
 import { fetchPeopleByFilter } from "../people/actions";
+import { setCurrentUser } from "../auth/actions";
 
 export const SET_PROFILE = 'SET_PROFILE';
 export const CLEAN_PROFILE = 'CLEAN_PROFILE';
@@ -88,6 +89,17 @@ export function updateProfile(profile) {
             return fetchPeopleByFilter(dispatch, filter);
         }).then(() => {
             return Promise.resolve(result);
+        });
+    };
+};
+
+export function updateProfileCulture(id, culture) {
+    return (dispatch) => {
+        return api.updateUserCulture(id, culture).then(res => {
+            checkResponseError(res);
+            const result = res.data.response;
+            dispatch(setCurrentUser(result));
+            return dispatch(setProfile(result));
         });
     };
 };

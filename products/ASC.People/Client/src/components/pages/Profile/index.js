@@ -72,7 +72,13 @@ class PureProfile extends React.Component {
 
 const ProfileContainer = withTranslation()(PureProfile);
 
-const Profile = (props) => <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>;
+const Profile = (props) => { 
+  const { language } = props;
+
+  i18n.changeLanguage(language);
+
+  return <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>
+};
 
 Profile.propTypes = {
   history: PropTypes.object.isRequired,
@@ -84,7 +90,8 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser
+    profile: state.profile.targetUser,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 }
 

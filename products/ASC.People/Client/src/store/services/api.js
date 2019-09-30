@@ -36,6 +36,10 @@ export function getSettings() {
     : axios.get(`${API_URL}/settings.json`);
 }
 
+export function getPortalCultures() {
+  return axios.get(`${API_URL}/settings/cultures.json`);
+}
+
 export function getPortalPasswordSettings() {
   return IS_FAKE
     ? fakeApi.getPortalPasswordSettings()
@@ -73,6 +77,10 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
+
+export function updateUserCulture(id, cultureName) {
+  return axios.put(`${API_URL}/people/${id}/culture`, { cultureName });
+}
 export function loadAvatar(profileId, data) {
   return IS_FAKE
     ? fakeApi.loadAvatar()
@@ -91,8 +99,8 @@ export function deleteAvatar(profileId) {
 }
 
 export function getInitInfo() {
-  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings()]).then(
-    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp) {
+  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings(), getPortalCultures()]).then(
+    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp, culturesResp) {
       let info = {
         user: userResp.data.response,
         modules: modulesResp.data.response,
@@ -100,6 +108,7 @@ export function getInitInfo() {
       };
 
       info.settings.passwordSettings = passwordSettingsResp.data.response;
+      info.settings.cultures = culturesResp.data.response || [];
 
       return Promise.resolve(info);
     })

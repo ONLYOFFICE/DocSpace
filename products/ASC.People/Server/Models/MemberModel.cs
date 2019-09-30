@@ -28,5 +28,6 @@ namespace ASC.People.Models
     {
         public string UserId { get; set; }
         public bool? Disable { get; set; }
+        public string CultureName { get; set; }
     }
 }

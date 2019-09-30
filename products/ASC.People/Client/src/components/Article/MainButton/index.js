@@ -86,21 +86,25 @@ class PureArticleMainButtonContent extends React.Component {
     };
 };
 
-
-const mapStateToProps = (state) => {
-    return {
-        isAdmin: isAdmin(state.auth.user),
-        settings: state.auth.settings
-    }
-}
-
 const ArticleMainButtonContentContainer = withTranslation()(PureArticleMainButtonContent);
 
-const ArticleMainButtonContent = (props) => <I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>;
+const ArticleMainButtonContent = (props) => {
+    const { language } = props;
+    i18n.changeLanguage(language);
+    return (<I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>); 
+};
 
 ArticleMainButtonContent.propTypes = {
     isAdmin: PropTypes.bool.isRequired,
     history: PropTypes.object.isRequired
 };
+
+const mapStateToProps = (state) => {
+    return {
+        isAdmin: isAdmin(state.auth.user),
+        language: state.auth.user.cultureName || state.auth.settings.culture,
+        settings: state.auth.settings
+    }
+}
 
 export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));

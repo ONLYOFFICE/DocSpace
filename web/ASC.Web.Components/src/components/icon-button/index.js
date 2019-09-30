@@ -1,131 +1,181 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
-import { Icons } from '../icons';
-import isEqual from 'lodash/isEqual';
+import styled from "styled-components";
+import { Icons } from "../icons";
+import isEmpty from "lodash/isEmpty";
 
 const StyledOuter = styled.div`
-    width: ${props => props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
-    cursor: ${props => props.isDisabled || !props.isClickable ? 'default' : 'pointer'};
-    line-height: 0;
+  width: ${props =>
+    props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
+  cursor: ${props =>
+    props.isDisabled || !props.isClickable ? "default" : "pointer"};
+  line-height: 0;
 `;
 class IconButton extends React.PureComponent {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            currentIconName: this.props.iconName,
-            currentIconColor: this.props.color
-        };
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
+    this.state = {
+      currentIconName: this.props.iconName,
+      currentIconColor: this.props.color
+    };
+    this.onMouseEnter = this.onMouseEnter.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
 
-        this.isNeedUpdate = false;
+    this.isNeedUpdate = false;
+  }
+
+  onMouseEnter(e) {
+    const {
+      isDisabled,
+      iconHoverName,
+      iconName,
+      hoverColor,
+      color,
+      onMouseEnter
+    } = this.props;
+
+    if (isDisabled) return;
+
+    this.setState({
+      currentIconName: iconHoverName || iconName,
+      currentIconColor: hoverColor || color
+    });
+
+    onMouseEnter && onMouseEnter(e);
+  }
+  onMouseLeave(e) {
+    const { isDisabled, iconName, color, onMouseDown } = this.props;
+
+    if (isDisabled) return;
+
+    this.setState({
+      currentIconName: iconName,
+      currentIconColor: color
+    });
+
+    onMouseDown && onMouseDown(e);
+  }
+  onMouseDown(e) {
+    const {
+      isDisabled,
+      iconClickName,
+      iconName,
+      clickColor,
+      color,
+      onMouseDown
+    } = this.props;
+
+    if (isDisabled) return;
+
+    this.setState({
+      currentIconName: iconClickName || iconName,
+      currentIconColor: clickColor || color
+    });
+
+    onMouseDown && onMouseDown(e);
+  }
+  onMouseUp(e) {
+    const {
+      isDisabled,
+      iconHoverName,
+      iconName,
+      color,
+      onClick,
+      onMouseUp
+    } = this.props;
+
+    if (isDisabled) return;
+
+    switch (e.nativeEvent.which) {
+      case 1: //Left click
+        this.setState({
+          currentIconName: iconHoverName || iconName,
+          currentIconColor: iconHoverName || color
+        });
+
+        onClick && onClick(e);
+        onMouseUp && onMouseUp(e);
+        break;
+      case 3: //Right click
+        onMouseUp && onMouseUp(e);
+        break;
+      default:
+        break;
+    }
+  }
+  componentDidUpdate(prevProps) {
+    const { iconName, color } = this.props;
+
+    let newState = {};
+
+    if (iconName !== prevProps.iconName) {
+      newState.currentIconName = iconName;
+    }
+    if (color !== prevProps.color) {
+      newState.currentIconColor = color;
     }
 
-
-    onMouseEnter(e) {
-        if (!this.props.isDisabled) {
-            this.setState({
-                currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
-                currentIconColor: this.props.hoverColor ? this.props.hoverColor : this.props.color
-            });
-            this.props.onMouseEnter && this.props.onMouseEnter(e);
-        }
-    }
-    onMouseLeave(e) {
-        if (!this.props.isDisabled) {
-            this.setState({
-                currentIconName: this.props.iconName,
-                currentIconColor: this.props.color
-            });
-            this.props.onMouseDown && this.props.onMouseDown(e);
-        }
-    }
-    onMouseDown(e) {
-        if (!this.props.isDisabled) {
-            this.setState({
-                currentIconName: this.props.iconClickName ? this.props.iconClickName : this.props.iconName,
-                currentIconColor: this.props.clickColor ? this.props.clickColor : this.props.color
-            });
-            this.props.onMouseDown && this.props.onMouseDown(e);
-        }
-    }
-    onMouseUp(e) {
-        if (!this.props.isDisabled) {
-            switch (e.nativeEvent.which) {
-                case 1: //Left click
-                    this.setState({
-                        currentIconName: this.props.iconHoverName ? this.props.iconHoverName : this.props.iconName,
-                        currentIconColor: this.props.iconHoverName ? this.props.iconHoverName : this.props.color
-                    });
-                    this.props.onClick && this.props.onClick(e);
-                    this.props.onMouseUp && this.props.onMouseUp(e);
-                    break;
-                case 3://Right click
-                    this.props.onMouseUp && this.props.onMouseUp(e);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props.iconName !== prevProps.iconName || this.props.color !== prevProps.color) {
-            let newState = {
-                currentIconName: this.props.iconName !== prevProps.iconName ? this.props.iconName : this.state.currentIconName,
-                currentIconColor: this.props.color !== prevProps.color ? this.props.color : this.state.currentIconColor
-            }
-            this.setState(newState);
-        }
-    }
-    render() {
-        //console.log("IconButton render");
-        return (
-            <StyledOuter
-                size={this.props.size}
-                isDisabled={this.props.isDisabled}
-
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-                onMouseDown={this.onMouseDown}
-                onMouseUp={this.onMouseUp}
-
-                isClickable={typeof this.props.onClick === 'function' || this.props.isClickable}
-            >
-                {React.createElement(Icons[this.state.currentIconName], { size: "scale", color: this.state.currentIconColor, isfill: this.props.isFill })}
-            </StyledOuter>
-        );
-    }
+    if (!isEmpty(newState)) this.setState(newState);
+  }
+  render() {
+    //console.log("IconButton render");
+    const {
+      className,
+      size,
+      isDisabled,
+      isFill,
+      isClickable,
+      onClick
+    } = this.props;
+    return (
+      <StyledOuter
+        className={className}
+        size={size}
+        isDisabled={isDisabled}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
+        isClickable={typeof onClick === "function" || isClickable}
+      >
+        {React.createElement(Icons[this.state.currentIconName], {
+          size: "scale",
+          color: this.state.currentIconColor,
+          isfill: isFill
+        })}
+      </StyledOuter>
+    );
+  }
 }
 
 IconButton.propTypes = {
-    color: PropTypes.string,
-    hoverColor: PropTypes.string,
-    clickColor: PropTypes.string,
-    size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    isFill: PropTypes.bool,
-    isDisabled: PropTypes.bool,
-    isClickable: PropTypes.bool,
-    iconName: PropTypes.string.isRequired,
-    iconHoverName: PropTypes.string,
-    iconClickName: PropTypes.string,
-    onClick: PropTypes.func,
-    onMouseEnter: PropTypes.func,
-    onMouseDown: PropTypes.func,
-    onMouseUp: PropTypes.func
+  className: PropTypes.string,
+  color: PropTypes.string,
+  hoverColor: PropTypes.string,
+  clickColor: PropTypes.string,
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  isFill: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  isClickable: PropTypes.bool,
+  iconName: PropTypes.string.isRequired,
+  iconHoverName: PropTypes.string,
+  iconClickName: PropTypes.string,
+  onClick: PropTypes.func,
+  onMouseEnter: PropTypes.func,
+  onMouseDown: PropTypes.func,
+  onMouseUp: PropTypes.func
 };
 
 IconButton.defaultProps = {
-    color: "#d0d5da",
-    size: 25,
-    isFill: true,
-    iconName: "AZSortingIcon",
-    isDisabled: false,
-    isClickable: false
+  color: "#d0d5da",
+  size: 25,
+  isFill: true,
+  iconName: "AZSortingIcon",
+  isDisabled: false,
+  isClickable: false
 };
 
 export default IconButton;

@@ -31,7 +31,9 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render")
 
-    const { group, match } = this.props;
+    const { group, match, language } = this.props;
+
+    i18n.changeLanguage(language);
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -59,6 +61,7 @@ class GroupAction extends React.Component {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
     group: state.group.targetGroup
   };
 }
