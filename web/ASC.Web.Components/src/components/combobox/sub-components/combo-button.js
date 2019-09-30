@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
-import { Icons } from '../../icons'
+import { Icons } from '../../icons';
+import { Text } from '../../text'
 
 const StyledComboButton = styled.div`
   display: flex;
@@ -54,6 +55,19 @@ const StyledComboButton = styled.div`
       border-color: #ECEEF1;
     `}
   }
+  .combo-button-label{
+    margin-right: 8px;
+    max-width: 175px;
+    ${props => props.noBorder && `
+      line-height: 13px;
+      border-bottom: 1px dashed transparent;
+    `}
+  }
+  .combo-button-label:hover{
+    ${props => props.noBorder && `
+      border-bottom: 1px dashed;
+    `}
+  }
 `;
 
 const StyledOptionalItem = styled.div`
@@ -64,29 +78,6 @@ const StyledIcon = styled.div`
   width: 16px;
   margin-right: 8px;
   margin-top: -2px;
-`;
-
-
-const StyledLabel = styled.div`
-  font-family: Open Sans;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  margin-right: 8px;
-
-  ${props => props.noBorder && `
-    line-height: 11px;
-    border-bottom: 1px dashed transparent;
-
-    :hover{
-      border-bottom: 1px dashed;
-    }
-  `};
 `;
 
 const StyledArrowIcon = styled.div`
@@ -149,9 +140,16 @@ class ComboButton extends React.Component {
             }
           </StyledIcon>
         }
-        <StyledLabel noBorder={noBorder}>
+        <Text.Body
+          noBorder={noBorder}
+          title={selectedOption.label}
+          as="div"
+          truncate={true}
+          fontWeight={600}
+          className="combo-button-label"
+        >
           {selectedOption.label}
-        </StyledLabel>
+        </Text.Body>
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
