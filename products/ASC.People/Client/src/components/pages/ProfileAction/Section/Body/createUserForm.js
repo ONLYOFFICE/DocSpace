@@ -320,6 +320,7 @@ class CreateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
+              headerLabel={t("editAvatar")}
               chooseFileLabel ={t("chooseFileLabel")}
               unknownTypeError={t("unknownTypeError")}
               maxSizeFileError={t("maxSizeFileError")}
