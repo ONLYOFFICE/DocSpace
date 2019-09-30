@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { logout, validateActivatingEmail } from '../../../../store/auth/actions';
+import { logout, changeEmail } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 
@@ -17,16 +17,20 @@ class ActivateEmail extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { history, logout, validateActivatingEmail } = this.props;
+        const { history, logout, changeEmail } = this.props;
         const queryParams = this.state.queryString.split('&');
         const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
         const linkParams = Object.fromEntries(arrayOfQueryParams);
-        logout();
-        validateActivatingEmail(linkParams)
+        const email = decodeURIComponent(linkParams.email);
+        const uid = linkParams.uid;
+        // logout();
+        changeEmail(uid, { email }, this.state.queryString)
             .then((res) => {
-                const email = decodeURIComponent(res.data.response.email);
                 history.push(`/login/confirmed-email=${email}`);
-                
+            })
+            .catch((e) => {
+                console.log('activate email error', e);
+                history.push(`/login/error=${e}`);
             });
     }
 
@@ -47,4 +51,4 @@ ActivateEmail.propTypes = {
 const ActivateEmailForm = (props) => (<PageLayout sectionBodyContent={<ActivateEmail {...props} />} />);
 
 
-export default connect(null, { logout, validateActivatingEmail })(withRouter(withTranslation()(ActivateEmailForm)));
+export default connect(null, { logout, changeEmail })(withRouter(withTranslation()(ActivateEmailForm)));

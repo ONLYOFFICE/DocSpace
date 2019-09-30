@@ -17,7 +17,7 @@ if(!token) {
 }
 
 if (token) {
-    if (!window.location.pathname.includes("confirm/type=EmailActivation")) {
+    if (!window.location.pathname.includes("confirm/EmailActivation")) {
         setAuthorizationToken(token);
         store.dispatch(getUserInfo);
     }

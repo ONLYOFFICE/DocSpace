@@ -172,6 +172,11 @@ export function changeEmail(userId, email, key) {
 
 export function activateConfirmUser(personalData, loginData, key, userId, activationStatus) {
     const data = Object.assign({}, personalData, loginData);
+    const changedData = {
+        id: userId,
+        FirstName: personalData.firstname,
+        LastName: personalData.lastname
+    }
     return dispatch => {
         return api.changePassword(userId, data, key)
             .then(res => {
@@ -189,6 +194,11 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
                 checkResponseError(res);
                 const token = res.data.response.token;
                 setAuthorizationToken(token);
+                return api.updateUser(changedData);
+            })
+            .then(res => {
+                console.log("user data updated, result:", res);
+                checkResponseError(res);
                 return getUserInfo(dispatch);
             });
     };
