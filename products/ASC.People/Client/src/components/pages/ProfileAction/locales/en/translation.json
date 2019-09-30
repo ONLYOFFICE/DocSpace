@@ -37,8 +37,9 @@
   "CustomNewGuest": "New {{typeGuest, lowercase}}",
   "CustomAddDepartments": "Add {{departments, lowercase}}",
 
-  "chooseFileLabel":  "Drop files here, or click to select files",
+  "chooseFileLabel":  "Drop file here, or click to select file",
   "unknownTypeError": "Unknown image file type",
   "maxSizeFileError": "Maximum file size exceeded",
-  "unknownError":     "Error"
+  "unknownError":     "Error",
+  "editAvatar": "Edit photo"
 }
