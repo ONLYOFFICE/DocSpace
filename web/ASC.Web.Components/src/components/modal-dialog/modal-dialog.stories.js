@@ -19,6 +19,7 @@ storiesOf('Components|ModalDialog', module)
             <Button
               label="Show"
               primary={true}
+              size="medium"
               onClick={(e) => {
                 action('onShow')(e);
                 toggle(true);
