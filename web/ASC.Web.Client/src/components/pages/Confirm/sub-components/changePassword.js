@@ -9,7 +9,10 @@ import { Button, PageLayout, Text, PasswordInput } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { welcomePageTitle } from "../../../../helpers/customNames";
-import { changePassword } from "../../../../../src/store/auth/actions";
+import {
+  changePassword,
+  getPasswordSettings
+} from "../../../../../src/store/auth/actions";
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -44,9 +47,28 @@ const Form = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
-  const { match, location, history, changePassword } = props;
+  const {
+    match,
+    location,
+    history,
+    changePassword,
+    getPasswordSettings
+  } = props;
   const { params } = match;
   const { t } = useTranslation("translation", { i18n });
+
+  const indexOfSlash = match.path.lastIndexOf("/");
+  const typeLink = match.path.slice(indexOfSlash + 1);
+  const queryString = `type=${typeLink}&${location.search.slice(1)}`;
+
+  getPasswordSettings(queryString)
+    .then(function() {
+      console.log("GET PASSWORD SETTINGS SUCCESS");
+    })
+    .catch(e => {
+      console.log("ERROR GET PASSWORD SETTINGS", e);
+      history.push(`/login/error=${e}`);
+    });
 
   const onSubmit = useCallback(
     e => {
@@ -68,11 +90,7 @@ const Form = props => {
       const userId = str[2].slice(4);
       const key = `type=PasswordChange&${location.search.slice(1)}`;
 
-      //console.log("str", str);
-      //console.log("key", key);
-      //console.log("userId", userId);
-
-      changePassword(userId, {password}, key)
+      changePassword(userId, { password }, key)
         .then(() => {
           console.log("UPDATE PASSWORD");
           history.push("/");
@@ -198,5 +216,5 @@ ChangePasswordForm.defaultProps = {
 
 export default connect(
   null,
-  { changePassword }
+  { changePassword, getPasswordSettings }
 )(withRouter(withTranslation()(ChangePasswordForm)));
