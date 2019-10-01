@@ -3,23 +3,10 @@ import PropTypes from 'prop-types'
 import ModalDialog from '../modal-dialog'
 import Button from '../button'
 import AvatarEditorBody from './sub-components/avatar-editor-body'
-import Aside from "../layout/sub-components/aside";
-import IconButton from '../icon-button'
-import styled from 'styled-components'
+import SidePanel from '../side-panel'
 import { desktop } from '../../utils/device';
 import throttle from 'lodash/throttle';
 
-const Header = styled.div`
-    margin-bottom: 10px;
-`;
-
-const StyledAside = styled(Aside)`
-    padding: 10px;
-
-    .aside-save-button{
-        margin-top: 10px;
-    }
-`;
 
 class AvatarEditor extends React.Component {
     constructor(props) {
@@ -106,7 +93,7 @@ class AvatarEditor extends React.Component {
             this.setState({ visible: this.props.visible });
         }
         if (this.props.displayType !== prevProps.displayType) {
-            this.setState({ displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth <= desktop.match(/\d+/)[0] ? 'aside' : 'modal' });
+            this.setState({ displayType: this.props.displayType !== 'auto' ? this.props.displayType : window.innerWidth < desktop.match(/\d+/)[0] ? 'aside' : 'modal' });
         }
         if (this.state.visible && this.state.displayType === "aside") {
             window.addEventListener("popstate", this.popstate, false);
@@ -146,50 +133,44 @@ class AvatarEditor extends React.Component {
                             key="SaveBtn"
                             label={this.props.saveButtonLabel}
                             primary={true}
+                            size="medium"
                             onClick={this.onSaveButtonClick}
                         />
                     ]}
                     onClose={this.props.onClose}
                 />
                 :
-                <StyledAside
+                <SidePanel
                     visible={this.state.visible}
                     scale={true}
-                >
-                    <Header>
-                        <IconButton
-                            iconName={"ArrowPathIcon"}
-                            color="#A3A9AE"
-                            size="16"
-                            onClick={this.onClose}
+                    headerContent={this.props.headerLabel}
+                    bodyContent={
+                        <AvatarEditorBody
+                            onImageChange={this.onImageChange}
+                            onPositionChange={this.onPositionChange}
+                            onLoadFileError={this.onLoadFileError}
+                            onLoadFile={this.onLoadFile}
+                            deleteImage={this.onDeleteImage}
+                            maxSize={this.props.maxSize * 1000000} // megabytes to bytes
+                            accept={this.props.accept}
+                            image={this.props.image}
+                            chooseFileLabel={this.props.chooseFileLabel}
+                            unknownTypeError={this.props.unknownTypeError}
+                            maxSizeFileError={this.props.maxSizeFileError}
+                            unknownError={this.props.unknownError}
                         />
-                    </Header>
-
-                    <AvatarEditorBody
-                        onImageChange={this.onImageChange}
-                        onPositionChange={this.onPositionChange}
-                        onLoadFileError={this.onLoadFileError}
-                        onLoadFile={this.onLoadFile}
-                        deleteImage={this.onDeleteImage}
-                        maxSize={this.props.maxSize * 1000000} // megabytes to bytes
-                        accept={this.props.accept}
-                        image={this.props.image}
-                        chooseFileLabel={this.props.chooseFileLabel}
-                        unknownTypeError={this.props.unknownTypeError}
-                        maxSizeFileError={this.props.maxSizeFileError}
-                        unknownError={this.props.unknownError}
-                    />
-
-                    <Button
-                        key="SaveBtn"
-                        className="aside-save-button"
-                        label={this.props.saveButtonLabel}
-                        primary={true}
-                        onClick={this.onSaveButtonClick}
-                    />
-                </StyledAside>
-
-
+                    }
+                    footerContent={[
+                        <Button
+                            key="SaveBtn"
+                            label={this.props.saveButtonLabel}
+                            primary={true}
+                            size="medium"
+                            onClick={this.onSaveButtonClick}
+                        />
+                    ]}
+                    onClose={this.onClose}
+                />
         );
     }
 }
