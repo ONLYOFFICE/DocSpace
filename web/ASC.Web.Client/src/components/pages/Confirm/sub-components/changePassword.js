@@ -24,7 +24,8 @@ import {
 import { welcomePageTitle } from "../../../../helpers/customNames";
 import {
   changePassword,
-  getConfirmationInfo
+  getConfirmationInfo,
+  logout
 } from "../../../../../src/store/auth/actions";
 
 const BodyStyle = styled(Container)`
@@ -32,6 +33,10 @@ const BodyStyle = styled(Container)`
   p {
     margin-bottom: 5px;
   }
+.button-style{
+  margin-top: 20px;
+}
+
   .password-row {
     margin: 23px 0 0;
     .password-card {
@@ -93,7 +98,7 @@ class Form extends React.PureComponent {
   onSubmit = e => {
     this.setState({ isLoading: true }, function() {
       const { userId, password, queryString } = this.state;
-      const { history, changePassword } = this.props;
+      const { history, changePassword, logout } = this.props;
       this.setState({ errorText: "" });
       let hasError = false;
 
@@ -112,6 +117,7 @@ class Form extends React.PureComponent {
       changePassword(userId, { password }, queryString)
         .then(() => {
           console.log("UPDATE PASSWORD");
+          logout();
           history.push("/");
         })
         .catch(e => {
@@ -145,7 +151,7 @@ class Form extends React.PureComponent {
 
   onCopyToClipboard = () =>
     toastr.success(this.props.t("EmailAndPasswordCopiedToClipboard"));
-    
+
   validatePassword = value => this.setState({ passwordValid: value });
 
   render() {
@@ -170,11 +176,6 @@ class Form extends React.PureComponent {
                 {t("CustomWelcomePageTitle", { welcomePageTitle })}
               </CardTitle>
             </Card>
-          </Col>
-        </Row>
-
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
             <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
 
             <PasswordInput
@@ -206,11 +207,8 @@ class Form extends React.PureComponent {
               isAutoFocussed={true}
               inputWidth="490px"
             />
-          </Col>
-        </Row>
-        <Row className="password-row">
-          <Col sm="12" md={mdOptions}>
             <Button
+              className="button-style"
               primary
               size="big"
               tabIndex={3}
@@ -260,5 +258,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { changePassword, getConfirmationInfo }
+  { changePassword, getConfirmationInfo, logout }
 )(withRouter(withTranslation()(ChangePasswordForm)));
