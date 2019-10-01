@@ -5,6 +5,6 @@
   "AboutCompanyAddressTitle": "адрес",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "тел.",
-  "LicensedUnder": "Это программное обеспечение лицензируется под", "_comment": "{0}GNU GPL v.3{1}",
-  "SourceCode": "Исходный код программы доступен по cсылке", "_comment": "{0}GNU GPL v.3{1}","_comment":"SYNTAX ERROR"
+  "LicensedUnder": "Это программное обеспечение лицензируется под",
+  "SourceCode": "Исходный код программы доступен по cсылке"
 }
