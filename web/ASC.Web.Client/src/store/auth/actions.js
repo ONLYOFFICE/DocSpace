@@ -149,7 +149,7 @@ export function changePassword(userId, password, key) {
     return dispatch => {
         return api.changePassword(userId, password, key)
             .then(res => {
-                //checkResponseError(res);
+                checkResponseError(res);
                 dispatch(setNewPasswordSettings(res.data.response));
             })
     }
@@ -159,6 +159,7 @@ export function changeEmail(userId, email, key) {
     return dispatch => {
         return api.changePassword(userId, email, key)
             .then(res => {
+                checkResponseError(res);
                 dispatch(setNewEmail(res.data.response.email));
             })
     }
@@ -180,7 +181,7 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             })
             .then(res => {
                 console.log("activation success, result:", res);
-                // checkResponseError(res);
+                checkResponseError(res);
                 return api.login(loginData);
             })
             .then(res => {
