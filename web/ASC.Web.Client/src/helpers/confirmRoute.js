@@ -69,15 +69,7 @@ class ConfirmRoute extends React.Component {
                                 <Loader className="pageLoader" type="rombs" size={40} />
                             }
                         />
-                    ) :
-                        (new Cookies()).get(AUTH_KEY) ? (
-                            <Redirect
-                                to={{
-                                    pathname: "/",
-                                    state: { from: props.location }
-                                }}
-                            />
-                        ) : (
+                    ) : (
                                 <Component {...newProps} />
                             )
                 }

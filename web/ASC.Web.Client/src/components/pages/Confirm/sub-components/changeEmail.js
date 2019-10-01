@@ -8,29 +8,21 @@ import PropTypes from 'prop-types';
 
 
 class ChangeEmail extends React.PureComponent {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            queryString: `type=EmailChange&${props.location.search.slice(1)}`
-        };
-    }
-
-    componentDidUpdate(){
-        const { changeEmail, userId, isLoaded } = this.props;
-        if (isLoaded){
-        const queryParams = this.state.queryString.split('&');
-        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-        const linkParams = Object.fromEntries(arrayOfQueryParams);
-        const email = decodeURIComponent(linkParams.email);
-        changeEmail(userId, {email}, this.state.queryString)
-            .then((res) => {
-                console.log('change client email success', res)
-                window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
-            })
-            .catch((e) => {
-                console.log('change client email error', e)
-            });
+    componentDidUpdate() {
+        const { changeEmail, userId, isLoaded, linkData } = this.props;
+        if (isLoaded) {
+            const email = linkData.email;
+            const key = linkData.confirmHeader;
+            changeEmail(userId, { email }, key)
+                .then((res) => {
+                    console.log('change client email success', res)
+                    window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
+                })
+                .catch((e) => {
+                    console.log('change client email error', e)
+                });
+        } else {
+            window.location.href = '/';
         }
     }
 
@@ -42,10 +34,9 @@ class ChangeEmail extends React.PureComponent {
     }
 }
 
-
-
 ChangeEmail.propTypes = {
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    changeEmail: PropTypes.func.isRequired
 };
 const ChangeEmailForm = (props) => (<PageLayout sectionBodyContent={<ChangeEmail {...props} />} />);
 
