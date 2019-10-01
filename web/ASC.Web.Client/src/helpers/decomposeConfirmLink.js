@@ -1,5 +1,6 @@
-const decomposeLink = (url, querySearch) => {
-  const queryString = querySearch.slice(1).split('&');
+const decomposeConfirmLink = (url, querySearch) => {
+  const decodedString = decodeURIComponent(querySearch);
+  const queryString = decodedString.slice(1).split('&');
   const arrayOfQueryString = queryString.map(queryParam => queryParam.split('='));
   const queryParams = Object.fromEntries(arrayOfQueryString);
   const posSeparator = url.lastIndexOf('/');
@@ -8,4 +9,4 @@ const decomposeLink = (url, querySearch) => {
   return data;
 }
 
-export default decomposeLink;
+export default decomposeConfirmLink;

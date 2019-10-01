@@ -31,7 +31,7 @@ const Confirm = ({ match, language }) => {
             path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />
-          <PublicRoute
+          <ConfirmRoute
             path={`${match.path}/Activation`}
             component={ActivateUserForm}
           />
