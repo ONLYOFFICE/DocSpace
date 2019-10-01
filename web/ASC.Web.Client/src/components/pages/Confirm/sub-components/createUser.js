@@ -54,12 +54,6 @@ class Confirm extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const queryParams = props.location.search.slice(1).split('&');
-        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-        const linkParams = Object.fromEntries(arrayOfQueryParams);
-        const indexOfSlash = this.props.match.path.lastIndexOf('/');
-        const typeLink = this.props.match.path.slice(indexOfSlash + 1);
-
         this.state = {
             email: '',
             emailValid: true,
@@ -72,20 +66,15 @@ class Confirm extends React.PureComponent {
             errorText: '',
             isLoading: false,
             passwordEmpty: false,
-            queryString: `type=${typeLink}&${props.location.search.slice(1)}`,
-            type: typeLink,
-            queryEmail: decodeURIComponent(linkParams.email),
-            userId: linkParams.uid
+            key: props.linkData.confirmHeader,
+            linkType: props.linkData.type
         };
     }
 
     onSubmit = (e) => {
         this.setState({ isLoading: true }, function () {
-            const { history, createConfirmUser } = this.props;
-            const queryParams = this.state.queryString.split('&');
-            const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-            const linkParams = Object.fromEntries(arrayOfQueryParams);
-            const isVisitor = parseInt(linkParams.emplType) === 2;
+            const { history, createConfirmUser, linkData } = this.props;
+            const isVisitor = parseInt(linkData.emplType) === 2;
 
             this.setState({ errorText: "" });
 
@@ -128,7 +117,7 @@ class Confirm extends React.PureComponent {
                 email: this.state.email
             };
             const registerData = Object.assign(personalData, { isVisitor: isVisitor })
-            createConfirmUser(registerData, loginData, this.state.queryString)
+            createConfirmUser(registerData, loginData, this.state.key)
                 .then(() => history.push('/'))
                 .catch(e => {
                     console.error("confirm error", e);
@@ -150,7 +139,7 @@ class Confirm extends React.PureComponent {
     componentDidMount() {
         const { getPasswordSettings, history } = this.props;
 
-        getPasswordSettings(this.state.queryString)
+        getPasswordSettings(this.state.key, this.state.linkType)
             .then(
                 function () {
                     console.log("get settings success");
@@ -197,7 +186,7 @@ class Confirm extends React.PureComponent {
     }
 
     render() {
-        console.log('Confirm render');
+        console.log('createUser render');
         const { settings, isConfirmLoaded, t } = this.props;
         return (
             !isConfirmLoaded
@@ -301,7 +290,6 @@ class Confirm extends React.PureComponent {
                                     isDisabled={this.state.isLoading}
                                     onKeyDown={this.onKeyPress}
                                 />
-
 
                                 <Button
                                     className='confirm-row'
