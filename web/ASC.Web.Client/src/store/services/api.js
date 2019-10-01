@@ -82,3 +82,9 @@ export function updateUser(data) {
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
 }
+
+export function checkConfirmLink(data) {
+  return IS_FAKE
+    ? fakeApi.checkConfirmLink()
+    : axios.post(`${API_URL}/authentication/confirm.json`, data);
+}
