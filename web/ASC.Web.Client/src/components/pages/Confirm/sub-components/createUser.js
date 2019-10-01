@@ -111,6 +111,7 @@ class Confirm extends React.PureComponent {
                 userName: this.state.email,
                 password: this.state.password
             };
+
             const personalData = {
                 firstname: this.state.firstName,
                 lastname: this.state.lastName,
@@ -121,8 +122,10 @@ class Confirm extends React.PureComponent {
                 .then(() => history.push('/'))
                 .catch(e => {
                     console.error("confirm error", e);
-                    this.setState({ errorText: e.message });
-                    this.setState({ isLoading: false });
+                    this.setState({
+                        errorText: e.message,
+                        isLoading: false
+                    });
                 })
         });
     };
