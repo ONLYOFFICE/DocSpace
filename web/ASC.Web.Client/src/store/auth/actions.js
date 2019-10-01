@@ -164,14 +164,14 @@ export function changeEmail(userId, email, key) {
 }
 
 export function activateConfirmUser(personalData, loginData, key, userId, activationStatus) {
-    const data = Object.assign({}, personalData, loginData);
     const changedData = {
         id: userId,
         FirstName: personalData.firstname,
         LastName: personalData.lastname
     }
+
     return dispatch => {
-        return api.changePassword(userId, data, key)
+        return api.changePassword(userId, { password: loginData.password }, key)
             .then(res => {
                 checkResponseError(res);
                 console.log('set password success:', res.data.response);

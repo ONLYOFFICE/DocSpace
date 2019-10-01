@@ -28,7 +28,7 @@ const Confirm = ({ match }) => {
             path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />
-          <PublicRoute
+          <ConfirmRoute
             path={`${match.path}/Activation`}
             component={ActivateUserForm}
           />

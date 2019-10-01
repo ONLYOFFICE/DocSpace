@@ -44,35 +44,25 @@ const ConfirmContainer = styled.div`
 
 `;
 
-const emailInputName = 'email';
-const passwordInputName = 'password';
-
 class Confirm extends React.PureComponent {
 
   constructor(props) {
     super(props);
 
-    const queryParams = props.location.search.slice(1).split('&');
-    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-    const linkParams = Object.fromEntries(arrayOfQueryParams);
-    const indexOfSlash = this.props.match.path.lastIndexOf('/');
-    const typeLink = this.props.match.path.slice(indexOfSlash + 1);
-
     this.state = {
-      email: decodeURIComponent(linkParams.email),
-      emailValid: true,
-      firstName:  decodeURIComponent(linkParams.firstname),
+      email: props.linkData.email,
+      firstName:  props.linkData.firstname,
       firstNameValid: true,
-      lastName:  decodeURIComponent(linkParams.lastname),
+      lastName:  props.linkData.lastname,
       lastNameValid: true,
       password: '',
       passwordValid: true,
       errorText: '',
       isLoading: false,
       passwordEmpty: false,
-      queryString: `type=${typeLink}&${props.location.search.slice(1)}`,
-      type: typeLink,
-      userId: linkParams.uid
+      key: props.linkData.confirmHeader,
+      linkType: props.linkData.type,
+      userId: props.linkData.uid
     };
   }
 
@@ -110,22 +100,19 @@ class Confirm extends React.PureComponent {
         userName: this.state.email,
         password: this.state.password
       };
+
       const personalData = {
         firstname: this.state.firstName,
-        lastname: this.state.lastName,
-        email: this.state.email
+        lastname: this.state.lastName
       };
 
-      activateConfirmUser(personalData, loginData, this.state.queryString, this.state.userId, EmployeeActivationStatus.Activated)
+      activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
         .then(() => history.push('/'))
         .catch(e => {
           console.error("activate error", e);
           this.setState({ errorText: e.message });
           this.setState({ isLoading: false });
         });
-
-
-
     });
   };
 
@@ -141,7 +128,7 @@ class Confirm extends React.PureComponent {
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
 
-    getConfirmationInfo(this.state.queryString)
+    getConfirmationInfo(this.state.key, this.state.linkType)
       .then(
         function () {
           console.log("get settings success");
@@ -172,7 +159,6 @@ class Confirm extends React.PureComponent {
     !this.state.lastNameValid && this.setState({ lastNameValid: true });
     this.state.errorText && this.setState({ errorText: "" });;
   }
-
 
   onChangePassword = event => {
     this.setState({ password: event.target.value });
@@ -244,8 +230,8 @@ class Confirm extends React.PureComponent {
                 <PasswordInput
                   className='confirm-row'
                   id='password'
-                  inputName={passwordInputName}
-                  emailInputName={emailInputName}
+                  inputName='password'
+                  emailInputName='surname'
                   inputValue={this.state.password}
                   placeholder={t('InvitePassword')}
                   size='huge'
