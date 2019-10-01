@@ -1,8 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import Backdrop from '../backdrop'
-import { Text } from '../text'
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Backdrop from "../backdrop";
+import Aside from "../layout/sub-components/aside";
+import { Text } from "../text";
+import { desktop } from "../../utils/device";
+import throttle from "lodash/throttle";
 
 const Dialog = styled.div`
   position: relative;
@@ -42,13 +45,14 @@ const CloseButton = styled.a`
   width: 16px;
   height: 16px;
 
-  &:before, &:after {
+  &:before,
+  &:after {
     position: absolute;
     left: 8px;
-    content: ' ';
+    content: " ";
     height: 16px;
     width: 1px;
-    background-color: #D8D8D8;
+    background-color: #d8d8d8;
   }
   &:before {
     transform: rotate(45deg);
@@ -65,13 +69,68 @@ const Body = styled.div`
 
 const Footer = styled.div``;
 
-const ModalDialog = props => {
-  //console.log("ModalDialog render");
-  const { visible, headerContent, bodyContent, footerContent, onClose, zIndex } = props;
+class ModalDialog extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <>
-      <Backdrop visible={visible} zIndex={zIndex} >
+    this.state = { displayType: this.getTypeByWidth() };
+
+    this.getTypeByWidth = this.getTypeByWidth.bind(this);
+    this.resize = this.resize.bind(this);
+    this.popstate = this.popstate.bind(this);
+    this.throttledResize = throttle(this.resize, 300);
+  }
+
+  getTypeByWidth() {
+    if (this.props.displayType !== "auto") return this.props.displayType;
+
+    return window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "modal";
+  }
+
+  resize() {
+    if (this.props.displayType !== "auto") return;
+
+    const type = this.getTypeByWidth();
+    if (type === this.state.displayType) return;
+
+    this.setState({ displayType: type });
+  }
+
+  popstate() {
+    window.removeEventListener("popstate", this.popstate, false);
+    this.props.onClose();
+    window.history.go(1);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.displayType !== prevProps.displayType) {
+      this.setState({ displayType: this.getTypeByWidth() });
+    }
+    if (this.props.visible && this.state.displayType === "aside") {
+      window.addEventListener("popstate", this.popstate, false);
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.throttledResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.throttledResize);
+  }
+
+  render() {
+    const {
+      visible,
+      scale,
+      headerContent,
+      bodyContent,
+      footerContent,
+      onClose
+    } = this.props;
+
+    return this.state.displayType === "modal" ? (
+      <Backdrop visible={visible}>
         <Dialog>
           <Content>
             <Header>
@@ -83,21 +142,45 @@ const ModalDialog = props => {
           </Content>
         </Dialog>
       </Backdrop>
-    </>
-  );
-};
+    ) : (
+      <>
+        <Backdrop visible={visible} onClick={onClose} />
+        <Aside visible={visible} scale={scale}>
+          <Content>
+            <Header>
+              <HeaderText>{headerContent}</HeaderText>
+              <CloseButton onClick={onClose}></CloseButton>
+            </Header>
+            <Body>{bodyContent}</Body>
+            <Footer>{footerContent}</Footer>
+          </Content>
+        </Aside>
+      </>
+    );
+  }
+}
 
 ModalDialog.propTypes = {
   visible: PropTypes.bool,
-  headerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  bodyContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  footerContent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  onClose: PropTypes.func,
-  zIndex: PropTypes.number
-}
+  displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
+  scale: PropTypes.bool,
+  headerContent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  bodyContent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  footerContent: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  onClose: PropTypes.func
+};
 
 ModalDialog.defaultProps = {
-  zIndex: 310
-}
+  displayType: "auto"
+};
 
-export default ModalDialog
+export default ModalDialog;
