@@ -225,14 +225,7 @@ const SectionHeaderContent = props => {
           ) : (
             <>
               <Text.ContentHeader>Departments</Text.ContentHeader>
-              {isAdmin && (
-                <IconButton
-                  className="add-group-button"
-                  size="small"
-                  iconName="PlusIcon"
-                  onClick={onAddDepartmentsClick}
-                />
-              )}
+              
             </>
           )}
         </div>
