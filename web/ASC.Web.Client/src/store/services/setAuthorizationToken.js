@@ -7,13 +7,14 @@ export default function setAuthorizationToken(token) {
 
     if (token) {
         axios.defaults.headers.common["Authorization"] = token;
+        localStorage.setItem(AUTH_KEY, token);
 
         const current = new Date();
         const nextYear = new Date();
 
         nextYear.setFullYear(current.getFullYear() + 1);
 
-        cookies.set(AUTH_KEY, token, {
+        cookies.set(AUTH_KEY, token, { // Cookie is necessary for private images (avatars etc.)
             path: '/',
             expires: nextYear,
         });

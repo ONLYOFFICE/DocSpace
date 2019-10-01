@@ -1,4 +1,5 @@
 import React, { Suspense, lazy } from "react";
+import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PublicRoute from "../../../helpers/publicRoute";
@@ -15,7 +16,9 @@ const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 // const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 
-const Confirm = ({ match }) => {
+const Confirm = ({ match, language }) => {
+
+  i18n.changeLanguage(language);
 
   //console.log("Confirm render");
   return (
@@ -28,7 +31,7 @@ const Confirm = ({ match }) => {
             path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />
-          <PublicRoute
+          <ConfirmRoute
             path={`${match.path}/Activation`}
             component={ActivateUserForm}
           />
@@ -59,4 +62,10 @@ const Confirm = ({ match }) => {
   );
 };
 
-export default Confirm;
+function mapStatToProps(state) {
+  return {
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
+
+export default connect(mapStatToProps)(Confirm);
