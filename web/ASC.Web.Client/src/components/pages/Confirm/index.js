@@ -3,13 +3,14 @@ import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PublicRoute from "../../../helpers/publicRoute";
+import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import ChangeEmailForm from "./sub-components/changeEmail";
-import CreateUserForm from "./sub-components/createUser";
 import ActivateUserForm from "./sub-components/activateUser";
 
-// const CreateUserForm = lazy(() => import("./sub-components/createUser"));
+// const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
+const CreateUserForm = lazy(() => import("./sub-components/createUser"));
 const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
 const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 // const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
@@ -26,7 +27,7 @@ const Confirm = ({ match, language }) => {
         fallback={<Loader className="pageLoader" type="rombs" size={40} />}
       >
         <Switch>
-          <PublicRoute
+          <ConfirmRoute
             path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />

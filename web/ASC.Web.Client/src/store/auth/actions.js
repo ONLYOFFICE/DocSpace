@@ -111,7 +111,7 @@ export function logout() {
     };
 };
 
-export function getPasswordSettings(token) {
+export function getConfirmationInfo(token, type) {
     return dispatch => {
         return api.getPasswordSettings(token)
             .then((res) => dispatch(setPasswordSettings(res.data.response)))
