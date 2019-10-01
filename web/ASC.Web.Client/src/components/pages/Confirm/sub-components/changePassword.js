@@ -59,14 +59,7 @@ const BodyStyle = styled(Container)`
 class Form extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    const { match, location } = props;
-
-    const str = location.search.split("&");
-    const userId = str[2].slice(4);
-    const indexOfSlash = match.path.lastIndexOf("/");
-    const typeLink = match.path.slice(indexOfSlash + 1);
-    const queryString = `type=${typeLink}&${location.search.slice(1)}`;
+    const { linkData } = props;
 
     this.state = {
       password: "",
@@ -75,9 +68,8 @@ class Form extends React.PureComponent {
       errorText: "",
       isLoading: false,
       passwordEmpty: false,
-      queryString: queryString,
-      type: typeLink,
-      userId: userId
+      key: linkData.confirmHeader,
+      userId: linkData.uid
     };
   }
 
@@ -96,8 +88,8 @@ class Form extends React.PureComponent {
   };
 
   onSubmit = e => {
-    this.setState({ isLoading: true }, function() {
-      const { userId, password, queryString } = this.state;
+    this.setState({ isLoading: true }, function () {
+      const { userId, password, key } = this.state;
       const { history, changePassword, logout } = this.props;
       this.setState({ errorText: "" });
       let hasError = false;
@@ -114,7 +106,7 @@ class Form extends React.PureComponent {
         return false;
       }
 
-      changePassword(userId, { password }, queryString)
+      changePassword(userId, { password }, key)
         .then(() => {
           console.log("UPDATE PASSWORD");
           logout();
@@ -131,7 +123,7 @@ class Form extends React.PureComponent {
 
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.queryString)
+    getConfirmationInfo(this.state.key)
       .then(() => {
         console.log("GET PASSWORD SETTINGS SUCCESS");
       })
@@ -162,74 +154,74 @@ class Form extends React.PureComponent {
     return !isConfirmLoaded ? (
       <Loader className="pageLoader" type="rombs" size={40} />
     ) : (
-      <BodyStyle>
-        <Row className="password-row">
-          <Col sm="12" md={mdOptions}>
-            <Card className="password-card">
-              <CardImg
-                className="card-img"
-                src="images/dark_general.png"
-                alt="Logo"
-                top
-              />
-              <CardTitle className="card-title">
-                {t("CustomWelcomePageTitle", { welcomePageTitle })}
-              </CardTitle>
-            </Card>
-            <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
-
-            <PasswordInput
-              id="password"
-              name="password"
-              inputName="password"
-              inputValue={password}
-              size="huge"
-              scale={true}
-              type="password"
-              isDisabled={isLoading}
-              hasError={passwordEmpty}
-              onCopyToClipboard={this.onCopyToClipboard}
-              onValidateInput={this.validatePassword}
-              generatorSpecial="!@#$%^&*"
-              tabIndex={1}
-              value={password}
-              onChange={this.onChange}
-              emailInputName="E-mail"
-              passwordSettings={settings}
-              tooltipPasswordTitle="Password must contain:"
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: 6,
-                toNumber: 30
-              })}:`}
-              placeholder={t("PasswordCustomMode")}
-              maxLength={30}
-              onKeyDown={this.onKeyPress}
-              isAutoFocussed={true}
-              inputWidth="490px"
-            />
-            <Button
-              className="button-style"
-              primary
-              size="big"
-              tabIndex={3}
-              label={
-                isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-              }
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={this.onSubmit}
-            />
-          </Col>
-        </Row>
-        <Collapse isOpen={!!errorText}>
-          <Row className="login-row">
+        <BodyStyle>
+          <Row className="password-row">
             <Col sm="12" md={mdOptions}>
-              <div className="alert alert-danger">{errorText}</div>
+              <Card className="password-card">
+                <CardImg
+                  className="card-img"
+                  src="images/dark_general.png"
+                  alt="Logo"
+                  top
+                />
+                <CardTitle className="card-title">
+                  {t("CustomWelcomePageTitle", { welcomePageTitle })}
+                </CardTitle>
+              </Card>
+              <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
+
+              <PasswordInput
+                id="password"
+                name="password"
+                inputName="password"
+                inputValue={password}
+                size="huge"
+                scale={true}
+                type="password"
+                isDisabled={isLoading}
+                hasError={passwordEmpty}
+                onCopyToClipboard={this.onCopyToClipboard}
+                onValidateInput={this.validatePassword}
+                generatorSpecial="!@#$%^&*"
+                tabIndex={1}
+                value={password}
+                onChange={this.onChange}
+                emailInputName="E-mail"
+                passwordSettings={settings}
+                tooltipPasswordTitle="Password must contain:"
+                tooltipPasswordLength={`${t("ErrorPasswordLength", {
+                  fromNumber: 6,
+                  toNumber: 30
+                })}:`}
+                placeholder={t("PasswordCustomMode")}
+                maxLength={30}
+                onKeyDown={this.onKeyPress}
+                isAutoFocussed={true}
+                inputWidth="490px"
+              />
+              <Button
+                className="button-style"
+                primary
+                size="big"
+                tabIndex={3}
+                label={
+                  isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+                }
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                onClick={this.onSubmit}
+              />
             </Col>
           </Row>
-        </Collapse>
-      </BodyStyle>
-    );
+          <Collapse isOpen={!!errorText}>
+            <Row className="login-row">
+              <Col sm="12" md={mdOptions}>
+                <div className="alert alert-danger">{errorText}</div>
+              </Col>
+            </Row>
+          </Collapse>
+        </BodyStyle>
+      );
   }
 }
 

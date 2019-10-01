@@ -44,7 +44,7 @@ const Confirm = ({ match, language }) => {
             path={`${match.path}/EmailChange`}
             component={ChangeEmailForm}
           />
-          <Route
+          <ConfirmRoute
             exact
             path={`${match.path}/PasswordChange`}
             component={ChangePasswordForm}
