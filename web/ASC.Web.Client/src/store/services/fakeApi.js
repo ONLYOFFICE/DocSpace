@@ -163,3 +163,7 @@ export function updateActivationStatus() {
 export function updateUser(data) {
   return fakeResponse(data);
 }
+
+export function checkConfirmLink(data) {
+  return fakeResponse(data);
+}

@@ -203,3 +203,9 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             });
     };
 };
+
+export function checkConfirmLink(data) {
+    return dispatch => {
+        return api.checkConfirmLink(data);
+    }
+}

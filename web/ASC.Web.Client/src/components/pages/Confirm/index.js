@@ -7,6 +7,7 @@ import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import ChangeEmailForm from "./sub-components/changeEmail";
 import CreateUserForm from "./sub-components/createUser";
+import ActivateUserForm from "./sub-components/activateUser";
 
 // const CreateUserForm = lazy(() => import("./sub-components/createUser"));
 const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
@@ -26,8 +27,12 @@ const Confirm = ({ match, language }) => {
       >
         <Switch>
           <PublicRoute
-            path={[`${match.path}/LinkInvite`, `${match.path}/Activation`]}
+            path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
+          />
+          <PublicRoute
+            path={`${match.path}/Activation`}
+            component={ActivateUserForm}
           />
           <Route
             exact

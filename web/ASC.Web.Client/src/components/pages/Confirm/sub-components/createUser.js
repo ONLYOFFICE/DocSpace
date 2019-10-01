@@ -6,8 +6,7 @@ import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
-import { EmployeeActivationStatus } from './../../../../helpers/constants';
-import { getPasswordSettings, createConfirmUser, activateConfirmUser } from '../../../../store/auth/actions';
+import { getPasswordSettings, createConfirmUser } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -64,9 +63,9 @@ class Confirm extends React.PureComponent {
         this.state = {
             email: '',
             emailValid: true,
-            firstName: linkParams.firstname === undefined ? '' : decodeURIComponent(linkParams.firstname),
+            firstName: '',
             firstNameValid: true,
-            lastName: linkParams.lastname === undefined ? '' : decodeURIComponent(linkParams.lastname),
+            lastName: '',
             lastNameValid: true,
             password: '',
             passwordValid: true,
@@ -82,7 +81,7 @@ class Confirm extends React.PureComponent {
 
     onSubmit = (e) => {
         this.setState({ isLoading: true }, function () {
-            const { history, createConfirmUser, activateConfirmUser } = this.props;
+            const { history, createConfirmUser } = this.props;
             const queryParams = this.state.queryString.split('&');
             const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
             const linkParams = Object.fromEntries(arrayOfQueryParams);
@@ -102,7 +101,7 @@ class Confirm extends React.PureComponent {
                 this.setState({ lastNameValid: !hasError });
             }
 
-            if (!this.state.queryEmail && !validationEmail.test(this.state.email.trim())) {
+            if (!validationEmail.test(this.state.email.trim())) {
                 hasError = true;
                 this.setState({ emailValid: !hasError });
             }
@@ -118,40 +117,24 @@ class Confirm extends React.PureComponent {
                 this.setState({ isLoading: false });
                 return false;
             }
-            const emailData = this.state.type === 'LinkInvite' ? this.state.email : this.state.queryEmail;
+
             const loginData = {
-                userName: emailData,
+                userName: this.state.email,
                 password: this.state.password
             };
             const personalData = {
                 firstname: this.state.firstName,
                 lastname: this.state.lastName,
-                email: emailData
+                email: this.state.email
             };
             const registerData = Object.assign(personalData, { isVisitor: isVisitor })
-            switch (this.state.type) {
-                case 'LinkInvite':
-                    createConfirmUser(registerData, loginData, this.state.queryString)
-                        .then(() => history.push('/'))
-                        .catch(e => {
-                            console.error("confirm error", e);
-                            this.setState({ errorText: e.message });
-                            this.setState({ isLoading: false });
-                        });
-                    break;
-                case 'Activation':
-                    activateConfirmUser(personalData, loginData, this.state.queryString, this.state.userId, EmployeeActivationStatus.Activated)
-                        .then(() => history.push('/'))
-                        .catch(e => {
-                            console.error("activate error", e);
-                            this.setState({ errorText: e.message });
-                            this.setState({ isLoading: false });
-                        });
-                    break;
-                default: return;
-
-            }
-
+            createConfirmUser(registerData, loginData, this.state.queryString)
+                .then(() => history.push('/'))
+                .catch(e => {
+                    console.error("confirm error", e);
+                    this.setState({ errorText: e.message });
+                    this.setState({ isLoading: false });
+                })
         });
     };
 
@@ -271,7 +254,7 @@ class Confirm extends React.PureComponent {
                                         onKeyDown={this.onKeyPress}
                                     />
 
-                                    {this.state.type === 'LinkInvite' && <TextInput
+                                    <TextInput
                                         className='confirm-row'
                                         id='email'
                                         name={emailInputName}
@@ -286,7 +269,7 @@ class Confirm extends React.PureComponent {
                                         onChange={this.onChangeEmail}
                                         onKeyDown={this.onKeyPress}
                                     />
-                                    }
+
                                 </div>
 
                                 <PasswordInput
@@ -366,4 +349,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser, activateConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
+export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
