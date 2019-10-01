@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
   .header-container {
     display: flex;
     align-items: center;
-
+    max-width: calc(100vw - 32px);
     .add-group-button {
       margin-left: 8px;
     }
@@ -209,7 +209,7 @@ const SectionHeaderContent = props => {
         <div className="header-container">
           {group ? (
             <>
-              <Text.ContentHeader>{group.name}</Text.ContentHeader>
+              <Text.ContentHeader truncate={true}>{group.name}</Text.ContentHeader>
               {isAdmin && (
                 <ContextMenuButton
                   directionX="right"

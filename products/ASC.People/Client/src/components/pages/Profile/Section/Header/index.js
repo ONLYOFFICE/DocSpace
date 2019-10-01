@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { connect } from "react-redux";
-import { Text, IconButton, ContextMenuButton, toastr } from "asc-web-components";
+import { Text, IconButton, ContextMenuButton, toastr, utils } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
@@ -8,16 +8,21 @@ import { useTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
+import { callbackify } from "util";
+import styled from 'styled-components';
 
 const wrapperStyle = {
   display: "flex",
   alignItems: "center"
 };
-
-const textStyle = {
-  marginLeft: "16px",
-  marginRight: "16px"
-};
+const Header = styled(Text.ContentHeader)`
+  margin-left: 16px;
+  margin-right: 16px;
+  max-width: calc(100vw - 430px);
+  @media ${utils.device.tablet} {
+    max-width: calc(100vw - 96px);
+  }
+`;
 
 const SectionHeaderContent = props => {
   const { profile, history, settings, isAdmin, viewer, updateUserStatus } = props;
@@ -188,10 +193,10 @@ const SectionHeaderContent = props => {
           onClick={onClick}
         />
       </div>
-      <Text.ContentHeader truncate={true} style={textStyle}>
+      <Header truncate={true}>
         {profile.displayName}
         {profile.isLDAP && ` (${t('LDAPLbl')})`}
-      </Text.ContentHeader>
+      </Header>
       {(isAdmin || isMe(viewer, profile.userName)) && (
         <ContextMenuButton
           directionX="right"

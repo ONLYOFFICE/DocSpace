@@ -15,6 +15,9 @@ const horizontalCss = css`
     margin: 0;
     width: 110px;
     min-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .field-body {
     flex-grow: 1;

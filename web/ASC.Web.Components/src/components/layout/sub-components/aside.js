@@ -21,9 +21,9 @@ const StyledAside = styled(Container)`
   position: fixed;
   right: 0;
   top: 0;
-  transform: translateX(${props => (props.visible ? "0" : props.scale ? "100%" : "240px")});
+  transform: translateX(${props => (props.visible ? "0" : props.scale ? "100%" : "320px")});
   transition: transform 0.3s ease-in-out;
-  width: ${props => (props.scale ? "100%" : "240px")};
+  width: ${props => (props.scale ? "100%" : "320px")};
   z-index: 400;
 `;
 

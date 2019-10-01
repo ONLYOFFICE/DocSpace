@@ -38,7 +38,7 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'base' && '20px') ||
         (props.size === 'middle' && '20px') ||
         (props.size === 'big' && '20px') ||
-        (props.size === 'huge' && '20px')
+        (props.size === 'huge' && '21px')
     };
     font-size: ${props =>
         (props.size === 'base' && '13px') ||

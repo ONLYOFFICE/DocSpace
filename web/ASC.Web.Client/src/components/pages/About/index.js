@@ -1,4 +1,5 @@
-﻿import React from "react";
+﻿import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import { PageLayout, Text, Link } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -53,8 +54,12 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = () => {
+const Body = ({language}) => {
   const { t } = useTranslation("translation", { i18n });
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   return (
     <BodyStyle>
@@ -153,8 +158,12 @@ const Body = () => {
   );
 };
 
-const About = () => {
-  return <PageLayout sectionBodyContent={<Body />} />;
-};
+const About = ({language}) => <PageLayout sectionBodyContent={<Body language={language} />} />;
 
-export default About;
+function mapStateToProps(state) {
+  return {
+      language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
+
+export default connect(mapStateToProps)(About);

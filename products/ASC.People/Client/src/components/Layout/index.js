@@ -89,13 +89,18 @@ function mapStateToProps(state) {
         availableModules: getAvailableModules(state.auth.modules),
         currentUser: state.auth.user,
         currentModuleId: state.auth.settings.currentProductId,
-        settings: state.auth.settings
+        settings: state.auth.settings,
+        language: state.auth.user.cultureName || state.auth.settings.culture,
     };
 }
 
 const PeopleLayoutContainer = withTranslation()(PurePeopleLayout);
 
-const PeopleLayout = (props) => <I18nextProvider i18n={i18n}><PeopleLayoutContainer {...props} /></I18nextProvider>;
+const PeopleLayout = (props) => { 
+    const { language } = props;
+    i18n.changeLanguage(language);
+    return (<I18nextProvider i18n={i18n}><PeopleLayoutContainer {...props} /></I18nextProvider>);
+};
 
 PeopleLayout.propTypes = {
     logout: PropTypes.func.isRequired
