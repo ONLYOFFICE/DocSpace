@@ -24,7 +24,7 @@ import {
 import { welcomePageTitle } from "../../../../helpers/customNames";
 import {
   changePassword,
-  getPasswordSettings
+  getConfirmationInfo
 } from "../../../../../src/store/auth/actions";
 
 const BodyStyle = styled(Container)`
@@ -124,8 +124,8 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getPasswordSettings, history } = this.props;
-    getPasswordSettings(this.state.queryString)
+    const { getConfirmationInfo, history } = this.props;
+    getConfirmationInfo(this.state.queryString)
       .then(() => {
         console.log("GET PASSWORD SETTINGS SUCCESS");
       })
@@ -260,5 +260,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { changePassword, getPasswordSettings }
+  { changePassword, getConfirmationInfo }
 )(withRouter(withTranslation()(ChangePasswordForm)));
