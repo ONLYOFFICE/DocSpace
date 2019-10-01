@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
-import { getPasswordSettings, createConfirmUser } from '../../../../store/auth/actions';
+import { getConfirmationInfo, createConfirmUser } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -137,9 +137,9 @@ class Confirm extends React.PureComponent {
     validatePassword = (value) => this.setState({ passwordValid: value });
 
     componentDidMount() {
-        const { getPasswordSettings, history } = this.props;
+        const { getConfirmationInfo, history } = this.props;
 
-        getPasswordSettings(this.state.key, this.state.linkType)
+        getConfirmationInfo(this.state.key, this.state.linkType)
             .then(
                 function () {
                     console.log("get settings success");
@@ -322,7 +322,7 @@ class Confirm extends React.PureComponent {
 
 
 Confirm.propTypes = {
-    getPasswordSettings: PropTypes.func.isRequired,
+    getConfirmationInfo: PropTypes.func.isRequired,
     createConfirmUser: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired
@@ -337,4 +337,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getPasswordSettings, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
