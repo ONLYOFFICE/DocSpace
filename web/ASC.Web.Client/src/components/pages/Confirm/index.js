@@ -60,10 +60,10 @@ const Confirm = ({ match, language }) => {
   );
 };
 
-function mapStatToProps(state) {
+function mapStateToProps(state) {
   return {
     language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 }
 
-export default connect(mapStatToProps)(Confirm);
+export default connect(mapStateToProps)(Confirm);
