@@ -135,13 +135,6 @@ export function createUser() {
   return fakeResponse(data);
 }
 
-export function validateActivatingEmail(payload, key) {
-  const data = {
-    email: payload.email
-  };
-  return fakeResponse(data);
-}
-
 export function validateConfirmLink(link) {
   const data = {
     isValid: true

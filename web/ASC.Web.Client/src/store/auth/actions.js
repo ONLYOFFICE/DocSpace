@@ -138,12 +138,6 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
-export function validateActivatingEmail(data, key) {
-    return dispatch => {
-        return api.validateActivatingEmail(data, key);
-    }
-};
-
 export function checkResponseError(res) {
     if (res && res.data && res.data.error) {
         console.error(res.data.error);
