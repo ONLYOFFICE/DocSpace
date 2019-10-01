@@ -74,12 +74,18 @@ export function setNewEmail(email) {
     };
 };
 
+export function getPortalSettings(dispatch) {
+    return api.getSettings()
+        .then(res => { 
+            checkResponseError(res);
+            return dispatch(setSettings(res.data.response)) 
+        });
+}
 
 export function getUserInfo(dispatch) {
     return api.getUser()
         .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(() => api.getSettings())
-        .then(res => dispatch(setSettings(res.data.response)))
+        .then(() => getPortalSettings(dispatch))
         .then(api.getModulesList)
         .then((res) => dispatch(setModules(res.data.response)))
         .then(() => dispatch(setIsLoaded(true)));
@@ -89,6 +95,7 @@ export function login(data) {
     return dispatch => {
         return api.login(data)
             .then(res => {
+                checkResponseError(res);
                 const token = res.data.response.token;
                 setAuthorizationToken(token);
             })
@@ -104,7 +111,7 @@ export function logout() {
     };
 };
 
-export function getPasswordSettings(token) {
+export function getConfirmationInfo(token, type) {
     return dispatch => {
         return api.getPasswordSettings(token)
             .then((res) => dispatch(setPasswordSettings(res.data.response)))
@@ -131,12 +138,6 @@ export function createConfirmUser(registerData, loginData, key) {
     };
 };
 
-export function validateActivatingEmail(data, key) {
-    return dispatch => {
-        return api.validateActivatingEmail(data, key);
-    }
-};
-
 export function checkResponseError(res) {
     if (res && res.data && res.data.error) {
         console.error(res.data.error);
@@ -148,7 +149,7 @@ export function changePassword(userId, password, key) {
     return dispatch => {
         return api.changePassword(userId, password, key)
             .then(res => {
-                //checkResponseError(res);
+                checkResponseError(res);
                 dispatch(setNewPasswordSettings(res.data.response));
             })
     }
@@ -158,20 +159,21 @@ export function changeEmail(userId, email, key) {
     return dispatch => {
         return api.changePassword(userId, email, key)
             .then(res => {
+                checkResponseError(res);
                 dispatch(setNewEmail(res.data.response.email));
             })
     }
 }
 
 export function activateConfirmUser(personalData, loginData, key, userId, activationStatus) {
-    const data = Object.assign({}, personalData, loginData);
     const changedData = {
         id: userId,
         FirstName: personalData.firstname,
         LastName: personalData.lastname
     }
+
     return dispatch => {
-        return api.changePassword(userId, data, key)
+        return api.changePassword(userId, { password: loginData.password }, key)
             .then(res => {
                 checkResponseError(res);
                 console.log('set password success:', res.data.response);
@@ -179,7 +181,7 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             })
             .then(res => {
                 console.log("activation success, result:", res);
-                // checkResponseError(res);
+                checkResponseError(res);
                 return api.login(loginData);
             })
             .then(res => {
@@ -196,3 +198,9 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             });
     };
 };
+
+export function checkConfirmLink(data) {
+    return dispatch => {
+        return api.checkConfirmLink(data);
+    }
+}

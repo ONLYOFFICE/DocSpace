@@ -9,22 +9,14 @@ import PropTypes from 'prop-types';
 
 class ActivateEmail extends React.PureComponent {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            queryString: `type=EmailActivation&${props.location.search.slice(1)}`
-        };
-    }
-
     componentDidMount() {
-        const { history, logout, changeEmail } = this.props;
-        const queryParams = this.state.queryString.split('&');
-        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-        const linkParams = Object.fromEntries(arrayOfQueryParams);
-        const email = decodeURIComponent(linkParams.email);
-        const uid = linkParams.uid;
-        // logout();
-        changeEmail(uid, { email }, this.state.queryString)
+        const { history, logout, changeEmail, linkData } = this.props;
+
+        const email = linkData.email;
+        const uid = linkData.uid;
+        const key = linkData.confirmHeader;
+        logout();
+        changeEmail(uid, { email }, key)
             .then((res) => {
                 history.push(`/login/confirmed-email=${email}`);
             })

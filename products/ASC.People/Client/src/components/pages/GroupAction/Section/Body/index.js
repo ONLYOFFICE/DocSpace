@@ -413,7 +413,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
-            isDropDown={true}
+            displayType="dropdown"
             isOpen={isHeadSelectorOpen}
             size="full"
             placeholder={"Search"}
@@ -455,7 +455,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
-            isDropDown={true}
+            displayType="dropdown"
             isOpen={isUsersSelectorOpen}
             size="full"
             placeholder={"Search"}

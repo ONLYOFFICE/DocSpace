@@ -1,19 +1,23 @@
 import React, { Suspense, lazy } from "react";
+import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PublicRoute from "../../../helpers/publicRoute";
+import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import ChangeEmailForm from "./sub-components/changeEmail";
-import CreateUserForm from "./sub-components/createUser";
+import ActivateEmailForm  from "./sub-components/activateEmail";
 
-// const CreateUserForm = lazy(() => import("./sub-components/createUser"));
+const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
+const CreateUserForm = lazy(() => import("./sub-components/createUser"));
 const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
-const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
-// const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
+// const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
+const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 
-const Confirm = ({ match }) => {
+const Confirm = ({ match, language }) => {
+
+  i18n.changeLanguage(language);
 
   //console.log("Confirm render");
   return (
@@ -22,16 +26,20 @@ const Confirm = ({ match }) => {
         fallback={<Loader className="pageLoader" type="rombs" size={40} />}
       >
         <Switch>
-          <PublicRoute
-            path={[`${match.path}/LinkInvite`, `${match.path}/Activation`]}
+          <ConfirmRoute
+            path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />
-          <Route
+          <ConfirmRoute
+            path={`${match.path}/Activation`}
+            component={ActivateUserForm}
+          />
+          <ConfirmRoute
             exact
             path={`${match.path}/EmailActivation`}
             component={ActivateEmailForm}
           />
-          <Route
+          <ConfirmRoute
             exact
             path={`${match.path}/EmailChange`}
             component={ChangeEmailForm}
@@ -53,4 +61,10 @@ const Confirm = ({ match }) => {
   );
 };
 
-export default Confirm;
+function mapStateToProps(state) {
+  return {
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
+
+export default connect(mapStateToProps)(Confirm);

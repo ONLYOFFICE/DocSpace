@@ -8,6 +8,10 @@ const StyledArticleBody = styled.div`
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+
+  .people-tree-menu{
+    margin-right: 20px;
+  }
 `;
 
 const ArticleBody = React.memo(props => {

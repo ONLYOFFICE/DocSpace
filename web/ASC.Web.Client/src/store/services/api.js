@@ -54,10 +54,6 @@ export function createUser(data, key) {
     : axios.post(`${API_URL}/people`, data, { headers: { confirm: key } });
 }
 
-export function validateActivatingEmail(data, key) {
-  return fakeApi.validateActivatingEmail(data, key);
-}
-
 export function validateConfirmLink(link) {
   return fakeApi.validateConfirmLink(link);
 }
@@ -81,4 +77,10 @@ export function updateUser(data) {
   return IS_FAKE
     ? fakeApi.updateUser()
     : axios.put(`${API_URL}/people/${data.id}`, data);
+}
+
+export function checkConfirmLink(data) {
+  return IS_FAKE
+    ? fakeApi.checkConfirmLink()
+    : axios.post(`${API_URL}/authentication/confirm.json`, data);
 }

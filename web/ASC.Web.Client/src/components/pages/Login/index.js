@@ -38,7 +38,7 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
     const { t } = useTranslation('translation', { i18n });
-    const { login, match, location, history } = props;
+    const { login, match, location, history, language } = props;
     const { params } = match;
     const [identifier, setIdentifier] = useState(params.confirmedEmail || '');
     const [identifierValid, setIdentifierValid] = useState(true);
@@ -69,7 +69,7 @@ const Form = props => {
 
         setIsLoading(true);
 
-        let payload = {
+        const payload = {
             userName: identifier,
             password: password
         };
@@ -94,6 +94,7 @@ const Form = props => {
     }, [onSubmit]);
 
     useEffect(() => {
+        i18n.changeLanguage(language);
         params.error && setErrorText(params.error);
         window.addEventListener('keydown', onKeyPress);
         window.addEventListener('keyup', onKeyPress);
@@ -102,7 +103,7 @@ const Form = props => {
             window.removeEventListener('keydown', onKeyPress);
             window.removeEventListener('keyup', onKeyPress);
         };
-    }, [onKeyPress, params]);
+    }, [onKeyPress, params, language]);
 
     const onChangePassword = event => {
         setPassword(event.target.value);
@@ -207,4 +208,10 @@ LoginForm.defaultProps = {
     password: ""
 }
 
-export default connect(null, { login })(withRouter(LoginForm));
+function mapStateToProps(state) {
+    return {
+        language: state.auth.user.cultureName || state.auth.settings.culture,
+    };
+  }
+
+export default connect(mapStateToProps, { login })(withRouter(LoginForm));

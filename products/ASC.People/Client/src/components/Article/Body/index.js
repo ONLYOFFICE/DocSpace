@@ -92,6 +92,7 @@ class ArticleBodyContent extends React.Component {
 
     return (
       <TreeMenu
+        className="people-tree-menu"
         checkable={false}
         draggable={false}
         disabled={false}

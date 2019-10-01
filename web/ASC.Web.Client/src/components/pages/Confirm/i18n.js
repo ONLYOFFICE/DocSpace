@@ -31,6 +31,9 @@ if (process.env.NODE_ENV === "production") {
   const resources = {
     en: {
       translation: require("./locales/en/translation.json")
+    },
+    ru: {
+      translation: require("./locales/ru/translation.json")
     }
   };
 
@@ -49,7 +52,7 @@ if (process.env.NODE_ENV === "production") {
     },
 
     react: {
-      useSuspense: true
+      useSuspense: false
     }
   });
 }

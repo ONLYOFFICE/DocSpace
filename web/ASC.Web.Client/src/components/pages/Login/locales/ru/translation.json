@@ -1,0 +1,10 @@
+{
+  "LoadingProcessing": "Загрузка...",
+  "LoginButton": "Войти",
+  "Password": "Пароль",
+  "RegistrationEmailWatermark": "Регистрационный email",
+  "MessageEmailConfirmed": "Ваш email успешно активирован.",
+  "MessageAuthorize": "Пожалуйста авторизуйтесь.",
+
+  "CustomWelcomePageTitle": "{{welcomePageTitle}}"
+}

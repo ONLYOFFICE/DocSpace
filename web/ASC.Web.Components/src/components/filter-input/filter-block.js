@@ -17,7 +17,7 @@ const StyledFilterItem = styled.div`
   margin-bottom: ${props => props.block ? '3px' : '0'};
   position: relative;
   height: 100%;
-  padding: 3px 44px 3px 7px;
+  padding: 3px 22px 3px 7px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
@@ -47,6 +47,9 @@ const StyledComboBox = styled(ComboBox)`
   max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
+  div:first-child{
+    width: auto;
+  }
 `;
 const StyledFilterName = styled.span`
   line-height: 18px;
