@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Container, Col, Row, Collapse } from 'reactstrap';
-import { ModuleTile, Loader, PageLayout } from 'asc-web-components';
+import { ModuleTile, Loader, PageLayout, toastr } from 'asc-web-components';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 
@@ -30,8 +30,14 @@ Tiles.propTypes = {
     history: PropTypes.object.isRequired
 };
 
-const Body = ({ modules, history, isLoaded }) => {
+const Body = ({ modules, match, history, isLoaded }) => {
     const { t } = useTranslation('translation', { i18n });
+    const { params } = match;
+
+    useEffect(() => {
+        params.error && toastr.error(params.error);
+    }, [params.error]);
+
     return (
         !isLoaded
             ? (
