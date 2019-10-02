@@ -280,14 +280,16 @@ class DatePicker extends Component {
           //guide={true}
           //showMask={true}
         />
-        {displayType === "dropdown" && isOpen ? (
-          <DropDownStyle>
-            <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
-          </DropDownStyle>
-        ) : isOpen ? (
-          <Aside visible={isOpen} scale={false}>
-            {this.renderBody()}
-          </Aside>
+        {isOpen ? (
+          displayType === "dropdown" ? (
+            <DropDownStyle>
+              <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
+            </DropDownStyle>
+          ) : (
+            <Aside visible={isOpen} scale={false}>
+              {this.renderBody()}
+            </Aside>
+          )
         ) : null}
       </DateInputStyle>
     );
@@ -314,7 +316,8 @@ DatePicker.propTypes = {
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
   maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
-  selectedDate: moment(new Date()).toDate()
+  selectedDate: moment(new Date()).toDate(),
+  displayType: "dropdown"
 };
 
 export default DatePicker;
