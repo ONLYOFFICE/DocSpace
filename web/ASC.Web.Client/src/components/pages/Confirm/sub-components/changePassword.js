@@ -101,6 +101,7 @@ class Form extends React.PureComponent {
           toastr.success(this.props.t("ChangePasswordSuccess"));
           history.push("/");
         })
+        //.catch((res) => toastr.error(res.data))
         .catch(e => {
           toastr.error(this.props.t(`${e.message}`));
           this.setState({ isLoading: false });
@@ -110,7 +111,8 @@ class Form extends React.PureComponent {
 
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.key).catch(e => {
+    getConfirmationInfo(this.state.key)
+    .catch(e => {
       toastr.error(this.props.t(`${e.message}`));
       history.push("/");
     });

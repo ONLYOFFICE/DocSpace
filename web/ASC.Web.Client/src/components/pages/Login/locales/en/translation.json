@@ -5,6 +5,11 @@
   "RegistrationEmailWatermark": "Your registration email",
   "MessageEmailConfirmed": "Your email was activated successfully.",
   "MessageAuthorize": "Please authorize yourself.",
+  "ForgotPassword": "Forgot your password?",
+  "PasswordRecoveryTitle": "Password recovery",
+  "MessageSendPasswordRecoveryInstructionsOnEmail": "Please enter the email you used while registering on the portal. The password recovery instructions will be send to that email address.",
+  "SendButton": "Send",
+  "CancelButton": "Cancel",
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"
 }

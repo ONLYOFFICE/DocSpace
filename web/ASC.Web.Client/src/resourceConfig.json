@@ -22,7 +22,10 @@
         "RegistrationEmailWatermark",
         "MessageEmailConfirmed",
         "MessageAuthorize",
-        "LoginButton"
+        "LoginButton",
+        "ForgotPassword",
+        "PasswordRecoveryTitle",
+        "MessageSendPasswordRecoveryInstructionsOnEmail"
       ]
     },
     "Confirm": {

@@ -84,3 +84,9 @@ export function checkConfirmLink(data) {
     ? fakeApi.checkConfirmLink()
     : axios.post(`${API_URL}/authentication/confirm.json`, data);
 }
+
+export function sendInstructionsToChangePassword(email) {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToChangePassword()
+    : axios.post(`${API_URL}/people/password.json`, { email });
+}
