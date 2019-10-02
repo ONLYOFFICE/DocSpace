@@ -447,7 +447,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgProfileDeletion(int tenantId, UserInfo user)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.ProfileRemove);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(tenantId, user.Email, ConfirmType.ProfileRemove, null, SecurityContext.CurrentAccount.ID);
 
             static string greenButtonText() => CoreContext.Configuration.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
