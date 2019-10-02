@@ -44,6 +44,11 @@
         "ErrorPasswordNoSpecialSymbols",
         "EmailAndPasswordCopiedToClipboard",
         "LastName",
+        "DeleteProfileBtn",
+        "DeleteProfileSuccessMessage",
+        "DeleteProfileSuccessMessageInfo",
+        "DeleteProfileConfirmation",
+        "DeleteProfileConfirmationInfo",
         "ChangePasswordSuccess"
       ]
     }

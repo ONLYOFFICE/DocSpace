@@ -7,7 +7,7 @@ import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
 import { EmployeeActivationStatus } from './../../../../helpers/constants';
-import { getConfirmationInfo, activateConfirmUser } from '../../../../store/auth/actions';
+import { getConfirmationInfo, activateConfirmUser, logout } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -74,7 +74,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { activateConfirmUser } = this.props;
+      const { activateConfirmUser, logout } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -111,7 +111,7 @@ class Confirm extends React.PureComponent {
         firstname: this.state.firstName,
         lastname: this.state.lastName
       };
-
+      logout();
       activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
         .then(() => window.location.href = '/')
         .catch(e => {
@@ -321,4 +321,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser })(withRouter(withTranslation()(ActivateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser,logout })(withRouter(withTranslation()(ActivateUserForm)));

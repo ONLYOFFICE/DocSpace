@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
-import { callbackify } from "util";
 import styled from 'styled-components';
 
 const wrapperStyle = {
