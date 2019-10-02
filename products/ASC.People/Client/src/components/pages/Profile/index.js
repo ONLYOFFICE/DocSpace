@@ -43,30 +43,22 @@ class PureProfile extends React.Component {
   render() {
     console.log("Profile render")
 
-    const { profile } = this.props;
-    return (
-        profile
-          ?
-          <PageLayout
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={<ArticleMainButtonContent />}
-            articleBodyContent={<ArticleBodyContent />}
-            sectionHeaderContent={
-              <SectionHeaderContent profile={profile} />
-            }
-            sectionBodyContent={
-              <SectionBodyContent profile={profile} />
-            }
-          />
-          : <PageLayout
-            articleHeaderContent={<ArticleHeaderContent />}
-            articleMainButtonContent={<ArticleMainButtonContent />}
-            articleBodyContent={<ArticleBodyContent />}
-            sectionBodyContent={
-              <Loader className="pageLoader" type="rombs" size={40} />
-            }
-          />
-    );
+    const { profile, isVisitor } = this.props;
+
+    const articleProps = isVisitor ? {} : {
+      articleHeaderContent: <ArticleHeaderContent />,
+      articleMainButtonContent: <ArticleMainButtonContent />,
+      articleBodyContent: <ArticleBodyContent />
+    };
+
+    const sectionProps = profile ? {
+      sectionHeaderContent: <SectionHeaderContent profile={profile} />,
+      sectionBodyContent: <SectionBodyContent profile={profile} />
+    } : {
+      sectionBodyContent: <Loader className="pageLoader" type="rombs" size={40} />
+    };
+
+    return <PageLayout {...articleProps} {...sectionProps} />;
   };
 };
 
@@ -92,6 +84,7 @@ function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
     language: state.auth.user.cultureName || state.auth.settings.culture,
+    isVisitor: state.auth.user.isVisitor,
   };
 }
 

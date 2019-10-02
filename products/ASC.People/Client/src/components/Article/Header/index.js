@@ -8,8 +8,9 @@ const ArticleHeaderContent = ({currentModuleName}) => {
 }
 
 const mapStateToProps = (state) => {
+  const currentModule = getCurrentModule(state.auth.modules, state.auth.settings.currentProductId);
   return {
-      currentModuleName: getCurrentModule(state.auth.modules, state.auth.settings.currentProductId).title
+      currentModuleName: (currentModule && currentModule.title) || ""
   }
 }
 
