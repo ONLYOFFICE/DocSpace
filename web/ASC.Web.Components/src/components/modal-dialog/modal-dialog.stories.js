@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { BooleanValue } from 'react-values'
-import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import Section from '../../../.storybook/decorators/section';
@@ -31,6 +31,7 @@ storiesOf('Components|ModalDialog', module)
               visible={value}
               scale={boolean('scale', false)}
               displayType={select('displayType', ['auto', 'modal', 'aside'], 'auto')}
+              zIndex={number('zIndex', 310)}
               headerContent="Change password"
               bodyContent={
                 <div>Send the password change instruction to the <a href="mailto:asc@story.book">asc@story.book</a> email address</div>
