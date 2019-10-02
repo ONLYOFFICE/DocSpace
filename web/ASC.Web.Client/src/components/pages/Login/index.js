@@ -94,7 +94,7 @@ const Form = props => {
   };
 
   const onSendPasswordInstructions = useCallback(
-    e => {
+    () => {
       setIsLoading(true);
       sendInstructionsToChangePassword(email)
         .then(res => {
@@ -152,21 +152,19 @@ const Form = props => {
 
   const onKeyPress = useCallback(
     event => {
-      if (event.key === "Enter" && !isDisabled) {
-        onSubmit();
+      if (event.key === "Enter") {
+        !isDisabled ? onSubmit() : onSendPasswordInstructions();
       }
     },
-    [onSubmit, isDisabled]
+    [onSendPasswordInstructions, onSubmit, isDisabled]
   );
 
   useEffect(() => {
     i18n.changeLanguage(language);
     params.error && setErrorText(params.error);
-    window.addEventListener("keydown", onKeyPress);
     window.addEventListener("keyup", onKeyPress);
     // Remove event listeners on cleanup
     return () => {
-      window.removeEventListener("keydown", onKeyPress);
       window.removeEventListener("keyup", onKeyPress);
     };
   }, [onKeyPress, params, language]);
@@ -285,7 +283,6 @@ const Form = props => {
               isDisabled={isLoading}
               value={email}
               onChange={onChangeEmail}
-              //onKeyDown={onKeyPress}
             />
           ]}
           footerContent={[
