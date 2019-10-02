@@ -38,9 +38,12 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
+    position: relative;
+
     display: flex;
     align-items: center;
     max-width: calc(100vw - 32px);
+
     .add-group-button {
       margin-left: 8px;
     }
@@ -225,7 +228,15 @@ const SectionHeaderContent = props => {
           ) : (
             <>
               <Text.ContentHeader>Departments</Text.ContentHeader>
-              
+              {isAdmin && (
+                <IconButton
+                  className="add-group-button"
+                  size={16}
+                  iconName="PlusIcon"
+                  isFill={false}
+                  onClick={onAddDepartmentsClick}
+                />
+              )}
             </>
           )}
         </div>
