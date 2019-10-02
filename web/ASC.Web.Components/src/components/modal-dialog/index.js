@@ -126,11 +126,12 @@ class ModalDialog extends React.Component {
       headerContent,
       bodyContent,
       footerContent,
-      onClose
+      onClose,
+      zIndex
     } = this.props;
 
     return this.state.displayType === "modal" ? (
-      <Backdrop visible={visible}>
+      <Backdrop visible={visible} zIndex={zIndex}>
         <Dialog>
           <Content>
             <Header>
@@ -143,8 +144,7 @@ class ModalDialog extends React.Component {
         </Dialog>
       </Backdrop>
     ) : (
-      <>
-        <Backdrop visible={visible} onClick={onClose} />
+      <Backdrop visible={visible} onClick={onClose} zIndex={zIndex}>
         <Aside visible={visible} scale={scale}>
           <Content>
             <Header>
@@ -155,7 +155,7 @@ class ModalDialog extends React.Component {
             <Footer>{footerContent}</Footer>
           </Content>
         </Aside>
-      </>
+      </Backdrop>
     );
   }
 }
@@ -176,11 +176,13 @@ ModalDialog.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  zIndex: PropTypes.number
 };
 
 ModalDialog.defaultProps = {
-  displayType: "auto"
+  displayType: "auto",
+  zIndex: 310
 };
 
 export default ModalDialog;
