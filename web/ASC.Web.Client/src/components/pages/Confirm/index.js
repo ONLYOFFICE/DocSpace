@@ -12,6 +12,7 @@ const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"))
 const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
+const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const Error404 = lazy(() => import("../Error"));
 
 const Confirm = ({ match, language }) => {
@@ -47,6 +48,11 @@ const Confirm = ({ match, language }) => {
             exact
             path={`${match.path}/PasswordChange`}
             component={ChangePasswordForm}
+          />
+          <ConfirmRoute
+            exact
+            path={`${match.path}/ProfileRemove`}
+            component={ProfileRemoveForm}
           />
           <Route
             exact

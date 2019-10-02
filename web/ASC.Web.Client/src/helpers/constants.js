@@ -44,3 +44,12 @@ export const ValidationResult = Object.freeze({
   Invalid: 1,
   Expired: 2
 });
+
+/**
+ * Enum for employee status.
+ * @readonly
+ */
+export const EmployeeStatus = Object.freeze({
+  Active: 1,
+  Disabled: 2
+});
