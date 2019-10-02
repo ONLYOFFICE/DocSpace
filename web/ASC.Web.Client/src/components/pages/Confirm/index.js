@@ -12,6 +12,7 @@ const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"))
 const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
+const Error404 = lazy(() => import("../Error"));
 
 const Confirm = ({ match, language }) => {
 
@@ -52,7 +53,7 @@ const Confirm = ({ match, language }) => {
             path={`${match.path}/PhoneActivation`}
             component={ChangePhoneForm}
           />
-          <Redirect to={{ pathname: "/" }} />
+          <Route component={Error404} />
         </Switch>
       </Suspense>
     </I18nextProvider >
