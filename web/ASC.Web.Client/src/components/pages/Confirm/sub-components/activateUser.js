@@ -42,7 +42,13 @@ const ConfirmContainer = styled.div`
         word-break: break-word;
     }
 
+    .display-none {
+      display: none;
+    }
+
 `;
+
+const emailInputName = 'email';
 
 class Confirm extends React.PureComponent {
 
@@ -51,9 +57,9 @@ class Confirm extends React.PureComponent {
 
     this.state = {
       email: props.linkData.email,
-      firstName:  props.linkData.firstname,
+      firstName: props.linkData.firstname,
       firstNameValid: true,
-      lastName:  props.linkData.lastname,
+      lastName: props.linkData.lastname,
       lastNameValid: true,
       password: '',
       passwordValid: true,
@@ -95,7 +101,7 @@ class Confirm extends React.PureComponent {
         this.setState({ isLoading: false });
         return false;
       }
-    
+
       const loginData = {
         userName: this.state.email,
         password: this.state.password
@@ -225,13 +231,24 @@ class Confirm extends React.PureComponent {
                     onChange={this.onChangeSurname}
                     onKeyDown={this.onKeyPress}
                   />
+
+                  <TextInput
+                    className='confirm-row display-none'
+                    id='email'
+                    name={emailInputName}
+                    value={this.state.email}
+                    size='huge'
+                    scale={true}
+                    isReadOnly={true}
+                  />
+
                 </div>
 
                 <PasswordInput
                   className='confirm-row'
                   id='password'
                   inputName='password'
-                  emailInputName='surname'
+                  emailInputName={emailInputName}
                   inputValue={this.state.password}
                   placeholder={t('InvitePassword')}
                   size='huge'

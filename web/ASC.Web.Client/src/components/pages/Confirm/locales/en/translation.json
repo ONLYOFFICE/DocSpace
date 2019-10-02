@@ -17,6 +17,7 @@
   "PasswordCustomMode": "Password",
   "ImportContactsOkButton": "OK",
   "LoadingProcessing": "Loading...",
+  "ChangePasswordSuccess": "Password has been successfully changed",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

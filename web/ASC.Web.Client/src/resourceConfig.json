@@ -40,7 +40,8 @@
         "ErrorPasswordNoUpperCase",
         "ErrorPasswordNoSpecialSymbols",
         "EmailAndPasswordCopiedToClipboard",
-        "LastName"
+        "LastName",
+        "ChangePasswordSuccess"
       ]
     }
   },

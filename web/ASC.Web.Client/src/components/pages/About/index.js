@@ -30,7 +30,7 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 36%;
+      width: 26%;
       float: right;
     }
 
@@ -39,7 +39,7 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 36%;
+      width: 26%;
       float: left;
     }
   }
