@@ -280,15 +280,15 @@ class DatePicker extends Component {
           //guide={true}
           //showMask={true}
         />
-        {displayType === "dropdown" ? (
+        {displayType === "dropdown" && isOpen ? (
           <DropDownStyle>
             <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
           </DropDownStyle>
-        ) : (
+        ) : isOpen ? (
           <Aside visible={isOpen} scale={false}>
             {this.renderBody()}
           </Aside>
-        )}
+        ) : null}
       </DateInputStyle>
     );
   }
