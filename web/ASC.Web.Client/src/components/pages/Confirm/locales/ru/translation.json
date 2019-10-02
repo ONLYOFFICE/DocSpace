@@ -13,10 +13,11 @@
   "ErrorPasswordNoUpperCase": "заглавные буквы",
   "ErrorPasswordNoSpecialSymbols": "специальные символы",
   "EmailAndPasswordCopiedToClipboard": "Email и пароль скопированы",
-  "PassworResetTitle": "Теперь вы можете создать новый пароль.",  "_comment":"SYNTAX ERROR 'Passwor' Reset Title",
+  "PassworResetTitle": "Теперь вы можете создать новый пароль.",
   "PasswordCustomMode": "Пароль",
   "ImportContactsOkButton": "OK",
   "LoadingProcessing": "Загрузка...",
+  "ChangePasswordSuccess": "Пароль был успешно изменен",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

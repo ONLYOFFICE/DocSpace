@@ -4,15 +4,7 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {
-  Container,
-  Collapse,
-  Row,
-  Col,
-  Card,
-  CardTitle,
-  CardImg
-} from "reactstrap";
+import { Container, Row, Col, Card, CardTitle, CardImg } from "reactstrap";
 import {
   Button,
   PageLayout,
@@ -33,9 +25,9 @@ const BodyStyle = styled(Container)`
   p {
     margin-bottom: 5px;
   }
-.button-style{
-  margin-top: 20px;
-}
+  .button-style {
+    margin-top: 20px;
+  }
 
   .password-row {
     margin: 23px 0 0;
@@ -65,7 +57,6 @@ class Form extends React.PureComponent {
       password: "",
       passwordValid: true,
       isValidConfirmLink: false,
-      errorText: "",
       isLoading: false,
       passwordEmpty: false,
       key: linkData.confirmHeader,
@@ -83,15 +74,13 @@ class Form extends React.PureComponent {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     event.target.value.trim() && this.setState({ passwordEmpty: false });
-    this.state.errorText && this.setState({ errorText: "" });
     this.onKeyPress(event);
   };
 
   onSubmit = e => {
-    this.setState({ isLoading: true }, function () {
+    this.setState({ isLoading: true }, function() {
       const { userId, password, key } = this.state;
       const { history, changePassword, logout } = this.props;
-      this.setState({ errorText: "" });
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -108,14 +97,12 @@ class Form extends React.PureComponent {
 
       changePassword(userId, { password }, key)
         .then(() => {
-          console.log("UPDATE PASSWORD");
           logout();
+          toastr.success(this.props.t("ChangePasswordSuccess"));
           history.push("/");
         })
         .catch(e => {
-          history.push("/");
-          console.log("ERROR UPDATE PASSWORD:", e.message);
-          this.setState({ errorText: e.message });
+          toastr.error(this.props.t(`${e.message}`));
           this.setState({ isLoading: false });
         });
     });
@@ -123,14 +110,10 @@ class Form extends React.PureComponent {
 
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.key)
-      .then(() => {
-        console.log("GET PASSWORD SETTINGS SUCCESS");
-      })
-      .catch(e => {
-        console.log("ERROR GET PASSWORD SETTINGS", e);
-        history.push(`/login/error=${e}`);
-      });
+    getConfirmationInfo(this.state.key).catch(e => {
+      toastr.error(this.props.t(`${e.message}`));
+      history.push("/");
+    });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -141,95 +124,84 @@ class Form extends React.PureComponent {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onCopyToClipboard = () =>
-    toastr.success(this.props.t("EmailAndPasswordCopiedToClipboard"));
-
   validatePassword = value => this.setState({ passwordValid: value });
 
   render() {
     const { settings, isConfirmLoaded, t } = this.props;
-    const { isLoading, password, passwordEmpty, errorText } = this.state;
+    const { isLoading, password, passwordEmpty } = this.state;
     const mdOptions = { size: 6, offset: 3 };
 
     return !isConfirmLoaded ? (
       <Loader className="pageLoader" type="rombs" size={40} />
     ) : (
-        <BodyStyle>
-          <Row className="password-row">
-            <Col sm="12" md={mdOptions}>
-              <Card className="password-card">
-                <CardImg
-                  className="card-img"
-                  src="images/dark_general.png"
-                  alt="Logo"
-                  top
-                />
-                <CardTitle className="card-title">
-                  {t("CustomWelcomePageTitle", { welcomePageTitle })}
-                </CardTitle>
-              </Card>
-              <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
+      <BodyStyle>
+        <Row className="password-row">
+          <Col sm="12" md={mdOptions}>
+            <Card className="password-card">
+              <CardImg
+                className="card-img"
+                src="images/dark_general.png"
+                alt="Logo"
+                top
+              />
+              <CardTitle className="card-title">
+                {t("CustomWelcomePageTitle", { welcomePageTitle })}
+              </CardTitle>
+            </Card>
+            <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
 
-              <PasswordInput
-                id="password"
-                name="password"
-                inputName="password"
-                inputValue={password}
-                size="huge"
-                scale={true}
-                type="password"
-                isDisabled={isLoading}
-                hasError={passwordEmpty}
-                onCopyToClipboard={this.onCopyToClipboard}
-                onValidateInput={this.validatePassword}
-                generatorSpecial="!@#$%^&*"
-                tabIndex={1}
-                value={password}
-                onChange={this.onChange}
-                emailInputName="E-mail"
-                passwordSettings={settings}
-                tooltipPasswordTitle="Password must contain:"
-                tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                  fromNumber: 6,
-                  toNumber: 30
-                })}:`}
-                placeholder={t("PasswordCustomMode")}
-                maxLength={30}
-                onKeyDown={this.onKeyPress}
-                isAutoFocussed={true}
-                inputWidth="490px"
-              />
-              <Button
-                className="button-style"
-                primary
-                size="big"
-                tabIndex={3}
-                label={
-                  isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-                }
-                isDisabled={isLoading}
-                isLoading={isLoading}
-                onClick={this.onSubmit}
-              />
-            </Col>
-          </Row>
-          <Collapse isOpen={!!errorText}>
-            <Row className="login-row">
-              <Col sm="12" md={mdOptions}>
-                <div className="alert alert-danger">{errorText}</div>
-              </Col>
-            </Row>
-          </Collapse>
-        </BodyStyle>
-      );
+            <PasswordInput
+              id="password"
+              name="password"
+              inputName="password"
+              inputValue={password}
+              size="huge"
+              scale={true}
+              type="password"
+              isDisabled={isLoading}
+              hasError={passwordEmpty}
+              onValidateInput={this.validatePassword}
+              generatorSpecial="!@#$%^&*"
+              tabIndex={1}
+              value={password}
+              onChange={this.onChange}
+              emailInputName="E-mail"
+              passwordSettings={settings}
+              tooltipPasswordTitle="Password must contain:"
+              tooltipPasswordLength={`${t("ErrorPasswordLength", {
+                fromNumber: 6,
+                toNumber: 30
+              })}:`}
+              placeholder={t("PasswordCustomMode")}
+              maxLength={30}
+              onKeyDown={this.onKeyPress}
+              isAutoFocussed={true}
+              inputWidth="490px"
+            />
+            <Button
+              className="button-style"
+              primary
+              size="big"
+              tabIndex={2}
+              label={
+                isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+              }
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={this.onSubmit}
+            />
+          </Col>
+        </Row>
+      </BodyStyle>
+    );
   }
 }
 
 Form.propTypes = {
-  match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
-  changePassword: PropTypes.func.isRequired
+  changePassword: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  linkData: PropTypes.object.isRequired
 };
 
 Form.defaultProps = {
@@ -240,11 +212,12 @@ const ChangePasswordForm = props => (
   <PageLayout sectionBodyContent={<Form {...props} />} />
 );
 
-function mapStateToProps(state) {
+function mapStateToProps(store) {
   return {
-    isValidConfirmLink: state.auth.isValidConfirmLink,
-    isConfirmLoaded: state.auth.isConfirmLoaded,
-    settings: state.auth.password
+    isValidConfirmLink: store.auth.isValidConfirmLink,
+    isConfirmLoaded: store.auth.isConfirmLoaded,
+    settings: store.auth.password,
+    isAuthenticated: store.auth.isAuthenticated
   };
 }
 
