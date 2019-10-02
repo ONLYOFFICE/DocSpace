@@ -74,7 +74,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { history, activateConfirmUser } = this.props;
+      const { activateConfirmUser } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -113,7 +113,7 @@ class Confirm extends React.PureComponent {
       };
 
       activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
-        .then(() => history.push('/'))
+        .then(() => window.location.href = '/')
         .catch(e => {
           console.error("activate error", e);
           this.setState({ errorText: e.message });

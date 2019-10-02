@@ -1,12 +1,11 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { AUTH_KEY } from './constants';
-import Cookies from 'universal-cookie';
+import { Route } from 'react-router-dom';
+import { ValidationResult } from './../helpers/constants';
+import { decomposeConfirmLink } from './../helpers/converters';
+import { PageLayout, Loader } from "asc-web-components";
 import { connect } from 'react-redux';
 import { checkConfirmLink } from './../store/auth/actions';
-import { ValidationResult } from './../helpers/constants';
-import decomposeConfirmLink from './../helpers/decomposeConfirmLink';
-import { PageLayout, Loader } from "asc-web-components";
+import { withRouter } from "react-router";
 
 class ConfirmRoute extends React.Component {
     constructor(props) {
@@ -20,16 +19,20 @@ class ConfirmRoute extends React.Component {
             uid: '',
             firstname: '',
             lastname: '',
-            isReady: false,
+            isLoaded: false,
             componentProps: {}
         }
     }
 
     componentDidMount() {
-        const { pathname, search } = this.props.location;
-        const { checkConfirmLink } = this.props;
-        const decomposedLink = decomposeConfirmLink(pathname, search);
+        const { location, checkConfirmLink, isAuthenticated, history } = this.props;
+        const { search } = location;
+        const decomposedLink = decomposeConfirmLink(location);
         let validationResult;
+        let path = '';
+        if (!isAuthenticated) {
+            path = '/login';
+        }
         checkConfirmLink(decomposedLink)
             .then((res) => {
                 validationResult = res.data.response;
@@ -38,44 +41,49 @@ class ConfirmRoute extends React.Component {
                         const confirmHeader = `type=${decomposedLink.type}&${search.slice(1)}`;
                         const componentProps = Object.assign({}, decomposedLink, { confirmHeader });
                         this.setState({
-                            isReady: true,
+                            isLoaded: true,
                             componentProps
                         });
                         break;
                     case ValidationResult.Invalid:
-                        window.location.href = '/login/error=Invalid link'
+                        history.push(`${path}/error=Invalid link`);
                         break;
                     case ValidationResult.Expired:
-                        window.location.href = '/login/error=Expired link'
+                        history.push(`${path}/error=Expired link`);
                         break;
                     default:
-                        window.location.href = '/login/error=Unknown error'
+                        history.push(`${path}/error=Unknown error`);
                         break;
                 }
             })
-            .catch((e) => window.location.href = '/');
+            .catch((e) => history.push(`${path}/error=${e}`));
     }
 
     render() {
-        const { component: Component, location, path, computedMatch, ...rest } = this.props;
-        const newProps = Object.assign({}, { location, path, computedMatch }, { linkData: this.state.componentProps });
+        const { component: Component, ...rest } = this.props;
         return (
             <Route
                 {...rest}
                 render={props =>
-                    !this.state.isReady ? (
+                    !this.state.isLoaded ? (
                         <PageLayout
                             sectionBodyContent={
                                 <Loader className="pageLoader" type="rombs" size={40} />
                             }
                         />
                     ) : (
-                                <Component {...newProps} />
-                            )
+                            <Component {...props = { ...props, linkData: this.state.componentProps }} />
+                        )
                 }
             />
         )
     }
 };
 
-export default connect(null, { checkConfirmLink })(ConfirmRoute);
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated
+    };
+}
+
+export default connect(mapStateToProps, { checkConfirmLink })(withRouter(ConfirmRoute));

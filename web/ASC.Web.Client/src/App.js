@@ -21,7 +21,7 @@ const App = () => {
           <Switch>
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
             <Route path="/confirm" component={Confirm} />
-            <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path={["/","/error=:error"]} component={Home} />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute component={Error404} />
           </Switch>

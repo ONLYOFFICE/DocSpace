@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
-import { getConfirmationInfo, createConfirmUser } from '../../../../store/auth/actions';
+import { getConfirmationInfo, createConfirmUser, logout } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -73,7 +73,7 @@ class Confirm extends React.PureComponent {
 
     onSubmit = (e) => {
         this.setState({ isLoading: true }, function () {
-            const { history, createConfirmUser, linkData } = this.props;
+            const { history, createConfirmUser, logout, linkData } = this.props;
             const isVisitor = parseInt(linkData.emplType) === 2;
 
             this.setState({ errorText: "" });
@@ -118,8 +118,9 @@ class Confirm extends React.PureComponent {
                 email: this.state.email
             };
             const registerData = Object.assign(personalData, { isVisitor: isVisitor })
+            logout();
             createConfirmUser(registerData, loginData, this.state.key)
-                .then(() => history.push('/'))
+                .then(() => window.location.href = '/')
                 .catch(e => {
                     console.error("confirm error", e);
                     this.setState({
@@ -340,4 +341,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, createConfirmUser })(withRouter(withTranslation()(CreateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, createConfirmUser, logout })(withRouter(withTranslation()(CreateUserForm)));
