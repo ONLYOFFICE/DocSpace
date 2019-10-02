@@ -15,9 +15,6 @@ const horizontalCss = css`
     margin: 0;
     width: 110px;
     min-width: 110px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .field-body {
     flex-grow: 1;
@@ -51,7 +48,7 @@ const FieldContainer = React.memo((props) => {
   const {isVertical, className, isRequired, hasError, labelText, children} = props;
   return (
     <Container vertical={isVertical} className={className}>
-      <Label isRequired={isRequired} error={hasError} text={labelText} className="field-label"/>
+      <Label isRequired={isRequired} error={hasError} text={labelText} truncate={true} className="field-label"/>
       <div className="field-body">{children}</div>
     </Container>
   );
