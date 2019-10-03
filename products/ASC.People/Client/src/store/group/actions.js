@@ -38,23 +38,21 @@ export function createGroup(groupName, groupManager, members) {
     const { people } = getState();
     const { groups, filter } = people;
 
-    let newGroup;
-
     return api
       .createGroup(groupName, groupManager, members)
       .then(res => {
         checkResponseError(res);
-        newGroup = res.data.response;
+        const newGroup = res.data.response;
 
-        //dispatch(setGroup(newGroup));
-        return dispatch(setGroups([...groups, newGroup]));
-      })
-      .then(() => {
-        return fetchPeopleByFilter(dispatch, filter);
-      })
-      .then(() => {
+        dispatch(setGroups([...groups, newGroup]))
+        dispatch(resetGroup());
+
         return Promise.resolve(newGroup);
-      });
+      }).then((group) => {
+        const newFilter = filter.clone();
+        newFilter.group = group.id;
+        return fetchPeopleByFilter(dispatch, newFilter);
+      });;
   };
 }
 
@@ -63,27 +61,24 @@ export function updateGroup(id, groupName, groupManager, members) {
     const { people } = getState();
     const { groups, filter } = people;
 
-    let newGroup;
-
     return api
       .updateGroup(id, groupName, groupManager, members)
       .then(res => {
         checkResponseError(res);
-        newGroup = res.data.response;
-
-        //dispatch(setGroup(newGroup));
+        const newGroup = res.data.response;
 
         const newGroups = groups.map(g =>
           g.id === newGroup.id ? newGroup : g
         );
 
-        return dispatch(setGroups(newGroups));
-      })
-      .then(() => {
-        return fetchPeopleByFilter(dispatch, filter);
-      })
-      .then(() => {
+        dispatch(setGroups(newGroups));
+        dispatch(resetGroup());
+
         return Promise.resolve(newGroup);
+      }).then((group) => {
+        const newFilter = filter.clone();
+        newFilter.group = group.id;
+        return fetchPeopleByFilter(dispatch, newFilter);
       });
   };
 }
