@@ -2,18 +2,18 @@ import React, { Suspense, lazy } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import PublicRoute from "../../../helpers/publicRoute";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import ActivateEmailForm  from "./sub-components/activateEmail";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
 const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
-// const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
+const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
+const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
+const Error404 = lazy(() => import("../Error"));
 
 const Confirm = ({ match, language }) => {
 
@@ -49,12 +49,17 @@ const Confirm = ({ match, language }) => {
             path={`${match.path}/PasswordChange`}
             component={ChangePasswordForm}
           />
+          <ConfirmRoute
+            exact
+            path={`${match.path}/ProfileRemove`}
+            component={ProfileRemoveForm}
+          />
           <Route
             exact
             path={`${match.path}/PhoneActivation`}
             component={ChangePhoneForm}
           />
-          <Redirect to={{ pathname: "/" }} />
+          <Route component={Error404} />
         </Switch>
       </Suspense>
     </I18nextProvider >

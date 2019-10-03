@@ -160,3 +160,15 @@ export function updateUser(data) {
 export function checkConfirmLink(data) {
   return fakeResponse(data);
 }
+
+export function deleteUser(data) {
+  return fakeResponse(data);
+}
+
+export function updateUserStatus(data) {
+  return fakeResponse(data);
+}
+
+export function sendInstructionsToChangePassword() {
+  return fakeResponse("Instruction has been sent successfully");
+}

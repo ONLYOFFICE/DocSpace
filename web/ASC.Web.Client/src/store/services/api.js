@@ -84,3 +84,23 @@ export function checkConfirmLink(data) {
     ? fakeApi.checkConfirmLink()
     : axios.post(`${API_URL}/authentication/confirm.json`, data);
 }
+
+export function deleteUser(userId) {
+  return IS_FAKE
+    ? fakeApi.deleteUser(userId)
+    : axios.delete(`${API_URL}/people/${userId}.json`);
+}
+
+export function updateUserStatus(status, userIds, key) {
+  return IS_FAKE
+    ? fakeApi.updateUserStatus(status, userIds)
+    : axios.put(`${API_URL}/people/status/${status}`, { userIds }, {
+      headers: { confirm: key }
+    });
+}
+
+export function sendInstructionsToChangePassword(email) {
+  return IS_FAKE
+    ? fakeApi.sendInstructionsToChangePassword()
+    : axios.post(`${API_URL}/people/password.json`, { email });
+}

@@ -22,7 +22,10 @@
         "RegistrationEmailWatermark",
         "MessageEmailConfirmed",
         "MessageAuthorize",
-        "LoginButton"
+        "LoginButton",
+        "ForgotPassword",
+        "PasswordRecoveryTitle",
+        "MessageSendPasswordRecoveryInstructionsOnEmail"
       ]
     },
     "Confirm": {
@@ -41,6 +44,11 @@
         "ErrorPasswordNoSpecialSymbols",
         "EmailAndPasswordCopiedToClipboard",
         "LastName",
+        "DeleteProfileBtn",
+        "DeleteProfileSuccessMessage",
+        "DeleteProfileSuccessMessageInfo",
+        "DeleteProfileConfirmation",
+        "DeleteProfileConfirmationInfo",
         "ChangePasswordSuccess"
       ]
     }

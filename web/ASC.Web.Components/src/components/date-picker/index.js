@@ -7,6 +7,7 @@ import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
+import Aside from "../layout/sub-components/aside";
 
 const DateInputStyle = styled.div`
   max-width: 110px;
@@ -232,18 +233,35 @@ class DatePicker extends Component {
     }
   }
 
-  render() {
+  renderBody = () => {
     const {
       isDisabled,
-      isReadOnly,
-      //hasWarning,
       minDate,
       maxDate,
       locale,
-      themeColor
+      themeColor,
+      calendarSize
     } = this.props;
+    const { selectedDate } = this.state;
 
-    const { value, isOpen, mask, selectedDate, hasError } = this.state;
+    return (
+      <Calendar
+        locale={locale}
+        themeColor={themeColor}
+        minDate={minDate}
+        maxDate={maxDate}
+        isDisabled={isDisabled}
+        openToDate={selectedDate}
+        selectedDate={selectedDate}
+        onChange={this.onChange}
+        size={calendarSize}
+      />
+    );
+  };
+
+  render() {
+    const { isDisabled, isReadOnly, displayType } = this.props;
+    const { value, isOpen, mask, hasError } = this.state;
 
     return (
       <DateInputStyle ref={this.ref}>
@@ -253,7 +271,6 @@ class DatePicker extends Component {
           isReadOnly={isReadOnly}
           hasError={hasError}
           onFocus={this.onClick.bind(this, true)}
-          //hasWarning={hasWarning}
           iconName={"CalendarIcon"}
           onIconClick={this.onClick.bind(this, !isOpen)}
           value={value}
@@ -264,22 +281,15 @@ class DatePicker extends Component {
           //showMask={true}
         />
         {isOpen ? (
-          <DropDownStyle>
-            <DropDown opened={isOpen}>
-              {
-                <Calendar
-                  locale={locale}
-                  themeColor={themeColor}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  isDisabled={isDisabled}
-                  openToDate={selectedDate}
-                  selectedDate={selectedDate}
-                  onChange={this.onChange}
-                />
-              }
-            </DropDown>
-          </DropDownStyle>
+          displayType === "dropdown" ? (
+            <DropDownStyle>
+              <DropDown opened={isOpen}>{this.renderBody()}</DropDown>
+            </DropDownStyle>
+          ) : (
+            <Aside visible={isOpen} scale={false}>
+              {this.renderBody()}
+            </Aside>
+          )
         ) : null}
       </DateInputStyle>
     );
@@ -298,13 +308,16 @@ DatePicker.propTypes = {
   isReadOnly: PropTypes.bool,
   hasError: PropTypes.bool,
   hasWarning: PropTypes.bool,
-  isOpen: PropTypes.bool
+  isOpen: PropTypes.bool,
+  displayType: PropTypes.oneOf(["dropdown", "aside"]),
+  calendarSize: PropTypes.oneOf(["base", "big"])
 };
 
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
   maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
-  selectedDate: moment(new Date()).toDate()
+  selectedDate: moment(new Date()).toDate(),
+  displayType: "dropdown"
 };
 
 export default DatePicker;
