@@ -16,7 +16,6 @@ import {
   PageLayout,
   Text,
   Link,
-  ModalDialog,
   toastr
 } from "asc-web-components";
 import { connect } from "react-redux";
@@ -26,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { welcomePageTitle } from "./../../../helpers/customNames";
 import { sendInstructionsToChangePassword } from "../../../store/services/api";
+import SubModalDialog from "./sub-components/modal-dialog";
 
 const FormContainer = styled(Container)`
   margin-top: 70px;
@@ -93,62 +93,53 @@ const Form = props => {
     setEmail("");
   };
 
-  const onSendPasswordInstructions = useCallback(
-    () => {
-      setIsLoading(true);
-      sendInstructionsToChangePassword(email)
-        .then(res => {
-          res.data.error
-            ? toastr.error(res.data.error.message)
-            : toastr.success(res.data.response);
-        })
-        .catch(error => toastr.error(error.message))
-        .finally(onDialogClose());
-    },
-    [email]
-  );
+  const onSendPasswordInstructions = useCallback(() => {
+    setIsLoading(true);
+    sendInstructionsToChangePassword(email)
+      .then(res => {
+        res.data.error
+          ? toastr.error(res.data.error.message)
+          : toastr.success(res.data.response);
+      })
+      .catch(error => toastr.error(error.message))
+      .finally(onDialogClose());
+  }, [email]);
 
-  const onSubmit = useCallback(
-    e => {
-      //e.preventDefault();
+  const onSubmit = useCallback(() => {
+    errorText && setErrorText("");
+    let hasError = false;
 
-      errorText && setErrorText("");
+    if (!identifier.trim()) {
+      hasError = true;
+      setIdentifierValid(!hasError);
+    }
 
-      let hasError = false;
+    if (!password.trim()) {
+      hasError = true;
+      setPasswordValid(!hasError);
+    }
 
-      if (!identifier.trim()) {
-        hasError = true;
-        setIdentifierValid(!hasError);
-      }
+    if (hasError) return false;
 
-      if (!password.trim()) {
-        hasError = true;
-        setPasswordValid(!hasError);
-      }
+    setIsLoading(true);
 
-      if (hasError) return false;
+    const payload = {
+      userName: identifier,
+      password: password
+    };
 
-      setIsLoading(true);
-
-      const payload = {
-        userName: identifier,
-        password: password
-      };
-
-      login(payload)
-        .then(function() {
-          console.log("auth success", match, location, history);
-          setIsLoading(false);
-          history.push("/");
-        })
-        .catch(e => {
-          console.error("auth error", e);
-          setErrorText(e.message);
-          setIsLoading(false);
-        });
-    },
-    [errorText, history, identifier, location, login, match, password]
-  );
+    login(payload)
+      .then(function() {
+        console.log("auth success", match, location, history);
+        setIsLoading(false);
+        history.push("/");
+      })
+      .catch(e => {
+        console.error("auth error", e);
+        setErrorText(e.message);
+        setIsLoading(false);
+      });
+  }, [errorText, history, identifier, location, login, match, password]);
 
   const onKeyPress = useCallback(
     event => {
@@ -256,62 +247,17 @@ const Form = props => {
         </Col>
       </Row>
       {openDialog ? (
-        <ModalDialog
-          visible={openDialog}
-          headerContent={
-            <Text.Body isBold={false} fontSize={21}>
-              {t("PasswordRecoveryTitle")}
-            </Text.Body>
-          }
-          bodyContent={[
-            <Text.Body
-              key="text-body"
-              className="text-body"
-              isBold={false}
-              fontSize={13}
-            >
-              {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
-            </Text.Body>,
-            <TextInput
-              key="e-mail"
-              id="e-mail"
-              name="e-mail"
-              type="text"
-              size="base"
-              scale={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              value={email}
-              onChange={onChangeEmail}
-            />
-          ]}
-          footerContent={[
-            <Button
-              className="btn-style"
-              key="SendBtn"
-              label={isLoading ? t("LoadingProcessing") : t("SendButton")}
-              size="base"
-              scale={false}
-              primary={true}
-              onClick={onSendPasswordInstructions}
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              tabIndex={2}
-            />,
-            <Button
-              key="CancelBtn"
-              label={t("CancelButton")}
-              size="base"
-              scale={false}
-              primary={false}
-              onClick={onDialogClose}
-              isDisabled={isLoading}
-              tabIndex={3}
-            />
-          ]}
-          onClose={onDialogClose}
+        <SubModalDialog
+          openDialog={openDialog}
+          isLoading={isLoading}
+          email={email}
+          onChangeEmail={onChangeEmail}
+          onSendPasswordInstructions={onSendPasswordInstructions}
+          onDialogClose={onDialogClose}
+          t={t}
         />
       ) : null}
+
       <Row className="login-row">
         <Col sm="12" md={mdOptions}>
           <Button
