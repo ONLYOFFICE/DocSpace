@@ -8,6 +8,7 @@ import Scrollbar from "../../scrollbar";
 const Container = ({
   visible,
   scale,
+  zIndex,
   ...props
 }) => <aside {...props} />;
 /* eslint-enable react/prop-types */
@@ -24,15 +25,15 @@ const StyledAside = styled(Container)`
   transform: translateX(${props => (props.visible ? "0" : props.scale ? "100%" : "320px")});
   transition: transform 0.3s ease-in-out;
   width: ${props => (props.scale ? "100%" : "320px")};
-  z-index: 400;
+  z-index: ${props => props.zIndex};
 `;
 
 const Aside = React.memo(props => {
   //console.log("Aside render");
-  const { visible, children, scale, className} = props;
+  const { visible, children, scale, zIndex, className} = props;
 
   return (
-    <StyledAside visible={visible} scale={scale} className={className}>
+    <StyledAside visible={visible} scale={scale} zIndex={zIndex} className={className}>
       <Scrollbar>{children}</Scrollbar>
     </StyledAside>
   );
@@ -44,6 +45,7 @@ Aside.propTypes = {
   visible: PropTypes.bool,
   scale: PropTypes.bool,
   className: PropTypes.string,
+  zIndex: PropTypes.number,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -51,6 +53,7 @@ Aside.propTypes = {
 };
 Aside.defaultProps = {
   scale: false,
+  zIndex: 400
 };
 
 export default Aside;
