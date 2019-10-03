@@ -144,18 +144,19 @@ class ModalDialog extends React.Component {
         </Dialog>
       </Backdrop>
     ) : (
-      <Backdrop visible={visible} onClick={onClose} zIndex={zIndex}>
-        <Aside visible={visible} scale={scale}>
+      <>
+        <Backdrop visible={visible} onClick={onClose} zIndex={zIndex}/>
+        <Aside visible={visible} scale={scale} zIndex={zIndex}>
           <Content>
             <Header>
               <HeaderText>{headerContent}</HeaderText>
-              <CloseButton onClick={onClose}></CloseButton>
+              {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
             </Header>
             <Body>{bodyContent}</Body>
             <Footer>{footerContent}</Footer>
           </Content>
         </Aside>
-      </Backdrop>
+      </>
     );
   }
 }
