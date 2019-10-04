@@ -139,6 +139,8 @@ import OrigArrowPathIcon from './arrow.path.react.svg'
 import OrigToggleButtonCheckedIcon from './toggle.button.checked.react.svg';
 import OrigToggleButtonIcon from './toggle.button.react.svg';
 
+import OrigQuestionIcon from './question.react.svg';
+
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -682,6 +684,12 @@ export const ToggleButtonCheckedIcon = createStyledIcon(
 
 export const ToggleButtonIcon = createStyledIcon(
   OrigToggleButtonIcon,
+  'ToggleButtonIcon',
+  "rect"
+);
+
+export const QuestionIcon = createStyledIcon(
+  OrigQuestionIcon,
   'ToggleButtonIcon',
   "rect"
 );
