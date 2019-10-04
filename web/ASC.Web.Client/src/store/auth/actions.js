@@ -1,5 +1,6 @@
 import * as api from '../services/api';
 import setAuthorizationToken from '../services/setAuthorizationToken';
+import { checkResponseError } from '../../helpers/utils';
 
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -137,13 +138,6 @@ export function createConfirmUser(registerData, loginData, key) {
             });
     };
 };
-
-export function checkResponseError(res) {
-    if (res && res.data && res.data.error) {
-        console.error(res.data.error);
-        throw new Error(res.data.error.message);
-    }
-}
 
 export function changePassword(userId, password, key) {
     return dispatch => {
