@@ -85,20 +85,13 @@ export function checkConfirmLink(data) {
     : axios.post(`${API_URL}/authentication/confirm.json`, data);
 }
 
-export function deleteUser(userId) {
+export function deleteSelf(key) {
   return IS_FAKE
-    ? fakeApi.deleteUser(userId)
-    : axios.delete(`${API_URL}/people/${userId}.json`);
-}
-
-export function updateUserStatus(status, userIds, key) {
-  return IS_FAKE
-    ? fakeApi.updateUserStatus(status, userIds)
-    : axios.put(`${API_URL}/people/status/${status}`, { userIds }, {
+    ? fakeApi.deleteUser(key)
+    : axios.delete(`${API_URL}/people/@self`,  {
       headers: { confirm: key }
     });
 }
-
 export function sendInstructionsToChangePassword(email) {
   return IS_FAKE
     ? fakeApi.sendInstructionsToChangePassword()

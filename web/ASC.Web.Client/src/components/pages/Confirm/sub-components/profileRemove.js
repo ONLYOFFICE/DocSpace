@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { welcomePageTitle } from './../../../../helpers/customNames';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { deleteUser, updateUserStatus } from './../../../../store/services/api'
-import { EmployeeStatus } from './../../../../helpers/constants';
+import { deleteSelf } from './../../../../store/services/api';
+import setAuthorizationToken from './../../../../store/services/setAuthorizationToken';
 
 const ProfileRemoveContainer = styled.div`
     display: flex;
@@ -40,17 +40,13 @@ class ProfileRemove extends React.PureComponent {
   onDeleteProfile = (e) => {
     this.setState({ isLoading: true }, function () {
       const { linkData } = this.props;
-
-      updateUserStatus(EmployeeStatus.Disabled, [linkData.uid], linkData.confirmHeader)
-        .then((res) => {
-          console.log('success update status', res)
-          return deleteUser(linkData.uid);
-        })
+      deleteSelf(linkData.confirmHeader)
         .then((res) => {
           this.setState({
             isLoading: false,
             isProfileDeleted: true
           });
+          setAuthorizationToken();
           console.log('success delete', res)
         })
         .catch((e) => {
