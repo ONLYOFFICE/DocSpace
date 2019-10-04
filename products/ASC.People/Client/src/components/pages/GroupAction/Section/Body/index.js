@@ -28,7 +28,7 @@ import {
   updateGroup
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
-import { fetchSelectorUsers } from "../../../../../store/people/actions";
+import { fetchSelectorUsers, fetchPeople, fetchGroups } from "../../../../../store/people/actions";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import isEqual from "lodash/isEqual";
 
@@ -242,6 +242,9 @@ class SectionBodyContent extends React.Component {
       newGroup.id = group.id;
 
     this.save(newGroup)
+      .then(group => {
+        toastr.success(`Group '${group.name}' has been saved successfully`);
+      })
       .catch(error => {
         toastr.error(error.message);
         this.setState({ inLoading: false });
@@ -567,11 +570,11 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
   };
 }
 
 export default connect(
   mapStateToProps,
-  { resetGroup, createGroup, updateGroup, fetchSelectorUsers }
+  { resetGroup, createGroup, updateGroup, fetchSelectorUsers, fetchPeople, fetchGroups }
 )(withRouter(withTranslation()(SectionBodyContent)));

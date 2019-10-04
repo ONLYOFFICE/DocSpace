@@ -14,6 +14,7 @@ import {
   PAGE_COUNT,
   EmployeeStatus
 } from "../../helpers/constants";
+import { checkResponseError } from "../../helpers/utils";
 
 export const SET_GROUPS = "SET_GROUPS";
 export const SET_USERS = "SET_USERS";
@@ -69,7 +70,7 @@ export function selectGroup(groupId) {
     let newFilter = filter.clone();
     newFilter.group = groupId;
 
-    return fetchPeopleByFilter(dispatch, newFilter);
+    return fetchPeople(newFilter, dispatch);
   };
 }
 
@@ -147,14 +148,38 @@ export function fetchSelectorUsers() {
   };
 }
 
-export function fetchPeople(filter) {
-  return dispatch => {
-    return fetchPeopleByFilter(dispatch, filter);
+export function fetchGroups(dispatchFunc = null) {
+  return api.getGroupList()
+  .then(res => {
+    checkResponseError(res);
+    return dispatchFunc 
+      ? dispatchFunc(setGroups(res.data.response)) 
+      : Promise.resolve(dispatch => dispatch(setGroups(res.data.response)));
+  });
+}
+
+
+export function fetchPeople(filter, dispatchFunc = null) {
+  return dispatchFunc ? fetchPeopleByFilter(dispatchFunc, filter)
+   : (dispatch, getState) => {
+    if(filter) {
+      return fetchPeopleByFilter(dispatch, filter);
+    }
+    else {
+      const {people} = getState();
+      const {filter} = people;
+      return fetchPeopleByFilter(dispatch, filter);
+    }
   };
 }
 
-export function fetchPeopleByFilter(dispatch, filter) {
-  let filterData = (filter && filter.clone()) || Filter.getDefault();
+function fetchPeopleByFilter(dispatch, filter) {
+  let filterData = (filter && filter.clone());
+
+  if(!filterData) {
+    filterData = Filter.getDefault();
+    filterData.employeeStatus = EmployeeStatus.Active;
+  }
 
   return api.getUserList(filterData).then(res => {
     filterData.total = res.data.total;
@@ -167,7 +192,7 @@ export function fetchPeopleByFilter(dispatch, filter) {
   });
 }
 
-export async function fetchPeopleAsync(dispatch, filter = null) {
+/*export async function fetchPeopleAsync(dispatch, filter = null) {
   let filterData = (filter && filter.clone());
 
   if(!filterData) {
@@ -185,7 +210,7 @@ export async function fetchPeopleAsync(dispatch, filter = null) {
     groupId: filterData.group
   });
   dispatch(setUsers(usersResp.data.response));
-}
+}*/
 
 export function updateUserStatus(status, userIds) {
   return dispatch => {
@@ -224,6 +249,6 @@ export function resetFilter() {
 
     const newFilter = filter.clone(true);
 
-    return fetchPeopleByFilter(dispatch, newFilter);
+    return fetchPeople(newFilter, dispatch);
   };
 }
