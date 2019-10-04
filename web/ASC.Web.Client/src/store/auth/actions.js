@@ -75,20 +75,34 @@ export function setNewEmail(email) {
     };
 };
 
+export function getUser(dispatch) {
+    return api.getUser()
+    .then((res) => { 
+        checkResponseError(res);
+        return dispatch(setCurrentUser(res.data.response));
+    });
+}
+
 export function getPortalSettings(dispatch) {
     return api.getSettings()
         .then(res => { 
             checkResponseError(res);
-            return dispatch(setSettings(res.data.response)) 
+            return dispatch(setSettings(res.data.response));
+        });
+}
+
+export function getModules(dispatch) {
+    return api.getModulesList()
+        .then(res => { 
+            checkResponseError(res);
+            return dispatch(setModules(res.data.response));
         });
 }
 
 export function getUserInfo(dispatch) {
-    return api.getUser()
-        .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(() => getPortalSettings(dispatch))
-        .then(api.getModulesList)
-        .then((res) => dispatch(setModules(res.data.response)))
+    return getUser(dispatch)
+        .then(getPortalSettings.bind(this, dispatch))
+        .then(getModules.bind(this, dispatch))
         .then(() => dispatch(setIsLoaded(true)));
 };
 
