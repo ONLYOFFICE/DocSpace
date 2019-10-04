@@ -575,6 +575,50 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user, ApiContext);
         }
 
+        [Delete("@self")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+        public EmployeeWraperFull DeleteProfile()
+        {
+            ApiContext.AuthByClaim();
+
+            if (CoreContext.UserManager.IsSystemUser(SecurityContext.CurrentAccount.ID))
+                throw new SecurityException();
+
+            var user = GetUserInfo(SecurityContext.CurrentAccount.ID.ToString());
+
+            if (!CoreContext.UserManager.UserExists(user))
+                throw new Exception(Resource.ErrorUserNotFound); 
+            
+            if(user.IsLDAP())
+                throw new SecurityException();
+
+            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+
+            user.Status = EmployeeStatus.Terminated;
+
+            CoreContext.UserManager.SaveUserInfo(Tenant, user);
+
+            var userName = user.DisplayUserName(false);
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
+
+            HttpContext.ResetUserCookie(Tenant.TenantId, user.ID);
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
+
+            if (CoreContext.Configuration.Personal)
+            {
+                UserPhotoManager.RemovePhoto(Tenant, user.ID);
+                CoreContext.UserManager.DeleteUser(Tenant, user.ID);
+                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+            }
+            else
+            {
+                //StudioNotifyService.Instance.SendMsgProfileHasDeletedItself(user);
+                //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
+            }
+
+            return new EmployeeWraperFull(user, ApiContext);
+        }
+
         [Update("{userid}/contacts")]
         public EmployeeWraperFull UpdateMemberContacts(string userid, UpdateMemberModel memberModel)
         {

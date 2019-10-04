@@ -175,6 +175,17 @@ namespace ASC.Security.Cryptography
                 case ConfirmType.Activation:
                     checkKeyResult = ValidateEmailKey(Email + Type + UiD, Key, ValidInterval);
                     break;
+                case ConfirmType.ProfileRemove:
+                    // validate UiD
+                    if (P == 1)
+                    {
+                        var user = CoreContext.UserManager.GetUsers(UiD.GetValueOrDefault());
+                        if (user == null || user.Status == EmployeeStatus.Terminated || SecurityContext.IsAuthenticated && SecurityContext.CurrentAccount.ID != UiD)
+                            return ValidationResult.Invalid;
+                    }
+
+                    checkKeyResult = ValidateEmailKey(Email + Type + UiD, Key, ValidInterval);
+                    break;
                 default:
                     checkKeyResult = ValidateEmailKey(Email + Type, Key, ValidInterval);
                     break;

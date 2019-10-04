@@ -1,5 +1,5 @@
 import * as api from "../services/api";
-import { setGroups, fetchPeopleAsync } from "../people/actions";
+import { fetchGroups, fetchPeople } from "../people/actions";
 import setAuthorizationToken from "../../store/services/setAuthorizationToken";
 import { getFilterByLocation } from "../../helpers/converters";
 import config from "../../../package.json";
@@ -57,9 +57,7 @@ export async function getUserInfo(dispatch) {
   dispatch(setModules(modules));
   dispatch(setSettings(newSettings));
 
-  const groupResp = await api.getGroupList();
-
-  dispatch(setGroups(groupResp.data.response));
+  await fetchGroups(dispatch);
 
   var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
   const match = window.location.pathname.match(re);
@@ -67,7 +65,7 @@ export async function getUserInfo(dispatch) {
   if (match && match.length > 0)
   {
     const newFilter = getFilterByLocation(window.location);
-    await fetchPeopleAsync(dispatch, newFilter);
+    await fetchPeople(newFilter, dispatch);
   }
 
   return dispatch(setIsLoaded(true));

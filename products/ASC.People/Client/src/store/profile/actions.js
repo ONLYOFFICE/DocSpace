@@ -1,8 +1,9 @@
 import * as api from "../../store/services/api";
 import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
-import { fetchPeopleByFilter } from "../people/actions";
+import { fetchPeople } from "../people/actions";
 import { setCurrentUser } from "../auth/actions";
+import { checkResponseError } from "../../helpers/utils";
 
 export const SET_PROFILE = 'SET_PROFILE';
 export const CLEAN_PROFILE = 'CLEAN_PROFILE';
@@ -20,12 +21,7 @@ export function resetProfile() {
     };
 };
 
-export function checkResponseError(res) {
-    if (res && res.data && res.data.error) {
-        console.error(res.data.error);
-        throw new Error(res.data.error.message);
-    }
-}
+
 
 export function employeeWrapperToMemberModel(profile) {
     const comment = profile.notes;
@@ -67,7 +63,7 @@ export function createProfile(profile) {
             result = res.data.response;
             return dispatch(setProfile(result));
         }).then(() => {
-            return fetchPeopleByFilter(dispatch, filter);
+            return fetchPeople(filter, dispatch);
         }).then(() => {
             return Promise.resolve(result);
         });
@@ -86,7 +82,7 @@ export function updateProfile(profile) {
             result = res.data.response;
             return Promise.resolve(dispatch(setProfile(result)));
         }).then(() => {
-            return fetchPeopleByFilter(dispatch, filter);
+            return fetchPeople(filter, dispatch);
         }).then(() => {
             return Promise.resolve(result);
         });
