@@ -48,7 +48,7 @@ class SubModalDialog extends React.Component {
             className="btn-style"
             key="SendBtn"
             label={isLoading ? t("LoadingProcessing") : t("SendButton")}
-            size="base"
+            size="big"
             scale={false}
             primary={true}
             onClick={onSendPasswordInstructions}
@@ -59,7 +59,7 @@ class SubModalDialog extends React.Component {
           <Button
             key="CancelBtn"
             label={t("CancelButton")}
-            size="base"
+            size="big"
             scale={false}
             primary={false}
             onClick={onDialogClose}

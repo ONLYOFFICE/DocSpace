@@ -5,6 +5,9 @@
   "AboutCompanyAddressTitle": "адрес",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "тел.",
-  "LicensedUnder": "Это программное обеспечение лицензируется под",
+  "LicensedUnder": "Это программное обеспечение лицензируется под {{license}}",
+
+
+
   "SourceCode": "Исходный код программы доступен по cсылке"
 }

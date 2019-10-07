@@ -25,7 +25,8 @@
         "LoginButton",
         "ForgotPassword",
         "PasswordRecoveryTitle",
-        "MessageSendPasswordRecoveryInstructionsOnEmail"
+        "MessageSendPasswordRecoveryInstructionsOnEmail",
+        "CookieSettingsHelp"
       ]
     },
     "Confirm": {
@@ -49,7 +50,8 @@
         "DeleteProfileSuccessMessageInfo",
         "DeleteProfileConfirmation",
         "DeleteProfileConfirmationInfo",
-        "ChangePasswordSuccess"
+        "ChangePasswordSuccess",
+        "Remember"
       ]
     }
   },

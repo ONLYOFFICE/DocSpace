@@ -57,4 +57,5 @@ export { default as FieldContainer } from './components/field-container'
 export { default as utils } from './utils'
 export { default as DatePicker } from './components/date-picker'
 export { default as PasswordInput } from './components/password-input'
-export { default as QuestionIcon } from './components/question-icon'
+export { default as Tooltip } from './components/tooltip'
+
