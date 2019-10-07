@@ -1,11 +1,13 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { ValidationResult } from './../helpers/constants';
 import { decomposeConfirmLink } from './../helpers/converters';
 import { PageLayout, Loader } from "asc-web-components";
 import { connect } from 'react-redux';
 import { checkConfirmLink } from './../store/auth/actions';
 import { withRouter } from "react-router";
+import Cookies from "universal-cookie";
+import { AUTH_KEY } from './constants';
 
 class ConfirmRoute extends React.Component {
     constructor(props) {
@@ -56,24 +58,38 @@ class ConfirmRoute extends React.Component {
                         break;
                 }
             })
-            .catch((e) => history.push(`${path}/error=${e}`));
+            .catch((e) => {
+            history.push(`${path}/error=${e.message}`);
+        })
     }
 
     render() {
-        const { component: Component, ...rest } = this.props;
+        const { component: Component, isAuthenticated, ...rest } = this.props;
+        let path = '';
+        if (!isAuthenticated) {
+            path = '/login';
+        }
+        const { forUnauthorized } = rest;
         return (
             <Route
                 {...rest}
                 render={props =>
-                    !this.state.isLoaded ? (
-                        <PageLayout
-                            sectionBodyContent={
-                                <Loader className="pageLoader" type="rombs" size={40} />
-                            }
+                    forUnauthorized && (new Cookies()).get(AUTH_KEY)
+                        ? <Redirect
+                            to={{
+                                pathname: `${path}/error=Access error`,
+                                state: { from: props.location }
+                            }}
                         />
-                    ) : (
-                            <Component {...props = { ...props, linkData: this.state.componentProps }} />
-                        )
+                        : !this.state.isLoaded ? (
+                            <PageLayout
+                                sectionBodyContent={
+                                    <Loader className="pageLoader" type="rombs" size={40} />
+                                }
+                            />
+                        ) : (
+                                <Component {...props = { ...props, linkData: this.state.componentProps }} />
+                            )
                 }
             />
         )

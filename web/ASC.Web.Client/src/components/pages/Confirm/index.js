@@ -31,6 +31,7 @@ const Confirm = ({ match, language }) => {
             component={CreateUserForm}
           />
           <ConfirmRoute
+            forUnauthorized
             path={`${match.path}/Activation`}
             component={ActivateUserForm}
           />
