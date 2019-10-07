@@ -27,6 +27,7 @@ const Confirm = ({ match, language }) => {
       >
         <Switch>
           <ConfirmRoute
+            forUnauthorized
             path={`${match.path}/LinkInvite`}
             component={CreateUserForm}
           />

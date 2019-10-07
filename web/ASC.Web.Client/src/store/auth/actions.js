@@ -174,9 +174,3 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             .then(user => dispatch(setCurrentUser(user)));
     };
 };
-
-export function checkConfirmLink(data) {
-    return dispatch => {
-        return api.checkConfirmLink(data);
-    }
-}
