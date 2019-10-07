@@ -111,13 +111,14 @@ class Confirm extends React.PureComponent {
         firstname: this.state.firstName,
         lastname: this.state.lastName
       };
-      logout();
       activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
         .then(() => window.location.href = '/')
         .catch(e => {
           console.error("activate error", e);
-          this.setState({ errorText: e.message });
-          this.setState({ isLoading: false });
+          this.setState({
+            errorText: e.message,
+            isLoading: false
+          });
         });
     });
   };
@@ -321,4 +322,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser,logout })(withRouter(withTranslation()(ActivateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser, logout })(withRouter(withTranslation()(ActivateUserForm)));

@@ -1,5 +1,6 @@
 import * as api from '../services/api';
 import setAuthorizationToken from '../services/setAuthorizationToken';
+import { checkResponseError } from '../../helpers/utils';
 
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -74,20 +75,34 @@ export function setNewEmail(email) {
     };
 };
 
+export function getUser(dispatch) {
+    return api.getUser()
+    .then((res) => { 
+        checkResponseError(res);
+        return dispatch(setCurrentUser(res.data.response));
+    });
+}
+
 export function getPortalSettings(dispatch) {
     return api.getSettings()
         .then(res => { 
             checkResponseError(res);
-            return dispatch(setSettings(res.data.response)) 
+            return dispatch(setSettings(res.data.response));
+        });
+}
+
+export function getModules(dispatch) {
+    return api.getModulesList()
+        .then(res => { 
+            checkResponseError(res);
+            return dispatch(setModules(res.data.response));
         });
 }
 
 export function getUserInfo(dispatch) {
-    return api.getUser()
-        .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(() => getPortalSettings(dispatch))
-        .then(api.getModulesList)
-        .then((res) => dispatch(setModules(res.data.response)))
+    return getUser(dispatch)
+        .then(getPortalSettings.bind(this, dispatch))
+        .then(getModules.bind(this, dispatch))
         .then(() => dispatch(setIsLoaded(true)));
 };
 
@@ -137,13 +152,6 @@ export function createConfirmUser(registerData, loginData, key) {
             });
     };
 };
-
-export function checkResponseError(res) {
-    if (res && res.data && res.data.error) {
-        console.error(res.data.error);
-        throw new Error(res.data.error.message);
-    }
-}
 
 export function changePassword(userId, password, key) {
     return dispatch => {

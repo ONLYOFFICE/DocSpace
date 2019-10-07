@@ -8,6 +8,23 @@ import PropTypes from 'prop-types';
 
 
 class ChangeEmail extends React.PureComponent {
+    componentDidMount() {
+        const { changeEmail, userId, isLoaded, linkData } = this.props;
+        if (isLoaded) {
+            const email = linkData.email;
+            const key = linkData.confirmHeader;
+            changeEmail(userId, { email }, key)
+                .then((res) => {
+                    console.log('change client email success', res)
+                    window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
+                })
+                .catch((e) => {
+                    console.log('change client email error', e)
+                    window.location.href = `${window.location.origin}/error=${e.message}`;
+                });
+        }
+    }
+
     componentDidUpdate() {
         const { changeEmail, userId, isLoaded, linkData } = this.props;
         if (isLoaded) {
