@@ -16,7 +16,10 @@ import {
   PageLayout,
   Text,
   Link,
-  toastr
+  toastr,
+  Checkbox,
+  IconButton,
+  Tooltip
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { login } from "../../../store/auth/actions";
@@ -32,6 +35,7 @@ const FormContainer = styled(Container)`
 
   .link-style {
     float: right;
+    line-height: 16px;
   }
 
   .text-body {
@@ -40,6 +44,19 @@ const FormContainer = styled(Container)`
 
   .btn-style {
     margin-right: 8px;
+  }
+
+  .checkbox {
+    float: left;
+    span {
+      font-size: 12px;
+    }
+  }
+
+  .question-icon {
+    float: left;
+    margin-left: 4px;
+    line-height: 16px;
   }
 
   .login-row {
@@ -61,6 +78,16 @@ const FormContainer = styled(Container)`
       }
     }
   }
+
+  .button-row {
+    margin: 16px 0 0;
+  }
+`;
+
+const TooltipStyle = styled.a`
+  margin-left: 3px;
+  position: absolute;
+  margin-top: 3px;
 `;
 
 const mdOptions = { size: 6, offset: 3 };
@@ -79,6 +106,10 @@ const Form = props => {
   const [openDialog, setOpenDialog] = useState(false);
   const [email, setEmail] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+
+  const [isChecked, setIsisChecked] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const onClick = () => {
     setOpenDialog(true);
@@ -244,8 +275,23 @@ const Form = props => {
           >
             {t("ForgotPassword")}
           </Link>
+          <Checkbox
+            className="checkbox"
+            isChecked={isChecked}
+            onChange={() => setIsisChecked(!isChecked)}
+            label={t("Remember")}
+          />
+          <TooltipStyle
+            style={{ position: "absolute" }}
+            data-for="tooltipContent"
+            data-tip={t("CookieSettingsHelp")}
+            data-event="click focus"
+          >
+            <IconButton size={13} iconName="QuestionIcon" />
+          </TooltipStyle>
         </Col>
       </Row>
+
       {openDialog ? (
         <SubModalDialog
           openDialog={openDialog}
@@ -258,7 +304,7 @@ const Form = props => {
         />
       ) : null}
 
-      <Row className="login-row">
+      <Row className="button-row">
         <Col sm="12" md={mdOptions}>
           <Button
             primary
@@ -287,6 +333,13 @@ const Form = props => {
           </Col>
         </Row>
       </Collapse>
+      <Tooltip
+        id="tooltipContent"
+        getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
+        type="light"
+        effect="float"
+        place="top"
+      />
     </FormContainer>
   );
 };

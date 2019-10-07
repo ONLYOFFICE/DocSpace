@@ -10,6 +10,8 @@
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Please enter the email you used while registering on the portal. The password recovery instructions will be send to that email address.",
   "SendButton": "Send",
   "CancelButton": "Cancel",
+  "Remember": "Remember",
+  "CookieSettingsHelp": "{0}Session Lifetime{1} allows to set time (in minutes) before the portal users will need to enter the portal credentials again in order to access the portal.{2}After save all the users will be logged out from portal.",
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"
 }

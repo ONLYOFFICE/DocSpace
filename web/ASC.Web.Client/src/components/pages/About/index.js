@@ -132,7 +132,7 @@ const Body = ({language}) => {
 
         <div style={{ marginTop: "20px" }}>
           <Text.Body className="text_p" fontSize={12}>
-            {t("LicensedUnder")}:{" "}
+            {t("LicensedUnder", {license: "GNU GPL v.3"} )}:{" "}
             <Link
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               isHovered={true}

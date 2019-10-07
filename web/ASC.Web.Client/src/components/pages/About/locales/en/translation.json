@@ -5,7 +5,7 @@
   "AboutCompanyAddressTitle": "address",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "tel.",
-  "LicensedUnder": "This software is licensed under",
+  "LicensedUnder": "This software is licensed under {{license}}",
 
 
 
