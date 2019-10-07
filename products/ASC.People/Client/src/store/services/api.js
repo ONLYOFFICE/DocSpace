@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as fakeApi from "./fakeApi";
 import Filter from "../people/filter";
+import { checkResponseError } from "../../helpers/utils";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -19,12 +20,14 @@ export function getModulesList() {
     : axios
       .get(`${API_URL}/modules`)
       .then(res => {
+        checkResponseError(res);
         const modules = res.data.response;
         return axios.all(
           modules.map(m => axios.get(`${window.location.origin}/${m}`))
         );
       })
       .then(res => {
+        checkResponseError(res);
         const response = res.map(d => d.data.response);
         return Promise.resolve({ data: { response } });
       });

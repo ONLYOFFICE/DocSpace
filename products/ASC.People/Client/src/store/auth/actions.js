@@ -3,6 +3,7 @@ import { fetchGroups, fetchPeople } from "../people/actions";
 import setAuthorizationToken from "../../store/services/setAuthorizationToken";
 import { getFilterByLocation } from "../../helpers/converters";
 import config from "../../../package.json";
+import { checkResponseError } from "../../helpers/utils";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -76,10 +77,12 @@ export function login(data) {
     return api
       .login(data)
       .then(res => {
+        checkResponseError(res);
         const token = res.data.response.token;
         setAuthorizationToken(token);
       })
-      .then(() => getUserInfo(dispatch));
+      .then(() => getUserInfo(dispatch))
+      .catch((e) => console.error(e));
   };
 }
 

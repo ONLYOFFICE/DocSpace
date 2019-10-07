@@ -34,8 +34,8 @@ class ConfirmRoute extends React.Component {
             path = '/login';
         }
         checkConfirmLink(decomposedLink)
-            .then((res) => {
-                validationResult = res.data.response;
+            .then((result) => {
+                validationResult = result;
                 switch (validationResult) {
                     case ValidationResult.Ok:
                         const confirmHeader = `type=${decomposedLink.type}&${search.slice(1)}`;

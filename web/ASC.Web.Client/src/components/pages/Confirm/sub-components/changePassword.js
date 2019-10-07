@@ -80,7 +80,7 @@ class Form extends React.PureComponent {
   onSubmit = e => {
     this.setState({ isLoading: true }, function() {
       const { userId, password, key } = this.state;
-      const { history, changePassword, logout } = this.props;
+      const { history, changePassword } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -95,9 +95,8 @@ class Form extends React.PureComponent {
         return false;
       }
 
-      changePassword(userId, { password }, key)
+      changePassword(userId, password, key)
         .then(() => {
-          logout();
           toastr.success(this.props.t("ChangePasswordSuccess"));
           history.push("/");
         })

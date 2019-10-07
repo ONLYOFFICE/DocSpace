@@ -1,6 +1,5 @@
 import * as api from '../services/api';
-import setAuthorizationToken from '../services/setAuthorizationToken';
-import { checkResponseError } from '../../helpers/utils';
+import { setAuthorizationToken } from '../services/client';
 
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -54,10 +53,10 @@ export function setLogout() {
     };
 };
 
-export function setPasswordSettings(password) {
+export function setPasswordSettings(passwordSettings) {
     return {
         type: SET_PASSWORD_SETTINGS,
-        password
+        passwordSettings
     };
 };
 
@@ -77,99 +76,77 @@ export function setNewEmail(email) {
 
 export function getUser(dispatch) {
     return api.getUser()
-    .then((res) => { 
-        checkResponseError(res);
-        return dispatch(setCurrentUser(res.data.response));
-    });
+        .then(user => dispatch(setCurrentUser(user)));
 }
 
 export function getPortalSettings(dispatch) {
     return api.getSettings()
-        .then(res => { 
-            checkResponseError(res);
-            return dispatch(setSettings(res.data.response));
-        });
+        .then(settings => dispatch(setSettings(settings)));
 }
 
 export function getModules(dispatch) {
     return api.getModulesList()
-        .then(res => { 
-            checkResponseError(res);
-            return dispatch(setModules(res.data.response));
-        });
+        .then(modules => dispatch(setModules(modules)));
+}
+
+const loadInitInfo = (dispatch) => {
+    return getPortalSettings(dispatch)
+    .then(getModules.bind(this, dispatch))
+    .then(() => dispatch(setIsLoaded(true)));
 }
 
 export function getUserInfo(dispatch) {
     return getUser(dispatch)
-        .then(getPortalSettings.bind(this, dispatch))
-        .then(getModules.bind(this, dispatch))
-        .then(() => dispatch(setIsLoaded(true)));
+        .then(loadInitInfo.bind(this, dispatch));
 };
 
-export function login(data) {
+export function login(user, pass) {
     return dispatch => {
-        return api.login(data)
-            .then(res => {
-                checkResponseError(res);
-                const token = res.data.response.token;
-                setAuthorizationToken(token);
-            })
+        return api.login(user, pass)
             .then(() => getUserInfo(dispatch));
     }
 };
 
 
-export function logout() {
-    return dispatch => {
+export function logout(dispatch = null) {
+    return dispatch ? () => {
         setAuthorizationToken();
-        return dispatch(setLogout());
+        return Promise.resolve(dispatch(setLogout()));
+    } : dispatch => {
+        setAuthorizationToken();
+        return Promise.resolve(dispatch(setLogout()));
     };
 };
 
 export function getConfirmationInfo(token, type) {
     return dispatch => {
         return api.getPasswordSettings(token)
-            .then((res) => dispatch(setPasswordSettings(res.data.response)))
+            .then((settings) => dispatch(setPasswordSettings(settings)))
             .then(() => dispatch(setIsConfirmLoaded(true)));
     }
 };
 
 export function createConfirmUser(registerData, loginData, key) {
     const data = Object.assign({}, registerData, loginData);
-    return dispatch => {
+    return (dispatch) => {
         return api.createUser(data, key)
-            .then(res => {
-                checkResponseError(res);
-                console.log('register success:', res.data.response);
-                return api.login(loginData);
-            })
-            .then(res => {
-                console.log("log in, result:", res);
-                checkResponseError(res);
-                const token = res.data.response.token;
-                setAuthorizationToken(token);
-                return getUserInfo(dispatch);
-            });
+            .then(user => dispatch(setCurrentUser(user)))
+            .then(() => api.login(loginData.userName, loginData.password))
+            .then(loadInitInfo.bind(this, dispatch));
     };
 };
 
 export function changePassword(userId, password, key) {
     return dispatch => {
         return api.changePassword(userId, password, key)
-            .then(res => {
-                checkResponseError(res);
-                dispatch(setNewPasswordSettings(res.data.response));
-            })
+            .then(() => logout(dispatch));
     }
 }
 
 export function changeEmail(userId, email, key) {
     return dispatch => {
-        return api.changePassword(userId, email, key)
-            .then(res => {
-                checkResponseError(res);
-                dispatch(setNewEmail(res.data.response.email));
-            })
+        return api.changeEmail(userId, email, key)
+            .then(email => dispatch(setNewEmail(email)));
     }
 }
 
@@ -182,28 +159,19 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
 
     return dispatch => {
         return api.changePassword(userId, { password: loginData.password }, key)
-            .then(res => {
-                checkResponseError(res);
-                console.log('set password success:', res.data.response);
+            .then(data => {
+                console.log('set password success:', data);
                 return api.updateActivationStatus(activationStatus, userId, key);
             })
-            .then(res => {
-                console.log("activation success, result:", res);
-                checkResponseError(res);
-                return api.login(loginData);
+            .then(data => {
+                console.log("activation success, result:", data);
+                return dispatch(login(loginData));
             })
-            .then(res => {
-                console.log("log in, result:", res);
-                checkResponseError(res);
-                const token = res.data.response.token;
-                setAuthorizationToken(token);
+            .then(data => {
+                console.log("log in, result:", data);
                 return api.updateUser(changedData);
             })
-            .then(res => {
-                console.log("user data updated, result:", res);
-                checkResponseError(res);
-                return getUserInfo(dispatch);
-            });
+            .then(user => dispatch(setCurrentUser(user)));
     };
 };
 

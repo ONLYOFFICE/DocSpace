@@ -25,8 +25,8 @@ const initialState = {
             dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
             timePattern: "h:mm tt"
         },
-    },
-    password: null
+    }/*,
+    password: null*/
 }
 
 const authReducer = (state = initialState, action) => {
@@ -46,7 +46,7 @@ const authReducer = (state = initialState, action) => {
             });
         case SET_PASSWORD_SETTINGS:
             return Object.assign({}, state, {
-                password: { ...state.password, ...action.password }
+                settings: { ...state.settings, passwordSettings: action.passwordSettings }
             });
         case SET_IS_LOADED:
             return Object.assign({}, state, {
@@ -56,14 +56,10 @@ const authReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 isConfirmLoaded: action.isConfirmLoaded
             });
-        case SET_NEW_PASSWORD:
-            return Object.assign({}, state, {
-                password: action.password
-            });   
         case SET_NEW_EMAIL:
             return Object.assign({}, state, {
-                email: action.email
-            });   
+                user: { ...state.user, email: action.email }
+            });
         case LOGOUT:
             return initialState;
         default:

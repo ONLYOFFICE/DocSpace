@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { connect } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";

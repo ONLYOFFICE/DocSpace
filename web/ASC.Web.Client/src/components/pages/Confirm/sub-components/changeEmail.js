@@ -13,7 +13,7 @@ class ChangeEmail extends React.PureComponent {
         if (isLoaded) {
             const email = linkData.email;
             const key = linkData.confirmHeader;
-            changeEmail(userId, { email }, key)
+            changeEmail(userId, email, key)
                 .then((res) => {
                     console.log('change client email success', res)
                     window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
