@@ -48,12 +48,6 @@ export function getSettings() {
 }
 
 export function getPasswordSettings(key) {
-  /*return IS_FAKE
-    ? fakeApi.getPasswordSettings()
-    : axios.get(`${API_URL}/settings/security/password`, {
-      headers: { confirm: key }
-    });*/
-
   return request({
     method: "get",
     url: "/settings/security/password",
@@ -64,9 +58,6 @@ export function getPasswordSettings(key) {
 }
 
 export function createUser(data, key) {
-  /*return IS_FAKE
-    ? fakeApi.createUser()
-    : axios.post(`${API_URL}/people`, data, { headers: { confirm: key } });*/
   return request({
     method: "post",
     url: "/people",
@@ -76,12 +67,6 @@ export function createUser(data, key) {
 }
 
 export function changePassword(userId, password, key) {
-  /* return IS_FAKE
-    ? fakeApi.changePassword()
-    : axios.put(`${API_URL}/people/${userId}/password`, password, {
-      headers: { confirm: key }
-    });*/
-
     const data = { password };
 
   return request({
@@ -93,11 +78,6 @@ export function changePassword(userId, password, key) {
 }
 
 export function changeEmail(userId, email, key) {
-  /* return IS_FAKE
-    ? fakeApi.changePassword()
-    : axios.put(`${API_URL}/people/${userId}/password`, password, {
-      headers: { confirm: key }
-    });*/
 
     const data = { email };
 
@@ -109,11 +89,6 @@ export function changeEmail(userId, email, key) {
   });
 }
 export function updateActivationStatus(activationStatus, userId, key) {
-  /*return IS_FAKE
-    ? fakeApi.updateActivationStatus()
-    : axios.put(`${API_URL}/people/activationstatus/${activationStatus}.json`, { userIds: [userId] }, {
-      headers: { confirm: key }
-    });*/
 
   return request({
     method: "put",
@@ -124,9 +99,6 @@ export function updateActivationStatus(activationStatus, userId, key) {
 }
 
 export function updateUser(data) {
-  /*return IS_FAKE
-    ? fakeApi.updateUser()
-    : axios.put(`${API_URL}/people/${data.id}`, data);*/
   return request({
     method: "put",
     url: `/people/${data.id}`,
@@ -135,9 +107,6 @@ export function updateUser(data) {
 }
 
 export function checkConfirmLink(data) {
-  /*return IS_FAKE
-    ? fakeApi.checkConfirmLink()
-    : axios.post(`${API_URL}/authentication/confirm.json`, data);*/
   return request({
     method: "post",
     url: "/authentication/confirm.json",
@@ -146,11 +115,6 @@ export function checkConfirmLink(data) {
 }
 
 export function deleteSelf(key) {
-  /*return IS_FAKE
-    ? fakeApi.deleteUser(key)
-    : axios.delete(`${API_URL}/people/@self`,  {
-      headers: { confirm: key }
-    });*/
   return request({
     method: "delete",
     url: "/people/@self",
@@ -158,9 +122,6 @@ export function deleteSelf(key) {
   });
 }
 export function sendInstructionsToChangePassword(email) {
-  /*return IS_FAKE
-    ? fakeApi.sendInstructionsToChangePassword()
-    : axios.post(`${API_URL}/people/password.json`, { email });*/
   return request({
     method: "post",
     url: "/people/password.json",
