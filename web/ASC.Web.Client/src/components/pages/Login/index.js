@@ -284,7 +284,7 @@ const Form = props => {
           <TooltipStyle
             style={{ position: "absolute" }}
             data-for="tooltipContent"
-            data-tip={t("CookieSettingsHelp")}
+            data-tip={t("RememberHelper")}
             data-event="click focus"
           >
             <IconButton size={13} iconName="QuestionIcon" />

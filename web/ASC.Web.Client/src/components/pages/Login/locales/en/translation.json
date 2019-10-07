@@ -11,7 +11,7 @@
   "SendButton": "Send",
   "CancelButton": "Cancel",
   "Remember": "Remember",
-  "CookieSettingsHelp": "{0}Session Lifetime{1} allows to set time (in minutes) before the portal users will need to enter the portal credentials again in order to access the portal.{2}After save all the users will be logged out from portal.",
-
+  "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to the settings.",
+  
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"
 }

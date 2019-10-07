@@ -26,7 +26,7 @@
         "ForgotPassword",
         "PasswordRecoveryTitle",
         "MessageSendPasswordRecoveryInstructionsOnEmail",
-        "CookieSettingsHelp"
+        "RememberHelper"
       ]
     },
     "Confirm": {
