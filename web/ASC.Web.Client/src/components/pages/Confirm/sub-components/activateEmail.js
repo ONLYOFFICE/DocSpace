@@ -11,12 +11,9 @@ class ActivateEmail extends React.PureComponent {
 
     componentDidMount() {
         const { history, logout, changeEmail, linkData } = this.props;
-
-        const email = linkData.email;
-        const uid = linkData.uid;
-        const key = linkData.confirmHeader;
+        const [email, uid, key] = [linkData.email, linkData.uid, linkData.confirmHeader];
         logout();
-        changeEmail(uid, { email }, key)
+        changeEmail(uid, email, key)
             .then((res) => {
                 history.push(`/login/confirmed-email=${email}`);
             })
