@@ -4,6 +4,8 @@
 
 Custom tooltip
 
+#### See documentation: https://github.com/wwayne/react-tooltip
+
 #### Usage with IconButton
 
 ```js
@@ -14,6 +16,8 @@ import { Tooltip, IconButton, Text } from "asc-web-components";
     data-for="tooltipContent"
     data-tip="You tooltip content"
     data-event="click focus"
+    data-offset="{'top': 100, 'right': 100}"
+    data-place="top"
   >
     <IconButton isClickable={true} size={20} iconName="QuestionIcon" />
   </div>
@@ -49,7 +53,7 @@ const arrayUsers = [
 
   <Tooltip
     id="group"
-    offset={{ right: 90 }}
+    offsetRight={90}
     getContent={dataTip =>
       dataTip ? (
         <div>
@@ -64,18 +68,24 @@ const arrayUsers = [
 
 #### YouComponent Properties
 
-| Props        | Type     | Required | Values | Default | Description                       |
-| ------------ | -------- | :------: | ------ | ------- | --------------------------------- |
-| `data-tip`   | `string` |    -     | -      | -       | Required if you need to component |
-| `data-event` | `string` |    -     | -      | -       | Custom event to trigger tooltip   |
-| `data-for`   | `string` |    ✅    | -      | -       | Corresponds to the id of Tooltip  |
+| Props         | Type     | Required | Values                               | Default | Description                       |
+| ------------- | -------- | :------: | ------------------------------------ | ------- | --------------------------------- |
+| `data-tip`    | `string` |    -     | -                                    | -       | Required if you need to component |
+| `data-event`  | `string` |    -     | `click, focus`                       | -       | Custom event to trigger tooltip   |
+| `data-offset` | `string` |    -     | `{'top', 'left', 'right', 'bottom'}` | -       | Offset of current tooltip         |
+| `data-place`  | `string` |    -     | `top, right, bottom, left`           | -       | Tooltip placement                 |
+| `data-for`    | `string` |    ✅    | -                                    | -       | Corresponds to the id of Tooltip  |
 
 #### ReactTooltip Properties
 
-| Props        | Type     | Required | Values                                 | Default | Description                          |
-| ------------ | -------- | :------: | -------------------------------------- | ------- | ------------------------------------ |
-| `id`         | `string` |    ✅    | -                                      | -       | Used as HTML id property             |
-| `getContent` | `func`   |    -     |                                        | -       | Generate the tip content dynamically |
-| `effect`     | `string` |    -     | `float, solid`                         | `float` | Behaviour of tooltip                 |
-| `offset`     | `object` |    -     | `top, left, right, bottom`             | -       | Offset of tooltip                    |
-| `maxWidth`   | `number` |    -     | -                                      | `340`   | Set max width of tooltip             |
+| Props          | Type     | Required | Values                     | Default | Description                          |
+| -------------- | -------- | :------: | -------------------------- | ------- | ------------------------------------ |
+| `id`           | `string` |    ✅    | -                          | -       | Used as HTML id property             |
+| `getContent`   | `func`   |    -     |                            | -       | Generate the tip content dynamically |
+| `effect`       | `string` |    -     | `float, solid`             | `float` | Behaviour of tooltip                 |
+| `place`        | `string` |    -     | `top, right, bottom, left` | `top`   | Global tooltip placement             |
+| `offsetTop`    | `number` |    -     | -                          | -       | Offset top all tooltips on page      |
+| `offsetRight`  | `number` |    -     | -                          | -       | Offset right all tooltips on page    |
+| `offsetBottom` | `number` |    -     | -                          | -       | Offset bottom all tooltips on page   |
+| `offsetLeft`   | `number` |    -     | -                          | -       | Offset left all tooltips on page     |
+| `maxWidth`     | `number` |    -     | -                          | `340`   | Set max width of tooltip             |

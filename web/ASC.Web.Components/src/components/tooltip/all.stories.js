@@ -1,8 +1,5 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { withKnobs, select, number } from "@storybook/addon-knobs/react";
-import withReadme from "storybook-readme/with-readme";
-import Readme from "./README.md";
 import Tooltip from "./";
 import IconButton from "../icon-button";
 import Section from "../../../.storybook/decorators/section";
@@ -12,9 +9,6 @@ import { Text } from "../text";
 const BodyStyle = { marginTop: 70, marginLeft: 50, position: "absolute" };
 const BodyStyle_2 = { marginTop: 70, marginLeft: 200, position: "absolute" };
 const BodyStyle_3 = { marginTop: 70, marginLeft: 400 };
-
-const arrayEffects = ["float", "solid"];
-const arrayPlaces = ["top", "right", "bottom", "left"];
 
 const arrayUsers = [
   {
@@ -50,8 +44,8 @@ const arrayUsers = [
 ];
 
 storiesOf("Components|Tooltip", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
+  .addParameters({ viewport: { defaultViewport: "responsive" } })
+  .addParameters({ options: { showAddonPanel: false } })
   .add("all", () => {
     return (
       <Section>
@@ -62,13 +56,13 @@ storiesOf("Components|Tooltip", module)
           data-event="click focus"
         >
           <h5 style={{ marginLeft: -30 }}>Click on me</h5>
-          <IconButton isClickable={true} size={20} iconName="QuestionIcon" />
+          <IconButton isClickable={true} size={13} iconName="QuestionIcon" />
         </div>
         <Tooltip
           id="tooltipContent"
-          effect={select("effect", arrayEffects, "float")}
-          place={select("place", arrayPlaces, "top")}
-          maxWidth={number("maxWidth", 320)}
+          effect="float"
+          place="top"
+          maxWidth={320}
         />
 
         <div style={BodyStyle_2}>
@@ -79,7 +73,8 @@ storiesOf("Components|Tooltip", module)
         </div>
         <Tooltip
           id="link"
-          offset={{ right: 90 }}
+          offsetRight={90}
+          effect="solid"
           getContent={dataTip => (
             <div>
               <Text.Body isBold={true} fontSize={16}>
@@ -118,7 +113,7 @@ storiesOf("Components|Tooltip", module)
 
         <Tooltip
           id="group"
-          offset={{ right: 90 }}
+          offsetRight={90}
           getContent={dataTip =>
             dataTip ? (
               <div>

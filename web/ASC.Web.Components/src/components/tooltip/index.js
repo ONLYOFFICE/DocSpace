@@ -33,7 +33,17 @@ class Tooltip extends Component {
   }
 
   render() {
-    const { effect, place, maxWidth, id, getContent, offset } = this.props;
+    const {
+      effect,
+      place,
+      maxWidth,
+      id,
+      getContent,
+      offsetTop,
+      offsetRight,
+      offsetBottom,
+      offsetLeft
+    } = this.props;
 
     return (
       <TooltipStyle maxWidth={maxWidth}>
@@ -44,7 +54,12 @@ class Tooltip extends Component {
           effect={effect}
           place={place}
           globalEventOff="click"
-          offset={offset}
+          offset={{
+            top: offsetTop,
+            right: offsetRight,
+            bottom: offsetBottom,
+            left: offsetLeft
+          }}
           wrapper="span"
         />
       </TooltipStyle>
@@ -57,14 +72,20 @@ Tooltip.propTypes = {
   effect: PropTypes.oneOf(["float", "solid"]),
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
   maxWidth: PropTypes.number,
-  offset: PropTypes.object,
-  getContent: PropTypes.func
+  getContent: PropTypes.func,
+  offsetTop: PropTypes.number,
+  offsetRight: PropTypes.number,
+  offsetBottom: PropTypes.number,
+  offsetLeft: PropTypes.number
 };
 
 Tooltip.defaultProps = {
   effect: "float",
   place: "top",
-  offset: { right: 70 }
+  offsetTop: 0,
+  offsetRight: 0,
+  offsetBottom: 0,
+  offsetLeft: 0
 };
 
 export default Tooltip;
