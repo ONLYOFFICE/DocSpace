@@ -106,10 +106,7 @@ const Form = props => {
   const [openDialog, setOpenDialog] = useState(false);
   const [email, setEmail] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
-
   const [isChecked, setIsisChecked] = useState(false);
-
-  const [isOpen, setIsOpen] = useState(false);
 
   const onClick = () => {
     setOpenDialog(true);
@@ -127,7 +124,7 @@ const Form = props => {
   const onSendPasswordInstructions = useCallback(() => {
     setIsLoading(true);
     sendInstructionsToChangePassword(email)
-      .then(res => toastr.success(res), error => toastr.error(error.message))
+      .then(res => toastr.success(res), message => toastr.error(message))
       .finally(onDialogClose());
   }, [email]);
 
@@ -329,7 +326,7 @@ const Form = props => {
       </Collapse>
       <Tooltip
         id="tooltipContent"
-        offset={{right: 110}}
+        offset={{ right: 110 }}
         getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
         type="light"
         effect="float"
