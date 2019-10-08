@@ -7,7 +7,7 @@ import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
 import { EmployeeActivationStatus } from './../../../../helpers/constants';
-import { getConfirmationInfo, activateConfirmUser, logout } from '../../../../store/auth/actions';
+import { getConfirmationInfo, activateConfirmUser } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -74,7 +74,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { activateConfirmUser, logout } = this.props;
+      const { activateConfirmUser, history } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -95,7 +95,10 @@ class Confirm extends React.PureComponent {
         this.setState({ passwordValid: !hasError });
       }
 
-      !this.state.password.trim() && this.setState({ passwordEmpty: true });
+      if (!this.state.password.trim()) {
+        this.setState({ passwordEmpty: true });
+        hasError = true;
+      }
 
       if (hasError) {
         this.setState({ isLoading: false });
@@ -112,7 +115,7 @@ class Confirm extends React.PureComponent {
         lastname: this.state.lastName
       };
       activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
-        .then(() => window.location.href = '/')
+        .then(() => history.push('/'))
         .catch(error => {
           console.error("activate error", error);
           this.setState({
@@ -318,8 +321,8 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.auth.isConfirmLoaded,
-    settings: state.auth.password
+    settings: state.auth.settings.passwordSettings
   };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser, logout })(withRouter(withTranslation()(ActivateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, activateConfirmUser })(withRouter(withTranslation()(ActivateUserForm)));

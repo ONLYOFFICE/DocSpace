@@ -42,6 +42,11 @@ class ProfileActions extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
+
+    if (this.props.user !== prevProps.user) {
+      this.setState({ user: this.props.user })
+    }
+
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
