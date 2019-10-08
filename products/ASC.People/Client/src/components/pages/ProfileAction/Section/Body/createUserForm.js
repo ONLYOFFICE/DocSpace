@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile, loadAvatar, createThumbnailsAvatar } from '../../../../../store/profile/actions';
+import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -14,6 +14,7 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { createThumbnailsAvatar, loadAvatar } from "../../../../../store/services/api";
 
 class CreateUserForm extends React.Component {
 
@@ -48,22 +49,18 @@ class CreateUserForm extends React.Component {
   }
 
   createAvatar(userId,userName){
-    this.props.createThumbnailsAvatar(userId, {
+    createThumbnailsAvatar(userId, {
       x: this.state.avatar.x,
       y: this.state.avatar.y,
       width: this.state.avatar.width,
       height: this.state.avatar.height,
       tmpFile: this.state.avatar.tmpFile
     })
-    .then((result) => {
-      if(result.status === 200){
+    .then(() => {
         toastr.success("Success");
         this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
-      }
     })
-    .catch((error) => {
-      toastr.error(error.message);
-    });
+    .catch((error) => toastr.error(error));
   }
   openAvatarEditor(){
     let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
@@ -89,24 +86,23 @@ class CreateUserForm extends React.Component {
     let _this = this;
     data.append("file", file);
     data.append("Autosave", false);
-    this.props.loadAvatar(0, data)
-      .then((result) => {
+
+    loadAvatar(0, data)
+      .then((response) => {
         var img = new Image();
         img.onload = function () {
             var stateCopy = Object.assign({}, _this.state);
             stateCopy.avatar =  {
-              tmpFile: result.data.response.data,
-              image: result.data.response.data,
+              tmpFile: response.data,
+              image: response.data,
               defaultWidth: img.width,
               defaultHeight: img.height
             }
             _this.setState(stateCopy);
         };
-        img.src = result.data.response.data;
+        img.src = response.data;
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
   }
   onSaveAvatar(isUpdate, result, file){
     var stateCopy = Object.assign({}, this.state);
@@ -223,7 +219,7 @@ class CreateUserForm extends React.Component {
         }
       })
       .catch((error) => {
-        toastr.error(error.message)
+        toastr.error(error);
         this.setState({ isLoading: false })
       });
   }
@@ -475,7 +471,6 @@ class CreateUserForm extends React.Component {
     );
   };
 }
-
 const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
@@ -486,8 +481,6 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    createProfile,
-    loadAvatar,
-    createThumbnailsAvatar
+    createProfile
   }
 )(withRouter(withTranslation()(CreateUserForm)));

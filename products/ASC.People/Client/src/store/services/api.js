@@ -1,59 +1,56 @@
+import { request } from "./client";
 import axios from "axios";
-import * as fakeApi from "./fakeApi";
 import Filter from "../people/filter";
 
-const PREFIX = "api";
-const VERSION = "2.0";
-const API_URL = `${window.location.origin}/${PREFIX}/${VERSION}`;
-
-const IS_FAKE = false;
-const linkTtl = 6 * 3600 * 1000;
-
-export function login(data) {
-  return axios.post(`${API_URL}/authentication`, data);
-}
-
 export function getModulesList() {
-  return IS_FAKE
-    ? fakeApi.getModulesList()
-    : axios
-      .get(`${API_URL}/modules`)
-      .then(res => {
-        const modules = res.data.response;
-        return axios.all(
-          modules.map(m => axios.get(`${window.location.origin}/${m}`))
-        );
-      })
-      .then(res => {
-        const response = res.map(d => d.data.response);
-        return Promise.resolve({ data: { response } });
-      });
+  return request({
+    method: "get",
+    url: "/modules"
+  }).then(modules => {
+    return axios.all(
+      modules.map(m =>
+        request({
+          method: "get",
+          url: `${window.location.origin}/${m}`
+        })
+      )
+    );
+  });
 }
 
 export function getSettings() {
-  return IS_FAKE
-    ? fakeApi.getSettings()
-    : axios.get(`${API_URL}/settings.json`);
+  return request({
+    method: "get",
+    url: "/settings.json"
+  });
 }
 
 export function getPortalCultures() {
-  return axios.get(`${API_URL}/settings/cultures.json`);
+  return request({
+    method: "get",
+    url: "/settings/cultures.json"
+  });
 }
 
 export function getPortalPasswordSettings() {
-  return IS_FAKE
-    ? fakeApi.getPortalPasswordSettings()
-    : axios.get(`${API_URL}/settings/security/password`);
+  return request({
+    method: "get",
+    url: "/settings/security/password"
+  });
 }
 
 export function getUser(userId) {
-  return IS_FAKE
-    ? fakeApi.getUser()
-    : axios.get(`${API_URL}/people/${userId || "@self"}.json`);
+  return request({
+    method: "get",
+    url: "/people/@self.json"
+  });
 }
 
 export function getSelectorUserList() {
-  return axios.get(`${API_URL}/people/filter.json?fields=id,displayName,groups`);
+  return request({
+    method: "get",
+    url: "/people/filter.json?fields=id,displayName,groups"
+  });
 }
 
 export function getUserList(filter = Filter.getDefault()) {
@@ -61,72 +58,99 @@ export function getUserList(filter = Filter.getDefault()) {
     filter && filter instanceof Filter
       ? `/filter.json?${filter.toUrlParams()}`
       : "";
-  return IS_FAKE ? fakeApi.getUsers() : axios.get(`${API_URL}/people${params}`);
+
+  return request({
+    method: "get",
+    url: `/people${params}`
+  });
 }
 
 export function getGroupList() {
-  return IS_FAKE ? fakeApi.getGroups() : axios.get(`${API_URL}/group`);
+  return request({
+    method: "get",
+    url: "/group"
+  });
 }
 
 export function createUser(data) {
-  return IS_FAKE ? fakeApi.createUser() : axios.post(`${API_URL}/people`, data);
+  return request({
+    method: "post",
+    url: "/people",
+    data
+  });
 }
 
 export function updateUser(data) {
-  return IS_FAKE
-    ? fakeApi.updateUser()
-    : axios.put(`${API_URL}/people/${data.id}`, data);
+  return request({
+    method: "put",
+    url: `/people/${data.id}`,
+    data
+  });
 }
 
 export function updateUserCulture(id, cultureName) {
-  return axios.put(`${API_URL}/people/${id}/culture`, { cultureName });
+  return request({
+    method: "put",
+    url: `/people/${id}/culture`,
+    data: { cultureName }
+  });
 }
 export function loadAvatar(profileId, data) {
-  return IS_FAKE
-    ? fakeApi.loadAvatar()
-    : axios.post(`${API_URL}/people/${profileId}/photo`, data);
+  return request({
+    method: "post",
+    url: `/people/${profileId}/photo`,
+    data
+  });
 }
 export function createThumbnailsAvatar(profileId, data) {
-  return IS_FAKE
-    ? fakeApi.createThumbnailsAvatar()
-    : axios.post(`${API_URL}/people/${profileId}/photo/thumbnails.json`, data);
+  return request({
+    method: "post",
+    url: `/people/${profileId}/photo/thumbnails.json`,
+    data
+  });
 }
 export function deleteAvatar(profileId) {
-
-  return IS_FAKE
-    ? fakeApi.deleteAvatar()
-    : axios.delete(`${API_URL}/people/${profileId}/photo`, profileId);
+  return request({
+    method: "delete",
+    url: `/people/${profileId}/photo`
+  });
 }
 
 export function getInitInfo() {
-  return axios.all([getUser(), getModulesList(), getSettings(), getPortalPasswordSettings(), getPortalCultures()]).then(
-    axios.spread(function (userResp, modulesResp, settingsResp, passwordSettingsResp, culturesResp) {
-      let info = {
-        user: userResp.data.response,
-        modules: modulesResp.data.response,
-        settings: settingsResp.data.response
-      };
+  return axios
+    .all([
+      getUser(),
+      getModulesList(),
+      getSettings(),
+      getPortalPasswordSettings(),
+      getPortalCultures()
+    ])
+    .then(
+      axios.spread((user, modules, settings, passwordSettings, cultures) => {
+        const info = {
+          user,
+          modules,
+          settings
+        };
 
-      info.settings.passwordSettings = passwordSettingsResp.data.response;
-      info.settings.cultures = culturesResp.data.response || [];
+        info.settings.passwordSettings = passwordSettings;
+        info.settings.cultures = cultures || [];
 
-      return Promise.resolve(info);
-    })
-  );
+        return Promise.resolve(info);
+      })
+    );
 }
 
 export function getInvitationLinks() {
   const isGuest = true;
   return axios.all([getInvitationLink(), getInvitationLink(isGuest)]).then(
-    axios.spread(function (userInvitationLinkResp, guestInvitationLinkResp) {
-      let links = {
-        inviteLinks: {}
+    axios.spread((userInvitationLinkResp, guestInvitationLinkResp) => {
+      const links = {
+        inviteLinks: {
+          userLink: userInvitationLinkResp,
+          guestLink: guestInvitationLinkResp
+        }
       };
-
-      links.inviteLinks = {
-        userLink: userInvitationLinkResp,
-        guestLink: guestInvitationLinkResp
-      }
 
       return Promise.resolve(links);
     })
@@ -134,123 +158,138 @@ export function getInvitationLinks() {
 }
 
 export function updateUserStatus(status, userIds) {
-  return IS_FAKE
-    ? fakeApi.updateUserStatus(status, userIds)
-    : axios.put(`${API_URL}/people/status/${status}`, { userIds });
+  return request({
+    method: "put",
+    url: `/people/status/${status}`,
+    data: { userIds }
+  });
 }
 
 export function updateUserType(type, userIds) {
-  return IS_FAKE
-    ? fakeApi.updateUserType(type, userIds)
-    : axios.put(`${API_URL}/people/type/${type}`, { userIds });
+  return request({
+    method: "put",
+    url: `/people/type/${type}`,
+    data: { userIds }
+  });
 }
 
 export function resendUserInvites(userIds) {
-  return IS_FAKE
-    ? fakeApi.resendUserInvites(userIds)
-    : axios.put(`${API_URL}/people/invite`, { userIds });
+  return request({
+    method: "put",
+    url: "/people/invite",
+    data: { userIds }
+  });
 }
 
 export function sendInstructionsToDelete() {
-  return IS_FAKE
-    ? fakeApi.sendInstructionsToDelete()
-    : axios.put(`${API_URL}/people/self/delete.json`);
+  return request({
+    method: "put",
+    url: "/people/self/delete.json"
+  });
 }
 
 export function sendInstructionsToChangePassword(email) {
-  return IS_FAKE
-    ? fakeApi.sendInstructionsToChangePassword()
-    : axios.post(`${API_URL}/people/password.json`, { email });
+  return request({
+    method: "post",
+    url: "/people/password.json",
+    data: { email }
+  });
 }
 
 export function sendInstructionsToChangeEmail(userId, email) {
-  return IS_FAKE
-    ? fakeApi.sendInstructionsToChangeEmail()
-    : axios.post(`${API_URL}/people/email.json`, { userId, email });
+  return request({
+    method: "post",
+    url: "/people/email.json",
+    data: { userId, email }
+  });
 }
 
 export function deleteUser(userId) {
-  return IS_FAKE
-    ? fakeApi.deleteUser(userId)
-    : axios.delete(`${API_URL}/people/${userId}.json`);
+  return request({
+    method: "delete",
+    url: `/people/${userId}.json`
+  });
 }
 
 export function deleteUsers(userIds) {
-  return IS_FAKE
-    ? fakeApi.deleteUsers(userIds)
-    : axios
-      .put(`${API_URL}/people/delete.json`, { userIds })
-      .then(CheckError);
+  return request({
+    method: "put",
+    url: "/people/delete.json",
+    data: { userIds }
+  });
 }
 
 export function getGroup(groupId) {
-  return IS_FAKE
-    ? fakeApi.getGroup(groupId)
-    : axios.get(`${API_URL}/group/${groupId}.json`);
+  return request({
+    method: "get",
+    url: `/group/${groupId}.json`
+  });
 }
 
+const GUEST_INVITE_LINK = "guestInvitationLink";
+const USER_INVITE_LINK = "userInvitationLink";
+const INVITE_LINK_TTL = "localStorageLinkTtl";
+const LINKS_TTL = 6 * 3600 * 1000;
+
 export function getInvitationLink(isGuest) {
-  let localStorageLinkTtl = localStorage.getItem('localStorageLinkTtl');
+  const curLinksTtl = localStorage.getItem(INVITE_LINK_TTL);
+  const now = +new Date();
 
-  if (localStorageLinkTtl === null) {
-    localStorage.setItem('localStorageLinkTtl', +new Date());
-  }
-  else if (+new Date() - localStorageLinkTtl > linkTtl) {
-    localStorage.clear();
-    localStorage.setItem('localStorageLinkTtl', +new Date());
+  if (!curLinksTtl) {
+    localStorage.setItem(INVITE_LINK_TTL, now);
+  } else if (now - curLinksTtl > LINKS_TTL) {
+    localStorage.removeItem(GUEST_INVITE_LINK);
+    localStorage.removeItem(USER_INVITE_LINK);
+    localStorage.setItem(INVITE_LINK_TTL, now);
   }
 
-  if (IS_FAKE) {
-    return fakeApi.getInvitationLink(isGuest);
-  }
-  else
-    if (isGuest) {
-      const guestInvitationLink = localStorage.getItem('guestInvitationLink');
-      return guestInvitationLink
-        ? guestInvitationLink
-        : axios.get(`${API_URL}/portal/users/invite/2.json`)
-          .then(res => {
-            localStorage.setItem('guestInvitationLink', res.data.response);
-            return Promise.resolve(res.data.response);
-          })
-    }
-    else {
-      const userInvitationLink = localStorage.getItem('userInvitationLink');
-      return userInvitationLink
-        ? userInvitationLink
-        : axios.get(`${API_URL}/portal/users/invite/1.json`)
-          .then(res => {
-            localStorage.setItem('userInvitationLink', res.data.response);
-            return Promise.resolve(res.data.response);
-          })
-    }
+  const link = localStorage.getItem(
+    isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK
+  );
+
+  return link
+    ? Promise.resolve(link)
+    : request({
+        method: "get",
+        url: `/portal/users/invite/${isGuest ? 2 : 1}.json`
+      }).then(link => {
+        localStorage.setItem(
+          isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK,
+          link
+        );
+        return Promise.resolve(link);
+      });
 }
 
 export function getShortenedLink(link) {
-  return IS_FAKE
-    ? fakeApi.getShortenedLink(link)
-    : axios.put(`${API_URL}/portal/getshortenlink.json`, link);
-}
-
-function CheckError(res) {
-  if (res.data && res.data.error) {
-    const error = res.data.error.message || "Unknown error has happened";
-    console.trace(error);
-    throw error;
-  }
-  return Promise.resolve(res);
+  return request({
+    method: "put",
+    url: "/portal/getshortenlink.json",
+    data: link
+  });
 }
 
 export function createGroup(groupName, groupManager, members) {
-  const group = { groupName, groupManager, members };
-  return axios.post(`${API_URL}/group.json`, group);
+  const data = { groupName, groupManager, members };
+  return request({
+    method: "post",
+    url: "/group.json",
+    data
+  });
 }
 
 export function updateGroup(id, groupName, groupManager, members) {
-  const group = { groupId: id, groupName, groupManager, members };
-  return axios.put(`${API_URL}/group/${id}.json`, group);
+  const data = { groupId: id, groupName, groupManager, members };
+  return request({
+    method: "put",
+    url: `/group/${id}.json`,
+    data
+  });
 }
 
 export function deleteGroup(id) {
-  return axios.delete(`${API_URL}/group/${id}.json`);
+  return request({
+    method: "delete",
+    url: `/group/${id}.json`
+  });
 }

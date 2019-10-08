@@ -1,105 +1,107 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import { ValidationResult } from './../helpers/constants';
-import { decomposeConfirmLink } from './../helpers/converters';
+import React from "react";
+import { Route } from "react-router-dom";
+import { ValidationResult } from "./../helpers/constants";
+import { getObjectByLocation } from "./../helpers/converters";
 import { PageLayout, Loader } from "asc-web-components";
-import { connect } from 'react-redux';
-import { checkConfirmLink } from './../store/auth/actions';
+import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import Cookies from "universal-cookie";
-import { AUTH_KEY } from './constants';
+import { AUTH_KEY } from "./constants";
+import { checkConfirmLink } from "../store/services/api";
 
 class ConfirmRoute extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            type: '',
-            key: '',
-            p: '',
-            emplType: '',
-            email: '',
-            uid: '',
-            firstname: '',
-            lastname: '',
-            isLoaded: false,
-            componentProps: {}
-        }
-    }
-
-    componentDidMount() {
-        const { location, checkConfirmLink, isAuthenticated, history } = this.props;
-        const { search } = location;
-        const decomposedLink = decomposeConfirmLink(location);
-        let validationResult;
-        let path = '';
-        if (!isAuthenticated) {
-            path = '/login';
-        }
-        checkConfirmLink(decomposedLink)
-            .then((res) => {
-                validationResult = res.data.response;
-                switch (validationResult) {
-                    case ValidationResult.Ok:
-                        const confirmHeader = `type=${decomposedLink.type}&${search.slice(1)}`;
-                        const componentProps = Object.assign({}, decomposedLink, { confirmHeader });
-                        this.setState({
-                            isLoaded: true,
-                            componentProps
-                        });
-                        break;
-                    case ValidationResult.Invalid:
-                        history.push(`${path}/error=Invalid link`);
-                        break;
-                    case ValidationResult.Expired:
-                        history.push(`${path}/error=Expired link`);
-                        break;
-                    default:
-                        history.push(`${path}/error=Unknown error`);
-                        break;
-                }
-            })
-            .catch((e) => {
-            history.push(`${path}/error=${e.message}`);
-        })
-    }
-
-    render() {
-        const { component: Component, isAuthenticated, ...rest } = this.props;
-        let path = '';
-        if (!isAuthenticated) {
-            path = '/login';
-        }
-        const { forUnauthorized } = rest;
-        return (
-            <Route
-                {...rest}
-                render={props =>
-                    forUnauthorized && (new Cookies()).get(AUTH_KEY)
-                        ? <Redirect
-                            to={{
-                                pathname: `${path}/error=Access error`,
-                                state: { from: props.location }
-                            }}
-                        />
-                        : !this.state.isLoaded ? (
-                            <PageLayout
-                                sectionBodyContent={
-                                    <Loader className="pageLoader" type="rombs" size={40} />
-                                }
-                            />
-                        ) : (
-                                <Component {...props = { ...props, linkData: this.state.componentProps }} />
-                            )
-                }
-            />
-        )
-    }
-};
-
-function mapStateToProps(state) {
-    return {
-        isAuthenticated: state.auth.isAuthenticated
+  constructor(props) {
+    super(props);
+    this.state = {
+      linkData: {},
+      isLoaded: false
     };
+  }
+
+  componentDidMount() {
+    const { forUnauthorized, history } = this.props;
+
+    if (forUnauthorized && new Cookies().get(AUTH_KEY))
+      //TODO: Remove cookie getting after setup on server
+      return history.push(`/error=Access error`);
+
+    const { location, isAuthenticated } = this.props;
+    const { search } = location;
+
+    const queryParams = getObjectByLocation(location);
+    const url = location.pathname;
+    const posSeparator = url.lastIndexOf("/");
+    const type = url.slice(posSeparator + 1);
+    const confirmLinkData = Object.assign({ type }, queryParams);
+
+    let path = "";
+    if (!isAuthenticated) {
+      path = "/login";
+    }
+
+    checkConfirmLink(confirmLinkData)
+      .then(validationResult => {
+        switch (validationResult) {
+          case ValidationResult.Ok:
+            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(1)}`;
+            const linkData = {
+              ...confirmLinkData,
+              confirmHeader
+            };
+            this.setState({
+              isLoaded: true,
+              linkData
+            });
+            break;
+          case ValidationResult.Invalid:
+            history.push(`${path}/error=Invalid link`);
+            break;
+          case ValidationResult.Expired:
+            history.push(`${path}/error=Expired link`);
+            break;
+          default:
+            history.push(`${path}/error=Unknown error`);
+            break;
+        }
+      })
+      .catch(error => {
+        history.push(`${path}/error=${error}`);
+      });
+  }
+
+  render() {
+    const { component: Component, ...rest } = this.props;
+
+    console.log(`ConfirmRoute render`, this.props, this.state);
+
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          !this.state.isLoaded ? (
+            <PageLayout
+              sectionBodyContent={
+                <Loader className="pageLoader" type="rombs" size={40} />
+              }
+            />
+          ) : (
+            <Component
+              {...(props = { ...props, linkData: this.state.linkData })}
+            />
+          )
+        }
+      />
+    );
+  }
 }
 
-export default connect(mapStateToProps, { checkConfirmLink })(withRouter(ConfirmRoute));
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  { checkConfirmLink }
+)(withRouter(ConfirmRoute));

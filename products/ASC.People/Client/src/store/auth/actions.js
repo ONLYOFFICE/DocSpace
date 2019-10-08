@@ -1,6 +1,6 @@
 import * as api from "../services/api";
 import { fetchGroups, fetchPeople } from "../people/actions";
-import setAuthorizationToken from "../../store/services/setAuthorizationToken";
+import { setAuthorizationToken } from "../../store/services/client";
 import { getFilterByLocation } from "../../helpers/converters";
 import config from "../../../package.json";
 
@@ -49,8 +49,8 @@ export async function getUserInfo(dispatch) {
   const { user, modules, settings } = await api.getInitInfo();
   let newSettings = settings;
   if (user.isAdmin) {
-    const inviteLinkResp = await api.getInvitationLinks();
-    newSettings = Object.assign(newSettings, inviteLinkResp);
+    const inviteLinks = await api.getInvitationLinks();
+    newSettings = Object.assign(newSettings, inviteLinks);
   }
 
   dispatch(setCurrentUser(user));
@@ -69,18 +69,6 @@ export async function getUserInfo(dispatch) {
   }
 
   return dispatch(setIsLoaded(true));
-}
-
-export function login(data) {
-  return dispatch => {
-    return api
-      .login(data)
-      .then(res => {
-        const token = res.data.response.token;
-        setAuthorizationToken(token);
-      })
-      .then(() => getUserInfo(dispatch));
-  };
 }
 
 export function logout() {

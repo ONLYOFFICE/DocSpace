@@ -74,7 +74,7 @@ const SectionHeaderContent = props => {
   const onInviteAgainClick = () => {
     resendUserInvites(selectedUserIds)
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
+      .catch(error => toastr.error(error));
   };
   const getUserContextOptions = (user, viewer, t) => {
 

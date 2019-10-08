@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import { welcomePageTitle } from './../../../../helpers/customNames';
-import { getConfirmationInfo, createConfirmUser, logout } from '../../../../store/auth/actions';
+import { getConfirmationInfo, createConfirmUser, logout, login } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 const inputWidth = '400px';
@@ -71,9 +71,16 @@ class Confirm extends React.PureComponent {
         };
     }
 
-    onSubmit = (e) => {
-        this.setState({ isLoading: true }, function () {
-            const { history, createConfirmUser, logout, linkData } = this.props;
+    /*componentWillMount() {
+        const { isAuthenticated, logout } = this.props;
+
+        if(isAuthenticated)
+            logout();
+    }*/
+
+    onSubmit = () => {
+        this.setState({ isLoading: true }, () => {
+            const { history, createConfirmUser, linkData } = this.props;
             const isVisitor = parseInt(linkData.emplType) === 2;
 
             this.setState({ errorText: "" });
@@ -118,16 +125,19 @@ class Confirm extends React.PureComponent {
                 email: this.state.email
             };
             const registerData = Object.assign(personalData, { isVisitor: isVisitor })
-            logout();
+
             createConfirmUser(registerData, loginData, this.state.key)
-                .then(() => window.location.href = '/')
-                .catch(e => {
-                    console.error("confirm error", e);
+                .then(() => { 
+                   toastr.success("User has been created successfully");
+                   return history.push('/');
+                })
+                .catch((error) => {
+                    console.error("confirm error", error);
                     this.setState({
-                        errorText: e.message,
+                        errorText: error,
                         isLoading: false
                     });
-                })
+                });
         });
     };
 
@@ -337,8 +347,9 @@ const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...
 function mapStateToProps(state) {
     return {
         isConfirmLoaded: state.auth.isConfirmLoaded,
-        settings: state.auth.password
+        isAuthenticated: state.auth.isAuthenticated,
+        settings: state.auth.settings.passwordSettings
     };
 }
 
-export default connect(mapStateToProps, { getConfirmationInfo, createConfirmUser, logout })(withRouter(withTranslation()(CreateUserForm)));
+export default connect(mapStateToProps, { getConfirmationInfo, createConfirmUser, login, logout })(withRouter(withTranslation()(CreateUserForm)));

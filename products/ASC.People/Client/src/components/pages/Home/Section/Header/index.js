@@ -97,7 +97,7 @@ const SectionHeaderContent = props => {
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
+      .catch(error => toastr.error(error));
   }, [selectedUserIds]);
 
   const onDelete = useCallback(() => {
@@ -107,7 +107,7 @@ const SectionHeaderContent = props => {
         toastr.success("Users have been removed successfully");
         return fetchPeople(filter);
       })
-      .catch(e => toastr.error("ERROR"))
+      .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   }, [selectedUserIds, onLoading, filter]);
 

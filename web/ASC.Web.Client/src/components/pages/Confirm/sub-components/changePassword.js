@@ -80,7 +80,7 @@ class Form extends React.PureComponent {
   onSubmit = e => {
     this.setState({ isLoading: true }, function() {
       const { userId, password, key } = this.state;
-      const { history, changePassword, logout } = this.props;
+      const { history, changePassword } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -95,15 +95,13 @@ class Form extends React.PureComponent {
         return false;
       }
 
-      changePassword(userId, { password }, key)
+      changePassword(userId, password, key)
         .then(() => {
-          logout();
           toastr.success(this.props.t("ChangePasswordSuccess"));
           history.push("/");
         })
-        //.catch((res) => toastr.error(res.data))
-        .catch(e => {
-          toastr.error(this.props.t(`${e.message}`));
+        .catch(error => {
+          toastr.error(this.props.t(`${error}`));
           this.setState({ isLoading: false });
         });
     });
@@ -112,8 +110,8 @@ class Form extends React.PureComponent {
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
     getConfirmationInfo(this.state.key)
-    .catch(e => {
-      toastr.error(this.props.t(`${e.message}`));
+    .catch(error => {
+      toastr.error(this.props.t(`${error}`));
       history.push("/");
     });
 

@@ -135,13 +135,6 @@ export function createUser() {
   return fakeResponse(data);
 }
 
-export function validateConfirmLink(link) {
-  const data = {
-    isValid: true
-  };
-  return fakeResponse(data);
-}
-
 export function changePassword() {
   const data = { password: "password" };
 

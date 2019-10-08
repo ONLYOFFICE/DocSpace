@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Button, PageLayout, Text } from 'asc-web-components';
 import styled from 'styled-components';
@@ -6,7 +7,7 @@ import { welcomePageTitle } from './../../../../helpers/customNames';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { deleteSelf } from './../../../../store/services/api';
-import setAuthorizationToken from './../../../../store/services/setAuthorizationToken';
+import { logout } from '../../../../store/auth/actions';
 
 const ProfileRemoveContainer = styled.div`
     display: flex;
@@ -37,17 +38,18 @@ class ProfileRemove extends React.PureComponent {
     };
   }
 
-  onDeleteProfile = (e) => {
+  onDeleteProfile = () => {
     this.setState({ isLoading: true }, function () {
-      const { linkData } = this.props;
+      const { linkData, logout } = this.props;
       deleteSelf(linkData.confirmHeader)
         .then((res) => {
           this.setState({
             isLoading: false,
             isProfileDeleted: true
           });
-          setAuthorizationToken();
+          //setAuthorizationToken();
           console.log('success delete', res)
+          return logout()
         })
         .catch((e) => {
           this.setState({ isLoading: false });
@@ -106,4 +108,4 @@ ProfileRemove.propTypes = {
 const ProfileRemoveForm = (props) => (<PageLayout sectionBodyContent={<ProfileRemove {...props} />} />);
 
 
-export default withRouter(withTranslation()(ProfileRemoveForm));
+export default connect(null, { logout })(withRouter(withTranslation()(ProfileRemoveForm)));

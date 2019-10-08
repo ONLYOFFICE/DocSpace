@@ -94,7 +94,7 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
   const { t } = useTranslation("translation", { i18n });
-  const { login, match, location, history, language } = props;
+  const { login, match, history, language } = props;
   const { params } = match;
   const [identifier, setIdentifier] = useState(params.confirmedEmail || "");
   const [identifierValid, setIdentifierValid] = useState(true);
@@ -127,12 +127,7 @@ const Form = props => {
   const onSendPasswordInstructions = useCallback(() => {
     setIsLoading(true);
     sendInstructionsToChangePassword(email)
-      .then(res => {
-        res.data.error
-          ? toastr.error(res.data.error.message)
-          : toastr.success(res.data.response);
-      })
-      .catch(error => toastr.error(error.message))
+      .then(res => toastr.success(res), error => toastr.error(error.message))
       .finally(onDialogClose());
   }, [email]);
 
@@ -140,12 +135,16 @@ const Form = props => {
     errorText && setErrorText("");
     let hasError = false;
 
-    if (!identifier.trim()) {
+    const userName = identifier.trim();
+
+    if (!userName) {
       hasError = true;
       setIdentifierValid(!hasError);
     }
 
-    if (!password.trim()) {
+    const pass = password.trim();
+
+    if (!pass) {
       hasError = true;
       setPasswordValid(!hasError);
     }
@@ -154,23 +153,19 @@ const Form = props => {
 
     setIsLoading(true);
 
-    const payload = {
-      userName: identifier,
-      password: password
-    };
-
-    login(payload)
-      .then(function() {
-        console.log("auth success", match, location, history);
+    login(userName, pass).then(
+      () => {
+        //console.log("auth success", match, location, history);
         setIsLoading(false);
         history.push("/");
-      })
-      .catch(e => {
-        console.error("auth error", e);
-        setErrorText(e.message);
+      },
+      error => {
+        //console.error("auth error", error);
+        setErrorText(error);
         setIsLoading(false);
-      });
-  }, [errorText, history, identifier, location, login, match, password]);
+      }
+    );
+  }, [errorText, history, identifier, login, password]);
 
   const onKeyPress = useCallback(
     event => {
