@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
-import { Text } from "../text";
 
 const TooltipStyle = styled.div`
   .__react_component_tooltip {
@@ -12,8 +11,10 @@ const TooltipStyle = styled.div`
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+    opacity: 1;
+    padding: 16px;
 
-    max-width: 340px;
+    max-width: ${props => (props.maxWidth ? props.maxWidth + "px" : `340px`)};
 
     &:before {
       border: none;
@@ -32,18 +33,19 @@ class Tooltip extends Component {
   }
 
   render() {
-    const { type, effect, place } = this.props;
+    const { effect, place, maxWidth, id, getContent, offset } = this.props;
 
     return (
-      <TooltipStyle>
+      <TooltipStyle maxWidth={maxWidth}>
         <ReactTooltip
-          id="tooltipContent"
-          getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
-          type={type}
-          border={true}
+          id={id}
+          getContent={getContent}
+          type="light"
           effect={effect}
           place={place}
           globalEventOff="click"
+          offset={offset}
+          wrapper="span"
         />
       </TooltipStyle>
     );
@@ -51,17 +53,18 @@ class Tooltip extends Component {
 }
 
 Tooltip.propTypes = {
-  tooltipContent: PropTypes.string,
+  id: PropTypes.string,
   effect: PropTypes.oneOf(["float", "solid"]),
-  type: PropTypes.oneOf(["success", "warning", "error", "info", "light"]),
-  place: PropTypes.oneOf(["top", "right", "bottom", "left"])
+  place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
+  maxWidth: PropTypes.number,
+  offset: PropTypes.object,
+  getContent: PropTypes.func
 };
 
 Tooltip.defaultProps = {
-  type: "light",
-  effect: "solid",
+  effect: "float",
   place: "top",
-  border: true
+  offset: { right: 70 }
 };
 
 export default Tooltip;
