@@ -100,7 +100,7 @@ class SectionBodyContent extends React.PureComponent {
                     </Text.Body>
                   )
                 )
-                .catch(e => toastr.error("ERROR"))
+                .catch(error => toastr.error(error))
                 .finally(() => onLoading(false));
               this.onDialogClose();
             }}
@@ -172,7 +172,7 @@ class SectionBodyContent extends React.PureComponent {
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id])
       .then(() => toastr.success("SUCCESS Context action: Disable"))
-      .catch(e => toastr.error("FAILED Context action: Disable", e))
+      .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
 
@@ -182,7 +182,7 @@ class SectionBodyContent extends React.PureComponent {
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id])
       .then(() => toastr.success("SUCCESS Context action: Enable"))
-      .catch(e => toastr.error("FAILED Context action: Enable", e))
+      .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
 
@@ -230,7 +230,7 @@ class SectionBodyContent extends React.PureComponent {
                   toastr.success("User has been removed successfully");
                   return fetchPeople(filter);
                 })
-                .catch(e => toastr.error("ERROR"))
+                .catch(error => toastr.error(error))
                 .finally(() => onLoading(false));
               this.onDialogClose();
             }}
@@ -290,7 +290,7 @@ class SectionBodyContent extends React.PureComponent {
                     </Text.Body>
                   )
                 )
-                .catch(e => toastr.error("ERROR"))
+                .catch(error => toastr.error(error))
                 .finally(() => onLoading(false));
               this.onDialogClose();
             }}
@@ -320,7 +320,7 @@ class SectionBodyContent extends React.PureComponent {
           </Text.Body>
         )
       )
-      .catch(e => toastr.error("ERROR"))
+      .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
   getUserContextOptions = (user, viewer) => {

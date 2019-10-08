@@ -3,7 +3,6 @@ import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
 import { fetchPeople } from "../people/actions";
 import { setCurrentUser } from "../auth/actions";
-import { checkResponseError } from "../../helpers/utils";
 
 export const SET_PROFILE = 'SET_PROFILE';
 export const CLEAN_PROFILE = 'CLEAN_PROFILE';
@@ -21,15 +20,13 @@ export function resetProfile() {
     };
 };
 
-
-
 export function employeeWrapperToMemberModel(profile) {
     const comment = profile.notes;
     const department = profile.groups ? profile.groups.map(group => group.id) : [];
     const worksFrom = profile.workFrom;
 
     return { ...profile, comment, department, worksFrom };
-}
+};
 
 export function fetchProfile(userName) {
     return (dispatch, getState) => {
@@ -40,16 +37,15 @@ export function fetchProfile(userName) {
         } else {
             const user = getUserByUserName(people.users, userName);
             if (!user) {
-                api.getUser(userName).then(res => {
-                    checkResponseError(res);
-                    dispatch(setProfile(res.data.response));
+                api.getUser(userName).then(user => {
+                    dispatch(setProfile(user));
                 });
             } else {
                 dispatch(setProfile(user));
             }
         }
     };
-}
+};
 
 export function createProfile(profile) {
     return (dispatch, getState) => {
@@ -58,10 +54,9 @@ export function createProfile(profile) {
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
-        return api.createUser(member).then(res => {
-            checkResponseError(res);
-            result = res.data.response;
-            return dispatch(setProfile(result));
+        return api.createUser(member).then(user => {
+            result = user;
+            return dispatch(setProfile(user));
         }).then(() => {
             return fetchPeople(filter, dispatch);
         }).then(() => {
@@ -77,10 +72,9 @@ export function updateProfile(profile) {
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
-        return api.updateUser(member).then(res => {
-            checkResponseError(res);
-            result = res.data.response;
-            return Promise.resolve(dispatch(setProfile(result)));
+        return api.updateUser(member).then(user => {
+            result = user;
+            return Promise.resolve(dispatch(setProfile(user)));
         }).then(() => {
             return fetchPeople(filter, dispatch);
         }).then(() => {
@@ -91,63 +85,15 @@ export function updateProfile(profile) {
 
 export function updateProfileCulture(id, culture) {
     return (dispatch) => {
-        return api.updateUserCulture(id, culture).then(res => {
-            checkResponseError(res);
-            const result = res.data.response;
-            dispatch(setCurrentUser(result));
-            return dispatch(setProfile(result));
+        return api.updateUserCulture(id, culture).then(user => {
+            dispatch(setCurrentUser(user));
+            return dispatch(setProfile(user));
         });
-    };
-};
-export function loadAvatar(profileId, data) {
-    return (dispatch, getState) => {
-        return api.loadAvatar(
-            profileId,
-            data
-        ).then(res => {
-            checkResponseError(res);
-            return Promise.resolve(res);
-        });
-    };
-};
-export function createThumbnailsAvatar(profileId, data) {
-    return (dispatch, getState) => {
-        return api.createThumbnailsAvatar(
-            profileId,
-            data
-        ).then(res => {
-            checkResponseError(res);
-            return Promise.resolve(res);
-        });
-    };
-};
-export function deleteAvatar(profileId) {
-    return (dispatch, getState) => {
-        return api.deleteAvatar(profileId)
-            .then(res => {
-                checkResponseError(res);
-                return Promise.resolve(res);
-            });
-
     };
 };
 
 export function getInvitationLink(isGuest = false) {
     return dispatch => {
-        return api.getInvitationLink(isGuest)
-            .then(res => {
-                checkResponseError(res);
-                return Promise.resolve(res);
-            });
+        return api.getInvitationLink(isGuest);
     }
-}
-
-export function getShortenedLink(link) {
-    return dispatch => {
-        return api.getShortenedLink(link)
-            .then(res => {
-                checkResponseError(res);
-                return Promise.resolve(res);
-            });
-    }
-}
+};

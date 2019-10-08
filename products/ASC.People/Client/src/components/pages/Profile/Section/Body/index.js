@@ -200,16 +200,16 @@ class ProfileInfo extends React.PureComponent {
   onSendEmailChangeInstructions = () => {
     sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.value)
       .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+        toastr.success(res);
       })
-      .catch((error) => toastr.error(error.message))
+      .catch((error) => toastr.error(error))
       .finally(this.onDialogClose);
   }
 
   onSentInviteAgain = id => {
     resendUserInvites(new Array(id))
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
+      .catch(error => toastr.error(error));
   };
 
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile, loadAvatar, createThumbnailsAvatar, deleteAvatar } from '../../../../../store/profile/actions';
+import { updateProfile } from '../../../../../store/profile/actions';
 import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -15,6 +15,7 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
+import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
 
 class UpdateUserForm extends React.Component {
 
@@ -153,8 +154,8 @@ class UpdateUserForm extends React.Component {
         this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
-        toastr.error(error.message)
-        this.setState({isLoading: false})
+        toastr.error(error);
+        this.setState({isLoading: false});
       });
   }
 
@@ -201,9 +202,9 @@ class UpdateUserForm extends React.Component {
   onSendEmailChangeInstructions() {
     sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
       .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+        toastr.success(res);
       })
-      .catch((error) => toastr.error(error.message))
+      .catch((error) => toastr.error(error))
       .finally(this.onDialogClose);
   }
 
@@ -232,9 +233,9 @@ class UpdateUserForm extends React.Component {
   onSendPasswordChangeInstructions() {
     sendInstructionsToChangePassword(this.state.profile.email)
       .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+        toastr.success(res);
       })
-      .catch((error) => toastr.error(error.message))
+      .catch((error) => toastr.error(error))
       .finally(this.onDialogClose);
   }
 
@@ -324,61 +325,51 @@ class UpdateUserForm extends React.Component {
     let _this = this;
     data.append("file", file);
     data.append("Autosave", false);
-    this.props.loadAvatar(this.state.profile.id, data)
-      .then((result) => {
+    loadAvatar(this.state.profile.id, data)
+      .then((response) => {
         var img = new Image();
         img.onload = function () {
             var stateCopy = Object.assign({}, _this.state);
             stateCopy.avatar =  {
-              tmpFile: result.data.response.data,
-              image: result.data.response.data,
+              tmpFile: response.data,
+              image: response.data,
               defaultWidth: img.width,
               defaultHeight: img.height
             }
             _this.setState(stateCopy);
         };
-        img.src = result.data.response.data;
+        img.src = response.data;
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
   }
   onSaveAvatar(isUpdate, result) {
     if(isUpdate){
-      this.props.createThumbnailsAvatar(this.state.profile.id, {
+      createThumbnailsAvatar(this.state.profile.id, {
         x: Math.round(result.x*this.state.avatar.defaultWidth - result.width/2),
         y: Math.round(result.y*this.state.avatar.defaultHeight - result.height/2),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile
       })
-      .then((result) => {
-        if(result.status === 200){
+      .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = '';
-          stateCopy.profile.avatarMax = result.data.response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
+          stateCopy.profile.avatarMax = response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
           toastr.success("Success");
           this.setState(stateCopy);
-        }
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
     }else{
-      this.props.deleteAvatar(this.state.profile.id)
-      .then((result) => {
-        if(result.status === 200){
+      deleteAvatar(this.state.profile.id)
+      .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.profile.avatarMax = result.data.response.big;
+          stateCopy.profile.avatarMax = response.big;
           toastr.success("Success");
           this.setState(stateCopy);
-        }
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
     }
   }
   onCloseAvatarEditor() {
@@ -626,9 +617,6 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    updateProfile,
-    loadAvatar,
-    deleteAvatar,
-    createThumbnailsAvatar
+    updateProfile
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

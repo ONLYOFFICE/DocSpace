@@ -1,9 +1,8 @@
 import * as api from "../services/api";
 import { fetchGroups, fetchPeople } from "../people/actions";
-import setAuthorizationToken from "../../store/services/setAuthorizationToken";
+import { setAuthorizationToken } from "../../store/services/client";
 import { getFilterByLocation } from "../../helpers/converters";
 import config from "../../../package.json";
-import { checkResponseError } from "../../helpers/utils";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -50,8 +49,8 @@ export async function getUserInfo(dispatch) {
   const { user, modules, settings } = await api.getInitInfo();
   let newSettings = settings;
   if (user.isAdmin) {
-    const inviteLinkResp = await api.getInvitationLinks();
-    newSettings = Object.assign(newSettings, inviteLinkResp);
+    const inviteLinks = await api.getInvitationLinks();
+    newSettings = Object.assign(newSettings, inviteLinks);
   }
 
   dispatch(setCurrentUser(user));
@@ -70,20 +69,6 @@ export async function getUserInfo(dispatch) {
   }
 
   return dispatch(setIsLoaded(true));
-}
-
-export function login(data) {
-  return dispatch => {
-    return api
-      .login(data)
-      .then(res => {
-        checkResponseError(res);
-        const token = res.data.response.token;
-        setAuthorizationToken(token);
-      })
-      .then(() => getUserInfo(dispatch))
-      .catch((e) => console.error(e));
-  };
 }
 
 export function logout() {

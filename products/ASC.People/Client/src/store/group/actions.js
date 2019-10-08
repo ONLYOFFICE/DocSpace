@@ -1,6 +1,5 @@
 import * as api from "../../store/services/api";
-import { setGroups, fetchPeople, fetchGroups } from "../people/actions";
-import { checkResponseError } from "../../helpers/utils";
+import { setGroups, fetchPeople } from "../people/actions";
 import history from "../../history";
 
 export const SET_GROUP = "SET_GROUP";
@@ -21,10 +20,8 @@ export function resetGroup() {
 
 export function fetchGroup(groupId) {
   return dispatch => {
-    api.getGroup(groupId).then(res => {
-      checkResponseError(res);
-      dispatch(setGroup(res.data.response || null));
-    });
+    api.getGroup(groupId)
+    .then(group => dispatch(setGroup(group || null)));
   };
 }
 
@@ -35,10 +32,8 @@ export function createGroup(groupName, groupManager, members) {
 
     return api
       .createGroup(groupName, groupManager, members)
-      .then(res => {
-        checkResponseError(res);
+      .then(newGroup => {
         history.goBack();
-        const newGroup = res.data.response;
         dispatch(resetGroup());
         dispatch(setGroups([...groups, newGroup]));
         return Promise.resolve(newGroup);
@@ -53,10 +48,8 @@ export function updateGroup(id, groupName, groupManager, members) {
 
     return api
       .updateGroup(id, groupName, groupManager, members)
-      .then(res => {
-        checkResponseError(res);
+      .then(newGroup => {
         history.goBack();
-        const newGroup = res.data.response;
         dispatch(resetGroup());
         const newGroups = groups.map(g =>
           g.id === newGroup.id ? newGroup : g
@@ -75,7 +68,6 @@ export function deleteGroup(id) {
     return api
       .deleteGroup(id)
       .then(res => {
-        checkResponseError(res);
         return dispatch(setGroups(groups.filter(g => g.id !== id)));
       })
       .then(() => {

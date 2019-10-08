@@ -246,7 +246,7 @@ class SectionBodyContent extends React.Component {
         toastr.success(`Group '${group.name}' has been saved successfully`);
       })
       .catch(error => {
-        toastr.error(error.message);
+        toastr.error(error);
         this.setState({ inLoading: false });
       });
   };
