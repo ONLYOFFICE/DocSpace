@@ -146,7 +146,7 @@ export function changePassword(userId, password, key) {
 export function changeEmail(userId, email, key) {
     return dispatch => {
         return api.changeEmail(userId, email, key)
-            .then(email => dispatch(setNewEmail(email)));
+            .then(user => dispatch(setNewEmail(user.email)));
     }
 }
 
