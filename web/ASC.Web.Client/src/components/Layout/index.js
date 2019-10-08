@@ -6,15 +6,12 @@ import { Layout, Toast } from "asc-web-components";
 import { logout } from "../../store/auth/actions";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
+import isEqual from "lodash/isEqual";
 
 class PureStudioLayout extends React.Component {
-    shouldComponentUpdate(nextProps) {
-        if(this.props.hasChanges !== nextProps.hasChanges) {
-            return true;
-        }
-
-        return false;
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+  }
 
     onProfileClick = () => {
         window.location.href = "/products/people/view/@self";
