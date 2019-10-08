@@ -95,7 +95,10 @@ class Confirm extends React.PureComponent {
         this.setState({ passwordValid: !hasError });
       }
 
-      !this.state.password.trim() && this.setState({ passwordEmpty: true });
+      if (!this.state.password.trim()) {
+        this.setState({ passwordEmpty: true });
+        hasError = true;
+      }
 
       if (hasError) {
         this.setState({ isLoading: false });
