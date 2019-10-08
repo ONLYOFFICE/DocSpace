@@ -97,8 +97,8 @@ class Form extends React.PureComponent {
 
       changePassword(userId, password, key)
         .then(() => {
-          toastr.success(this.props.t("ChangePasswordSuccess"));
           history.push("/");
+          toastr.success(this.props.t("ChangePasswordSuccess"));
         })
         .catch(error => {
           toastr.error(this.props.t(`${error}`));
@@ -212,12 +212,12 @@ const ChangePasswordForm = props => (
   <PageLayout sectionBodyContent={<Form {...props} />} />
 );
 
-function mapStateToProps(store) {
+function mapStateToProps(state) {
   return {
-    isValidConfirmLink: store.auth.isValidConfirmLink,
-    isConfirmLoaded: store.auth.isConfirmLoaded,
-    settings: store.auth.password,
-    isAuthenticated: store.auth.isAuthenticated
+    isValidConfirmLink: state.auth.isValidConfirmLink,
+    isConfirmLoaded: state.auth.isConfirmLoaded,
+    settings: state.auth.settings.passwordSettings,
+    isAuthenticated: state.auth.isAuthenticated
   };
 }
 
