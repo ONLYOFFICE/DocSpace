@@ -78,15 +78,6 @@ class Confirm extends React.PureComponent {
             logout();
     }*/
 
-    onError = (error) => {
-        console.error("confirm error", error);
-        this.setState({
-            errorText: error,
-            isLoading: false
-        });
-        return Promise.reject(error);
-    }
-
     onSubmit = () => {
         this.setState({ isLoading: true }, () => {
             const { history, createConfirmUser, linkData } = this.props;
@@ -140,7 +131,13 @@ class Confirm extends React.PureComponent {
                    toastr.success("User has been created successfully");
                    return history.push('/');
                 })
-                .catch(this.onError);
+                .catch((error) => {
+                    console.error("confirm error", error);
+                    this.setState({
+                        errorText: error,
+                        isLoading: false
+                    });
+                });
         });
     };
 

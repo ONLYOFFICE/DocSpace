@@ -20,7 +20,7 @@ class ChangeEmail extends React.PureComponent {
                 })
                 .catch((e) => {
                     console.log('change client email error', e)
-                    window.location.href = `${window.location.origin}/error=${e.message}`;
+                    window.location.href = `${window.location.origin}/error=${e}`;
                 });
         }
     }

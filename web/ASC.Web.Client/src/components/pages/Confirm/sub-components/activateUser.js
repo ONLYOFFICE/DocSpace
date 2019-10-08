@@ -113,10 +113,10 @@ class Confirm extends React.PureComponent {
       };
       activateConfirmUser(personalData, loginData, this.state.key, this.state.userId, EmployeeActivationStatus.Activated)
         .then(() => window.location.href = '/')
-        .catch(e => {
-          console.error("activate error", e);
+        .catch(error => {
+          console.error("activate error", error);
           this.setState({
-            errorText: e.message,
+            errorText: error,
             isLoading: false
           });
         });

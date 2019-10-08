@@ -2,13 +2,11 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import history from "../../history";
 import { AUTH_KEY } from "../../helpers/constants.js";
-import { checkResponseError } from "../../helpers/utils";
 
 const PREFIX = "api";
 const VERSION = "2.0";
 const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 
-//let authTokenRequest;
 
 /**
  * @description axios instance for ajax requests
@@ -69,6 +67,13 @@ export function setAuthorizationToken(token) {
     cookies.remove(AUTH_KEY, {
       path: "/"
     });
+  }
+}
+
+const checkResponseError = (res) => {
+  if (res && res.data && res.data.error) {
+      console.error(res.data.error);
+      throw new Error(res.data.error.message);
   }
 }
 

@@ -64,8 +64,8 @@ class ConfirmRoute extends React.Component {
             break;
         }
       })
-      .catch(e => {
-        history.push(`${path}/error=${e.message}`);
+      .catch(error => {
+        history.push(`${path}/error=${error}`);
       });
   }
 
