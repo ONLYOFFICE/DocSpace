@@ -45,7 +45,7 @@ class ConfirmRoute extends React.Component {
           case ValidationResult.Ok:
             const confirmHeader = `type=${confirmLinkData.type}&${search.slice(1)}`;
             const linkData = {
-              confirmLinkData,
+              ...confirmLinkData,
               confirmHeader
             };
             this.setState({

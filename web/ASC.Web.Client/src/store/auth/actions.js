@@ -158,14 +158,14 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
     }
 
     return dispatch => {
-        return api.changePassword(userId, { password: loginData.password }, key)
+        return api.changePassword(userId, loginData.password, key)
             .then(data => {
                 console.log('set password success:', data);
                 return api.updateActivationStatus(activationStatus, userId, key);
             })
             .then(data => {
                 console.log("activation success, result:", data);
-                return dispatch(login(loginData));
+                return dispatch(login(loginData.userName, loginData.password));
             })
             .then(data => {
                 console.log("log in, result:", data);
