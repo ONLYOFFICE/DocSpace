@@ -282,12 +282,11 @@ const Form = props => {
             label={t("Remember")}
           />
           <TooltipStyle
-            style={{ position: "absolute" }}
             data-for="tooltipContent"
             data-tip={t("RememberHelper")}
             data-event="click focus"
           >
-            <IconButton size={13} iconName="QuestionIcon" />
+            <IconButton isClickable={true} size={13} iconName="QuestionIcon" />
           </TooltipStyle>
         </Col>
       </Row>
@@ -335,10 +334,12 @@ const Form = props => {
       </Collapse>
       <Tooltip
         id="tooltipContent"
+        offset={{right: 110}}
         getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
         type="light"
         effect="float"
         place="top"
+        maxWidth={250}
       />
     </FormContainer>
   );
