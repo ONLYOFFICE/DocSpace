@@ -1,13 +1,7 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
 import { FieldContainer, DatePicker } from "asc-web-components";
-import styled from "styled-components";
 
-const CalendarStyle = styled.div`
-  .calendar_day {
-    line-height: 2em;
-  }
-`;
 class DateField extends React.Component {
   shouldComponentUpdate(nextProps) {
     return !isEqual(this.props, nextProps);
@@ -15,7 +9,7 @@ class DateField extends React.Component {
 
   render() {
     console.log("DateField render");
-    
+
     const {
       isRequired,
       hasError,
@@ -28,25 +22,23 @@ class DateField extends React.Component {
       inputOnChange,
       inputTabIndex
     } = this.props;
-    
+
     return (
       <FieldContainer
         isRequired={isRequired}
         hasError={hasError}
         labelText={labelText}
       >
-        <CalendarStyle>
-          <DatePicker
-            name={inputName}
-            selectedDate={inputValue}
-            disabled={inputIsDisabled}
-            onChange={inputOnChange}
-            hasError={hasError}
-            tabIndex={inputTabIndex}
-            displayType="auto"
-            calendarHeaderContent={calendarHeaderContent}
-          />
-        </CalendarStyle>
+        <DatePicker
+          name={inputName}
+          selectedDate={inputValue}
+          disabled={inputIsDisabled}
+          onChange={inputOnChange}
+          hasError={hasError}
+          tabIndex={inputTabIndex}
+          displayType="auto"
+          calendarHeaderContent={calendarHeaderContent}
+        />
       </FieldContainer>
     );
   }

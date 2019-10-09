@@ -494,7 +494,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={5}
             />
             <DateField
-              calendarHeaderContent="Select date"
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -525,7 +525,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
             />
             <DateField
-              calendarHeaderContent="Select date"
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}

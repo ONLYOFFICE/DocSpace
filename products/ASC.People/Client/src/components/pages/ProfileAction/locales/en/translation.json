@@ -41,5 +41,6 @@
   "unknownTypeError": "Unknown image file type",
   "maxSizeFileError": "Maximum file size exceeded",
   "unknownError":     "Error",
-  "editAvatar": "Edit photo"
+  "editAvatar": "Edit photo",
+  "CalendarSelectDate": "Select Date:"
 }

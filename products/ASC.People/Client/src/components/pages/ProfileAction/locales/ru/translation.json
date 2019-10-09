@@ -41,5 +41,6 @@
   "unknownTypeError": "Неизвестный тип файла изображения",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "unknownError":     "Ошибка",
-  "editAvatar": "Изменить фотографию"
+  "editAvatar": "Изменить фотографию",
+  "CalendarSelectDate": "Выберите дату:"
 }
