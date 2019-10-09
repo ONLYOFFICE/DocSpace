@@ -46,7 +46,7 @@ namespace ASC.Studio.Notify
                     services.AddSingleton<StudioNotifyServiceSender>();
                     services.AddHostedService<ServiceLauncher>();
                     services.AddHttpContextAccessor()
-                            .AddStorage()
+                            .AddStorage(hostContext.Configuration)
                             .AddLogManager();
 
                     var serviceProvider = services.BuildServiceProvider();

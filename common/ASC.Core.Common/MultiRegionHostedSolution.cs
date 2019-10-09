@@ -198,9 +198,12 @@ namespace ASC.Core
 
         private void Initialize()
         {
+            var connectionStrings = Configuraion.GetConnectionStrings();
+            var dbConnectionStrings = Configuraion.GetConnectionStrings(dbid);
+
             if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
-                foreach (var cs in ConfigurationManager.ConnectionStrings)
+                foreach (var cs in Configuraion.GetConnectionStrings())
                 {
                     if (cs.Name.StartsWith(dbid + "."))
                     {
@@ -209,17 +212,17 @@ namespace ASC.Core
                     }
                 }
 
-                regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                regions[dbid] = new HostedSolution(dbConnectionStrings);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                    regions[string.Empty] = new HostedSolution(dbConnectionStrings);
                 }
             }
             else
             {
 
                 var find = false;
-                foreach (var cs in ConfigurationManager.ConnectionStrings)
+                foreach (var cs in connectionStrings)
                 {
                     if (cs.Name.StartsWith(dbid + "."))
                     {
@@ -230,15 +233,15 @@ namespace ASC.Core
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                    regions[dbid] = new HostedSolution(dbConnectionStrings);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                        regions[string.Empty] = new HostedSolution(dbConnectionStrings);
                     }
                 }
                 else
                 {
-                    foreach (var connectionString in ConfigurationManager.ConnectionStrings)
+                    foreach (var connectionString in connectionStrings)
                     {
                         try
                         {

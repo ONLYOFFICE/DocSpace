@@ -29,6 +29,7 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using ASC.Common.Utils;
+    using Microsoft.Extensions.Configuration;
 
     public class DbBaseTest<TDbService>
     {
@@ -44,10 +45,11 @@ namespace ASC.Core.Common.Tests
             private set;
         }
 
+        internal IConfiguration Configuration { get; set; }
 
         protected DbBaseTest()
         {
-            Service = (TDbService)Activator.CreateInstance(typeof(TDbService), ConfigurationManager.ConnectionStrings["core"]);
+            Service = (TDbService)Activator.CreateInstance(typeof(TDbService), Configuration.GetConnectionStrings("core"));
             Tenant = 1024;
 
             //var pattern = "%message (%property{duration} ms)     %property{sql}    %property{sqlParams}%newline";

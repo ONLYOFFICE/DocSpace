@@ -43,7 +43,7 @@ namespace ASC.Core.Common.Tests
 
         public TariffServiceTest(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
         {
-            var cs = ConfigurationManager.ConnectionStrings["core"];
+            var cs = configuration.GetConnectionStrings("core");
             var tenantService = new DbTenantService(cs, tenantDomainValidator, timeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
             tariffService = new TariffService(cs, new DbQuotaService(cs), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration);

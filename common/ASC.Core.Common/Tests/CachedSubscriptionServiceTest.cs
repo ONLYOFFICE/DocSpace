@@ -31,6 +31,7 @@ namespace ASC.Core.Common.Tests
     using ASC.Common.Utils;
     using ASC.Core.Caching;
     using ASC.Core.Data;
+    using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
     [TestFixture]
@@ -39,9 +40,9 @@ namespace ASC.Core.Common.Tests
         private readonly ISubscriptionService service;
 
 
-        public CachedSubscriptionServiceTest()
+        public CachedSubscriptionServiceTest(IConfiguration configuration)
         {
-            service = new CachedSubscriptionService(new DbSubscriptionService(ConfigurationManager.ConnectionStrings["core"]));
+            service = new CachedSubscriptionService(new DbSubscriptionService(configuration.GetConnectionStrings("core")));
         }
 
 

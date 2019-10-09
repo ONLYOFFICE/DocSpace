@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using CommandLine;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Resource.Manager
@@ -63,7 +64,7 @@ namespace ASC.Resource.Manager
                     return;
                 }
 
-                enabledSettings = ConfigurationManager.GetSetting<EnabledSettings>("enabled");
+                enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
 

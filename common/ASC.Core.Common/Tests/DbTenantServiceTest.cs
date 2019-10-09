@@ -44,7 +44,7 @@ namespace ASC.Core.Common.Tests
 
         public DbTenantServiceTest()
         {
-            userService = new DbUserService(ConfigurationManager.ConnectionStrings["core"]);
+            userService = new DbUserService(Configuration.GetConnectionStrings("core"));
         }
 
 

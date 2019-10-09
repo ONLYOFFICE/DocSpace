@@ -103,7 +103,7 @@ namespace ASC.People
 
 
             services.AddLogManager()
-                    .AddStorage()
+                    .AddStorage(Configuration)
                     .AddWebItemManager()
                     .AddSingleton((r) =>
                     {

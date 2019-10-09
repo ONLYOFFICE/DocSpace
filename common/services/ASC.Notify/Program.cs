@@ -43,7 +43,7 @@ namespace ASC.Notify
                     ConfigurationManager.Init(serviceProvider);
                     CommonServiceProvider.Init(serviceProvider);
 
-                    var c = ConfigurationManager.GetSetting<NotifyServiceCfg>("notify");
+                    var c = hostContext.Configuration.GetSetting<NotifyServiceCfg>("notify");
                     c.Init();
                     services.AddSingleton(c);
                     services.AddSingleton<DbWorker>();

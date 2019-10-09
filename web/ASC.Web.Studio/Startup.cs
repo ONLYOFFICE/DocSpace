@@ -43,7 +43,7 @@ namespace ASC.Web.Studio
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             services.AddHttpContextAccessor()
-                .AddStorage()
+                .AddStorage(Configuration)
                 .AddLogManager();
         }
 

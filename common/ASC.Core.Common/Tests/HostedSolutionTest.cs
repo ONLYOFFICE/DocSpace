@@ -30,15 +30,17 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using ASC.Common.Utils;
     using ASC.Core.Tenants;
+    using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
     [TestFixture]
     public class HostedSolutionTest
     {
+        private IConfiguration Configuration { get; set; }
         [Test]
         public void FindTenants()
         {
-            var h = new HostedSolution(ConfigurationManager.ConnectionStrings["core"]);
+            var h = new HostedSolution(Configuration.GetConnectionStrings("core"));
             var tenants = h.FindTenants("76ff727b-f987-4871-9834-e63d4420d6e9");
             Assert.AreNotEqual(0, tenants.Count);
         }

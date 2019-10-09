@@ -76,7 +76,7 @@ namespace ASC.Web.Api
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             services.AddLogManager()
-                    .AddStorage()
+                    .AddStorage(Configuration)
                     .AddWebItemManager()
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
@@ -108,7 +108,7 @@ namespace ASC.Web.Api
             app.UseSession();
 
             app.UseAuthentication();
-            
+
             app.UseAuthorization();
 
             app.UseCultureMiddleware();
