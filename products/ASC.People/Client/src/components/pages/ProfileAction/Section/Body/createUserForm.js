@@ -378,6 +378,7 @@ class CreateUserForm extends React.Component {
               passwordSettings={settings.passwordSettings}
             />
             <DateField
+              calendarHeaderContent="Select date"
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -397,6 +398,7 @@ class CreateUserForm extends React.Component {
               radioOnChange={this.onInputChange}
             />
             <DateField
+              calendarHeaderContent="Select date"
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
