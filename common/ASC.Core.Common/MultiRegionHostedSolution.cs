@@ -34,6 +34,7 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
@@ -44,11 +45,13 @@ namespace ASC.Core
         private readonly string dbid;
 
         public IConfiguration Configuraion { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
-        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion)
+        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion, InstanceCrypto instanceCrypto)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
+            InstanceCrypto = instanceCrypto;
             Initialize();
         }
 
@@ -119,12 +122,12 @@ namespace ASC.Core
 
         public string CreateAuthenticationCookie(string region, int tenantId, string login, string password)
         {
-            return GetRegionService(region).CreateAuthenticationCookie(tenantId, login, password);
+            return GetRegionService(region).CreateAuthenticationCookie(InstanceCrypto, tenantId, login, password);
         }
 
         public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
         {
-            return GetRegionService(region).CreateAuthenticationCookie(tenantId, userId);
+            return GetRegionService(region).CreateAuthenticationCookie(InstanceCrypto, tenantId, userId);
         }
 
 

@@ -26,9 +26,11 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
@@ -46,9 +48,15 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "email,public_profile"; } }
 
         public FacebookLoginProvider() { }
-        public FacebookLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+        public FacebookLoginProvider(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -58,19 +66,19 @@ namespace ASC.FederatedLogin.LoginProviders
             return RequestProfile(accessToken);
         }
 
-        private static LoginProfile RequestProfile(string accessToken)
+        private LoginProfile RequestProfile(string accessToken)
         {
             var facebookProfile = RequestHelper.PerformRequest(FacebookProfileUrl + "&access_token=" + accessToken);
             var loginProfile = ProfileFromFacebook(facebookProfile);
             return loginProfile;
         }
 
-        internal static LoginProfile ProfileFromFacebook(string facebookProfile)
+        internal LoginProfile ProfileFromFacebook(string facebookProfile)
         {
             var jProfile = JObject.Parse(facebookProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 BirthDay = jProfile.Value<string>("birthday"),
                 Link = jProfile.Value<string>("link"),

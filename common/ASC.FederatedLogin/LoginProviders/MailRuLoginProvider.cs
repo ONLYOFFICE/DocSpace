@@ -31,9 +31,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -73,9 +75,14 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public MailRuLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+        public MailRuLoginProvider(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -100,7 +107,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
         }
 
@@ -136,7 +143,7 @@ namespace ASC.FederatedLogin.LoginProviders
             return loginProfile;
         }
 
-        private static LoginProfile ProfileFromMailRu(string strProfile)
+        private LoginProfile ProfileFromMailRu(string strProfile)
         {
             var jProfile = JArray.Parse(strProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
@@ -144,7 +151,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var mailRuProfiles = jProfile.ToObject<List<MailRuProfile>>();
             if (mailRuProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 EMail = mailRuProfiles[0].email,
                 Id = mailRuProfiles[0].uid,

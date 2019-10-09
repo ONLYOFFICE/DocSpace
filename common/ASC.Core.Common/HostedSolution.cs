@@ -183,27 +183,27 @@ namespace ASC.Core
             tenantService.RemoveTenant(tenant.TenantId);
         }
 
-        public string CreateAuthenticationCookie(int tenantId, string login, string password)
+        public string CreateAuthenticationCookie(InstanceCrypto instanceCrypto, int tenantId, string login, string password)
         {
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
             var u = userService.GetUser(tenantId, login, passwordhash);
-            return u != null ? CreateAuthenticationCookie(tenantId, u.ID, login, passwordhash) : null;
+            return u != null ? CreateAuthenticationCookie(instanceCrypto, tenantId, u.ID, login, passwordhash) : null;
         }
 
-        public string CreateAuthenticationCookie(int tenantId, Guid userId)
+        public string CreateAuthenticationCookie(InstanceCrypto instanceCrypto, int tenantId, Guid userId)
         {
             var u = userService.GetUser(tenantId, userId);
             var password = userService.GetUserPassword(tenantId, userId);
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
-            return u != null ? CreateAuthenticationCookie(tenantId, userId, u.Email, passwordhash) : null;
+            return u != null ? CreateAuthenticationCookie(instanceCrypto, tenantId, userId, u.Email, passwordhash) : null;
         }
 
-        private string CreateAuthenticationCookie(int tenantId, Guid userId, string login, string passwordhash)
+        private string CreateAuthenticationCookie(InstanceCrypto instanceCrypto, int tenantId, Guid userId, string login, string passwordhash)
         {
             var tenantSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
             var userSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId);
-            return CookieStorage.EncryptCookie(tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
+            return CookieStorage.EncryptCookie(instanceCrypto, tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
         }
 
         public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)

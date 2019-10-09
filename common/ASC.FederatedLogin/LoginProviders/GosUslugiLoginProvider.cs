@@ -32,9 +32,11 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Web;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -89,9 +91,15 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public GosUslugiLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+        public GosUslugiLoginProvider(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -115,7 +123,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
         }
 
@@ -212,7 +220,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 throw new Exception("userinfo is incorrect");
             }
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Id = oid,
                 FirstName = userInfo.Value<string>("firstName"),

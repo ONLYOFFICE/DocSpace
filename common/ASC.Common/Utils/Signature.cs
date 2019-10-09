@@ -34,9 +34,16 @@ using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
 {
-    public static class Signature
+    public class Signature
     {
-        public static string Create<T>(T obj)
+        public Signature(MachinePseudoKeys machinePseudoKeys)
+        {
+            MachinePseudoKeys = machinePseudoKeys;
+        }
+
+        public MachinePseudoKeys MachinePseudoKeys { get; }
+
+        public string Create<T>(T obj)
         {
             return Create(obj, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
         }
@@ -48,7 +55,7 @@ namespace ASC.Common.Utils
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
         }
 
-        public static T Read<T>(string signature)
+        public T Read<T>(string signature)
         {
             return Read<T>(signature, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
         }

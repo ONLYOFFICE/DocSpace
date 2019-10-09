@@ -31,7 +31,9 @@ using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 
 namespace ASC.FederatedLogin
 {
@@ -41,6 +43,8 @@ namespace ASC.FederatedLogin
         private static readonly ICacheNotify<LinkerCacheItem> notify = new KafkaCache<LinkerCacheItem>();
         private readonly string dbid;
 
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
         static AccountLinker()
         {
@@ -48,14 +52,16 @@ namespace ASC.FederatedLogin
         }
 
 
-        public AccountLinker(string dbid)
+        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto)
         {
             this.dbid = dbid;
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
         }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
-            return GetLinkedObjects(new LoginProfile { Id = id, Provider = provider });
+            return GetLinkedObjects(new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public IEnumerable<string> GetLinkedObjects(LoginProfile profile)
@@ -92,7 +98,7 @@ namespace ASC.FederatedLogin
             using var db = new DbManager(dbid);
             var query = new SqlQuery("account_links")
 .Select("profile").Where("id", obj);
-            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString((string)x[0]));
+            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
         }
 
         public void AddLink(string obj, LoginProfile profile)
@@ -113,12 +119,12 @@ namespace ASC.FederatedLogin
 
         public void AddLink(string obj, string id, string provider)
         {
-            AddLink(obj, new LoginProfile { Id = id, Provider = provider });
+            AddLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public void RemoveLink(string obj, string id, string provider)
         {
-            RemoveLink(obj, new LoginProfile { Id = id, Provider = provider });
+            RemoveLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public void RemoveLink(string obj, LoginProfile profile)

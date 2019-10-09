@@ -44,13 +44,15 @@ namespace ASC.Web.Core.Files
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
         public IConfiguration Configuration { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
-        public FilesLinkUtility(CommonLinkUtility commonLinkUtility, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration)
+        public FilesLinkUtility(CommonLinkUtility commonLinkUtility, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration, InstanceCrypto instanceCrypto)
         {
             CommonLinkUtility = commonLinkUtility;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
+            InstanceCrypto = instanceCrypto;
             FilesUploaderURL = Configuration["files.uploader.url"] ?? "~";
         }
 

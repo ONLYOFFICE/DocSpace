@@ -38,7 +38,7 @@ namespace ASC.Core.Security.Authentication
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
-        public static bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
+        public static bool DecryptCookie(InstanceCrypto instanceCrypto, string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
         {
             tenant = Tenant.DEFAULT_TENANT;
             userid = Guid.Empty;
@@ -56,7 +56,7 @@ namespace ASC.Core.Security.Authentication
             try
             {
                 cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
-                var s = InstanceCrypto.Decrypt(cookie).Split('$');
+                var s = instanceCrypto.Decrypt(cookie).Split('$');
 
                 if (0 < s.Length) login = s[0];
                 if (1 < s.Length) tenant = int.Parse(s[1]);
@@ -77,15 +77,15 @@ namespace ASC.Core.Security.Authentication
         }
 
 
-        public static string EncryptCookie(TenantCookieSettings TenantCookieSettings, int tenant, Guid userid, string login = null, string password = null)
+        public static string EncryptCookie(InstanceCrypto instanceCrypto, TenantCookieSettings TenantCookieSettings, int tenant, Guid userid, string login = null, string password = null)
         {
             var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
             var expires = TenantCookieSettings.GetExpiresTime(tenant);
             var settingsUser = TenantCookieSettings.GetForUser(tenant, userid);
-            return EncryptCookie(tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
+            return EncryptCookie(instanceCrypto, tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
         }
 
-        public static string EncryptCookie(int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
+        public static string EncryptCookie(InstanceCrypto instanceCrypto, int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
         {
             var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}",
                 (login ?? string.Empty).ToLowerInvariant(),
@@ -97,7 +97,7 @@ namespace ASC.Core.Security.Authentication
                 expires.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
                 indexUser);
 
-            return InstanceCrypto.Encrypt(s);
+            return instanceCrypto.Encrypt(s);
         }
 
 

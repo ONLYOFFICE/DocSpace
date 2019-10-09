@@ -26,8 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -46,9 +48,14 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "sdct-r"; } }
 
         public YahooLoginProvider() { }
-        public YahooLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+        public YahooLoginProvider(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, signature, instanceCrypto, name, order, props, additional) { }
 
         public OAuth20Token Auth(HttpContext context)
         {

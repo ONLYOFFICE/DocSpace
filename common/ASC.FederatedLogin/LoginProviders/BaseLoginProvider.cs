@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -63,16 +65,26 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+
         protected BaseLoginProvider()
         {
 
         }
 
-        protected BaseLoginProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
+        protected BaseLoginProvider(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
         {
-
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
         }
 
         public virtual LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
@@ -89,7 +101,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
         }
 

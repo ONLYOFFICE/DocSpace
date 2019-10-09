@@ -35,6 +35,7 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Textile.Resources;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +50,7 @@ namespace ASC.Notify.Textile
 
         public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
         static TextileStyler()
         {
@@ -58,10 +60,11 @@ namespace ASC.Notify.Textile
             BlockAttributesParser.Styler = new StyleReader(reader.ReadToEnd().Replace("\n", "").Replace("\r", ""));
         }
 
-        public TextileStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        public TextileStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration, InstanceCrypto instanceCrypto)
         {
             CoreBaseSettings = coreBaseSettings;
             Configuration = configuration;
+            InstanceCrypto = instanceCrypto;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -300,7 +303,7 @@ namespace ASC.Notify.Textile
             return string.Format(format,
                                  site,
                                  WebEncoders.Base64UrlEncode(
-                                     Security.Cryptography.InstanceCrypto.Encrypt(
+                                     InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
         }
     }

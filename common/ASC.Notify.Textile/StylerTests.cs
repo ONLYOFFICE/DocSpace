@@ -29,6 +29,7 @@ namespace ASC.Notify.Textile
 {
     using ASC.Core;
     using ASC.Notify.Messages;
+    using ASC.Security.Cryptography;
     using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
@@ -37,6 +38,8 @@ namespace ASC.Notify.Textile
     {
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public IConfiguration Configuration { get; set; }
+        public InstanceCrypto InstanceCrypto { get; set; }
+
         private readonly string pattern = "h1.New Post in Forum Topic: \"==Project(%: \"Sample Title\"==\":\"==http://sssp.teamlab.com==\"" + System.Environment.NewLine +
             "25/1/2022 \"Jim\":\"http://sssp.teamlab.com/myp.aspx\"" + System.Environment.NewLine +
             "has created a new post in topic:" + System.Environment.NewLine +
@@ -56,7 +59,7 @@ namespace ASC.Notify.Textile
         public void TestTextileStyler()
         {
             var message = new NoticeMessage() { Body = pattern };
-            new TextileStyler(CoreBaseSettings, Configuration).ApplyFormating(message);
+            new TextileStyler(CoreBaseSettings, Configuration, InstanceCrypto).ApplyFormating(message);
         }
     }
 }

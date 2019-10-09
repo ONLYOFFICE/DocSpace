@@ -50,6 +50,8 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "Code")]
         private string code;
 
+        public Signature Signature { get; }
+
         public string Code
         {
             get { return Signature.Read<string>(code); }
@@ -59,8 +61,9 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "IsUsed")]
         public bool IsUsed { get; set; }
 
-        public BackupCode(string code)
+        public BackupCode(Signature signature, string code)
         {
+            Signature = signature;
             Code = code;
             IsUsed = false;
         }
@@ -76,19 +79,22 @@ namespace ASC.Web.Studio.Core.TFA
         public SecurityContext SecurityContext { get; }
         public CookiesManager CookiesManager { get; }
         public SetupInfo SetupInfo { get; }
+        public Signature Signature { get; }
 
         public TfaManager(
-            TfaAppUserSettings tfaAppUserSettings, 
-            TfaAppAuthSettings tfaAppAuthSettings, 
-            SecurityContext securityContext, 
+            TfaAppUserSettings tfaAppUserSettings,
+            TfaAppAuthSettings tfaAppAuthSettings,
+            SecurityContext securityContext,
             CookiesManager cookiesManager,
-            SetupInfo setupInfo)
+            SetupInfo setupInfo,
+            Signature signature)
         {
             TfaAppUserSettings = tfaAppUserSettings;
             TfaAppAuthSettings = tfaAppAuthSettings;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
             SetupInfo = setupInfo;
+            Signature = signature;
         }
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)
@@ -169,7 +175,7 @@ namespace ASC.Web.Studio.Core.TFA
                         result.Append(alphabet[b % (alphabet.Length)]);
                     }
 
-                    list.Add(new BackupCode(result.ToString()));
+                    list.Add(new BackupCode(Signature, result.ToString()));
                 }
             }
 

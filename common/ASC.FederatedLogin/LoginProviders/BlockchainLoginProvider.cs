@@ -27,28 +27,30 @@
 using System;
 using System.Linq;
 using System.Security;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
 {
     public static class BlockchainLoginProvider
     {
-        public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext)
+        public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto)
         {
             var tenant = tenantManager.GetCurrentTenant();
             var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
             if (!securityContext.IsAuthenticated || user.IsVisitor(userManager)) throw new SecurityException();
 
-            var loginProfile = new LoginProfile
+            var loginProfile = new LoginProfile(signature, instanceCrypto)
             {
                 Provider = ProviderConstants.Blockchain,
             };
 
-            var linker = new AccountLinker("webstudio");
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto);
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -61,14 +63,14 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress(SecurityContext securityContext)
+        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto)
         {
-            return GetAddress(securityContext.CurrentAccount.ID);
+            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto);
         }
 
-        public static string GetAddress(Guid userId)
+        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto)
         {
-            var linker = new AccountLinker("webstudio");
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto);
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
             if (profile == null) return null;
 

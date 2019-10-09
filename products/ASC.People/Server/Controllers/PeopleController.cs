@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security;
 
 using ASC.Api.Core;
+using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -21,6 +22,7 @@ using ASC.MessagingSystem;
 using ASC.People;
 using ASC.People.Models;
 using ASC.People.Resources;
+using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
@@ -72,6 +74,8 @@ namespace ASC.Employee.Core.Controllers
         public SetupInfo SetupInfo { get; }
         public FileSizeComment FileSizeComment { get; }
         public DisplayUserSettings DisplayUserSettings { get; }
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -94,11 +98,13 @@ namespace ASC.Employee.Core.Controllers
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
             TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings, 
+            CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
-            DisplayUserSettings displayUserSettings)
+            DisplayUserSettings displayUserSettings,
+            Signature signature,
+            InstanceCrypto instanceCrypto)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -126,6 +132,8 @@ namespace ASC.Employee.Core.Controllers
             SetupInfo = setupInfo;
             FileSizeComment = fileSizeComment;
             DisplayUserSettings = displayUserSettings;
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
         }
 
         [Read("info")]
@@ -1210,7 +1218,7 @@ namespace ASC.Employee.Core.Controllers
         [Update("thirdparty/linkaccount")]
         public void LinkAccount(string serializedProfile)
         {
-            var profile = new LoginProfile(serializedProfile);
+            var profile = new LoginProfile(Signature, InstanceCrypto, serializedProfile);
 
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {
@@ -1234,9 +1242,9 @@ namespace ASC.Employee.Core.Controllers
             MessageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
         }
 
-        private static AccountLinker GetLinker()
+        private AccountLinker GetLinker()
         {
-            return new AccountLinker("webstudio");
+            return new AccountLinker("webstudio", Signature, InstanceCrypto);
         }
 
         private static string GetMeaningfulProviderName(string providerName)

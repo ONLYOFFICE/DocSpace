@@ -45,10 +45,10 @@ namespace ASC.Core.Common.Tests
             var expire1 = DateTime.UtcNow;
             var iu1 = 1;
 
-            var cookie = CookieStorage.EncryptCookie(t1, id1, login1, pwd1, it1, expire1, iu1);
+            var cookie = CookieStorage.EncryptCookie(null, t1, id1, login1, pwd1, it1, expire1, iu1);
 
 
-            CookieStorage.DecryptCookie(cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
+            CookieStorage.DecryptCookie(null, cookie, out var t2, out var id2, out var login2, out var pwd2, out var it2, out var expire2, out var iu2);
 
             Assert.AreEqual(t1, t2);
             Assert.AreEqual(id1, id2);

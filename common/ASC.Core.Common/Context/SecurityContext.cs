@@ -67,6 +67,7 @@ namespace ASC.Core
         public TenantCookieSettings TenantCookieSettings { get; }
         public TenantManager TenantManager { get; }
         public UserFormatter UserFormatter { get; }
+        public InstanceCrypto InstanceCrypto { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -76,7 +77,8 @@ namespace ASC.Core
             AuthContext authContext,
             TenantCookieSettings tenantCookieSettings,
             TenantManager tenantManager,
-            UserFormatter userFormatter
+            UserFormatter userFormatter,
+            InstanceCrypto instanceCrypto
             )
         {
             UserManager = userManager;
@@ -85,6 +87,7 @@ namespace ASC.Core
             TenantCookieSettings = tenantCookieSettings;
             TenantManager = tenantManager;
             UserFormatter = userFormatter;
+            InstanceCrypto = instanceCrypto;
             HttpContextAccessor = httpContextAccessor;
         }
 
@@ -117,7 +120,7 @@ namespace ASC.Core
                     }
                     log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
+                else if (CookieStorage.DecryptCookie(InstanceCrypto, cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
                 {
                     if (tenant != TenantManager.GetCurrentTenant().TenantId)
                     {
@@ -228,7 +231,7 @@ namespace ASC.Core
                 roles.Add(Role.Users);
 
                 account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
-                cookie = CookieStorage.EncryptCookie(TenantCookieSettings, TenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = CookieStorage.EncryptCookie(InstanceCrypto, TenantCookieSettings, TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             var claims = new List<Claim>
