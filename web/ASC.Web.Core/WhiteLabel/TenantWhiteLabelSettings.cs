@@ -52,8 +52,8 @@ namespace ASC.Web.Core.WhiteLabel
         {
         }
         public TenantWhiteLabelSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
             WebImageSupplier webImageSupplier,
             UserPhotoManager userPhotoManager,
             TenantManager tenantManager,
@@ -522,8 +522,6 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void Apply(int tenantId)
         {
-            if (!DBResourceManager.ResourcesFromDataBase) return;
-
             if (AppliedTenants.Contains(tenantId)) return;
 
             var whiteLabelSettings = LoadForTenant(tenantId);

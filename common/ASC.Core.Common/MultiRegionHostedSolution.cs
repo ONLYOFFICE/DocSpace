@@ -34,19 +34,22 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core
 {
     public class MultiRegionHostedSolution
     {
-        private readonly object locker = new object();
         private readonly Dictionary<string, HostedSolution> regions = new Dictionary<string, HostedSolution>();
         private readonly string dbid;
-        private volatile bool initialized = false;
 
-        public MultiRegionHostedSolution(string dbid)
+        public IConfiguration Configuraion { get; }
+
+        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion)
         {
             this.dbid = dbid;
+            Configuraion = configuraion;
+            Initialize();
         }
 
         public List<Tenant> GetTenants(DateTime from)
@@ -181,99 +184,84 @@ namespace ASC.Core
 
         private IEnumerable<HostedSolution> GetRegionServices()
         {
-            Initialize();
-
             return regions.Where(x => !string.IsNullOrEmpty(x.Key))
                    .Select(x => x.Value);
         }
 
         private HostedSolution GetRegionService(string region)
         {
-            Initialize();
             return regions[region];
         }
 
         private void Initialize()
         {
-            if (!initialized)
+            if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
-                lock (locker)
+                foreach (var cs in ConfigurationManager.ConnectionStrings)
                 {
-                    if (!initialized)
+                    if (cs.Name.StartsWith(dbid + "."))
                     {
-                        initialized = true;
+                        var name = cs.Name.Substring(dbid.Length + 1);
+                        regions[name] = new HostedSolution(cs, name);
+                    }
+                }
 
+                regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                if (!regions.ContainsKey(string.Empty))
+                {
+                    regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                }
+            }
+            else
+            {
 
-                        if (Convert.ToBoolean(ConfigurationManager.AppSettings["core.multi-hosted.config-only"] ?? "false"))
+                var find = false;
+                foreach (var cs in ConfigurationManager.ConnectionStrings)
+                {
+                    if (cs.Name.StartsWith(dbid + "."))
+                    {
+                        var name = cs.Name.Substring(dbid.Length + 1);
+                        regions[name] = new HostedSolution(cs, name);
+                        find = true;
+                    }
+                }
+                if (find)
+                {
+                    regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                    if (!regions.ContainsKey(string.Empty))
+                    {
+                        regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
+                    }
+                }
+                else
+                {
+                    foreach (var connectionString in ConfigurationManager.ConnectionStrings)
+                    {
+                        try
                         {
-                            foreach (var cs in ConfigurationManager.ConnectionStrings)
-                            {
-                                if (cs.Name.StartsWith(dbid + "."))
-                                {
-                                    var name = cs.Name.Substring(dbid.Length + 1);
-                                    regions[name] = new HostedSolution(cs, name);
-                                }
-                            }
-
-                            regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
-                            if (!regions.ContainsKey(string.Empty))
-                            {
-                                regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
-                            }
-                        }
-                        else
-                        {
-
-                            var find = false;
-                            foreach (var cs in ConfigurationManager.ConnectionStrings)
-                            {
-                                if (cs.Name.StartsWith(dbid + "."))
-                                {
-                                    var name = cs.Name.Substring(dbid.Length + 1);
-                                    regions[name] = new HostedSolution(cs, name);
-                                    find = true;
-                                }
-                            }
-                            if (find)
-                            {
-                                regions[dbid] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
-                                if (!regions.ContainsKey(string.Empty))
-                                {
-                                    regions[string.Empty] = new HostedSolution(ConfigurationManager.ConnectionStrings[dbid]);
-                                }
-                            }
-                            else
-                            {
-                                foreach (var connectionString in ConfigurationManager.ConnectionStrings)
-                                {
-                                    try
-                                    {
-                                        using var db = new DbManager(connectionString.Name);
-                                        var q = new SqlQuery("regions")
+                            using var db = new DbManager(connectionString.Name);
+                            var q = new SqlQuery("regions")
 .Select("region")
 .Select("connection_string")
 .Select("provider");
-                                        db.ExecuteList(q)
-                                            .ForEach(r =>
-                                            {
-                                                var cs = new System.Configuration.ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
-                                                if (!DbRegistry.IsDatabaseRegistered(cs.Name))
-                                                {
-                                                    DbRegistry.RegisterDatabase(cs.Name, cs);
-                                                }
-
-                                                if (!regions.ContainsKey(string.Empty))
-                                                {
-                                                    regions[string.Empty] = new HostedSolution(cs, cs.Name);
-                                                }
-
-                                                regions[cs.Name] = new HostedSolution(cs, cs.Name);
-                                            });
+                            db.ExecuteList(q)
+                                .ForEach(r =>
+                                {
+                                    var cs = new System.Configuration.ConnectionStringSettings((string)r[0], (string)r[1], (string)r[2]);
+                                    if (!DbRegistry.IsDatabaseRegistered(cs.Name))
+                                    {
+                                        DbRegistry.RegisterDatabase(cs.Name, cs);
                                     }
-                                    catch (DbException) { }
-                                }
-                            }
+
+                                    if (!regions.ContainsKey(string.Empty))
+                                    {
+                                        regions[string.Empty] = new HostedSolution(cs, cs.Name);
+                                    }
+
+                                    regions[cs.Name] = new HostedSolution(cs, cs.Name);
+                                });
                         }
+                        catch (DbException) { }
                     }
                 }
             }

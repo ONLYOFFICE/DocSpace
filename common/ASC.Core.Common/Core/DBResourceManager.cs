@@ -40,26 +40,25 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
         public static bool WhiteLableEnabled = false;
-        public static bool ResourcesFromDataBase { get; private set; }
         private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
-
-        static DBResourceManager()
-        {
-            ResourcesFromDataBase = string.Equals(ConfigurationManager.AppSettings["resources:from-db"], "true");
-        }
 
         public DBResourceManager(string filename, Assembly assembly)
                     : base(filename, assembly)
         {
+        }
+        public DBResourceManager(IConfiguration configuration, string filename, Assembly assembly)
+                    : base(filename, assembly)
+        {
+            Configuration = configuration;
         }
 
 
@@ -123,6 +122,7 @@ namespace TMResourceData
             get { return typeof(DBResourceSet); }
         }
 
+        public IConfiguration Configuration { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
@@ -130,7 +130,7 @@ namespace TMResourceData
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(invariant, culture, BaseName);
+                set = new DBResourceSet(Configuration, invariant, culture, BaseName);
                 resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
@@ -141,29 +141,16 @@ namespace TMResourceData
         {
             private const string NEUTRAL_CULTURE = "Neutral";
 
-            private static readonly TimeSpan cacheTimeout = TimeSpan.FromMinutes(120); // for performance
+            private readonly TimeSpan cacheTimeout = TimeSpan.FromMinutes(120); // for performance
             private readonly object locker = new object();
             private readonly MemoryCache cache;
             private readonly ResourceSet invariant;
             private readonly string culture;
             private readonly string filename;
 
+            public IConfiguration Configuration { get; }
 
-            static DBResourceSet()
-            {
-                try
-                {
-                    var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
-                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["resources:cache-timeout"] ?? defaultValue));
-                }
-                catch (Exception err)
-                {
-                    log.Error(err);
-                }
-            }
-
-
-            public DBResourceSet(ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(IConfiguration configuration, ResourceSet invariant, CultureInfo culture, string filename)
             {
                 if (culture == null)
                 {
@@ -174,6 +161,17 @@ namespace TMResourceData
                     throw new ArgumentNullException("filename");
                 }
 
+                try
+                {
+                    var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
+                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(configuration["resources:cache-timeout"] ?? defaultValue));
+                }
+                catch (Exception err)
+                {
+                    log.Error(err);
+                }
+
+                Configuration = configuration;
                 this.invariant = invariant;
                 this.culture = invariant != null ? NEUTRAL_CULTURE : culture.Name;
                 this.filename = filename.Split('.').Last() + ".resx";
@@ -200,7 +198,7 @@ namespace TMResourceData
 
                 if (WhiteLableEnabled)
                 {
-                    result = WhiteLabelHelper.ReplaceLogo(name, result);
+                    result = WhiteLabelHelper.ReplaceLogo(Configuration, name, result);
                 }
 
                 return result;
@@ -267,7 +265,6 @@ namespace TMResourceData
     {
         private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private static readonly ConcurrentDictionary<int, string> whiteLabelDictionary = new ConcurrentDictionary<int, string>();
-        private static readonly string replPattern = ConfigurationManager.AppSettings["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
         public static string DefaultLogoText = "";
 
 
@@ -295,7 +292,7 @@ namespace TMResourceData
             }
         }
 
-        internal static string ReplaceLogo(string resourceName, string resourceValue)
+        internal static string ReplaceLogo(IConfiguration configuration, string resourceName, string resourceValue)
         {
             if (string.IsNullOrEmpty(resourceValue))
             {
@@ -323,6 +320,7 @@ namespace TMResourceData
                             newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}");
                         }
 
+                        var replPattern = configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
                         var pattern = string.Format(replPattern, DefaultLogoText);
                         //Hack for resource strings with mails looked like ...@onlyoffice... or with website http://www.onlyoffice.com link or with the https://www.facebook.com/pages/OnlyOffice/833032526736775
 
