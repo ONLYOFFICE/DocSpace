@@ -114,7 +114,7 @@ class InputBlock extends React.Component {
         {
           iconNames.includes(this.props.iconName)
           &&
-          <InputGroupAddon addonType="append" onClick={this.onIconClick}>
+          <InputGroupAddon addonType="append">
             <StyledIconBlock>
               <IconButton
                 size={iconButtonSize}
@@ -122,6 +122,7 @@ class InputBlock extends React.Component {
                 iconName={this.props.iconName}
                 isFill={this.props.isIconFill}
                 isDisabled={this.props.isDisabled}
+                onClick={this.onIconClick}
                 isClickable={typeof this.props.onIconClick === 'function'}
               />
             </StyledIconBlock>
