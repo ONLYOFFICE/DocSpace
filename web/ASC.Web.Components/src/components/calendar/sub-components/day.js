@@ -8,7 +8,7 @@ const StyledDay = styled.div`
   display: flex;
   flex-basis: 14.2857%; /*(1/7*100%)*/
   text-align: center;
-  line-height: 2.5em;
+  line-height: 33px
   user-select: none;
   ${props =>
     props.size === "base" ? "margin-top: 3px;" : "margin-top: 7.5px;"}

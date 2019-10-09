@@ -1,5 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
+import withReadme from "storybook-readme/with-readme";
+import Readme from "./README.md";
 import Tooltip from "./";
 import IconButton from "../icon-button";
 import Section from "../../../.storybook/decorators/section";
@@ -44,8 +46,7 @@ const arrayUsers = [
 ];
 
 storiesOf("Components|Tooltip", module)
-  .addParameters({ viewport: { defaultViewport: "responsive" } })
-  .addParameters({ options: { showAddonPanel: false } })
+  .addDecorator(withReadme(Readme))
   .add("all", () => {
     return (
       <Section>

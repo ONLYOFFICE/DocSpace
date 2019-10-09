@@ -410,7 +410,7 @@ DatePicker.propTypes = {
   calendarSize: PropTypes.oneOf(["base", "big"]),
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   zIndex: PropTypes.number,
-  headerContent: PropTypes.string
+  calendarHeaderContent: PropTypes.string
 };
 
 DatePicker.defaultProps = {
