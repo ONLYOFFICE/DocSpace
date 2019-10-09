@@ -11,6 +11,7 @@ import {
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import Calendar from ".";
+import Section from "../../../.storybook/decorators/section";
 
 function myDateKnob(name, defaultValue) {
   const stringTimestamp = date(name, defaultValue);
@@ -51,20 +52,22 @@ storiesOf("Components|Calendar", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
-    <Calendar
-      onChange={date => {
-        action("Selected date")(date);
-      }}
-      isDisabled={boolean("isDisabled", false)}
-      themeColor={color("themeColor", "#ED7309")}
-      selectedDate={myDateKnob("selectedDate", new Date())}
-      openToDate={myDateKnob("openToDate", new Date())}
-      minDate={myDateKnob("minDate", new Date("1970/01/01"))}
-      maxDate={myDateKnob(
-        "maxDate",
-        new Date(new Date().getFullYear() + 1 + "/01/01")
-      )}
-      locale={select("locale", locales, "en")}
-      size={select("size", arraySize, "base")}
-    />
+    <Section>
+      <Calendar
+        onChange={date => {
+          action("Selected date")(date);
+        }}
+        isDisabled={boolean("isDisabled", false)}
+        themeColor={color("themeColor", "#ED7309")}
+        selectedDate={myDateKnob("selectedDate", new Date())}
+        openToDate={myDateKnob("openToDate", new Date())}
+        minDate={myDateKnob("minDate", new Date("1970/01/01"))}
+        maxDate={myDateKnob(
+          "maxDate",
+          new Date(new Date().getFullYear() + 1 + "/01/01")
+        )}
+        locale={select("locale", locales, "en")}
+        size={select("size", arraySize, "base")}
+      />
+    </Section>
   ));

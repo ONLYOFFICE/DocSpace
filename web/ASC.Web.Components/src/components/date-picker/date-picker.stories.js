@@ -6,7 +6,9 @@ import {
   boolean,
   color,
   select,
-  date
+  date,
+  number,
+  text
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
@@ -46,7 +48,7 @@ const locales = [
   "vi"
 ];
 
-const displayType = ["dropdown", "aside"];
+const displayType = ["dropdown", "aside", "auto"];
 
 storiesOf("Components|DatePicker", module)
   .addDecorator(withKnobs)
@@ -70,8 +72,10 @@ storiesOf("Components|DatePicker", module)
         isOpen={boolean("isOpen", false)}
         themeColor={color("themeColor", "#ED7309")}
         locale={select("locale", locales, "en")}
-        displayType={select("displayType", displayType, "dropdown")}
+        displayType={select("displayType", displayType, "auto")}
         calendarSize={select("calendarSize", ["base", "big"], "base")}
+        zIndex={number("zIndex", 310)}
+        calendarHeaderContent={text("headerContent", "Select Date")}
       />
     </Section>
   ));
