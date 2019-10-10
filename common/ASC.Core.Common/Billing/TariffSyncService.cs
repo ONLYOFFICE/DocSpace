@@ -118,14 +118,16 @@ namespace ASC.Core.Billing
 
     class TariffSync
     {
-        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry)
+        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry, CoreSettings coreSettings)
         {
             TenantManager = tenantManager;
             DbRegistry = dbRegistry;
+            CoreSettings = coreSettings;
         }
 
         public TenantManager TenantManager { get; }
         public DbRegistry DbRegistry { get; }
+        public CoreSettings CoreSettings { get; }
 
         public void Sync(TariffSyncServiceSection config, IConfiguration configuration)
         {
@@ -137,7 +139,7 @@ namespace ASC.Core.Billing
 
                 var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
                 // save new
-                foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
+                foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreSettings.GetKey(tenant.TenantId)))
                 {
                     quotaService.SaveTenantQuota(tariff);
                     oldtariffs.Remove(tariff.Id);

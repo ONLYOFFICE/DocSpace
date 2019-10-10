@@ -37,7 +37,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Notify.Senders
 {
@@ -52,7 +52,7 @@ namespace ASC.Core.Notify.Senders
         private TimeSpan sendWindow = TimeSpan.MinValue;
         private GetSendQuotaResponse quota;
 
-        public AWSSender(IConfiguration configuration): base(configuration)
+        public AWSSender(IServiceProvider serviceProvider) : base(serviceProvider)
         {
 
         }
@@ -75,8 +75,12 @@ namespace ASC.Core.Notify.Senders
                 try
                 {
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
-                    CoreContext.TenantManager.SetCurrentTenant(m.Tenant);
-                    if (!CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
+                    using var scope = ServiceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    tenantManager.SetCurrentTenant(m.Tenant);
+                    var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
+                    if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
                         _useCoreSettings = true;
                         result = base.Send(m);

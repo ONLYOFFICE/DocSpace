@@ -54,8 +54,13 @@ namespace ASC.Web.Studio.Core.TFA
 
         }
 
-        public TfaAppUserSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
+        public TfaAppUserSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings) : base(authContext, settingsManager, tenantManager)
         {
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public override ISettings GetDefault()
@@ -92,6 +97,8 @@ namespace ASC.Web.Studio.Core.TFA
             }
         }
 
+        public CoreBaseSettings CoreBaseSettings { get; }
+
         public IEnumerable<BackupCode> BackupCodesForUser(Guid userId)
         {
             return LoadForUser(userId).CodesSetting;
@@ -121,10 +128,10 @@ namespace ASC.Web.Studio.Core.TFA
             }
         }
 
-        public static bool IsVisibleSettings(TenantExtra tenantExtra)
+        public bool IsVisibleSettings(TenantExtra tenantExtra)
         {
             var quota = tenantExtra.GetTenantQuota();
-            return CoreContext.Configuration.Standalone
+            return CoreBaseSettings.Standalone
                     || (!quota.Trial
                         && !quota.NonProfit
                         && !quota.Free

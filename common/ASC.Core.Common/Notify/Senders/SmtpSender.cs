@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
@@ -36,6 +35,7 @@ using ASC.Notify.Patterns;
 using MailKit;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MimeKit;
 
 namespace ASC.Core.Notify.Senders
@@ -53,6 +53,7 @@ namespace ASC.Core.Notify.Senders
 
         protected ILog Log { get; private set; }
         public IConfiguration Configuration { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         private string _host;
         private int _port;
@@ -61,10 +62,11 @@ namespace ASC.Core.Notify.Senders
         protected bool _useCoreSettings;
         const int NETWORK_TIMEOUT = 30000;
 
-        public SmtpSender(IConfiguration configuration)
+        public SmtpSender(IServiceProvider serviceProvider)
         {
             Log = LogManager.GetLogger("ASC.Notify");
-            Configuration = configuration;
+            Configuration = serviceProvider.GetService<IConfiguration>();
+            ServiceProvider = serviceProvider;
         }
 
         public virtual void Init(IDictionary<string, string> properties)
@@ -87,9 +89,10 @@ namespace ASC.Core.Notify.Senders
             }
         }
 
-        private void InitUseCoreSettings()
+        private void InitUseCoreSettings(CoreConfiguration configuration)
         {
-            var s = CoreContext.Configuration.SmtpSettings;
+            var s = configuration.SmtpSettings;
+
             _host = s.Host;
             _port = s.Port;
             _ssl = s.EnableSSL;
@@ -100,7 +103,11 @@ namespace ASC.Core.Notify.Senders
 
         public virtual NoticeSendResult Send(NotifyMessage m)
         {
-            CoreContext.TenantManager.SetCurrentTenant(m.Tenant);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(m.Tenant);
+            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
             try
@@ -108,7 +115,7 @@ namespace ASC.Core.Notify.Senders
                 try
                 {
                     if (_useCoreSettings)
-                        InitUseCoreSettings();
+                        InitUseCoreSettings(configuration);
 
                     var mail = BuildMailMessage(m);
 

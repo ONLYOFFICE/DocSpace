@@ -188,17 +188,11 @@ namespace ASC.Core
     {
         private long? personalMaxSpace;
 
-        public CoreConfiguration(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
+        public CoreConfiguration(CoreSettings coreSettings, TenantManager tenantManager, IConfiguration configuration)
         {
-            CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             TenantManager = tenantManager;
             Configuration = configuration;
-        }
-
-        public bool Standalone
-        {
-            get => CoreBaseSettings.Standalone;
         }
 
         public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
@@ -252,12 +246,6 @@ namespace ASC.Core
             set { SaveSetting("SmtpSettings", value?.Serialize(), TenantManager.GetCurrentTenant().TenantId); }
         }
 
-        public string BaseDomain
-        {
-            get => CoreSettings.BaseDomain;
-            set => CoreSettings.BaseDomain = value;
-        }
-        public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
@@ -269,10 +257,6 @@ namespace ASC.Core
         public string GetSetting(string key, int tenant = Tenant.DEFAULT_TENANT) => CoreSettings.GetSetting(key, tenant);
 
         #endregion
-
-        public string GetKey(int tenant) => CoreSettings.GetKey(tenant);
-
-        public string GetAffiliateId(int tenant) => CoreSettings.GetAffiliateId(tenant);
 
         #region Methods Get/Set Section
 

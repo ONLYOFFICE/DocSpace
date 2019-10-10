@@ -43,9 +43,6 @@ namespace ASC.Core
             ConfigureCoreContextByDefault();
         }
 
-
-        public static CoreConfiguration Configuration { get; private set; }
-
         public static TenantManager TenantManager { get; private set; }
 
         private static bool QuotaCacheEnabled(IConfiguration configuration)
@@ -75,7 +72,6 @@ namespace ASC.Core
             var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration, DbRegistry);
 
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreBaseSettings, coreSettings);
-            Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager, configuration);
         }
     }
 }

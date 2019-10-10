@@ -57,6 +57,7 @@ namespace ASC.Web.Core.Mail
         public AuthContext AuthContext { get; }
         public IConfiguration Configuration { get; }
         public DbRegistry DbRegistry { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         static MailServiceHelper()
         {
@@ -64,12 +65,13 @@ namespace ASC.Web.Core.Mail
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration, DbRegistry dbRegistry)
+        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration, DbRegistry dbRegistry, CoreBaseSettings coreBaseSettings)
         {
             UserManager = userManager;
             AuthContext = authContext;
             Configuration = configuration;
             DbRegistry = dbRegistry;
+            CoreBaseSettings = coreBaseSettings;
             DefaultDatabase = GetDefaultDatabase();
         }
 
@@ -100,7 +102,7 @@ namespace ASC.Web.Core.Mail
 
         private void DemandPermission()
         {
-            if (!CoreContext.Configuration.Standalone)
+            if (!CoreBaseSettings.Standalone)
                 throw new NotSupportedException("Method for server edition only.");
 
             if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))

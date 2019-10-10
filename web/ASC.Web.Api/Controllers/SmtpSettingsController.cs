@@ -62,6 +62,7 @@ namespace ASC.Api.Settings
         public TenantManager TenantManager { get; }
         public CoreSettings CoreSettings { get; }
         public CoreConfiguration CoreConfiguration { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
         public LogManager LogManager { get; }
         public MessageService MessageService { get; }
@@ -79,6 +80,7 @@ namespace ASC.Api.Settings
             TenantManager tenantManager,
             CoreSettings coreSettings,
             CoreConfiguration coreConfiguration,
+            CoreBaseSettings coreBaseSettings,
             IConfiguration configuration)
         {
             LogManager = logManager;
@@ -91,6 +93,7 @@ namespace ASC.Api.Settings
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             CoreConfiguration = coreConfiguration;
+            CoreBaseSettings = coreBaseSettings;
             Configuration = configuration;
         }
 
@@ -137,7 +140,7 @@ namespace ASC.Api.Settings
                 CoreConfiguration.SmtpSettings = null;
             }
 
-            var current = CoreConfiguration.Standalone ? CoreConfiguration.SmtpSettings : SmtpSettings.Empty;
+            var current = CoreBaseSettings.Standalone ? CoreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
             return ToSmtpSettings(current, true);
         }

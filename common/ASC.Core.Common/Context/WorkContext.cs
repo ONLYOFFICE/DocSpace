@@ -112,19 +112,19 @@ namespace ASC.Core
                     };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        emailSender = new AWSSender(configuration);
+                        emailSender = new AWSSender(serviceProvider);
                         properties["accessKey"] = configuration["ses:accessKey"];
                         properties["secretKey"] = configuration["ses:secretKey"];
                         properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
                     {
-                        emailSender = new SmtpSender(configuration);
+                        emailSender = new SmtpSender(serviceProvider);
                     }
                     emailSender.Init(properties);
                 }
 
-                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider));
                 NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
 
                 NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;

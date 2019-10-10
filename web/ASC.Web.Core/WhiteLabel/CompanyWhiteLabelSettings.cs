@@ -74,9 +74,10 @@ namespace ASC.Web.Core.WhiteLabel
 
         }
 
-        public CompanyWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
+        public CompanyWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, CoreSettings coreSettings) :
             base(authContext, settingsManager, tenantManager)
         {
+            CoreSettings = coreSettings;
         }
 
         #region ISettings Members
@@ -92,7 +93,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             if (_default != null) return _default;
 
-            var settings = CoreContext.Configuration.GetSetting("CompanyWhiteLabelSettings");
+            var settings = CoreSettings.GetSetting("CompanyWhiteLabelSettings");
 
             _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
 
@@ -108,5 +109,7 @@ namespace ASC.Web.Core.WhiteLabel
                 return LoadForDefaultTenant();
             }
         }
+
+        public CoreSettings CoreSettings { get; }
     }
 }
