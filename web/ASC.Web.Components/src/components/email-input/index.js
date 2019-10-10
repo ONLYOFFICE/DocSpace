@@ -38,30 +38,24 @@ class EmailInput extends React.Component {
   constructor() {
     super();
     this.state = {
-      isValidEmail: true,
-      lastValidEmail: ''
+      isValidEmail: true
     }
   }
 
   checkEmail = (value) => {
 
-    if(!value.length) 
-    {
+    if (!value.length) {
       !this.state.isValidEmail && this.setState({ isValidEmail: true });
       return;
     }
 
     const emailObj = parseAddress(value);
-    const email = emailObj.email;
     const isValidEmail = emailObj.isValid();
 
-    email !== this.state.lastValidEmail && isValidEmail && this.setState({ lastValidEmail: email });
-
     this.props.onValidateInput
-      && (isValidEmail !== this.state.isValidEmail || (email !== this.state.lastValidEmail && isValidEmail) || value.length === 0)
-      && this.props.onValidateInput(emailObj);
+      && this.props.onValidateInput(isValidEmail);
 
-    this.setState({ isValidEmail });
+    this.setState({ isValidEmail:  isValidEmail });
 
   }
 
@@ -129,33 +123,22 @@ class EmailInput extends React.Component {
 }
 
 EmailInput.propTypes = {
-  value: PropTypes.string,
-  onChange: PropTypes.func,
   onValidateInput: PropTypes.func,
-  inputWidth: PropTypes.string,
-  hasError: PropTypes.bool,
-  hasWarning: PropTypes.bool,
-  placeholder: PropTypes.string,
-  tabIndex: PropTypes.number,
-  maxLength: PropTypes.number,
   className: PropTypes.string,
-
-  isDisabled: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
-  scale: PropTypes.bool
 }
 
 EmailInput.defaultProps = {
-  inputType: 'text',
+  id: '',
   name: '',
   autoComplete: 'email',
   maxLength: 255,
-
+  value: '',
   isDisabled: false,
+  isReadOnly: false,
   size: 'base',
   scale: false,
   withBorder: true,
-
+  placeholder: '',
   className: ''
 }
 

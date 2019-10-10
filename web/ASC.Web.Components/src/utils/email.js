@@ -156,7 +156,8 @@ export const parseAddresses = (str, options = new EmailOptions()) => {
         type: parseErrorTypes.IncorrectEmail
       });
     } else {
-      errors.concat(checkErrors(parsedAddress));
+      const checkOptionErrors = checkErrors(parsedAddress)
+      checkOptionErrors.length && errors.push(checkOptionErrors);
     }
 
     resultEmails.push(
