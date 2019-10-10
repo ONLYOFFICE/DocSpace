@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import isEqual from "lodash/isEqual";
 import TextInput from '../text-input'
-import Email from '../../utils/email';
+import { Email, parseAddress } from '../../utils/email';
 
 const borderColor = {
   default: '#D0D5DA',
@@ -43,19 +43,17 @@ class EmailInput extends React.Component {
     }
   }
 
-  validationFirstEmail = value => {
-    const emailUtility = new Email(value);
-    const email = emailUtility.ParseAddress();
-    return {
-      isValidEmail: email[2],
-      email: email[1]
-    };
-  }
-
   checkEmail = (value) => {
 
-    const emailObj = this.validationFirstEmail(value);
-    const { email, isValidEmail } = emailObj;
+    if(!value.length) 
+    {
+      !this.state.isValidEmail && this.setState({ isValidEmail: true });
+      return;
+    }
+
+    const emailObj = parseAddress(value);
+    const email = emailObj.email;
+    const isValidEmail = emailObj.isValid();
 
     email !== this.state.lastValidEmail && isValidEmail && this.setState({ lastValidEmail: email });
 
@@ -63,7 +61,7 @@ class EmailInput extends React.Component {
       && (isValidEmail !== this.state.isValidEmail || (email !== this.state.lastValidEmail && isValidEmail) || value.length === 0)
       && this.props.onValidateInput(emailObj);
 
-    value.length === 0 ? this.setState({ isValidEmail: true }) : this.setState({ isValidEmail });
+    this.setState({ isValidEmail });
 
   }
 
