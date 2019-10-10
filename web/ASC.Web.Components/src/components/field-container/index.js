@@ -19,6 +19,9 @@ const horizontalCss = css`
   .field-body {
     flex-grow: 1;
   }
+  .icon-button {
+    line-height: 24px;
+  }
 `
 const verticalCss = css`
   display: flex;
@@ -45,10 +48,11 @@ const Container = styled.div`
 `;
 
 const FieldContainer = React.memo((props) => {
-  const {isVertical, className, isRequired, hasError, labelText, children} = props;
+  const {isVertical, className, isRequired, hasError, labelText, children, tooltipId, tooltipEvent, iconButton} = props;
+  
   return (
     <Container vertical={isVertical} className={className}>
-      <Label isRequired={isRequired} error={hasError} text={labelText} truncate={true} className="field-label"/>
+      <Label iconButton={iconButton} tooltipId={tooltipId} tooltipEvent={tooltipEvent} isRequired={isRequired} error={hasError} text={labelText} truncate={true} className="field-label"/>
       <div className="field-body">{children}</div>
     </Container>
   );
@@ -62,10 +66,14 @@ FieldContainer.propTypes = {
   isRequired: PropTypes.bool,
   hasError: PropTypes.bool,
   labelText: PropTypes.string,
+  icon: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ])
+  ]),
+  tooltipId: PropTypes.string,
+  iconButton: PropTypes.string,
+  tooltipEvent: PropTypes.string
 };
 
 export default FieldContainer
