@@ -19,7 +19,11 @@ class RadioField extends React.Component {
       radioValue,
       radioOptions,
       radioIsDisabled,
-      radioOnChange
+      radioOnChange,
+
+      tooltipId,
+      tooltipEvent,
+      iconButton
     } = this.props;
 
     return (
@@ -27,6 +31,9 @@ class RadioField extends React.Component {
         isRequired={isRequired}
         hasError={hasError}
         labelText={labelText}
+        tooltipId={tooltipId}
+        tooltipEvent={tooltipEvent}
+        iconButton={iconButton}
       >
         <RadioButtonGroup
           name={radioName}

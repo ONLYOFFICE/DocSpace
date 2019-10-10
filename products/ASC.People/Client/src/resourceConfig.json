@@ -68,7 +68,21 @@
         "SaveButton",
         "CopyEmailAndPassword",
         "UserType",
-        "CancelButton"
+        "CancelButton",
+
+        "EmailPopupHelper",
+        "ProfileTypePopupHelper",
+        "ProductsAndInstruments_Products",
+        "GuestCaption",
+        "TermsOfUsePopupHelperLink",
+        "Mail",
+        "People"
+      ],
+      "FeedResource": [
+        "DocumentsProduct",
+        "ProjectsProduct",
+        "CommunityProduct",
+        "Message"
       ]
     },
     "Home": {

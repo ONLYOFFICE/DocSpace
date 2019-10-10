@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Tooltip, Link } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
@@ -16,6 +16,21 @@ import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
+import styled from "styled-components";
+
+const Table = styled.table`
+  width: 100%;
+  margin-bottom: 23px;
+`;
+
+const Tr = styled.tr``;
+
+const Th = styled.th`
+  padding: 11px 0 10px 0px;
+  border-top: 1px solid #ECEEF1;
+`;
+
+const Td = styled.td``;
 
 class UpdateUserForm extends React.Component {
 
@@ -453,6 +468,18 @@ class UpdateUserForm extends React.Component {
               buttonIsDisabled={isLoading}
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
+
+              tooltipId="tooltipEmailId"
+              tooltipEvent="click"
+              iconButton="QuestionIcon"
+            />
+            <Tooltip
+              id="tooltipEmailId"
+              offsetRight={100}
+              getContent={() => <Text.Body fontSize={12}>{t("EmailPopupHelper")}</Text.Body>}
+              effect="solid"
+              place="top"
+              maxWidth={312}
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
@@ -523,7 +550,57 @@ class UpdateUserForm extends React.Component {
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
+
+              tooltipId="tooltipUserTypeId"
+              tooltipEvent="click"
+              iconButton="QuestionIcon"
             />
+            <Tooltip
+              id="tooltipUserTypeId"
+              offsetRight={100}
+              getContent={() => 
+                <>
+              <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
+              <Table>
+                <Tr>
+                  <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
+                </Tr>
+                <Tr>
+                  <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
+                </Tr>
+                <Tr>
+                  <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
+                </Tr>
+                </Table>
+                <Link 
+                  color="#316DAA" 
+                  isHovered={true} 
+                  href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block" 
+                  style={{marginTop: 23}}>
+                    {t("TermsOfUsePopupHelperLink")}
+                </Link>
+              </>
+            }
+              effect="solid"
+              place="top"
+              maxWidth={312}
+            />
+
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
