@@ -37,10 +37,11 @@ namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
-        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility)
+        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbRegistry dbRegistry)
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
+            DbRegistry = dbRegistry;
         }
 
         #region method
@@ -166,7 +167,7 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
                     const string tableTitle = "files_converts";
 
-                    using var dbManager = new DbManager(databaseId);
+                    using var dbManager = new DbManager(DbRegistry, databaseId);
                     var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
 
                     var list = dbManager.ExecuteList(sqlQuery);
@@ -253,6 +254,7 @@ namespace ASC.Web.Core.Files
         public List<string> ExtsCoAuthoring { get => (Configuration["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
         public IConfiguration Configuration { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
+        public DbRegistry DbRegistry { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {

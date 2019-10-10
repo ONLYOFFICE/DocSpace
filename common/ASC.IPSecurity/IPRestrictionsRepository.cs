@@ -32,27 +32,33 @@ using ASC.Common.Data.Sql;
 
 namespace ASC.IPSecurity
 {
-    internal class IPRestrictionsRepository
+    public class IPRestrictionsRepository
     {
         private const string dbId = "core";
 
+        public DbRegistry DbRegistry { get; }
 
-        public static List<IPRestriction> Get(int tenant)
+        public IPRestrictionsRepository(DbRegistry dbRegistry)
         {
-            using var db = new DbManager(dbId);
+            DbRegistry = dbRegistry;
+        }
+
+        public List<IPRestriction> Get(int tenant)
+        {
+            using var db = new DbManager(DbRegistry, dbId);
             return db
 .ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
 .ConvertAll(r => new IPRestriction
 {
-Id = Convert.ToInt32(r[0]),
-Ip = Convert.ToString(r[1]),
-TenantId = tenant,
+    Id = Convert.ToInt32(r[0]),
+    Ip = Convert.ToString(r[1]),
+    TenantId = tenant,
 });
         }
 
-        public static List<string> Save(IEnumerable<string> ips, int tenant)
+        public List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            using var db = new DbManager(dbId);
+            using var db = new DbManager(DbRegistry, dbId);
             using var tx = db.BeginTransaction();
             var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
             db.ExecuteNonQuery(d);

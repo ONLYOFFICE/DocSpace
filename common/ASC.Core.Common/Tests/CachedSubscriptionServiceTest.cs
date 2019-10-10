@@ -28,6 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System.Linq;
+    using ASC.Common.Data;
     using ASC.Common.Utils;
     using ASC.Core.Caching;
     using ASC.Core.Data;
@@ -40,9 +41,9 @@ namespace ASC.Core.Common.Tests
         private readonly ISubscriptionService service;
 
 
-        public CachedSubscriptionServiceTest(IConfiguration configuration)
+        public CachedSubscriptionServiceTest(IConfiguration configuration, DbRegistry dbRegistry)
         {
-            service = new CachedSubscriptionService(new DbSubscriptionService(configuration.GetConnectionStrings("core")));
+            service = new CachedSubscriptionService(new DbSubscriptionService(configuration.GetConnectionStrings("core"), dbRegistry));
         }
 
 

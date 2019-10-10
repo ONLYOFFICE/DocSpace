@@ -46,12 +46,14 @@ namespace ASC.Core
 
         public IConfiguration Configuraion { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public DbRegistry DbRegistry { get; }
 
-        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion, InstanceCrypto instanceCrypto)
+        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
             InstanceCrypto = instanceCrypto;
+            DbRegistry = dbRegistry;
             Initialize();
         }
 
@@ -171,12 +173,12 @@ namespace ASC.Core
 
         public IDbManager GetRegionDb(string region)
         {
-            return new DbManager(GetRegionService(region).DbId);
+            return new DbManager(DbRegistry, GetRegionService(region).DbId);
         }
 
         public IDbManager GetMultiRegionDb()
         {
-            return new MultiRegionalDbManager(GetRegions().Select(r => new DbManager(GetRegionService(r).DbId)));
+            return new MultiRegionalDbManager(GetRegions().Select(r => new DbManager(DbRegistry, GetRegionService(r).DbId)));
         }
 
         public System.Configuration.ConnectionStringSettings GetRegionConnectionString(string region)
@@ -245,7 +247,7 @@ namespace ASC.Core
                     {
                         try
                         {
-                            using var db = new DbManager(connectionString.Name);
+                            using var db = new DbManager(DbRegistry, connectionString.Name);
                             var q = new SqlQuery("regions")
 .Select("region")
 .Select("connection_string")

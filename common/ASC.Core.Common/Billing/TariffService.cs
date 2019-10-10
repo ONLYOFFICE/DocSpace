@@ -32,6 +32,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ASC.Common.Caching;
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
@@ -98,8 +99,9 @@ namespace ASC.Core.Billing
             ITenantService tenantService,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            IConfiguration configuration)
-            : base(connectionString, "tenant")
+            IConfiguration configuration,
+            DbRegistry dbRegistry)
+            : base(connectionString, dbRegistry, "tenant")
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;

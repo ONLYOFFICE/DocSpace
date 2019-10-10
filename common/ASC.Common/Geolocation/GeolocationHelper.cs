@@ -39,9 +39,11 @@ namespace ASC.Geolocation
 
         private readonly string dbid;
 
+        public DbRegistry DbRegistry { get; }
 
-        public GeolocationHelper(string dbid)
+        public GeolocationHelper(DbRegistry dbRegistry, string dbid)
         {
+            DbRegistry = dbRegistry;
             this.dbid = dbid;
         }
 
@@ -51,7 +53,7 @@ namespace ASC.Geolocation
             try
             {
                 var ipformatted = FormatIP(ip);
-                using var db = new DbManager(dbid);
+                using var db = new DbManager(DbRegistry, dbid);
                 var q = new SqlQuery("dbip_location")
 .Select("ip_start", "ip_end", "country", "city", "timezone_offset", "timezone_name")
 .Where(Exp.Le("ip_start", ipformatted))

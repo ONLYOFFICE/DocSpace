@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
@@ -40,8 +41,8 @@ namespace ASC.Core.Data
         internal const string tenants_quotarow = "tenants_quotarow";
 
 
-        public DbQuotaService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbQuotaService(ConnectionStringSettings connectionString, DbRegistry dbRegistry)
+            : base(connectionString, dbRegistry, "tenant")
         {
         }
 

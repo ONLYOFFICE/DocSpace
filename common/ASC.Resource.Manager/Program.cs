@@ -29,11 +29,12 @@ namespace ASC.Resource.Manager
             var serviceProvider = services.BuildServiceProvider();
             CommonServiceProvider.Init(serviceProvider);
             ConfigurationManager.Init(serviceProvider);
+            var ResourceData = serviceProvider.GetService<ResourceData>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
             var enabledSettings = new EnabledSettings();
-            Action<string, string, string, string, string, string> export = null;
+            Action<ResourceData, string, string, string, string, string, string> export = null;
 
             try
             {
@@ -135,11 +136,11 @@ namespace ASC.Resource.Manager
             {
                 if (!string.IsNullOrEmpty(culture))
                 {
-                    export(projectName, moduleName, fileName, culture, exportPath, key);
+                    export(ResourceData, projectName, moduleName, fileName, culture, exportPath, key);
                 }
                 else
                 {
-                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(projectName, moduleName, fileName, c, exportPath, key));
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(ResourceData, projectName, moduleName, fileName, c, exportPath, key));
                 }
             }
         }

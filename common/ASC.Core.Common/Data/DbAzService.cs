@@ -38,8 +38,8 @@ namespace ASC.Core.Data
 {
     public class DbAzService : DbBaseService, IAzService
     {
-        public DbAzService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbAzService(ConnectionStringSettings connectionString, DbRegistry dbRegistry)
+            : base(connectionString, dbRegistry, "tenant")
         {
         }
 

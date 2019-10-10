@@ -28,8 +28,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
 using ASC.Web.Core;
@@ -102,7 +100,6 @@ namespace ASC.Notify
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
             //resolve with options
             commonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
-            DbRegistry.Configure();
             NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))

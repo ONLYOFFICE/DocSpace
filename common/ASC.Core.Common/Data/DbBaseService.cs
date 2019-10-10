@@ -36,15 +36,17 @@ namespace ASC.Core.Data
     {
         private readonly string dbid;
 
+        public DbRegistry DbRegistry { get; }
         protected string TenantColumn
         {
             get;
             private set;
         }
 
-        protected DbBaseService(ConnectionStringSettings connectionString, string tenantColumn)
+        protected DbBaseService(ConnectionStringSettings connectionString, DbRegistry dbRegistry, string tenantColumn)
         {
             dbid = connectionString.Name;
+            DbRegistry = dbRegistry;
             TenantColumn = tenantColumn;
         }
 
@@ -75,7 +77,7 @@ namespace ASC.Core.Data
 
         protected IDbManager GetDb()
         {
-            return DbManager.FromHttpContext(dbid);
+            return DbManager.FromHttpContext(DbRegistry, dbid);
         }
 
         protected SqlQuery Query(string table, int tenant)

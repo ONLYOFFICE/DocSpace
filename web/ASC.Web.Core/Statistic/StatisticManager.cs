@@ -40,8 +40,14 @@ namespace ASC.Web.Studio.Core.Statistic
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
+        public DbRegistry DbRegistry { get; }
 
-        public static void SaveUserVisit(int tenantID, Guid userID, Guid productID)
+        public StatisticManager(DbRegistry dbRegistry)
+        {
+            DbRegistry = dbRegistry;
+        }
+
+        public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
         {
             var now = DateTime.UtcNow;
             var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
@@ -69,7 +75,7 @@ namespace ASC.Web.Studio.Core.Statistic
             }
         }
 
-        public static List<Guid> GetVisitorsToday(int tenantID, Guid productID)
+        public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
         {
             using var db = GetDb();
             var users = db
@@ -96,7 +102,7 @@ new SqlQuery("webstudio_uservisit")
             return users;
         }
 
-        public static List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+        public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
             using var db = GetDb();
             return db.ExecuteList(new SqlQuery("webstudio_uservisit")
@@ -111,7 +117,7 @@ r =>
 new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt32(r[1]) });
         }
 
-        public static List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+        public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
             using var db = GetDb();
             return db.ExecuteList(new SqlQuery("webstudio_uservisit")
@@ -124,12 +130,12 @@ new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt
 r =>
 new UserVisit
 {
-VisitDate = Convert.ToDateTime(r[0]),
-UserID = new Guid(Convert.ToString(r[1]))
+    VisitDate = Convert.ToDateTime(r[0]),
+    UserID = new Guid(Convert.ToString(r[1]))
 });
         }
 
-        private static void FlushCache()
+        private void FlushCache()
         {
             if (cache.Count == 0) return;
 
@@ -164,9 +170,9 @@ UserID = new Guid(Convert.ToString(r[1]))
             tx.Commit();
         }
 
-        private static IDbManager GetDb()
+        private IDbManager GetDb()
         {
-            return DbManager.FromHttpContext(dbId);
+            return DbManager.FromHttpContext(DbRegistry, dbId);
         }
     }
 }

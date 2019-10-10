@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Security;
 
 using ASC.Api.Core;
+using ASC.Common.Data;
 using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
@@ -76,6 +77,7 @@ namespace ASC.Employee.Core.Controllers
         public DisplayUserSettings DisplayUserSettings { get; }
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public DbRegistry DbRegistry { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -104,7 +106,8 @@ namespace ASC.Employee.Core.Controllers
             FileSizeComment fileSizeComment,
             DisplayUserSettings displayUserSettings,
             Signature signature,
-            InstanceCrypto instanceCrypto)
+            InstanceCrypto instanceCrypto,
+            DbRegistry dbRegistry)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -134,6 +137,7 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettings = displayUserSettings;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
+            DbRegistry = dbRegistry;
         }
 
         [Read("info")]
@@ -1244,7 +1248,7 @@ namespace ASC.Employee.Core.Controllers
 
         private AccountLinker GetLinker()
         {
-            return new AccountLinker("webstudio", Signature, InstanceCrypto);
+            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbRegistry);
         }
 
         private static string GetMeaningfulProviderName(string providerName)

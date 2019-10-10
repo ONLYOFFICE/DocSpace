@@ -99,6 +99,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
                     var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
+                    var dbRegistry = scope.ServiceProvider.GetService<DbRegistry>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -198,7 +199,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 .Where(Exp.Le("created_date", now.AddDays(-1)))
                                 .GroupBy("short_date");
 
-                            using (var db = new DbManager(dbid))
+                            using (var db = new DbManager(dbRegistry, dbid))
                             {
                                 datesWithActivity = db
                                     .ExecuteList(query)
@@ -557,6 +558,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                    var dbRegistry = scope.ServiceProvider.GetService<DbRegistry>();
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -686,7 +688,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 .Where(Exp.Le("created_date", now.AddDays(-1)))
                                 .GroupBy("short_date");
 
-                            using (var db = new DbManager(dbid))
+                            using (var db = new DbManager(dbRegistry, dbid))
                             {
                                 datesWithActivity = db
                                     .ExecuteList(query)

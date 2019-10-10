@@ -27,8 +27,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ASC.Common.Data;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 
@@ -51,7 +49,6 @@ namespace ASC.Notify
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            DbRegistry.Configure();
             NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
 

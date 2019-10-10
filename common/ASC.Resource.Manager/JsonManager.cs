@@ -38,7 +38,7 @@ namespace ASC.Resource.Manager
 {
     public static class JsonManager
     {
-        public static void Upload(string fileName, Stream fileStream, string projectName, string moduleName)
+        public static void Upload(ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
         {
             var culture = GetCultureFromFileName(fileName);
 
@@ -73,7 +73,7 @@ namespace ASC.Resource.Manager
                 jsonObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
             }
 
-            var fileID = ResourceData.AddFile(fileName, projectName, moduleName);
+            var fileID = resourceData.AddFile(fileName, projectName, moduleName);
             const string resourceType = "text";
             foreach (var key in jsonObj.Keys)
             {
@@ -92,15 +92,15 @@ namespace ASC.Resource.Manager
                         ResFile = new ResFile { FileID = fileID }
                     };
 
-                    ResourceData.GetValueByKey(neutralKey, "Neutral");
+                    resourceData.GetValueByKey(neutralKey, "Neutral");
                     if (string.IsNullOrEmpty(neutralKey.ValueTo)) continue;
                 }
 
-                ResourceData.AddResource(culture, resourceType, DateTime.UtcNow, word, true, "Console");
+                resourceData.AddResource(culture, resourceType, DateTime.UtcNow, word, true, "Console");
             }
         }
 
-        public static void Export(string project, string module, string fName, string language, string exportPath, string key = null)
+        public static void Export(ResourceData resourceData, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -110,7 +110,7 @@ namespace ASC.Resource.Manager
                 Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
-            var words = ResourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
+            var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
 
             if (!words.Any())
             {

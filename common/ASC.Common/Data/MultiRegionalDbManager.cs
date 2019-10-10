@@ -52,7 +52,7 @@ namespace ASC.Common.Data
         }
 
 
-        public MultiRegionalDbManager(string dbId)
+        public MultiRegionalDbManager(DbRegistry dbRegistry, string dbId)
         {
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             DatabaseId = dbId;
@@ -61,8 +61,8 @@ namespace ASC.Common.Data
                                             .Select(
                                                 c =>
                                                 HttpContext.Current != null
-                                                    ? DbManager.FromHttpContext(c.Name)
-                                                    : new DbManager(c.Name))
+                                                    ? DbManager.FromHttpContext(dbRegistry, c.Name)
+                                                    : new DbManager(dbRegistry, c.Name))
                                             .ToList();
             localDb = databases.SingleOrDefault(db => db.DatabaseId.Equals(dbId, cmp));
         }
@@ -83,9 +83,9 @@ namespace ASC.Common.Data
             }
         }
 
-        public static MultiRegionalDbManager FromHttpContext(string databaseId)
+        public static MultiRegionalDbManager FromHttpContext(DbRegistry dbRegistry, string databaseId)
         {
-            return new MultiRegionalDbManager(databaseId);
+            return new MultiRegionalDbManager(dbRegistry, databaseId);
         }
 
         public IDbTransaction BeginTransaction(IsolationLevel isolationLevel)

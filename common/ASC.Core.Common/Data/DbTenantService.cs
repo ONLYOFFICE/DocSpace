@@ -47,8 +47,8 @@ namespace ASC.Core.Data
         public TenantDomainValidator TenantDomainValidator { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
-            : base(connectionString, null)
+        public DbTenantService(ConnectionStringSettings connectionString, DbRegistry dbRegistry, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
+            : base(connectionString, dbRegistry, null)
         {
             TenantDomainValidator = tenantDomainValidator;
             TimeZoneConverter = timeZoneConverter;

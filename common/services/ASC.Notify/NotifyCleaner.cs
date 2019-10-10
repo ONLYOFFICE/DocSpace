@@ -38,11 +38,13 @@ namespace ASC.Notify
         private static readonly ILog log = LogManager.GetLogger("ASC.Notify");
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
+        public DbRegistry DbRegistry { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
-        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg)
+        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg, DbRegistry dbRegistry)
         {
             NotifyServiceCfg = notifyServiceCfg;
+            DbRegistry = dbRegistry;
             CancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -66,7 +68,7 @@ namespace ASC.Notify
                 try
                 {
                     var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
-                    using var db = new DbManager(NotifyServiceCfg.ConnectionStringName);
+                    using var db = new DbManager(DbRegistry, NotifyServiceCfg.ConnectionStringName);
                     using var d1 = db.Connection.CreateCommand("delete from notify_info where modify_date < ? and state = 4", date);
                     using var d2 = db.Connection.CreateCommand("delete from notify_queue where creation_date < ?", date);
                     d1.CommandTimeout = 60 * 60; // hour

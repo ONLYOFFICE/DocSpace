@@ -45,10 +45,12 @@ namespace ASC.Notify
         private readonly object syncRoot = new object();
 
         public NotifyServiceCfg NotifyServiceCfg { get; }
+        public DbRegistry DbRegistry { get; }
 
-        public DbWorker(NotifyServiceCfg notifyServiceCfg)
+        public DbWorker(NotifyServiceCfg notifyServiceCfg, DbRegistry dbRegistry)
         {
             NotifyServiceCfg = notifyServiceCfg;
+            DbRegistry = dbRegistry;
             dbid = NotifyServiceCfg.ConnectionStringName;
         }
 
@@ -164,7 +166,7 @@ namespace ASC.Notify
 
         private DbManager GetDb()
         {
-            return new DbManager(dbid);
+            return new DbManager(DbRegistry, dbid);
         }
     }
 }

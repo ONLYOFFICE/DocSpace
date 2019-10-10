@@ -45,6 +45,7 @@ namespace ASC.FederatedLogin
 
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public DbRegistry DbRegistry { get; }
 
         static AccountLinker()
         {
@@ -52,11 +53,12 @@ namespace ASC.FederatedLogin
         }
 
 
-        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto)
+        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
         {
             this.dbid = dbid;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
+            DbRegistry = dbRegistry;
         }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
@@ -71,7 +73,7 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            using var db = new DbManager(dbid);
+            using var db = new DbManager(DbRegistry, dbid);
             var query = new SqlQuery("account_links")
 .Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
             return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
@@ -95,7 +97,7 @@ namespace ASC.FederatedLogin
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            using var db = new DbManager(dbid);
+            using var db = new DbManager(DbRegistry, dbid);
             var query = new SqlQuery("account_links")
 .Select("profile").Where("id", obj);
             return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
@@ -103,7 +105,7 @@ namespace ASC.FederatedLogin
 
         public void AddLink(string obj, LoginProfile profile)
         {
-            using (var db = new DbManager(dbid))
+            using (var db = new DbManager(DbRegistry, dbid))
             {
                 db.ExecuteScalar<int>(
                     new SqlInsert("account_links", true)
@@ -139,7 +141,7 @@ namespace ASC.FederatedLogin
             if (!string.IsNullOrEmpty(provider)) sql.Where("provider", provider);
             if (!string.IsNullOrEmpty(hashId)) sql.Where("uid", hashId);
 
-            using (var db = new DbManager(dbid))
+            using (var db = new DbManager(DbRegistry, dbid))
             {
                 db.ExecuteScalar<int>(sql);
             }

@@ -32,6 +32,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using ASC.Common.Caching;
+using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -408,13 +409,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public void ClearOldNumbers(DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
             var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {

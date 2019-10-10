@@ -133,6 +133,8 @@ namespace ASC.Api.Settings
         public SetupInfo SetupInfo { get; }
         public BuildVersion BuildVersion { get; }
         public DisplayUserSettings DisplayUserSettings { get; }
+        public StatisticManager StatisticManager { get; }
+        public IPRestrictionsService IPRestrictionsService { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -180,7 +182,9 @@ namespace ASC.Api.Settings
             IConfiguration configuration,
             SetupInfo setupInfo,
             BuildVersion buildVersion,
-            DisplayUserSettings displayUserSettings)
+            DisplayUserSettings displayUserSettings,
+            StatisticManager statisticManager,
+            IPRestrictionsService iPRestrictionsService)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -228,6 +232,8 @@ namespace ASC.Api.Settings
             SetupInfo = setupInfo;
             BuildVersion = buildVersion;
             DisplayUserSettings = displayUserSettings;
+            StatisticManager = statisticManager;
+            IPRestrictionsService = iPRestrictionsService;
         }
 
         [Read("")]

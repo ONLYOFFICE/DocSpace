@@ -55,10 +55,11 @@ namespace TMResourceData
                     : base(filename, assembly)
         {
         }
-        public DBResourceManager(IConfiguration configuration, string filename, Assembly assembly)
+        public DBResourceManager(IConfiguration configuration, DbRegistry dbRegistry, string filename, Assembly assembly)
                     : base(filename, assembly)
         {
             Configuration = configuration;
+            DbRegistry = dbRegistry;
         }
 
 
@@ -123,6 +124,7 @@ namespace TMResourceData
         }
 
         public IConfiguration Configuration { get; }
+        public DbRegistry DbRegistry { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
@@ -130,7 +132,7 @@ namespace TMResourceData
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(Configuration, invariant, culture, BaseName);
+                set = new DBResourceSet(Configuration, DbRegistry, invariant, culture, BaseName);
                 resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
@@ -149,8 +151,9 @@ namespace TMResourceData
             private readonly string filename;
 
             public IConfiguration Configuration { get; }
+            public DbRegistry DbRegistry { get; }
 
-            public DBResourceSet(IConfiguration configuration, ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(IConfiguration configuration, DbRegistry dbRegistry, ResourceSet invariant, CultureInfo culture, string filename)
             {
                 if (culture == null)
                 {
@@ -172,6 +175,7 @@ namespace TMResourceData
                 }
 
                 Configuration = configuration;
+                DbRegistry = dbRegistry;
                 this.invariant = invariant;
                 this.culture = invariant != null ? NEUTRAL_CULTURE : culture.Name;
                 this.filename = filename.Split('.').Last() + ".resx";
@@ -247,9 +251,9 @@ namespace TMResourceData
                 return dic;
             }
 
-            private static Dictionary<string, string> LoadResourceSet(string filename, string culture)
+            private Dictionary<string, string> LoadResourceSet(string filename, string culture)
             {
-                using var dbManager = DbManager.FromHttpContext("tmresource");
+                using var dbManager = DbManager.FromHttpContext(DbRegistry, "tmresource");
                 var q = new SqlQuery("res_data d")
 .Select("d.title", "d.textvalue")
 .InnerJoin("res_files f", Exp.EqColumns("f.id", "d.fileid"))

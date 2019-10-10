@@ -83,14 +83,16 @@ namespace ASC.Common.Data
             get { return Command.Connection; }
         }
 
+        public DbRegistry DbRegistry { get; }
 
-        public DbManager(string databaseId, int? commandTimeout = null)
-            : this(databaseId, true, commandTimeout)
+        public DbManager(DbRegistry dbRegistry, string databaseId, int? commandTimeout = null)
+            : this(dbRegistry, databaseId, true, commandTimeout)
         {
         }
 
-        public DbManager(string databaseId, bool shared, int? commandTimeout = null)
+        public DbManager(DbRegistry dbRegistry, string databaseId, bool shared, int? commandTimeout = null)
         {
+            DbRegistry = dbRegistry ?? throw new ArgumentNullException(nameof(dbRegistry));
             DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
             this.shared = shared;
 
@@ -124,20 +126,20 @@ namespace ASC.Common.Data
 
         #endregion
 
-        public static IDbManager FromHttpContext(string databaseId)
+        public static IDbManager FromHttpContext(DbRegistry dbRegistry, string databaseId)
         {
             if (HttpContext.Current != null)
             {
                 if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
                 {
-                    var localDbManager = new DbManager(databaseId);
+                    var localDbManager = new DbManager(dbRegistry, databaseId);
                     var dbManagerAdapter = new DbManagerProxy(localDbManager);
                     DisposableHttpContext.Current[databaseId] = localDbManager;
                     return dbManagerAdapter;
                 }
                 return new DbManagerProxy(dbManager);
             }
-            return new DbManager(databaseId);
+            return new DbManager(dbRegistry, databaseId);
         }
 
         private DbConnection OpenConnection()

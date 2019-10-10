@@ -29,6 +29,7 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
+    using ASC.Common.Data;
     using ASC.Core.Billing;
     using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
@@ -40,10 +41,11 @@ namespace ASC.Core.Common.Tests
 
         public IServiceProvider ServiceProvider { get; set; }
         public IConfiguration Configuration { get; set; }
+        public DbRegistry DbRegistry { get; set; }
 
         public TariffSyncServiceTest()
         {
-            tariffSyncService = new TariffSyncService(ServiceProvider, Configuration);
+            tariffSyncService = new TariffSyncService(ServiceProvider, Configuration, DbRegistry);
         }
 
         [Test]

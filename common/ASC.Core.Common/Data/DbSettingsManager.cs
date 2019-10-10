@@ -55,10 +55,12 @@ namespace ASC.Core.Data
         private readonly string dbId;
 
         public IServiceProvider ServiceProvider { get; }
+        public DbRegistry DbRegistry { get; }
 
-        public DbSettingsManager(IServiceProvider serviceProvider) : this((ConnectionStringSettings)null)
+        public DbSettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry) : this(null)
         {
             ServiceProvider = serviceProvider;
+            DbRegistry = dbRegistry;
         }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
@@ -192,7 +194,7 @@ namespace ASC.Core.Data
 
         private IDbManager GetDbManager()
         {
-            return DbManager.FromHttpContext(dbId);
+            return DbManager.FromHttpContext(DbRegistry, dbId);
         }
 
         private DataContractJsonSerializer GetJsonSerializer(Type type)

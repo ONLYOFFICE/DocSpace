@@ -25,19 +25,14 @@
 
 
 using System;
-using System.Configuration;
+using ASC.Common.Data;
 using ASC.Core.Data;
 
 namespace ASC.Core.Common.Settings
 {
     public class SettingsManager : DbSettingsManager
     {
-        private SettingsManager(ConnectionStringSettings connectionString)
-            : base(connectionString)
-        {
-        }
-
-        public SettingsManager(IServiceProvider serviceProvider) : base(serviceProvider)
+        public SettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry) : base(serviceProvider, dbRegistry)
         {
 
         }

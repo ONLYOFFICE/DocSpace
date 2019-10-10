@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using System.Security;
+using ASC.Common.Data;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
@@ -39,7 +40,7 @@ namespace ASC.Web.Studio.Core
 {
     public static class BlockchainLoginProvider
     {
-        public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto)
+        public static void UpdateData(string account, UserManager userManager, TenantManager tenantManager, SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
         {
             var tenant = tenantManager.GetCurrentTenant();
             var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
@@ -50,7 +51,7 @@ namespace ASC.Web.Studio.Core
                 Provider = ProviderConstants.Blockchain,
             };
 
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto);
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbRegistry);
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -63,14 +64,14 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto)
+        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
         {
-            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto);
+            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto, dbRegistry);
         }
 
-        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto)
+        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
         {
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto);
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbRegistry);
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
             if (profile == null) return null;
 

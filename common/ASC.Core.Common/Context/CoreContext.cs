@@ -58,6 +58,7 @@ namespace ASC.Core
 
         private static void ConfigureCoreContextByDefault()
         {
+            var DbRegistry = CommonServiceProvider.GetService<DbRegistry>();
             var cs = DbRegistry.GetConnectionString("core");
             if (cs == null)
             {
@@ -68,10 +69,10 @@ namespace ASC.Core
             var tenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
             var timeZoneConverter = CommonServiceProvider.GetService<TimeZoneConverter>();
             var coreBaseSettings = new CoreBaseSettings(configuration);
-            var tenantService = new CachedTenantService(new DbTenantService(cs, tenantDomainValidator, timeZoneConverter), coreBaseSettings);
+            var tenantService = new CachedTenantService(new DbTenantService(cs, DbRegistry, tenantDomainValidator, timeZoneConverter), coreBaseSettings);
             var coreSettings = new CoreSettings(tenantService, coreBaseSettings, configuration);
-            var quotaService = QuotaCacheEnabled(configuration) ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs)) : new DbQuotaService(cs);
-            var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration);
+            var quotaService = QuotaCacheEnabled(configuration) ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs, DbRegistry)) : new DbQuotaService(cs, DbRegistry);
+            var tariffService = new TariffService(cs, quotaService, tenantService, coreBaseSettings, coreSettings, configuration, DbRegistry);
 
             TenantManager = new TenantManager(tenantService, quotaService, tariffService, null, coreBaseSettings, coreSettings);
             Configuration = new CoreConfiguration(coreBaseSettings, coreSettings, TenantManager, configuration);

@@ -37,6 +37,7 @@ namespace ASC.IPSecurity
         private static readonly ICacheNotify<IPRestrictionItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
 
+        public IPRestrictionsRepository IPRestrictionsRepository { get; }
 
         static IPRestrictionsService()
         {
@@ -44,8 +45,12 @@ namespace ASC.IPSecurity
             notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
         }
 
+        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository)
+        {
+            IPRestrictionsRepository = iPRestrictionsRepository;
+        }
 
-        public static IEnumerable<IPRestriction> Get(int tenant)
+        public IEnumerable<IPRestriction> Get(int tenant)
         {
             var key = GetCacheKey(tenant);
             var restrictions = cache.Get<List<IPRestriction>>(key);
@@ -56,7 +61,7 @@ namespace ASC.IPSecurity
             return restrictions;
         }
 
-        public static IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
+        public IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
         {
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);

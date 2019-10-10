@@ -34,12 +34,14 @@ namespace ASC.MessagingSystem.DbSender
     {
         private readonly ILog log = LogManager.GetLogger("ASC.Messaging");
 
-        public DbMessageSender(IConfiguration configuration)
+        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository)
         {
             var setting = configuration["messaging:enabled"];
             MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
+            MessagesRepository = messagesRepository;
         }
 
+        public MessagesRepository MessagesRepository { get; }
         private bool MessagingEnabled { get; }
 
 

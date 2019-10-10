@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security;
-
+using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
@@ -74,14 +74,15 @@ namespace ASC.Core
             var configuration = CommonServiceProvider.GetService<IConfiguration>();
             var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
             var TimeZoneConverter = CommonServiceProvider.GetService<TimeZoneConverter>();
+            var DbRegistry = CommonServiceProvider.GetService<DbRegistry>();
 
-            tenantService = new DbTenantService(connectionString, TenantDomainValidator, TimeZoneConverter);
+            tenantService = new DbTenantService(connectionString, DbRegistry, TenantDomainValidator, TimeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
             var coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new DbUserService(connectionString);
-            quotaService = new DbQuotaService(connectionString);
-            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration);
+            userService = new DbUserService(connectionString, DbRegistry);
+            quotaService = new DbQuotaService(connectionString, DbRegistry);
+            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, DbRegistry);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;

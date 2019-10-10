@@ -47,16 +47,18 @@ namespace ASC.IPSecurity
         public AuthContext AuthContext { get; }
         public IPRestrictionsSettings IPRestrictionsSettings { get; }
         public TenantManager TenantManager { get; }
+        public IPRestrictionsService IPRestrictionsService { get; }
 
         private readonly string CurrentIpForTest;
 
-        public IPSecurity(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, AuthContext authContext, IPRestrictionsSettings iPRestrictionsSettings, TenantManager tenantManager)
+        public IPSecurity(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, AuthContext authContext, IPRestrictionsSettings iPRestrictionsSettings, TenantManager tenantManager, IPRestrictionsService iPRestrictionsService)
         {
             Configuration = configuration;
             HttpContextAccessor = httpContextAccessor;
             AuthContext = authContext;
             IPRestrictionsSettings = iPRestrictionsSettings;
             TenantManager = tenantManager;
+            IPRestrictionsService = iPRestrictionsService;
             CurrentIpForTest = configuration["ipsecurity:test"];
             var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);

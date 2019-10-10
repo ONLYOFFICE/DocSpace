@@ -56,6 +56,7 @@ namespace ASC.Web.Core.Mail
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
         public IConfiguration Configuration { get; }
+        public DbRegistry DbRegistry { get; }
 
         static MailServiceHelper()
         {
@@ -63,11 +64,12 @@ namespace ASC.Web.Core.Mail
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration)
+        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration, DbRegistry dbRegistry)
         {
             UserManager = userManager;
             AuthContext = authContext;
             Configuration = configuration;
+            DbRegistry = dbRegistry;
             DefaultDatabase = GetDefaultDatabase();
         }
 
@@ -77,12 +79,12 @@ namespace ASC.Web.Core.Mail
             return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
         }
 
-        private static DbManager GetDb()
+        private DbManager GetDb()
         {
-            return new DbManager("webstudio");
+            return new DbManager(DbRegistry, "webstudio");
         }
 
-        private static DbManager GetDb(string dbid, string connectionString)
+        private DbManager GetDb(string dbid, string connectionString)
         {
             var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
 
@@ -93,7 +95,7 @@ namespace ASC.Web.Core.Mail
 
             DbRegistry.RegisterDatabase(connectionSettings.Name, connectionSettings);
 
-            return new DbManager(connectionSettings.Name);
+            return new DbManager(DbRegistry, connectionSettings.Name);
         }
 
         private void DemandPermission()
@@ -106,7 +108,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static bool IsMailServerAvailable()
+        public bool IsMailServerAvailable()
         {
             return _GetMailServerInfo() != null;
         }
@@ -119,7 +121,7 @@ namespace ASC.Web.Core.Mail
             return _GetMailServerInfo();
         }
 
-        private static MailServerInfo _GetMailServerInfo()
+        private MailServerInfo _GetMailServerInfo()
         {
             var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
 

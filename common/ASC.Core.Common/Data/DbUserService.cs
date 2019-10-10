@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
@@ -39,8 +39,8 @@ namespace ASC.Core.Data
 {
     public class DbUserService : DbBaseService, IUserService
     {
-        public DbUserService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbUserService(ConnectionStringSettings connectionString, DbRegistry dbRegistry)
+            : base(connectionString, dbRegistry, "tenant")
         {
         }
 

@@ -28,6 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
+    using ASC.Common.Data;
     using ASC.Common.Utils;
     using Microsoft.Extensions.Configuration;
 
@@ -46,6 +47,7 @@ namespace ASC.Core.Common.Tests
         }
 
         internal IConfiguration Configuration { get; set; }
+        internal DbRegistry DbRegistry { get; set; }
 
         protected DbBaseTest()
         {

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Data;
 using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
@@ -53,12 +54,12 @@ namespace ASC.FederatedLogin
         }
 
 
-        public MultiRegionAccountLinker(string databaseId, Signature signature, InstanceCrypto instanceCrypto, IConfiguration configuration)
+        public MultiRegionAccountLinker(string databaseId, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, IConfiguration configuration)
         {
             foreach (var connection in configuration.GetConnectionStrings())
             {
                 if (connection.Name.StartsWith(databaseId))
-                    _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name, signature, instanceCrypto));
+                    _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name, signature, instanceCrypto, dbRegistry));
             }
         }
 

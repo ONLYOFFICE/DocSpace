@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ASC.Common.Caching;
+using ASC.Common.Data;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
@@ -55,8 +56,8 @@ namespace ASC.VoipService.Dao
         }
 
 
-        public CachedVoipDao(int tenantID, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext,  BaseCommonLinkUtility baseCommonLinkUtility)
-            : base(tenantID, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
+        public CachedVoipDao(int tenantID, DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+            : base(tenantID, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
         }
 

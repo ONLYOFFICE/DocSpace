@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Common.Module;
 using ASC.Common.Utils;
@@ -46,11 +47,12 @@ namespace ASC.Core.Billing
         private Timer timer;
 
 
-        public TariffSyncService(IServiceProvider serviceProvider, IConfiguration configuration)
+        public TariffSyncService(IServiceProvider serviceProvider, IConfiguration configuration, DbRegistry dbRegistry)
         {
             config = TariffSyncServiceSection.GetSection();
             ServiceProvider = serviceProvider;
             Configuration = configuration;
+            DbRegistry = dbRegistry;
         }
 
 
@@ -63,7 +65,7 @@ namespace ASC.Core.Billing
                 {
                     var cs = Configuration.GetConnectionStrings(config.ConnectionStringName + version) ??
                              Configuration.GetConnectionStrings(config.ConnectionStringName);
-                    quotaServices[version] = new DbQuotaService(cs).GetTenantQuotas();
+                    quotaServices[version] = new DbQuotaService(cs, DbRegistry).GetTenantQuotas();
                 }
                 return quotaServices[version];
             }
@@ -78,6 +80,7 @@ namespace ASC.Core.Billing
 
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
+        public DbRegistry DbRegistry { get; }
 
         public void Start()
         {
@@ -115,12 +118,14 @@ namespace ASC.Core.Billing
 
     class TariffSync
     {
-        public TariffSync(TenantManager tenantManager)
+        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry)
         {
             TenantManager = tenantManager;
+            DbRegistry = dbRegistry;
         }
 
         public TenantManager TenantManager { get; }
+        public DbRegistry DbRegistry { get; }
 
         public void Sync(TariffSyncServiceSection config, IConfiguration configuration)
         {
@@ -128,7 +133,7 @@ namespace ASC.Core.Billing
             if (tenant != null)
             {
                 using var wcfClient = new TariffSyncClient();
-                var quotaService = new DbQuotaService(configuration.GetConnectionStrings(config.ConnectionStringName));
+                var quotaService = new DbQuotaService(configuration.GetConnectionStrings(config.ConnectionStringName), DbRegistry);
 
                 var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
                 // save new

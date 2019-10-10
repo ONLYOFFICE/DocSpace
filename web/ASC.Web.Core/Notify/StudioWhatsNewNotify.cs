@@ -53,7 +53,7 @@ namespace ASC.Web.Studio.Core.Notify
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Confuguration { get; }
 
-        public StudioWhatsNewNotify(IServiceProvider  serviceProvider, IConfiguration confuguration)
+        public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration)
         {
             ServiceProvider = serviceProvider;
             Confuguration = confuguration;
@@ -74,7 +74,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             var products = WebItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
 
-            foreach (var tenantid in GetChangedTenants(scheduleDate))
+            foreach (var tenantid in GetChangedTenants(ServiceProvider.GetService<FeedAggregateDataProvider>(), scheduleDate))
             {
                 try
                 {
@@ -101,6 +101,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
+                    var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
                     foreach (var user in userManager.GetUsers())
@@ -117,12 +118,12 @@ namespace ASC.Web.Studio.Core.Notify
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var feeds = FeedAggregateDataProvider.GetFeeds(new FeedApiFilter
+                        var feeds = feedAggregateDataProvider.GetFeeds(new FeedApiFilter
                         {
                             From = scheduleDate.Date.AddDays(-1),
                             To = scheduleDate.Date.AddSeconds(-1),
                             Max = 100,
-                        }, authContext, tenantManager, tenantUtil);
+                        });
 
                         var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
 
@@ -264,9 +265,9 @@ namespace ASC.Web.Studio.Core.Notify
             return "";
         }
 
-        private static IEnumerable<int> GetChangedTenants(DateTime date)
+        private static IEnumerable<int> GetChangedTenants(FeedAggregateDataProvider feedAggregateDataProvider, DateTime date)
         {
-            return new FeedAggregateDataProvider().GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+            return feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
         }
 
         private bool TimeToSendWhatsNew(DateTime currentTime)

@@ -39,22 +39,26 @@ using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
-    internal class MessagesRepository
+    public class MessagesRepository
     {
         private const string MessagesDbId = "default";
         private static DateTime lastSave = DateTime.UtcNow;
-        private static readonly TimeSpan CacheTime;
-        private static readonly IDictionary<string, EventMessage> Cache;
+        private readonly TimeSpan CacheTime;
+        private readonly IDictionary<string, EventMessage> Cache;
         private static Parser Parser { get; set; }
-        private static readonly Timer Timer;
-        private static bool timerStarted;
+        public DbRegistry DbRegistry { get; }
+
+        private readonly Timer Timer;
+        private bool timerStarted;
 
         private const string LoginEventsTable = "login_events";
         private const string AuditEventsTable = "audit_events";
-        private static readonly Timer ClearTimer;
+        private readonly Timer ClearTimer;
 
-        static MessagesRepository()
+
+        public MessagesRepository(DbRegistry dbRegistry)
         {
+            DbRegistry = dbRegistry;
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
             Parser = Parser.GetDefault();
@@ -65,12 +69,12 @@ namespace ASC.MessagingSystem.DbSender
             ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
         }
 
-        public static void Add(EventMessage message)
+        public void Add(EventMessage message)
         {
             // messages with action code < 2000 are related to login-history
             if ((int)message.Action < 2000)
             {
-                using var db = DbManager.FromHttpContext(MessagesDbId);
+                using var db = DbManager.FromHttpContext(DbRegistry, MessagesDbId);
                 AddLoginEvent(message, db);
                 return;
             }
@@ -91,7 +95,7 @@ namespace ASC.MessagingSystem.DbSender
 
         }
 
-        private static void FlushCache(object state)
+        private void FlushCache(object state)
         {
             List<EventMessage> events = null;
 
@@ -110,7 +114,7 @@ namespace ASC.MessagingSystem.DbSender
 
             if (events == null) return;
 
-            using var db = DbManager.FromHttpContext(MessagesDbId);
+            using var db = DbManager.FromHttpContext(DbRegistry, MessagesDbId);
             using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
@@ -245,8 +249,8 @@ namespace ASC.MessagingSystem.DbSender
                        : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
         }
 
-
-        private static void DeleteOldEvents(object state)
+        //TODO: move to external service
+        private void DeleteOldEvents(object state)
         {
             try
             {
@@ -259,7 +263,7 @@ namespace ASC.MessagingSystem.DbSender
             }
         }
 
-        private static void GetOldEvents(string table, string settings)
+        private void GetOldEvents(string table, string settings)
         {
             var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.Guid, TenantAuditSettings.MaxLifeTime);
             var query = new SqlQuery(table + " t1")
@@ -274,7 +278,7 @@ namespace ASC.MessagingSystem.DbSender
 
             do
             {
-                using var dbManager = new DbManager(MessagesDbId, 180000);
+                using var dbManager = new DbManager(DbRegistry, MessagesDbId, 180000);
                 ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
 
                 if (!ids.Any()) return;

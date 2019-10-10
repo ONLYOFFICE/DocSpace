@@ -39,11 +39,13 @@ namespace ASC.Feed.Data
 
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
+        public DbRegistry DbRegistry { get; }
 
-        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager)
+        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbRegistry dbRegistry)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
+            DbRegistry = dbRegistry;
         }
 
         public DateTime GetTimeReaded()
@@ -113,9 +115,9 @@ namespace ASC.Feed.Data
         }
 
 
-        private static DbManager GetDb()
+        private DbManager GetDb()
         {
-            return new DbManager(dbId);
+            return new DbManager(DbRegistry, dbId);
         }
 
         private int GetTenant()
