@@ -31,6 +31,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using ASC.Common.Data.Sql;
+using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Data
 {
@@ -52,11 +54,11 @@ namespace ASC.Common.Data
         }
 
 
-        public MultiRegionalDbManager(DbRegistry dbRegistry, string dbId)
+        public MultiRegionalDbManager(IConfiguration configuration, DbRegistry dbRegistry, string dbId)
         {
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             DatabaseId = dbId;
-            databases = Utils.ConfigurationManager.ConnectionStrings
+            databases = configuration.GetConnectionStrings()
                                             .Where(c => c.Name.Equals(dbId, cmp) || c.Name.StartsWith(dbId + ".", cmp))
                                             .Select(
                                                 c =>
@@ -83,9 +85,9 @@ namespace ASC.Common.Data
             }
         }
 
-        public static MultiRegionalDbManager FromHttpContext(DbRegistry dbRegistry, string databaseId)
+        public static MultiRegionalDbManager FromHttpContext(IConfiguration configuration, DbRegistry dbRegistry, string databaseId)
         {
-            return new MultiRegionalDbManager(dbRegistry, databaseId);
+            return new MultiRegionalDbManager(configuration, dbRegistry, databaseId);
         }
 
         public IDbTransaction BeginTransaction(IsolationLevel isolationLevel)

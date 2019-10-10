@@ -45,13 +45,22 @@ namespace ASC.Core
         private readonly string dbid;
 
         public IConfiguration Configuraion { get; }
+        public TenantDomainValidator TenantDomainValidator { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbRegistry DbRegistry { get; }
 
-        public MultiRegionHostedSolution(string dbid, IConfiguration configuraion, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
+        public MultiRegionHostedSolution(string dbid,
+            IConfiguration configuraion,
+            TenantDomainValidator tenantDomainValidator,
+            TimeZoneConverter timeZoneConverter,
+            InstanceCrypto instanceCrypto,
+            DbRegistry dbRegistry)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
+            TenantDomainValidator = tenantDomainValidator;
+            TimeZoneConverter = timeZoneConverter;
             InstanceCrypto = instanceCrypto;
             DbRegistry = dbRegistry;
             Initialize();
@@ -210,14 +219,14 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(cs, name);
+                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, name);
                     }
                 }
 
-                regions[dbid] = new HostedSolution(dbConnectionStrings);
+                regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(dbConnectionStrings);
+                    regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
                 }
             }
             else
@@ -229,16 +238,16 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(cs, name);
+                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(dbConnectionStrings);
+                    regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(dbConnectionStrings);
+                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
                     }
                 }
                 else
@@ -263,10 +272,10 @@ namespace ASC.Core
 
                                     if (!regions.ContainsKey(string.Empty))
                                     {
-                                        regions[string.Empty] = new HostedSolution(cs, cs.Name);
+                                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, cs.Name);
                                     }
 
-                                    regions[cs.Name] = new HostedSolution(cs, cs.Name);
+                                    regions[cs.Name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, cs.Name);
                                 });
                         }
                         catch (DbException) { }

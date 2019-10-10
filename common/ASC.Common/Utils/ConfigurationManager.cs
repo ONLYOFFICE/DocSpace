@@ -13,23 +13,18 @@ namespace ASC.Common.Utils
     public static class ConfigurationManager
     {
         public static IConfiguration AppSettings { get; private set; }
-        public static ConnectionStringCollection ConnectionStrings { get; private set; }
         public static LogManager LogManager { get; private set; }
 
         public static void Init(IServiceProvider serviceProvider)
         {
             AppSettings = serviceProvider.GetService<IConfiguration>();
             LogManager = serviceProvider.GetService<LogManager>();
-            ConnectionStrings = AppSettings.GetConnectionStrings();
         }
         public static void UseCm(this IApplicationBuilder applicationBuilder)
         {
             Init(applicationBuilder.ApplicationServices);
         }
-        public static IEnumerable<T> GetSettings<T>(string section) where T : new()
-        {
-            return AppSettings.GetSettings<T>(section);
-        }
+
         public static T GetSetting<T>(string section) where T : new()
         {
             return AppSettings.GetSetting<T>(section);

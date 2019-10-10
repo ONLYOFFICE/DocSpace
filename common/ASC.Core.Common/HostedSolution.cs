@@ -30,7 +30,6 @@ using System.Configuration;
 using System.Linq;
 using System.Security;
 using ASC.Common.Data;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Data;
@@ -64,25 +63,20 @@ namespace ASC.Core
             private set;
         }
 
-        public HostedSolution(ConnectionStringSettings connectionString)
-            : this(connectionString, null)
+        public HostedSolution(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, ConnectionStringSettings connectionString)
+            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, null)
         {
         }
 
-        public HostedSolution(ConnectionStringSettings connectionString, string region)
+        public HostedSolution(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, ConnectionStringSettings connectionString, string region)
         {
-            var configuration = CommonServiceProvider.GetService<IConfiguration>();
-            var TenantDomainValidator = CommonServiceProvider.GetService<TenantDomainValidator>();
-            var TimeZoneConverter = CommonServiceProvider.GetService<TimeZoneConverter>();
-            var DbRegistry = CommonServiceProvider.GetService<DbRegistry>();
-
-            tenantService = new DbTenantService(connectionString, DbRegistry, TenantDomainValidator, TimeZoneConverter);
+            tenantService = new DbTenantService(connectionString, dbRegistry, tenantDomainValidator, timeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
             var coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new DbUserService(connectionString, DbRegistry);
-            quotaService = new DbQuotaService(connectionString, DbRegistry);
-            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, DbRegistry);
+            userService = new DbUserService(connectionString, dbRegistry);
+            quotaService = new DbQuotaService(connectionString, dbRegistry);
+            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;

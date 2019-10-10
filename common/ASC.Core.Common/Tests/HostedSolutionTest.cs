@@ -40,7 +40,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void FindTenants()
         {
-            var h = new HostedSolution(Configuration.GetConnectionStrings("core"));
+            var h = new HostedSolution(null, null, null, null, Configuration.GetConnectionStrings("core"));
             var tenants = h.FindTenants("76ff727b-f987-4871-9834-e63d4420d6e9");
             Assert.AreNotEqual(0, tenants.Count);
         }
@@ -55,7 +55,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void RegionsTest()
         {
-            var regionSerice = new MultiRegionHostedSolution("site", null, null, null);
+            var regionSerice = new MultiRegionHostedSolution("site", null, null, null, null, null);
 
             var t1 = regionSerice.GetTenant("teamlab.com", 50001);
             Assert.AreEqual("alias_test2.teamlab.com", t1.TenantDomain);
