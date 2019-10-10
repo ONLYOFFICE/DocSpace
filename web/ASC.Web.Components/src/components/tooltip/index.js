@@ -13,6 +13,7 @@ const TooltipStyle = styled.div`
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     opacity: 1;
     padding: 16px;
+    pointer-events: auto;
 
     max-width: ${props => (props.maxWidth ? props.maxWidth + "px" : `340px`)};
 
@@ -60,7 +61,7 @@ class Tooltip extends Component {
             bottom: offsetBottom,
             left: offsetLeft
           }}
-          wrapper="span"
+          wrapper="div"
         />
       </TooltipStyle>
     );

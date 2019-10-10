@@ -24,9 +24,9 @@ import { Tooltip, IconButton, Text } from "asc-web-components";
   <Tooltip
     id="tooltipContent"
     getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
-    effect={select("effect", arrayEffects, "float")}
-    place={select("place", arrayPlaces, "top")}
-    maxWidth={number("maxWidth", 320)}
+    effect="float"
+    place="top"
+    maxWidth={320}
   />
 
 ```
