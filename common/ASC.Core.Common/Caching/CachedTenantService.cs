@@ -131,9 +131,9 @@ namespace ASC.Core.Caching
             return t;
         }
 
-        public Tenant SaveTenant(Tenant tenant)
+        public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
         {
-            tenant = service.SaveTenant(tenant);
+            tenant = service.SaveTenant(coreSettings, tenant);
             cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.TenantId }, CacheNotifyAction.InsertOrUpdate);
             return tenant;
         }

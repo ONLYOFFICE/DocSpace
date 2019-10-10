@@ -189,7 +189,7 @@ namespace ASC.Core.Billing
                 if (tenant != null)
                 {
                     tenant.VersionChanged = DateTime.UtcNow;
-                    tenantService.SaveTenant(tenant);
+                    tenantService.SaveTenant(CoreSettings, tenant);
                 }
             }
 
@@ -420,7 +420,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
                 if (t != null)
                 {
                     // update tenant.LastModified to flush cache in documents
-                    tenantService.SaveTenant(t);
+                    tenantService.SaveTenant(CoreSettings, t);
                 }
             }
             return inserted;

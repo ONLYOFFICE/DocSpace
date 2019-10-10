@@ -67,9 +67,9 @@ namespace ASC.Core
         }
 
         public TenantManager(
-            ITenantService tenantService, 
-            IQuotaService quotaService, 
-            ITariffService tariffService, 
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
             IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
@@ -140,7 +140,7 @@ namespace ASC.Core
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            var newTenant = tenantService.SaveTenant(tenant);
+            var newTenant = tenantService.SaveTenant(CoreSettings, tenant);
             if (CallContext.GetData(CURRENT_TENANT) is Tenant) SetCurrentTenant(newTenant);
 
             return newTenant;

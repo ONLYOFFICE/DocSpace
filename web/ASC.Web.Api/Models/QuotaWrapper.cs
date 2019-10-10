@@ -93,7 +93,7 @@ namespace ASC.Web.Studio.Core.Quota
 
         }
 
-        public QuotaWrapper(Tenant tenant, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, PersonalQuotaSettings personalQuotaSettings, WebItemManager webItemManager)
+        public QuotaWrapper(Tenant tenant, CoreBaseSettings coreBaseSettings, CoreConfiguration configuration, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, PersonalQuotaSettings personalQuotaSettings, WebItemManager webItemManager)
         {
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -104,15 +104,15 @@ namespace ASC.Web.Studio.Core.Quota
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
             MaxUsersCount = TenantExtra.GetTenantQuota().ActiveUsers;
-            UsersCount = CoreContext.Configuration.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
+            UsersCount = coreBaseSettings.Personal ? 1 : TenantStatisticsProvider.GetUsersCount();
 
             StorageUsage = quotaRows
                     .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
                     .ToList();
 
-            if (CoreContext.Configuration.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+            if (coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
-                UserStorageSize = CoreContext.Configuration.PersonalMaxSpace(personalQuotaSettings);
+                UserStorageSize = configuration.PersonalMaxSpace(personalQuotaSettings);
 
                 var webItem = WebItemManager[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)

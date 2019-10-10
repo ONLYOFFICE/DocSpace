@@ -117,7 +117,7 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public Tenant SaveTenant(Tenant t)
+        public Tenant SaveTenant(CoreSettings coreSettings, Tenant t)
         {
             if (t == null) throw new ArgumentNullException("tenant");
 
@@ -126,7 +126,7 @@ namespace ASC.Core.Data
             {
                 if (!string.IsNullOrEmpty(t.MappedDomain))
                 {
-                    var baseUrl = TenantUtil.GetBaseDomain(t.HostedRegion);
+                    var baseUrl = coreSettings.GetBaseDomain(t.HostedRegion);
 
                     if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                     {

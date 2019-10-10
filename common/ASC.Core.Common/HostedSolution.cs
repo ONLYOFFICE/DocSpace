@@ -50,6 +50,7 @@ namespace ASC.Core
         private readonly ITariffService tariffService;
         private readonly TenantManager clientTenantManager;
         private readonly DbSettingsManager settingsManager;
+        private readonly CoreSettings coreSettings;
 
         public string Region
         {
@@ -63,16 +64,27 @@ namespace ASC.Core
             private set;
         }
 
-        public HostedSolution(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, ConnectionStringSettings connectionString)
+        public HostedSolution(
+            IConfiguration configuration,
+            TenantDomainValidator tenantDomainValidator,
+            TimeZoneConverter timeZoneConverter,
+            DbRegistry dbRegistry,
+            ConnectionStringSettings connectionString)
             : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, null)
         {
         }
 
-        public HostedSolution(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, ConnectionStringSettings connectionString, string region)
+        public HostedSolution(
+            IConfiguration configuration,
+            TenantDomainValidator tenantDomainValidator,
+            TimeZoneConverter timeZoneConverter,
+            DbRegistry dbRegistry,
+            ConnectionStringSettings connectionString,
+            string region)
         {
             tenantService = new DbTenantService(connectionString, dbRegistry, tenantDomainValidator, timeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
-            var coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
+            coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
             userService = new DbUserService(connectionString, dbRegistry);
             quotaService = new DbQuotaService(connectionString, dbRegistry);
@@ -144,7 +156,7 @@ namespace ASC.Core
                 Calls = ri.Calls
             };
 
-            tenant = tenantService.SaveTenant(tenant);
+            tenant = tenantService.SaveTenant(coreSettings, tenant);
 
             // create user
             var user = new UserInfo
@@ -163,14 +175,14 @@ namespace ASC.Core
 
             // save tenant owner
             tenant.OwnerId = user.ID;
-            tenant = tenantService.SaveTenant(tenant);
+            tenant = tenantService.SaveTenant(coreSettings, tenant);
 
             settingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            return tenantService.SaveTenant(tenant);
+            return tenantService.SaveTenant(coreSettings, tenant);
         }
 
         public void RemoveTenant(Tenant tenant)

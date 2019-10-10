@@ -102,8 +102,9 @@ namespace ASC.Web.Studio.Core.Notify
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
                     var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+                    var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
 
-                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
+                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
                     foreach (var user in userManager.GetUsers())
                     {
                         if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))

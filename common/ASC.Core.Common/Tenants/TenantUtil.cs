@@ -37,18 +37,6 @@ namespace ASC.Core.Tenants
             TenantManager = tenantManager;
         }
 
-        public static string GetBaseDomain(string hostedRegion)
-        {
-            var baseHost = CoreContext.Configuration.BaseDomain;
-
-            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
-            {
-                return baseHost;
-            }
-            var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
-            return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
-        }
-
 
         public DateTime DateTimeFromUtc(DateTime utc)
         {

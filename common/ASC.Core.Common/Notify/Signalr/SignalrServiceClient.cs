@@ -53,6 +53,7 @@ namespace ASC.Core.Notify.Signalr
         private readonly string hub;
 
         public TenantManager TenantManager { get; }
+        public CoreSettings CoreSettings { get; }
 
         static SignalrServiceClient()
         {
@@ -60,10 +61,11 @@ namespace ASC.Core.Notify.Signalr
             Log = LogManager.GetLogger("ASC");
         }
 
-        public SignalrServiceClient(string hub, TenantManager tenantManager, IConfiguration configuration)
+        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration)
         {
             this.hub = hub.Trim('/');
             TenantManager = tenantManager;
+            CoreSettings = coreSettings;
             CoreMachineKey = configuration["core:machinekey"];
             Url = configuration["web:hub:internal"];
             EnableSignalr = !string.IsNullOrEmpty(Url);
@@ -99,7 +101,7 @@ namespace ASC.Core.Notify.Signalr
                 var isTenantUser = callerUserName == string.Empty;
                 var message = new MessageClass
                 {
-                    UserName = isTenantUser ? tenant.GetTenantDomain() : callerUserName,
+                    UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
                     Text = messageText
                 };
 
@@ -121,7 +123,7 @@ namespace ASC.Core.Notify.Signalr
 
                 var message = new MessageClass
                 {
-                    UserName = tenant.GetTenantDomain(),
+                    UserName = tenant.GetTenantDomain(CoreSettings),
                     Text = chatRoomName
                 };
 

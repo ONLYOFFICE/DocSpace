@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.Utility
         Storage = 21
     }
 
-    public class CommonLinkUtility: BaseCommonLinkUtility
+    public class CommonLinkUtility : BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -74,25 +74,27 @@ namespace ASC.Web.Studio.Utility
         public const string ParamName_UserUserID = "uid";
 
         public CommonLinkUtility(
-            CoreBaseSettings coreBaseSettings, 
-            TenantManager tenantManager, 
-            UserManager userManager, 
-            WebItemManagerSecurity webItemManagerSecurity, 
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            TenantManager tenantManager,
+            UserManager userManager,
+            WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
-            EmailValidationKeyProvider emailValidationKeyProvider) : 
-            this(null, coreBaseSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider)
+            EmailValidationKeyProvider emailValidationKeyProvider) :
+            this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider)
         {
         }
 
         public CommonLinkUtility(
             IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
             TenantManager tenantManager,
             UserManager userManager,
             WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider) :
-            base(httpContextAccessor, coreBaseSettings, tenantManager) => (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
+            base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager) => (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
         public string Logout
         {
@@ -442,7 +444,7 @@ namespace ASC.Web.Studio.Utility
 
         #region Help Centr
 
-        public string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings,  bool inCurrentCulture = true)
+        public string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings, bool inCurrentCulture = true)
         {
             if (!AdditionalWhiteLabelSettings.Instance.HelpCenterEnabled)
                 return string.Empty;

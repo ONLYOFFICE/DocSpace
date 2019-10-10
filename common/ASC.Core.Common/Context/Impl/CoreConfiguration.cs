@@ -106,6 +106,18 @@ namespace ASC.Core
             Configuration = configuration;
         }
 
+        public string GetBaseDomain(string hostedRegion)
+        {
+            var baseHost = BaseDomain;
+
+            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
+            {
+                return baseHost;
+            }
+            var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
+            return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
+        }
+
         public void SaveSetting(string key, string value, int tenant = Tenant.DEFAULT_TENANT)
         {
             if (string.IsNullOrEmpty(key))
@@ -186,12 +198,7 @@ namespace ASC.Core
 
         public bool Standalone
         {
-            get  => CoreBaseSettings.Standalone;
-        }
-
-        public bool Personal
-        {
-            get => CoreBaseSettings.Personal;
+            get => CoreBaseSettings.Standalone;
         }
 
         public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)

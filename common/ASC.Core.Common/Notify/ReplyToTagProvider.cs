@@ -39,10 +39,11 @@ namespace ASC.Core.Common.Notify
 
         private const string TagName = "replyto";
 
-        public ReplyToTagProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings)
+        public ReplyToTagProvider(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings)
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
         }
 
         /// <summary>
@@ -89,11 +90,12 @@ namespace ASC.Core.Common.Notify
                 // we use mapped domains for standalone portals because it is the only way to reach autoreply service
                 // mapped domains are no allowed for SAAS because of http(s) problem
                 var tenant = TenantManager.GetCurrentTenant();
-                return tenant.GetTenantDomain(CoreBaseSettings.Standalone);
+                return tenant.GetTenantDomain(CoreSettings, CoreBaseSettings.Standalone);
             }
         }
 
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
     }
 }

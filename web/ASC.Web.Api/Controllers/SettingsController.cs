@@ -135,6 +135,7 @@ namespace ASC.Api.Settings
         public DisplayUserSettings DisplayUserSettings { get; }
         public StatisticManager StatisticManager { get; }
         public IPRestrictionsService IPRestrictionsService { get; }
+        public CoreConfiguration CoreConfiguration { get; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
@@ -184,7 +185,8 @@ namespace ASC.Api.Settings
             BuildVersion buildVersion,
             DisplayUserSettings displayUserSettings,
             StatisticManager statisticManager,
-            IPRestrictionsService iPRestrictionsService)
+            IPRestrictionsService iPRestrictionsService,
+            CoreConfiguration coreConfiguration)
         {
             ServiceProvider = serviceProvider;
             LogManager = logManager;
@@ -234,6 +236,7 @@ namespace ASC.Api.Settings
             DisplayUserSettings = displayUserSettings;
             StatisticManager = statisticManager;
             IPRestrictionsService = iPRestrictionsService;
+            CoreConfiguration = coreConfiguration;
         }
 
         [Read("")]
@@ -261,7 +264,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return new QuotaWrapper(Tenant, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings, WebItemManager);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, PersonalQuotaSettings, WebItemManager);
         }
 
         [AllowAnonymous]

@@ -40,15 +40,18 @@ namespace ASC.Core.Common
         private const string LOCALHOST = "localhost";
 
         private UriBuilder _serverRoot;
-        private  string _vpath;
+        private string _vpath;
 
         public HttpContext HttpContext { get; set; }
 
-        public BaseCommonLinkUtility(CoreBaseSettings coreBaseSettings, TenantManager tenantManager) : this(null, coreBaseSettings, tenantManager)
+        public BaseCommonLinkUtility(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager) : this(null, coreBaseSettings, coreSettings, tenantManager)
         {
         }
 
-        public BaseCommonLinkUtility(IHttpContextAccessor httpContextAccessor, CoreBaseSettings coreBaseSettings, TenantManager tenantManager)
+        public BaseCommonLinkUtility(IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            TenantManager tenantManager)
         {
             try
             {
@@ -67,6 +70,7 @@ namespace ASC.Core.Common
             }
 
             CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
             TenantManager = tenantManager;
         }
 
@@ -88,6 +92,7 @@ namespace ASC.Core.Common
         }
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
         public TenantManager TenantManager { get; }
 
         private string serverRootPath;
@@ -118,7 +123,7 @@ namespace ASC.Core.Common
                 {
                     // take values from db if localhost or no http context thread
                     var tenant = TenantManager.GetCurrentTenant();
-                    result.Host = tenant.TenantDomain;
+                    result.Host = tenant.GetTenantDomain(CoreSettings);
 
 #if DEBUG
                     // for Visual Studio debug
