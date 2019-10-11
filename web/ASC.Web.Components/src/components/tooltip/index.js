@@ -64,7 +64,6 @@ class Tooltip extends Component {
           wrapper="div"
           resizeHide={true}
           scrollHide={true}
-          isCapture={true}
         />
       </TooltipStyle>
     );
