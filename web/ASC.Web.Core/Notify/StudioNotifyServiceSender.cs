@@ -73,7 +73,7 @@ namespace ASC.Web.Studio.Core.Notify
             tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
-            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, userManager, authContext, displayUserSettings);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
             var tenant = tenantManager.GetCurrentTenant(false);
 
@@ -149,7 +149,8 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendSaasLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
+            //remove client
+            StudioPeriodicNotify.SendSaasLetters(EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)

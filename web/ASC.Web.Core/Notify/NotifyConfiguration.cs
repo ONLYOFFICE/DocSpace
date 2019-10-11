@@ -74,7 +74,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void NotifyClientRegisterCallback(Context context, INotifyClient client, UserManager userManager)
+        private static void NotifyClientRegisterCallback(Context context, INotifyClient client)
         {
             #region url correction
 
@@ -82,12 +82,11 @@ namespace ASC.Web.Studio.Core.Notify
                 "Web.UrlAbsoluter",
                 InterceptorPlace.MessageSend,
                 InterceptorLifetime.Global,
-                (r, p) =>
+                (r, p, scope) =>
                 {
                     if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HTMLContentType)
                     {
-                        var scope = ServiceProvider.CreateScope();
-                        var commonLinkUtility = ServiceProvider.GetService<CommonLinkUtility>();
+                        var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
 
                         var body = r.CurrentMessage.Body;
 
@@ -123,16 +122,17 @@ namespace ASC.Web.Studio.Core.Notify
                 "ProductSecurityInterceptor",
                  InterceptorPlace.DirectSend,
                  InterceptorLifetime.Global,
-                 (r, p) =>
+                 (r, p, scope) =>
                  {
                      try
                      {
                          //fix
-                         using var scope = ServiceProvider.CreateScope();
+                         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                          var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
+                         var userManager = scope.ServiceProvider.GetService<UserManager>();
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                         var tenant = tenantManager.GetCurrentTenant();
 
                          if (32 <= r.Recipient.ID.Length)
                          {
@@ -208,7 +208,7 @@ namespace ASC.Web.Studio.Core.Notify
                 "WhiteLabelInterceptor",
                  InterceptorPlace.MessageSend,
                  InterceptorLifetime.Global,
-                 (r, p) =>
+                 (r, p, scope) =>
                  {
                      try
                      {
@@ -235,11 +235,14 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
+            var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
+            var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
+            var displayUserSettings = serviceScope.ServiceProvider.GetService<DisplayUserSettings>();
 
             if (authContext.IsAuthenticated)
             {

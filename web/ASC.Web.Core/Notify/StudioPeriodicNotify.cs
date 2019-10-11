@@ -38,7 +38,6 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Billing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Helpers;
@@ -52,7 +51,7 @@ namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioPeriodicNotify
     {
-        public static void SendSaasLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public static void SendSaasLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -100,6 +99,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
                     var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
                     var dbRegistry = scope.ServiceProvider.GetService<DbRegistry>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -519,7 +519,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendSaasTariffLetters");
         }
 
-        public static void SendEnterpriseLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public static void SendEnterpriseLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -559,6 +559,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var dbRegistry = scope.ServiceProvider.GetService<DbRegistry>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
@@ -915,7 +916,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendTariffEnterpriseLetters");
         }
 
-        public static void SendOpensourceLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public static void SendOpensourceLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
             var now = scheduleDate.Date;
@@ -949,6 +950,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
                     var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     INotifyAction action = null;
 
@@ -1102,7 +1104,7 @@ namespace ASC.Web.Studio.Core.Notify
             log.Info("End SendOpensourceTariffLetters");
         }
 
-        public static void SendPersonalLetters(INotifyClient client, string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public static void SendPersonalLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
             var log = LogManager.GetLogger("ASC.Notify");
 
@@ -1137,6 +1139,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                     var authentication = scope.ServiceProvider.GetService<AuthManager>();
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 

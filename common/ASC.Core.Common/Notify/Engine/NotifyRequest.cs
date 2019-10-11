@@ -32,6 +32,7 @@ using ASC.Notify.Messages;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
 {
@@ -79,7 +80,7 @@ namespace ASC.Notify.Engine
             IsNeedCheckSubscriptions = true;
         }
 
-        internal bool Intercept(InterceptorPlace place)
+        internal bool Intercept(InterceptorPlace place, IServiceScope serviceScope)
         {
             var result = false;
             foreach (var interceptor in Interceptors)
@@ -88,7 +89,7 @@ namespace ASC.Notify.Engine
                 {
                     try
                     {
-                        if (interceptor.PreventSend(this, place))
+                        if (interceptor.PreventSend(this, place, serviceScope))
                         {
                             result = true;
                         }

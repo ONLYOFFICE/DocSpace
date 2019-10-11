@@ -28,13 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
-using ASC.Core;
 using ASC.Notify.Channels;
 using ASC.Notify.Engine;
 using ASC.Notify.Model;
 using ASC.Notify.Sinks;
-using ASC.Web.Core.Users;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify
 {
@@ -66,13 +65,13 @@ namespace ASC.Notify
         }
 
 
-        public event Action<Context, INotifyClient, UserManager> NotifyClientRegistration;
+        public event Action<Context, INotifyClient> NotifyClientRegistration;
 
 
-        public Context(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        public Context(IServiceProvider serviceProvider)
         {
-            NotifyEngine = new NotifyEngine(this, coreBaseSettings, configuration);
-            DispatchEngine = new DispatchEngine(this, configuration);
+            NotifyEngine = new NotifyEngine(this, serviceProvider);
+            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>());
         }
 
 
@@ -101,11 +100,11 @@ namespace ASC.Notify
             }
         }
 
-        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
+        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, IServiceScope serviceScope)
         {
             //ValidateNotifySource(source);
-            var client = new NotifyClientImpl(this, source, userManager, authContext, displayUserSettings);
-            NotifyClientRegistration?.Invoke(this, client, userManager);
+            var client = new NotifyClientImpl(this, source, serviceScope);
+            NotifyClientRegistration?.Invoke(this, client);
             return client;
         }
 

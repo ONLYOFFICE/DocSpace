@@ -31,7 +31,6 @@ using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
-using ASC.Web.Core.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -95,7 +94,7 @@ namespace ASC.Core
                 if (notifyStarted) return;
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                NotifyContext = new NotifyContext(serviceProvider.GetService<CoreBaseSettings>(), configuration);
+                NotifyContext = new NotifyContext(serviceProvider);
 
                 INotifySender jabberSender = new NotifyServiceSender();
                 INotifySender emailSender = new NotifyServiceSender();
@@ -133,16 +132,17 @@ namespace ASC.Core
             }
         }
 
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
         {
-            request.Properties.Add("Tenant", CoreContext.TenantManager.GetCurrentTenant(false));
+            request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
         }
 
-        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request)
+        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
             {
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(tenant);
             }
         }
     }

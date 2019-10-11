@@ -25,11 +25,10 @@
 
 
 using System;
-using ASC.Core;
 using ASC.Notify.Engine;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Model
 {
@@ -38,17 +37,12 @@ namespace ASC.Notify.Model
         private readonly Context ctx;
         private readonly InterceptorStorage interceptors = new InterceptorStorage();
         private readonly INotifySource notifySource;
+        public IServiceScope ServiceScope { get; }
 
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public DisplayUserSettings DisplayUserSettings { get; }
-
-        public NotifyClientImpl(Context context, INotifySource notifySource, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
+        public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
         {
             this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
-            UserManager = userManager;
-            AuthContext = authContext;
-            DisplayUserSettings = displayUserSettings;
+            ServiceScope = serviceScope;
             ctx = context ?? throw new ArgumentNullException("context");
         }
 
@@ -141,7 +135,7 @@ namespace ASC.Notify.Model
         private void SendAsync(NotifyRequest request)
         {
             request.Interceptors = interceptors.GetAll();
-            ctx.NotifyEngine.QueueRequest(request, UserManager, AuthContext, DisplayUserSettings);
+            ctx.NotifyEngine.QueueRequest(request, ServiceScope);
         }
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)

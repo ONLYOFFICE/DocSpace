@@ -38,8 +38,8 @@ using ASC.Notify.Cron;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.Core.Users;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
 {
@@ -69,25 +69,27 @@ namespace ASC.Notify.Engine
 
         public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public event Action<NotifyEngine, NotifyRequest, UserManager, AuthContext, DisplayUserSettings> BeforeTransferRequest;
+        public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
 
-        public event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
+        public event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
 
 
-        public NotifyEngine(Context context, CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        public NotifyEngine(Context context, IServiceProvider serviceProvider)
         {
             this.context = context ?? throw new ArgumentNullException("context");
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
+            CoreBaseSettings = serviceProvider.GetService<CoreBaseSettings>();
+            Configuration = serviceProvider.GetService<IConfiguration>();
+            ServiceProvider = serviceProvider;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
         }
 
 
-        public virtual void QueueRequest(NotifyRequest request, UserManager userManager, AuthContext authContext, DisplayUserSettings displayUserSettings)
+        public virtual void QueueRequest(NotifyRequest request, IServiceScope serviceScope)
         {
-            BeforeTransferRequest?.Invoke(this, request, userManager, authContext, displayUserSettings);
+            BeforeTransferRequest?.Invoke(this, request, serviceScope);
             lock (requests)
             {
                 if (!notifySender.IsAlive)
@@ -213,11 +215,12 @@ namespace ASC.Notify.Engine
                     }
                     if (request != null)
                     {
-                        //createscope
-                        AfterTransferRequest?.Invoke(this, request);
+                        using var scope = ServiceProvider.CreateScope();
+                        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                        AfterTransferRequest?.Invoke(this, request, scope);
                         try
                         {
-                            SendNotify(CoreContext.TenantManager.GetCurrentTenant(), request);
+                            SendNotify(tenantManager.GetCurrentTenant(), request, scope);
                         }
                         catch (Exception e)
                         {
@@ -241,18 +244,18 @@ namespace ASC.Notify.Engine
         }
 
 
-        private NotifyResult SendNotify(Tenant tenant, NotifyRequest request)
+        private NotifyResult SendNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
         {
             var sendResponces = new List<SendResponse>();
 
-            var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, null);
+            var response = CheckPreventInterceptors(request, InterceptorPlace.Prepare, serviceScope, null);
             if (response != null)
             {
                 sendResponces.Add(response);
             }
             else
             {
-                sendResponces.AddRange(SendGroupNotify(tenant, request));
+                sendResponces.AddRange(SendGroupNotify(tenant, request, serviceScope));
             }
 
             NotifyResult result = null;
@@ -268,19 +271,19 @@ namespace ASC.Notify.Engine
             return result;
         }
 
-        private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, string sender)
+        private SendResponse CheckPreventInterceptors(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope, string sender)
         {
-            return request.Intercept(place) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
+            return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
         }
 
-        private List<SendResponse> SendGroupNotify(Tenant tenant, NotifyRequest request)
+        private List<SendResponse> SendGroupNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
         {
             var responces = new List<SendResponse>();
-            SendGroupNotify(tenant, request, responces);
+            SendGroupNotify(tenant, request, responces, serviceScope);
             return responces;
         }
 
-        private void SendGroupNotify(Tenant tenant, NotifyRequest request, List<SendResponse> responces)
+        private void SendGroupNotify(Tenant tenant, NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
         {
             if (request.Recipient is IDirectRecipient)
             {
@@ -290,7 +293,7 @@ namespace ASC.Notify.Engine
                     var directresponses = new List<SendResponse>(1);
                     try
                     {
-                        directresponses = SendDirectNotify(tenant, request);
+                        directresponses = SendDirectNotify(tenant, request, serviceScope);
                     }
                     catch (Exception exc)
                     {
@@ -303,7 +306,7 @@ namespace ASC.Notify.Engine
             {
                 if (request.Recipient is IRecipientsGroup)
                 {
-                    var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, null);
+                    var checkresp = CheckPreventInterceptors(request, InterceptorPlace.GroupSend, serviceScope, null);
                     if (checkresp != null)
                     {
                         responces.Add(checkresp);
@@ -320,7 +323,7 @@ namespace ASC.Notify.Engine
                                 try
                                 {
                                     var newRequest = request.Split(recipient);
-                                    SendGroupNotify(tenant, newRequest, responces);
+                                    SendGroupNotify(tenant, newRequest, responces, serviceScope);
                                 }
                                 catch (Exception exc)
                                 {
@@ -345,12 +348,12 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private List<SendResponse> SendDirectNotify(Tenant tenant, NotifyRequest request)
+        private List<SendResponse> SendDirectNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
         {
             if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
             var responses = new List<SendResponse>();
-            var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, null);
+            var response = CheckPreventInterceptors(request, InterceptorPlace.DirectSend, serviceScope, null);
             if (response != null)
             {
                 responses.Add(response);
@@ -377,7 +380,7 @@ namespace ASC.Notify.Engine
                     {
                         try
                         {
-                            response = SendDirectNotify(tenant.TenantId, request, channel);
+                            response = SendDirectNotify(tenant.TenantId, request, channel, serviceScope);
                         }
                         catch (Exception exc)
                         {
@@ -399,7 +402,7 @@ namespace ASC.Notify.Engine
             return responses;
         }
 
-        private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel)
+        private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
         {
             if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
@@ -409,7 +412,7 @@ namespace ASC.Notify.Engine
             if (oops != null) return oops;
 
             request.CurrentMessage = noticeMessage;
-            var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, channel.SenderName);
+            var preventresponse = CheckPreventInterceptors(request, InterceptorPlace.MessageSend, serviceScope, channel.SenderName);
             if (preventresponse != null) return preventresponse;
 
             channel.SendAsync(noticeMessage);
