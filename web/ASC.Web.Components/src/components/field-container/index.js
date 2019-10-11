@@ -37,6 +37,10 @@ const verticalCss = css`
   .field-body {
     width: 100%;
   }
+  .icon-button {
+    line-height: unset;
+    margin-top: -4px;
+  }
 `
 
 const Container = styled.div`
