@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import isEqual from "lodash/isEqual";
 import TextInput from '../text-input'
-import { Email, parseAddress } from '../../utils/email';
+import { EmailSettings, parseAddress, checkEmailSettings, isEqualEmailSettings } from '../../utils/email';
 
 const borderColor = {
   default: '#D0D5DA',
@@ -34,29 +34,45 @@ const StyledTextInput = styled(SimpleInput)`
 `;
 
 class EmailInput extends React.Component {
+  constructor(props) {
+    super(props);
 
-  constructor() {
-    super();
+    const { value, emailSettings } = this.props;
+    const validatedSettings = checkEmailSettings(emailSettings);
+
     this.state = {
-      isValidEmail: true
+      isValidEmail: true,
+      emailSettings: validatedSettings,
+      value
     }
+  }
+
+  componentDidUpdate() {
+    const { emailSettings } = this.props;
+    if (isEqualEmailSettings(this.state.emailSettings, emailSettings)) return;
+
+    const validatedSettings = checkEmailSettings(emailSettings);
+
+    this.setState({ emailSettings: validatedSettings }, function () {
+      this.checkEmail(this.state.value);
+    });
+
   }
 
   checkEmail = (value) => {
 
     if (!value.length) {
-      !this.state.isValidEmail && this.setState({ isValidEmail: true });
+      !this.state.isValidEmail && this.setState({ isValidEmail: true, value });
       return;
     }
 
-    const emailObj = parseAddress(value);
+    const emailObj = parseAddress(value, this.state.emailSettings);
     const isValidEmail = emailObj.isValid();
 
     this.props.onValidateInput
       && this.props.onValidateInput(isValidEmail);
 
-    this.setState({ isValidEmail:  isValidEmail });
-
+    this.setState({ isValidEmail, value });
   }
 
   onChangeAction = (e) => {
@@ -85,13 +101,12 @@ class EmailInput extends React.Component {
       isReadOnly,
       onFocus,
       onBlur,
-      value,
       name,
       onValidateInput,
       withBorder
     } = this.props;
 
-    const { isValidEmail } = this.state;
+    const { isValidEmail, value } = this.state;
 
     return (
       <StyledTextInput
@@ -125,6 +140,8 @@ class EmailInput extends React.Component {
 EmailInput.propTypes = {
   onValidateInput: PropTypes.func,
   className: PropTypes.string,
+  value: PropTypes.string,
+  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)])
 }
 
 EmailInput.defaultProps = {
@@ -139,7 +156,9 @@ EmailInput.defaultProps = {
   scale: false,
   withBorder: true,
   placeholder: '',
-  className: ''
+  className: '',
+
+  settings: new EmailSettings()
 }
 
 export default EmailInput;

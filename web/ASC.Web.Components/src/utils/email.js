@@ -336,3 +336,38 @@ export class EmailSettings {
     }
   }
 }
+
+export const checkEmailSettings = (settings) => {
+  if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
+    const defaultSettings = new EmailSettings();
+    Object.keys(settings).map((item) => {
+      if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
+        defaultSettings[item] = settings[item];
+      }
+    });
+    return defaultSettings;
+  }
+
+  else if (typeof settings === 'object' && settings instanceof EmailSettings) {
+    return settings;
+  }
+}
+
+export const isEqualEmailSettings = (settings1, settings2) => {
+  const comparedProperties = [
+    'allowDomainPunycode',
+    'allowLocalPartPunycode',
+    'allowDomainIp',
+    'allowStrictLocalPart',
+    'allowSpaces',
+    'allowName'
+  ];
+  const propLength = comparedProperties.length;
+  for (let i = 0; i < propLength; i++) {
+    const comparedProp = comparedProperties[i]
+    if (settings1[comparedProp] !== settings2[comparedProp]) {
+      return false;
+    }
+  }
+  return true;
+}
