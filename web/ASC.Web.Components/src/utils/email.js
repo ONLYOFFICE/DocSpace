@@ -31,15 +31,15 @@ const str2Obj = str => {
     i = str.match(t) || str.match(n);
   return i
     ? {
-        name: i[1]
-          .replace(/\\"/g, '"')
-          .replace(/\\\\/g, "\\")
-          .trim(),
-        email: i[2].trim()
-      }
+      name: i[1]
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, "\\")
+        .trim(),
+      email: i[2].trim()
+    }
     : {
-        email: str
-      };
+      email: str
+    };
 };
 
 const obj2str = object => {
@@ -61,7 +61,7 @@ const normalizeString = str => {
   return obj2str(str2Obj(str));
 };
 
-const checkErrors = parsedAddress => {
+const checkErrors = (parsedAddress, options) => {
   const errors = [];
   if (
     parsedAddress.domain.indexOf(".") === -1 ||
@@ -77,6 +77,7 @@ const checkErrors = parsedAddress => {
   }
 
   if (
+    !options.allowDomainIp &&
     parsedAddress.domain.indexOf("[") === 0 &&
     parsedAddress.domain.indexOf("]") === parsedAddress.domain.length - 1
   ) {
@@ -87,7 +88,7 @@ const checkErrors = parsedAddress => {
     });
   }
 
-  if (!/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.domain))) {
+  if (!options.allowDomainPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.domain))) {
     errors.push({
       message: "Punycode domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
@@ -96,8 +97,9 @@ const checkErrors = parsedAddress => {
   }
 
   if (
-    !/^[\x00-\x7F]+$/.test(parsedAddress.local) ||
-    !/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)*$/.test(parsedAddress.local)
+    options.allowStrictLocalPart &&
+    (!/^[\x00-\x7F]+$/.test(parsedAddress.local) ||
+      !/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)*$/.test(parsedAddress.local))
   ) {
     errors.push({
       message: "Incorrect localpart",
@@ -107,8 +109,9 @@ const checkErrors = parsedAddress => {
   }
 
   if (
-    /\s+/.test(parsedAddress.local) ||
-    parsedAddress.local !== parsedAddress.parts.local.tokens
+    !options.allowSpaces &&
+    (/\s+/.test(parsedAddress.local) ||
+      parsedAddress.local !== parsedAddress.parts.local.tokens)
   ) {
     errors.push({
       message: "Incorrect, localpart contains spaces",
@@ -117,9 +120,9 @@ const checkErrors = parsedAddress => {
     });
   }
 
-  if (
-    /\s+/.test(parsedAddress.domain) ||
-    parsedAddress.domain !== parsedAddress.parts.domain.tokens
+  if (!options.allowSpaces &&
+    (/\s+/.test(parsedAddress.domain) ||
+      parsedAddress.domain !== parsedAddress.parts.domain.tokens)
   ) {
     errors.push({
       message: "Incorrect, domain contains spaces",
@@ -136,8 +139,8 @@ const checkErrors = parsedAddress => {
  * @param {String} str
  * @return {Array} result with array of Email objects
  */
-export const parseAddresses = (str, options = new EmailOptions()) => {
-  if (!(options instanceof EmailOptions)) throw "Invalid options";
+export const parseAddresses = (str, options = new EmailSettings()) => {
+  if (!(options instanceof EmailSettings)) throw "Invalid options";
 
   const parts = getParts(str);
   const resultEmails = [];
@@ -150,13 +153,13 @@ export const parseAddresses = (str, options = new EmailOptions()) => {
 
     const errors = [];
 
-    if (!parsedAddress) {
+    if (!parsedAddress || (parsedAddress.name && !options.allowName)) {
       errors.push({
         message: "Incorrect email",
         type: parseErrorTypes.IncorrectEmail
       });
     } else {
-      const checkOptionErrors = checkErrors(parsedAddress)
+      const checkOptionErrors = checkErrors(parsedAddress, options)
       checkOptionErrors.length && errors.push(checkOptionErrors);
     }
 
@@ -175,16 +178,16 @@ export const parseAddresses = (str, options = new EmailOptions()) => {
  * @param {String} str
  * @return {Email} result
  */
-export const parseAddress = (str, options = new EmailOptions()) => {
+export const parseAddress = (str, options = new EmailSettings()) => {
   const parsedEmails = parseAddresses(str, options);
 
-  if (!parseAddresses.length) {
+  if (!parsedEmails.length) {
     return new Email("", str, [
       { message: "No one email parsed", type: parseErrorTypes.EmptyRecipients }
     ]);
   }
 
-  if (parseAddresses.length > 1) {
+  if (parsedEmails.length > 1) {
     return new Email("", str, [
       { message: "To many email parsed", type: parseErrorTypes.IncorrectEmail }
     ]);
@@ -233,7 +236,7 @@ export class Email {
     return this.parseErrors.length === 0;
   };
 
-  equals = function(addr) {
+  equals = function (addr) {
     if (typeof addr === "object" && addr instanceof Email) {
       return this.email === addr.email && this.name === addr.name;
     } else if (typeof addr === "string") {
@@ -245,7 +248,7 @@ export class Email {
   };
 }
 
-export class EmailOptions {
+export class EmailSettings {
   constructor() {
     this.allowDomainPunycode = false;
     this.allowLocalPartPunycode = false;
@@ -253,5 +256,83 @@ export class EmailOptions {
     this.allowStrictLocalPart = true;
     this.allowSpaces = false;
     this.allowName = true;
+  }
+
+  get allowDomainPunycode() {
+    return this._allowDomainPunycode;
+  }
+
+  set allowDomainPunycode(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowDomainPunycode = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowDomainPunycode option. Use boolean value`
+    }
+  }
+
+  get allowLocalPartPunycode() {
+    return this._allowLocalPartPunycode;
+  }
+
+  set allowLocalPartPunycode(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowLocalPartPunycode = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`
+    }
+  }
+
+  get allowDomainIp() {
+    return this._allowDomainIp;
+  }
+
+  set allowDomainIp(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowDomainIp = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowDomainIp option. Use boolean value`
+    }
+  }
+
+  get allowStrictLocalPart() {
+    return this._allowStrictLocalPart;
+  }
+
+  set allowStrictLocalPart(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowStrictLocalPart = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowStrictLocalPart option. Use boolean value`
+    }
+  }
+
+  get allowSpaces() {
+    return this._allowSpaces;
+  }
+
+  set allowSpaces(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowSpaces = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowSpaces option. Use boolean value`
+    }
+  }
+
+  get allowName() {
+    return this._allowName;
+  }
+
+  set allowName(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowName = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowName option. Use boolean value`
+    }
   }
 }
