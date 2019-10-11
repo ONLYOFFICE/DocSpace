@@ -43,37 +43,49 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Data
 {
+    public class DbSettingsManagerCache
+    {
+        public ICache Cache { get; }
+        public ICacheNotify<SettingsCacheItem> Notify { get; }
+
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
+        {
+            Cache = AscCache.Memory;
+            Notify = notify;
+            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+        }
+
+        public void Remove(string key)
+        {
+            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+        }
+    }
+
     public class DbSettingsManager
     {
         private static readonly ILog log = LogManager.GetLogger("ASC");
-
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<SettingsCacheItem> notify;
 
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
         private readonly string dbId;
 
+        public ICache Cache { get; }
         public IServiceProvider ServiceProvider { get; }
         public DbRegistry DbRegistry { get; }
+        public DbSettingsManagerCache DbSettingsManagerCache { get; }
 
-        public DbSettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry) : this(null)
+        public DbSettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry, DbSettingsManagerCache dbSettingsManagerCache) : this(null)
         {
             ServiceProvider = serviceProvider;
             DbRegistry = dbRegistry;
+            DbSettingsManagerCache = dbSettingsManagerCache;
+            Cache = dbSettingsManagerCache.Cache;
         }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
             dbId = connectionString != null ? connectionString.Name : "default";
         }
-
-        static DbSettingsManager()
-        {
-            notify = new KafkaCache<SettingsCacheItem>();
-            notify.Subscribe((i) => cache.Remove(i.Key), CacheNotifyAction.Remove);
-        }
-
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
         {
@@ -89,7 +101,7 @@ namespace ASC.Core.Data
         {
             var settings = LoadSettings<T>(tenantId);
             var key = settings.ID.ToString() + tenantId + Guid.Empty;
-            notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+            DbSettingsManagerCache.Remove(key);
         }
 
 
@@ -122,11 +134,13 @@ namespace ASC.Core.Data
                             .InColumnValue("tenantid", tenantId)
                             .InColumnValue("data", data);
                     }
-                    notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+
+                    DbSettingsManagerCache.Remove(key);
+
                     db.ExecuteNonQuery(i);
                 }
 
-                cache.Insert(key, settings, expirationTimeout);
+                Cache.Insert(key, settings, expirationTimeout);
                 return true;
             }
             catch (Exception ex)
@@ -143,7 +157,7 @@ namespace ASC.Core.Data
 
             try
             {
-                var settings = cache.Get<T>(key);
+                var settings = Cache.Get<T>(key);
                 if (settings != null) return settings;
 
                 using (var db = GetDbManager())
@@ -166,7 +180,7 @@ namespace ASC.Core.Data
                     }
                 }
 
-                cache.Insert(key, settings, expirationTimeout);
+                Cache.Insert(key, settings, expirationTimeout);
                 return settings;
             }
             catch (Exception ex)

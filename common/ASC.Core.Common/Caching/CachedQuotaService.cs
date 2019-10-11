@@ -49,14 +49,13 @@ namespace ASC.Core.Caching
         }
 
 
-        public CachedQuotaService(IQuotaService service)
+        public CachedQuotaService(IQuotaService service, ICacheNotify<QuotaCacheItem> cacheNotify)
         {
             this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             interval = new TrustInterval();
             CacheExpiration = TimeSpan.FromMinutes(10);
 
-            cacheNotify = new KafkaCache<QuotaCacheItem>();
             cacheNotify.Subscribe((i) =>
             {
                 if (i.Key == KEY_QUOTA_ROWS)

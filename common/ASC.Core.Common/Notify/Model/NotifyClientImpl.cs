@@ -83,21 +83,6 @@ namespace ASC.Notify.Model
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
         }
 
-
-
-        public INotifyClient RegisterSendMethod(Action<DateTime> method, string cron)
-        {
-            ctx.NotifyEngine.RegisterSendMethod(method, cron);
-            return this;
-        }
-
-        public INotifyClient UnregisterSendMethod(Action<DateTime> method)
-        {
-            ctx.NotifyEngine.UnregisterSendMethod(method);
-            return this;
-
-        }
-
         public void BeginSingleRecipientEvent(string name)
         {
             interceptors.Add(new SingleRecipientInterceptor(name));

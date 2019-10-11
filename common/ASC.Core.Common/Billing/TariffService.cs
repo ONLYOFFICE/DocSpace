@@ -43,37 +43,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Billing
 {
-    public class TariffService : DbBaseService, ITariffService
+    public class TariffServiceStorage
     {
-        private const int DEFAULT_TRIAL_PERIOD = 30;
-        private static readonly TimeSpan DEFAULT_CACHE_EXPIRATION = TimeSpan.FromMinutes(5);
-        private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+        public ICache Cache { get; }
+        public ICacheNotify<TariffCacheItem> Notify { get; }
 
-        private readonly static ICache cache;
-        private readonly static ICacheNotify<TariffCacheItem> notify;
-        private readonly static bool billingConfigured = false;
-
-        private static readonly ILog log = LogManager.GetLogger("ASC");
-        private readonly IQuotaService quotaService;
-        private readonly ITenantService tenantService;
-        private readonly bool test;
-        private readonly int paymentDelay;
-
-
-        public TimeSpan CacheExpiration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
-
-        static TariffService()
+        public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify)
         {
-            cache = AscCache.Memory;
-            notify = new KafkaCache<TariffCacheItem>();
-            notify.Subscribe((i) =>
+            Cache = AscCache.Memory;
+            Notify = notify;
+            Notify.Subscribe((i) =>
             {
-                cache.Remove(GetTariffCacheKey(i.TenantId));
-                cache.Remove(GetBillingUrlCacheKey(i.TenantId));
-                cache.Remove(GetBillingPaymentCacheKey(i.TenantId, DateTime.MinValue, DateTime.MaxValue)); // clear all payments
+                Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
+                Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
+                Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId, DateTime.MinValue, DateTime.MaxValue)); // clear all payments
             }, CacheNotifyAction.Remove);
 
             //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
@@ -91,7 +74,31 @@ namespace ASC.Core.Billing
                 log.Error(err);
             }*/
         }
+    }
 
+    public class TariffService : DbBaseService, ITariffService
+    {
+        private readonly ICache cache;
+        private readonly ICacheNotify<TariffCacheItem> notify;
+
+        private const int DEFAULT_TRIAL_PERIOD = 30;
+        private static readonly TimeSpan DEFAULT_CACHE_EXPIRATION = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+
+        private readonly static bool billingConfigured = false;
+
+        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly IQuotaService quotaService;
+        private readonly ITenantService tenantService;
+        private readonly bool test;
+        private readonly int paymentDelay;
+
+
+        public TimeSpan CacheExpiration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
+        public TariffServiceStorage TariffServiceStorage { get; }
 
         public TariffService(
             System.Configuration.ConnectionStringSettings connectionString,
@@ -100,17 +107,22 @@ namespace ASC.Core.Billing
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            DbRegistry dbRegistry)
+            DbRegistry dbRegistry,
+            TariffServiceStorage tariffServiceStorage)
             : base(connectionString, dbRegistry, "tenant")
         {
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
             Configuration = configuration;
+            TariffServiceStorage = tariffServiceStorage;
             CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = configuration["core:payment:test"] == "true";
             int.TryParse(configuration["core:payment:delay"], out paymentDelay);
+
+            cache = TariffServiceStorage.Cache;
+            notify = TariffServiceStorage.Notify;
         }
 
 
@@ -196,17 +208,17 @@ namespace ASC.Core.Billing
             ClearCache(tenantId);
         }
 
-        private static string GetTariffCacheKey(int tenantId)
+        internal static string GetTariffCacheKey(int tenantId)
         {
             return string.Format("{0}:{1}", tenantId, "tariff");
         }
 
-        private static string GetBillingUrlCacheKey(int tenantId)
+        internal static string GetBillingUrlCacheKey(int tenantId)
         {
             return string.Format("{0}:{1}", tenantId, "billing:urls");
         }
 
-        private static string GetBillingPaymentCacheKey(int tenantId, DateTime from, DateTime to)
+        internal static string GetBillingPaymentCacheKey(int tenantId, DateTime from, DateTime to)
         {
             return string.Format("{0}:{1}:{2}-{3}", tenantId, "billing:payments", from.ToString("yyyyMMddHHmmss"), to.ToString("yyyyMMddHHmmss"));
         }

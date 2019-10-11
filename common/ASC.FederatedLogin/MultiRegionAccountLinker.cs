@@ -54,12 +54,12 @@ namespace ASC.FederatedLogin
         }
 
 
-        public MultiRegionAccountLinker(string databaseId, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, IConfiguration configuration)
+        public MultiRegionAccountLinker(string databaseId, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, IConfiguration configuration, AccountLinkerStorage accountLinkerStorage)
         {
             foreach (var connection in configuration.GetConnectionStrings())
             {
                 if (connection.Name.StartsWith(databaseId))
-                    _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name, signature, instanceCrypto, dbRegistry));
+                    _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name, signature, instanceCrypto, dbRegistry, accountLinkerStorage));
             }
         }
 

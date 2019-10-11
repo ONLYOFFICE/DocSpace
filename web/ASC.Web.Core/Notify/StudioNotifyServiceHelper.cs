@@ -11,22 +11,17 @@ namespace ASC.Web.Core.Notify
 {
     public class StudioNotifyServiceHelper
     {
-        private static readonly ICacheNotify<NotifyItem> cache;
-
+        public ICacheNotify<NotifyItem> Cache { get; }
         public StudioNotifyHelper StudioNotifyHelper { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
 
-        static StudioNotifyServiceHelper()
-        {
-            cache = new KafkaCache<NotifyItem>();
-        }
-
-        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager)
+        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager, ICacheNotify<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
             TenantManager = tenantManager;
+            Cache = cache;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -109,7 +104,7 @@ namespace ASC.Web.Core.Notify
 
             item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
 
-            cache.Publish(item, CacheNotifyAction.Any);
+            Cache.Publish(item, CacheNotifyAction.Any);
         }
     }
 }

@@ -40,11 +40,9 @@ namespace ASC.Data.Storage
 {
     public class StorageFactoryListener
     {
-        private readonly ICacheNotify<DataStoreCacheItem> Cache;
-        public StorageFactoryListener()
+        public StorageFactoryListener(ICacheNotify<DataStoreCacheItem> cache)
         {
-            Cache = new KafkaCache<DataStoreCacheItem>();
-            Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
         }
     }
 
@@ -162,8 +160,8 @@ namespace ASC.Data.Storage
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public StorageFactory(
-            StorageFactoryListener storageFactoryListener, 
-            StorageFactoryConfig storageFactoryConfig, 
+            StorageFactoryListener storageFactoryListener,
+            StorageFactoryConfig storageFactoryConfig,
             StorageSettings storageSettings,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,

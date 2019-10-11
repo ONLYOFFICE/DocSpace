@@ -49,13 +49,15 @@ namespace ASC.Core
         public TimeZoneConverter TimeZoneConverter { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbRegistry DbRegistry { get; }
+        public TariffServiceStorage TariffServiceStorage { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
             TenantDomainValidator tenantDomainValidator,
             TimeZoneConverter timeZoneConverter,
             InstanceCrypto instanceCrypto,
-            DbRegistry dbRegistry)
+            DbRegistry dbRegistry,
+            TariffServiceStorage tariffServiceStorage)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
@@ -63,6 +65,7 @@ namespace ASC.Core
             TimeZoneConverter = timeZoneConverter;
             InstanceCrypto = instanceCrypto;
             DbRegistry = dbRegistry;
+            TariffServiceStorage = tariffServiceStorage;
             Initialize();
         }
 
@@ -219,14 +222,14 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, name);
+                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, name);
                     }
                 }
 
-                regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
+                regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
+                    regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage);
                 }
             }
             else
@@ -238,16 +241,16 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, name);
+                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
+                    regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings);
+                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage);
                     }
                 }
                 else
@@ -272,10 +275,10 @@ namespace ASC.Core
 
                                     if (!regions.ContainsKey(string.Empty))
                                     {
-                                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, cs.Name);
+                                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, cs.Name);
                                     }
 
-                                    regions[cs.Name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, cs.Name);
+                                    regions[cs.Name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, cs.Name);
                                 });
                         }
                         catch (DbException) { }

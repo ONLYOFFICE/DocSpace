@@ -39,15 +39,10 @@ namespace ASC.IPSecurity
 
         public IPRestrictionsRepository IPRestrictionsRepository { get; }
 
-        static IPRestrictionsService()
-        {
-            notify = new KafkaCache<IPRestrictionItem>();
-            notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
-        }
-
-        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository)
+        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository, ICacheNotify<IPRestrictionItem> notify)
         {
             IPRestrictionsRepository = iPRestrictionsRepository;
+            notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
         }
 
         public IEnumerable<IPRestriction> Get(int tenant)

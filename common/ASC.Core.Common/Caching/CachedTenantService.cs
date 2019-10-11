@@ -46,16 +46,13 @@ namespace ASC.Core.Caching
         public TimeSpan SettingsExpiration { get; set; }
         public CoreBaseSettings CoreBaseSettings { get; }
 
-        public CachedTenantService(ITenantService service, CoreBaseSettings coreBaseSettings)
+        public CachedTenantService(ITenantService service, CoreBaseSettings coreBaseSettings, ICacheNotify<TenantCacheItem> cacheNotifyItem, ICacheNotify<TenantSetting> cacheNotifySettings)
         {
             this.service = service ?? throw new ArgumentNullException("service");
             CoreBaseSettings = coreBaseSettings;
             cache = AscCache.Memory;
             CacheExpiration = TimeSpan.FromMinutes(2);
             SettingsExpiration = TimeSpan.FromMinutes(2);
-
-            cacheNotifyItem = new KafkaCache<TenantCacheItem>();
-            cacheNotifySettings = new KafkaCache<TenantSetting>();
 
             cacheNotifyItem.Subscribe((t) =>
             {

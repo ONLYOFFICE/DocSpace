@@ -38,6 +38,23 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mail
 {
+    public class MailServiceHelperStorage
+    {
+        public ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
+        public ICache Cache { get; }
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
+        {
+            Cache = AscCache.Memory;
+            CacheNotify = cacheNotify;
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
+
+        public void Remove()
+        {
+            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
     public class MailServiceHelper
     {
         public const string ConnectionStringFormat = "Server={0};Database={1};User ID={2};Password={3};Pooling=True;Character Set=utf8";
@@ -49,29 +66,32 @@ namespace ASC.Web.Core.Mail
         public const int DefaultPort = 8081;
         public const string DefaultVersion = "v1";
 
-        private static readonly ICacheNotify<MailServiceHelperCache> CacheNotify;
-        private static readonly ICache Cache = AscCache.Memory;
-        private const string CacheKey = "mailserverinfo";
+        internal const string CacheKey = "mailserverinfo";
 
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
         public IConfiguration Configuration { get; }
         public DbRegistry DbRegistry { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public MailServiceHelperStorage MailServiceHelperStorage { get; }
 
-        static MailServiceHelper()
-        {
-            CacheNotify = new KafkaCache<MailServiceHelperCache>();
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
-        }
+        public ICache Cache { get; }
 
-        public MailServiceHelper(UserManager userManager, AuthContext authContext, IConfiguration configuration, DbRegistry dbRegistry, CoreBaseSettings coreBaseSettings)
+        public MailServiceHelper(
+            UserManager userManager,
+            AuthContext authContext,
+            IConfiguration configuration,
+            DbRegistry dbRegistry,
+            CoreBaseSettings coreBaseSettings,
+            MailServiceHelperStorage mailServiceHelperStorage)
         {
             UserManager = userManager;
             AuthContext = authContext;
             Configuration = configuration;
             DbRegistry = dbRegistry;
             CoreBaseSettings = coreBaseSettings;
+            MailServiceHelperStorage = mailServiceHelperStorage;
+            Cache = mailServiceHelperStorage.Cache;
             DefaultDatabase = GetDefaultDatabase();
         }
 
@@ -301,7 +321,7 @@ namespace ASC.Web.Core.Mail
 
             transaction.Commit();
 
-            CacheNotify.Publish(new MailServiceHelperCache() { Key = CacheKey }, CacheNotifyAction.Remove);
+            MailServiceHelperStorage.Remove();
         }
     }
 

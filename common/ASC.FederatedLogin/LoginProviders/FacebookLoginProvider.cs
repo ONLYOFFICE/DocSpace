@@ -26,8 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
@@ -53,10 +55,11 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, signature, instanceCrypto, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {

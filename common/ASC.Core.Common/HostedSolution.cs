@@ -69,8 +69,9 @@ namespace ASC.Core
             TenantDomainValidator tenantDomainValidator,
             TimeZoneConverter timeZoneConverter,
             DbRegistry dbRegistry,
-            ConnectionStringSettings connectionString)
-            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, null)
+            ConnectionStringSettings connectionString,
+            TariffServiceStorage tariffServiceStorage)
+            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, null)
         {
         }
 
@@ -80,6 +81,7 @@ namespace ASC.Core
             TimeZoneConverter timeZoneConverter,
             DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
+            TariffServiceStorage tariffServiceStorage,
             string region)
         {
             tenantService = new DbTenantService(connectionString, dbRegistry, tenantDomainValidator, timeZoneConverter);
@@ -88,7 +90,7 @@ namespace ASC.Core
 
             userService = new DbUserService(connectionString, dbRegistry);
             quotaService = new DbQuotaService(connectionString, dbRegistry);
-            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry);
+            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry, tariffServiceStorage);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;

@@ -58,7 +58,14 @@ namespace ASC.Core.Caching
         public TimeSpan PhotoExpiration { get; set; }
         public CoreBaseSettings CoreBaseSettings { get; }
 
-        public CachedUserService(IUserService service, CoreBaseSettings coreBaseSettings)
+        public CachedUserService(
+            IUserService service,
+            CoreBaseSettings coreBaseSettings,
+            ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
+            ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
+            ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem
+            )
         {
             this.service = service ?? throw new ArgumentNullException("service");
             CoreBaseSettings = coreBaseSettings;
@@ -68,11 +75,6 @@ namespace ASC.Core.Caching
             CacheExpiration = TimeSpan.FromMinutes(20);
             DbExpiration = TimeSpan.FromMinutes(1);
             PhotoExpiration = TimeSpan.FromMinutes(10);
-
-            cacheUserInfoItem = new KafkaCache<UserInfoCacheItem>();
-            cacheUserPhotoItem = new KafkaCache<UserPhotoCacheItem>();
-            cacheGroupCacheItem = new KafkaCache<GroupCacheItem>();
-            cacheUserGroupRefItem = new KafkaCache<UserGroupRefCacheItem>();
 
             cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
             cacheUserPhotoItem.Subscribe((p) => cache.Remove(p.Key), CacheNotifyAction.Remove);

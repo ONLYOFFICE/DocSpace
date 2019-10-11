@@ -42,12 +42,12 @@ namespace ASC.Core.Common.Tests
         private readonly ITariffService tariffService;
 
 
-        public TariffServiceTest(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry)
+        public TariffServiceTest(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, TariffServiceStorage tariffServiceStorage)
         {
             var cs = configuration.GetConnectionStrings("core");
             var tenantService = new DbTenantService(cs, dbRegistry, tenantDomainValidator, timeZoneConverter);
             var baseSettings = new CoreBaseSettings(configuration);
-            tariffService = new TariffService(cs, new DbQuotaService(cs, dbRegistry), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration, dbRegistry);
+            tariffService = new TariffService(cs, new DbQuotaService(cs, dbRegistry), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration, dbRegistry, tariffServiceStorage);
         }
 
 

@@ -36,8 +36,6 @@ namespace ASC.Web.Core.WhiteLabel
 {
     public class TenantLogoManager
     {
-        private static readonly ICache Cache = AscCache.Memory;
-        private static readonly ICacheNotify<TenantLogoCacheItem> CacheNotify;
 
         private string CacheKey
         {
@@ -50,15 +48,15 @@ namespace ASC.Web.Core.WhiteLabel
             private set;
         }
 
+        public ICache Cache { get; }
+        public ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
-        static TenantLogoManager()
-        {
-            CacheNotify = new KafkaCache<TenantLogoCacheItem>();
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
-        }
-
-
-        public TenantLogoManager(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantInfoSettings tenantInfoSettings, TenantManager tenantManager, IConfiguration configuration)
+        public TenantLogoManager(
+            TenantWhiteLabelSettings tenantWhiteLabelSettings,
+            TenantInfoSettings tenantInfoSettings,
+            TenantManager tenantManager,
+            IConfiguration configuration,
+            ICacheNotify<TenantLogoCacheItem> cacheNotify)
         {
             TenantWhiteLabelSettings = tenantWhiteLabelSettings;
             TenantInfoSettings = tenantInfoSettings;
@@ -66,6 +64,8 @@ namespace ASC.Web.Core.WhiteLabel
             Configuration = configuration;
             var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
+            Cache = AscCache.Memory;
+            CacheNotify = cacheNotify;
         }
 
         public string GetFavicon(bool general, bool timeParam)

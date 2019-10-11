@@ -4,6 +4,7 @@ using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
@@ -23,6 +24,7 @@ using ASC.Core.Users;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
+using ASC.FederatedLogin;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.MessagingSystem.DbSender;
@@ -32,6 +34,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Notify;
+using ASC.Web.Core.Sms;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Settings;
@@ -113,7 +116,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ISubscriptionService)new CachedSubscriptionService(new DbSubscriptionService(cs, DbRegistry));
+                        return (ISubscriptionService)new CachedSubscriptionService(new DbSubscriptionService(cs, DbRegistry), r.GetService<ICacheNotify<SubscriptionRecord>>(), r.GetService<ICacheNotify<SubscriptionMethodCache>>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -123,7 +126,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (IAzService)new CachedAzService(new DbAzService(cs, DbRegistry));
+                        return (IAzService)new CachedAzService(new DbAzService(cs, DbRegistry), r.GetService<ICacheNotify<AzRecordCache>>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -133,7 +136,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (IUserService)new CachedUserService(new DbUserService(cs, DbRegistry), r.GetService<CoreBaseSettings>());
+                        return (IUserService)new CachedUserService(new DbUserService(cs, DbRegistry), r.GetService<CoreBaseSettings>(), r.GetService<ICacheNotify<UserInfoCacheItem>>(), r.GetService<ICacheNotify<UserPhotoCacheItem>>(), r.GetService<ICacheNotify<GroupCacheItem>>(), r.GetService<ICacheNotify<UserGroupRefCacheItem>>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -143,7 +146,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITenantService)new CachedTenantService(new DbTenantService(cs, DbRegistry, r.GetService<TenantDomainValidator>(), r.GetService<TimeZoneConverter>()), r.GetService<CoreBaseSettings>());
+                        return (ITenantService)new CachedTenantService(new DbTenantService(cs, DbRegistry, r.GetService<TenantDomainValidator>(), r.GetService<TimeZoneConverter>()), r.GetService<CoreBaseSettings>(), r.GetService<ICacheNotify<TenantCacheItem>>(), r.GetService<ICacheNotify<TenantSetting>>());
                     })
                     .AddSingleton((r) =>
                     {
@@ -163,7 +166,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return quotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs, DbRegistry)) : new DbQuotaService(cs, DbRegistry); ;
+                        return quotaCacheEnabled ? (IQuotaService)new CachedQuotaService(new DbQuotaService(cs, DbRegistry), r.GetService<ICacheNotify<QuotaCacheItem>>()) : new DbQuotaService(cs, DbRegistry);
                     })
                     .AddSingleton((r) =>
                     {
@@ -173,7 +176,7 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreBaseSettings>(), r.GetService<CoreSettings>(), Configuration, DbRegistry);
+                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreBaseSettings>(), r.GetService<CoreSettings>(), Configuration, DbRegistry, r.GetService<TariffServiceStorage>());
                     })
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
@@ -243,6 +246,7 @@ namespace ASC.People
                     .AddSingleton<UserManagerConstants>()
                     .AddSingleton<MessagePolicy>()
                     .AddScoped<DisplayUserSettings>()
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
                     .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()
                     .AddSingleton<TimeZoneConverter>()
@@ -253,6 +257,11 @@ namespace ASC.People
                     .AddSingleton<MessagesRepository>()
                     .AddSingleton<IPRestrictionsService>()
                     .AddSingleton<IPRestrictionsRepository>()
+                    .AddSingleton<TariffServiceStorage>()
+                    .AddSingleton<DbSettingsManagerCache>()
+                    .AddSingleton<AccountLinkerStorage>()
+                    .AddSingleton<SmsKeyStorageCache>()
+                    .AddSingleton<WebItemSecurityCache>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

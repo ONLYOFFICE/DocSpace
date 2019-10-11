@@ -37,8 +37,6 @@ namespace ASC.Core.Common.Configuration
 {
     public class Consumer : IDictionary<string, string>
     {
-        private static readonly ICacheNotify<ConsumerCacheItem> Cache = new KafkaCache<ConsumerCacheItem>();
-
         public bool CanSet { get; private set; }
 
         public int Order { get; private set; }
@@ -81,6 +79,7 @@ namespace ASC.Core.Common.Configuration
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
         public IConfiguration Configuration { get; }
+        public ICacheNotify<ConsumerCacheItem> Cache { get; }
 
         public bool IsSet
         {
@@ -96,12 +95,18 @@ namespace ASC.Core.Common.Configuration
         {
         }
 
-        public Consumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration)
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache)
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
+            Cache = cache;
             OnlyDefault = configuration["core:default-consumers"] == "true";
             Name = "";
             Order = int.MaxValue;
@@ -109,8 +114,14 @@ namespace ASC.Core.Common.Configuration
             Additional = new Dictionary<string, string>();
         }
 
-        public Consumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
-            string name, int order, Dictionary<string, string> additional) : this(tenantManager, coreBaseSettings, coreSettings, configuration)
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> additional)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -118,8 +129,14 @@ namespace ASC.Core.Common.Configuration
             Additional = additional;
         }
 
-        public Consumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional) : this(tenantManager, coreBaseSettings, coreSettings, configuration)
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -273,20 +290,37 @@ namespace ASC.Core.Common.Configuration
 
         }
 
-        public DataStoreConsumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration) :
-            base(tenantManager, coreBaseSettings, coreSettings, configuration)
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
 
         }
 
-        public DataStoreConsumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
-            string name, int order, Dictionary<string, string> additional) : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, additional)
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
         {
             Init(additional);
         }
 
-        public DataStoreConsumer(TenantManager tenantManager, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration,
-            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional) : base(tenantManager, coreBaseSettings, coreSettings, configuration, name, order, props, additional)
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
             Init(additional);
         }
@@ -322,12 +356,12 @@ namespace ASC.Core.Common.Configuration
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Name, fromConfig.Order, props, additional);
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
         }
 
         public object Clone()
         {
-            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 

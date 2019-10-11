@@ -9,6 +9,7 @@ using ASC.Common.Utils;
 using Confluent.Kafka;
 
 using Google.Protobuf;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Caching
 {
@@ -26,6 +27,7 @@ namespace ASC.Common.Caching
         private ProtobufDeserializer<AscCacheItem> KeyDeserializer { get; } = new ProtobufDeserializer<AscCacheItem>();
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
+
         public KafkaCache()
         {
             Log = LogManager.GetLogger("ASC");
@@ -34,6 +36,24 @@ namespace ASC.Common.Caching
             Key = Guid.NewGuid();
 
             var settings = ConfigurationManager.GetSetting<KafkaSettings>("kafka");
+            if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
+            {
+                ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
+            }
+            else
+            {
+                MemoryCacheNotify = new MemoryCacheNotify<T>();
+            }
+
+        }
+        public KafkaCache(IConfiguration configuration)
+        {
+            Log = LogManager.GetLogger("ASC");
+            Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
+            Actions = new ConcurrentDictionary<string, Action<T>>();
+            Key = Guid.NewGuid();
+
+            var settings = configuration.GetSetting<KafkaSettings>("kafka");
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
             {
                 ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
@@ -55,7 +75,7 @@ namespace ASC.Common.Caching
 
             try
             {
-                if(Producer == null)
+                if (Producer == null)
                 {
                     Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(ClientConfig))
                     .SetErrorHandler((_, e) => Log.Error(e))

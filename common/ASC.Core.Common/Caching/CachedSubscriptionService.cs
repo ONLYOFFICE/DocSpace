@@ -41,12 +41,10 @@ namespace ASC.Core.Caching
         public TimeSpan CacheExpiration { get; set; }
 
 
-        public CachedSubscriptionService(ISubscriptionService service)
+        public CachedSubscriptionService(ISubscriptionService service, ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod)
         {
             this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
-            notifyRecord = new KafkaCache<SubscriptionRecord>();
-            notifyMethod = new KafkaCache<SubscriptionMethodCache>();
             CacheExpiration = TimeSpan.FromMinutes(5);
 
             notifyRecord.Subscribe((s) =>

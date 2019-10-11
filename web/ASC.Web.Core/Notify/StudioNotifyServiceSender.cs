@@ -31,7 +31,6 @@ using System.Threading;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Configuration;
-using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -44,17 +43,13 @@ namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioNotifyServiceSender
     {
-        private readonly INotifyClient client;
-        private readonly ICacheNotify<NotifyItem> cache;
-
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
 
-        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration)
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {
-            cache = new KafkaCache<NotifyItem>();
             cache.Subscribe(OnMessage, CacheNotifyAction.Any);
             ServiceProvider = serviceProvider;
             Configuration = configuration;
@@ -122,28 +117,28 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 if (tenantExtra.Enterprise)
                 {
-                    client.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
+                    WorkContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
                 else if (tenantExtra.Opensource)
                 {
-                    client.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+                    WorkContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
                 else if (tenantExtra.Saas)
                 {
                     if (coreBaseSettings.Personal)
                     {
-                        client.RegisterSendMethod(SendLettersPersonal, cron);
+                        WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
                     }
                     else
                     {
-                        client.RegisterSendMethod(SendSaasTariffLetters, cron);
+                        WorkContext.RegisterSendMethod(SendSaasTariffLetters, cron);
                     }
                 }
             }
 
             if (!coreBaseSettings.Personal)
             {
-                client.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+                WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
         }
 
@@ -155,23 +150,23 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendEnterpriseLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
+            StudioPeriodicNotify.SendEnterpriseLetters(EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendOpensourceTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendOpensourceLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
+            StudioPeriodicNotify.SendOpensourceLetters(EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendLettersPersonal(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendPersonalLetters(client, EMailSenderName, scheduleDate, ServiceProvider);
+            StudioPeriodicNotify.SendPersonalLetters(EMailSenderName, scheduleDate, ServiceProvider);
         }
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             using var scope = ServiceProvider.CreateScope();
-            scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, client);
+            scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
         }
     }
 }

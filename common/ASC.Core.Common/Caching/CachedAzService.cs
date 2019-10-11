@@ -40,13 +40,12 @@ namespace ASC.Core.Caching
         public TimeSpan CacheExpiration { get; set; }
 
 
-        public CachedAzService(IAzService service)
+        public CachedAzService(IAzService service, ICacheNotify<AzRecordCache> cacheNotify)
         {
             this.service = service ?? throw new ArgumentNullException("service");
             cache = AscCache.Memory;
             CacheExpiration = TimeSpan.FromMinutes(10);
 
-            cacheNotify = new KafkaCache<AzRecordCache>();
             cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
             cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
         }

@@ -37,7 +37,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Feed;
 using ASC.Feed.Data;
-using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
@@ -59,7 +58,7 @@ namespace ASC.Web.Studio.Core.Notify
             Confuguration = confuguration;
         }
 
-        public void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
+        public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             var log = LogManager.GetLogger("ASC.Notify.WhatsNew");
             var WebItemManager = ServiceProvider.GetService<WebItemManager>();
@@ -103,6 +102,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
                     var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
                     var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
                     foreach (var user in userManager.GetUsers())

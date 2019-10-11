@@ -37,28 +37,50 @@ using ASC.Security.Cryptography;
 
 namespace ASC.FederatedLogin
 {
+    public class AccountLinkerStorage
+    {
+        private readonly ICache cache;
+        private readonly ICacheNotify<LinkerCacheItem> notify;
+
+        public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify)
+        {
+            cache = AscCache.Memory;
+            this.notify = notify;
+            notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
+        }
+
+        public void RemoveFromCache(string obj)
+        {
+            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+        }
+        public List<LoginProfile> GetFromCache(string obj, Func<string, List<LoginProfile>> fromDb)
+        {
+            var profiles = cache.Get<List<LoginProfile>>(obj);
+            if (profiles == null)
+            {
+                cache.Insert(obj, profiles = fromDb(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
+            }
+            return profiles;
+        }
+    }
+
     public class AccountLinker
     {
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<LinkerCacheItem> notify = new KafkaCache<LinkerCacheItem>();
+
         private readonly string dbid;
 
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbRegistry DbRegistry { get; }
+        public AccountLinkerStorage AccountLinkerStorage { get; }
 
-        static AccountLinker()
-        {
-            notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
-        }
-
-
-        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry)
+        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, AccountLinkerStorage accountLinkerStorage)
         {
             this.dbid = dbid;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
             DbRegistry = dbRegistry;
+            AccountLinkerStorage = accountLinkerStorage;
         }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
@@ -86,12 +108,7 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
         {
-            var profiles = cache.Get<List<LoginProfile>>(obj);
-            if (profiles == null)
-            {
-                cache.Insert(obj, profiles = GetLinkedProfilesFromDB(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
-            }
-            return profiles;
+            return AccountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
         }
 
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
@@ -116,7 +133,7 @@ namespace ASC.FederatedLogin
                         .InColumnValue("linked", DateTime.UtcNow)
                     );
             }
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            AccountLinkerStorage.RemoveFromCache(obj);
         }
 
         public void AddLink(string obj, string id, string provider)
@@ -145,7 +162,7 @@ namespace ASC.FederatedLogin
             {
                 db.ExecuteScalar<int>(sql);
             }
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            AccountLinkerStorage.RemoveFromCache(obj);
         }
     }
 }

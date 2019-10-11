@@ -38,11 +38,53 @@ using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
 {
+    public class WebItemSecurityCache
+    {
+        public ICache Cache { get; }
+        public ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
+
+        public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify)
+        {
+            Cache = AscCache.Memory;
+            CacheNotify = cacheNotify;
+            CacheNotify.Subscribe((r) =>
+            {
+                ClearCache(r.Tenant);
+            }, CacheNotifyAction.Any);
+        }
+
+        public void ClearCache(int tenantId)
+        {
+            Cache.Remove(GetCacheKey(tenantId));
+        }
+
+        public string GetCacheKey(int tenantId)
+        {
+            return $"{tenantId}:webitemsecurity";
+        }
+
+        public void Publish(int tenantId)
+        {
+            CacheNotify.Publish(new WebItemSecurityNotifier { Tenant = tenantId }, CacheNotifyAction.Any);
+        }
+
+        public Dictionary<string, bool> Get(int tenantId) => Cache.Get<Dictionary<string, bool>>(GetCacheKey(tenantId));
+        public Dictionary<string, bool> GetOrInsert(int tenantId)
+        {
+
+            var dic = Get(tenantId);
+            if (dic == null)
+            {
+                Cache.Insert(GetCacheKey(tenantId), dic = new Dictionary<string, bool>(), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+            }
+
+            return dic;
+        }
+    }
+
     public class WebItemSecurity
     {
         private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
-        private static readonly ICache cache;
-        private static readonly ICacheNotify<WebItemSecurityNotifier> cacheNotify;
 
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
@@ -53,34 +95,19 @@ namespace ASC.Web.Core
         public TenantManager TenantManager { get; }
         public AuthorizationManager AuthorizationManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
-
-        static WebItemSecurity()
-        {
-            try
-            {
-                cache = AscCache.Memory;
-                cacheNotify = new KafkaCache<WebItemSecurityNotifier>();
-                cacheNotify.Subscribe((r) =>
-                {
-                    ClearCache(r.Tenant);
-                }, CacheNotifyAction.Any);
-            }
-            catch
-            {
-
-            }
-        }
+        public WebItemSecurityCache WebItemSecurityCache { get; }
 
         public WebItemSecurity(
-            UserManager userManager, 
-            AuthContext  authContext,
-            PermissionContext permissionContext, 
-            AuthManager authentication, 
+            UserManager userManager,
+            AuthContext authContext,
+            PermissionContext permissionContext,
+            AuthManager authentication,
             WebItemManager webItemManager,
             TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
             AuthorizationManager authorizationManager,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            WebItemSecurityCache webItemSecurityCache)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -91,6 +118,7 @@ namespace ASC.Web.Core
             TenantManager = tenantManager;
             AuthorizationManager = authorizationManager;
             CoreBaseSettings = coreBaseSettings;
+            WebItemSecurityCache = webItemSecurityCache;
         }
 
         //
@@ -105,13 +133,8 @@ namespace ASC.Web.Core
             var result = false;
 
             var tenant = TenantManager.GetCurrentTenant();
-            var key = GetCacheKey(tenant.TenantId);
-            var dic = cache.Get<Dictionary<string, bool>>(key);
-            if (dic == null)
-            {
-                cache.Insert(key, dic = new Dictionary<string, bool>(), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-            }
-            else
+            var dic = WebItemSecurityCache.GetOrInsert(tenant.TenantId);
+            if (dic != null)
             {
                 lock (dic)
                 {
@@ -170,7 +193,7 @@ namespace ASC.Web.Core
                 }
             }
 
-            dic = cache.Get<Dictionary<string, bool>>(key);
+            dic = WebItemSecurityCache.Get(tenant.TenantId);
             if (dic != null)
             {
                 lock (dic)
@@ -209,7 +232,7 @@ namespace ASC.Web.Core
                 AuthorizationManager.AddAce(a);
             }
 
-            cacheNotify.Publish(new WebItemSecurityNotifier() { Tenant = TenantManager.GetCurrentTenant().TenantId }, CacheNotifyAction.Any);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public WebItemSecurityInfo GetSecurityInfo(string id)
@@ -294,7 +317,7 @@ namespace ASC.Web.Core
                 UserManager.RemoveUserFromGroup(userid, productid);
             }
 
-            cacheNotify.Publish(new WebItemSecurityNotifier { Tenant = TenantManager.GetCurrentTenant().TenantId }, CacheNotifyAction.Any);
+            WebItemSecurityCache.Publish(TenantManager.GetCurrentTenant().TenantId);
         }
 
         public bool IsProductAdministrator(Guid productid, Guid userid)
@@ -323,16 +346,6 @@ namespace ASC.Web.Core
                 users = users.Union(UserManager.GetUsersByGroup(id));
             }
             return users.ToList();
-        }
-
-        public static void ClearCache(int tenantId)
-        {
-            cache.Remove(GetCacheKey(tenantId));
-        }
-
-        private static string GetCacheKey(int tenantId)
-        {
-            return $"{tenantId}:webitemsecurity";
         }
 
         private static IEnumerable<AzRecord> GetPeopleModuleActions(Guid userid)

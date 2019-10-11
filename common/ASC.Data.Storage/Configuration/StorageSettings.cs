@@ -38,12 +38,10 @@ namespace ASC.Data.Storage.Configuration
 {
     public class BaseStorageSettingsListener
     {
-        private readonly ICacheNotify<ConsumerCacheItem> Cache;
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
-            Cache = new KafkaCache<ConsumerCacheItem>();
             ServiceProvider = serviceProvider;
-            Cache.Subscribe((i) =>
+            serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
             {
                 var scope = ServiceProvider.CreateScope();
 
@@ -76,30 +74,27 @@ namespace ASC.Data.Storage.Configuration
         [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
-        static BaseStorageSettings()
-        {
-            Cache = new KafkaCache<DataStoreCacheItem>();
-        }
-
         public BaseStorageSettings()
         {
 
         }
 
         public BaseStorageSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
-            TenantManager tenantManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider) : 
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache) :
             base(authContext, settingsManager, tenantManager)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            Cache = cache;
         }
 
         public override ISettings GetDefault()
@@ -175,7 +170,7 @@ namespace ASC.Data.Storage.Configuration
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
-        private static readonly ICacheNotify<DataStoreCacheItem> Cache;
+        private readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
 
     [Serializable]
@@ -188,14 +183,15 @@ namespace ASC.Data.Storage.Configuration
         }
 
         public StorageSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
-            TenantManager tenantManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider)
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache)
         {
         }
 
@@ -215,14 +211,15 @@ namespace ASC.Data.Storage.Configuration
         }
 
         public CdnStorageSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
-            TenantManager tenantManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider) : 
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider)
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache)
         {
         }
 

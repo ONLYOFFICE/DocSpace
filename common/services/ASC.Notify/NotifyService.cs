@@ -45,11 +45,11 @@ namespace ASC.Notify
 
         public IServiceProvider ServiceProvider { get; }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider)
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify)
         {
             this.db = db;
             ServiceProvider = serviceProvider;
-            cacheNotify = new KafkaCache<NotifyMessage>();
+            this.cacheNotify = cacheNotify;
         }
 
         public void Start()

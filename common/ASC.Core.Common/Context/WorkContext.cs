@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ASC.Common.Caching;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
+using ASC.Notify.Messages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -94,10 +96,11 @@ namespace ASC.Core
                 if (notifyStarted) return;
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
+                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
                 NotifyContext = new NotifyContext(serviceProvider);
 
-                INotifySender jabberSender = new NotifyServiceSender();
-                INotifySender emailSender = new NotifyServiceSender();
+                INotifySender jabberSender = new NotifyServiceSender(cacheNotify);
+                INotifySender emailSender = new NotifyServiceSender(cacheNotify);
 
                 var postman = configuration["core:notify:postman"];
 
@@ -132,6 +135,16 @@ namespace ASC.Core
             }
         }
 
+        public static void RegisterSendMethod(Action<DateTime> method, string cron)
+        {
+            NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
+        }
+
+        public static void UnregisterSendMethod(Action<DateTime> method)
+        {
+            NotifyContext.NotifyEngine.UnregisterSendMethod(method);
+
+        }
         private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
         {
             request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));

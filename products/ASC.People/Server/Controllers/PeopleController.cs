@@ -78,6 +78,8 @@ namespace ASC.Employee.Core.Controllers
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbRegistry DbRegistry { get; }
+        public AccountLinkerStorage AccountLinkerStorage { get; }
+        public WebItemSecurityCache WebItemSecurityCache { get; }
 
         public PeopleController(Common.Logging.LogManager logManager,
             MessageService messageService,
@@ -107,7 +109,9 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettings displayUserSettings,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            DbRegistry dbRegistry)
+            DbRegistry dbRegistry,
+            AccountLinkerStorage accountLinkerStorage,
+            WebItemSecurityCache webItemSecurityCache)
         {
             LogManager = logManager;
             MessageService = messageService;
@@ -138,6 +142,8 @@ namespace ASC.Employee.Core.Controllers
             Signature = signature;
             InstanceCrypto = instanceCrypto;
             DbRegistry = dbRegistry;
+            AccountLinkerStorage = accountLinkerStorage;
+            WebItemSecurityCache = webItemSecurityCache;
         }
 
         [Read("info")]
@@ -555,7 +561,7 @@ namespace ASC.Employee.Core.Controllers
             if (memberModel.IsVisitor && !user.IsVisitor(UserManager) && canBeGuestFlag)
             {
                 UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                WebItemSecurity.ClearCache(Tenant.TenantId);
+                WebItemSecurityCache.ClearCache(Tenant.TenantId);
             }
 
             if (!self && !memberModel.IsVisitor && user.IsVisitor(UserManager))
@@ -564,7 +570,7 @@ namespace ASC.Employee.Core.Controllers
                 if (TenantStatisticsProvider.GetUsersCount() < usersQuota)
                 {
                     UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                    WebItemSecurity.ClearCache(Tenant.TenantId);
+                    WebItemSecurityCache.ClearCache(Tenant.TenantId);
                 }
                 else
                 {
@@ -1084,13 +1090,13 @@ namespace ASC.Employee.Core.Controllers
                             if (TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers)
                             {
                                 UserManager.RemoveUserFromGroup(user.ID, Constants.GroupVisitor.ID);
-                                WebItemSecurity.ClearCache(Tenant.TenantId);
+                                WebItemSecurityCache.ClearCache(Tenant.TenantId);
                             }
                         }
                         break;
                     case EmployeeType.Visitor:
                         UserManager.AddUserIntoGroup(user.ID, Constants.GroupVisitor.ID);
-                        WebItemSecurity.ClearCache(Tenant.TenantId);
+                        WebItemSecurityCache.ClearCache(Tenant.TenantId);
                         break;
                 }
             }
@@ -1248,7 +1254,7 @@ namespace ASC.Employee.Core.Controllers
 
         private AccountLinker GetLinker()
         {
-            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbRegistry);
+            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbRegistry, AccountLinkerStorage);
         }
 
         private static string GetMeaningfulProviderName(string providerName)
