@@ -557,7 +557,7 @@ class UpdateUserForm extends React.Component {
             />
             <Tooltip
               id="tooltipUserTypeId"
-              offsetRight={100}
+              offsetRight={120}
               getContent={() => 
                 <>
               <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
@@ -600,7 +600,7 @@ class UpdateUserForm extends React.Component {
             }
               effect="solid"
               place="top"
-              maxWidth={312}
+              maxWidth={340}
             />
 
             <DateField
