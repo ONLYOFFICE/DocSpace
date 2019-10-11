@@ -13,7 +13,8 @@ import {
   Link,
   toastr,
   ModalDialog,
-  ComboBox
+  ComboBox,
+  Tooltip
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
@@ -79,6 +80,8 @@ const InfoItemLabel = styled.div`
 
 const InfoItemValue = styled.div`
   width: 240px;
+  display: flex;
+  box-sizing: border-box;
 
   .language-combo {
     padding-top: 4px;
@@ -87,6 +90,10 @@ const InfoItemValue = styled.div`
       padding-left: 0px;
     }
   }
+`;
+
+const TooltipIcon = styled.div`
+  padding-top: 6px;
 `;
 
 const IconButtonWrapper = styled.div`
@@ -402,7 +409,25 @@ class ProfileInfo extends React.PureComponent {
                 size='content'
                 className='language-combo'
               />
+
+              <TooltipIcon 
+                data-for="tooltipLanguageId"
+                data-tip={t("NotFoundLanguage", {userMail: "documentation@onlyoffice.com"})}
+                data-event="click"
+                //data-offset="{'right': 90}"
+              >
+                <IconButton isClickable={true} size={13} iconName="QuestionIcon" />
+              </TooltipIcon> 
+             
             </InfoItemValue>
+            <Tooltip 
+              id="tooltipLanguageId"
+              getContent={(dataTip) => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
+              effect="solid"
+              offsetRight={100}
+              place="top"
+              maxWidth={340}
+              />
           </InfoItem>
         }
         <ModalDialog

@@ -51,7 +51,8 @@
         "DeleteSelfProfile",
         "EditButton",
         "ChangeEmailSuccess",
-        "Actions"
+        "Actions",
+        "NotFoundLanguage"
       ]
     },
     "ProfileAction": {
