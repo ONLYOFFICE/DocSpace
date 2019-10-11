@@ -200,11 +200,6 @@ namespace TMResourceData
                     result = invariant.GetString(name, ignoreCase);
                 }
 
-                if (WhiteLableEnabled)
-                {
-                    result = WhiteLabelHelper.ReplaceLogo(Configuration, name, result);
-                }
-
                 return result;
             }
 
@@ -265,7 +260,7 @@ namespace TMResourceData
         }
     }
 
-    public class WhiteLabelHelper
+    public static class WhiteLabelHelper
     {
         private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private static readonly ConcurrentDictionary<int, string> whiteLabelDictionary = new ConcurrentDictionary<int, string>();
@@ -296,9 +291,13 @@ namespace TMResourceData
             }
         }
 
-        internal static string ReplaceLogo(IConfiguration configuration, string resourceName, string resourceValue)
+        internal static string ReplaceLogo(IConfiguration configuration, TenantManager tenantManager, string resourceName, string resourceValue)
         {
             if (string.IsNullOrEmpty(resourceValue))
+            {
+                return resourceValue;
+            }
+            if (!DBResourceManager.WhiteLableEnabled)
             {
                 return resourceValue;
             }
@@ -307,7 +306,7 @@ namespace TMResourceData
             {
                 try
                 {
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                    var tenant = tenantManager.GetCurrentTenant(false);
                     if (tenant == null) return resourceValue;
 
                     if (whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
