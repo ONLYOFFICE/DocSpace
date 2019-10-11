@@ -562,30 +562,32 @@ class UpdateUserForm extends React.Component {
                 <>
               <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
               <Table>
-                <Tr>
-                  <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
-                </Tr>
-                <Tr>
-                  <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
-                </Tr>
-                <Tr>
-                  <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
-                </Tr>
+              <tbody>
+                  <Tr>
+                    <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
+                  </Tr>
+                  <Tr>
+                    <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
+                  </Tr>
+                </tbody>
                 </Table>
                 <Link 
                   color="#316DAA" 
