@@ -62,6 +62,9 @@ class Tooltip extends Component {
             left: offsetLeft
           }}
           wrapper="div"
+          resizeHide={true}
+          scrollHide={true}
+          isCapture={true}
         />
       </TooltipStyle>
     );
