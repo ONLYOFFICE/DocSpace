@@ -379,7 +379,6 @@ export class EmailSettings {
 export const checkAndConvertEmailSettings = (settings) => {
   if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
     const defaultSettings = new EmailSettings();
-    console.log('NEW SETTINGS:', defaultSettings.getSettings())
     Object.keys(settings).map((item) => {
       if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
         defaultSettings[item] = settings[item];
