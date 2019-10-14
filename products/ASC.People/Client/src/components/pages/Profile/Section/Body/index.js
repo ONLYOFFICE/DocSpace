@@ -262,7 +262,7 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
     const formatedDepartments = department && getFormattedDepartments(groups);
-    const supportEmail = "support@onlyoffice.com";
+    const supportEmail = "documentation@onlyoffice.com";
 
     return (
       <InfoContainer>
@@ -413,9 +413,8 @@ class ProfileInfo extends React.PureComponent {
 
               <TooltipIcon 
                 data-for="tooltipLanguageId"
-                data-tip
-                data-event="click"
-                //data-offset="{'right': 90}"
+                data-tip=''
+                data-event="click focus"
               >
                 <IconButton isClickable={true} size={13} iconName="QuestionIcon" />
               </TooltipIcon> 
@@ -423,7 +422,6 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
             <Tooltip 
               id="tooltipLanguageId"
-              //getContent={(dataTip) => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
               effect="solid"
               offsetRight={100}
               place="top"
@@ -431,8 +429,15 @@ class ProfileInfo extends React.PureComponent {
               >
                 <Text.Body fontSize={13}>
                 <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
-                  "In case you cannot find your language in the list of the available ones, feel free to write to us at <Link>{supportEmail}</Link> to take part in the translation and get up to 1 year free of charge. <Link>More info...</Link>"
+                  "In case you cannot find your language in the list of the
+                   available ones, feel free to write to us at 
+                  <Link href="documentation@onlyoffice.com" isHovered={true}>
+                    {{supportEmail}}
+                  </Link> to take part in the translation and get up to 1 year free of
+                  charge."
                 </Trans>
+                {" "}
+                  <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
                 </Text.Body>
               </Tooltip>
           </InfoItem>
