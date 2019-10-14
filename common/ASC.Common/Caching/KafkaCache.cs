@@ -28,24 +28,6 @@ namespace ASC.Common.Caching
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
 
-        public KafkaCache()
-        {
-            Log = LogManager.GetLogger("ASC");
-            Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
-            Actions = new ConcurrentDictionary<string, Action<T>>();
-            Key = Guid.NewGuid();
-
-            var settings = ConfigurationManager.GetSetting<KafkaSettings>("kafka");
-            if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
-            {
-                ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
-            }
-            else
-            {
-                MemoryCacheNotify = new MemoryCacheNotify<T>();
-            }
-
-        }
         public KafkaCache(IConfiguration configuration)
         {
             Log = LogManager.GetLogger("ASC");

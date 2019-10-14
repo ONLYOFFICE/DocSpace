@@ -37,7 +37,6 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -80,11 +79,11 @@ namespace ASC.Api.Settings
     [ApiController]
     public partial class SettingsController : ControllerBase
     {
-        private const int ONE_THREAD = 1;
-        private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
+        //private const int ONE_THREAD = 1;
 
-        private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
-        private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
+        //private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
+        //private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
+        //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -274,39 +273,39 @@ namespace ASC.Api.Settings
             return SetupInfo.EnabledCultures;
         }
 
-        [Read("recalculatequota")]
-        public void RecalculateQuota()
-        {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        //[Read("recalculatequota")]
+        //public void RecalculateQuota()
+        //{
+        //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var operations = quotaTasks.GetTasks()
-                .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
+        //    var operations = quotaTasks.GetTasks()
+        //        .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
 
-            if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-            {
-                throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-            }
+        //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
+        //    {
+        //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
+        //    }
 
-            var op = new QuotaSync(Tenant.TenantId, ServiceProvider);
+        //    var op = new QuotaSync(Tenant.TenantId, ServiceProvider);
 
-            quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-        }
+        //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
+        //}
 
-        [Read("checkrecalculatequota")]
-        public bool CheckRecalculateQuota()
-        {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        //[Read("checkrecalculatequota")]
+        //public bool CheckRecalculateQuota()
+        //{
+        //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
+        //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
 
-            if (task != null && task.Status == DistributedTaskStatus.Completed)
-            {
-                quotaTasks.RemoveTask(task.Id);
-                return false;
-            }
+        //    if (task != null && task.Status == DistributedTaskStatus.Completed)
+        //    {
+        //        quotaTasks.RemoveTask(task.Id);
+        //        return false;
+        //    }
 
-            return task != null;
-        }
+        //    return task != null;
+        //}
 
         [AllowAnonymous]
         [Read("version/build", false)]

@@ -34,23 +34,70 @@ using ASC.Common.Caching;
 
 namespace ASC.Common.Threading
 {
+    public class DistributedTaskCacheNotify
+    {
+        public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }
+        public ICache Cache { get; }
+        private readonly ICacheNotify<DistributedTaskCancelation> notify;
+        private readonly ICacheNotify<DistributedTaskCache> notifyCache;
+
+        public DistributedTaskCacheNotify(ICacheNotify<DistributedTaskCancelation> notify, ICacheNotify<DistributedTaskCache> notifyCache)
+        {
+            Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
+
+            this.notify = notify;
+
+            notify.Subscribe((c) =>
+            {
+                if (Cancelations.TryGetValue(c.Id, out var s))
+                {
+                    s.Cancel();
+                }
+            }, CacheNotifyAction.Remove);
+
+            this.notifyCache = notifyCache;
+
+            notifyCache.Subscribe((c) =>
+            {
+                Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
+            }, CacheNotifyAction.Remove);
+
+            notifyCache.Subscribe((c) =>
+            {
+                Cache.HashSet(c.Key, c.Id, c);
+            }, CacheNotifyAction.InsertOrUpdate);
+        }
+
+        public void CancelTask(string id)
+        {
+            notify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
+        }
+
+        public void SetTask(DistributedTask task)
+        {
+            notifyCache.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
+        }
+
+        public void RemoveTask(string id, string key)
+        {
+            notifyCache.Publish(new DistributedTaskCache() { Id = id, Key = key }, CacheNotifyAction.Remove);
+        }
+    }
+
     public class DistributedTaskQueue
     {
         public static readonly string InstanseId;
 
         private readonly string key;
-        private static readonly ICache cache;
-        private readonly ICacheNotify<DistributedTaskCancelation> notify;
-        private readonly ICacheNotify<DistributedTaskCache> notifyCache;
+        private readonly ICache cache;
         private readonly TaskScheduler scheduler;
-        private static readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
+        private readonly ConcurrentDictionary<string, CancellationTokenSource> cancelations;
 
+        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
 
         static DistributedTaskQueue()
         {
             InstanseId = Process.GetCurrentProcess().Id.ToString();
-
-            cache = AscCache.Memory;
         }
 
 
@@ -59,7 +106,7 @@ namespace ASC.Common.Threading
         /// </summary>
         /// <param name="name">Name of queue</param>
         /// <param name="maxThreadsCount">limit of threads count; Default: -1 - no limit</param>
-        public DistributedTaskQueue(string name, int maxThreadsCount = -1)
+        public DistributedTaskQueue(DistributedTaskCacheNotify distributedTaskCacheNotify, string name, int maxThreadsCount = -1)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -70,26 +117,9 @@ namespace ASC.Common.Threading
             scheduler = maxThreadsCount <= 0
                 ? TaskScheduler.Default
                 : new LimitedConcurrencyLevelTaskScheduler(maxThreadsCount);
-
-            notify = new KafkaCache<DistributedTaskCancelation>();
-            notify.Subscribe((c) =>
-            {
-                if (cancelations.TryGetValue(c.Id, out var s))
-                {
-                    s.Cancel();
-                }
-            }, CacheNotifyAction.Remove);
-
-            notifyCache = new KafkaCache<DistributedTaskCache>();
-            notifyCache.Subscribe((c) =>
-            {
-                cache.HashSet(key, c.Id, (DistributedTaskCache)null);
-            }, CacheNotifyAction.Remove);
-
-            notifyCache.Subscribe((c) =>
-            {
-                cache.HashSet(key, c.Id, c);
-            }, CacheNotifyAction.InsertOrUpdate);
+            DistributedTaskCacheNotify = distributedTaskCacheNotify;
+            cancelations = DistributedTaskCacheNotify.Cancelations;
+            cache = DistributedTaskCacheNotify.Cache;
         }
 
 
@@ -123,11 +153,6 @@ namespace ASC.Common.Threading
             task.Start(scheduler);
         }
 
-        public void CancelTask(string id)
-        {
-            notify.Publish(new DistributedTaskCancelation() { Id = id }, CacheNotifyAction.Remove);
-        }
-
         public IEnumerable<DistributedTask> GetTasks()
         {
             var tasks = new List<DistributedTask>(cache.HashGetAll<DistributedTask>(key).Values);
@@ -150,17 +175,6 @@ namespace ASC.Common.Threading
             }
             return task;
         }
-
-        public void SetTask(DistributedTask task)
-        {
-            notifyCache.Publish(task.DistributedTaskCache, CacheNotifyAction.InsertOrUpdate);
-        }
-
-        public void RemoveTask(string id)
-        {
-            notifyCache.Publish(new DistributedTaskCache() { Id = id }, CacheNotifyAction.Remove);
-        }
-
 
         private void OnCompleted(Task task, string id)
         {
@@ -186,7 +200,14 @@ namespace ASC.Common.Threading
 
         private Action<DistributedTask> GetPublication()
         {
-            return (t) => SetTask(t);
+            return (t) =>
+            {
+                if (t.DistributedTaskCache != null)
+                {
+                    t.DistributedTaskCache.Key = key;
+                }
+                DistributedTaskCacheNotify.SetTask(t);
+            };
         }
     }
 }

@@ -94,16 +94,19 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    public class UserPhotoManager
+    public class UserPhotoManagerCache
     {
-        private static readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
-        private static readonly ICacheNotify<UserPhotoManagerCacheItem> CacheNotify;
+        private readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles;
+        private readonly ICacheNotify<UserPhotoManagerCacheItem> CacheNotify;
+        private readonly HashSet<int> TenantDiskCache;
 
-        static UserPhotoManager()
+        public UserPhotoManagerCache(ICacheNotify<UserPhotoManagerCacheItem> notify)
         {
             try
             {
-                CacheNotify = new KafkaCache<UserPhotoManagerCacheItem>();
+                Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
+                TenantDiskCache = new HashSet<int>();
+                CacheNotify = notify;
 
                 CacheNotify.Subscribe((data) =>
                 {
@@ -117,7 +120,7 @@ namespace ASC.Web.Core.Users
 
                     try
                     {
-                        foreach(var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
+                        foreach (var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
                         {
                             Photofiles.TryGetValue(s, out var dict);
                             dict?.TryRemove(userId, out _);
@@ -133,27 +136,86 @@ namespace ASC.Web.Core.Users
             }
         }
 
+        public bool IsCacheLoadedForTenant(int tenantId)
+        {
+            return TenantDiskCache.Contains(tenantId);
+        }
+
+        public bool SetCacheLoadedForTenant(bool isLoaded, int tenantId)
+        {
+            return isLoaded ? TenantDiskCache.Add(tenantId) : TenantDiskCache.Remove(tenantId);
+        }
+
+        public void ClearCache(Guid userID)
+        {
+            if (CacheNotify != null)
+            {
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()) }, CacheNotifyAction.Remove);
+            }
+        }
+
+        public void AddToCache(Guid userID, Size size, string fileName)
+        {
+            if (CacheNotify != null)
+            {
+                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()), Size = UserPhotoManager.ToCache(size), FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
+            }
+        }
+
+        public string SearchInCache(Guid userId, Size size)
+        {
+            string fileName = null;
+            Photofiles.TryGetValue(UserPhotoManager.ToCache(size), out var photo);
+
+            if (size != Size.Empty)
+            {
+                photo?.TryGetValue(userId, out fileName);
+            }
+            else
+            {
+                fileName = photo?
+                            .Select(x => x.Value)
+                            .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
+            }
+
+            return fileName;
+        }
+    }
+
+    public class UserPhotoManager
+    {
+        //Regex for parsing filenames into groups with id's
+        private static readonly Regex ParseFile =
+                new Regex(@"^(?'module'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){0,1}" +
+                    @"(?'user'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){1}" +
+                    @"_(?'kind'orig|size){1}_(?'size'(?'width'[0-9]{1,5})-{1}(?'height'[0-9]{1,5})){0,1}\..*", RegexOptions.Compiled);
+
+        private static readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles = new ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>>();
+
         public UserManager UserManager { get; }
         public WebImageSupplier WebImageSupplier { get; }
         public UserPhotoThumbnailSettings UserPhotoThumbnailSettings { get; }
         public TenantManager TenantManager { get; }
         public StorageFactory StorageFactory { get; }
+        public UserPhotoManagerCache UserPhotoManagerCache { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
         public UserPhotoManager(
-            UserManager userManager, 
-            WebImageSupplier webImageSupplier, 
+            UserManager userManager,
+            WebImageSupplier webImageSupplier,
             UserPhotoThumbnailSettings userPhotoThumbnailSettings,
             TenantManager tenantManager,
-            StorageFactory storageFactory)
+            StorageFactory storageFactory,
+            UserPhotoManagerCache userPhotoManagerCache)
         {
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             UserPhotoThumbnailSettings = userPhotoThumbnailSettings;
             TenantManager = tenantManager;
             StorageFactory = storageFactory;
+            UserPhotoManagerCache = userPhotoManagerCache;
         }
 
         public string GetDefaultPhotoAbsoluteWebPath()
@@ -291,7 +353,8 @@ namespace ASC.Web.Core.Users
                 {
                     photoUrl = SaveOrUpdatePhoto(userID, data, -1, new Size(-1, -1), false, out fileName);
                 }
-                AddToCache(userID, Size.Empty, fileName);
+
+                UserPhotoManagerCache.AddToCache(userID, Size.Empty, fileName);
 
                 return photoUrl;
             }
@@ -338,7 +401,7 @@ namespace ASC.Web.Core.Users
                     //empty photo. cache default
                     var photoUrl = GetDefaultPhotoAbsoluteWebPath(size);
 
-                    AddToCache(userID, size, "default");
+                    UserPhotoManagerCache.AddToCache(userID, size, "default");
                     isdef = true;
                     return photoUrl;
                 }
@@ -363,47 +426,19 @@ namespace ASC.Web.Core.Users
                 _ => GetDefaultPhotoAbsoluteWebPath()
             };
 
-        //Regex for parsing filenames into groups with id's
-        private static readonly Regex ParseFile =
-                new Regex(@"^(?'module'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){0,1}" +
-                    @"(?'user'\{{0,1}([0-9a-fA-F]){8}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){4}-([0-9a-fA-F]){12}\}{0,1}){1}" +
-                    @"_(?'kind'orig|size){1}_(?'size'(?'width'[0-9]{1,5})-{1}(?'height'[0-9]{1,5})){0,1}\..*", RegexOptions.Compiled);
-
         private static readonly HashSet<int> TenantDiskCache = new HashSet<int>();
         private static readonly object DiskCacheLoaderLock = new object();
-
-        private bool IsCacheLoadedForTenant()
-        {
-            //
-            return TenantDiskCache.Contains(Tenant.TenantId);
-        }
-
-        private static bool SetCacheLoadedForTenant(bool isLoaded, int tenantId)
-        {
-            return isLoaded ? TenantDiskCache.Add(tenantId) : TenantDiskCache.Remove(tenantId);
-        }
 
 
         private string SearchInCache(Guid userId, Size size, out bool isDef)
         {
-            if (!IsCacheLoadedForTenant())
+            if (!UserPhotoManagerCache.IsCacheLoadedForTenant(Tenant.TenantId))
                 LoadDiskCache();
 
             isDef = false;
 
-            string fileName = null;
-            Photofiles.TryGetValue(ToCache(size), out var photo);
+            var fileName = UserPhotoManagerCache.SearchInCache(userId, size);
 
-            if (size != Size.Empty)
-            {
-                photo?.TryGetValue(userId, out fileName);
-            }
-            else
-            {
-                fileName = photo?
-                            .Select(x => x.Value)
-                            .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
-            }
             if (fileName != null && fileName.StartsWith("default"))
             {
                 isDef = true;
@@ -419,12 +454,11 @@ namespace ASC.Web.Core.Users
             return null;
         }
 
-
         private void LoadDiskCache()
         {
             lock (DiskCacheLoaderLock)
             {
-                if (!IsCacheLoadedForTenant())
+                if (!UserPhotoManagerCache.IsCacheLoadedForTenant(Tenant.TenantId))
                 {
                     try
                     {
@@ -444,11 +478,11 @@ namespace ASC.Web.Core.Users
                                         //Parse size
                                         size = new Size(int.Parse(match.Groups["width"].Value), int.Parse(match.Groups["height"].Value));
                                     }
-                                    AddToCache(parsedUserId, size, fileName);
+                                    UserPhotoManagerCache.AddToCache(parsedUserId, size, fileName);
                                 }
                             }
                         }
-                        SetCacheLoadedForTenant(true, Tenant.TenantId);
+                        UserPhotoManagerCache.SetCacheLoadedForTenant(true, Tenant.TenantId);
                     }
                     catch (Exception err)
                     {
@@ -457,23 +491,6 @@ namespace ASC.Web.Core.Users
                 }
             }
         }
-
-        private static void ClearCache(Guid userID)
-        {
-            if (CacheNotify != null)
-            {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()) }, CacheNotifyAction.Remove);
-            }
-        }
-
-        private static void AddToCache(Guid userID, Size size, string fileName)
-        {
-            if (CacheNotify != null)
-            {
-                CacheNotify.Publish(new UserPhotoManagerCacheItem { UserID = Google.Protobuf.ByteString.CopyFrom(userID.ToByteArray()), Size = ToCache(size), FileName = fileName }, CacheNotifyAction.InsertOrUpdate);
-            }
-        }
-
         public static void ResetThumbnailSettings(Guid userId)
         {
             var thumbSettings = new UserPhotoThumbnailSettings().GetDefault() as UserPhotoThumbnailSettings;
@@ -496,7 +513,7 @@ namespace ASC.Web.Core.Users
             storage.DeleteFiles("", idUser + "*.*", false);
 
             UserManager.SaveUserPhoto(idUser, null);
-            ClearCache(idUser);
+            UserPhotoManagerCache.ClearCache(idUser);
         }
 
         private string SaveOrUpdatePhoto(Guid userID, byte[] data, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
@@ -510,7 +527,7 @@ namespace ASC.Web.Core.Users
             {
                 UserManager.SaveUserPhoto(userID, data);
                 SetUserPhotoThumbnailSettings(userID, width, height);
-                ClearCache(userID);
+                UserPhotoManagerCache.ClearCache(userID);
             }
 
             var store = GetDataStore();
@@ -553,7 +570,7 @@ namespace ASC.Web.Core.Users
 
                 settings.SaveForUser(userID);
 
-                ClearCache(userID);
+                UserPhotoManagerCache.ClearCache(userID);
             }
 
             var store = GetDataStore();
@@ -701,7 +718,7 @@ namespace ASC.Web.Core.Users
             }
         }
 
-        private static void ResizeImage(ResizeWorkerItem item)
+        private void ResizeImage(ResizeWorkerItem item)
         {
             try
             {
@@ -727,7 +744,7 @@ namespace ASC.Web.Core.Users
                 using var stream2 = new MemoryStream(data);
                 item.DataStore.Save(fileName, stream2).ToString();
 
-                AddToCache(item.UserId, item.Size, fileName);
+                UserPhotoManagerCache.AddToCache(item.UserId, item.Size, fileName);
             }
             catch (ArgumentException error)
             {
@@ -838,7 +855,7 @@ namespace ASC.Web.Core.Users
                 photoUrl = store.Save(fileName, s).ToString();
             }
 
-            AddToCache(userID, size, fileName);
+            UserPhotoManagerCache.AddToCache(userID, size, fileName);
             return photoUrl;
         }
 
@@ -875,7 +892,7 @@ namespace ASC.Web.Core.Users
             return StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
         }
 
-        private static CacheSize ToCache(Size size) =>
+        public static CacheSize ToCache(Size size) =>
             size switch
             {
                 Size(var w, var h) when w == RetinaFotoSize.Width && h == RetinaFotoSize.Height => CacheSize.Retina,

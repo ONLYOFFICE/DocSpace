@@ -8,6 +8,7 @@ message DistributedTaskCache {
 	string Status = 3;
 	string Exception = 4;
 	repeated DistributedTaskCacheProp Props = 5;
+	string Key = 6;
 
 	message DistributedTaskCacheProp
 	{

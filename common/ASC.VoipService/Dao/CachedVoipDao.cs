@@ -36,42 +36,56 @@ using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
 {
-    public class CachedVoipDao : VoipDao
+    public class VoipDaoCache
     {
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<CachedVoipItem> notify;
-        private static readonly TimeSpan timeout = TimeSpan.FromDays(1);
+        public ICache Cache { get; }
+        public ICacheNotify<CachedVoipItem> Notify { get; }
 
-
-        static CachedVoipDao()
+        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify)
         {
-            try
-            {
-                notify = new KafkaCache<CachedVoipItem>();
-                notify.Subscribe((c) => ResetCache(c.Tenant), CacheNotifyAction.Any);
-            }
-            catch (Exception)
-            {
-            }
+            Cache = AscCache.Memory;
+            Notify = notify;
+            Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), CacheNotifyAction.Any);
         }
 
+        public void ResetCache(int tenant)
+        {
+            Notify.Publish(new CachedVoipItem { Tenant = tenant }, CacheNotifyAction.Any);
+        }
+    }
 
-        public CachedVoipDao(int tenantID, DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+    public class CachedVoipDao : VoipDao
+    {
+        private readonly ICache cache;
+        private static readonly TimeSpan timeout = TimeSpan.FromDays(1);
+
+        public VoipDaoCache VoipDaoCache { get; }
+
+        public CachedVoipDao(
+            int tenantID,
+            DbRegistry dbRegistry,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            VoipDaoCache voipDaoCache)
             : base(tenantID, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
+            cache = voipDaoCache.Cache;
+            VoipDaoCache = voipDaoCache;
         }
 
         public override VoipPhone SaveOrUpdateNumber(VoipPhone phone)
         {
             var result = base.SaveOrUpdateNumber(phone);
-            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.Any);
+            VoipDaoCache.ResetCache(TenantID);
             return result;
         }
 
         public override void DeleteNumber(string phoneId = "")
         {
             base.DeleteNumber(phoneId);
-            notify.Publish(new CachedVoipItem { Tenant = TenantID }, CacheNotifyAction.Any);
+            VoipDaoCache.ResetCache(TenantID);
         }
 
         public override IEnumerable<VoipPhone> GetNumbers(params object[] ids)
@@ -86,13 +100,7 @@ namespace ASC.VoipService.Dao
             return ids.Any() ? numbers.Where(r => ids.Contains(r.Id) || ids.Contains(r.Number)).ToList() : numbers;
         }
 
-
-        private static void ResetCache(int tenant)
-        {
-            cache.Remove(GetCacheKey(tenant));
-        }
-
-        private static string GetCacheKey(int tenant)
+        public static string GetCacheKey(int tenant)
         {
             return "voip" + tenant.ToString(CultureInfo.InvariantCulture);
         }

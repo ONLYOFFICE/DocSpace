@@ -25,12 +25,9 @@
 
 
 using System;
-using System.Diagnostics;
-using System.Linq;
 using ASC.Api.Core;
 using ASC.Api.Settings.Smtp;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
@@ -51,7 +48,7 @@ namespace ASC.Api.Settings
     [ApiController]
     public class SmtpSettingsController : ControllerBase
     {
-        private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
+        //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
@@ -145,70 +142,70 @@ namespace ASC.Api.Settings
             return ToSmtpSettings(current, true);
         }
 
-        [Read("smtp/test")]
-        public SmtpOperationStatus TestSmtpSettings()
-        {
-            CheckSmtpPermissions();
+        //[Read("smtp/test")]
+        //public SmtpOperationStatus TestSmtpSettings()
+        //{
+        //    CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
+        //    var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
 
-            //add resolve
-            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
+        //    //add resolve
+        //    var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
 
-            SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
+        //    SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
 
-            return ToSmtpOperationStatus();
-        }
+        //    return ToSmtpOperationStatus();
+        //}
 
-        [Read("smtp/test/status")]
-        public SmtpOperationStatus GetSmtpOperationStatus()
-        {
-            CheckSmtpPermissions();
+        //[Read("smtp/test/status")]
+        //public SmtpOperationStatus GetSmtpOperationStatus()
+        //{
+        //    CheckSmtpPermissions();
 
-            return ToSmtpOperationStatus();
-        }
+        //    return ToSmtpOperationStatus();
+        //}
 
-        private SmtpOperationStatus ToSmtpOperationStatus()
-        {
-            var operations = SMTPTasks.GetTasks().ToList();
+        //private SmtpOperationStatus ToSmtpOperationStatus()
+        //{
+        //    var operations = SMTPTasks.GetTasks().ToList();
 
-            foreach (var o in operations)
-            {
-                if (!string.IsNullOrEmpty(o.InstanseId) &&
-                    Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
-                    continue;
+        //    foreach (var o in operations)
+        //    {
+        //        if (!string.IsNullOrEmpty(o.InstanseId) &&
+        //            Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
+        //            continue;
 
-                o.SetProperty(SmtpOperation.PROGRESS, 100);
-                SMTPTasks.RemoveTask(o.Id);
-            }
+        //        o.SetProperty(SmtpOperation.PROGRESS, 100);
+        //        SMTPTasks.RemoveTask(o.Id);
+        //    }
 
-            var operation =
-                operations
-                    .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
+        //    var operation =
+        //        operations
+        //            .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
 
-            if (operation == null)
-            {
-                return null;
-            }
+        //    if (operation == null)
+        //    {
+        //        return null;
+        //    }
 
-            if (DistributedTaskStatus.Running < operation.Status)
-            {
-                operation.SetProperty(SmtpOperation.PROGRESS, 100);
-                SMTPTasks.RemoveTask(operation.Id);
-            }
+        //    if (DistributedTaskStatus.Running < operation.Status)
+        //    {
+        //        operation.SetProperty(SmtpOperation.PROGRESS, 100);
+        //        SMTPTasks.RemoveTask(operation.Id);
+        //    }
 
-            var result = new SmtpOperationStatus
-            {
-                Id = operation.Id,
-                Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
-                Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
-                Status = operation.GetProperty<string>(SmtpOperation.RESULT),
-                Error = operation.GetProperty<string>(SmtpOperation.ERROR),
-                Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
-            };
+        //    var result = new SmtpOperationStatus
+        //    {
+        //        Id = operation.Id,
+        //        Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
+        //        Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
+        //        Status = operation.GetProperty<string>(SmtpOperation.RESULT),
+        //        Error = operation.GetProperty<string>(SmtpOperation.ERROR),
+        //        Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
+        //    };
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsWrapper settingsWrapper)
         {

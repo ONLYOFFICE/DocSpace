@@ -435,13 +435,13 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public void ClearOldNumbers(DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 
             var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility, voipDaoCache);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {
