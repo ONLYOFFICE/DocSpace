@@ -8,7 +8,9 @@ import InputBlock from '../input-block'
 import { Icons } from '../icons'
 import Link from '../link'
 import { Text } from '../text'
-import DropDown from '../drop-down'
+//import DropDown from '../drop-down'
+
+import Tooltip from "../tooltip";
 
 // eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => <div {...props}></div>;
@@ -50,6 +52,13 @@ const CopyLink = styled.div`
   }
 `;
 
+const TooltipStyle = styled.div`
+  .__react_component_tooltip {
+    top: 84px !important;
+    left: 15px !important;
+  }
+`;
+
 const Progress = styled.div`
   border: 3px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
   border-radius: 2px;
@@ -58,7 +67,7 @@ const Progress = styled.div`
 `;
 
 const StyledTooltipContainer = styled(Text.Body)`
-  margin: 8px 16px 16px 16px;
+  /*margin: 8px 16px 16px 16px;*/
 `;
 
 const StyledTooltipItem = styled(Text.Body)`
@@ -87,17 +96,17 @@ class PasswordInput extends React.Component {
     }
   }
 
-  onFocus = () => {
+  /*onFocus = () => {
     this.setState({
       displayTooltip: true
     });
-  }
+  }*/
 
-  onBlur = () => {
+  /*onBlur = () => {
     this.setState({
       displayTooltip: false
     });
-  }
+  }*/
 
   changeInputType = () => {
     const newType = this.state.type === 'text' ? 'password' : 'text';
@@ -280,7 +289,7 @@ class PasswordInput extends React.Component {
       validDigits,
       validCapital,
       validSpecial,
-      displayTooltip
+      //displayTooltip
     } = this.state;
 
     const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
@@ -312,7 +321,12 @@ class PasswordInput extends React.Component {
 
     return (
       <StyledInput onValidateInput={onValidateInput} className={className}>
-        <PasswordProgress inputWidth={inputWidth}>
+        <PasswordProgress 
+          inputWidth={inputWidth}
+          data-for="tooltipContent"
+          data-tip
+          data-event="click"
+        >
           <InputBlock
             id={id}
             name={inputName}
@@ -327,20 +341,24 @@ class PasswordInput extends React.Component {
             type={type}
             iconColor={iconsColor}
             isIconFill={true}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
+            //onFocus={this.onFocus}
+            //onBlur={this.onBlur}
             hasWarning={hasWarning}
             placeholder={placeholder}
             tabIndex={tabIndex}
             maxLength={maxLength}
             autoComplete={autoComplete}
-          >
-            {displayTooltip &&
-              <DropDown directionY='top' manualY='150%' isOpen={true}>
-                {tooltipContent}
-              </DropDown>
-            }
+            >
           </InputBlock>
+          <TooltipStyle>
+            <Tooltip
+              id="tooltipContent"
+              getContent={() => tooltipContent}
+              effect="solid"
+              place="top"
+              //maxWidth={250}
+            />
+          </TooltipStyle>
           <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
         </PasswordProgress>
         <NewPasswordButton>
@@ -419,3 +437,10 @@ PasswordInput.defaultProps = {
 }
 
 export default PasswordInput;
+/*
+            {displayTooltip &&
+              <DropDown directionY='top' manualY='150%' isOpen={true}>
+                {tooltipContent}
+              </DropDown>
+            }
+*/
