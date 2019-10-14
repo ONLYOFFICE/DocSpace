@@ -94,7 +94,7 @@ class TextInput extends React.Component {
 TextInput.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    type: PropTypes.oneOf(['text', 'password']),
+    type: PropTypes.oneOf(['text', 'password', 'email']),
     value: PropTypes.string.isRequired,
     maxLength: PropTypes.number,
     placeholder: PropTypes.string,

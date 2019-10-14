@@ -124,7 +124,7 @@ class EmailInput extends React.Component {
         hasError={!isValidEmail}
         hasWarning={hasWarning}
         placeholder={placeholder}
-        type='text'
+        type='email'
         size={size}
         scale={scale}
         tabIndex={tabIndex}
