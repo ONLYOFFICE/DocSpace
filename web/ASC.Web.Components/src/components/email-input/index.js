@@ -44,7 +44,7 @@ class EmailInput extends React.Component {
     this.state = {
       isValidEmail: true,
       emailSettings: validatedSettings,
-      value
+      inputValue: value
     }
   }
 
@@ -55,7 +55,7 @@ class EmailInput extends React.Component {
     const validatedSettings = checkEmailSettings(emailSettings);
 
     this.setState({ emailSettings: validatedSettings }, function () {
-      this.checkEmail(this.state.value);
+      this.checkEmail(this.state.inputValue);
     });
 
   }
@@ -63,7 +63,7 @@ class EmailInput extends React.Component {
   checkEmail = (value) => {
 
     if (!value.length) {
-      !this.state.isValidEmail && this.setState({ isValidEmail: true, value });
+      !this.state.isValidEmail && this.setState({ isValidEmail: true, inputValue: value });
       return;
     }
 
@@ -73,7 +73,7 @@ class EmailInput extends React.Component {
     this.props.onValidateInput
       && this.props.onValidateInput(isValidEmail);
 
-    this.setState({ isValidEmail, value });
+    this.setState({ isValidEmail, inputValue: value });
   }
 
   onChangeAction = (e) => {
@@ -87,21 +87,20 @@ class EmailInput extends React.Component {
 
   render() {
     //console.log('EmailInput render()');
-    const {
-      onValidateInput,
-    } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { onValidateInput, emailSettings, onChange, value, ...rest } = this.props;
 
-    const { isValidEmail, value } = this.state;
+    const { isValidEmail } = this.state;
 
     return (
       <StyledTextInput
         isValidEmail={isValidEmail}
+        value={value}
         onChange={this.onChangeAction}
         hasError={!isValidEmail}
-        value={value}
         type='email'
         onValidateInput={onValidateInput}
-        {...this.props}
+        {...rest}
       />
     );
   }
@@ -127,6 +126,7 @@ EmailInput.defaultProps = {
   withBorder: true,
   placeholder: '',
   className: '',
+  title: '',
 
   settings: new EmailSettings()
 }

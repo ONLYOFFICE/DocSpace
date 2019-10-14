@@ -63,13 +63,11 @@ const normalizeString = str => {
 
 const checkErrors = (parsedAddress, options) => {
   const errors = [];
+
   if (!options.allowLocalDomainName &&
-    (parsedAddress.domain.indexOf(".") === -1 ||
-    !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain) 
-    || options.allowDomainIp)
-  ) {
+    (parsedAddress.domain.indexOf(".") === -1)) {
     errors.push({
-      message: "Incorrect domain",
+      message: "Local domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress
     });
@@ -95,16 +93,18 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
-  if (!options.allowLocalPartPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
+  if (!options.allowLocalPartPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))
+    && /[..\n]+/.test(punycode.toUnicode(parsedAddress.local))
+  ) {
     errors.push({
-      message: "Punycode domains are not supported",
+      message: "Punycode local part are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress
     });
   }
 
   if (
-    !options.allowStrictLocalPart &&
+    options.allowStrictLocalPart &&
     (!/^[\x00-\x7F]+$/.test(parsedAddress.local) ||
       !/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)*$/.test(parsedAddress.local))
   ) {
@@ -133,6 +133,14 @@ const checkErrors = (parsedAddress, options) => {
   ) {
     errors.push({
       message: "Incorrect, domain contains spaces",
+      type: parseErrorTypes.IncorrectEmail,
+      errorItem: parsedAddress
+    });
+  }
+
+  if (parsedAddress.local.length > 64) {
+    errors.push({
+      message: "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress
     });
