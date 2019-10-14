@@ -87,7 +87,7 @@ RUN cd /app/onlyoffice/src/ && \
     mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd products/ASC.People/Server && \
-    dotnet -d publish -o /var/www/products/ASC.People/Server && \
+    dotnet -d publish -o /var/www/products/ASC.People/server && \
     cd ../../../ && \
     cd web/ASC.Web.Api && \
     dotnet -d publish -o /var/www/studio/api && \
@@ -104,14 +104,16 @@ RUN cd /app/onlyoffice/src/ && \
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN sed -i 's/172.18.0.5/localhost/' /app/onlyoffice/config/appsettings.test.json
+
 RUN mkdir -p /var/mysqld/ && \
     chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /var/mysqld/ && \
     service mysql start && \
     mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
     mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.sql && \
     mysql -D "onlyoffice" < /app/onlyoffice/src/sql/app.data.sql && \
-    mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "dev"@"localhost" IDENTIFIED WITH mysql_native_password BY "dev";' && \
-    mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'dev'@'localhost' IDENTIFIED BY "dev";' && \
+    mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
+    mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost' IDENTIFIED BY "onlyoffice_pass";' && \
     mysql -D "onlyoffice" -e 'UPDATE core_user SET email = "paul.bannov@gmail.com";' && \
     mysql -D "onlyoffice" -e 'UPDATE core_usersecurity SET pwdhash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", pwdhashsha512 = "USubvPlB+ogq0Q1trcSupg==";' && \
     service mysql stop
