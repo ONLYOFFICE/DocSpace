@@ -15,19 +15,47 @@ storiesOf('Components|Input', module)
   .addDecorator(withReadme(Readme))
   .add('email input', () => {
 
+    const placeholder = text('placeholder', 'Input email');
+    const size = select('size', sizeInput, 'base');
+    const scale = boolean('scale', false);
+    const isDisabled = boolean('isDisabled', false);
+    const isReadOnly = boolean('isReadOnly', false);
+    const maxLength = number('maxLength', 255);
+    const id = text('id', 'emailId');
+    const name = text('name', 'demoEmailInput');
+
+    const allowDomainPunycode = boolean('allowDomainPunycode', false);
+    const allowLocalPartPunycode = boolean('allowLocalPartPunycode', false);
+    const allowDomainIp = boolean('allowDomainIp', false);
+    const allowStrictLocalPart = boolean('allowStrictLocalPart', true);
+    const allowSpaces = boolean('allowSpaces', false);
+    const allowName = boolean('allowName', false);
+    const allowLocalDomainName = boolean('allowLocalDomainName', false);
+
+    const settings = {
+      allowDomainPunycode,
+      allowLocalPartPunycode,
+      allowDomainIp,
+      allowStrictLocalPart,
+      allowSpaces,
+      allowName,
+      allowLocalDomainName
+    }
+
     return (
       <Section>
         <StringValue>
           {({ value, set }) => (
             <EmailInput
-              placeholder={text('placeholder', 'Input email')}
-              size={select('size', sizeInput, 'base')}
-              scale={boolean('scale', false)}
-              isDisabled={boolean('isDisabled', false)}
-              isReadOnly={boolean('isReadOnly', false)}
-              maxLength={number('maxLength', 255)}
-              id={text('id', 'emailId')}
-              name={text('name', 'demoEmailInput')}
+              placeholder={placeholder}
+              size={size}
+              scale={scale}
+              isDisabled={isDisabled}
+              isReadOnly={isReadOnly}
+              maxLength={maxLength}
+              id={id}
+              name={name}
+              emailSettings={settings}
               value={value}
               onChange={e => {
                 set(e.target.value);
