@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
 import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import {
@@ -253,7 +253,7 @@ class ProfileInfo extends React.PureComponent {
     const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const t = this.props.t;
+    const {t, i18n } = this.props;
     const type = isVisitor ? "Guest" : "Employee";
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
@@ -262,6 +262,7 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex = capitalizeFirstLetter(sex);
     const formatedDepartments = department && getFormattedDepartments(groups);
+    const supportEmail = "support@onlyoffice.com";
 
     return (
       <InfoContainer>
@@ -412,7 +413,7 @@ class ProfileInfo extends React.PureComponent {
 
               <TooltipIcon 
                 data-for="tooltipLanguageId"
-                data-tip={t("NotFoundLanguage", {userMail: "documentation@onlyoffice.com"})}
+                data-tip
                 data-event="click"
                 //data-offset="{'right': 90}"
               >
@@ -422,12 +423,18 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
             <Tooltip 
               id="tooltipLanguageId"
-              getContent={(dataTip) => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
+              //getContent={(dataTip) => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
               effect="solid"
               offsetRight={100}
               place="top"
               maxWidth={340}
-              />
+              >
+                <Text.Body fontSize={13}>
+                <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+                  "In case you cannot find your language in the list of the available ones, feel free to write to us at <Link>{supportEmail}</Link> to take part in the translation and get up to 1 year free of charge. <Link>More info...</Link>"
+                </Trans>
+                </Text.Body>
+              </Tooltip>
           </InfoItem>
         }
         <ModalDialog
