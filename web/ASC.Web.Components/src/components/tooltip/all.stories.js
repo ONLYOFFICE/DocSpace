@@ -61,7 +61,7 @@ storiesOf("Components|Tooltip", module)
         </div>
         <Tooltip
           id="tooltipContent"
-          effect="float"
+          effect="solid"
           place="top"
           maxWidth={320}
         />
@@ -72,22 +72,17 @@ storiesOf("Components|Tooltip", module)
             Bob Johnston
           </Link>
         </div>
-        <Tooltip
-          id="link"
-          offsetRight={90}
-          effect="solid"
-          getContent={dataTip => (
-            <div>
-              <Text.Body isBold={true} fontSize={16}>
-                {dataTip}
-              </Text.Body>
-              <Text.Body color="#A3A9AE" fontSize={13}>
-                BobJohnston@gmail.com
-              </Text.Body>
-              <Text.Body fontSize={13}>Developer</Text.Body>
-            </div>
-          )}
-        />
+        <Tooltip id="link" offsetRight={90} effect="solid">
+          <div>
+            <Text.Body isBold={true} fontSize={16}>
+              Bob Johnston
+            </Text.Body>
+            <Text.Body color="#A3A9AE" fontSize={13}>
+              BobJohnston@gmail.com
+            </Text.Body>
+            <Text.Body fontSize={13}>Developer</Text.Body>
+          </div>
+        </Tooltip>
 
         <div style={BodyStyle_3}>
           <h5 style={{ marginLeft: -5 }}>Hover group</h5>

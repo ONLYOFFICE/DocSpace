@@ -33,6 +33,10 @@ class Tooltip extends Component {
     this.state = {};
   }
 
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
+
   render() {
     const {
       effect,
@@ -83,7 +87,8 @@ Tooltip.propTypes = {
   offsetTop: PropTypes.number,
   offsetRight: PropTypes.number,
   offsetBottom: PropTypes.number,
-  offsetLeft: PropTypes.number
+  offsetLeft: PropTypes.number,
+  children: PropTypes.object
 };
 
 Tooltip.defaultProps = {

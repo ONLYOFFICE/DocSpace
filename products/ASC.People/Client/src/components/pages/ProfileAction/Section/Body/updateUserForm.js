@@ -470,17 +470,18 @@ class UpdateUserForm extends React.Component {
               buttonTabIndex={1}
 
               tooltipId="tooltipEmailId"
-              tooltipEvent="click"
+              tooltipEvent="click focus"
               iconButton="QuestionIcon"
             />
             <Tooltip
               id="tooltipEmailId"
               offsetRight={100}
-              getContent={() => <Text.Body fontSize={12}>{t("EmailPopupHelper")}</Text.Body>}
               effect="solid"
               place="top"
               maxWidth={312}
-            />
+            >
+              <Text.Body fontSize={13}>{t("EmailPopupHelper")}</Text.Body>
+            </Tooltip>
             <TextChangeField
               labelText={`${t("Password")}:`}
               inputName="password"
@@ -552,14 +553,17 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
 
               tooltipId="tooltipUserTypeId"
-              tooltipEvent="click"
+              tooltipEvent="click focus"
               iconButton="QuestionIcon"
             />
             <Tooltip
               id="tooltipUserTypeId"
               offsetRight={120}
-              getContent={() => 
-                <>
+              effect="solid"
+              place="top"
+              maxWidth={340}
+            >
+               <>
               <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
               <Table>
               <tbody>
@@ -597,11 +601,7 @@ class UpdateUserForm extends React.Component {
                     {t("TermsOfUsePopupHelperLink")}
                 </Link>
               </>
-            }
-              effect="solid"
-              place="top"
-              maxWidth={340}
-            />
+            </Tooltip>
 
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
