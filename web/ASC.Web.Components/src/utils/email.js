@@ -63,11 +63,10 @@ const normalizeString = str => {
 
 const checkErrors = (parsedAddress, options) => {
   const errors = [];
-  if (
-    parsedAddress.domain.indexOf(".") === -1 ||
-    !/(^((?!-)[a-zA-Z0-9-]{2,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(
-      parsedAddress.domain
-    )
+  if (!options.allowLocalDomainName &&
+    (parsedAddress.domain.indexOf(".") === -1 ||
+    !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain) 
+    || options.allowDomainIp)
   ) {
     errors.push({
       message: "Incorrect domain",
@@ -96,8 +95,16 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
+  if (!options.allowLocalPartPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
+    errors.push({
+      message: "Punycode domains are not supported",
+      type: parseErrorTypes.IncorrectEmail,
+      errorItem: parsedAddress
+    });
+  }
+
   if (
-    options.allowStrictLocalPart &&
+    !options.allowStrictLocalPart &&
     (!/^[\x00-\x7F]+$/.test(parsedAddress.local) ||
       !/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)*$/.test(parsedAddress.local))
   ) {
@@ -256,6 +263,7 @@ export class EmailSettings {
     this.allowStrictLocalPart = true;
     this.allowSpaces = false;
     this.allowName = true;
+    this.allowLocalDomainName = false;
   }
 
   get allowDomainPunycode() {
@@ -335,6 +343,20 @@ export class EmailSettings {
       throw `Invalid value ${value} for allowName option. Use boolean value`
     }
   }
+
+  get allowLocalDomainName() {
+    return this._allowLocalDomainName;
+  }
+
+  set allowLocalDomainName(value) {
+    if (value !== undefined && typeof value === 'boolean') {
+      this._allowLocalDomainName = value;
+    }
+    else {
+      throw `Invalid value ${value} for allowLocalDomainName option. Use boolean value`
+    }
+  }
+
 }
 
 export const checkEmailSettings = (settings) => {
@@ -360,7 +382,8 @@ export const isEqualEmailSettings = (settings1, settings2) => {
     'allowDomainIp',
     'allowStrictLocalPart',
     'allowSpaces',
-    'allowName'
+    'allowName',
+    'allowLocalDomainName'
   ];
   const propLength = comparedProperties.length;
   for (let i = 0; i < propLength; i++) {

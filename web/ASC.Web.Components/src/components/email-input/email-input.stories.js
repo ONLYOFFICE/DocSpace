@@ -30,6 +30,7 @@ storiesOf('Components|Input', module)
     const allowStrictLocalPart = boolean('allowStrictLocalPart', true);
     const allowSpaces = boolean('allowSpaces', false);
     const allowName = boolean('allowName', false);
+    const allowLocalDomainName = boolean('allowLocalDomainName', false);
 
     const settings = {
       allowDomainPunycode,
@@ -37,7 +38,8 @@ storiesOf('Components|Input', module)
       allowDomainIp,
       allowStrictLocalPart,
       allowSpaces,
-      allowName
+      allowName,
+      allowLocalDomainName
     }
 
     return (
