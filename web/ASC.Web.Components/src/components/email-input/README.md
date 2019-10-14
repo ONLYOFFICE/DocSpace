@@ -4,31 +4,23 @@
 
 Email entry field with advanced capabilities for validation based on settings.
 
-Object with settings:
-
-```js
-{
-      allowDomainPunycode: false,
-      allowLocalPartPunycode: false,
-      allowDomainIp: false,
-      allowStrictLocalPart: true,
-      allowSpaces: false,
-      allowName: false,
-      allowLocalDomainName: false
-}
-```
-
 ### Usage
 
 ```js
 import { EmailInput } from "asc-web-components";
 
 <EmailInput
+
   name="email"
+
   placeholder="email"
+
   onValidateInput={isValidEmail =>
-    console.log(`isValidEmail = ${isValidEmail}`)
+    console.log("isValidEmail = ", isValidEmail);
   }
+
+  emailSettings={settings}
+
 />;
 ```
 
@@ -83,7 +75,6 @@ or instance of `EmailSettings` class:
 import { EmailSettings } from "asc-utils"; //temporary name of package
 import { EmailInput } from "asc-web-components";
 
-
 const emailSettings = new EmailSettings();
 
 /*
@@ -116,12 +107,6 @@ returned Object with NEW settings:
 }
 */
 emailSettings.getSettings();
-
-return (
-  <EmailInput
-  emailSettings={emailSettings}
-/>;
-);
 ```
 
 ### Custom validate email
@@ -136,7 +121,7 @@ How are applied colors in component:
 | default           | `true`  | #D0D5DA      |
 | default           | `false` | #c30         |
 | :hover            | `true`  | #D0D5DA      |
-| :hover            | `false` | #c30          |
+| :hover            | `false` | #c30         |
 | :focus            | `true`  | #2DA7DB      |
 | :focus            | `false` | #c30         |
 
@@ -147,13 +132,13 @@ import { EmailInput } from "asc-web-components";
 const [emailValid, setEmailValid] = useState(true);
 
 const customChangeFunc = (e) => {
-  // our event handling
+  // your event handling
   customValidateFunc(e.target.value);
 }
 
 const customValidateFunc = (value) => {
   let validationResult;
-//our validating function
+// your validating function
   setEmailValid(validationResult);
 }
 
@@ -164,9 +149,26 @@ const onValidateInput = (isValidEmail) => {
 return (
 <EmailInput
   isValid={emailValid}
+
   onChange={customChangeFunc}
+
   customValidateFunc={customValidateFunc}
+
   onValidateInput={onValidateInput}
+
 />;
 );
+```
+
+#### Email settings RFC 5321
+```js
+{
+  allowDomainPunycode: true,
+  allowLocalPartPunycode: true,
+  allowDomainIp: true,
+  allowStrictLocalPart: false,
+  allowSpaces: true,
+  allowName: false,
+  allowLocalDomainName: true
+}
 ```
