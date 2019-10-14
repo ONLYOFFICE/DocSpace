@@ -1,34 +1,172 @@
 # EmailInput
 
-#### Description
+## Description
 
-Email entry field with advanced capabilities for displaying, validation of correspondence and generation based on settings.
+Email entry field with advanced capabilities for validation based on settings.
 
-#### Usage
+Object with settings:
+
+```js
+{
+      allowDomainPunycode: false,
+      allowLocalPartPunycode: false,
+      allowDomainIp: false,
+      allowStrictLocalPart: true,
+      allowSpaces: false,
+      allowName: false,
+      allowLocalDomainName: false
+}
+```
+
+### Usage
 
 ```js
 import { EmailInput } from "asc-web-components";
 
-onChangeFunc = (value) => {
-  // our code for working with input value
-}
-
 <EmailInput
   name="email"
-  placeholder
-  value={value}
-  onChange={e => {
-    this.onChangeFunc(e.target.value);
-  }}
-  isDisabled={false}
   placeholder="email"
-  onValidateInput={a => console.log(a)}
+  onValidateInput={isValidEmail =>
+    console.log(`isValidEmail = ${isValidEmail}`)
+  }
 />;
 ```
 
-#### Properties
-You can apply all properties of the TextInput component to the component, except `mask` and `hasError` prop
+### Properties
 
-| Props             | Type     | Required | Values             | Default         | Description                                                           |
-| ----------------- | -------- | :------: | ------------------ | --------------- | --------------------------------------------------------------------- |
-| `onValidateInput` | `func`   |    -     | -                  | -               | Will be validate our value, return Object, containing validating value and boolean validation result  |
+You can apply all properties of the `TextInput` component to the component
+
+| Props                | Type                                | Required | Values | Default         | Description                                                              |
+| -------------------- | ----------------------------------- | :------: | ------ | --------------- | ------------------------------------------------------------------------ |
+| `onValidateInput`    | `func`                              |    -     | -      | -               | Will be validate our value, return boolean validation result             |
+| `emailSettings`      | `Object, instance of EmailSettings` |    -     | -      | `EmailSettings` | Settings for validating email                                            |
+| `onChange`           | `func`                              |    -     | -      | -               | Function for your custom handling changes in input                       |
+| `customValidateFunc` | `func`                              |    -     | -      | -               | Function for your custom validation input value                          |
+| `isValid`            | `bool`                              |    -     | -      | -               | Used in your custom validation function for change border-color of input |
+
+### Validate email
+
+Our validation algorithm based on [An RFC 5322 email address parser](https://www.npmjs.com/package/email-addresses).
+
+For email validating you should use plain Object or our email utility with following settings:
+
+| Props                    | Type   | Required | Default | Description                                                                                                                                                 |
+| ------------------------ | ------ | :------: | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `allowDomainPunycode`    | `bool` |    -     | `false` | Allow email with punycode symbols in domain, e. g. `example@джpумлатест.bрфa` and `example@mañana.com` are valid email addresses                            |
+| `allowLocalPartPunycode` | `bool` |    -     | `false` | Allow email with punycode symbols in local part, e. g. `джумла@example.com` and `mañana@example.com` are valid email addresses                              |
+| `allowDomainIp`          | `bool` |    -     | `false` | Allow email with IP address in domain, e. g. `user@[127.0.0.1]` is a valid email address                                                                    |
+| `allowStrictLocalPart`   | `bool` |    -     | `true`  | Allow email, started with latin symbols and digits(`([a-zA-Z0-9]+)`) and also contains `_,-,.,+`. Used RegEx `/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)\*\$/` |
+| `allowSpaces`            | `bool` |    -     | `false` | Allow spaces in local part and domain, e. g. `" "@example.org` is a valid email address.                                                                    |
+| `allowName`              | `bool` |    -     | `false` | Supports all features of RFC 5322, which means that `"Bob Example" <bob@example.com>` is a valid email address.                                             |
+| `allowLocalDomainName`   | `bool` |    -     | `false` | Allow local domain address, e. g. `admin@local` is a valid email address                                                                                    |
+
+### emailSettings prop
+
+Plain object:
+
+```js
+const emailSettings = {
+  allowDomainPunycode: false,
+  allowLocalPartPunycode: false,
+  allowDomainIp: false,
+  allowStrictLocalPart: true,
+  allowSpaces: false,
+  allowName: false,
+  allowLocalDomainName: false
+};
+```
+
+or instance of `EmailSettings` class:
+
+```js
+//TODO: rename package
+import { EmailSettings } from "asc-utils"; //temporary name of package
+import { EmailInput } from "asc-web-components";
+
+
+const emailSettings = new EmailSettings();
+
+/*
+returned Object with default settings:
+{
+  allowDomainPunycode: false,
+  allowLocalPartPunycode: false,
+  allowDomainIp: false,
+  allowStrictLocalPart: true,
+  allowSpaces: false,
+  allowName: false,
+  allowLocalDomainName: false
+}
+*/
+emailSettings.getSettings();
+
+// set allowName setting to true
+email.allowName = true;
+
+/*
+returned Object with NEW settings:
+{
+  allowDomainPunycode: false,
+  allowLocalPartPunycode: false,
+  allowDomainIp: false,
+  allowStrictLocalPart: true,
+  allowSpaces: false,
+  allowName: true,
+  allowLocalDomainName: false
+}
+*/
+emailSettings.getSettings();
+
+return (
+  <EmailInput
+  emailSettings={emailSettings}
+/>;
+);
+```
+
+### Custom validate email
+
+You should use custom validation with the `customValidateFunc` prop. Also you can change state of validation with the help of `isValid` prop.
+`isValid` prop allow you to change border-color of input.
+
+How are applied colors in component:
+
+| Сomponent actions | isValid | border-color |
+| ----------------- | ------- | ------------ |
+| default           | `true`  | #D0D5DA      |
+| default           | `false` | #c30         |
+| :hover            | `true`  | #D0D5DA      |
+| :hover            | `false` | #c30          |
+| :focus            | `true`  | #2DA7DB      |
+| :focus            | `false` | #c30         |
+
+```js
+import React, { useState } from "react";
+import { EmailInput } from "asc-web-components";
+
+const [emailValid, setEmailValid] = useState(true);
+
+const customChangeFunc = (e) => {
+  // our event handling
+  customValidateFunc(e.target.value);
+}
+
+const customValidateFunc = (value) => {
+  let validationResult;
+//our validating function
+  setEmailValid(validationResult);
+}
+
+const onValidateInput = (isValidEmail) => {
+    console.log(`isValidEmail = ${isValidEmail}`);
+}
+
+return (
+<EmailInput
+  isValid={emailValid}
+  onChange={customChangeFunc}
+  customValidateFunc={customValidateFunc}
+  onValidateInput={onValidateInput}
+/>;
+);
+```
