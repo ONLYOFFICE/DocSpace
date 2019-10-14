@@ -129,7 +129,7 @@ EmailInput.defaultProps = {
   title: '',
   isValid: undefined,
 
-  settings: new EmailSettings()
+  emailSettings: new EmailSettings()
 }
 
 export default EmailInput;
