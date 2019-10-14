@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import isEqual from "lodash/isEqual";
 import TextInput from '../text-input'
-import { EmailSettings, parseAddress, checkEmailSettings, isEqualEmailSettings } from '../../utils/email';
+import { EmailSettings, parseAddress, checkAndConvertEmailSettings, isEqualEmailSettings } from '../../utils/email';
 
 const borderColor = {
   default: '#D0D5DA',
@@ -39,7 +39,7 @@ class EmailInput extends React.Component {
     super(props);
 
     const { value, emailSettings } = this.props;
-    const validatedSettings = checkEmailSettings(emailSettings);
+    const validatedSettings = checkAndConvertEmailSettings(emailSettings);
 
     this.state = {
       isValidEmail: true,
@@ -52,7 +52,7 @@ class EmailInput extends React.Component {
     const { emailSettings } = this.props;
     if (isEqualEmailSettings(this.state.emailSettings, emailSettings)) return;
 
-    const validatedSettings = checkEmailSettings(emailSettings);
+    const validatedSettings = checkAndConvertEmailSettings(emailSettings);
 
     this.setState({ emailSettings: validatedSettings }, function () {
       this.checkEmail(this.state.inputValue);
@@ -61,7 +61,6 @@ class EmailInput extends React.Component {
   }
 
   checkEmail = (value) => {
-
     if (!value.length) {
       !this.state.isValidEmail && this.setState({ isValidEmail: true, inputValue: value });
       return;
@@ -88,14 +87,14 @@ class EmailInput extends React.Component {
   render() {
     //console.log('EmailInput render()');
     // eslint-disable-next-line no-unused-vars
-    const { onValidateInput, emailSettings, onChange, value, isValid, ...rest } = this.props;
+    const { onValidateInput, emailSettings, onChange, isValid, value, ...rest } = this.props;
 
-    const { isValidEmail } = this.state;
+    const { isValidEmail, inputValue } = this.state;
 
     return (
       <StyledTextInput
         isValidEmail={isValid || isValidEmail}
-        value={value}
+        value={inputValue}
         onChange={this.onChangeAction}
         type='email'
         onValidateInput={onValidateInput}

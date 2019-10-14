@@ -93,9 +93,7 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
-  if (!options.allowLocalPartPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))
-    && /[..\n]+/.test(punycode.toUnicode(parsedAddress.local))
-  ) {
+  if (!options.allowLocalPartPunycode && parsedAddress.local.length > 0 && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
     errors.push({
       message: "Punycode local part are not supported",
       type: parseErrorTypes.IncorrectEmail,
@@ -270,7 +268,7 @@ export class EmailSettings {
     this.allowDomainIp = false;
     this.allowStrictLocalPart = true;
     this.allowSpaces = false;
-    this.allowName = true;
+    this.allowName = false;
     this.allowLocalDomainName = false;
   }
 
@@ -365,11 +363,23 @@ export class EmailSettings {
     }
   }
 
+  getSettings() {
+    return {
+      allowDomainPunycode: this.allowDomainPunycode,
+      allowLocalPartPunycode: this.allowLocalPartPunycode,
+      allowDomainIp: this.allowDomainIp,
+      allowStrictLocalPart: this.allowStrictLocalPart,
+      allowSpaces: this.allowSpaces,
+      allowName: this.allowName,
+      allowLocalDomainName: this.allowLocalDomainName
+    }
+  }
 }
 
-export const checkEmailSettings = (settings) => {
+export const checkAndConvertEmailSettings = (settings) => {
   if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
     const defaultSettings = new EmailSettings();
+    console.log('NEW SETTINGS:', defaultSettings.getSettings())
     Object.keys(settings).map((item) => {
       if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
         defaultSettings[item] = settings[item];
