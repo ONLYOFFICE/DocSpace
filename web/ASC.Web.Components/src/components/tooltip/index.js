@@ -43,7 +43,8 @@ class Tooltip extends Component {
       offsetTop,
       offsetRight,
       offsetBottom,
-      offsetLeft
+      offsetLeft,
+      children
     } = this.props;
 
     return (
@@ -65,7 +66,9 @@ class Tooltip extends Component {
           resizeHide={true}
           scrollHide={true}
           isCapture={true}
-        />
+        >
+          {children}
+        </ReactTooltip>
       </TooltipStyle>
     );
   }
