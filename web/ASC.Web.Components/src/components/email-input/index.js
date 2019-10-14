@@ -12,11 +12,12 @@ const borderColor = {
 };
 
 // eslint-disable-next-line no-unused-vars
-const SimpleInput = ({ onValidateInput, isValidEmail, ...props }) => <TextInput {...props}></TextInput>;
+const SimpleInput = ({ onValidateInput, isValidEmail, emailSettings, ...props }) => <TextInput {...props}></TextInput>;
 
 SimpleInput.propTypes = {
   onValidateInput: PropTypes.func,
-  isValidEmail: PropTypes.bool
+  isValidEmail: PropTypes.bool,
+  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)])
 }
 
 const StyledTextInput = styled(SimpleInput)`
@@ -87,23 +88,7 @@ class EmailInput extends React.Component {
   render() {
     //console.log('EmailInput render()');
     const {
-      isDisabled,
-      scale,
-      size,
-      hasWarning,
-      placeholder,
-      tabIndex,
-      maxLength,
-      id,
-      autoComplete,
-      className,
-      isAutoFocussed,
-      isReadOnly,
-      onFocus,
-      onBlur,
-      name,
       onValidateInput,
-      withBorder
     } = this.props;
 
     const { isValidEmail, value } = this.state;
@@ -111,27 +96,12 @@ class EmailInput extends React.Component {
     return (
       <StyledTextInput
         isValidEmail={isValidEmail}
-        id={id}
-        name={name}
-        value={value}
-        autoComplete={autoComplete}
         onChange={this.onChangeAction}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        isAutoFocussed={isAutoFocussed}
-        isDisabled={isDisabled}
-        isReadOnly={isReadOnly}
         hasError={!isValidEmail}
-        hasWarning={hasWarning}
-        placeholder={placeholder}
+        value={value}
         type='email'
-        size={size}
-        scale={scale}
-        tabIndex={tabIndex}
-        maxLength={maxLength}
-        className={className}
         onValidateInput={onValidateInput}
-        withBorder={withBorder}
+        {...this.props}
       />
     );
   }
@@ -139,7 +109,7 @@ class EmailInput extends React.Component {
 
 EmailInput.propTypes = {
   onValidateInput: PropTypes.func,
-  className: PropTypes.string,
+  onChange: PropTypes.func,
   value: PropTypes.string,
   emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)])
 }
