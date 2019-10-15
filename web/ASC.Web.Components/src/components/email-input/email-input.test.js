@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import EmailInput from '.';
-import { EmailSettings } from '../../utils/email';
+import { EmailSettings } from '../../utils/email/';
 
 
 const baseProps = {
