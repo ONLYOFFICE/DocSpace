@@ -77,8 +77,7 @@ import { EmailInput } from "asc-web-components";
 
 const emailSettings = new EmailSettings();
 
-/*
-returned Object with default settings:
+emailSettings.getSettings(); /* returned Object with default settings:
 {
   allowDomainPunycode: false,
   allowLocalPartPunycode: false,
@@ -89,14 +88,11 @@ returned Object with default settings:
   allowLocalDomainName: false
 }
 */
-emailSettings.getSettings();
+email.allowName = true; // set allowName setting to true
 
-// set allowName setting to true
-email.allowName = true;
-
-/*
-returned Object with NEW settings:
+emailSettings.getSettings(); /* returned Object with NEW settings:
 {
+  
   allowDomainPunycode: false,
   allowLocalPartPunycode: false,
   allowDomainIp: false,
@@ -104,9 +100,10 @@ returned Object with NEW settings:
   allowSpaces: false,
   allowName: true,
   allowLocalDomainName: false
+
 }
 */
-emailSettings.getSettings();
+
 ```
 
 ### Custom validate email
