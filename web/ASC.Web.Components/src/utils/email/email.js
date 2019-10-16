@@ -152,7 +152,7 @@ const checkErrors = (parsedAddress, options) => {
  * @return {Array} result with array of Email objects
  */
 export const parseAddresses = (str, options = new EmailSettings()) => {
-  if (!(options instanceof EmailSettings)) throw "Invalid options";
+  if (!(options instanceof EmailSettings)) throw new TypeError("Invalid options");
 
   const parts = getParts(str);
   const resultEmails = [];

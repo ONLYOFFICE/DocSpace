@@ -152,6 +152,7 @@ describe('email', () => {
     const isDomainValid = isValidDomainName(domain);
     expect(isDomainValid).toBe(true);
   });
+
   it('validate domain name with IP address without brackets', () => {
     const domain = "127.0.0.1";
     const isDomainValid = isValidDomainName(domain);
@@ -214,6 +215,18 @@ describe('email', () => {
     expect(parsed.parseErrors[0].message).toBe('Too many email parsed');
   });
 
+  it('parsing one address, passed emailSettings as Object', () => {
+    const emailAddress = "test@test.com";
+
+    try {
+
+      parseAddress(emailAddress, emailSettingsObj);
+    } catch (err) {
+
+      expect(err.name).toBe('TypeError');
+    }
+  });
+
   it('parsing one address, passed emailSettings as instance of EmailSettings class', () => {
     const emailAddress = "test@test.com";
     const parsed = parseAddress(emailAddress, emailSettingsInstance);
@@ -223,6 +236,7 @@ describe('email', () => {
   });
 
   // test parseAddresses function
+
   it('parsing two addresses through function for parsing emails', () => {
     const emailAddress = "test@test.com, test2@test2.com";
     const parsed = parseAddresses(emailAddress);
