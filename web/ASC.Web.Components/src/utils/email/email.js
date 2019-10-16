@@ -74,6 +74,15 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
+  if (!(options.allowDomainIp || options.allowDomainPunycode || options.allowLocalDomainName)
+    && !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain)) {
+    errors.push({
+      message: "Incorrect domain",
+      type: parseErrorTypes.IncorrectEmail,
+      errorItem: parsedAddress
+    });
+  }
+
   if (
     !options.allowDomainIp &&
     parsedAddress.domain.indexOf("[") === 0 &&
@@ -219,6 +228,7 @@ export const parseAddress = (str, options = new EmailSettings()) => {
  */
 export const isValidDomainName = domain => {
   let parsed = emailAddresses.parseOneAddress("test@" + domain);
+  if (!parsed) return false;
   return parsed && parsed.domain === domain && domain.indexOf(".") !== -1;
 };
 
@@ -254,7 +264,7 @@ export class Email {
     if (typeof addr === "object" && addr instanceof Email) {
       return this.email === addr.email && this.name === addr.name;
     } else if (typeof addr === "string") {
-      var parsed = parseAddress(addr);
+      let parsed = parseAddress(addr);
       return this.email === parsed.email && this.name === parsed.name;
     }
 
