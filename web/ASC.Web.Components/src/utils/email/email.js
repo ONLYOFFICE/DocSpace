@@ -257,7 +257,7 @@ export class Email {
     if (typeof addr === "object" && addr instanceof Email) {
       return this.email === addr.email && this.name === addr.name;
     } else if (typeof addr === "string") {
-      let parsed = parseAddress(addr);
+      const parsed = parseAddress(addr);
       return this.email === parsed.email && this.name === parsed.name;
     }
 
