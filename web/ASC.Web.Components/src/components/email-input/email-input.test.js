@@ -58,6 +58,22 @@ describe('<EmailInput />', () => {
     expect(shouldUpdate).toBe(true);
     expect(wrapper.state('emailSettings')).toBe(emailSettings);
   });
+  it('isValidEmail is "true" after deleting value', () => {
+
+    const wrapper = mount(<EmailInput {...baseProps} />);
+
+    const event = { target: { value: "test" } };
+
+    wrapper.simulate('change', event);
+
+    expect(wrapper.state('isValidEmail')).toBe(false);
+
+    const emptyValue = { target: { value: "" } };
+
+    wrapper.simulate('change', emptyValue);
+
+    expect(wrapper.state('isValidEmail')).toBe(true);
+  });
 
   it('not re-render test', () => {
     const wrapper = shallow(<EmailInput {...baseProps} />).instance();
