@@ -111,6 +111,16 @@ export class EmailSettings {
       allowLocalDomainName: this.allowLocalDomainName
     }
   }
+
+  disableAllSettings() {
+    this.allowDomainPunycode = true;
+    this.allowLocalPartPunycode = true;
+    this.allowDomainIp = true;
+    this.allowStrictLocalPart = false;
+    this.allowSpaces = true;
+    this.allowName = true;
+    this.allowLocalDomainName = true;
+  }
 }
 
 export const checkAndConvertEmailSettings = (settings) => {
