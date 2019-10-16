@@ -228,10 +228,14 @@ export const isValidDomainName = domain => {
  * @return {Bool} result
  */
 export const isEqualEmail = (email1, email2) => {
-  let parsed1 = parseAddress(email1);
-  let parsed2 = parseAddress(email2);
 
-  if (!parsed1.isValid || !parsed2.isValid) {
+  const emailSettings = new EmailSettings();
+  emailSettings.disableAllSettings();
+  
+  const parsed1 = parseAddress(email1, emailSettings);
+  const parsed2 = parseAddress(email2, emailSettings);
+
+  if (!parsed1.isValid() || !parsed2.isValid()) {
     return false;
   }
 
