@@ -62,6 +62,77 @@ describe('emailSettings', () => {
   expect(newSettings).toStrictEqual(disabledSettings);
  });
 
+
+ it('set invalid (non-boolean) value for allowLocalDomainName setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowLocalDomainName = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowDomainPunycode setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowDomainPunycode = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowLocalPartPunycode setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowLocalPartPunycode = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowDomainIp setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowDomainIp = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowStrictLocalPart setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowStrictLocalPart = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowSpaces setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowSpaces = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
+ it('set invalid (non-boolean) value for allowName setting', () => {
+  const emailSettings = new EmailSettings();
+
+  try {
+   emailSettings.allowName = '1';
+  } catch (err) {
+   expect(err.name).toBe('TypeError');
+  }
+ });
+
  // test isEqualEmailSettings function
 
  it('is not equal email settings', () => {

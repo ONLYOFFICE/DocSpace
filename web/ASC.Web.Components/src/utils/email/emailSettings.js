@@ -18,7 +18,7 @@ export class EmailSettings {
       this._allowDomainPunycode = value;
     }
     else {
-      throw `Invalid value ${value} for allowDomainPunycode option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
     }
   }
 
@@ -31,7 +31,7 @@ export class EmailSettings {
       this._allowLocalPartPunycode = value;
     }
     else {
-      throw `Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
     }
   }
 
@@ -44,7 +44,7 @@ export class EmailSettings {
       this._allowDomainIp = value;
     }
     else {
-      throw `Invalid value ${value} for allowDomainIp option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowDomainIp option. Use boolean value`);
     }
   }
 
@@ -57,7 +57,7 @@ export class EmailSettings {
       this._allowStrictLocalPart = value;
     }
     else {
-      throw `Invalid value ${value} for allowStrictLocalPart option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
     }
   }
 
@@ -70,7 +70,7 @@ export class EmailSettings {
       this._allowSpaces = value;
     }
     else {
-      throw `Invalid value ${value} for allowSpaces option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowSpaces option. Use boolean value`);
     }
   }
 
@@ -83,7 +83,7 @@ export class EmailSettings {
       this._allowName = value;
     }
     else {
-      throw `Invalid value ${value} for allowName option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowName option. Use boolean value`);
     }
   }
 
@@ -96,7 +96,7 @@ export class EmailSettings {
       this._allowLocalDomainName = value;
     }
     else {
-      throw `Invalid value ${value} for allowLocalDomainName option. Use boolean value`
+      throw new TypeError (`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
     }
   }
 
