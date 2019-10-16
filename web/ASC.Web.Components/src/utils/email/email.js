@@ -203,7 +203,7 @@ export const parseAddress = (str, options = new EmailSettings()) => {
 
   if (parsedEmails.length > 1) {
     return new Email("", str, [
-      { message: "To many email parsed", type: parseErrorTypes.IncorrectEmail }
+      { message: "Too many email parsed", type: parseErrorTypes.IncorrectEmail }
     ]);
   }
 
