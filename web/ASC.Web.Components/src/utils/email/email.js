@@ -183,7 +183,7 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
       });
     } else {
       const checkOptionErrors = checkErrors(parsedAddress, options)
-      checkOptionErrors.length && errors.push(checkOptionErrors);
+      checkOptionErrors.length && errors.push(...checkOptionErrors);
     }
 
     resultEmails.push(
