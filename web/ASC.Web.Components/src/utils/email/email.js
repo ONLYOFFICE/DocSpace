@@ -135,17 +135,6 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
-  if (!options.allowSpaces &&
-    (/\s+/.test(parsedAddress.domain) ||
-      parsedAddress.domain !== parsedAddress.parts.domain.tokens)
-  ) {
-    errors.push({
-      message: "Incorrect, domain contains spaces",
-      type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
-    });
-  }
-
   if (parsedAddress.local.length > 64) {
     errors.push({
       message: "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
