@@ -130,6 +130,7 @@ class IconButton extends React.PureComponent {
       isClickable,
       onClick
     } = this.props;
+
     return (
       <StyledOuter
         className={className}
@@ -140,6 +141,7 @@ class IconButton extends React.PureComponent {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         isClickable={typeof onClick === "function" || isClickable}
+        //{...this.props}
       >
         {React.createElement(Icons[this.state.currentIconName], {
           size: "scale",

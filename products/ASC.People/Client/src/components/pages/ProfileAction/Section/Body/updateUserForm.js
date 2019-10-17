@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Tooltip, Link } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
@@ -22,8 +22,6 @@ const Table = styled.table`
   width: 100%;
   margin-bottom: 23px;
 `;
-
-const Tr = styled.tr``;
 
 const Th = styled.th`
   padding: 11px 0 10px 0px;
@@ -432,6 +430,45 @@ class UpdateUserForm extends React.Component {
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    const tooltipTypeContent = 
+      <>
+        <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
+        <Table>
+          <tbody>
+            <tr>
+              <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
+            </tr>
+            <tr>
+              <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
+            </tr>
+            <tr>
+              <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
+            </tr>
+            <tr>
+              <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
+            </tr>
+            <tr>
+              <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
+            </tr>
+          </tbody>
+        </Table>
+        <Link 
+          color="#316DAA" 
+          isHovered={true} 
+          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block" 
+          style={{marginTop: 23}}>
+            {t("TermsOfUsePopupHelperLink")}
+        </Link>
+      </>;
 
     return (
       <>
@@ -469,19 +506,12 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
 
-              tooltipId="tooltipEmailId"
-              tooltipEvent="click focus"
-              iconButton="QuestionIcon"
+
+              tooltipContent={<Text.Body fontSize={13}>{t("EmailPopupHelper")}</Text.Body>}
+              tooltipMaxWidth={312}
+              tooltipOffsetRight={100}
+              tooltipId="EmailTooltip"
             />
-            <Tooltip
-              id="tooltipEmailId"
-              offsetRight={100}
-              effect="solid"
-              place="top"
-              maxWidth={312}
-            >
-              <Text.Body fontSize={13}>{t("EmailPopupHelper")}</Text.Body>
-            </Tooltip>
             <TextChangeField
               labelText={`${t("Password")}:`}
               inputName="password"
@@ -552,57 +582,11 @@ class UpdateUserForm extends React.Component {
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
 
-              tooltipId="tooltipUserTypeId"
-              tooltipEvent="click focus"
-              iconButton="QuestionIcon"
+              tooltipContent={tooltipTypeContent}
+              tooltipMaxWidth={340}
+              tooltipOffsetRight={120}
+              tooltipId="TypeTooltip"
             />
-            <Tooltip
-              id="tooltipUserTypeId"
-              offsetRight={120}
-              effect="solid"
-              place="top"
-              maxWidth={340}
-            >
-               <>
-              <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
-              <Table>
-              <tbody>
-                  <Tr>
-                    <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
-                  </Tr>
-                  <Tr>
-                    <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
-                  </Tr>
-                </tbody>
-                </Table>
-                <Link 
-                  color="#316DAA" 
-                  isHovered={true} 
-                  href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block" 
-                  style={{marginTop: 23}}>
-                    {t("TermsOfUsePopupHelperLink")}
-                </Link>
-              </>
-            </Tooltip>
-
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
