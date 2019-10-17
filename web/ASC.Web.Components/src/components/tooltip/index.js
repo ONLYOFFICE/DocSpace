@@ -48,7 +48,9 @@ class Tooltip extends Component {
       offsetRight,
       offsetBottom,
       offsetLeft,
-      children
+      children,
+      afterShow,
+      afterHide
     } = this.props;
 
     return (
@@ -59,7 +61,7 @@ class Tooltip extends Component {
           type="light"
           effect={effect}
           place={place}
-          globalEventOff="click"
+          //globalEventOff="click"
           offset={{
             top: offsetTop,
             right: offsetRight,
@@ -69,7 +71,9 @@ class Tooltip extends Component {
           wrapper="div"
           resizeHide={true}
           scrollHide={true}
+          afterShow={afterShow}
           isCapture={true}
+          afterHide={afterHide}
         >
           {children}
         </ReactTooltip>
@@ -84,11 +88,13 @@ Tooltip.propTypes = {
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
   maxWidth: PropTypes.number,
   getContent: PropTypes.func,
+  afterHide: PropTypes.func,
+  afterShow: PropTypes.func,
   offsetTop: PropTypes.number,
   offsetRight: PropTypes.number,
   offsetBottom: PropTypes.number,
   offsetLeft: PropTypes.number,
-  children: PropTypes.object
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 
 Tooltip.defaultProps = {

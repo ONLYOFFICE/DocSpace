@@ -324,7 +324,7 @@ class PasswordInput extends React.Component {
         <PasswordProgress 
           inputWidth={inputWidth}
           data-for="tooltipContent"
-          data-tip
+          data-tip=""
           data-event="click"
         >
           <InputBlock
