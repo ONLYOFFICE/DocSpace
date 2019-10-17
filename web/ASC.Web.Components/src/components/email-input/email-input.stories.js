@@ -1,6 +1,5 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { StringValue } from 'react-values';
 import { text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
@@ -44,26 +43,18 @@ storiesOf('Components|Input', module)
 
     return (
       <Section>
-        <StringValue>
-          {({ value, set }) => (
-            <EmailInput
-              placeholder={placeholder}
-              size={size}
-              scale={scale}
-              isDisabled={isDisabled}
-              isReadOnly={isReadOnly}
-              maxLength={maxLength}
-              id={id}
-              name={name}
-              emailSettings={settings}
-              value={value}
-              onChange={e => {
-                set(e.target.value);
-              }}
-              onValidateInput={(isEmailValid) => action('validateEmail')(isEmailValid)}
-            />
-          )}
-        </StringValue>
+        <EmailInput
+          placeholder={placeholder}
+          size={size}
+          scale={scale}
+          isDisabled={isDisabled}
+          isReadOnly={isReadOnly}
+          maxLength={maxLength}
+          id={id}
+          name={name}
+          emailSettings={settings}
+          onValidateInput={(isEmailValid) => action('isValidEmail')(isEmailValid)}
+        />
       </Section>
-    )
+    );
   });

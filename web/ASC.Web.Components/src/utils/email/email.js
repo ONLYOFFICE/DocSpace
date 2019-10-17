@@ -1,6 +1,7 @@
 import emailAddresses from "email-addresses";
 import punycode from "punycode";
-import { parseErrorTypes } from "./constants";
+import { parseErrorTypes } from "./../constants";
+import { EmailSettings } from './index';
 
 const getParts = string => {
   let mass = [];
@@ -63,11 +64,18 @@ const normalizeString = str => {
 
 const checkErrors = (parsedAddress, options) => {
   const errors = [];
+
   if (!options.allowLocalDomainName &&
-    (parsedAddress.domain.indexOf(".") === -1 ||
-    !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain) 
-    || options.allowDomainIp)
-  ) {
+    (parsedAddress.domain.indexOf(".") === -1)) {
+    errors.push({
+      message: "Local domains are not supported",
+      type: parseErrorTypes.IncorrectEmail,
+      errorItem: parsedAddress
+    });
+  }
+
+  if (!(options.allowDomainIp || options.allowDomainPunycode || options.allowLocalDomainName)
+    && !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain)) {
     errors.push({
       message: "Incorrect domain",
       type: parseErrorTypes.IncorrectEmail,
@@ -95,16 +103,16 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
-  if (!options.allowLocalPartPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
+  if (!options.allowLocalPartPunycode && parsedAddress.local.length > 0 && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
     errors.push({
-      message: "Punycode domains are not supported",
+      message: "Punycode local part are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress
     });
   }
 
   if (
-    !options.allowStrictLocalPart &&
+    options.allowStrictLocalPart &&
     (!/^[\x00-\x7F]+$/.test(parsedAddress.local) ||
       !/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)*$/.test(parsedAddress.local))
   ) {
@@ -127,12 +135,9 @@ const checkErrors = (parsedAddress, options) => {
     });
   }
 
-  if (!options.allowSpaces &&
-    (/\s+/.test(parsedAddress.domain) ||
-      parsedAddress.domain !== parsedAddress.parts.domain.tokens)
-  ) {
+  if (parsedAddress.local.length > 64) {
     errors.push({
-      message: "Incorrect, domain contains spaces",
+      message: "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress
     });
@@ -147,7 +152,7 @@ const checkErrors = (parsedAddress, options) => {
  * @return {Array} result with array of Email objects
  */
 export const parseAddresses = (str, options = new EmailSettings()) => {
-  if (!(options instanceof EmailSettings)) throw "Invalid options";
+  if (!(options instanceof EmailSettings)) throw new TypeError("Invalid options");
 
   const parts = getParts(str);
   const resultEmails = [];
@@ -167,7 +172,7 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
       });
     } else {
       const checkOptionErrors = checkErrors(parsedAddress, options)
-      checkOptionErrors.length && errors.push(checkOptionErrors);
+      checkOptionErrors.length && errors.push(...checkOptionErrors);
     }
 
     resultEmails.push(
@@ -196,7 +201,7 @@ export const parseAddress = (str, options = new EmailSettings()) => {
 
   if (parsedEmails.length > 1) {
     return new Email("", str, [
-      { message: "To many email parsed", type: parseErrorTypes.IncorrectEmail }
+      { message: "Too many email parsed", type: parseErrorTypes.IncorrectEmail }
     ]);
   }
 
@@ -212,6 +217,7 @@ export const parseAddress = (str, options = new EmailSettings()) => {
  */
 export const isValidDomainName = domain => {
   let parsed = emailAddresses.parseOneAddress("test@" + domain);
+  if (!parsed) return false;
   return parsed && parsed.domain === domain && domain.indexOf(".") !== -1;
 };
 
@@ -222,10 +228,14 @@ export const isValidDomainName = domain => {
  * @return {Bool} result
  */
 export const isEqualEmail = (email1, email2) => {
-  let parsed1 = parseAddress(email1);
-  let parsed2 = parseAddress(email2);
 
-  if (!parsed1.isValid || !parsed2.isValid) {
+  const emailSettings = new EmailSettings();
+  emailSettings.disableAllSettings();
+  
+  const parsed1 = parseAddress(email1, emailSettings);
+  const parsed2 = parseAddress(email2, emailSettings);
+
+  if (!parsed1.isValid() || !parsed2.isValid()) {
     return false;
   }
 
@@ -247,150 +257,10 @@ export class Email {
     if (typeof addr === "object" && addr instanceof Email) {
       return this.email === addr.email && this.name === addr.name;
     } else if (typeof addr === "string") {
-      var parsed = parseAddress(addr);
+      const parsed = parseAddress(addr);
       return this.email === parsed.email && this.name === parsed.name;
     }
 
     return false;
   };
-}
-
-export class EmailSettings {
-  constructor() {
-    this.allowDomainPunycode = false;
-    this.allowLocalPartPunycode = false;
-    this.allowDomainIp = false;
-    this.allowStrictLocalPart = true;
-    this.allowSpaces = false;
-    this.allowName = true;
-    this.allowLocalDomainName = false;
-  }
-
-  get allowDomainPunycode() {
-    return this._allowDomainPunycode;
-  }
-
-  set allowDomainPunycode(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowDomainPunycode = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowDomainPunycode option. Use boolean value`
-    }
-  }
-
-  get allowLocalPartPunycode() {
-    return this._allowLocalPartPunycode;
-  }
-
-  set allowLocalPartPunycode(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowLocalPartPunycode = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`
-    }
-  }
-
-  get allowDomainIp() {
-    return this._allowDomainIp;
-  }
-
-  set allowDomainIp(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowDomainIp = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowDomainIp option. Use boolean value`
-    }
-  }
-
-  get allowStrictLocalPart() {
-    return this._allowStrictLocalPart;
-  }
-
-  set allowStrictLocalPart(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowStrictLocalPart = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowStrictLocalPart option. Use boolean value`
-    }
-  }
-
-  get allowSpaces() {
-    return this._allowSpaces;
-  }
-
-  set allowSpaces(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowSpaces = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowSpaces option. Use boolean value`
-    }
-  }
-
-  get allowName() {
-    return this._allowName;
-  }
-
-  set allowName(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowName = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowName option. Use boolean value`
-    }
-  }
-
-  get allowLocalDomainName() {
-    return this._allowLocalDomainName;
-  }
-
-  set allowLocalDomainName(value) {
-    if (value !== undefined && typeof value === 'boolean') {
-      this._allowLocalDomainName = value;
-    }
-    else {
-      throw `Invalid value ${value} for allowLocalDomainName option. Use boolean value`
-    }
-  }
-
-}
-
-export const checkEmailSettings = (settings) => {
-  if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
-    const defaultSettings = new EmailSettings();
-    Object.keys(settings).map((item) => {
-      if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
-        defaultSettings[item] = settings[item];
-      }
-    });
-    return defaultSettings;
-  }
-
-  else if (typeof settings === 'object' && settings instanceof EmailSettings) {
-    return settings;
-  }
-}
-
-export const isEqualEmailSettings = (settings1, settings2) => {
-  const comparedProperties = [
-    'allowDomainPunycode',
-    'allowLocalPartPunycode',
-    'allowDomainIp',
-    'allowStrictLocalPart',
-    'allowSpaces',
-    'allowName',
-    'allowLocalDomainName'
-  ];
-  const propLength = comparedProperties.length;
-  for (let i = 0; i < propLength; i++) {
-    const comparedProp = comparedProperties[i]
-    if (settings1[comparedProp] !== settings2[comparedProp]) {
-      return false;
-    }
-  }
-  return true;
 }
