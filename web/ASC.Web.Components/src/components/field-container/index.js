@@ -69,14 +69,14 @@ class FieldContainer extends React.Component {
     //console.log(`FieldContainer constructor(${this.helperId})`, props, this.ref);
   }
 
-  afterShow = e => {
+  afterShow = () => {
     //console.log(`afterShow ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
     this.setState({ isOpen: true }, () => {
       handleAnyClick(true, this.handleClick);
     });
   };
 
-  afterHide = e => {
+  afterHide = () => {
     //console.log(`afterHide ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
     if (this.state.isOpen) {
       this.setState({ isOpen: false }, () => {
@@ -93,6 +93,11 @@ class FieldContainer extends React.Component {
       this.refTooltip.current.hideTooltip();
     }
   };
+
+  componentWillUnmount() {
+    handleAnyClick(false, this.handleClick);
+  }
+
 
   render() {
     const {
