@@ -11,3 +11,4 @@
 **/storybook-static/
 /web/ASC.Web.Components/dist
 /build/deploy
+/coverage
