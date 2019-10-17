@@ -33,20 +33,22 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
     public class NotifySender
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
 
         private readonly DbWorker db;
         private CancellationTokenSource cancellationToken;
 
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
-        public NotifySender(NotifyServiceCfg notifyServiceCfg, DbWorker dbWorker)
+        public NotifySender(NotifyServiceCfg notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<LogNLog> options)
         {
+            log = options.Get("ASC");
             NotifyServiceCfg = notifyServiceCfg;
             db = dbWorker;
         }

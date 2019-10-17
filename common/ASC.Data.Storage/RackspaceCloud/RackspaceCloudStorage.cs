@@ -33,6 +33,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using MimeMapping = ASC.Common.Web.MimeMapping;
@@ -54,10 +55,16 @@ namespace ASC.Data.Storage.RackspaceCloud
         private Uri _cname;
         private Uri _cnameSSL;
 
-        private static readonly ILog _logger = LogManager.GetLogger("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+        private readonly ILog _logger;
 
-        public RackspaceCloudStorage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
+        public RackspaceCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
+            _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
         }
 
         private string MakePath(string domain, string path)
@@ -104,7 +111,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         {
             _tenant = tenant;
 
-            if(moduleConfig != null)
+            if (moduleConfig != null)
             {
                 _modulename = moduleConfig.Name;
                 _dataList = new DataList(moduleConfig);

@@ -33,6 +33,7 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using UAParser;
 using IsolationLevel = System.Data.IsolationLevel;
@@ -55,8 +56,9 @@ namespace ASC.MessagingSystem.DbSender
         private const string AuditEventsTable = "audit_events";
         private readonly Timer ClearTimer;
 
+        public ILog Log { get; set; }
 
-        public MessagesRepository(DbRegistry dbRegistry)
+        public MessagesRepository(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> options)
         {
             DbRegistry = dbRegistry;
             CacheTime = TimeSpan.FromMinutes(1);
@@ -67,6 +69,7 @@ namespace ASC.MessagingSystem.DbSender
 
             ClearTimer = new Timer(DeleteOldEvents);
             ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
+            Log = options.Get("ASC");
         }
 
         public void Add(EventMessage message)
@@ -145,7 +148,7 @@ namespace ASC.MessagingSystem.DbSender
                     }
                     catch (Exception e)
                     {
-                        LogManager.GetLogger("ASC").Error("FlushCache " + message.Id, e);
+                        Log.Error("FlushCache " + message.Id, e);
                     }
                 }
 
@@ -259,7 +262,7 @@ namespace ASC.MessagingSystem.DbSender
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Messaging").Error(ex.Message, ex);
+                Log.Error(ex.Message, ex);
             }
         }
 

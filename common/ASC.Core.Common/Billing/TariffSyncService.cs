@@ -36,23 +36,26 @@ using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
     class TariffSyncService : ITariffSyncService, IServiceController
     {
-        private readonly static ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
         private readonly TariffSyncServiceSection config;
         private readonly IDictionary<int, IEnumerable<TenantQuota>> quotaServices = new Dictionary<int, IEnumerable<TenantQuota>>();
         private Timer timer;
 
 
-        public TariffSyncService(IServiceProvider serviceProvider, IConfiguration configuration, DbRegistry dbRegistry)
+        public TariffSyncService(IServiceProvider serviceProvider, IConfiguration configuration, DbRegistry dbRegistry,
+            IOptionsMonitor<LogNLog> options)
         {
             config = TariffSyncServiceSection.GetSection();
             ServiceProvider = serviceProvider;
             Configuration = configuration;
             DbRegistry = dbRegistry;
+            log = options.CurrentValue;
         }
 
 

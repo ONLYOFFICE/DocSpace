@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -52,13 +53,13 @@ namespace ASC.Api.Core.Middleware
 
 
         public ProductSecurityFilter(
-            LogManager logManager, 
-            UserManager userManager, 
-            TenantManager tenantManager, 
+            IOptionsMonitor<LogNLog> options,
+            UserManager userManager,
+            TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
             AuthContext authContext)
         {
-            log = logManager.Get("Api");
+            log = options.Get("ASC");
             UserManager = userManager;
             TenantManager = tenantManager;
             WebItemSecurity = webItemSecurity;

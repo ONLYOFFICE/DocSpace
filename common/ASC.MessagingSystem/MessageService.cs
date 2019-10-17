@@ -31,19 +31,20 @@ using ASC.Common.Logging;
 using ASC.MessagingSystem.DbSender;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
     public class MessageService
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
         private readonly IMessageSender sender;
         private readonly HttpRequest request;
 
         public MessageFactory MessageFactory { get; }
         public MessagePolicy MessagePolicy { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender, MessagePolicy messagePolicy)
+        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender, MessagePolicy messagePolicy, IOptionsMonitor<LogNLog> options)
         {
             if (configuration["messaging:enabled"] != "true")
             {
@@ -54,6 +55,7 @@ namespace ASC.MessagingSystem
             MessagePolicy = messagePolicy;
             request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
+            log = options.Get("ASC");
         }
 
         #region HttpRequest

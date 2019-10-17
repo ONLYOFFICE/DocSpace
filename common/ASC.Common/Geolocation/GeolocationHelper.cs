@@ -30,19 +30,20 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Geolocation
 {
     public class GeolocationHelper
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Geo");
-
         private readonly string dbid;
 
         public DbRegistry DbRegistry { get; }
+        public ILog Log { get; }
 
-        public GeolocationHelper(DbRegistry dbRegistry, string dbid)
+        public GeolocationHelper(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option, string dbid)
         {
+            Log = option.CurrentValue;
             DbRegistry = dbRegistry;
             this.dbid = dbid;
         }
@@ -75,7 +76,7 @@ namespace ASC.Geolocation
             }
             catch (Exception error)
             {
-                log.Error(error);
+                Log.Error(error);
             }
             return IPGeolocationInfo.Default;
         }

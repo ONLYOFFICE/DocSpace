@@ -47,6 +47,7 @@ using ASC.Web.Studio.Utility;
 
 using Google.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -194,7 +195,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         LogManager.GetLogger("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC").Error(error);
                      }
                      return false;
                  });
@@ -225,7 +226,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         LogManager.GetLogger("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC").Error(error);
                      }
                      return false;
                  });
@@ -265,6 +266,7 @@ namespace ASC.Web.Studio.Core.Notify
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var log = scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
@@ -297,10 +299,10 @@ namespace ASC.Web.Studio.Core.Notify
                 request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
             }
 
-            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility);
+            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
         }
 
-        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility)
+        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility, ILog Log)
         {
             if (tenantExtra.Enterprise || coreBaseSettings.CustomMode)
             {
@@ -333,7 +335,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception error)
                 {
-                    LogManager.GetLogger("ASC").Error(error);
+                    Log.Error(error);
                 }
             }
 

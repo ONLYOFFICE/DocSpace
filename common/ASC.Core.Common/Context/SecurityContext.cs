@@ -43,12 +43,13 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
     public class SecurityContext
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Core");
+        private readonly ILog log;
 
 
         public IAccount CurrentAccount
@@ -78,9 +79,11 @@ namespace ASC.Core
             TenantCookieSettings tenantCookieSettings,
             TenantManager tenantManager,
             UserFormatter userFormatter,
-            InstanceCrypto instanceCrypto
+            InstanceCrypto instanceCrypto,
+            IOptionsMonitor<LogNLog> options
             )
         {
+            log = options.Get("ASC");
             UserManager = userManager;
             Authentication = authentication;
             AuthContext = authContext;

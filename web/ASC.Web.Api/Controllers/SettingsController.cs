@@ -72,6 +72,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
 {
@@ -135,10 +136,11 @@ namespace ASC.Api.Settings
         public StatisticManager StatisticManager { get; }
         public IPRestrictionsService IPRestrictionsService { get; }
         public CoreConfiguration CoreConfiguration { get; }
+        public ILog Log { get; set; }
 
         public SettingsController(
             IServiceProvider serviceProvider,
-            LogManager logManager,
+            IOptionsMonitor<LogNLog> option,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
@@ -187,8 +189,8 @@ namespace ASC.Api.Settings
             IPRestrictionsService iPRestrictionsService,
             CoreConfiguration coreConfiguration)
         {
+            Log = option.Get("ASC.Api");
             ServiceProvider = serviceProvider;
-            LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -691,7 +693,7 @@ namespace ASC.Api.Settings
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error(e.Message, e);
+                    Log.Error(e.Message, e);
                 }
             }
 
@@ -1178,7 +1180,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("UpdateStorage", e);
+                Log.Error("UpdateStorage", e);
                 throw;
             }
 
@@ -1202,7 +1204,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("ResetStorageToDefault", e);
+                Log.Error("ResetStorageToDefault", e);
                 throw;
             }
         }
@@ -1241,7 +1243,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("UpdateCdn", e);
+                Log.Error("UpdateCdn", e);
                 throw;
             }
 

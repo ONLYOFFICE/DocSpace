@@ -33,6 +33,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Engine
 {
@@ -96,7 +97,7 @@ namespace ASC.Notify.Engine
                     }
                     catch (Exception err)
                     {
-                        LogManager.GetLogger("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                        serviceScope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
                     }
                 }
             }

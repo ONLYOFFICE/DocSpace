@@ -32,6 +32,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.DiscStorage
 {
@@ -39,8 +40,6 @@ namespace ASC.Data.Storage.DiscStorage
     {
         private const int BufferSize = 8192;
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
-
-
 
         public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
@@ -64,7 +63,12 @@ namespace ASC.Data.Storage.DiscStorage
             return this;
         }
 
-        public DiscDataStore(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
+        public DiscDataStore(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
         }
 
@@ -130,7 +134,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Uri Save(string domain, string path, Stream stream)
         {
-            LogManager.GetLogger("ASC").Debug("Save " + path);
+            Log.Debug("Save " + path);
             var buffered = stream.GetBuffered();
             if (QuotaController != null)
             {

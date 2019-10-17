@@ -11,6 +11,7 @@ using System.Security;
 
 using ASC.Api.Core;
 using ASC.Common.Data;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
@@ -39,7 +40,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
@@ -48,7 +49,6 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class PeopleController : ControllerBase
     {
-        public Common.Logging.LogManager LogManager { get; }
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
@@ -80,8 +80,9 @@ namespace ASC.Employee.Core.Controllers
         public DbRegistry DbRegistry { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
         public WebItemSecurityCache WebItemSecurityCache { get; }
+        public ILog Log { get; }
 
-        public PeopleController(Common.Logging.LogManager logManager,
+        public PeopleController(
             MessageService messageService,
             QueueWorkerReassign queueWorkerReassign,
             QueueWorkerRemove queueWorkerRemove,
@@ -111,9 +112,10 @@ namespace ASC.Employee.Core.Controllers
             InstanceCrypto instanceCrypto,
             DbRegistry dbRegistry,
             AccountLinkerStorage accountLinkerStorage,
-            WebItemSecurityCache webItemSecurityCache)
+            WebItemSecurityCache webItemSecurityCache,
+            IOptionsMonitor<LogNLog> option)
         {
-            LogManager = logManager;
+            Log = option.Get("ASC.Api");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;
@@ -208,7 +210,7 @@ namespace ASC.Employee.Core.Controllers
                 }
                 else
                 {
-                    LogManager.Get("ASC.Api").Error(string.Format("Account {0} сould not get user by name {1}", SecurityContext.CurrentAccount.ID, username));
+                    Log.Error(string.Format("Account {0} сould not get user by name {1}", SecurityContext.CurrentAccount.ID, username));
                 }
             }
 
@@ -236,7 +238,7 @@ namespace ASC.Employee.Core.Controllers
             }
             catch (Exception error)
             {
-                LogManager.Get("ASC.Api").Error(error);
+                Log.Error(error);
             }
             return null;
         }
@@ -270,7 +272,7 @@ namespace ASC.Employee.Core.Controllers
             }
             catch (Exception error)
             {
-                LogManager.Get("ASC.Api").Error(error);
+                Log.Error(error);
             }
             return null;
         }

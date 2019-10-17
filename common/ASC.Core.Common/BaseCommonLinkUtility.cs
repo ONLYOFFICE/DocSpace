@@ -31,6 +31,7 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common
@@ -44,14 +45,21 @@ namespace ASC.Core.Common
 
         public HttpContext HttpContext { get; set; }
 
-        public BaseCommonLinkUtility(CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, TenantManager tenantManager) : this(null, coreBaseSettings, coreSettings, tenantManager)
+        public BaseCommonLinkUtility(
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            TenantManager tenantManager,
+            IOptionsMonitor<LogNLog> options)
+            : this(null, coreBaseSettings, coreSettings, tenantManager, options)
         {
         }
 
-        public BaseCommonLinkUtility(IHttpContextAccessor httpContextAccessor,
+        public BaseCommonLinkUtility(
+            IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IOptionsMonitor<LogNLog> options)
         {
             try
             {
@@ -66,7 +74,7 @@ namespace ASC.Core.Common
             }
             catch (Exception error)
             {
-                LogManager.GetLogger("ASC.Web").Error(error);
+                options.Get("ASC.Web").Error(error);
             }
 
             CoreBaseSettings = coreBaseSettings;

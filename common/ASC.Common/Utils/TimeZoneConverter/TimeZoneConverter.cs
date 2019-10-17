@@ -33,13 +33,12 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using ASC.Common.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Utils
 {
     public class TimeZoneConverter
     {
-        private readonly ILog Log = LogManager.GetLogger("ASC.TimeZone");
-
         private IEnumerable<MapZone> _mapZones;
 
         private bool _isR7;
@@ -47,9 +46,11 @@ namespace ASC.Common.Utils
         private Dictionary<string, string> _translations;
 
         public IConfiguration Configuration { get; }
+        public ILog Log { get; }
 
-        public TimeZoneConverter(IConfiguration configuration)
+        public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
         {
+            Log = option.CurrentValue;
             InitMapZones();
             InitTranslations();
             Configuration = configuration;

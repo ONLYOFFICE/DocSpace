@@ -38,12 +38,12 @@ using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
     class AWSSender : SmtpSender
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Notify.AmazonSES");
         private readonly object locker = new object();
         private AmazonSimpleEmailServiceClient ses;
         private TimeSpan refreshTimeout;
@@ -52,9 +52,10 @@ namespace ASC.Core.Notify.Senders
         private TimeSpan sendWindow = TimeSpan.MinValue;
         private GetSendQuotaResponse quota;
 
-        public AWSSender(IServiceProvider serviceProvider) : base(serviceProvider)
+        public AWSSender(IServiceProvider serviceProvider,
+            IOptionsMonitor<LogNLog> options) : base(serviceProvider, options)
         {
-
+            Log = options.Get("ASC.Notify.AmazonSES");
         }
 
         public override void Init(IDictionary<string, string> properties)
@@ -118,7 +119,7 @@ namespace ASC.Core.Notify.Senders
 
             if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
             {
-                log.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
+                Log.DebugFormat("Amazon sending failed: {0}, fallback to smtp", result);
                 result = base.Send(m);
             }
             return result;
@@ -136,7 +137,7 @@ namespace ASC.Core.Notify.Senders
                     {
                         //Quota exceeded, queue next refresh to +24 hours
                         lastRefresh = DateTime.UtcNow.AddHours(24);
-                        log.WarnFormat("Quota limit reached. setting next check to: {0}", lastRefresh);
+                        Log.WarnFormat("Quota limit reached. setting next check to: {0}", lastRefresh);
                         return NoticeSendResult.SendingImpossible;
                     }
                 }
@@ -187,7 +188,7 @@ namespace ASC.Core.Notify.Senders
                 {
                     //Possible BUG: at high frequncies maybe bug with to little differences
                     //This means that time passed from last send is less then message per second
-                    log.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", sendWindow);
+                    Log.DebugFormat("Send rate doesn't fit in send window. sleeping for: {0}", sendWindow);
                     Thread.Sleep(sendWindow);
                 }
             }
@@ -201,7 +202,7 @@ namespace ASC.Core.Notify.Senders
             {
                 if (IsRefreshNeeded())//Double check
                 {
-                    log.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", refreshTimeout, lastRefresh);
+                    Log.DebugFormat("refreshing qouta. interval: {0} Last refresh was at: {1}", refreshTimeout, lastRefresh);
 
                     //Do quota refresh
                     lastRefresh = DateTime.UtcNow.AddMinutes(1);
@@ -210,11 +211,11 @@ namespace ASC.Core.Notify.Senders
                         var r = new GetSendQuotaRequest();
                         quota = ses.GetSendQuotaAsync(r).Result;
                         sendWindow = TimeSpan.FromSeconds(1.0 / quota.MaxSendRate);
-                        log.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", quota.SentLast24Hours, quota.Max24HourSend, quota.MaxSendRate, sendWindow);
+                        Log.DebugFormat("quota: {0}/{1} at {2} mps. send window:{3}", quota.SentLast24Hours, quota.Max24HourSend, quota.MaxSendRate, sendWindow);
                     }
                     catch (Exception e)
                     {
-                        log.Error("error refreshing quota", e);
+                        Log.Error("error refreshing quota", e);
                     }
                 }
             }

@@ -40,6 +40,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
 {
@@ -198,6 +199,7 @@ namespace ASC.Web.Core.Users
         public TenantManager TenantManager { get; }
         public StorageFactory StorageFactory { get; }
         public UserPhotoManagerCache UserPhotoManagerCache { get; }
+        public ILog Log { get; }
 
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
@@ -208,7 +210,8 @@ namespace ASC.Web.Core.Users
             UserPhotoThumbnailSettings userPhotoThumbnailSettings,
             TenantManager tenantManager,
             StorageFactory storageFactory,
-            UserPhotoManagerCache userPhotoManagerCache)
+            UserPhotoManagerCache userPhotoManagerCache,
+            IOptionsMonitor<LogNLog> options)
         {
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
@@ -216,6 +219,7 @@ namespace ASC.Web.Core.Users
             TenantManager = tenantManager;
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
+            Log = options.Get("ASC.Web.Photo");
         }
 
         public string GetDefaultPhotoAbsoluteWebPath()
@@ -486,7 +490,7 @@ namespace ASC.Web.Core.Users
                     }
                     catch (Exception err)
                     {
-                        LogManager.GetLogger("ASC.Web.Photo").Error(err);
+                        Log.Error(err);
                     }
                 }
             }
@@ -610,12 +614,12 @@ namespace ASC.Web.Core.Users
             settings.SaveForUser(userId);
         }
 
-        private static byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out ImageFormat imgFormat, out int width, out int height)
+        private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out ImageFormat imgFormat, out int width, out int height)
         {
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageSizeLimitException();
 
-            data = ImageHelper.RotateImageByExifOrientationData(data);
+            data = ImageHelper.RotateImageByExifOrientationData(data, Log);
 
             try
             {
@@ -882,7 +886,7 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Web.Photo").Error(err);
+                Log.Error(err);
                 return null;
             }
         }
@@ -937,7 +941,7 @@ namespace ASC.Web.Core.Users
         /// <param name="data">source image byte array</param>
         /// <param name="updateExifData">set it to TRUE to update image Exif data after rotation (default is TRUE)</param>
         /// <returns>The rotated image byte array. If no rotation occurred, source data will be returned.</returns>
-        public static byte[] RotateImageByExifOrientationData(byte[] data, bool updateExifData = true)
+        public static byte[] RotateImageByExifOrientationData(byte[] data, ILog Log, bool updateExifData = true)
         {
             try
             {
@@ -953,7 +957,7 @@ namespace ASC.Web.Core.Users
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Web.Photo").Error(err);
+                Log.Error(err);
             }
 
             return data;

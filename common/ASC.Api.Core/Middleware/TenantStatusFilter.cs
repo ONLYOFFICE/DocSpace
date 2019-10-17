@@ -4,6 +4,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -11,9 +12,9 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public TenantStatusFilter(LogManager logManager, TenantManager tenantManager)
+        public TenantStatusFilter(IOptionsMonitor<LogNLog> options, TenantManager tenantManager)
         {
-            log = logManager.Get("Api");
+            log = options.Get("ASC");
             TenantManager = tenantManager;
         }
 

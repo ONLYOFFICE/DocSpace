@@ -31,18 +31,20 @@ using ASC.Common.Logging;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
     public class JabberSender : INotifySender
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
 
         public IServiceProvider ServiceProvider { get; }
 
         public JabberSender(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
+            log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
         }
 
         public void Init(IDictionary<string, string> properties)

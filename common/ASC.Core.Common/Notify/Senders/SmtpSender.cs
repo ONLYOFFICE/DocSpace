@@ -36,6 +36,7 @@ using MailKit;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace ASC.Core.Notify.Senders
@@ -51,7 +52,7 @@ namespace ASC.Core.Notify.Senders
 <body>{0}</body>
 </html>";
 
-        protected ILog Log { get; private set; }
+        protected ILog Log { get; set; }
         public IConfiguration Configuration { get; }
         public IServiceProvider ServiceProvider { get; }
 
@@ -62,9 +63,11 @@ namespace ASC.Core.Notify.Senders
         protected bool _useCoreSettings;
         const int NETWORK_TIMEOUT = 30000;
 
-        public SmtpSender(IServiceProvider serviceProvider)
+        public SmtpSender(
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<LogNLog> options)
         {
-            Log = LogManager.GetLogger("ASC.Notify");
+            Log = options.Get("ASC.Notify");
             Configuration = serviceProvider.GetService<IConfiguration>();
             ServiceProvider = serviceProvider;
         }

@@ -44,6 +44,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -60,7 +61,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
-            var log = LogManager.GetLogger("ASC.Notify.WhatsNew");
+            var log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var WebItemManager = ServiceProvider.GetService<WebItemManager>();
 
             if (WebItemManager.GetItemsAll<IProduct>().Count == 0)

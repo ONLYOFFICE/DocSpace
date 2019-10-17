@@ -39,6 +39,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -177,7 +178,7 @@ namespace ASC.Data.Storage
 
     public class UploadOperation
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
+        private readonly ILog Log;
         private readonly int tenantId;
         private readonly string path;
         private readonly string mappedPath;
@@ -187,6 +188,7 @@ namespace ASC.Data.Storage
         public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
             ServiceProvider = serviceProvider;
+            Log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
             this.tenantId = tenantId;
             this.path = path.TrimStart('/');
             this.mappedPath = mappedPath;
@@ -217,7 +219,7 @@ namespace ASC.Data.Storage
                     }
 
                     Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                    LogManager.GetLogger("ASC").DebugFormat("UploadFile {0}", Result);
+                    Log.DebugFormat("UploadFile {0}", Result);
                     return Result;
                 }
             }

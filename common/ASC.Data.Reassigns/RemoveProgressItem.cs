@@ -43,6 +43,7 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
 {
@@ -92,9 +93,8 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            var logger = LogManager.GetLogger("ASC.Web");
-
             using var scope = ServiceProvider.CreateScope();
+            var logger = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Web");
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
 

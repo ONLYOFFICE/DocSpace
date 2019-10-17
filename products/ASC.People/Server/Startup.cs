@@ -104,8 +104,12 @@ namespace ASC.People
 
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
+            services.Configure<LogNLog>(r => r.Name = "ASC");
+            services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
+            services.Configure<LogNLog>("ASC.Api", r => r.Name = "ASC.Api");
 
             services.AddLogManager()
+                    .AddSingleton(typeof(ILog), typeof(LogNLog))
                     .AddStorage(Configuration)
                     .AddWebItemManager()
                     .AddSingleton((r) =>
@@ -176,7 +180,16 @@ namespace ASC.People
                         {
                             throw new ConfigurationErrorsException("Can not configure CoreContext: connection string with name core not found.");
                         }
-                        return (ITariffService)new TariffService(cs, r.GetService<IQuotaService>(), r.GetService<ITenantService>(), r.GetService<CoreBaseSettings>(), r.GetService<CoreSettings>(), Configuration, DbRegistry, r.GetService<TariffServiceStorage>());
+                        return (ITariffService)new TariffService(cs,
+                            r.GetService<IQuotaService>(),
+                            r.GetService<ITenantService>(),
+                            r.GetService<CoreBaseSettings>(),
+                            r.GetService<CoreSettings>(),
+                            Configuration,
+                            DbRegistry,
+                            r.GetService<TariffServiceStorage>(),
+                            r.GetService<IOptionsMonitor<LogNLog>>()
+                            );
                     })
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
@@ -246,6 +259,7 @@ namespace ASC.People
                     .AddSingleton<UserManagerConstants>()
                     .AddSingleton<MessagePolicy>()
                     .AddScoped<DisplayUserSettings>()
+                    .AddScoped<SmsSender>()
                     .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
                     .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()

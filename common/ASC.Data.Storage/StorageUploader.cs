@@ -38,6 +38,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -116,7 +117,7 @@ namespace ASC.Data.Storage
     [DataContract]
     public class MigrateOperation : ProgressBase
     {
-        private static readonly ILog Log;
+        private readonly ILog Log;
         private static readonly string ConfigPath;
         private readonly IEnumerable<string> Modules;
         private readonly StorageSettings settings;
@@ -124,7 +125,6 @@ namespace ASC.Data.Storage
 
         static MigrateOperation()
         {
-            Log = LogManager.GetLogger("ASC");
             ConfigPath = "";
         }
 
@@ -136,6 +136,7 @@ namespace ASC.Data.Storage
             StorageFactoryConfig = storageFactoryConfig;
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             StepCount = Modules.Count();
+            Log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
         }
 
         public IServiceProvider ServiceProvider { get; }

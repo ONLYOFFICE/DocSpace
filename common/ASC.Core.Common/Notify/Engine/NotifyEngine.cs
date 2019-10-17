@@ -40,12 +40,13 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Engine
 {
     public class NotifyEngine : INotifyEngine
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Notify");
+        private readonly ILog log;
 
         private readonly Context context;
 
@@ -81,6 +82,7 @@ namespace ASC.Notify.Engine
             this.context = context ?? throw new ArgumentNullException("context");
             CoreBaseSettings = serviceProvider.GetService<CoreBaseSettings>();
             Configuration = serviceProvider.GetService<IConfiguration>();
+            log = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
             ServiceProvider = serviceProvider;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
@@ -108,7 +110,7 @@ namespace ASC.Notify.Engine
             if (method == null) throw new ArgumentNullException("method");
             if (string.IsNullOrEmpty(cron)) throw new ArgumentNullException("cron");
 
-            var w = new SendMethodWrapper(method, cron);
+            var w = new SendMethodWrapper(method, cron, log);
             lock (sendMethods)
             {
                 if (!notifyScheduler.IsAlive)
@@ -128,7 +130,7 @@ namespace ASC.Notify.Engine
 
             lock (sendMethods)
             {
-                sendMethods.Remove(new SendMethodWrapper(method, null));
+                sendMethods.Remove(new SendMethodWrapper(method, null, log));
             }
         }
 
@@ -585,10 +587,12 @@ namespace ASC.Notify.Engine
             private readonly Action<DateTime> method;
 
             public DateTime? ScheduleDate { get; private set; }
+            public ILog Log { get; }
 
-            public SendMethodWrapper(Action<DateTime> method, string cron)
+            public SendMethodWrapper(Action<DateTime> method, string cron, ILog log)
             {
                 this.method = method;
+                Log = log;
                 if (!string.IsNullOrEmpty(cron))
                 {
                     this.cronExpression = new CronExpression(cron);
@@ -607,7 +611,7 @@ namespace ASC.Notify.Engine
                 }
                 catch (Exception e)
                 {
-                    log.Error(e);
+                    Log.Error(e);
                 }
             }
 
@@ -623,7 +627,7 @@ namespace ASC.Notify.Engine
                         }
                         catch (Exception e)
                         {
-                            log.Error(e);
+                            Log.Error(e);
                         }
                     }).Wait();
                 }

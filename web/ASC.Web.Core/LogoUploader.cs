@@ -32,6 +32,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.CustomNavigation
 {
@@ -112,12 +113,14 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
         public UserPhotoManager UserPhotoManager { get; }
         public StorageFactory StorageFactory { get; }
         public TenantManager TenantManager { get; }
+        public ILog Log { get; set; }
 
-        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager)
+        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
         {
             UserPhotoManager = userPhotoManager;
             StorageFactory = storageFactory;
             TenantManager = tenantManager;
+            Log = options.Get("ASC");
         }
 
         public string SaveTmpLogo(string tmpLogoPath)
@@ -145,7 +148,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
@@ -167,7 +170,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error(e);
+                Log.Error(e);
             }
         }
 

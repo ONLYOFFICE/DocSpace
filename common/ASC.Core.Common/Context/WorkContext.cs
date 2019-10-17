@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
@@ -35,7 +36,7 @@ using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Options;
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
@@ -97,6 +98,8 @@ namespace ASC.Core
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
+                var options = serviceProvider.GetService<IOptionsMonitor<LogNLog>>();
+
                 NotifyContext = new NotifyContext(serviceProvider);
 
                 INotifySender jabberSender = new NotifyServiceSender(cacheNotify);
@@ -114,14 +117,14 @@ namespace ASC.Core
                     };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        emailSender = new AWSSender(serviceProvider);
+                        emailSender = new AWSSender(serviceProvider, options);
                         properties["accessKey"] = configuration["ses:accessKey"];
                         properties["secretKey"] = configuration["ses:secretKey"];
                         properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
                     {
-                        emailSender = new SmtpSender(serviceProvider);
+                        emailSender = new SmtpSender(serviceProvider, options);
                     }
                     emailSender.Init(properties);
                 }

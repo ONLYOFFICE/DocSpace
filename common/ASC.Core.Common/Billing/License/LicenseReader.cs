@@ -35,19 +35,26 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
     public class LicenseReader
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
+        private readonly ILog Log;
         private readonly string LicensePath;
         private readonly string LicensePathTemp;
 
         public const string CustomerIdKey = "CustomerId";
         public const int MaxUserCount = 10000;
 
-        public LicenseReader(UserManager userManager, TenantManager tenantManager, PaymentManager paymentManager, CoreSettings coreSettings, IConfiguration configuration)
+        public LicenseReader(
+            UserManager userManager,
+            TenantManager tenantManager,
+            PaymentManager paymentManager,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            IOptionsMonitor<LogNLog> options)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -56,6 +63,7 @@ namespace ASC.Core.Billing
             Configuration = configuration;
             LicensePath = Configuration["license:file:path"];
             LicensePathTemp = LicensePath + ".tmp";
+            Log = options.CurrentValue;
         }
 
         public string CustomerId
@@ -222,7 +230,7 @@ namespace ASC.Core.Billing
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
             };
-            
+
             TenantManager.SaveTenantQuota(quota);
 
             if (defaultQuota.CountPortals != license.PortalCount)
@@ -247,7 +255,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        private static void LogError(Exception error)
+        private void LogError(Exception error)
         {
             if (error is BillingNotFoundException)
             {
@@ -314,7 +322,7 @@ namespace ASC.Core.Billing
                 }
                 catch (Exception ex)
                 {
-                    LogManager.GetLogger("WebStudio").Error("VersionReleaseDate", ex);
+                    Log.Error("VersionReleaseDate", ex);
                 }
                 return _date;
             }

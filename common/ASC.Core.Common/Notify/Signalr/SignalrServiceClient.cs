@@ -34,6 +34,7 @@ using System.Text;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
@@ -41,7 +42,7 @@ namespace ASC.Core.Notify.Signalr
     public class SignalrServiceClient
     {
         private static readonly TimeSpan Timeout;
-        private static readonly ILog Log;
+        private readonly ILog Log;
         private static DateTime lastErrorTime;
         public readonly bool EnableSignalr;
         private readonly string CoreMachineKey;
@@ -58,11 +59,11 @@ namespace ASC.Core.Notify.Signalr
         static SignalrServiceClient()
         {
             Timeout = TimeSpan.FromSeconds(1);
-            Log = LogManager.GetLogger("ASC");
         }
 
-        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration)
+        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
         {
+            Log = options.Get("ASC");
             this.hub = hub.Trim('/');
             TenantManager = tenantManager;
             CoreSettings = coreSettings;

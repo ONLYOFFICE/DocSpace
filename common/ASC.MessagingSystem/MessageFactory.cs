@@ -31,12 +31,13 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
     public class MessageFactory
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
         private const string userAgentHeader = "User-Agent";
         private const string forwardedHeader = "X-Forwarded-For";
         private const string hostHeader = "Host";
@@ -45,10 +46,11 @@ namespace ASC.MessagingSystem
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
 
-        public MessageFactory(AuthContext authContext, TenantManager tenantManager)
+        public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
+            log = options.Get("ASC");
         }
 
         public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)

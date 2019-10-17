@@ -31,15 +31,24 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Sms
 {
-    public static class SmsSender
+    public class SmsSender
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
+        public IConfiguration Configuration { get; }
+        public TenantManager TenantManager { get; }
+        public ILog Log { get; }
 
+        public SmsSender(IConfiguration configuration, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
+        {
+            Configuration = configuration;
+            TenantManager = tenantManager;
+            Log = options.Get("ASC");
+        }
 
-        public static bool SendSMS(IConfiguration configuration, TenantManager tenantManager, string number, string message)
+        public bool SendSMS(string number, string message)
         {
             if (string.IsNullOrEmpty(number))
             {
@@ -54,9 +63,9 @@ namespace ASC.Web.Core.Sms
                 throw new MethodAccessException();
             }
 
-            if ("log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
+            if ("log".Equals(Configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase))
             {
-                var tenant = tenantManager.GetCurrentTenant(false);
+                var tenant = TenantManager.GetCurrentTenant(false);
                 var tenantId = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                 Log.InfoFormat("Tenant {0} send sms to phoneNumber {1} Message: {2}", tenantId, number, message);

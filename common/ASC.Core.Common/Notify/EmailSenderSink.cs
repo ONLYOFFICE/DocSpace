@@ -34,6 +34,7 @@ using ASC.Core.Tenants;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify
 {
@@ -127,7 +128,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 

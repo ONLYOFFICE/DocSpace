@@ -41,6 +41,7 @@ using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -118,7 +119,7 @@ namespace ASC.Web.Core.Sms
 
     public abstract class SmsProvider : Consumer
     {
-        protected static readonly ILog Log = LogManager.GetLogger("ASC");
+        protected readonly ILog Log;
         protected static readonly ICache Cache = AscCache.Memory;
 
         protected virtual string SendMessageUrlFormat { get; set; }
@@ -137,9 +138,11 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
+            Log = options.Get("ASC");
         }
 
         public virtual bool Enable()
@@ -196,8 +199,9 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -331,8 +335,9 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
     }
@@ -349,8 +354,9 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
         }
     }
@@ -416,8 +422,9 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -463,8 +470,9 @@ namespace ASC.Web.Core.Sms
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
         }
     }

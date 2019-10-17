@@ -45,6 +45,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -68,6 +69,7 @@ namespace ASC.Web.Studio.Core.Notify
         public SetupInfo SetupInfo { get; }
         public IServiceProvider ServiceProvider { get; }
         public DisplayUserSettings DisplayUserSettings { get; }
+        public ILog Log { get; }
 
         public StudioNotifyService(
             UserManager userManager,
@@ -84,8 +86,10 @@ namespace ASC.Web.Studio.Core.Notify
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             IServiceProvider serviceProvider,
-            DisplayUserSettings displayUserSettings)
+            DisplayUserSettings displayUserSettings,
+            IOptionsMonitor<LogNLog> option)
         {
+            Log = option.Get("ASC.Notify");
             client = studioNotifyServiceHelper;
             TenantExtra = tenantExtra;
             Authentication = authentication;
@@ -777,7 +781,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             catch (Exception error)
             {
-                LogManager.GetLogger("ASC.Notify").Error(error);
+                Log.Error(error);
             }
         }
 
@@ -886,7 +890,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception ex)
                 {
-                    LogManager.GetLogger("ASC.Notify").Error(ex);
+                    Log.Error(ex);
                 }
             });
         }

@@ -30,6 +30,7 @@ using System.Configuration;
 using System.Linq;
 using System.Security;
 using ASC.Common.Data;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Data;
@@ -39,6 +40,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -70,8 +72,9 @@ namespace ASC.Core
             TimeZoneConverter timeZoneConverter,
             DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
-            TariffServiceStorage tariffServiceStorage)
-            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, null)
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<LogNLog> options)
+            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, options, null)
         {
         }
 
@@ -82,6 +85,7 @@ namespace ASC.Core
             DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<LogNLog> options,
             string region)
         {
             tenantService = new DbTenantService(connectionString, dbRegistry, tenantDomainValidator, timeZoneConverter);
@@ -90,7 +94,7 @@ namespace ASC.Core
 
             userService = new DbUserService(connectionString, dbRegistry);
             quotaService = new DbQuotaService(connectionString, dbRegistry);
-            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry, tariffServiceStorage);
+            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;

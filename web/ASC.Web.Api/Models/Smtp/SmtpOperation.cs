@@ -37,6 +37,7 @@ using ASC.Web.Core.PublicResources;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -78,14 +79,16 @@ namespace ASC.Api.Settings.Smtp
 
         private readonly string messageBody;
 
+
         public SmtpOperation(
-            SmtpSettingsWrapper smtpSettings, 
-            int tenant, 
-            Guid user, 
-            UserManager userManager, 
+            SmtpSettingsWrapper smtpSettings,
+            int tenant,
+            Guid user,
+            UserManager userManager,
             SecurityContext securityContext,
             TenantManager tenantManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IOptionsMonitor<LogNLog> options)
         {
             SmtpSettings = smtpSettings;
             CurrentTenant = tenant;
@@ -107,7 +110,7 @@ namespace ASC.Api.Settings.Smtp
 
             TaskInfo = new DistributedTask();
 
-            Logger = LogManager.GetLogger("ASC");
+            Logger = options.Get("ASC");
         }
 
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)

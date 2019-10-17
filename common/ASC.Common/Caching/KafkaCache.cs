@@ -10,6 +10,7 @@ using Confluent.Kafka;
 
 using Google.Protobuf;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
 {
@@ -28,9 +29,9 @@ namespace ASC.Common.Caching
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
 
-        public KafkaCache(IConfiguration configuration)
+        public KafkaCache(IConfiguration configuration, IOptionsMonitor<LogNLog> options)
         {
-            Log = LogManager.GetLogger("ASC");
+            Log = options.Get("ASC");
             Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
             Actions = new ConcurrentDictionary<string, Action<T>>();
             Key = Guid.NewGuid();

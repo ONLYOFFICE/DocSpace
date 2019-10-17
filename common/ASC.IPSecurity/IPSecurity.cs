@@ -33,12 +33,13 @@ using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
 {
     public class IPSecurity
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC.IPSecurity");
+        private readonly ILog Log;
 
         public bool IpSecurityEnabled { get; }
 
@@ -51,8 +52,16 @@ namespace ASC.IPSecurity
 
         private readonly string CurrentIpForTest;
 
-        public IPSecurity(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, AuthContext authContext, IPRestrictionsSettings iPRestrictionsSettings, TenantManager tenantManager, IPRestrictionsService iPRestrictionsService)
+        public IPSecurity(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            AuthContext authContext,
+            IPRestrictionsSettings iPRestrictionsSettings,
+            TenantManager tenantManager,
+            IPRestrictionsService iPRestrictionsService,
+            IOptionsMonitor<LogNLog> options)
         {
+            Log = options.Get("ASC.IPSecurity");
             Configuration = configuration;
             HttpContextAccessor = httpContextAccessor;
             AuthContext = authContext;

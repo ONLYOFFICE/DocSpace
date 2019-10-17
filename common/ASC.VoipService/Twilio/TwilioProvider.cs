@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
@@ -74,9 +73,6 @@ namespace ASC.VoipService.Twilio
 
         public VoipRecord GetRecord(string callId, string recordSid)
         {
-            var logger = LogManager.GetLogger("ASC");
-            logger.DebugFormat("recordSid {0}", recordSid);
-
             var result = new VoipRecord { Id = recordSid };
             var count = 6;
 
@@ -94,7 +90,6 @@ namespace ASC.VoipService.Twilio
                     }
 
                     result.Price = (-1) * record.Price.Value;
-                    logger.DebugFormat("recordSid {0} price {1}", recordSid, result.Price);
 
                     result.Duration = Convert.ToInt32(record.Duration);
                     if (record.Uri != null)
@@ -161,11 +156,11 @@ namespace ASC.VoipService.Twilio
         {
             var phone = IncomingPhoneNumberResource.Fetch(phoneSid, client: client);
 
-            var result = new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) 
-            { 
-                Id = phone.Sid, 
-                Number = phone.PhoneNumber.ToString(), 
-                Settings = new TwilioVoipSettings(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility) 
+            var result = new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility)
+            {
+                Id = phone.Sid,
+                Number = phone.PhoneNumber.ToString(),
+                Settings = new TwilioVoipSettings(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility)
             };
 
             if (phone.VoiceUrl == null)

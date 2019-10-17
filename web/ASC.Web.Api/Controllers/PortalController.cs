@@ -14,6 +14,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -32,13 +33,14 @@ namespace ASC.Web.Api.Controllers
         public CommonLinkUtility CommonLinkUtility { get; }
         public UrlShortener UrlShortener { get; }
         public PermissionContext PermissionContext { get; }
-        public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public ILog Log { get; }
 
 
-        public PortalController(LogManager logManager,
+        public PortalController(
+            IOptionsMonitor<LogNLog> options,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
@@ -52,7 +54,7 @@ namespace ASC.Web.Api.Controllers
             PermissionContext permissionContext
             )
         {
-            LogManager = logManager;
+            Log = options.Get("ASC");
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -95,7 +97,7 @@ namespace ASC.Web.Api.Controllers
             }
             catch (Exception ex)
             {
-                LogManager.Get("ASC.Web").Error("getshortenlink", ex);
+                Log.Error("getshortenlink", ex);
                 return link;
             }
         }

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.Configuration;
@@ -35,6 +36,7 @@ using ASC.Data.Storage.DiscStorage;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -158,6 +160,7 @@ namespace ASC.Data.Storage
         public CoreBaseSettings CoreBaseSettings { get; }
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public IOptionsMonitor<LogNLog> Options { get; }
 
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,
@@ -166,7 +169,8 @@ namespace ASC.Data.Storage
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider)
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options)
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
@@ -175,6 +179,7 @@ namespace ASC.Data.Storage
             CoreBaseSettings = coreBaseSettings;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            Options = options;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -272,7 +277,7 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider))
+            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider, Options))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);

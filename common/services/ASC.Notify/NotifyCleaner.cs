@@ -30,19 +30,21 @@ using System.Threading.Tasks;
 using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
     public class NotifyCleaner
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Notify");
+        private readonly ILog log;
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
         public DbRegistry DbRegistry { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
-        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg, DbRegistry dbRegistry)
+        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg, DbRegistry dbRegistry, IOptionsMonitor<LogNLog> options)
         {
+            log = options.Get("ASC.Notify");
             NotifyServiceCfg = notifyServiceCfg;
             DbRegistry = dbRegistry;
             CancellationTokenSource = new CancellationTokenSource();

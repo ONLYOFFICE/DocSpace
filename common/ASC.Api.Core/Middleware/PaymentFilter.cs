@@ -7,6 +7,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -14,9 +15,9 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public PaymentFilter(LogManager logManager, TenantExtra tenantExtra)
+        public PaymentFilter(IOptionsMonitor<LogNLog> options, TenantExtra tenantExtra)
         {
-            log = logManager.Get("Api");
+            log = options.Get("ASC");
             TenantExtra = tenantExtra;
         }
 

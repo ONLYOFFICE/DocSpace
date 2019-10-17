@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
@@ -87,7 +88,7 @@ namespace ASC.Core.Billing
 
         private readonly static bool billingConfigured = false;
 
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
         private readonly IQuotaService quotaService;
         private readonly ITenantService tenantService;
         private readonly bool test;
@@ -108,9 +109,11 @@ namespace ASC.Core.Billing
             CoreSettings coreSettings,
             IConfiguration configuration,
             DbRegistry dbRegistry,
-            TariffServiceStorage tariffServiceStorage)
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<LogNLog> options)
             : base(connectionString, dbRegistry, "tenant")
         {
+            log = options.CurrentValue;
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
@@ -579,7 +582,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             }
         }
 
-        private static void LogError(Exception error)
+        private void LogError(Exception error)
         {
             if (error is BillingNotFoundException)
             {

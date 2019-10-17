@@ -46,6 +46,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -53,7 +54,7 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static void SendSaasLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
-            var log = LogManager.GetLogger("ASC.Notify");
+            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var now = scheduleDate.Date;
             const string dbid = "webstudio";
 
@@ -521,7 +522,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static void SendEnterpriseLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
-            var log = LogManager.GetLogger("ASC.Notify");
+            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var now = scheduleDate.Date;
             const string dbid = "webstudio";
 
@@ -918,7 +919,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static void SendOpensourceLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
-            var log = LogManager.GetLogger("ASC.Notify");
+            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var now = scheduleDate.Date;
 
             log.Info("Start SendOpensourceTariffLetters");
@@ -1106,7 +1107,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public static void SendPersonalLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
         {
-            var log = LogManager.GetLogger("ASC.Notify");
+            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
 
             log.Info("Start SendLettersPersonal...");
 

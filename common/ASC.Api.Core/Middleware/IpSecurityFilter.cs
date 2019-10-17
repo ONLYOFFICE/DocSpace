@@ -4,6 +4,7 @@ using ASC.Core;
 using ASC.IPSecurity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -12,11 +13,11 @@ namespace ASC.Api.Core.Middleware
         private readonly ILog log;
 
         public IpSecurityFilter(
-            LogManager logManager,
+            IOptionsMonitor<LogNLog> options,
             AuthContext authContext,
             IPSecurity.IPSecurity IPSecurity)
         {
-            log = logManager.Get("Api");
+            log = options.Get("ASC");
             AuthContext = authContext;
             this.IPSecurity = IPSecurity;
         }

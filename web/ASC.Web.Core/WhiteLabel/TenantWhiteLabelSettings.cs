@@ -38,6 +38,7 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
+using Microsoft.Extensions.Options;
 using TMResourceData;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -48,6 +49,8 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public const string DefaultLogoText = BaseWhiteLabelSettings.DefaultLogoText;
 
+        public ILog Log { get; set; }
+
         public TenantWhiteLabelSettings()
         {
         }
@@ -57,11 +60,13 @@ namespace ASC.Web.Core.WhiteLabel
             WebImageSupplier webImageSupplier,
             UserPhotoManager userPhotoManager,
             TenantManager tenantManager,
-            StorageFactory storageFactory) : base(authContext, settingsManager, tenantManager)
+            StorageFactory storageFactory,
+            IOptionsMonitor<LogNLog> option) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;
             StorageFactory = storageFactory;
+            Log = option.CurrentValue;
         }
 
         #region Logos information: extension, isDefault, text for img auto generating
@@ -161,7 +166,7 @@ namespace ASC.Web.Core.WhiteLabel
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error(e);
+                Log.Error(e);
             }
 
             Save(tenantId, tenantLogoManager, true);
@@ -179,7 +184,7 @@ namespace ASC.Web.Core.WhiteLabel
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error(e);
+                    Log.Error(e);
                 }
             }
         }
@@ -204,7 +209,7 @@ namespace ASC.Web.Core.WhiteLabel
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error(e);
+                    Log.Error(e);
                 }
             }
             #endregion
@@ -252,7 +257,7 @@ namespace ASC.Web.Core.WhiteLabel
                         }
                         catch (Exception ex)
                         {
-                            LogManager.GetLogger("ASC").Error(ex);
+                            Log.Error(ex);
                         }
                     }
                     else

@@ -28,11 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Security.Cryptography;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
 {
@@ -87,7 +89,8 @@ namespace ASC.Data.Storage.Configuration
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache) :
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options) :
             base(authContext, settingsManager, tenantManager)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
@@ -95,6 +98,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             Cache = cache;
+            Options = options;
         }
 
         public override ISettings GetDefault()
@@ -158,7 +162,7 @@ namespace ASC.Data.Storage.Configuration
                 if (DataStoreConsumer.HandlerType == null) return null;
 
                 return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils))
+                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils, Options))
                     .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer);
             }
         }
@@ -169,6 +173,7 @@ namespace ASC.Data.Storage.Configuration
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public IOptionsMonitor<LogNLog> Options { get; }
 
         private readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
@@ -190,8 +195,9 @@ namespace ASC.Data.Storage.Configuration
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache)
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options)
         {
         }
 
@@ -218,8 +224,9 @@ namespace ASC.Data.Storage.Configuration
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache)
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options)
         {
         }
 

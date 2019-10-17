@@ -30,19 +30,28 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
-        public BaseStorage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider)
+        protected ILog Log { get; set; }
+
+        public BaseStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            Log = options.Get("ASC");
         }
 
         #region IDataStore Members

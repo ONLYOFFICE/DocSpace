@@ -27,18 +27,20 @@
 using System;
 using ASC.Common.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem.DbSender
 {
     public class DbMessageSender : IMessageSender
     {
-        private readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
 
-        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository)
+        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<LogNLog> options)
         {
             var setting = configuration["messaging:enabled"];
             MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
             MessagesRepository = messagesRepository;
+            log = options.Get("ASC.Messaging");
         }
 
         public MessagesRepository MessagesRepository { get; }

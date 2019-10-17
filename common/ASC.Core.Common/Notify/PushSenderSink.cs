@@ -33,17 +33,19 @@ using ASC.Core.Configuration;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Notify
 {
     class PushSenderSink : Sink
     {
-        private readonly ILog _log = LogManager.GetLogger("ASC");
+        private readonly ILog _log;
         private bool configured = true;
 
         public PushSenderSink(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
+            _log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
         }
 
         public IServiceProvider ServiceProvider { get; }

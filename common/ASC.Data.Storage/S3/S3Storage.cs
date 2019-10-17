@@ -40,9 +40,11 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
@@ -64,7 +66,8 @@ namespace ASC.Data.Storage.S3
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
 
-        public S3Storage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider) : base(tenantManager, pathUtils, emailValidationKeyProvider)
+        public S3Storage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider, IOptionsMonitor<LogNLog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
         {
         }
 

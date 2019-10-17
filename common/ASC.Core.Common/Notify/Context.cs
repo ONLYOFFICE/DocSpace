@@ -34,6 +34,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Sinks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -67,11 +68,14 @@ namespace ASC.Notify
 
         public event Action<Context, INotifyClient> NotifyClientRegistration;
 
+        private ILog Log { get; set; }
 
         public Context(IServiceProvider serviceProvider)
         {
+            var options = serviceProvider.GetService<IOptionsMonitor<LogNLog>>();
+            Log = options.Get("ASC");
             NotifyEngine = new NotifyEngine(this, serviceProvider);
-            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>());
+            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
         }
 
 
@@ -130,7 +134,7 @@ namespace ASC.Notify
                     }
                     catch (Exception error)
                     {
-                        LogManager.GetLogger("ASC.Notify").ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
+                        Log.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
                     }
                 }
             }

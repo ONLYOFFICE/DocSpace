@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Users;
@@ -36,6 +37,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -80,8 +82,9 @@ namespace ASC.Web.Studio.Utility
             UserManager userManager,
             WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
-            EmailValidationKeyProvider emailValidationKeyProvider) :
-            this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider)
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options) :
+            this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options)
         {
         }
 
@@ -93,8 +96,10 @@ namespace ASC.Web.Studio.Utility
             UserManager userManager,
             WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
-            EmailValidationKeyProvider emailValidationKeyProvider) :
-            base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager) => (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options) :
+            base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options) =>
+            (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
         public string Logout
         {

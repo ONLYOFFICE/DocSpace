@@ -34,6 +34,7 @@ using ASC.Web.Core.WebZones;
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
 {
@@ -47,15 +48,10 @@ namespace ASC.Web.Core
 
     public class WebItemManager
     {
-        private static readonly ILog log;
+        private readonly ILog log;
 
         private readonly Dictionary<Guid, IWebItem> items = new Dictionary<Guid, IWebItem>();
         private readonly List<string> disableItem;
-
-        static WebItemManager()
-        {
-            log = LogManager.GetLogger("ASC.Web");
-        }
 
         public static Guid CommunityProductID
         {
@@ -119,10 +115,11 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container, IConfiguration configuration)
+        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
         {
             Container = container;
             Configuration = configuration;
+            log = options.Get("ASC.Web");
             disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
             LoadItems();
         }

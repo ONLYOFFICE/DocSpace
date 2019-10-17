@@ -32,12 +32,13 @@ using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
     public class NotifyService : INotifyService, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
 
         private readonly ICacheNotify<NotifyMessage> cacheNotify;
 
@@ -45,11 +46,12 @@ namespace ASC.Notify
 
         public IServiceProvider ServiceProvider { get; }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify)
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<LogNLog> options)
         {
             this.db = db;
             ServiceProvider = serviceProvider;
             this.cacheNotify = cacheNotify;
+            log = options.Get("ASC");
         }
 
         public void Start()

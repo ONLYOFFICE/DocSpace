@@ -35,6 +35,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -46,13 +47,15 @@ namespace ASC.Notify
         public NotifyCleaner NotifyCleaner { get; }
         public WebItemManager WebItemManager { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ILog Log { get; }
 
         public NotifyServiceLauncher(NotifyServiceCfg notifyServiceCfg,
             NotifySender notifySender,
             NotifyService notifyService,
             NotifyCleaner notifyCleaner,
             WebItemManager webItemManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<LogNLog> options)
         {
             NotifyServiceCfg = notifyServiceCfg;
             NotifyService = notifyService;
@@ -60,6 +63,7 @@ namespace ASC.Notify
             NotifyCleaner = notifyCleaner;
             WebItemManager = webItemManager;
             ServiceProvider = serviceProvider;
+            Log = options.Get("ASC.Notify");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -104,7 +108,7 @@ namespace ASC.Notify
             WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {
-                LogManager.GetLogger("ASC.Notify").DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
+                Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
                 pair.MethodInfo.Invoke(null, null);
             }
         }

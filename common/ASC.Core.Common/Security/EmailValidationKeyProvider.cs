@@ -33,6 +33,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
@@ -46,14 +47,14 @@ namespace ASC.Security.Cryptography
             Expired
         }
 
-        private static readonly ILog log = LogManager.GetLogger("ASC.KeyValidation.EmailSignature");
+        private readonly ILog log;
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
         internal readonly TimeSpan ValidInterval;
 
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
 
-        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration)
+        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
         {
             TenantManager = tenantManager;
             Configuration = configuration;
@@ -63,6 +64,7 @@ namespace ASC.Security.Cryptography
             }
 
             ValidInterval = validInterval;
+            log = options.Get("ASC");
         }
 
         public string GetEmailKey(string email)
