@@ -2,13 +2,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import LinkWithDropdown from '.';
 import Readme from './README.md';
-import { text, boolean, withKnobs, select, number } from '@storybook/addon-knobs/react';
+import { text, boolean, withKnobs, select, number, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Section from '../../../.storybook/decorators/section';
 import { Col } from 'reactstrap';
 
-const colors = ['black', 'gray', 'blue'];
-const dropdownType = ['alwaysDotted', 'appearDottedAfterHover'];
+const dropdownType = ["alwaysDashed", "appearDashedAfterHover"];
 
 const dropdownItems = [
   {
@@ -39,8 +38,8 @@ storiesOf('Components|LinkWithDropdown', module)
     <Section>
       <Col>
         <LinkWithDropdown
-          dropdownType={select('dropdownType', dropdownType, 'alwaysDotted')}
-          color={select('color', colors, 'black')}
+          dropdownType={select('dropdownType', dropdownType, 'alwaysDashed')}
+          color={color('color', '#333333')}
           fontSize={number('fontSize', 13)}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
