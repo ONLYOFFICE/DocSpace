@@ -50,13 +50,15 @@ class Tooltip extends Component {
       offsetLeft,
       children,
       afterShow,
-      afterHide
+      afterHide,
+      reference
     } = this.props;
 
     return (
       <TooltipStyle maxWidth={maxWidth}>
         <ReactTooltip
           id={id}
+          ref={reference}
           getContent={getContent}
           type="light"
           effect={effect}
@@ -94,7 +96,11 @@ Tooltip.propTypes = {
   offsetRight: PropTypes.number,
   offsetBottom: PropTypes.number,
   offsetLeft: PropTypes.number,
-  children: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  reference: PropTypes.oneOfType([
+    PropTypes.func, 
+    PropTypes.shape({ current: PropTypes.any })
+  ])
 };
 
 Tooltip.defaultProps = {

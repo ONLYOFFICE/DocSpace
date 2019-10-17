@@ -6,7 +6,6 @@ import Label from "../label";
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../../utils/event";
-import ReactTooltip from "react-tooltip";
 
 const horizontalCss = css`
   display: flex;
@@ -66,25 +65,32 @@ class FieldContainer extends React.Component {
 
     this.state = { isOpen: false };
     this.ref = React.createRef();
+    this.refTooltip = React.createRef();
+    //console.log(`FieldContainer constructor(${this.helperId})`, props, this.ref);
   }
 
-  afterShow = () => {
-    handleAnyClick(true, this.handleClick);
+  afterShow = e => {
+    //console.log(`afterShow ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
+    this.setState({ isOpen: true }, () => {
+      handleAnyClick(true, this.handleClick);
+    });
   };
 
-  afterHide = () => {
+  afterHide = e => {
+    //console.log(`afterHide ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
     if (this.state.isOpen) {
-      this.setState({ isOpen: false });
+      this.setState({ isOpen: false }, () => {
+        handleAnyClick(false, this.handleClick);
+      });
     }
   };
 
   handleClick = e => {
-    if (this.state.isOpen && !this.ref.current.contains(e.target)) {
-      ReactTooltip.hide();
-      this.setState({ isOpen: false });
-      handleAnyClick(false, this.handleClick);
-    } else if (!this.state.isOpen) {
-      this.setState({ isOpen: !this.state.isOpen });
+    //console.log(`handleClick ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
+
+    if (!this.ref.current.contains(e.target)) {
+      //console.log(`hideTooltip() tooltipId=${this.props.tooltipId}`, this.refTooltip.current);
+      this.refTooltip.current.hideTooltip();
     }
   };
 
@@ -125,6 +131,7 @@ class FieldContainer extends React.Component {
               />
               <Tooltip
                 id={tooltipId}
+                reference={this.refTooltip}
                 effect="solid"
                 place="top"
                 offsetRight={tooltipOffsetRight}
