@@ -13,7 +13,8 @@ import {
   Link,
   toastr,
   ModalDialog,
-  ComboBox
+  ComboBox,
+  HelpButton
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
@@ -91,7 +92,7 @@ const InfoItemValue = styled.div`
   }
 `;
 
-const TooltipIcon = styled.div`
+const TooltipIcon = styled.span`
   padding-top: 6px;
 `;
 
@@ -262,6 +263,19 @@ class ProfileInfo extends React.PureComponent {
     const formatedSex = capitalizeFirstLetter(sex);
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
+    const tooltipLanguage =
+    <Text.Body fontSize={13}>
+      <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+        "In case you cannot find your language in the list of the
+        available ones, feel free to write to us at 
+        <Link href="documentation@onlyoffice.com" isHovered={true}>
+          {{supportEmail}}
+        </Link> to take part in the translation and get up to 1 year free of
+        charge."
+      </Trans>
+      {" "}
+      <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
+    </Text.Body>
 
     return (
       <InfoContainer>
@@ -409,8 +423,9 @@ class ProfileInfo extends React.PureComponent {
                 size='content'
                 className='language-combo'
               />
-
-
+              <TooltipIcon>
+                <HelpButton offsetRight={0} tooltipContent={tooltipLanguage} />
+              </TooltipIcon>
              
             </InfoItemValue>
 
