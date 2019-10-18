@@ -111,6 +111,7 @@ namespace ASC.People
 
             services.Configure<DbManager>(r => { });
             services.Configure<DbManager>("default", r => { });
+            services.Configure<DbManager>("messages", r => { r.CommandTimeout = 180000; });
 
             services.AddLogManager()
                     .AddSingleton(typeof(ILog), typeof(LogNLog))

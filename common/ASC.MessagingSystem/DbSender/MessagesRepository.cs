@@ -28,21 +28,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
+
 using UAParser;
+
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
     public class MessagesRepository
     {
-        private const string MessagesDbId = "default";
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
@@ -57,10 +62,10 @@ namespace ASC.MessagingSystem.DbSender
         private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public MessagesRepository(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> options)
+        public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> options)
         {
-            DbRegistry = dbRegistry;
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
             Parser = Parser.GetDefault();
@@ -70,6 +75,7 @@ namespace ASC.MessagingSystem.DbSender
             ClearTimer = new Timer(DeleteOldEvents);
             ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
             Log = options.Get("ASC");
+            ServiceProvider = serviceProvider;
         }
 
         public void Add(EventMessage message)
@@ -77,7 +83,8 @@ namespace ASC.MessagingSystem.DbSender
             // messages with action code < 2000 are related to login-history
             if ((int)message.Action < 2000)
             {
-                using var db = DbManager.FromHttpContext(DbRegistry, MessagesDbId);
+                using var scope = ServiceProvider.CreateScope();
+                using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
                 AddLoginEvent(message, db);
                 return;
             }
@@ -117,7 +124,8 @@ namespace ASC.MessagingSystem.DbSender
 
             if (events == null) return;
 
-            using var db = DbManager.FromHttpContext(DbRegistry, MessagesDbId);
+            using var scope = ServiceProvider.CreateScope();
+            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
             using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
@@ -281,7 +289,8 @@ namespace ASC.MessagingSystem.DbSender
 
             do
             {
-                using var dbManager = new DbManager(DbRegistry, MessagesDbId, 180000);
+                using var scope = ServiceProvider.CreateScope();
+                var dbManager = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
                 ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
 
                 if (!ids.Any()) return;

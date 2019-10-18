@@ -96,7 +96,7 @@ namespace ASC.Common.Data
         private ISqlDialect dialect;
         private volatile bool disposed;
 
-        private readonly int? commandTimeout;
+        public int? CommandTimeout { get; set; }
 
         private DbCommand Command
         {
@@ -112,9 +112,9 @@ namespace ASC.Common.Data
                     command = OpenConnection().CreateCommand();
                 }
 
-                if (commandTimeout.HasValue)
+                if (CommandTimeout.HasValue)
                 {
-                    command.CommandTimeout = commandTimeout.Value;
+                    command.CommandTimeout = CommandTimeout.Value;
                 }
 
                 return command;
@@ -162,7 +162,7 @@ namespace ASC.Common.Data
 
             if (commandTimeout.HasValue)
             {
-                this.commandTimeout = commandTimeout;
+                this.CommandTimeout = commandTimeout;
             }
         }
 

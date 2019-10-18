@@ -64,7 +64,7 @@ namespace ASC.MessagingSystem
                     Date = DateTime.UtcNow,
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
                     UserId = AuthContext.CurrentAccount.ID,
-                    Page = request?.GetTypedHeaders().Referer.ToString(),
+                    Page = request?.GetTypedHeaders().Referer?.ToString(),
                     Action = action,
                     Description = description,
                     Target = target,
