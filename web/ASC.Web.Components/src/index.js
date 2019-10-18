@@ -58,4 +58,5 @@ export { default as utils } from './utils'
 export { default as DatePicker } from './components/date-picker'
 export { default as PasswordInput } from './components/password-input'
 export { default as Tooltip } from './components/tooltip'
+export { default as HelpButton } from './components/help-button'
 
