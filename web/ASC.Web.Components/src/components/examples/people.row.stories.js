@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import Row from '../row';
 import Avatar from '../avatar';
 import Link from '../link';
-import RowContent from '../combobox';
+import RowContent from '../row-content';
 import { Icons } from '../icons';
 import Section from '../../../.storybook/decorators/section';
 
