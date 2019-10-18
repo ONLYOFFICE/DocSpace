@@ -71,11 +71,9 @@ class Tooltip extends Component {
             left: offsetLeft
           }}
           wrapper="div"
-          resizeHide={true}
-          scrollHide={true}
           afterShow={afterShow}
-          isCapture={true}
           afterHide={afterHide}
+          isCapture={true}
         >
           {children}
         </ReactTooltip>

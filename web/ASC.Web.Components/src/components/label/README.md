@@ -35,10 +35,3 @@ Component displays the field name in the form
 | `truncate`         | `bool`     |    -     | -                     | false     | Disables word wrapping                                                      |
 | `htmlFor`          | `string`   |    -     | -                     | -         | The field ID to which the label is attached                                 |
 | `text`             | `string`   |    -     | -                     | -         | Text                                                                        |
-| `tooltipId`             | `string`   |    -     | -                     | -         | Tooltip id                                                                        |
-| `tooltipEvent`             | `string`   |    -     | -                     | -         | Tooltip event                                                                        |
-| `iconButton`             | `string`   |    -     | -                     | -         | Tooltip icon button                                                                        |
-
-
-
-

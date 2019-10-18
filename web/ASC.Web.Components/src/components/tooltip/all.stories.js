@@ -3,15 +3,12 @@ import { storiesOf } from "@storybook/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import Tooltip from "./";
-import IconButton from "../icon-button";
 import Section from "../../../.storybook/decorators/section";
 import Link from "../link";
 import { Text } from "../text";
 
-const BodyStyle = { marginTop: 100, marginLeft: 50, position: "absolute" };
-const headerStyle = { marginTop: 70, marginLeft: 15, position: "absolute" };
-const BodyStyle_2 = { marginTop: 70, marginLeft: 200, position: "absolute" };
-const BodyStyle_3 = { marginTop: 70, marginLeft: 400 };
+const BodyStyle = { marginTop: 70, marginLeft: 50, position: "absolute" };
+const BodyStyle_2 = { marginTop: 70, marginLeft: 250 };
 
 const arrayUsers = [
   {
@@ -51,25 +48,7 @@ storiesOf("Components|Tooltip", module)
   .add("all", () => {
     return (
       <Section>
-        <h5 style={headerStyle}>Click on me</h5>
-        <IconButton
-          data-for="tooltipContent"
-          data-tip="You tooltip content"
-          data-event="click focus"
-          isClickable={true}
-          size={13}
-          iconName="QuestionIcon"
-          style={BodyStyle}
-        />
-
-        <Tooltip
-          id="tooltipContent"
-          effect="solid"
-          place="top"
-          maxWidth={320}
-        />
-
-        <div style={BodyStyle_2}>
+        <div style={BodyStyle}>
           <h5 style={{ marginLeft: -5 }}>Hover on me</h5>
           <Link data-for="link" data-tip="Bob Johnston">
             Bob Johnston
@@ -87,7 +66,7 @@ storiesOf("Components|Tooltip", module)
           </div>
         </Tooltip>
 
-        <div style={BodyStyle_3}>
+        <div style={BodyStyle_2}>
           <h5 style={{ marginLeft: -5 }}>Hover group</h5>
           <Link data-for="group" data-tip={0}>
             Bob
