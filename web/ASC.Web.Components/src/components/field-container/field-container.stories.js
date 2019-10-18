@@ -54,7 +54,6 @@ storiesOf("Components|FieldContainer", module)
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
               tooltipContent={"tooltipContent"}
-              tooltipId={"tooltipId_1"}
             >
               <TextInput
                 value={value}
@@ -73,7 +72,6 @@ storiesOf("Components|FieldContainer", module)
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
               tooltipContent={"tooltipContent2"}
-              tooltipId={"tooltipId_2"}
             >
               <TextInput
                 value={value}

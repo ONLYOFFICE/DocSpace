@@ -128,7 +128,8 @@ class IconButton extends React.PureComponent {
       isDisabled,
       isFill,
       isClickable,
-      onClick
+      onClick,
+      id
     } = this.props;
 
     return (
@@ -141,6 +142,9 @@ class IconButton extends React.PureComponent {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         isClickable={typeof onClick === "function" || isClickable}
+        data-tip=""
+        data-event="click focus"
+        data-for={id}
         //{...this.props}
       >
         {React.createElement(Icons[this.state.currentIconName], {
@@ -168,7 +172,8 @@ IconButton.propTypes = {
   onClick: PropTypes.func,
   onMouseEnter: PropTypes.func,
   onMouseDown: PropTypes.func,
-  onMouseUp: PropTypes.func
+  onMouseUp: PropTypes.func,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 IconButton.defaultProps = {
