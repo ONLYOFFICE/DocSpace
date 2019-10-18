@@ -73,13 +73,19 @@ namespace ASC.Core.Data
         public IServiceProvider ServiceProvider { get; }
         public DbRegistry DbRegistry { get; }
         public DbSettingsManagerCache DbSettingsManagerCache { get; }
+        public DbManager DbManager { get; }
 
-        public DbSettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry, DbSettingsManagerCache dbSettingsManagerCache) : this(null)
+        public DbSettingsManager(
+            IServiceProvider serviceProvider,
+            DbRegistry dbRegistry,
+            DbSettingsManagerCache dbSettingsManagerCache,
+            DbOptionsManager optionsDbManager) : this(null)
         {
             ServiceProvider = serviceProvider;
             DbRegistry = dbRegistry;
             DbSettingsManagerCache = dbSettingsManagerCache;
             Cache = dbSettingsManagerCache.Cache;
+            DbManager = optionsDbManager.Value;
         }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
@@ -113,32 +119,31 @@ namespace ASC.Core.Data
                 var key = settings.ID.ToString() + tenantId + userId;
                 var data = Serialize(settings);
 
-                using (var db = GetDbManager())
+                var db = DbManager;
+
+                var defaultData = Serialize(settings.GetDefault());
+
+                ISqlInstruction i;
+                if (data.SequenceEqual(defaultData))
                 {
-                    var defaultData = Serialize(settings.GetDefault());
-
-                    ISqlInstruction i;
-                    if (data.SequenceEqual(defaultData))
-                    {
-                        // remove default settings
-                        i = new SqlDelete("webstudio_settings")
-                            .Where("id", settings.ID.ToString())
-                            .Where("tenantid", tenantId)
-                            .Where("userid", userId.ToString());
-                    }
-                    else
-                    {
-                        i = new SqlInsert("webstudio_settings", true)
-                            .InColumnValue("id", settings.ID.ToString())
-                            .InColumnValue("userid", userId.ToString())
-                            .InColumnValue("tenantid", tenantId)
-                            .InColumnValue("data", data);
-                    }
-
-                    DbSettingsManagerCache.Remove(key);
-
-                    db.ExecuteNonQuery(i);
+                    // remove default settings
+                    i = new SqlDelete("webstudio_settings")
+                        .Where("id", settings.ID.ToString())
+                        .Where("tenantid", tenantId)
+                        .Where("userid", userId.ToString());
                 }
+                else
+                {
+                    i = new SqlInsert("webstudio_settings", true)
+                        .InColumnValue("id", settings.ID.ToString())
+                        .InColumnValue("userid", userId.ToString())
+                        .InColumnValue("tenantid", tenantId)
+                        .InColumnValue("data", data);
+                }
+
+                DbSettingsManagerCache.Remove(key);
+
+                db.ExecuteNonQuery(i);
 
                 Cache.Insert(key, settings, expirationTimeout);
                 return true;
@@ -160,24 +165,22 @@ namespace ASC.Core.Data
                 var settings = Cache.Get<T>(key);
                 if (settings != null) return settings;
 
-                using (var db = GetDbManager())
-                {
-                    var q = new SqlQuery("webstudio_settings")
-                        .Select("data")
-                        .Where("id", settingsInstance.ID.ToString())
-                        .Where("tenantid", tenantId)
-                        .Where("userid", userId.ToString());
+                var db = DbManager;
+                var q = new SqlQuery("webstudio_settings")
+                    .Select("data")
+                    .Where("id", settingsInstance.ID.ToString())
+                    .Where("tenantid", tenantId)
+                    .Where("userid", userId.ToString());
 
-                    var result = db.ExecuteScalar<object>(q);
-                    if (result != null)
-                    {
-                        var data = result is string ? Encoding.UTF8.GetBytes((string)result) : (byte[])result;
-                        settings = Deserialize<T>(data);
-                    }
-                    else
-                    {
-                        settings = (T)settingsInstance.GetDefault();
-                    }
+                var result = db.ExecuteScalar<object>(q);
+                if (result != null)
+                {
+                    var data = result is string ? Encoding.UTF8.GetBytes((string)result) : (byte[])result;
+                    settings = Deserialize<T>(data);
+                }
+                else
+                {
+                    settings = (T)settingsInstance.GetDefault();
                 }
 
                 Cache.Insert(key, settings, expirationTimeout);
@@ -204,11 +207,6 @@ namespace ASC.Core.Data
             using var stream = new MemoryStream();
             GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
             return stream.ToArray();
-        }
-
-        private IDbManager GetDbManager()
-        {
-            return DbManager.FromHttpContext(DbRegistry, dbId);
         }
 
         private DataContractJsonSerializer GetJsonSerializer(Type type)

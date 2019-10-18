@@ -34,7 +34,7 @@ namespace ASC.Data.Storage
 {
     public static class SecureHelper
     {
-        public static bool IsSecure(HttpContext httpContext, IOptionsMonitor<ILog> options)
+        public static bool IsSecure(HttpContext httpContext, IOptionsMonitor<LogNLog> options)
         {
             try
             {

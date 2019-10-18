@@ -109,6 +109,9 @@ namespace ASC.People
             services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
             services.Configure<LogNLog>("ASC.Api", r => r.Name = "ASC.Api");
 
+            services.Configure<DbManager>(r => { });
+            services.Configure<DbManager>("default", r => { });
+
             services.AddLogManager()
                     .AddSingleton(typeof(ILog), typeof(LogNLog))
                     .AddStorage(Configuration)
@@ -228,6 +231,9 @@ namespace ASC.People
                     .AddScoped<StaticUploader>()
                     .AddScoped<CdnStorageSettings>()
                     .AddScoped<StorageFactory>()
+                    .AddScoped<DbOptionsManager>()
+                    .AddScoped<DbManager>()
+                    .AddScoped<IConfigureOptions<DbManager>, ConfigureDbManager>()
                     .AddSingleton<StorageFactoryListener>()
                     .AddSingleton<StorageFactoryConfig>()
                     .AddScoped<StorageSettings>()

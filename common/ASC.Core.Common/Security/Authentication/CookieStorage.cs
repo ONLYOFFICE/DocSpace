@@ -50,7 +50,7 @@ namespace ASC.Core.Security.Authentication
             IHttpContextAccessor httpContextAccessor,
             InstanceCrypto instanceCrypto,
             TenantCookieSettings tenantCookieSettings,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<LogNLog> options)
         {
             InstanceCrypto = instanceCrypto;
             TenantCookieSettings = tenantCookieSettings;

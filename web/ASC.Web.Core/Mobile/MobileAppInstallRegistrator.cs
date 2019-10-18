@@ -33,17 +33,16 @@ namespace ASC.Web.Core.Mobile
 {
     public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
-        public DbRegistry DbRegistry { get; }
+        public DbManager DbManager { get; }
 
-        public MobileAppInstallRegistrator(DbRegistry dbRegistry)
+        public MobileAppInstallRegistrator(DbOptionsManager optionsDbManager)
         {
-            DbRegistry = dbRegistry;
+            DbManager = optionsDbManager.Value;
         }
 
         public void RegisterInstall(string userEmail, MobileAppType appType)
         {
-            using var db = GetDbManager();
-            db.ExecuteNonQuery(
+            DbManager.ExecuteNonQuery(
 "INSERT INTO `mobile_app_install` (`user_email`, `app_type`, `registered_on`, `last_sign`)" +
 " VALUES (@user_email, @app_type, @registered_on, @last_sign)" +
 " ON DUPLICATE KEY UPDATE `last_sign`=@last_sign",
@@ -66,13 +65,7 @@ new
                 query.Where("app_type", (int)appType.Value);
 
 
-            using var db = GetDbManager();
-            return db.ExecuteScalar<int>(query) > 0;
-        }
-
-        private IDbManager GetDbManager()
-        {
-            return DbManager.FromHttpContext(DbRegistry, "default");
+            return DbManager.ExecuteScalar<int>(query) > 0;
         }
     }
 }

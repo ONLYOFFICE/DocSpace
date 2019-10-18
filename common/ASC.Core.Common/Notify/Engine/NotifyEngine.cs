@@ -82,7 +82,7 @@ namespace ASC.Notify.Engine
             this.context = context ?? throw new ArgumentNullException("context");
             CoreBaseSettings = serviceProvider.GetService<CoreBaseSettings>();
             Configuration = serviceProvider.GetService<IConfiguration>();
-            log = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+            log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             ServiceProvider = serviceProvider;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
             notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };

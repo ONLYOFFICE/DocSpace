@@ -32,8 +32,8 @@ namespace ASC.Core.Common.Settings
 {
     public class SettingsManager : DbSettingsManager
     {
-        public SettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry, DbSettingsManagerCache dbSettingsManagerCache)
-            : base(serviceProvider, dbRegistry, dbSettingsManagerCache)
+        public SettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry, DbSettingsManagerCache dbSettingsManagerCache, DbOptionsManager optionsDbManager)
+            : base(serviceProvider, dbRegistry, dbSettingsManagerCache, optionsDbManager)
         {
 
         }

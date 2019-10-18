@@ -33,9 +33,59 @@ using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Common.Web;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Data
 {
+    public class DbOptionsManager : OptionsManager<DbManager>, IDisposable
+    {
+        private Dictionary<string, DbManager> Pairs { get; set; }
+
+        public DbOptionsManager(IOptionsFactory<DbManager> factory) : base(factory)
+        {
+            Pairs = new Dictionary<string, DbManager>();
+        }
+
+        public override DbManager Get(string name)
+        {
+            var result = base.Get(name);
+            if (!Pairs.ContainsKey(name))
+            {
+                Pairs.Add(name, result);
+            }
+            return result;
+        }
+
+        public void Dispose()
+        {
+            foreach (var v in Pairs)
+            {
+                v.Value.Dispose();
+            }
+        }
+    }
+    public class ConfigureDbManager : IConfigureNamedOptions<DbManager>
+    {
+        public DbRegistry DbRegistry { get; }
+
+        public ConfigureDbManager(DbRegistry dbRegistry)
+        {
+            DbRegistry = dbRegistry;
+        }
+
+        public void Configure(string name, DbManager dbManager)
+        {
+            dbManager.DbRegistry = DbRegistry;
+            dbManager.DatabaseId = string.IsNullOrEmpty(name) ? "default" : name;
+        }
+
+        public void Configure(DbManager dbManager)
+        {
+            Configure("default", dbManager);
+        }
+    }
+
+
     public class DbManager : IDbManager
     {
         private readonly ILog logger = LogManager.GetLogger("ASC.SQL");
@@ -71,7 +121,11 @@ namespace ASC.Common.Data
             }
         }
 
-        public string DatabaseId { get; private set; }
+        public string DatabaseId
+        {
+            get;
+            set;
+        }
 
         public bool InTransaction
         {
@@ -83,7 +137,12 @@ namespace ASC.Common.Data
             get { return Command.Connection; }
         }
 
-        public DbRegistry DbRegistry { get; }
+        public DbRegistry DbRegistry { get; internal set; }
+
+        public DbManager()
+        {
+
+        }
 
         public DbManager(DbRegistry dbRegistry, string databaseId, int? commandTimeout = null)
             : this(dbRegistry, databaseId, true, commandTimeout)

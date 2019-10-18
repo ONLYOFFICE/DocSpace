@@ -35,16 +35,15 @@ namespace ASC.Web.Studio.Core.Statistic
 {
     public class StatisticManager
     {
-        private const string dbId = "default";
         private static DateTime lastSave = DateTime.UtcNow;
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
-        public DbRegistry DbRegistry { get; }
+        public IDbManager DbManager { get; }
 
-        public StatisticManager(DbRegistry dbRegistry)
+        public StatisticManager(DbOptionsManager optionsDbManager)
         {
-            DbRegistry = dbRegistry;
+            DbManager = optionsDbManager.Value;
         }
 
         public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
@@ -77,7 +76,7 @@ namespace ASC.Web.Studio.Core.Statistic
 
         public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
         {
-            using var db = GetDb();
+            var db = GetDb();
             var users = db
 .ExecuteList(
 new SqlQuery("webstudio_uservisit")
@@ -104,7 +103,7 @@ new SqlQuery("webstudio_uservisit")
 
         public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            using var db = GetDb();
+            var db = GetDb();
             return db.ExecuteList(new SqlQuery("webstudio_uservisit")
 .Select("VisitDate")
 .SelectSum("VisitCount")
@@ -119,7 +118,7 @@ new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt
 
         public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            using var db = GetDb();
+            var db = GetDb();
             return db.ExecuteList(new SqlQuery("webstudio_uservisit")
 .Select("VisitDate", "UserId")
 .Where(Exp.Between("VisitDate", startDate, endPeriod))
@@ -147,7 +146,7 @@ new UserVisit
                 lastSave = DateTime.UtcNow;
             }
 
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
             foreach (var v in visits)
             {
@@ -172,7 +171,7 @@ new UserVisit
 
         private IDbManager GetDb()
         {
-            return DbManager.FromHttpContext(DbRegistry, dbId);
+            return DbManager;
         }
     }
 }
