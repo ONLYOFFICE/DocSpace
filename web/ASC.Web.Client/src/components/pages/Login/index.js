@@ -18,8 +18,7 @@ import {
   Link,
   toastr,
   Checkbox,
-  IconButton,
-  Tooltip
+  HelpButton
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { login } from "../../../store/auth/actions";
@@ -84,10 +83,10 @@ const FormContainer = styled(Container)`
   }
 `;
 
-const TooltipStyle = styled.a`
+const TooltipStyle = styled.span`
   margin-left: 3px;
   position: absolute;
-  margin-top: 3px;
+  margin-top: 2px;
 `;
 
 const mdOptions = { size: 6, offset: 3 };
@@ -273,13 +272,12 @@ const Form = props => {
             onChange={() => setIsisChecked(!isChecked)}
             label={t("Remember")}
           />
-          <TooltipStyle
-            data-for="tooltipContent"
-            data-tip={t("RememberHelper")}
-            data-event="click"
-            data-offset="{'right': 90}"
-          >
-            <IconButton isClickable={true} size={13} iconName="QuestionIcon" />
+          <TooltipStyle>
+            <HelpButton
+              tooltipContent={
+                <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
+              }
+            />
           </TooltipStyle>
         </Col>
       </Row>
@@ -325,13 +323,6 @@ const Form = props => {
           </Col>
         </Row>
       </Collapse>
-      <Tooltip
-        id="tooltipContent"
-        getContent={dataTip => <Text.Body fontSize={12}>{dataTip}</Text.Body>}
-        effect="solid"
-        place="top"
-        maxWidth={250}
-      />
     </FormContainer>
   );
 };
