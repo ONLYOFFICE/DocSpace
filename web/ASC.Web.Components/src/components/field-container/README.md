@@ -20,12 +20,10 @@ Responsive form field container
 
 #### Properties
 
-| Props          | Type     | Required | Values | Default | Description                                  |
-| -------------- | -------- | :------: | ------ | ------- | -------------------------------------------- |
-| `isVertical`   | `bool`   |    -     | -      | false   | Vertical or horizontal alignment             |
-| `isRequired`   | `bool`   |    -     | -      | false   | Indicates that the field is required to fill |
-| `hasError`     | `bool`   |    -     | -      | false   | Indicates that the field is incorrect        |
-| `labelText`    | `string` |    -     | -      | -       | Field label text                             |
-| `tooltipId`    | `string` |    -     | -      | -       | Tooltip id                                   |
-| `tooltipEvent` | `string` |    -     | -      | -       | Tooltip event                                |
-| `iconButton`   | `string` |    -     | -      | -       | Tooltip icon button                          |
+| Props            | Type               | Required | Values | Default | Description                                  |
+| ---------------- | ------------------ | :------: | ------ | ------- | -------------------------------------------- |
+| `isVertical`     | `bool`             |    -     | -      | false   | Vertical or horizontal alignment             |
+| `isRequired`     | `bool`             |    -     | -      | false   | Indicates that the field is required to fill |
+| `hasError`       | `bool`             |    -     | -      | false   | Indicates that the field is incorrect        |
+| `labelText`      | `string`           |    -     | -      | -       | Field label text                             |
+| `tooltipContent` | `object or string` |    ✅    | -      | -       | Tooltip content                              |

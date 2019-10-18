@@ -3,9 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { tablet } from "../../utils/device";
 import Label from "../label";
-import IconButton from "../icon-button";
-import Tooltip from "../tooltip";
-import { handleAnyClick } from "../../utils/event";
+import HelpButton from "../help-button";
 
 const horizontalCss = css`
   display: flex;
@@ -62,42 +60,7 @@ const Container = styled.div`
 class FieldContainer extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = { isOpen: false };
-    this.ref = React.createRef();
-    this.refTooltip = React.createRef();
-    //console.log(`FieldContainer constructor(${this.helperId})`, props, this.ref);
   }
-
-  afterShow = () => {
-    //console.log(`afterShow ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
-    this.setState({ isOpen: true }, () => {
-      handleAnyClick(true, this.handleClick);
-    });
-  };
-
-  afterHide = () => {
-    //console.log(`afterHide ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
-    if (this.state.isOpen) {
-      this.setState({ isOpen: false }, () => {
-        handleAnyClick(false, this.handleClick);
-      });
-    }
-  };
-
-  handleClick = e => {
-    //console.log(`handleClick ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
-
-    if (!this.ref.current.contains(e.target)) {
-      //console.log(`hideTooltip() tooltipId=${this.props.tooltipId}`, this.refTooltip.current);
-      this.refTooltip.current.hideTooltip();
-    }
-  };
-
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
 
   render() {
     const {
@@ -107,10 +70,7 @@ class FieldContainer extends React.Component {
       hasError,
       labelText,
       children,
-      tooltipContent,
-      tooltipOffsetRight,
-      tooltipMaxWidth,
-      tooltipId
+      tooltipContent
     } = this.props;
 
     return (
@@ -124,30 +84,9 @@ class FieldContainer extends React.Component {
             className="field-label"
           />
           {tooltipContent && (
-            <div ref={this.ref}>
-              <IconButton
-                data-tip=""
-                data-for={tooltipId}
-                data-event="click focus"
-                className="icon-button"
-                isClickable={true}
-                iconName="QuestionIcon"
-                size={13}
-              />
-              <Tooltip
-                id={tooltipId}
-                reference={this.refTooltip}
-                effect="solid"
-                place="top"
-                offsetRight={tooltipOffsetRight}
-                maxWidth={tooltipMaxWidth}
-                afterShow={this.afterShow}
-                afterHide={this.afterHide}
-                globalEventOff={true}
-              >
-                {tooltipContent}
-              </Tooltip>
-            </div>
+            <HelpButton
+              tooltipContent={tooltipContent}
+            />
           )}
         </div>
         <div className="field-body">{children}</div>
@@ -169,10 +108,7 @@ FieldContainer.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  tooltipOffsetRight: PropTypes.number,
-  tooltipMaxWidth: PropTypes.number,
-  tooltipId: PropTypes.string
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 };
 
 export default FieldContainer;

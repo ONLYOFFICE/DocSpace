@@ -32,10 +32,7 @@ class TextChangeField extends React.Component {
       buttonOnClick,
       buttonTabIndex,
 
-      tooltipContent,
-      tooltipId,
-      tooltipMaxWidth,
-      tooltipOffsetRight
+      tooltipContent
     } = this.props;
 
     return (
@@ -44,9 +41,6 @@ class TextChangeField extends React.Component {
         hasError={hasError}
         labelText={labelText}
         tooltipContent={tooltipContent}
-        tooltipId={tooltipId}
-        tooltipMaxWidth={tooltipMaxWidth}
-        tooltipOffsetRight={tooltipOffsetRight}
       >
         <InputContainer>
           <TextInput
