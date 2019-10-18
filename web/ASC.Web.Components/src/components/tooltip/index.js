@@ -14,8 +14,7 @@ const TooltipStyle = styled.div`
     opacity: 1;
     padding: 16px;
     pointer-events: auto;
-
-    max-width: ${props => (props.maxWidth ? props.maxWidth + "px" : `340px`)};
+    max-width: 340px;
 
     &:before {
       border: none;
@@ -29,8 +28,6 @@ const TooltipStyle = styled.div`
 class Tooltip extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {};
   }
 
   componentDidUpdate() {
@@ -41,7 +38,6 @@ class Tooltip extends Component {
     const {
       effect,
       place,
-      maxWidth,
       id,
       getContent,
       offsetTop,
@@ -55,7 +51,7 @@ class Tooltip extends Component {
     } = this.props;
 
     return (
-      <TooltipStyle maxWidth={maxWidth}>
+      <TooltipStyle>
         <ReactTooltip
           id={id}
           ref={reference}
@@ -63,7 +59,6 @@ class Tooltip extends Component {
           type="light"
           effect={effect}
           place={place}
-          //globalEventOff="click"
           offset={{
             top: offsetTop,
             right: offsetRight,
@@ -74,6 +69,15 @@ class Tooltip extends Component {
           afterShow={afterShow}
           afterHide={afterHide}
           isCapture={true}
+          overridePosition={({ left, top, right, bottom }) => {
+            const d = document.documentElement;
+            left = Math.min(d.clientWidth - 340, left);
+            top = Math.min(d.clientHeight - 0, top);
+            left = Math.max(0, left);
+            top = Math.max(0, top);
+            //console.log("left:", left, "top:", top);
+            return { top, left, right, bottom };
+          }}
         >
           {children}
         </ReactTooltip>
@@ -86,7 +90,6 @@ Tooltip.propTypes = {
   id: PropTypes.string,
   effect: PropTypes.oneOf(["float", "solid"]),
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
-  maxWidth: PropTypes.number,
   getContent: PropTypes.func,
   afterHide: PropTypes.func,
   afterShow: PropTypes.func,
@@ -96,7 +99,7 @@ Tooltip.propTypes = {
   offsetLeft: PropTypes.number,
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   reference: PropTypes.oneOfType([
-    PropTypes.func, 
+    PropTypes.func,
     PropTypes.shape({ current: PropTypes.any })
   ])
 };

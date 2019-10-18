@@ -46,7 +46,7 @@ class HelpButton extends React.Component {
   }
 
   render() {
-    const { tooltipContent } = this.props;
+    const { tooltipContent, place, offsetRight } = this.props;
 
     return (
       <div ref={this.ref}>
@@ -61,8 +61,8 @@ class HelpButton extends React.Component {
           id={this.id}
           reference={this.refTooltip}
           effect="solid"
-          place="top"
-          offsetRight={110}
+          place={place}
+          offsetRight={offsetRight}
           afterShow={this.afterShow}
           afterHide={this.afterHide}
         >
@@ -81,7 +81,13 @@ HelpButton.propTypes = {
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   tooltipOffsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
-  tooltipId: PropTypes.string
+  tooltipId: PropTypes.string,
+  place: PropTypes.string
 };
+
+HelpButton.defaultProps = {
+  place: "top",
+  offsetRight:100
+}
 
 export default HelpButton;
