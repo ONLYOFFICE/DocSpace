@@ -22,8 +22,7 @@ const data = [
   { key: 'key4', label: 'Base button3', onClick: () => console.log('Base button3 clicked') }
 ];
 
-const dropdownType = ['alwaysDotted', 'appearDottedAfterHover'];
-const colors = ['black', 'gray', 'blue'];
+const dropdownType = ['alwaysDashed', 'appearDashedAfterHover'];
 
 storiesOf('Components|LinkWithDropdown', module)
   .addParameters({ viewport: { defaultViewport: 'responsive' } })
@@ -36,33 +35,33 @@ storiesOf('Components|LinkWithDropdown', module)
             <Col key={linkType}>type - {linkType}:</Col>
           )}
         </Row>
-        {colors.map(color =>
-          <Row key={color} style={rowStyle}>
-            {dropdownType.map(linkType =>
-              <Col key={linkType}>
-                <LinkWithDropdown color={color} isBold={true} dropdownType={linkType} data={data}>Bold {color} {linkType}</LinkWithDropdown>
-              </Col>
-            )}
-          </Row>
-        )}
-        {colors.map(color =>
-          <Row key={color} style={rowStyle}>
-            {dropdownType.map(linkType =>
-              <Col key={linkType}>
-                <LinkWithDropdown color={color} dropdownType={linkType} data={data}>{color} {linkType}</LinkWithDropdown>
-              </Col>
-            )}
-          </Row>
-        )}
-        {colors.map(color =>
-          <Row key={color} style={rowStyle}>
-            {dropdownType.map(linkType =>
-              <Col key={linkType}>
-                <LinkWithDropdown color={color} isSemitransparent={true} dropdownType={linkType} data={data}>Semitransparent {color} {linkType}</LinkWithDropdown>
-              </Col>
-            )}
-          </Row>
-        )}
+
+        <Row style={rowStyle}>
+          {dropdownType.map(linkType =>
+            <Col key={linkType}>
+              <LinkWithDropdown isBold={true} dropdownType={linkType} data={data}>Bold {linkType}</LinkWithDropdown>
+            </Col>
+          )}
+        </Row>
+
+
+        <Row style={rowStyle}>
+          {dropdownType.map(linkType =>
+            <Col key={linkType}>
+              <LinkWithDropdown dropdownType={linkType} data={data}> {linkType}</LinkWithDropdown>
+            </Col>
+          )}
+        </Row>
+
+
+        <Row style={rowStyle}>
+          {dropdownType.map(linkType =>
+            <Col key={linkType}>
+              <LinkWithDropdown isSemitransparent={true} dropdownType={linkType} data={data}>Semitransparent  {linkType}</LinkWithDropdown>
+            </Col>
+          )}
+        </Row>
+
       </Container>
     </>
   ));
