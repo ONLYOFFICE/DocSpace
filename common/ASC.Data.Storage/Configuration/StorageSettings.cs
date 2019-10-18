@@ -33,6 +33,7 @@ using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -90,7 +91,8 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options) :
+            IOptionsMonitor<LogNLog> options,
+            IHttpContextAccessor httpContextAccessor) :
             base(authContext, settingsManager, tenantManager)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
@@ -99,6 +101,20 @@ namespace ASC.Data.Storage.Configuration
             EmailValidationKeyProvider = emailValidationKeyProvider;
             Cache = cache;
             Options = options;
+            HttpContextAccessor = httpContextAccessor;
+        }
+        public BaseStorageSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options) :
+            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
+        {
         }
 
         public override ISettings GetDefault()
@@ -162,7 +178,7 @@ namespace ASC.Data.Storage.Configuration
                 if (DataStoreConsumer.HandlerType == null) return null;
 
                 return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils, Options))
+                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
                     .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer);
             }
         }
@@ -174,6 +190,7 @@ namespace ASC.Data.Storage.Configuration
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public IOptionsMonitor<LogNLog> Options { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         private readonly ICacheNotify<DataStoreCacheItem> Cache;
     }
@@ -197,7 +214,21 @@ namespace ASC.Data.Storage.Configuration
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<LogNLog> options) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options)
+            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
+        {
+        }
+        public StorageSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
+            IHttpContextAccessor httpContextAccessor) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
         {
         }
 
@@ -226,7 +257,22 @@ namespace ASC.Data.Storage.Configuration
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<LogNLog> options) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options)
+            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
+        {
+        }
+
+        public CdnStorageSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            BaseStorageSettingsListener baseStorageSettingsListener,
+            StorageFactoryConfig storageFactoryConfig,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            ICacheNotify<DataStoreCacheItem> cache,
+            IOptionsMonitor<LogNLog> options,
+            IHttpContextAccessor httpContextAccessor) :
+            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
         {
         }
 

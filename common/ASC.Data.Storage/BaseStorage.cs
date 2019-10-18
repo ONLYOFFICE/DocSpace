@@ -34,6 +34,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -46,11 +47,14 @@ namespace ASC.Data.Storage
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<LogNLog> options)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
+            HttpContextAccessor = httpContextAccessor;
+            Options = options;
             Log = options.Get("ASC");
         }
 
@@ -213,6 +217,8 @@ namespace ASC.Data.Storage
         public TenantManager TenantManager { get; }
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public IOptionsMonitor<LogNLog> Options { get; }
 
         #endregion
 

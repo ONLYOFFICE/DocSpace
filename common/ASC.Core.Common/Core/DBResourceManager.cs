@@ -35,12 +35,12 @@ using System.Resources;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace TMResourceData
@@ -291,7 +291,7 @@ namespace TMResourceData
             }
         }
 
-        internal static string ReplaceLogo(IConfiguration configuration, TenantManager tenantManager, string resourceName, string resourceValue)
+        internal static string ReplaceLogo(IConfiguration configuration, TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
         {
             if (string.IsNullOrEmpty(resourceValue))
             {
@@ -302,7 +302,7 @@ namespace TMResourceData
                 return resourceValue;
             }
 
-            if (HttpContext.Current != null) //if in Notify Service or other process without HttpContext
+            if (httpContextAccessor.HttpContext != null) //if in Notify Service or other process without HttpContext
             {
                 try
                 {

@@ -39,11 +39,11 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -66,8 +66,13 @@ namespace ASC.Data.Storage.S3
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
 
-        public S3Storage(TenantManager tenantManager, PathUtils pathUtils, EmailValidationKeyProvider emailValidationKeyProvider, IOptionsMonitor<LogNLog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        public S3Storage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<LogNLog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -97,12 +102,12 @@ namespace ASC.Data.Storage.S3
 
         public Uri GetUriInternal(string path)
         {
-            return new Uri(SecureHelper.IsSecure() ? _bucketSSlRoot : _bucketRoot, path);
+            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, path);
         }
 
         public Uri GetUriShared(string domain, string path)
         {
-            return new Uri(SecureHelper.IsSecure() ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
         public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
@@ -121,7 +126,7 @@ namespace ASC.Data.Storage.S3
                 BucketName = _bucket,
                 Expires = DateTime.UtcNow.Add(expire),
                 Key = MakePath(domain, path),
-                Protocol = SecureHelper.IsSecure() ? Protocol.HTTPS : Protocol.HTTP,
+                Protocol = SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? Protocol.HTTPS : Protocol.HTTP,
                 Verb = HttpVerb.GET
             };
 
@@ -768,11 +773,11 @@ namespace ASC.Data.Storage.S3
 
         public override string GetUploadedUrl(string domain, string directoryPath)
         {
-            if (HttpContext.Current != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                var buket = HttpContext.Current.Request.Query["bucket"].FirstOrDefault();
-                var key = HttpContext.Current.Request.Query["key"].FirstOrDefault();
-                var etag = HttpContext.Current.Request.Query["etag"].FirstOrDefault();
+                var buket = HttpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
+                var key = HttpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
+                var etag = HttpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
                 var destkey = MakePath(domain, directoryPath) + "/";
 
                 if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
@@ -780,9 +785,9 @@ namespace ASC.Data.Storage.S3
                 {
                     var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
                     var skipQuota = false;
-                    if (HttpContext.Current.Session != null)
+                    if (HttpContextAccessor?.HttpContext.Session != null)
                     {
-                        HttpContext.Current.Session.TryGetValue(etag, out var isCounted);
+                        HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
                         skipQuota = isCounted != null;
                     }
                     //Add to quota controller
@@ -793,7 +798,7 @@ namespace ASC.Data.Storage.S3
                             var size = GetFileSize(domain, domainpath);
                             QuotaUsedAdd(domain, size);
 
-                            if (HttpContext.Current.Session != null)
+                            if (HttpContextAccessor?.HttpContext.Session != null)
                             {
                                 //TODO:
                                 //HttpContext.Current.Session.Add(etag, size); 

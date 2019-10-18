@@ -30,13 +30,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -45,16 +45,16 @@ namespace ASC.Data.Storage
         private readonly IEnumerable<Appender> Appenders;
 
 
-        public WebPathSettings(IServiceProvider serviceProvider)
+        public WebPathSettings(Configuration.Storage storage)
         {
-            var section = serviceProvider.GetService<Configuration.Storage>();
+            var section = storage;
             if (section != null)
             {
                 Appenders = section.Appender;
             }
         }
 
-        public string GetRelativePath(string absolutePath)
+        public string GetRelativePath(HttpContext httpContext, IOptionsMonitor<LogNLog> options, string absolutePath)
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
@@ -66,12 +66,12 @@ namespace ASC.Data.Storage
             {
                 return absolutePath;
             }
-            return SecureHelper.IsSecure() && !string.IsNullOrEmpty(appender.AppendSecure) ?
+            return SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure) ?
                 absolutePath.Remove(0, appender.AppendSecure.Length) :
                 absolutePath.Remove(0, appender.Append.Length);
         }
 
-        public string GetPath(string relativePath)
+        public string GetPath(HttpContext httpContext, IOptionsMonitor<LogNLog> options, string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
@@ -122,7 +122,7 @@ namespace ASC.Data.Storage
                 else
                 {
                     //TODO HostingEnvironment.IsHosted
-                    if (SecureHelper.IsSecure() && !string.IsNullOrEmpty(appender.AppendSecure))
+                    if (SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure))
                     {
                         result = string.Format("{0}/{1}", appender.AppendSecure.TrimEnd('/'), relativePath.TrimStart('/'));
                     }
@@ -148,14 +148,16 @@ namespace ASC.Data.Storage
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IOptionsMonitor<LogNLog> Options { get; }
 
         public WebPath(
-            WebPathSettings webPathSettings, 
-            StaticUploader staticUploader, 
-            CdnStorageSettings cdnStorageSettings, 
+            WebPathSettings webPathSettings,
+            StaticUploader staticUploader,
+            CdnStorageSettings cdnStorageSettings,
             IHttpContextAccessor httpContextAccessor,
             IWebHostEnvironment webHostEnvironment,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<LogNLog> options)
         {
             WebPathSettings = webPathSettings;
             StaticUploader = staticUploader;
@@ -163,6 +165,7 @@ namespace ASC.Data.Storage
             HttpContextAccessor = httpContextAccessor;
             WebHostEnvironment = webHostEnvironment;
             CoreBaseSettings = coreBaseSettings;
+            Options = options;
         }
 
         public string GetPath(string relativePath)
@@ -185,7 +188,7 @@ namespace ASC.Data.Storage
                 }
             }
 
-            return WebPathSettings.GetPath(relativePath);
+            return WebPathSettings.GetPath(HttpContextAccessor.HttpContext, Options, relativePath);
         }
 
         public bool Exists(string relativePath)

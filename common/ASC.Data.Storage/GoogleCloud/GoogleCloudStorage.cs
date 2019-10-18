@@ -41,6 +41,7 @@ using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -65,7 +66,8 @@ namespace ASC.Data.Storage.GoogleCloud
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<LogNLog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 
@@ -191,7 +193,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         public Uri GetUriShared(string domain, string path)
         {
-            return new Uri(SecureHelper.IsSecure() ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+            return new Uri(SecureHelper.IsSecure(HttpContextAccessor.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
         private Uri MakeUri(string preSignedURL)

@@ -32,6 +32,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.DiscStorage
@@ -67,8 +68,9 @@ namespace ASC.Data.Storage.DiscStorage
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<LogNLog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }
 

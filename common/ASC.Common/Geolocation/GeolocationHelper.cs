@@ -81,11 +81,6 @@ namespace ASC.Geolocation
             return IPGeolocationInfo.Default;
         }
 
-        public IPGeolocationInfo GetIPGeolocationFromHttpContext()
-        {
-            return GetIPGeolocationFromHttpContext(Common.HttpContext.Current);
-        }
-
         public IPGeolocationInfo GetIPGeolocationFromHttpContext(Microsoft.AspNetCore.Http.HttpContext context)
         {
             if (context != null && context.Request != null)

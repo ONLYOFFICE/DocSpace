@@ -69,6 +69,7 @@ namespace ASC.Core
         public TenantManager TenantManager { get; }
         public UserFormatter UserFormatter { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public CookieStorage CookieStorage { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -80,6 +81,7 @@ namespace ASC.Core
             TenantManager tenantManager,
             UserFormatter userFormatter,
             InstanceCrypto instanceCrypto,
+            CookieStorage cookieStorage,
             IOptionsMonitor<LogNLog> options
             )
         {
@@ -91,6 +93,7 @@ namespace ASC.Core
             TenantManager = tenantManager;
             UserFormatter = userFormatter;
             InstanceCrypto = instanceCrypto;
+            CookieStorage = cookieStorage;
             HttpContextAccessor = httpContextAccessor;
         }
 
@@ -123,7 +126,7 @@ namespace ASC.Core
                     }
                     log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(InstanceCrypto, cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
+                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
                 {
                     if (tenant != TenantManager.GetCurrentTenant().TenantId)
                     {
@@ -234,7 +237,7 @@ namespace ASC.Core
                 roles.Add(Role.Users);
 
                 account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
-                cookie = CookieStorage.EncryptCookie(InstanceCrypto, TenantCookieSettings, TenantManager.GetCurrentTenant().TenantId, account.ID);
+                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             var claims = new List<Claim>

@@ -26,22 +26,23 @@
 
 using System;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
     public static class SecureHelper
     {
-        public static bool IsSecure()
+        public static bool IsSecure(HttpContext httpContext, IOptionsMonitor<ILog> options)
         {
             try
             {
-                return HttpContext.Current != null && Uri.UriSchemeHttps.Equals(HttpContext.Current.Request.GetUrlRewriter().Scheme, StringComparison.OrdinalIgnoreCase);
+                return httpContext != null && Uri.UriSchemeHttps.Equals(httpContext.Request.GetUrlRewriter().Scheme, StringComparison.OrdinalIgnoreCase);
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Data.Storage.SecureHelper").Error(err);
+                options.Get("ASC.Data.Storage.SecureHelper").Error(err);
                 return false;
             }
         }

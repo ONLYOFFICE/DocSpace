@@ -33,6 +33,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
@@ -61,8 +62,9 @@ namespace ASC.Data.Storage.RackspaceCloud
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<LogNLog> options)
-            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
         }
@@ -205,7 +207,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
         private Uri GetUriShared(string domain, string path)
         {
-            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure() ? _cnameSSL : _cname, MakePath(domain, path)));
+            return new Uri(string.Format("{0}{1}", SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _cnameSSL : _cname, MakePath(domain, path)));
         }
 
         public override Stream GetReadStream(string domain, string path)

@@ -27,18 +27,38 @@
 using System;
 using System.Globalization;
 using System.Web;
-using ASC.Common;
+
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Security.Cryptography;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+
 namespace ASC.Core.Security.Authentication
 {
-    class CookieStorage
+    public class CookieStorage
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
-        public static bool DecryptCookie(InstanceCrypto instanceCrypto, string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
+        public InstanceCrypto InstanceCrypto { get; }
+        public TenantCookieSettings TenantCookieSettings { get; }
+        public HttpContext HttpContext { get; }
+        public ILog Log { get; }
+
+        public CookieStorage(
+            IHttpContextAccessor httpContextAccessor,
+            InstanceCrypto instanceCrypto,
+            TenantCookieSettings tenantCookieSettings,
+            IOptionsMonitor<ILog> options)
+        {
+            InstanceCrypto = instanceCrypto;
+            TenantCookieSettings = tenantCookieSettings;
+            HttpContext = httpContextAccessor.HttpContext;
+            Log = options.Get("ASC");
+        }
+
+        public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
         {
             tenant = Tenant.DEFAULT_TENANT;
             userid = Guid.Empty;
@@ -56,7 +76,7 @@ namespace ASC.Core.Security.Authentication
             try
             {
                 cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
-                var s = instanceCrypto.Decrypt(cookie).Split('$');
+                var s = InstanceCrypto.Decrypt(cookie).Split('$');
 
                 if (0 < s.Length) login = s[0];
                 if (1 < s.Length) tenant = int.Parse(s[1]);
@@ -70,22 +90,22 @@ namespace ASC.Core.Security.Authentication
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.Core").ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, login {3}, pass {4}, indexTenant {5}, expire {6}: {7}",
+                Log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, login {3}, pass {4}, indexTenant {5}, expire {6}: {7}",
                     cookie, tenant, userid, login, password, indexTenant, expire.ToString(DateTimeFormat), err);
             }
             return false;
         }
 
 
-        public static string EncryptCookie(InstanceCrypto instanceCrypto, TenantCookieSettings TenantCookieSettings, int tenant, Guid userid, string login = null, string password = null)
+        public string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
         {
             var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
             var expires = TenantCookieSettings.GetExpiresTime(tenant);
             var settingsUser = TenantCookieSettings.GetForUser(tenant, userid);
-            return EncryptCookie(instanceCrypto, tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
+            return EncryptCookie(tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
         }
 
-        public static string EncryptCookie(InstanceCrypto instanceCrypto, int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
+        public string EncryptCookie(int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
         {
             var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}",
                 (login ?? string.Empty).ToLowerInvariant(),
@@ -97,19 +117,19 @@ namespace ASC.Core.Security.Authentication
                 expires.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
                 indexUser);
 
-            return instanceCrypto.Encrypt(s);
+            return InstanceCrypto.Encrypt(s);
         }
 
 
-        private static string GetUserDepenencySalt()
+        private string GetUserDepenencySalt()
         {
             var data = string.Empty;
             try
             {
-                if (HttpContext.Current != null && HttpContext.Current.Request != null)
+                if (HttpContext?.Request != null)
                 {
-                    var forwarded = HttpContext.Current.Request.Headers["X-Forwarded-For"].ToString();
-                    data = string.IsNullOrEmpty(forwarded) ? HttpContext.Current.Request.GetUserHostAddress() : forwarded.Split(':')[0];
+                    var forwarded = HttpContext.Request.Headers["X-Forwarded-For"].ToString();
+                    data = string.IsNullOrEmpty(forwarded) ? HttpContext.Request.GetUserHostAddress() : forwarded.Split(':')[0];
                 }
             }
             catch { }

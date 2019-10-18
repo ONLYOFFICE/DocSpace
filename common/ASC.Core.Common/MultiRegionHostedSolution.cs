@@ -34,8 +34,8 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core.Billing;
+using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
-using ASC.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -49,7 +49,7 @@ namespace ASC.Core
         public IConfiguration Configuraion { get; }
         public TenantDomainValidator TenantDomainValidator { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
-        public InstanceCrypto InstanceCrypto { get; }
+        public CookieStorage CookieStorage { get; }
         public DbRegistry DbRegistry { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
         public IOptionsMonitor<LogNLog> Options { get; }
@@ -58,7 +58,7 @@ namespace ASC.Core
             IConfiguration configuraion,
             TenantDomainValidator tenantDomainValidator,
             TimeZoneConverter timeZoneConverter,
-            InstanceCrypto instanceCrypto,
+            CookieStorage cookieStorage,
             DbRegistry dbRegistry,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<LogNLog> options)
@@ -67,7 +67,7 @@ namespace ASC.Core
             Configuraion = configuraion;
             TenantDomainValidator = tenantDomainValidator;
             TimeZoneConverter = timeZoneConverter;
-            InstanceCrypto = instanceCrypto;
+            CookieStorage = cookieStorage;
             DbRegistry = dbRegistry;
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
@@ -141,12 +141,12 @@ namespace ASC.Core
 
         public string CreateAuthenticationCookie(string region, int tenantId, string login, string password)
         {
-            return GetRegionService(region).CreateAuthenticationCookie(InstanceCrypto, tenantId, login, password);
+            return GetRegionService(region).CreateAuthenticationCookie(CookieStorage, tenantId, login, password);
         }
 
         public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
         {
-            return GetRegionService(region).CreateAuthenticationCookie(InstanceCrypto, tenantId, userId);
+            return GetRegionService(region).CreateAuthenticationCookie(CookieStorage, tenantId, userId);
         }
 
 

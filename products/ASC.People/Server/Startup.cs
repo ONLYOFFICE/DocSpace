@@ -18,6 +18,7 @@ using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 using ASC.Core.Data;
 using ASC.Core.Notify;
+using ASC.Core.Security.Authentication;
 using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -260,6 +261,7 @@ namespace ASC.People
                     .AddSingleton<MessagePolicy>()
                     .AddScoped<DisplayUserSettings>()
                     .AddScoped<SmsSender>()
+                    .AddScoped<CookieStorage>()
                     .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
                     .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()

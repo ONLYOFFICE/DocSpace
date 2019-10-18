@@ -34,6 +34,7 @@ using ASC.Core.Common.Configuration;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -161,6 +162,7 @@ namespace ASC.Data.Storage
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public IOptionsMonitor<LogNLog> Options { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,
@@ -170,7 +172,20 @@ namespace ASC.Data.Storage
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<LogNLog> options) :
+            this(storageFactoryListener, storageFactoryConfig, storageSettings, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null)
+        {
+        }
+        public StorageFactory(
+            StorageFactoryListener storageFactoryListener,
+            StorageFactoryConfig storageFactoryConfig,
+            StorageSettings storageSettings,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<LogNLog> options,
+            IHttpContextAccessor httpContextAccessor)
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
@@ -180,6 +195,7 @@ namespace ASC.Data.Storage
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             Options = options;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -277,7 +293,7 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider, Options))
+            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider, HttpContextAccessor, Options))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);
