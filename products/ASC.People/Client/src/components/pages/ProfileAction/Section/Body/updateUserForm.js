@@ -508,9 +508,6 @@ class UpdateUserForm extends React.Component {
 
 
               tooltipContent={<Text.Body fontSize={13}>{t("EmailPopupHelper")}</Text.Body>}
-              tooltipMaxWidth={312}
-              tooltipOffsetRight={100}
-              tooltipId="EmailTooltip"
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
@@ -583,9 +580,6 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
 
               tooltipContent={tooltipTypeContent}
-              tooltipMaxWidth={340}
-              tooltipOffsetRight={120}
-              tooltipId="TypeTooltip"
             />
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
