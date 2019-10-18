@@ -165,30 +165,34 @@ class LinkWithDropdown extends React.PureComponent {
     } = this.props;
     return (
       <>
-        <StyledLinkWithDropdown
+        <span
           ref={this.ref}
           onClick={this.clickToDropdown}
-          isSemitransparent={isSemitransparent}
-          dropdownType={dropdownType}
-          color={color}
         >
-          <StyledText
-            isTextOverflow={isTextOverflow}
-            truncate={isTextOverflow}
-            fontSize={fontSize}
-            color={color}
-            isBold={isBold}
-            title={title}
-            dropdownType={dropdownType}
-          >
-            {this.props.children}
-          </StyledText>
+          <StyledLinkWithDropdown
 
-          <Caret
-            color={color}
+            isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
-          />
-        </StyledLinkWithDropdown>
+            color={color}
+          >
+            <StyledText
+              isTextOverflow={isTextOverflow}
+              truncate={isTextOverflow}
+              fontSize={fontSize}
+              color={color}
+              isBold={isBold}
+              title={title}
+              dropdownType={dropdownType}
+            >
+              {this.props.children}
+            </StyledText>
+
+            <Caret
+              color={color}
+              dropdownType={dropdownType}
+            />
+          </StyledLinkWithDropdown>
+        </span>
 
         <DataDropDown
           isOpen={this.state.isOpen}
