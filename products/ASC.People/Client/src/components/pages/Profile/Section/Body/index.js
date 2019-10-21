@@ -424,7 +424,7 @@ class ProfileInfo extends React.PureComponent {
                 className='language-combo'
               />
               <TooltipIcon>
-                <HelpButton offsetRight={0} tooltipContent={tooltipLanguage} />
+                <HelpButton place="bottom" offsetLeft={50} offsetRight={0} tooltipContent={tooltipLanguage} />
               </TooltipIcon>
              
             </InfoItemValue>
