@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, toastr, AvatarEditor } from 'asc-web-components'
+import { Avatar, Button, Textarea, toastr, AvatarEditor, Text } from 'asc-web-components'
 import { withTranslation } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { createProfile } from '../../../../../store/profile/actions';
@@ -355,6 +355,16 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={3}
+
+              tooltipContent={
+                <Text.Body>
+                  {t("EmailPopupHelper_1")}
+                  <br /><br />
+                  {t("EmailPopupHelper_2")}
+                  <br /><br />
+                  {t("EmailPopupHelper_3")}
+                </Text.Body>
+              }
             />
             <PasswordField
               isRequired={true}

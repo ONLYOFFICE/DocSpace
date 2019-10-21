@@ -506,8 +506,13 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
 
-
-              tooltipContent={<Text.Body fontSize={13}>{t("EmailPopupHelper")}</Text.Body>}
+              tooltipContent={
+                <Text.Body>
+                  {t("EmailPopupHelper_1")}
+                  <br /><br />
+                  {t("EmailPopupHelper_3")}
+                </Text.Body>
+              }
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
