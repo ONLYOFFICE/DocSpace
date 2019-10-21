@@ -11,6 +11,8 @@ import history from './history';
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
+const Settings = lazy(() => import("./components/pages/Settings"));
+
 const App = () => {
   return (
     <Router history={history}>
@@ -23,6 +25,7 @@ const App = () => {
             <Route path="/confirm" component={Confirm} />
             <PrivateRoute exact path={["/","/error=:error"]} component={Home} />
             <PrivateRoute exact path="/about" component={About} />
+            <PrivateRoute restricted path="/settings" component={Settings} />
             <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>
