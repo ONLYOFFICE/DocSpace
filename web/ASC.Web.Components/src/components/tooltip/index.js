@@ -14,7 +14,7 @@ const TooltipStyle = styled.div`
     opacity: 1;
     padding: 16px;
     pointer-events: auto;
-    max-width: 320px;
+    max-width: 340px;
 
     &:before {
       border: none;
