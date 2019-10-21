@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +26,6 @@ namespace ASC.Resource.Manager
             var startup = new Startup();
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
-            CommonServiceProvider.Init(serviceProvider);
             ConfigurationManager.Init(serviceProvider);
             var ResourceData = serviceProvider.GetService<ResourceData>();
 

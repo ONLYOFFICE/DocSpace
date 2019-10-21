@@ -51,7 +51,6 @@ namespace ASC.Studio.Notify
 
                     var serviceProvider = services.BuildServiceProvider();
                     ConfigurationManager.Init(serviceProvider);
-                    CommonServiceProvider.Init(serviceProvider);
                 })
                 .UseConsoleLifetime()
                 .Build();
