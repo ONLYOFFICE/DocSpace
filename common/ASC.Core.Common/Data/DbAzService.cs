@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
@@ -38,8 +37,8 @@ namespace ASC.Core.Data
 {
     public class DbAzService : DbBaseService, IAzService
     {
-        public DbAzService(ConnectionStringSettings connectionString, DbRegistry dbRegistry)
-            : base(connectionString, dbRegistry, "tenant")
+        public DbAzService(DbOptionsManager dbOptionsManager)
+            : base(dbOptionsManager, "tenant")
         {
         }
 

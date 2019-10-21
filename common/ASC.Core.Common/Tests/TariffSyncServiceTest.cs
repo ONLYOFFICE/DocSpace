@@ -49,7 +49,7 @@ namespace ASC.Core.Common.Tests
 
         public TariffSyncServiceTest()
         {
-            tariffSyncService = new TariffSyncService(ServiceProvider, Configuration, DbRegistry, Options);
+            tariffSyncService = new TariffSyncService(null, null, null, null);
         }
 
         [Test]

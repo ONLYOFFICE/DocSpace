@@ -51,6 +51,7 @@ namespace ASC.Core
         public TimeZoneConverter TimeZoneConverter { get; }
         public CookieStorage CookieStorage { get; }
         public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
         public IOptionsMonitor<LogNLog> Options { get; }
 
@@ -60,6 +61,7 @@ namespace ASC.Core
             TimeZoneConverter timeZoneConverter,
             CookieStorage cookieStorage,
             DbRegistry dbRegistry,
+            DbOptionsManager dbOptions,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<LogNLog> options)
         {
@@ -69,6 +71,7 @@ namespace ASC.Core
             TimeZoneConverter = timeZoneConverter;
             CookieStorage = cookieStorage;
             DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
             Initialize();
@@ -190,12 +193,12 @@ namespace ASC.Core
 
         public IDbManager GetRegionDb(string region)
         {
-            return new DbManager(DbRegistry, GetRegionService(region).DbId);
+            return DbOptions.Get(GetRegionService(region).DbId);
         }
 
         public IDbManager GetMultiRegionDb()
         {
-            return new MultiRegionalDbManager(GetRegions().Select(r => new DbManager(DbRegistry, GetRegionService(r).DbId)));
+            return new MultiRegionalDbManager(GetRegions().Select(r => DbOptions.Get(GetRegionService(r).DbId)));
         }
 
         public System.Configuration.ConnectionStringSettings GetRegionConnectionString(string region)
@@ -264,7 +267,7 @@ namespace ASC.Core
                     {
                         try
                         {
-                            using var db = new DbManager(DbRegistry, connectionString.Name);
+                            using var db = DbOptions.Get(connectionString.Name);
                             var q = new SqlQuery("regions")
 .Select("region")
 .Select("connection_string")

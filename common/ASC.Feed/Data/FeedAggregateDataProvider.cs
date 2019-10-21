@@ -42,18 +42,18 @@ namespace ASC.Feed.Data
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
-        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptionsManager { get; }
 
-        public FeedAggregateDataProvider(DbRegistry dbRegistry)
+        public FeedAggregateDataProvider(DbOptionsManager dbOptionsManager)
         {
-            DbRegistry = dbRegistry;
+            DbOptionsManager = dbOptionsManager;
         }
-        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbRegistry dbRegistry)
+        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbOptionsManager dbOptionsManager)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
-            DbRegistry = dbRegistry;
+            DbOptionsManager = dbOptionsManager;
         }
 
         public DateTime GetLastTimeAggregate(string key)
@@ -62,17 +62,15 @@ namespace ASC.Feed.Data
                 .Select("last_date")
                 .Where("last_key", key);
 
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             var value = db.ExecuteScalar<DateTime>(q);
             return value != default ? value.AddSeconds(1) : value;
         }
 
         public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value)
         {
-            using (var db = new DbManager(DbRegistry, Constants.FeedDbId))
-            {
-                db.ExecuteNonQuery(new SqlInsert("feed_last", true).InColumnValue("last_key", key).InColumnValue("last_date", value));
-            }
+            var db = GetDb();
+            db.ExecuteNonQuery(new SqlInsert("feed_last", true).InColumnValue("last_key", key).InColumnValue("last_date", value));
 
             const int feedsPortionSize = 1000;
             var aggregatedDate = DateTime.UtcNow;
@@ -94,7 +92,7 @@ namespace ASC.Feed.Data
 
         private void SaveFeedsPortion(IEnumerable<FeedRow> feeds, DateTime aggregatedDate)
         {
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             var i = new SqlInsert("feed_aggregate", true)
 .InColumns("id", "tenant", "product", "module", "author", "modified_by", "group_id", "created_date",
@@ -131,12 +129,12 @@ namespace ASC.Feed.Data
 
         public void RemoveFeedAggregate(DateTime fromTime)
         {
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             using var command = db.Connection.CreateCommand();
             using var tx = db.Connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             command.Transaction = tx;
             command.CommandTimeout = 60 * 60; // a hour
-            var dialect = DbRegistry.GetSqlDialect(Constants.FeedDbId);
+            var dialect = db.GetSqlDialect(Constants.FeedDbId);
             if (dialect.SupportMultiTableUpdate)
             {
                 command.ExecuteNonQuery("delete from feed_aggregate, feed_users using feed_aggregate, feed_users where id = feed_id and aggregated_date < @date", new { date = fromTime });
@@ -228,7 +226,7 @@ namespace ASC.Feed.Data
                 query.Where(exp);
             }
 
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             var news = db
                         .ExecuteList(query)
                         .ConvertAll(r => new FeedResultItem(
@@ -259,13 +257,13 @@ namespace ASC.Feed.Data
                 q.Where(Exp.Ge("a.aggregated_date", lastReadedTime));
             }
 
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             return db.ExecuteList(q).Count();
         }
 
         public IEnumerable<int> GetTenants(TimeInterval interval)
         {
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             var q = new SqlQuery("feed_aggregate")
 .Select("tenant")
 .Where(Exp.Between("aggregated_date", interval.From, interval.To))
@@ -279,7 +277,7 @@ namespace ASC.Feed.Data
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
                 .Where("a.id", id);
 
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             var news = db
                     .ExecuteList(query)
                     .ConvertAll(r => new FeedResultItem(
@@ -298,19 +296,21 @@ namespace ASC.Feed.Data
 
         public void RemoveFeedItem(string id)
         {
-            using var db = new DbManager(DbRegistry, Constants.FeedDbId);
+            var db = GetDb();
             using var command = db.Connection.CreateCommand();
             using var tx = db.Connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             command.Transaction = tx;
             command.CommandTimeout = 60 * 60; // a hour
 
-            var dialect = DbRegistry.GetSqlDialect(Constants.FeedDbId);
+            var dialect = db.GetSqlDialect(Constants.FeedDbId);
 
             command.ExecuteNonQuery(new SqlDelete("feed_users").Where("feed_id", id), dialect);
             command.ExecuteNonQuery(new SqlDelete("feed_aggregate").Where("id", id), dialect);
 
             tx.Commit();
         }
+
+        private IDbManager GetDb() => DbOptionsManager.Get(Constants.FeedDbId);
     }
 
 

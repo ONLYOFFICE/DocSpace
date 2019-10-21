@@ -74,7 +74,7 @@ namespace ASC.Web.Core.Mail
         public DbRegistry DbRegistry { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
-
+        public DbOptionsManager DbOptions { get; }
         public ICache Cache { get; }
 
         public MailServiceHelper(
@@ -83,7 +83,8 @@ namespace ASC.Web.Core.Mail
             IConfiguration configuration,
             DbRegistry dbRegistry,
             CoreBaseSettings coreBaseSettings,
-            MailServiceHelperStorage mailServiceHelperStorage)
+            MailServiceHelperStorage mailServiceHelperStorage,
+            DbOptionsManager dbOptions)
         {
             UserManager = userManager;
             AuthContext = authContext;
@@ -91,6 +92,7 @@ namespace ASC.Web.Core.Mail
             DbRegistry = dbRegistry;
             CoreBaseSettings = coreBaseSettings;
             MailServiceHelperStorage = mailServiceHelperStorage;
+            DbOptions = dbOptions;
             Cache = mailServiceHelperStorage.Cache;
             DefaultDatabase = GetDefaultDatabase();
         }
@@ -103,7 +105,7 @@ namespace ASC.Web.Core.Mail
 
         private DbManager GetDb()
         {
-            return new DbManager(DbRegistry, "webstudio");
+            return DbOptions.Get("webstudio");
         }
 
         private DbManager GetDb(string dbid, string connectionString)
@@ -117,7 +119,7 @@ namespace ASC.Web.Core.Mail
 
             DbRegistry.RegisterDatabase(connectionSettings.Name, connectionSettings);
 
-            return new DbManager(DbRegistry, connectionSettings.Name);
+            return DbOptions.Get(connectionSettings.Name);
         }
 
         private void DemandPermission()

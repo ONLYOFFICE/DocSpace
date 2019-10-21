@@ -38,13 +38,13 @@ namespace ASC.Geolocation
     {
         private readonly string dbid;
 
-        public DbRegistry DbRegistry { get; }
         public ILog Log { get; }
+        public DbOptionsManager DbOptions { get; }
 
-        public GeolocationHelper(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option, string dbid)
+        public GeolocationHelper(DbOptionsManager dbOptions, IOptionsMonitor<LogNLog> option, string dbid)
         {
             Log = option.CurrentValue;
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
             this.dbid = dbid;
         }
 
@@ -54,7 +54,7 @@ namespace ASC.Geolocation
             try
             {
                 var ipformatted = FormatIP(ip);
-                using var db = new DbManager(DbRegistry, dbid);
+                var db = DbOptions.Get(dbid);
                 var q = new SqlQuery("dbip_location")
 .Select("ip_start", "ip_end", "country", "city", "timezone_offset", "timezone_name")
 .Where(Exp.Le("ip_start", ipformatted))

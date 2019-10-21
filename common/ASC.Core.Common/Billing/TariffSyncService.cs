@@ -48,13 +48,16 @@ namespace ASC.Core.Billing
         private Timer timer;
 
 
-        public TariffSyncService(IServiceProvider serviceProvider, IConfiguration configuration, DbRegistry dbRegistry,
+        public TariffSyncService(
+            IServiceProvider serviceProvider,
+            IConfiguration configuration,
+            DbQuotaService dbQuotaService,
             IOptionsMonitor<LogNLog> options)
         {
             config = TariffSyncServiceSection.GetSection();
             ServiceProvider = serviceProvider;
             Configuration = configuration;
-            DbRegistry = dbRegistry;
+            DbQuotaService = dbQuotaService;
             log = options.CurrentValue;
         }
 
@@ -68,7 +71,7 @@ namespace ASC.Core.Billing
                 {
                     var cs = Configuration.GetConnectionStrings(config.ConnectionStringName + version) ??
                              Configuration.GetConnectionStrings(config.ConnectionStringName);
-                    quotaServices[version] = new DbQuotaService(cs, DbRegistry).GetTenantQuotas();
+                    quotaServices[version] = DbQuotaService.GetTenantQuotas();
                 }
                 return quotaServices[version];
             }
@@ -83,7 +86,7 @@ namespace ASC.Core.Billing
 
         public IServiceProvider ServiceProvider { get; }
         public IConfiguration Configuration { get; }
-        public DbRegistry DbRegistry { get; }
+        public DbQuotaService DbQuotaService { get; }
 
         public void Start()
         {
@@ -109,7 +112,7 @@ namespace ASC.Core.Billing
             {
                 var scope = ServiceProvider.CreateScope();
                 var tariffSync = scope.ServiceProvider.GetService<TariffSync>();
-                tariffSync.Sync(config, Configuration);
+                tariffSync.Sync();
 
             }
             catch (Exception error)
@@ -121,24 +124,26 @@ namespace ASC.Core.Billing
 
     class TariffSync
     {
-        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry, CoreSettings coreSettings)
+        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry, CoreSettings coreSettings, DbQuotaService dbQuotaService)
         {
             TenantManager = tenantManager;
             DbRegistry = dbRegistry;
             CoreSettings = coreSettings;
+            DbQuotaService = dbQuotaService;
         }
 
         public TenantManager TenantManager { get; }
         public DbRegistry DbRegistry { get; }
         public CoreSettings CoreSettings { get; }
+        public DbQuotaService DbQuotaService { get; }
 
-        public void Sync(TariffSyncServiceSection config, IConfiguration configuration)
+        public void Sync()
         {
             var tenant = TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
             if (tenant != null)
             {
                 using var wcfClient = new TariffSyncClient();
-                var quotaService = new DbQuotaService(configuration.GetConnectionStrings(config.ConnectionStringName), DbRegistry);
+                var quotaService = DbQuotaService;
 
                 var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
                 // save new

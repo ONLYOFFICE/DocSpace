@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
@@ -40,9 +39,8 @@ namespace ASC.Core.Data
         private const string tenants_quota = "tenants_quota";
         internal const string tenants_quotarow = "tenants_quotarow";
 
-
-        public DbQuotaService(ConnectionStringSettings connectionString, DbRegistry dbRegistry)
-            : base(connectionString, dbRegistry, "tenant")
+        public DbQuotaService(DbOptionsManager dbOptionsManager)
+            : base(dbOptionsManager, "tenant")
         {
         }
 

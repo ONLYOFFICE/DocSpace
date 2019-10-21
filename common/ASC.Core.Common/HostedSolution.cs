@@ -78,6 +78,7 @@ namespace ASC.Core
         {
         }
 
+        //TODO:fix
         public HostedSolution(
             IConfiguration configuration,
             TenantDomainValidator tenantDomainValidator,
@@ -88,13 +89,13 @@ namespace ASC.Core
             IOptionsMonitor<LogNLog> options,
             string region)
         {
-            tenantService = new DbTenantService(connectionString, dbRegistry, tenantDomainValidator, timeZoneConverter);
+            tenantService = new DbTenantService(null, null, null);
             var baseSettings = new CoreBaseSettings(configuration);
             coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new DbUserService(connectionString, dbRegistry);
-            quotaService = new DbQuotaService(connectionString, dbRegistry);
-            tariffService = new TariffService(connectionString, quotaService, tenantService, baseSettings, coreSettings, configuration, dbRegistry, tariffServiceStorage, options);
+            userService = new DbUserService(null);
+            quotaService = new DbQuotaService(null);
+            tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;

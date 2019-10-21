@@ -29,7 +29,6 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
-    using ASC.Common.Utils;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
     using ASC.Core.Users;
@@ -44,7 +43,7 @@ namespace ASC.Core.Common.Tests
 
         public DbTenantServiceTest()
         {
-            userService = new DbUserService(Configuration.GetConnectionStrings("core"), DbRegistry);
+            userService = new DbUserService(null);
         }
 
 

@@ -29,10 +29,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
+
 using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Common.Web;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Data
@@ -67,16 +69,20 @@ namespace ASC.Common.Data
     public class ConfigureDbManager : IConfigureNamedOptions<DbManager>
     {
         public DbRegistry DbRegistry { get; }
+        public IOptionsMonitor<LogNLog> Option { get; }
 
-        public ConfigureDbManager(DbRegistry dbRegistry)
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option)
         {
             DbRegistry = dbRegistry;
+            Option = option;
         }
 
         public void Configure(string name, DbManager dbManager)
         {
             dbManager.DbRegistry = DbRegistry;
             dbManager.DatabaseId = string.IsNullOrEmpty(name) ? "default" : name;
+            dbManager.Logger = Option.Get("ASC.SQL");
+
         }
 
         public void Configure(DbManager dbManager)
@@ -88,7 +94,7 @@ namespace ASC.Common.Data
 
     public class DbManager : IDbManager
     {
-        private readonly ILog logger = LogManager.GetLogger("ASC.SQL");
+        public ILog Logger { get; internal set; }
         private readonly ProxyContext proxyContext;
         private readonly bool shared;
 
@@ -155,7 +161,7 @@ namespace ASC.Common.Data
             DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
             this.shared = shared;
 
-            if (logger.IsDebugEnabled)
+            if (Logger.IsDebugEnabled)
             {
                 proxyContext = new ProxyContext(AdoProxyExecutedEventHandler);
             }
@@ -184,22 +190,6 @@ namespace ASC.Common.Data
         }
 
         #endregion
-
-        public static IDbManager FromHttpContext(DbRegistry dbRegistry, string databaseId)
-        {
-            if (HttpContext.Current != null)
-            {
-                if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
-                {
-                    var localDbManager = new DbManager(dbRegistry, databaseId);
-                    var dbManagerAdapter = new DbManagerProxy(localDbManager);
-                    DisposableHttpContext.Current[databaseId] = localDbManager;
-                    return dbManagerAdapter;
-                }
-                return new DbManagerProxy(dbManager);
-            }
-            return new DbManager(dbRegistry, databaseId);
-        }
 
         private DbConnection OpenConnection()
         {
@@ -367,7 +357,7 @@ namespace ASC.Common.Data
 
         private void AdoProxyExecutedEventHandler(ExecutedEventArgs a)
         {
-            logger.DebugWithProps(a.SqlMethod,
+            Logger.DebugWithProps(a.SqlMethod,
                 new KeyValuePair<string, object>("duration", a.Duration.TotalMilliseconds),
                 new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(a.Sql)),
                 new KeyValuePair<string, object>("sqlParams", RemoveWhiteSpaces(a.SqlParameters))
@@ -379,6 +369,11 @@ namespace ASC.Common.Data
             return !string.IsNullOrEmpty(str) ?
                 str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
                 string.Empty;
+        }
+
+        public ISqlDialect GetSqlDialect(string databaseId)
+        {
+            return DbRegistry.GetSqlDialect(databaseId);
         }
     }
 
@@ -466,6 +461,11 @@ namespace ASC.Common.Data
         public int ExecuteBatch(IEnumerable<ISqlInstruction> batch)
         {
             return dbManager.ExecuteBatch(batch);
+        }
+
+        public ISqlDialect GetSqlDialect(string databaseId)
+        {
+            return dbManager.GetSqlDialect(databaseId);
         }
     }
 }

@@ -28,14 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
-    using ASC.Common.Data;
-    using ASC.Common.Logging;
-    using ASC.Common.Utils;
     using ASC.Core.Billing;
-    using ASC.Core.Data;
-    using ASC.Core.Tenants;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Options;
     using NUnit.Framework;
 
     [TestFixture]
@@ -44,12 +37,9 @@ namespace ASC.Core.Common.Tests
         private readonly ITariffService tariffService;
 
 
-        public TariffServiceTest(IConfiguration configuration, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter, DbRegistry dbRegistry, TariffServiceStorage tariffServiceStorage, IOptionsMonitor<LogNLog> options)
+        public TariffServiceTest()
         {
-            var cs = configuration.GetConnectionStrings("core");
-            var tenantService = new DbTenantService(cs, dbRegistry, tenantDomainValidator, timeZoneConverter);
-            var baseSettings = new CoreBaseSettings(configuration);
-            tariffService = new TariffService(cs, new DbQuotaService(cs, dbRegistry), tenantService, baseSettings, new CoreSettings(tenantService, baseSettings, configuration), configuration, dbRegistry, tariffServiceStorage, options);
+            tariffService = new TariffService(null, null, null, null, null, null, null, null);
         }
 
 

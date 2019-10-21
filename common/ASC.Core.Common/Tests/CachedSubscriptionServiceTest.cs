@@ -30,9 +30,7 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using ASC.Common.Caching;
     using ASC.Common.Data;
-    using ASC.Common.Utils;
     using ASC.Core.Caching;
-    using ASC.Core.Data;
     using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
@@ -44,7 +42,7 @@ namespace ASC.Core.Common.Tests
 
         public CachedSubscriptionServiceTest(IConfiguration configuration, DbRegistry dbRegistry, ICacheNotify<SubscriptionRecord> cacheNotify, ICacheNotify<SubscriptionMethodCache> notify)
         {
-            service = new CachedSubscriptionService(new DbSubscriptionService(configuration.GetConnectionStrings("core"), dbRegistry), cacheNotify, notify);
+            service = new CachedSubscriptionService(null, null);
         }
 
 

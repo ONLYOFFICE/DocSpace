@@ -54,17 +54,14 @@ namespace ASC.Common.Data
         }
 
 
-        public MultiRegionalDbManager(IConfiguration configuration, DbRegistry dbRegistry, string dbId)
+        public MultiRegionalDbManager(IConfiguration configuration, DbOptionsManager optionsManager, string dbId)
         {
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             DatabaseId = dbId;
             databases = configuration.GetConnectionStrings()
                                             .Where(c => c.Name.Equals(dbId, cmp) || c.Name.StartsWith(dbId + ".", cmp))
-                                            .Select(
-                                                c =>
-                                                HttpContext.Current != null
-                                                    ? DbManager.FromHttpContext(dbRegistry, c.Name)
-                                                    : new DbManager(dbRegistry, c.Name))
+                                            .Select(c => optionsManager.Get(c.Name))
+                                            .Cast<IDbManager>()
                                             .ToList();
             localDb = databases.SingleOrDefault(db => db.DatabaseId.Equals(dbId, cmp));
         }
@@ -83,11 +80,6 @@ namespace ASC.Common.Data
                 disposed = true;
                 databases.ForEach(db => db.Dispose());
             }
-        }
-
-        public static MultiRegionalDbManager FromHttpContext(IConfiguration configuration, DbRegistry dbRegistry, string databaseId)
-        {
-            return new MultiRegionalDbManager(configuration, dbRegistry, databaseId);
         }
 
         public IDbTransaction BeginTransaction(IsolationLevel isolationLevel)
@@ -179,6 +171,11 @@ namespace ASC.Common.Data
         public IDbTransaction BeginTransaction()
         {
             return localDb.BeginTransaction();
+        }
+
+        public ISqlDialect GetSqlDialect(string databaseId)
+        {
+            return localDb.GetSqlDialect(databaseId);
         }
     }
 }

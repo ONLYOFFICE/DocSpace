@@ -37,6 +37,7 @@ namespace ASC.Core.Data
         private readonly string dbid;
 
         public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptionsManager { get; }
         protected string TenantColumn
         {
             get;
@@ -47,6 +48,12 @@ namespace ASC.Core.Data
         {
             dbid = connectionString.Name;
             DbRegistry = dbRegistry;
+            TenantColumn = tenantColumn;
+        }
+
+        protected DbBaseService(DbOptionsManager dbOptionsManager, string tenantColumn)
+        {
+            DbOptionsManager = dbOptionsManager;
             TenantColumn = tenantColumn;
         }
 
@@ -77,7 +84,7 @@ namespace ASC.Core.Data
 
         protected IDbManager GetDb()
         {
-            return DbManager.FromHttpContext(DbRegistry, dbid);
+            return DbOptionsManager?.Value;
         }
 
         protected SqlQuery Query(string table, int tenant)
@@ -108,7 +115,7 @@ namespace ASC.Core.Data
 
         private T Execute<T>(Func<IDbManager, T> action)
         {
-            using var db = GetDb();
+            var db = GetDb();
             return action(db);
         }
     }

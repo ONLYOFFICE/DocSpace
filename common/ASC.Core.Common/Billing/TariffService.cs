@@ -102,16 +102,15 @@ namespace ASC.Core.Billing
         public TariffServiceStorage TariffServiceStorage { get; }
 
         public TariffService(
-            System.Configuration.ConnectionStringSettings connectionString,
             IQuotaService quotaService,
             ITenantService tenantService,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            DbRegistry dbRegistry,
+            DbOptionsManager dbOptionsManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<LogNLog> options)
-            : base(connectionString, dbRegistry, "tenant")
+            : base(dbOptionsManager, "tenant")
         {
             log = options.CurrentValue;
             this.quotaService = quotaService;
@@ -412,7 +411,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             var inserted = false;
             if (!Equals(bi, GetBillingInfo(tenant)))
             {
-                using var db = GetDb();
+                var db = GetDb();
                 using var tx = db.BeginTransaction();
                 // last record is not the same
                 var q = new SqlQuery("tenants_tariff").SelectCount().Where("tenant", tenant).Where("tariff", bi.Item1).Where("stamp", bi.Item2);
@@ -444,7 +443,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         public void DeleteDefaultBillingInfo()
         {
             const int tenant = Tenant.DEFAULT_TENANT;
-            using (var db = GetDb())
+            var db = GetDb();
             {
                 db.ExecuteNonQuery(new SqlUpdate("tenants_tariff")
                                        .Set("tenant", -2)

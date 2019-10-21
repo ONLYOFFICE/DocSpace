@@ -38,6 +38,7 @@ namespace ASC.Common.Data
         DbConnection Connection { get; }
         string DatabaseId { get; }
         bool InTransaction { get; }
+        ISqlDialect GetSqlDialect(string databaseId);
 
         IDbTransaction BeginTransaction();
 

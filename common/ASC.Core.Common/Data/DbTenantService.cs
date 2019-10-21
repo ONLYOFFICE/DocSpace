@@ -26,10 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
@@ -47,8 +47,8 @@ namespace ASC.Core.Data
         public TenantDomainValidator TenantDomainValidator { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString, DbRegistry dbRegistry, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
-            : base(connectionString, dbRegistry, null)
+        public DbTenantService(DbOptionsManager dbOptionsManager, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
+            : base(dbOptionsManager, null)
         {
             TenantDomainValidator = tenantDomainValidator;
             TimeZoneConverter = timeZoneConverter;

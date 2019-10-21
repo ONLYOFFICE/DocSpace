@@ -186,7 +186,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, HttpContext ?? ASC.Common.HttpContext.Current);
+            return GetCurrentTenant(throwIfNotFound, HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
