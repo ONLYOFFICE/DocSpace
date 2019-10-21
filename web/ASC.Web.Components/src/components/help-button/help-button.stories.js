@@ -50,7 +50,7 @@ storiesOf("Components|Buttons", module)
             tooltipContent={
               <>
                 <p>You can put every thing here</p>
-                <ul>
+                <ul style={{marginBottom: 0}}>
                   <li>Word</li>
                   <li>Chart</li>
                   <li>Else</li>

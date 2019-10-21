@@ -79,7 +79,7 @@ HelpButton.propTypes = {
     PropTypes.node
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  tooltipOffsetRight: PropTypes.number,
+  offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
   place: PropTypes.string
