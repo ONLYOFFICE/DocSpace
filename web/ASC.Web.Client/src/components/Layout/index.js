@@ -64,6 +64,20 @@ class PureStudioLayout extends React.Component {
 
 const getAvailableModules = modules => {
   const separator = { separator: true, id: "nav-separator-1" };
+  const customModules = [
+    {
+      separator: true,
+      id: "nav-separator-2"
+    },
+    {
+      id: 'testId',
+      title: 'Settings',
+      iconName: "SettingsIcon",
+      notifications: 0,
+      url: '/settings',
+      onClick: () => window.open('/settings', "_self"),
+      onBadgeClick: e => console.log("SettingsIconBadge Clicked", e)
+    }];
   const products =
     modules.map(product => {
       return {
@@ -77,7 +91,7 @@ const getAvailableModules = modules => {
       };
     }) || [];
 
-  return products.length ? [separator, ...products] : products;
+  return products.length ? [separator, ...products, ...customModules] : products;
 };
 
 function mapStateToProps(state) {
