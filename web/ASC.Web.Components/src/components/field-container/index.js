@@ -86,6 +86,7 @@ class FieldContainer extends React.Component {
           {tooltipContent && (
             <HelpButton
               tooltipContent={tooltipContent}
+              place="bottom"
             />
           )}
         </div>
