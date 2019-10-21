@@ -47,7 +47,7 @@ namespace ASC.Web.Studio.Core
             SecurityContext securityContext,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            DbRegistry dbRegistry,
+            DbOptionsManager dbOptions,
             AccountLinkerStorage accountLinkerStorage)
         {
             var tenant = tenantManager.GetCurrentTenant();
@@ -59,7 +59,7 @@ namespace ASC.Web.Studio.Core
                 Provider = ProviderConstants.Blockchain,
             };
 
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbRegistry, accountLinkerStorage);
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -72,14 +72,14 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, AccountLinkerStorage accountLinkerStorage)
+        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
-            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto, dbRegistry, accountLinkerStorage);
+            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto, dbOptions, accountLinkerStorage);
         }
 
-        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, AccountLinkerStorage accountLinkerStorage)
+        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbRegistry, accountLinkerStorage);
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
             if (profile == null) return null;
 

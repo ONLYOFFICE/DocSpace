@@ -77,7 +77,7 @@ namespace ASC.Employee.Core.Controllers
         public DisplayUserSettings DisplayUserSettings { get; }
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
-        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
         public WebItemSecurityCache WebItemSecurityCache { get; }
         public ILog Log { get; }
@@ -110,7 +110,7 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettings displayUserSettings,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            DbRegistry dbRegistry,
+            DbOptionsManager dbOptions,
             AccountLinkerStorage accountLinkerStorage,
             WebItemSecurityCache webItemSecurityCache,
             IOptionsMonitor<LogNLog> option)
@@ -143,7 +143,7 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettings = displayUserSettings;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
             WebItemSecurityCache = webItemSecurityCache;
         }
@@ -1256,7 +1256,7 @@ namespace ASC.Employee.Core.Controllers
 
         private AccountLinker GetLinker()
         {
-            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbRegistry, AccountLinkerStorage);
+            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbOptions, AccountLinkerStorage);
         }
 
         private static string GetMeaningfulProviderName(string providerName)

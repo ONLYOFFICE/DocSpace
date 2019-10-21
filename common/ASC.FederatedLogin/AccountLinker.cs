@@ -71,15 +71,15 @@ namespace ASC.FederatedLogin
 
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
-        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
 
-        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbRegistry dbRegistry, AccountLinkerStorage accountLinkerStorage)
+        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
             this.dbid = dbid;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
         }
 
@@ -95,7 +95,7 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            using var db = new DbManager(DbRegistry, dbid);
+            var db = DbOptions.Get(dbid);
             var query = new SqlQuery("account_links")
 .Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
             return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
@@ -114,7 +114,7 @@ namespace ASC.FederatedLogin
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            using var db = new DbManager(DbRegistry, dbid);
+            var db = DbOptions.Get(dbid);
             var query = new SqlQuery("account_links")
 .Select("profile").Where("id", obj);
             return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
@@ -122,17 +122,15 @@ namespace ASC.FederatedLogin
 
         public void AddLink(string obj, LoginProfile profile)
         {
-            using (var db = new DbManager(DbRegistry, dbid))
-            {
-                db.ExecuteScalar<int>(
-                    new SqlInsert("account_links", true)
-                        .InColumnValue("id", obj)
-                        .InColumnValue("uid", profile.HashId)
-                        .InColumnValue("provider", profile.Provider)
-                        .InColumnValue("profile", profile.ToSerializedString())
-                        .InColumnValue("linked", DateTime.UtcNow)
-                    );
-            }
+            var db = DbOptions.Get(dbid);
+            db.ExecuteScalar<int>(
+                new SqlInsert("account_links", true)
+                    .InColumnValue("id", obj)
+                    .InColumnValue("uid", profile.HashId)
+                    .InColumnValue("provider", profile.Provider)
+                    .InColumnValue("profile", profile.ToSerializedString())
+                    .InColumnValue("linked", DateTime.UtcNow)
+                );
             AccountLinkerStorage.RemoveFromCache(obj);
         }
 
@@ -158,10 +156,9 @@ namespace ASC.FederatedLogin
             if (!string.IsNullOrEmpty(provider)) sql.Where("provider", provider);
             if (!string.IsNullOrEmpty(hashId)) sql.Where("uid", hashId);
 
-            using (var db = new DbManager(DbRegistry, dbid))
-            {
-                db.ExecuteScalar<int>(sql);
-            }
+            var db = DbOptions.Get(dbid);
+            db.ExecuteScalar<int>(sql);
+
             AccountLinkerStorage.RemoveFromCache(obj);
         }
     }
