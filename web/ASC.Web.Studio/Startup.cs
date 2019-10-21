@@ -76,7 +76,6 @@ namespace ASC.Web.Studio
             app.UseSession();
             app.UseAuthentication();
 
-            app.UseCSP();
             app.UseCm();
 
             app.UseEndpoints(endpoints =>

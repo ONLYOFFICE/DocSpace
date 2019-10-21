@@ -267,7 +267,6 @@ namespace ASC.People
                 endpoints.MapCustom();
             });
 
-            app.UseCSP();
             app.UseCm();
             app.UseStaticFiles();
         }

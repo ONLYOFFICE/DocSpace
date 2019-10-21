@@ -121,7 +121,6 @@ namespace ASC.Web.Api
                 endpoints.MapCustom();
             });
 
-            app.UseCSP();
             app.UseCm();
         }
     }
