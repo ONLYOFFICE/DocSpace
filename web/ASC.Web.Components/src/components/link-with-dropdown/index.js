@@ -6,6 +6,7 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import { Text } from "../text";
 import { handleAnyClick } from "../../utils/event";
+import isEqual from "lodash/isEqual";
 
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({ isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, color, title, dropdownType, data,
@@ -100,13 +101,13 @@ const DataDropDown = ({ data, color, fontSize, title, ...props }) => (
   <DropDown {...props}></DropDown>
 );
 
-class LinkWithDropdown extends React.PureComponent {
+class LinkWithDropdown extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: props.isOpen
     };
 
     this.ref = React.createRef();
@@ -147,12 +148,16 @@ class LinkWithDropdown extends React.PureComponent {
   }
 
   onDropDownItemClick = item => {
-    item.onClick && item.onClick();
     this.toggleDropdown(!this.state.isOpen);
+    item.onClick && item.onClick();
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+  }
+
   render() {
-    console.log("LinkWithDropdown render");
+    // console.log("LinkWithDropdown render");
 
     const {
       isSemitransparent,
@@ -161,7 +166,9 @@ class LinkWithDropdown extends React.PureComponent {
       fontSize,
       color,
       isBold,
-      title
+      title,
+      isOpen,
+      ...rest
     } = this.props;
     return (
       <>
@@ -197,7 +204,7 @@ class LinkWithDropdown extends React.PureComponent {
         <DataDropDown
           isOpen={this.state.isOpen}
           withArrow={false}
-          {...this.props}
+          {...rest}
         >
           {this.props.data.map(item => (
             <DropDownItem
@@ -232,7 +239,8 @@ LinkWithDropdown.defaultProps = {
   fontSize: 13,
   isBold: false,
   isSemitransparent: false,
-  isTextOverflow: true
+  isTextOverflow: true,
+  isOpen: false
 };
 
 export default LinkWithDropdown;
