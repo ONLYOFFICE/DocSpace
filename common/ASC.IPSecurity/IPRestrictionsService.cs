@@ -30,24 +30,43 @@ using ASC.Common.Caching;
 
 namespace ASC.IPSecurity
 {
-    public class IPRestrictionsService
+    public class IPRestrictionsServiceCache
     {
         private const string cacheKey = "iprestrictions";
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<IPRestrictionItem> notify;
+        public ICache Cache { get; set; }
+
+        public ICacheNotify<IPRestrictionItem> Notify { get; }
+
+        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify)
+        {
+            Cache = AscCache.Memory;
+            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            Notify = notify;
+        }
+
+        public static string GetCacheKey(int tenant)
+        {
+            return cacheKey + tenant;
+        }
+    }
+    public class IPRestrictionsService
+    {
+        private readonly ICache cache;
+        private readonly ICacheNotify<IPRestrictionItem> notify;
         private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
 
         public IPRestrictionsRepository IPRestrictionsRepository { get; }
 
-        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository, ICacheNotify<IPRestrictionItem> notify)
+        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository, IPRestrictionsServiceCache iPRestrictionsServiceCache)
         {
             IPRestrictionsRepository = iPRestrictionsRepository;
-            notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            cache = iPRestrictionsServiceCache.Cache;
+            notify = iPRestrictionsServiceCache.Notify;
         }
 
         public IEnumerable<IPRestriction> Get(int tenant)
         {
-            var key = GetCacheKey(tenant);
+            var key = IPRestrictionsServiceCache.GetCacheKey(tenant);
             var restrictions = cache.Get<List<IPRestriction>>(key);
             if (restrictions == null)
             {
@@ -61,11 +80,6 @@ namespace ASC.IPSecurity
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
-        }
-
-        private static string GetCacheKey(int tenant)
-        {
-            return cacheKey + tenant;
         }
     }
 }

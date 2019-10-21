@@ -40,8 +40,8 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID, DbRegistry dbRegistry, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
-            : base(dbRegistry, tenantID)
+        public VoipDao(int tenantID, DbOptionsManager dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+            : base(dbOptions, tenantID)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;

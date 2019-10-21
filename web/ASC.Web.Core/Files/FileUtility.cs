@@ -37,11 +37,11 @@ namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
-        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbRegistry dbRegistry)
+        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbOptionsManager dbOptions)
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
         }
 
         #region method
@@ -167,7 +167,7 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
                     const string tableTitle = "files_converts";
 
-                    using var dbManager = new DbManager(DbRegistry, databaseId);
+                    var dbManager = DbOptions.Get(databaseId);
                     var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
 
                     var list = dbManager.ExecuteList(sqlQuery);
@@ -255,6 +255,7 @@ namespace ASC.Web.Core.Files
         public IConfiguration Configuration { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {

@@ -35,18 +35,18 @@ namespace ASC.VoipService.Dao
     {
         private readonly string dbid = "default";
 
-        protected AbstractDao(DbRegistry dbRegistry, int tenantID)
+        protected AbstractDao(DbOptionsManager dbOptions, int tenantID)
         {
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
             TenantID = tenantID;
         }
 
         protected DbManager GetDb()
         {
-            return new DbManager(DbRegistry, dbid);
+            return DbOptions.Get(dbid);
         }
 
-        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
         protected int TenantID
         {
             get;

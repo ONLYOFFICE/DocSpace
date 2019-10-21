@@ -36,16 +36,16 @@ namespace ASC.IPSecurity
     {
         private const string dbId = "core";
 
-        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
 
-        public IPRestrictionsRepository(DbRegistry dbRegistry)
+        public IPRestrictionsRepository(DbOptionsManager dbOptions)
         {
-            DbRegistry = dbRegistry;
+            DbOptions = dbOptions;
         }
 
         public List<IPRestriction> Get(int tenant)
         {
-            using var db = new DbManager(DbRegistry, dbId);
+            var db = DbOptions.Get(dbId);
             return db
 .ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
 .ConvertAll(r => new IPRestriction
@@ -58,7 +58,7 @@ namespace ASC.IPSecurity
 
         public List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            using var db = new DbManager(DbRegistry, dbId);
+            var db = DbOptions.Get(dbId);
             using var tx = db.BeginTransaction();
             var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
             db.ExecuteNonQuery(d);

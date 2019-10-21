@@ -33,8 +33,7 @@ using System.Threading.Tasks;
 using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
-using ASC.Common.Web;
-
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Data
@@ -70,11 +69,17 @@ namespace ASC.Common.Data
     {
         public DbRegistry DbRegistry { get; }
         public IOptionsMonitor<LogNLog> Option { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option)
         {
             DbRegistry = dbRegistry;
             Option = option;
+        }
+
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option, IHttpContextAccessor httpContextAccessor) : this(dbRegistry, option)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public void Configure(string name, DbManager dbManager)
@@ -83,11 +88,34 @@ namespace ASC.Common.Data
             dbManager.DatabaseId = string.IsNullOrEmpty(name) ? "default" : name;
             dbManager.Logger = Option.Get("ASC.SQL");
 
+            if (dbManager.Logger.IsDebugEnabled)
+            {
+                dbManager.ProxyContext = new ProxyContext(a =>
+                {
+                    dbManager.Logger.DebugWithProps(a.SqlMethod,
+    new KeyValuePair<string, object>("duration", a.Duration.TotalMilliseconds),
+    new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(a.Sql)),
+    new KeyValuePair<string, object>("sqlParams", RemoveWhiteSpaces(a.SqlParameters))
+    );
+                });
+            }
+
+            if (HttpContextAccessor != null)
+            {
+                dbManager.HttpContextAccessor = HttpContextAccessor;
+            }
         }
 
         public void Configure(DbManager dbManager)
         {
             Configure("default", dbManager);
+        }
+
+        private string RemoveWhiteSpaces(string str)
+        {
+            return !string.IsNullOrEmpty(str) ?
+                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
+                string.Empty;
         }
     }
 
@@ -95,8 +123,8 @@ namespace ASC.Common.Data
     public class DbManager : IDbManager
     {
         public ILog Logger { get; internal set; }
-        private readonly ProxyContext proxyContext;
-        private readonly bool shared;
+        public IHttpContextAccessor HttpContextAccessor { get; internal set; }
+        internal ProxyContext ProxyContext { get; set; }
 
         private DbCommand command;
         private ISqlDialect dialect;
@@ -150,28 +178,6 @@ namespace ASC.Common.Data
 
         }
 
-        public DbManager(DbRegistry dbRegistry, string databaseId, int? commandTimeout = null)
-            : this(dbRegistry, databaseId, true, commandTimeout)
-        {
-        }
-
-        public DbManager(DbRegistry dbRegistry, string databaseId, bool shared, int? commandTimeout = null)
-        {
-            DbRegistry = dbRegistry ?? throw new ArgumentNullException(nameof(dbRegistry));
-            DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
-            this.shared = shared;
-
-            if (Logger.IsDebugEnabled)
-            {
-                proxyContext = new ProxyContext(AdoProxyExecutedEventHandler);
-            }
-
-            if (commandTimeout.HasValue)
-            {
-                this.CommandTimeout = commandTimeout;
-            }
-        }
-
         #region IDisposable Members
 
         public void Dispose()
@@ -201,12 +207,12 @@ namespace ASC.Common.Data
         private DbConnection GetConnection()
         {
             CheckDispose();
-            string key = null;
             DbConnection connection;
-            if (shared && HttpContext.Current != null)
+            string key = null;
+            if (HttpContextAccessor?.HttpContext != null)
             {
                 key = string.Format("Connection {0}|{1}", GetDialect(), DbRegistry.GetConnectionString(DatabaseId));
-                connection = DisposableHttpContext.Current[key] as DbConnection;
+                connection = HttpContextAccessor.HttpContext.Items[key] as DbConnection;
                 if (connection != null)
                 {
                     var state = ConnectionState.Closed;
@@ -230,11 +236,11 @@ namespace ASC.Common.Data
                 }
             }
             connection = DbRegistry.CreateDbConnection(DatabaseId);
-            if (proxyContext != null)
+            if (ProxyContext != null)
             {
-                connection = new DbConnectionProxy(connection, proxyContext);
+                connection = new DbConnectionProxy(connection, ProxyContext);
             }
-            if (shared && HttpContext.Current != null) DisposableHttpContext.Current[key] = connection;
+            if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.Items[key] = connection;
             return connection;
         }
 
@@ -353,22 +359,6 @@ namespace ASC.Common.Data
         private ISqlDialect GetDialect()
         {
             return dialect ?? (dialect = DbRegistry.GetSqlDialect(DatabaseId));
-        }
-
-        private void AdoProxyExecutedEventHandler(ExecutedEventArgs a)
-        {
-            Logger.DebugWithProps(a.SqlMethod,
-                new KeyValuePair<string, object>("duration", a.Duration.TotalMilliseconds),
-                new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(a.Sql)),
-                new KeyValuePair<string, object>("sqlParams", RemoveWhiteSpaces(a.SqlParameters))
-                );
-        }
-
-        private string RemoveWhiteSpaces(string str)
-        {
-            return !string.IsNullOrEmpty(str) ?
-                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
-                string.Empty;
         }
 
         public ISqlDialect GetSqlDialect(string databaseId)

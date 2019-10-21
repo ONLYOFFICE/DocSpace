@@ -63,13 +63,13 @@ namespace ASC.VoipService.Dao
 
         public CachedVoipDao(
             int tenantID,
-            DbRegistry dbRegistry,
+            DbOptionsManager dbOptions,
             AuthContext authContext,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
             BaseCommonLinkUtility baseCommonLinkUtility,
             VoipDaoCache voipDaoCache)
-            : base(tenantID, dbRegistry, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
+            : base(tenantID, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
             cache = voipDaoCache.Cache;
             VoipDaoCache = voipDaoCache;
