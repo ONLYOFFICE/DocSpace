@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
-import { withTranslation } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
 import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
@@ -426,7 +426,7 @@ class UpdateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, dialog, selector } = this.state;
-    const { t } = this.props;
+    const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -507,11 +507,9 @@ class UpdateUserForm extends React.Component {
               buttonTabIndex={1}
 
               tooltipContent={
-                <Text.Body>
-                  {t("EmailPopupHelper_1")}
-                  <br /><br />
-                  {t("EmailPopupHelper_3")}
-                </Text.Body>
+                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p style={{height: "0", visibility: "hidden"}}>You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
+                </Trans>
               }
             />
             <TextChangeField
