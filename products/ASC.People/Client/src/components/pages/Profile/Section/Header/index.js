@@ -8,12 +8,14 @@ import { useTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
+import { fetchProfile } from '../../../../../store/profile/actions';
 import styled from 'styled-components';
 
 const wrapperStyle = {
   display: "flex",
   alignItems: "center"
 };
+
 const Header = styled(Text.ContentHeader)`
   margin-left: 16px;
   margin-right: 16px;
@@ -24,7 +26,7 @@ const Header = styled(Text.ContentHeader)`
 `;
 
 const SectionHeaderContent = props => {
-  const { profile, history, settings, isAdmin, viewer, updateUserStatus } = props;
+  const { profile, history, settings, isAdmin, viewer, updateUserStatus, fetchProfile } = props;
 
   const selectedUserIds = new Array(profile.id);
 
@@ -45,8 +47,9 @@ const SectionHeaderContent = props => {
   };
 
   const onDisableClick = () => {
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
+    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => fetchProfile(profile.id));
   };
 
   const onEditPhoto = () => {
@@ -54,8 +57,9 @@ const SectionHeaderContent = props => {
   };
 
   const onEnableClick = () => {
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
+    updateUserStatus(EmployeeStatus.Active, selectedUserIds)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => fetchProfile(profile.id));
   };
 
   const onReassignDataClick = user => {
@@ -219,4 +223,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { updateUserStatus })(withRouter(SectionHeaderContent));
+export default connect(mapStateToProps, { updateUserStatus, fetchProfile })(withRouter(SectionHeaderContent));
