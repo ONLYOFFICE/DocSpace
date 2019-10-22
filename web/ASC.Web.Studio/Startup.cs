@@ -1,6 +1,5 @@
 using ASC.Api.Core.Auth;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using Microsoft.AspNetCore.Authentication;
@@ -73,8 +72,6 @@ namespace ASC.Web.Studio
             app.UseStaticFiles();
             app.UseSession();
             app.UseAuthentication();
-
-            app.UseCm();
 
             app.UseEndpoints(endpoints =>
             {

@@ -4,7 +4,6 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
 using ASC.Data.Reassigns;
 using ASC.Data.Storage.Configuration;
 using ASC.MessagingSystem;
@@ -119,8 +118,6 @@ namespace ASC.Web.Api
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
-
-            app.UseCm();
         }
     }
 }

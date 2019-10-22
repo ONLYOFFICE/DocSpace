@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
 using ASC.Notify.Config;
 using ASC.Web.Core;
 using Microsoft.Extensions.Configuration;
@@ -40,8 +39,6 @@ namespace ASC.Notify
                     services.AddWebItemManager();
 
                     var serviceProvider = services.BuildServiceProvider();
-                    ConfigurationManager.Init(serviceProvider);
-
                     var c = hostContext.Configuration.GetSetting<NotifyServiceCfg>("notify");
                     c.Init();
                     services.AddSingleton(c);

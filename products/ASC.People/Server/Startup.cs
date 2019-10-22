@@ -206,11 +206,11 @@ namespace ASC.People
 
                     .AddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>()
                     .AddSingleton<ProgressQueue<ReassignProgressItem>>()
-                    .AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureWorkerQueue<ReassignProgressItem>>()
+                    .AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>()
 
                     .AddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>()
                     .AddSingleton<ProgressQueue<RemoveProgressItem>>()
-                    .AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureWorkerQueue<RemoveProgressItem>>()
+                    .AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>()
 
                     .AddScoped<DbManager>()
                     .AddScoped<IConfigureOptions<DbManager>, ConfigureDbManager>()
@@ -311,7 +311,6 @@ namespace ASC.People
                 endpoints.MapCustom();
             });
 
-            app.UseCm();
             app.UseStaticFiles();
         }
     }

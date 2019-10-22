@@ -84,14 +84,6 @@ namespace ASC.Common.Threading.Workers
 
         }
 
-        public WorkerQueue(int workerCount, TimeSpan waitInterval, int errorCount, bool stopAfterFinsih)
-        {
-            this.workerCount = workerCount;
-            this.errorCount = errorCount;
-            this.stopAfterFinsih = stopAfterFinsih;
-            this.waitInterval = (int)waitInterval.TotalMilliseconds;
-        }
-
 
         public void Start(Action<T> starter)
         {

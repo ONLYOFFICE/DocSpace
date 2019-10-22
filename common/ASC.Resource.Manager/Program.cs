@@ -26,7 +26,6 @@ namespace ASC.Resource.Manager
             var startup = new Startup();
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
-            ConfigurationManager.Init(serviceProvider);
             var ResourceData = serviceProvider.GetService<ResourceData>();
 
             var cultures = new List<string>();

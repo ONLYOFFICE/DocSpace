@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using Microsoft.Extensions.Options;
 
@@ -38,6 +39,22 @@ namespace ASC.Common.Threading.Progress
         }
     }
 
+    public class ConfigureProgressQueue<T> : IConfigureOptions<ProgressQueue<T>> where T : class, IProgressItem
+    {
+        public ConfigureProgressQueue(IOptionsMonitor<LogNLog> log)
+        {
+            Log = log;
+        }
+
+        public IOptionsMonitor<LogNLog> Log { get; }
+
+        public void Configure(ProgressQueue<T> queue)
+        {
+            queue.log = Log.Get("ASC.WorkerQueue");
+            queue.Start(x => x.RunJob());
+        }
+    }
+
     public class ProgressQueue<T> : WorkerQueue<T> where T : class, IProgressItem
     {
         public bool removeAfterCompleted;
@@ -45,13 +62,6 @@ namespace ASC.Common.Threading.Progress
         public ProgressQueue()
         {
 
-        }
-
-        public ProgressQueue(int workerCount, TimeSpan waitInterval, bool removeAfterCompleted)
-            : base(workerCount, waitInterval, 0, false)
-        {
-            this.removeAfterCompleted = removeAfterCompleted;
-            Start(x => x.RunJob());
         }
 
         public override void Add(T item)
