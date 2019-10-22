@@ -60,6 +60,16 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
 
+  getSelectedTitle = key => {
+    const { data } = this.props;
+    const length = key.length;
+    if (length === 1) {
+      return data[key].title;
+    }
+    else if (length === 3) {
+      return data[key[0]].children[key[2]].title;
+    }
+  }
   onSelect = value => {
     const { data, selectedKeys, selectSettingNode } = this.props;
 
@@ -68,12 +78,14 @@ class ArticleBodyContent extends React.Component {
 
         return;
       }
-      if (value[0].length > 1) {
-        selectSettingNode(value);
+      if (value[0].length === 3) {
+        const selectedTitle = this.getSelectedTitle(value[0]);
+        selectSettingNode(value, selectedTitle);
       }
       else if (value[0].length === 1 && (value[0].toString() !== selectedKeys.toString()[0] || selectedKeys.toString()[2] !== '0')) {
         const selectedKeys = data[value].children ? [`${value.toString()}-0`] : value;
-        selectSettingNode(selectedKeys);
+        const selectedTitle = this.getSelectedTitle(selectedKeys[0]);
+        selectSettingNode(selectedKeys, selectedTitle);
       }
     }
   };
@@ -117,27 +129,10 @@ class ArticleBodyContent extends React.Component {
   };
 };
 
-// const getTreeGroups = (groups) => {
-//   const treeData = [
-//     {
-//       key: "root",
-//       title: 'Test1',
-//       root: true,
-//       children: groups.map(g => {
-//         return {
-//           key: g.id, title: g.name, root: false
-//         };
-//       }) || []
-//     }
-//   ];
-
-//   return treeData;
-// };
-
 function mapStateToProps(state) {
   return {
     data: state.auth.settings.settingsTree.list,
-    selectedKeys: state.auth.settings.settingsTree.selected
+    selectedKeys: state.auth.settings.settingsTree.selectedKey
   };
 }
 

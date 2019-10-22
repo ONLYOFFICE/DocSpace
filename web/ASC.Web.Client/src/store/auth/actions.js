@@ -67,10 +67,10 @@ export function setNewEmail(email) {
     };
 };
 
-export function setNewSelectedNode(selected) {
+export function setNewSelectedNode(selectedNodeData) {
     return {
         type: SET_NEW_SETTING_NODE,
-        selected
+        selectedNodeData
     };
 };
 
@@ -175,6 +175,10 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
     };
 };
 
-export function selectSettingNode(selectedNode) {
-    return dispatch => dispatch(setNewSelectedNode(selectedNode));
+export function selectSettingNode(key, title) {
+    const selectedInfo = {
+        selectedKey: key,
+        selectedTitle: title,
+    };
+    return dispatch => dispatch(setNewSelectedNode(selectedInfo));
 };

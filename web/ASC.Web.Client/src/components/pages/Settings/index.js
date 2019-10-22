@@ -8,6 +8,7 @@ import {
   ArticleHeaderContent,
   ArticleBodyContent
 } from "./Article";
+import { SectionHeaderContent } from './Section'
 
 const CommonSettings = lazy(() => import("./sub-components/common"));
 
@@ -26,6 +27,7 @@ const Settings = ({ match, language }) => {
           withBodyScroll={false}
           articleHeaderContent={<ArticleHeaderContent />}
           articleBodyContent={<ArticleBodyContent />}
+          sectionHeaderContent={<SectionHeaderContent />}
           sectionBodyContent={
             <Switch>
               <Route

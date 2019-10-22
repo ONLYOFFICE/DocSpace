@@ -123,7 +123,8 @@ const initialState = {
         },
         settingsTree: {
             list: settingsTree,
-            selected: ['0-0']
+            selectedKey: ['0-0'],
+            selectedTitle: 'Customization'
         }
     }/*,
     password: null*/
@@ -162,7 +163,7 @@ const authReducer = (state = initialState, action) => {
             });
         case SET_NEW_SETTING_NODE:
             return Object.assign({}, state, {
-                settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, selected: action.selected } }
+                settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, ...action.selectedNodeData } }
             });
         case LOGOUT:
             return initialState;
