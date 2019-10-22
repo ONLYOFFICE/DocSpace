@@ -105,6 +105,7 @@ namespace ASC.Data.Reassigns
             var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
             var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
+            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
             var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
@@ -151,7 +152,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 99;
                 DeleteTalkStorage(storageFactory);
 
-                SendSuccessNotify(studioNotifyService, messageService, userName, docsSpace, crmSpace, mailSpace, talkSpace);
+                SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
@@ -230,16 +231,16 @@ namespace ASC.Data.Reassigns
             }
         }
 
-        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
+        private void SendSuccessNotify(StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, string userName, long docsSpace, long crmSpace, long mailSpace, long talkSpace)
         {
             if (_notify)
                 studioNotifyService.SendMsgRemoveUserDataCompleted(_currentUserId, User, userName,
                                                                             docsSpace, crmSpace, mailSpace, talkSpace);
 
             if (_httpHeaders != null)
-                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), new[] { userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataRemoving, messageTarget.Create(FromUser), new[] { userName });
             else
-                messageService.Send(MessageAction.UserDataRemoving, MessageTarget.Create(FromUser), userName);
+                messageService.Send(MessageAction.UserDataRemoving, messageTarget.Create(FromUser), userName);
         }
 
         private void SendErrorNotify(StudioNotifyService studioNotifyService, string errorMessage, string userName)

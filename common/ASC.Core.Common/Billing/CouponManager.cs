@@ -35,27 +35,28 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASC.Core.Common.Billing
 {
     public class CouponManager
     {
-        private static IEnumerable<AvangateProduct> Products { get; set; }
-        private static IEnumerable<string> Groups { get; set; }
-        private static readonly int Percent;
-        private static readonly int Schedule;
-        private static readonly string VendorCode;
-        private static readonly byte[] Secret;
-        private static readonly Uri BaseAddress;
-        private static readonly string ApiVersion;
-        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
-        private static readonly ILog Log;
+        private IEnumerable<AvangateProduct> Products { get; set; }
+        private IEnumerable<string> Groups { get; set; }
+        private readonly int Percent;
+        private readonly int Schedule;
+        private readonly string VendorCode;
+        private readonly byte[] Secret;
+        private readonly Uri BaseAddress;
+        private readonly string ApiVersion;
+        private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly ILog Log;
 
-        static CouponManager()
+        public CouponManager(IOptionsMonitor<LogNLog> option)
         {
             SemaphoreSlim = new SemaphoreSlim(1, 1);
-            Log = LogManager.GetLogger("ASC");
+            Log = option.Get("ASC");
 
             try
             {
@@ -81,17 +82,17 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        public static string CreateCoupon(TenantManager tenantManager)
+        public string CreateCoupon(TenantManager tenantManager)
         {
             return CreatePromotionAsync(tenantManager).Result;
         }
 
-        private static async Task<string> CreatePromotionAsync(TenantManager tenantManager)
+        private async Task<string> CreatePromotionAsync(TenantManager tenantManager)
         {
             try
             {
                 using var httpClient = PrepaireClient();
-                using var content = new StringContent(await Promotion.GeneratePromotion(tenantManager, Percent, Schedule), Encoding.Default, "application/json");
+                using var content = new StringContent(await Promotion.GeneratePromotion(Log, this, tenantManager, Percent, Schedule), Encoding.Default, "application/json");
                 using var response = await httpClient.PostAsync(string.Format("{0}/promotions/", ApiVersion), content);
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
@@ -108,7 +109,7 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        internal static async Task<IEnumerable<AvangateProduct>> GetProducts()
+        internal async Task<IEnumerable<AvangateProduct>> GetProducts()
         {
             if (Products != null) return Products;
 
@@ -145,9 +146,9 @@ namespace ASC.Core.Common.Billing
             }
         }
 
-        private static HttpClient PrepaireClient()
+        private HttpClient PrepaireClient()
         {
-            ServicePointManager.SecurityProtocol =  SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
             var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
@@ -156,7 +157,7 @@ namespace ASC.Core.Common.Billing
             return httpClient;
         }
 
-        private static string CreateAuthHeader()
+        private string CreateAuthHeader()
         {
             using var hmac = new HMACMD5(Secret);
             var date = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss");
@@ -195,7 +196,7 @@ namespace ASC.Core.Common.Billing
         public int PublishToAffiliatesNetwork { get; set; }
         public int AutoApply { get; set; }
 
-        public static async Task<string> GeneratePromotion(TenantManager tenantManager, int percent, int schedule)
+        public static async Task<string> GeneratePromotion(ILog log, CouponManager couponManager, TenantManager tenantManager, int percent, int schedule)
         {
             try
             {
@@ -220,7 +221,7 @@ namespace ASC.Core.Common.Billing
                     Name = string.Format("{0} {1}% off", code, percent),
                     Coupon = new Coupon { Type = "SINGLE", Code = code },
                     Discount = new Discount { Type = "PERCENT", Value = percent },
-                    Products = (await CouponManager.GetProducts()).Select(r => new CouponProduct { Code = r.ProductCode })
+                    Products = (await couponManager.GetProducts()).Select(r => new CouponProduct { Code = r.ProductCode })
 
                 };
 
@@ -228,7 +229,7 @@ namespace ASC.Core.Common.Billing
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC").Error(ex.Message, ex);
+                log.Error(ex.Message, ex);
                 throw;
             }
         }

@@ -1,4 +1,5 @@
 
+using System;
 using ASC.Api.Core;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
@@ -9,6 +10,8 @@ using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+using ASC.Common.Threading.Progress;
+using ASC.Common.Threading.Workers;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -112,7 +115,34 @@ namespace ASC.People
             services.Configure<DbManager>("default", r => { });
             services.Configure<DbManager>("messages", r => { r.CommandTimeout = 180000; });
 
-            services.AddLogManager()
+            //= new ProgressQueue<T>(1, TimeSpan.FromMinutes(5), true)
+            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
+            {
+                r.workerCount = 2;
+                r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
+                r.errorCount = 1;
+                r.stopAfterFinsih = true;
+            });
+
+            services.Configure<ProgressQueue<ReassignProgressItem>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+                r.removeAfterCompleted = true;
+                r.stopAfterFinsih = false;
+                r.errorCount = 0;
+            });
+
+            services.Configure<ProgressQueue<RemoveProgressItem>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
+                r.removeAfterCompleted = true;
+                r.stopAfterFinsih = false;
+                r.errorCount = 0;
+            });
+
+            services
                     .AddSingleton(typeof(ILog), typeof(LogNLog))
                     .AddStorage(Configuration)
                     .AddWebItemManager()
@@ -169,6 +199,19 @@ namespace ASC.People
                     .AddScoped<CdnStorageSettings>()
                     .AddScoped<StorageFactory>()
                     .AddScoped<DbOptionsManager>()
+
+                    .AddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>()
+                    .AddSingleton<WorkerQueue<ResizeWorkerItem>>()
+                    .AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>()
+
+                    .AddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>()
+                    .AddSingleton<ProgressQueue<ReassignProgressItem>>()
+                    .AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureWorkerQueue<ReassignProgressItem>>()
+
+                    .AddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>()
+                    .AddSingleton<ProgressQueue<RemoveProgressItem>>()
+                    .AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureWorkerQueue<RemoveProgressItem>>()
+
                     .AddScoped<DbManager>()
                     .AddScoped<IConfigureOptions<DbManager>, ConfigureDbManager>()
                     .AddSingleton<StorageFactoryListener>()
@@ -224,6 +267,7 @@ namespace ASC.People
                     .AddSingleton<WebItemSecurityCache>()
                     .AddSingleton<UserPhotoManagerCache>()
                     .AddSingleton<AscCacheNotify>()
+                    .AddSingleton<MessageTarget>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
                     .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
                     .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))

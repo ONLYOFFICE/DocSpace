@@ -25,14 +25,10 @@
 
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
-using ASC.Common.Utils;
-using Autofac;
 using log4net.Config;
 using log4net.Core;
-using Microsoft.Extensions.DependencyInjection;
 using NLog;
 
 namespace ASC.Common.Logging
@@ -768,45 +764,5 @@ namespace ASC.Common.Logging
         public string LogDirectory { get { return ""; } }
 
         public string Name { get; set; }
-    }
-
-    public class LogManager
-    {
-        internal IContainer Builder { get; set; }
-
-        internal static ConcurrentDictionary<string, ILog> Logs;
-
-        static LogManager()
-        {
-            Logs = new ConcurrentDictionary<string, ILog>();
-        }
-
-        public LogManager(IContainer builder)
-        {
-            Builder = builder;
-        }
-
-        public static ILog GetLogger(string name)
-        {
-            return ConfigurationManager.LogManager?.Get(name) ?? new NullLog();
-        }
-
-        public ILog Get(string name)
-        {
-            if (!Logs.TryGetValue(name, out var result))
-            {
-                result = Logs.AddOrUpdate(name, Builder != null ? Builder.Resolve<ILog>(new TypedParameter(typeof(string), name)) : new NullLog(), (k, v) => v);
-            }
-
-            return result;
-        }
-    }
-
-    public static class LogExtension
-    {
-        public static IServiceCollection AddLogManager(this IServiceCollection services)
-        {
-            return services.AddSingleton<LogManager>();
-        }
     }
 }

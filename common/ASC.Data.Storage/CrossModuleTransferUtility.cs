@@ -28,24 +28,29 @@ using System;
 using System.IO;
 using ASC.Common.Logging;
 using ASC.Core.ChunkedUploader;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
     public class CrossModuleTransferUtility
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC.CrossModuleTransferUtility");
+        private readonly ILog Log;
         private readonly IDataStore source;
         private readonly IDataStore destination;
         private readonly long maxChunkUploadSize;
         private readonly int chunksize;
 
-        public CrossModuleTransferUtility(IDataStore source, IDataStore destination)
+        public CrossModuleTransferUtility(IOptionsMonitor<LogNLog> option, IDataStore source, IDataStore destination)
         {
+            Log = option.Get("ASC.CrossModuleTransferUtility");
+            Option = option;
             this.source = source ?? throw new ArgumentNullException("source");
             this.destination = destination ?? throw new ArgumentNullException("destination");
             maxChunkUploadSize = 10 * 1024 * 1024;
             chunksize = 5 * 1024 * 1024;
         }
+
+        public IOptionsMonitor<LogNLog> Option { get; }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {
@@ -62,7 +67,7 @@ namespace ASC.Data.Storage
             else
             {
                 var session = new CommonChunkedUploadSession(stream.Length);
-                var holder = new CommonChunkedUploadSessionHolder(destination, destDomain);
+                var holder = new CommonChunkedUploadSessionHolder(Option, destination, destDomain);
                 holder.Init(session);
                 try
                 {

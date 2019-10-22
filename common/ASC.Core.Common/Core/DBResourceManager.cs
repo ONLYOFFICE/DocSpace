@@ -42,35 +42,38 @@ using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
         public static bool WhiteLableEnabled = false;
-        private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
 
         public DBResourceManager(string filename, Assembly assembly)
                     : base(filename, assembly)
         {
         }
-        public DBResourceManager(IConfiguration configuration, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
+        public DBResourceManager(IConfiguration configuration, IOptionsMonitor<LogNLog> option, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
                     : base(filename, assembly)
         {
             Configuration = configuration;
+            Option = option;
             OptionsDbManager = optionsDbManager;
         }
 
 
-        public static void PatchAssemblies()
+        public static void PatchAssemblies(IOptionsMonitor<LogNLog> option)
         {
-            AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(a.LoadedAssembly);
-            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(a));
+            AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
+            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
         }
 
-        public static void PatchAssembly(Assembly a, bool onlyAsc = true)
+        public static void PatchAssembly(IOptionsMonitor<LogNLog> option, Assembly a, bool onlyAsc = true)
         {
+            var log = option.Get("ASC");
+
             if (!onlyAsc || Accept(a))
             {
                 var types = new Type[0];
@@ -124,6 +127,7 @@ namespace TMResourceData
         }
 
         public IConfiguration Configuration { get; }
+        public IOptionsMonitor<LogNLog> Option { get; }
         public DbOptionsManager OptionsDbManager { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
@@ -132,7 +136,7 @@ namespace TMResourceData
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(Configuration, OptionsDbManager, invariant, culture, BaseName);
+                set = new DBResourceSet(Configuration, Option, OptionsDbManager, invariant, culture, BaseName);
                 resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
@@ -149,11 +153,13 @@ namespace TMResourceData
             private readonly ResourceSet invariant;
             private readonly string culture;
             private readonly string filename;
+            private readonly ILog log;
 
             public IConfiguration Configuration { get; }
+            public IOptionsMonitor<LogNLog> Option { get; }
             public DbOptionsManager OptionsDbManager { get; }
 
-            public DBResourceSet(IConfiguration configuration, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(IConfiguration configuration, IOptionsMonitor<LogNLog> option, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
             {
                 if (culture == null)
                 {
@@ -163,6 +169,11 @@ namespace TMResourceData
                 {
                     throw new ArgumentNullException("filename");
                 }
+
+                Configuration = configuration;
+                Option = option;
+                OptionsDbManager = optionsDbManager;
+                log = option.Get("ASC");
 
                 try
                 {
@@ -174,8 +185,6 @@ namespace TMResourceData
                     log.Error(err);
                 }
 
-                Configuration = configuration;
-                OptionsDbManager = optionsDbManager;
                 this.invariant = invariant;
                 this.culture = invariant != null ? NEUTRAL_CULTURE : culture.Name;
                 this.filename = filename.Split('.').Last() + ".resx";
@@ -260,14 +269,23 @@ namespace TMResourceData
         }
     }
 
-    public static class WhiteLabelHelper
+    public class WhiteLabelHelper
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
-        private static readonly ConcurrentDictionary<int, string> whiteLabelDictionary = new ConcurrentDictionary<int, string>();
-        public static string DefaultLogoText = "";
+        private readonly ILog log;
+        private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
+        public string DefaultLogoText;
 
+        public IConfiguration Configuration { get; }
 
-        public static void SetNewText(int tenantId, string newText)
+        public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        {
+            log = option.Get("ASC.Resources");
+            whiteLabelDictionary = new ConcurrentDictionary<int, string>();
+            DefaultLogoText = "";
+            Configuration = configuration;
+        }
+
+        public void SetNewText(int tenantId, string newText)
         {
             try
             {
@@ -279,7 +297,7 @@ namespace TMResourceData
             }
         }
 
-        public static void RestoreOldText(int tenantId)
+        public void RestoreOldText(int tenantId)
         {
             try
             {
@@ -291,7 +309,7 @@ namespace TMResourceData
             }
         }
 
-        internal static string ReplaceLogo(IConfiguration configuration, TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
+        internal string ReplaceLogo(TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
         {
             if (string.IsNullOrEmpty(resourceValue))
             {
@@ -323,7 +341,7 @@ namespace TMResourceData
                             newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}");
                         }
 
-                        var replPattern = configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
+                        var replPattern = Configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
                         var pattern = string.Format(replPattern, DefaultLogoText);
                         //Hack for resource strings with mails looked like ...@onlyoffice... or with website http://www.onlyoffice.com link or with the https://www.facebook.com/pages/OnlyOffice/833032526736775
 

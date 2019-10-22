@@ -3,20 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using ASC.Common.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Common.Utils
 {
     public static class ConfigurationManager
     {
-        public static LogManager LogManager { get; private set; }
-
         public static void Init(IServiceProvider serviceProvider)
         {
-            LogManager = serviceProvider.GetService<LogManager>();
         }
         public static void UseCm(this IApplicationBuilder applicationBuilder)
         {

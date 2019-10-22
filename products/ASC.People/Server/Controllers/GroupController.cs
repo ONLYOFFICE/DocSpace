@@ -21,7 +21,6 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        public Common.Logging.LogManager LogManager { get; }
         public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
 
@@ -31,19 +30,19 @@ namespace ASC.Employee.Core.Controllers
         public PermissionContext PermissionContext { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public DisplayUserSettings DisplayUserSettings { get; }
+        public MessageTarget MessageTarget { get; }
 
         public GroupController(
-            Common.Logging.LogManager logManager,
             MessageService messageService,
             ApiContext apiContext,
             UserManager userManager,
             UserPhotoManager userPhotoManager,
             SecurityContext securityContext,
             PermissionContext permissionContext,
-            CommonLinkUtility commonLinkUtility, 
-            DisplayUserSettings displayUserSettings)
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettings displayUserSettings,
+            MessageTarget messageTarget)
         {
-            LogManager = logManager;
             MessageService = messageService;
             ApiContext = apiContext;
             UserManager = userManager;
@@ -52,6 +51,7 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext = permissionContext;
             CommonLinkUtility = commonLinkUtility;
             DisplayUserSettings = displayUserSettings;
+            MessageTarget = messageTarget;
         }
 
         [Read]

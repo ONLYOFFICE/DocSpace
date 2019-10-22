@@ -1,6 +1,5 @@
 using ASC.Api.Core.Auth;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
@@ -43,8 +42,7 @@ namespace ASC.Web.Studio
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             services.AddHttpContextAccessor()
-                .AddStorage(Configuration)
-                .AddLogManager();
+                .AddStorage(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

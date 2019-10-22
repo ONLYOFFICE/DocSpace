@@ -110,6 +110,7 @@ namespace ASC.Data.Reassigns
             var userManager = scope.ServiceProvider.GetService<UserManager>();
             var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
             var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
+            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
 
             try
             {
@@ -145,14 +146,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify(userManager, studioNotifyService, messageService, displayUserSettings);
+                SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettings);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(userManager, userPhotoManager, messageService, displayUserSettings);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettings);
                 }
             }
             catch (Exception ex)
@@ -174,7 +175,7 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, DisplayUserSettings displayUserSettings)
+        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettings displayUserSettings)
         {
             var fromUser = userManager.GetUsers(FromUser);
             var toUser = userManager.GetUsers(ToUser);
@@ -185,9 +186,9 @@ namespace ASC.Data.Reassigns
             var toUserName = toUser.DisplayUserName(false, displayUserSettings);
 
             if (_httpHeaders != null)
-                messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
             else
-                messageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), fromUserName, toUserName);
+                messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
 
         private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
@@ -198,7 +199,7 @@ namespace ASC.Data.Reassigns
             studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
-        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, DisplayUserSettings displayUserSettings)
+        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettings displayUserSettings)
         {
             var user = userManager.GetUsers(FromUser);
             var userName = user.DisplayUserName(false, displayUserSettings);
@@ -208,9 +209,9 @@ namespace ASC.Data.Reassigns
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
-                messageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(FromUser), new[] { userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
             else
-                messageService.Send(MessageAction.UserDeleted, MessageTarget.Create(FromUser), userName);
+                messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
         }
     }
 }

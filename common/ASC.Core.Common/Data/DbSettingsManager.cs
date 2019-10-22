@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
@@ -63,7 +64,7 @@ namespace ASC.Core.Data
 
     public class DbSettingsManager
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
 
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
@@ -71,21 +72,20 @@ namespace ASC.Core.Data
 
         public ICache Cache { get; }
         public IServiceProvider ServiceProvider { get; }
-        public DbRegistry DbRegistry { get; }
         public DbSettingsManagerCache DbSettingsManagerCache { get; }
         public DbManager DbManager { get; }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
-            DbRegistry dbRegistry,
             DbSettingsManagerCache dbSettingsManagerCache,
-            DbOptionsManager optionsDbManager) : this(null)
+            DbOptionsManager optionsDbManager,
+            IOptionsMonitor<LogNLog> option) : this(null)
         {
             ServiceProvider = serviceProvider;
-            DbRegistry = dbRegistry;
             DbSettingsManagerCache = dbSettingsManagerCache;
             Cache = dbSettingsManagerCache.Cache;
             DbManager = optionsDbManager.Value;
+            log = option.Get("ASC");
         }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)

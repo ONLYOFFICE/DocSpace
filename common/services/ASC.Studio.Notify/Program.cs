@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Data.Storage.Configuration;
 using ASC.Notify;
@@ -46,8 +45,7 @@ namespace ASC.Studio.Notify
                     services.AddSingleton<StudioNotifyServiceSender>();
                     services.AddHostedService<ServiceLauncher>();
                     services.AddHttpContextAccessor()
-                            .AddStorage(hostContext.Configuration)
-                            .AddLogManager();
+                            .AddStorage(hostContext.Configuration);
 
                     var serviceProvider = services.BuildServiceProvider();
                     ConfigurationManager.Init(serviceProvider);

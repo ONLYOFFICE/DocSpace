@@ -27,12 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -49,14 +51,16 @@ namespace ASC.Web.Studio.Core.Notify
         public UserManager UserManager { get; }
         public SetupInfo SetupInfo { get; }
         public TenantManager TenantManager { get; }
+        public ILog Log { get; }
 
         public StudioNotifyHelper(
-            StudioNotifySource studioNotifySource, 
-            UserManager userManager, 
-            AdditionalWhiteLabelSettings additionalWhiteLabelSettings, 
+            StudioNotifySource studioNotifySource,
+            UserManager userManager,
+            AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            IOptionsMonitor<LogNLog> option)
         {
             Helplink = commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
             NotifySource = studioNotifySource;
@@ -65,6 +69,7 @@ namespace ASC.Web.Studio.Core.Notify
             TenantManager = tenantManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
+            Log = option.Get("ASC");
         }
 
 
@@ -156,7 +161,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public bool IsSubscribedToNotify(IRecipient recipient, INotifyAction notifyAction)
         {
-            return recipient != null && SubscriptionProvider.IsSubscribed(notifyAction, recipient, null);
+            return recipient != null && SubscriptionProvider.IsSubscribed(Log, notifyAction, recipient, null);
         }
 
         public void SubscribeToNotify(Guid userId, INotifyAction notifyAction, bool subscribe)

@@ -42,15 +42,19 @@ namespace ASC.Data.Reassigns
     }
     public class QueueWorker<T> where T : class, IProgressItem
     {
-        protected static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromMinutes(5), true);
+        protected readonly ProgressQueue<T> Queue;
 
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        public QueueWorker(IHttpContextAccessor httpContextAccessor, IServiceProvider serviceProvider)
+        public QueueWorker(
+            IHttpContextAccessor httpContextAccessor,
+            IServiceProvider serviceProvider,
+            ProgressQueueOptionsManager<T> optionsQueue)
         {
             HttpContextAccessor = httpContextAccessor;
             ServiceProvider = serviceProvider;
+            Queue = optionsQueue.Value;
         }
 
         public string GetProgressItemId(int tenantId, Guid userId)
@@ -104,8 +108,9 @@ namespace ASC.Data.Reassigns
         public QueueWorkerReassign(
             IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
-            QueueWorkerRemove queueWorkerRemove) : 
-            base(httpContextAccessor, serviceProvider)
+            QueueWorkerRemove queueWorkerRemove,
+            ProgressQueueOptionsManager<ReassignProgressItem> optionsQueue) :
+            base(httpContextAccessor, serviceProvider, optionsQueue)
         {
             QueueWorkerRemove = queueWorkerRemove;
         }
@@ -119,8 +124,9 @@ namespace ASC.Data.Reassigns
     {
         public QueueWorkerRemove(
             IHttpContextAccessor httpContextAccessor,
-            IServiceProvider serviceProvider) : 
-            base(httpContextAccessor, serviceProvider)
+            IServiceProvider serviceProvider,
+            ProgressQueueOptionsManager<RemoveProgressItem> optionsQueue) :
+            base(httpContextAccessor, serviceProvider, optionsQueue)
         {
         }
 

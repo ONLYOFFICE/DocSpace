@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Formatting = Newtonsoft.Json.Formatting;
@@ -38,7 +39,7 @@ namespace ASC.Resource.Manager
 {
     public static class JsonManager
     {
-        public static void Upload(ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
+        public static void Upload(IOptionsMonitor<LogNLog> option, ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
         {
             var culture = GetCultureFromFileName(fileName);
 
@@ -64,7 +65,7 @@ namespace ASC.Resource.Manager
                     }
                     catch (Exception e)
                     {
-                        LogManager.GetLogger("ASC").ErrorFormat("parse xml " + fileName, e);
+                        option.Get("ASC").ErrorFormat("parse xml " + fileName, e);
                     }
                 }
             }

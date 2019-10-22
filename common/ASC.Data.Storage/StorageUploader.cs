@@ -154,6 +154,7 @@ namespace ASC.Data.Storage
 
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+                var options = scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>();
 
                 SecurityContext.AuthenticateMe(tenant.OwnerId);
 
@@ -163,7 +164,7 @@ namespace ASC.Data.Storage
                     var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, settings.DataStoreConsumer);
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)

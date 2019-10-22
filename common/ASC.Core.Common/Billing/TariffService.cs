@@ -100,6 +100,7 @@ namespace ASC.Core.Billing
         public CoreSettings CoreSettings { get; }
         public IConfiguration Configuration { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
+        public IOptionsMonitor<LogNLog> Options { get; }
 
         public TariffService(
             IQuotaService quotaService,
@@ -118,6 +119,7 @@ namespace ASC.Core.Billing
             CoreSettings = coreSettings;
             Configuration = configuration;
             TariffServiceStorage = tariffServiceStorage;
+            Options = options;
             CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             test = configuration["core:payment:test"] == "true";
@@ -538,7 +540,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         {
             try
             {
-                return new BillingClient(test, Configuration);
+                return new BillingClient(test, Configuration, Options);
             }
             catch (InvalidOperationException ioe)
             {

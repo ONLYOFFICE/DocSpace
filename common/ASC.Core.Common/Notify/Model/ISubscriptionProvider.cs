@@ -58,7 +58,7 @@ namespace ASC.Notify.Model
 
     public static class SubscriptionProviderHelper
     {
-        public static bool IsSubscribed(this ISubscriptionProvider provider, INotifyAction action, IRecipient recipient, string objectID)
+        public static bool IsSubscribed(this ISubscriptionProvider provider, ILog log, INotifyAction action, IRecipient recipient, string objectID)
         {
             var result = false;
 
@@ -80,7 +80,7 @@ namespace ASC.Notify.Model
             }
             catch (Exception exception)
             {
-                LogManager.GetLogger("ASC").Error(exception);
+                log.Error(exception);
             }
 
             return result;

@@ -44,7 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
 {
-    internal class ResizeWorkerItem
+    public class ResizeWorkerItem
     {
         public ResizeWorkerItem(Guid userId, byte[] data, long maxFileSize, Size size, IDataStore dataStore, UserPhotoThumbnailSettings settings)
         {
@@ -204,6 +204,9 @@ namespace ASC.Web.Core.Users
         private Tenant tenant;
         public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
+        //note: using auto stop queue
+        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue;//TODO: configure
+
         public UserPhotoManager(
             UserManager userManager,
             WebImageSupplier webImageSupplier,
@@ -211,8 +214,10 @@ namespace ASC.Web.Core.Users
             TenantManager tenantManager,
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<LogNLog> options,
+            WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue)
         {
+            ResizeQueue = optionsQueue.Value;
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
             UserPhotoThumbnailSettings = userPhotoThumbnailSettings;
@@ -684,9 +689,6 @@ namespace ASC.Web.Core.Users
                 throw new UnknownImageFormatException(error);
             }
         }
-
-        //note: using auto stop queue
-        private static readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>(2, TimeSpan.FromSeconds(30), 1, true);//TODO: configure
 
         private string SizePhoto(Guid userID, byte[] data, long maxFileSize, Size size)
         {

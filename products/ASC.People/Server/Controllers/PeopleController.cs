@@ -80,6 +80,7 @@ namespace ASC.Employee.Core.Controllers
         public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
         public WebItemSecurityCache WebItemSecurityCache { get; }
+        public MessageTarget MessageTarget { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -113,6 +114,7 @@ namespace ASC.Employee.Core.Controllers
             DbOptionsManager dbOptions,
             AccountLinkerStorage accountLinkerStorage,
             WebItemSecurityCache webItemSecurityCache,
+            MessageTarget messageTarget,
             IOptionsMonitor<LogNLog> option)
         {
             Log = option.Get("ASC.Api");
@@ -146,6 +148,7 @@ namespace ASC.Employee.Core.Controllers
             DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
             WebItemSecurityCache = webItemSecurityCache;
+            MessageTarget = messageTarget;
         }
 
         [Read("info")]

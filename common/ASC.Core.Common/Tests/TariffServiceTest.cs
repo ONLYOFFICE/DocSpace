@@ -46,7 +46,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void TestShoppingUriBatch()
         {
-            using var bc = new BillingClient(true, null);
+            using var bc = new BillingClient(true, null, null);
             var result = bc.GetPaymentUrls("0", new[] { "12", "13", "14", "0", "-2" });
             Assert.AreEqual(5, result.Count);
         }

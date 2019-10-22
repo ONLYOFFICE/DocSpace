@@ -100,6 +100,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
                     var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
                     var options = scope.ServiceProvider.GetService<DbOptionsManager>();
+                    var couponManager = scope.ServiceProvider.GetService<CouponManager>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -305,7 +306,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                                     coupon = SetupInfo.IsSecretEmail(userManager.GetUsers(tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
-                                                : CouponManager.CreateCoupon(tenantManager);
+                                                : couponManager.CreateCoupon(tenantManager);
 
                                     log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.TenantAlias, coupon);
                                 }

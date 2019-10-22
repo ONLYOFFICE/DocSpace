@@ -26,14 +26,17 @@
 
 using System;
 using ASC.Common.Data;
+using ASC.Common.Logging;
 using ASC.Core.Data;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Settings
 {
     public class SettingsManager : DbSettingsManager
     {
-        public SettingsManager(IServiceProvider serviceProvider, DbRegistry dbRegistry, DbSettingsManagerCache dbSettingsManagerCache, DbOptionsManager optionsDbManager)
-            : base(serviceProvider, dbRegistry, dbSettingsManagerCache, optionsDbManager)
+        public SettingsManager(IServiceProvider serviceProvider, DbSettingsManagerCache dbSettingsManagerCache, DbOptionsManager optionsDbManager,
+            IOptionsMonitor<LogNLog> option)
+            : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, option)
         {
 
         }

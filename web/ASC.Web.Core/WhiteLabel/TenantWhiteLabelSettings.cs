@@ -61,11 +61,13 @@ namespace ASC.Web.Core.WhiteLabel
             UserPhotoManager userPhotoManager,
             TenantManager tenantManager,
             StorageFactory storageFactory,
+            WhiteLabelHelper whiteLabelHelper,
             IOptionsMonitor<LogNLog> option) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;
             StorageFactory = storageFactory;
+            WhiteLabelHelper = whiteLabelHelper;
             Log = option.CurrentValue;
         }
 
@@ -520,6 +522,7 @@ namespace ASC.Web.Core.WhiteLabel
         public WebImageSupplier WebImageSupplier { get; }
         public UserPhotoManager UserPhotoManager { get; }
         public StorageFactory StorageFactory { get; }
+        public WhiteLabelHelper WhiteLabelHelper { get; }
 
         #region Save for Resource replacement
 

@@ -29,13 +29,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Logging;
-
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading.Workers
 {
+    public class WorkerQueueOptionsManager<T> : OptionsManager<WorkerQueue<T>>
+    {
+        public WorkerQueueOptionsManager(IOptionsFactory<WorkerQueue<T>> factory) : base(factory)
+        {
+        }
+    }
+
+    public class ConfigureWorkerQueue<T> : IConfigureOptions<WorkerQueue<T>>
+    {
+        public ConfigureWorkerQueue(IOptionsMonitor<LogNLog> log)
+        {
+            Log = log;
+        }
+
+        public IOptionsMonitor<LogNLog> Log { get; }
+
+        public void Configure(Workers.WorkerQueue<T> queue)
+        {
+            queue.log = Log.Get("ASC.WorkerQueue");
+        }
+    }
+
     public class WorkerQueue<T>
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.WorkerQueue");
+        internal ILog log;
 
         private readonly ICollection<WorkItem<T>> items = new List<WorkItem<T>>();
         private readonly List<Thread> threads = new List<Thread>();
@@ -43,10 +65,10 @@ namespace ASC.Common.Threading.Workers
         private readonly AutoResetEvent waitEvent = new AutoResetEvent(false);
         private readonly ManualResetEvent stopEvent = new ManualResetEvent(false);
 
-        private readonly int workerCount;
-        private readonly bool stopAfterFinsih;
-        private readonly int errorCount;
-        private readonly int waitInterval;
+        public int workerCount;
+        public bool stopAfterFinsih;
+        public int errorCount;
+        public int waitInterval;
 
         private Action<T> action;
         private volatile bool started;
@@ -57,10 +79,9 @@ namespace ASC.Common.Threading.Workers
 
         public bool IsStarted { get { return started; } }
 
-
-        public WorkerQueue(int workerCount, TimeSpan waitInterval)
-            : this(workerCount, waitInterval, 1, false)
+        public WorkerQueue()
         {
+
         }
 
         public WorkerQueue(int workerCount, TimeSpan waitInterval, int errorCount, bool stopAfterFinsih)
@@ -200,7 +221,7 @@ namespace ASC.Common.Threading.Workers
 
         protected virtual void Error(WorkItem<T> item, Exception exception)
         {
-            LogManager.GetLogger("ASC.Common.Threading.Workers").Error(item, exception);
+            log.Error(item, exception);
 
             item.IsProcessed = false;
             item.Added = DateTime.Now;

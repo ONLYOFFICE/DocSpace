@@ -27,7 +27,6 @@
 using System;
 using ASC.Api.Core;
 using ASC.Api.Settings.Smtp;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
@@ -61,13 +60,12 @@ namespace ASC.Api.Settings
         public CoreConfiguration CoreConfiguration { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
-        public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
 
 
-        public SmtpSettingsController(LogManager logManager,
+        public SmtpSettingsController(
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
@@ -80,7 +78,6 @@ namespace ASC.Api.Settings
             CoreBaseSettings coreBaseSettings,
             IConfiguration configuration)
         {
-            LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;

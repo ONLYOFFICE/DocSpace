@@ -30,8 +30,8 @@ using System.Linq;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
-using NUnit.Framework;
 using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
 {
@@ -124,7 +124,7 @@ namespace ASC.Core.Common.Tests
                 //Проверяем подписался ли юзер вместе со всем отделом двумя способами.
                 Assert.AreEqual(objsGroup.Count() + 1, subProvider.GetSubscriptions(nAction, otdel).Count());
                 Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(nAction, testRec2).Count());
-                Assert.AreEqual(true, subProvider.IsSubscribed(nAction, testRec2, rndObj));
+                Assert.AreEqual(true, subProvider.IsSubscribed(null, nAction, testRec2, rndObj));
 
                 //Подписываем Everybody
                 rndObj2 = string.Concat("TestObject#", new Random().Next().ToString());
@@ -132,7 +132,7 @@ namespace ASC.Core.Common.Tests
                 subProvider.Subscribe(nAction, rndObj2, everyone);
                 //Проверяем подписался ли user двумя способами.
                 Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(nAction, testRec2).Count());
-                Assert.AreEqual(true, subProvider.IsSubscribed(nAction, testRec2, rndObj2));
+                Assert.AreEqual(true, subProvider.IsSubscribed(null, nAction, testRec2, rndObj2));
 
             }
             finally

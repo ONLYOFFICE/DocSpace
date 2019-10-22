@@ -88,7 +88,6 @@ namespace ASC.Api.Settings
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
         public IServiceProvider ServiceProvider { get; }
-        public LogManager LogManager { get; }
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
@@ -136,6 +135,7 @@ namespace ASC.Api.Settings
         public StatisticManager StatisticManager { get; }
         public IPRestrictionsService IPRestrictionsService { get; }
         public CoreConfiguration CoreConfiguration { get; }
+        public MessageTarget MessageTarget { get; }
         public ILog Log { get; set; }
 
         public SettingsController(
@@ -187,7 +187,8 @@ namespace ASC.Api.Settings
             DisplayUserSettings displayUserSettings,
             StatisticManager statisticManager,
             IPRestrictionsService iPRestrictionsService,
-            CoreConfiguration coreConfiguration)
+            CoreConfiguration coreConfiguration,
+            MessageTarget messageTarget)
         {
             Log = option.Get("ASC.Api");
             ServiceProvider = serviceProvider;
@@ -238,6 +239,7 @@ namespace ASC.Api.Settings
             StatisticManager = statisticManager;
             IPRestrictionsService = iPRestrictionsService;
             CoreConfiguration = coreConfiguration;
+            MessageTarget = messageTarget;
         }
 
         [Read("")]

@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.ChunkedUploader
 {
@@ -37,14 +38,15 @@ namespace ASC.Core.ChunkedUploader
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
+        public IOptionsMonitor<LogNLog> Option { get; }
         private IDataStore DataStore { get; set; }
         private string Domain { get; set; }
         private long MaxChunkUploadSize { get; set; }
         private const string StoragePath = "sessions";
 
-        public CommonChunkedUploadSessionHolder(IDataStore dataStore, string domain,
-            long maxChunkUploadSize = 10 * 1024 * 1024)
+        public CommonChunkedUploadSessionHolder(IOptionsMonitor<LogNLog> option, IDataStore dataStore, string domain, long maxChunkUploadSize = 10 * 1024 * 1024)
         {
+            Option = option;
             DataStore = dataStore;
             Domain = domain;
             MaxChunkUploadSize = maxChunkUploadSize;
@@ -59,7 +61,7 @@ namespace ASC.Core.ChunkedUploader
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC").Error(err);
+                Option.Get("ASC").Error(err);
             }
         }
 

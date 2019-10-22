@@ -36,27 +36,29 @@ using System.Xml.XPath;
 
 using ASC.Common.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
     public class BillingClient : ClientBase<IService>, IDisposable
     {
-        private readonly static ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
         private readonly bool test;
 
         private string Security { get; set; }
         private string PartnersProduct { get; set; }
 
-        public BillingClient(IConfiguration configuration)
-            : this(false, configuration)
+        public BillingClient(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+            : this(false, configuration, option)
         {
         }
 
-        public BillingClient(bool test, IConfiguration configuration)
+        public BillingClient(bool test, IConfiguration configuration, IOptionsMonitor<LogNLog> option)
         {
             this.test = test;
             Security = configuration["core:payment:security"];
             PartnersProduct = configuration["core:payment:partners-product"];
+            log = option.Get("ASC");
         }
 
 
