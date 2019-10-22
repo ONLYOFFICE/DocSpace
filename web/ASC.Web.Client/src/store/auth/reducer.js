@@ -1,6 +1,102 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL } from './actions';
+import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
+
+const settingsTree = [
+    {
+        title: 'Common',
+        key: '0',
+        icon: 'SettingsIcon',
+        children: [
+            {
+                title: 'Customization',
+                key: '0-0',
+                icon: ''
+            },
+            {
+                title: 'Modules & tools',
+                key: '0-1',
+                icon: ''
+            },
+            {
+                title: 'White label',
+                key: '0-2',
+                icon: ''
+            },
+        ]
+    },
+    {
+        title: 'Security',
+        key: '1',
+        icon: 'SettingsIcon',
+        children: [
+            {
+                title: 'Portal Access',
+                key: '1-0',
+                icon: ''
+            },
+            {
+                title: 'Access Rights',
+                key: '1-1',
+                icon: ''
+            },
+            {
+                title: 'Login History',
+                key: '1-2',
+                icon: ''
+            },
+            {
+                title: 'Audit Trail',
+                key: '1-3',
+                icon: ''
+            },
+        ]
+    },
+    {
+        title: 'Data Management',
+        key: '2',
+        icon: 'SettingsIcon',
+        children: [
+            {
+                title: 'Migration',
+                key: '2-0',
+                icon: ''
+            },
+            {
+                title: 'Backup',
+                key: '2-1',
+                icon: ''
+            },
+            {
+                title: 'Portal Deactivation/Deletion',
+                key: '2-2',
+                icon: ''
+            },
+        ]
+    },
+    {
+        title: 'Integration',
+        key: '3',
+        icon: 'SettingsIcon',
+        children: [
+            {
+                title: 'Third-Party Services',
+                key: '3-0',
+                icon: ''
+            },
+            {
+                title: 'SMTP Settings',
+                key: '3-1',
+                icon: ''
+            }
+        ]
+    },
+    {
+        title: 'Statistics',
+        key: '4',
+        icon: 'SettingsIcon',
+    },
+];
 
 const initialState = {
     isAuthenticated: false,
@@ -25,6 +121,10 @@ const initialState = {
             dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
             timePattern: "h:mm tt"
         },
+        settingsTree: {
+            list: settingsTree,
+            selected: ['0-0']
+        }
     }/*,
     password: null*/
 }
@@ -59,6 +159,10 @@ const authReducer = (state = initialState, action) => {
         case SET_NEW_EMAIL:
             return Object.assign({}, state, {
                 user: { ...state.user, email: action.email }
+            });
+        case SET_NEW_SETTING_NODE:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, selected: action.selected } }
             });
         case LOGOUT:
             return initialState;
