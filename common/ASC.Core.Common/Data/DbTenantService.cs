@@ -44,8 +44,8 @@ namespace ASC.Core.Data
         private static TimeZoneInfo defaultTimeZone;
         private List<string> forbiddenDomains;
 
-        public TenantDomainValidator TenantDomainValidator { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
         public DbTenantService(DbOptionsManager dbOptionsManager, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
             : base(dbOptionsManager, null)

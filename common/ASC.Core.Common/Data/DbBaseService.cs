@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 
@@ -34,21 +33,12 @@ namespace ASC.Core.Data
 {
     public abstract class DbBaseService
     {
-        private readonly string dbid;
+        private DbOptionsManager DbOptionsManager { get; }
 
-        public DbRegistry DbRegistry { get; }
-        public DbOptionsManager DbOptionsManager { get; }
         protected string TenantColumn
         {
             get;
             private set;
-        }
-
-        protected DbBaseService(ConnectionStringSettings connectionString, DbRegistry dbRegistry, string tenantColumn)
-        {
-            dbid = connectionString.Name;
-            DbRegistry = dbRegistry;
-            TenantColumn = tenantColumn;
         }
 
         protected DbBaseService(DbOptionsManager dbOptionsManager, string tenantColumn)

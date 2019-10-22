@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Caching;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core
 {
@@ -37,7 +38,7 @@ namespace ASC.Core
     {
         private readonly IAzService service;
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public AuthorizationManager(IAzService service, TenantManager tenantManager)
         {
@@ -124,6 +125,17 @@ namespace ASC.Core
             return aces is AzRecordStore store ?
                 store.Get(objId).Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty)) :
                 aces.Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty) && a.ObjectId == objId);
+        }
+    }
+
+    public static class AuthorizationManagerConfigFactory
+    {
+        public static IServiceCollection AddAuthorizationManagerService(this IServiceCollection services)
+        {
+            return services
+                .AddAzService()
+                .AddTenantManagerService()
+                .AddScoped<AuthorizationManager>();
         }
     }
 }

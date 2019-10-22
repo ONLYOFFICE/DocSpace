@@ -26,9 +26,11 @@
 
 using System;
 using System.Text;
+using ASC.Core.Caching;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace ASC.Core
@@ -307,5 +309,28 @@ namespace ASC.Core
         }
 
         #endregion
+    }
+
+    public static class CoreSettingsConfigFactory
+    {
+        public static IServiceCollection AddCoreBaseSettingsService(this IServiceCollection services)
+        {
+            return services.AddSingleton<CoreBaseSettings>();
+        }
+
+        public static IServiceCollection AddCoreSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddCoreBaseSettingsService()
+                .AddTenantService()
+                .AddScoped<CoreSettings>()
+                .AddScoped<CoreConfiguration>();
+        }
+        public static IServiceCollection AddCoreConfigurationService(this IServiceCollection services)
+        {
+            return services
+                .AddCoreSettingsService()
+                .AddScoped<CoreConfiguration>();
+        }
     }
 }

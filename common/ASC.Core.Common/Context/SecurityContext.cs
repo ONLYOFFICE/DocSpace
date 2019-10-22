@@ -39,10 +39,12 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core.Billing;
 using ASC.Core.Common.Security;
 using ASC.Core.Security.Authentication;
+using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -80,7 +82,6 @@ namespace ASC.Core
             TenantCookieSettings tenantCookieSettings,
             TenantManager tenantManager,
             UserFormatter userFormatter,
-            InstanceCrypto instanceCrypto,
             CookieStorage cookieStorage,
             IOptionsMonitor<LogNLog> options
             )
@@ -92,7 +93,6 @@ namespace ASC.Core
             TenantCookieSettings = tenantCookieSettings;
             TenantManager = tenantManager;
             UserFormatter = userFormatter;
-            InstanceCrypto = instanceCrypto;
             CookieStorage = cookieStorage;
             HttpContextAccessor = httpContextAccessor;
         }
@@ -316,6 +316,8 @@ namespace ASC.Core
 
     public class AuthContext
     {
+        private IHttpContextAccessor HttpContextAccessor { get; }
+
         public AuthContext(IHttpContextAccessor httpContextAccessor)
         {
             HttpContextAccessor = httpContextAccessor;
@@ -331,8 +333,6 @@ namespace ASC.Core
             get { return CurrentAccount.IsAuthenticated; }
         }
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
-
         internal ClaimsPrincipal Principal
         {
             get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
@@ -341,6 +341,24 @@ namespace ASC.Core
                 Thread.CurrentPrincipal = value;
                 if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
             }
+        }
+    }
+
+    public static class AuthContextConfigFactory
+    {
+        public static IServiceCollection AddAuthContextService(this IServiceCollection services)
+        {
+            return services
+                .AddHttpContextAccessor()
+                .AddScoped<AuthContext>();
+        }
+
+        public static IServiceCollection AddPermissionContextService(this IServiceCollection services)
+        {
+            return services
+                .AddAuthContextService()
+                .AddPermissionResolverService()
+                .AddScoped<PermissionContext>();
         }
     }
 }

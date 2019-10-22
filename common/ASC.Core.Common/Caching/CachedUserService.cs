@@ -32,10 +32,11 @@ using ASC.Common.Caching;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Caching
 {
-    public class UserServiceCache
+    class UserServiceCache
     {
         public const string USERS = "users";
         private const string GROUPS = "groups";
@@ -130,7 +131,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedUserService : IUserService, ICachedService
+    class CachedUserService : IUserService, ICachedService
     {
         private readonly IUserService service;
         private readonly ICache cache;
@@ -138,15 +139,15 @@ namespace ASC.Core.Caching
         private readonly TrustInterval trustInterval;
         private int getchanges;
 
-        public TimeSpan CacheExpiration { get; set; }
-        public TimeSpan DbExpiration { get; set; }
-        public TimeSpan PhotoExpiration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public UserServiceCache UserServiceCache { get; }
-        public ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
-        public ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
-        public ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; }
-        public ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
+        private TimeSpan CacheExpiration { get; set; }
+        private TimeSpan DbExpiration { get; set; }
+        private TimeSpan PhotoExpiration { get; set; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private UserServiceCache UserServiceCache { get; }
+        private ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
+        private ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
+        private ICacheNotify<GroupCacheItem> CacheGroupCacheItem { get; }
+        private ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
 
         public CachedUserService(
             DbUserService service,
@@ -453,6 +454,18 @@ namespace ASC.Core.Caching
         class UserPhoto
         {
             public string Key { get; set; }
+        }
+    }
+    public static class UserConfigFactory
+    {
+        public static IServiceCollection AddUserService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
+                    .AddCoreSettingsService()
+                    .AddScoped<DbUserService>()
+                    .AddScoped<IUserService, CachedUserService>()
+                    .AddSingleton<UserServiceCache>();
         }
     }
 }

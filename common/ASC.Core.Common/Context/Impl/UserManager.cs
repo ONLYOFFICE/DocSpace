@@ -32,6 +32,7 @@ using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core
 {
@@ -52,21 +53,21 @@ namespace ASC.Core
 
     public class UserManager
     {
-        public IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
+        private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
 
-        public IHttpContextAccessor Accessor { get; }
-        public IUserService UserService { get; }
-        public TenantManager TenantManager { get; }
-        public PermissionContext PermissionContext { get; }
-        public UserManagerConstants UserManagerConstants { get; }
-        public Constants Constants { get; }
+        private IHttpContextAccessor Accessor { get; }
+        private IUserService UserService { get; }
+        private TenantManager TenantManager { get; }
+        private PermissionContext PermissionContext { get; }
+        private UserManagerConstants UserManagerConstants { get; }
+        private Constants Constants { get; }
 
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
         public UserManager(
-            IUserService service, 
-            IHttpContextAccessor httpContextAccessor, 
+            IUserService service,
+            IHttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants)
@@ -608,6 +609,21 @@ namespace ASC.Core
                 CategoryId = g.CategoryID,
                 Sid = g.Sid
             };
+        }
+    }
+
+    public static class UserManagerConfigFactory
+    {
+        public static IServiceCollection AddUserManagerService(this IServiceCollection services)
+        {
+            return services
+                .AddUserService()
+                .AddHttpContextAccessor()
+                .AddTenantManagerService()
+                .AddConstantsService()
+                .AddPermissionContextService()
+                .AddSingleton<UserManagerConstants>()
+                .AddScoped<UserManager>();
         }
     }
 }

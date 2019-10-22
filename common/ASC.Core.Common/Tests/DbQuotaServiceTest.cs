@@ -39,7 +39,7 @@ namespace ASC.Core.Common.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
+    class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
     {
         public DbOptionsManager DbOptionsManager { get; }
 

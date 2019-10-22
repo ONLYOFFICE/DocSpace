@@ -30,11 +30,12 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+using Microsoft.Extensions.DependencyInjection;
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
 {
-    public class PermissionResolver : IPermissionResolver
+    class PermissionResolver : IPermissionResolver
     {
         private readonly AzManager azManager;
 
@@ -118,6 +119,16 @@ namespace ASC.Core.Security.Authorizing
                 DenySubject = denySubject;
                 DenyAction = denyAction;
             }
+        }
+    }
+
+    public static class PermissionResolverConfigFactory
+    {
+        public static IServiceCollection AddPermissionResolverService(this IServiceCollection services)
+        {
+            return services
+                .AddAzManagerService()
+                .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
         }
     }
 }

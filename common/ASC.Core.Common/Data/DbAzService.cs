@@ -35,7 +35,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    public class DbAzService : DbBaseService, IAzService
+    class DbAzService : DbBaseService, IAzService
     {
         public DbAzService(DbOptionsManager dbOptionsManager)
             : base(dbOptionsManager, "tenant")

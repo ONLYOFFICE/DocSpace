@@ -28,18 +28,20 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common.Caching;
+using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Caching
 {
-    public class TenantServiceCache
+    class TenantServiceCache
     {
         private const string KEY = "tenants";
-        public TimeSpan CacheExpiration { get; set; }
-        public ICache Cache { get; }
-        public ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
-        public ICacheNotify<TenantSetting> CacheNotifySettings { get; }
+        private TimeSpan CacheExpiration { get; set; }
+        internal ICache Cache { get; }
+        internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
+        internal ICacheNotify<TenantSetting> CacheNotifySettings { get; }
 
         public TenantServiceCache(CoreBaseSettings coreBaseSettings, ICacheNotify<TenantCacheItem> cacheNotifyItem, ICacheNotify<TenantSetting> cacheNotifySettings)
         {
@@ -147,15 +149,15 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedTenantService : ITenantService
+    class CachedTenantService : ITenantService
     {
         private readonly ITenantService service;
         private readonly ICache cache;
         private readonly ICacheNotify<TenantSetting> cacheNotifySettings;
         private readonly ICacheNotify<TenantCacheItem> cacheNotifyItem;
 
-        public TimeSpan SettingsExpiration { get; set; }
-        public TenantServiceCache TenantServiceCache { get; }
+        private TimeSpan SettingsExpiration { get; set; }
+        private TenantServiceCache TenantServiceCache { get; }
 
         public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache)
         {
@@ -264,6 +266,21 @@ namespace ASC.Core.Caching
             service.SetTenantSettings(tenant, key, data);
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
             cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public static class TenantConfigFactory
+    {
+        public static IServiceCollection AddTenantService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
+                    .AddCoreBaseSettingsService()
+                    .AddSingleton<TenantDomainValidator>()
+                    .AddSingleton<TimeZoneConverter>()
+                    .AddSingleton<TenantServiceCache>()
+                    .AddScoped<DbTenantService>()
+                    .AddScoped<ITenantService, CachedTenantService>();
         }
     }
 }

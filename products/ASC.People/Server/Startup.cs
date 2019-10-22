@@ -8,7 +8,6 @@ using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
@@ -21,7 +20,6 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Data;
 using ASC.Core.Notify;
 using ASC.Core.Security.Authentication;
-using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
@@ -143,46 +141,29 @@ namespace ASC.People
             });
 
             services
+                    .AddSubscriptionService()
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
                     .AddSingleton(typeof(ILog), typeof(LogNLog))
                     .AddStorage(Configuration)
                     .AddWebItemManager()
-                    .AddScoped<DbSubscriptionService>()
-                    .AddScoped<ISubscriptionService, CachedSubscriptionService>()
-                    .AddSingleton<SubscriptionServiceCache>()
-                    .AddScoped<DbAzService>()
-                    .AddScoped<IAzService, CachedAzService>()
-                    .AddSingleton<AzServiceCache>()
-                    .AddSingleton<UserServiceCache>()
-                    .AddScoped<DbUserService>()
-                    .AddScoped<IUserService, CachedUserService>()
-                    .AddSingleton<TenantServiceCache>()
-                    .AddScoped<DbTenantService>()
-                    .AddScoped<ITenantService, CachedTenantService>()
-                    .AddSingleton<QuotaServiceCache>()
-                    .AddScoped<DbQuotaService>()
-                    .AddScoped<IQuotaService, CachedQuotaService>()
-                    .AddScoped<ITariffService, TariffService>()
+                    .AddScoped<SecurityContext>()
                     .AddScoped<ApiContext>()
                     .AddScoped<StudioNotifyService>()
                     .AddScoped<UserManagerWrapper>()
                     .AddScoped<MessageService>()
                     .AddScoped<QueueWorkerReassign>()
                     .AddScoped<QueueWorkerRemove>()
-                    .AddScoped<TenantManager>()
-                    .AddScoped<UserManager>()
                     .AddScoped<StudioNotifyHelper>()
                     .AddScoped<StudioNotifySource>()
                     .AddScoped<StudioNotifyServiceHelper>()
                     .AddScoped<AuthManager>()
                     .AddScoped<TenantExtra>()
                     .AddScoped<TenantStatisticsProvider>()
-                    .AddScoped<SecurityContext>()
                     .AddScoped<AzManager>()
                     .AddScoped<WebItemSecurity>()
                     .AddScoped<UserPhotoManager>()
                     .AddScoped<CookiesManager>()
-                    .AddScoped<PermissionContext>()
-                    .AddScoped<AuthContext>()
                     .AddScoped<MessageFactory>()
                     .AddScoped<WebImageSupplier>()
                     .AddScoped<UserPhotoThumbnailSettings>()
@@ -223,35 +204,26 @@ namespace ASC.People
                     .AddScoped<EmailValidationKeyProvider>()
                     .AddScoped<TenantUtil>()
                     .AddScoped<PaymentManager>()
-                    .AddScoped<AuthorizationManager>()
-                    .AddScoped<CoreConfiguration>()
                     .AddScoped<BaseCommonLinkUtility>()
                     .AddScoped<CommonLinkUtility>()
                     .AddScoped<FilesLinkUtility>()
                     .AddScoped<FileUtility>()
                     .AddScoped<LicenseReader>()
                     .AddScoped<ApiSystemHelper>()
-                    .AddScoped<CoreSettings>()
                     .AddSingleton<WebPathSettings>()
                     .AddSingleton<BaseStorageSettingsListener>()
-                    .AddSingleton<CoreBaseSettings>()
                     .AddSingleton<SetupInfo>()
                     .AddScoped<FileSizeComment>()
                     .AddScoped<SubscriptionManager>()
                     .AddScoped<IPSecurity.IPSecurity>()
                     .AddSingleton<PathUtils>()
-                    .AddSingleton<TenantDomainValidator>()
                     .AddSingleton<DbMessageSender>()
                     .AddSingleton<UrlShortener>()
-                    .AddSingleton<UserManagerConstants>()
                     .AddSingleton<MessagePolicy>()
                     .AddScoped<DisplayUserSettings>()
                     .AddScoped<SmsSender>()
                     .AddScoped<CookieStorage>()
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
-                    .AddSingleton<ASC.Core.Users.Constants>()
                     .AddSingleton<UserFormatter>()
-                    .AddSingleton<TimeZoneConverter>()
                     .AddSingleton<MachinePseudoKeys>()
                     .AddSingleton<Signature>()
                     .AddSingleton<InstanceCrypto>()
@@ -260,7 +232,6 @@ namespace ASC.People
                     .AddSingleton<IPRestrictionsServiceCache>()
                     .AddScoped<IPRestrictionsService>()
                     .AddScoped<IPRestrictionsRepository>()
-                    .AddSingleton<TariffServiceStorage>()
                     .AddSingleton<DbSettingsManagerCache>()
                     .AddSingleton<AccountLinkerStorage>()
                     .AddSingleton<SmsKeyStorageCache>()
@@ -269,9 +240,6 @@ namespace ASC.People
                     .AddSingleton<AscCacheNotify>()
                     .AddSingleton<MessageTarget>()
                     .AddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl))
-                    .AddSingleton(typeof(IRoleProvider), typeof(RoleProvider))
-                    .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver))
-                    .AddScoped(typeof(IPermissionProvider), typeof(PermissionProvider))
                     ;
         }
 

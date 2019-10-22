@@ -29,17 +29,18 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Security.Authorizing
 {
-    public class PermissionProvider : IPermissionProvider
+    class PermissionProvider : IPermissionProvider
     {
+        private AuthorizationManager AuthorizationManager { get; }
+
         public PermissionProvider(AuthorizationManager authorizationManager)
         {
             AuthorizationManager = authorizationManager;
         }
-
-        public AuthorizationManager AuthorizationManager { get; }
 
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
@@ -49,6 +50,16 @@ namespace ASC.Core.Security.Authorizing
             return AuthorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
                 .Select(r => new Ace(r.ActionId, r.Reaction));
+        }
+    }
+
+    public static class PermissionProviderConfigFactory
+    {
+        public static IServiceCollection AddPermissionProviderService(this IServiceCollection services)
+        {
+            return services
+                .AddAuthorizationManagerService()
+                .AddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
         }
     }
 }

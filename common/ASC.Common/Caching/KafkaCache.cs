@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using Confluent.Kafka;

@@ -26,6 +26,7 @@
 
 using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Action = ASC.Common.Security.Authorizing.Action;
 using AuthConst = ASC.Common.Security.Authorizing.Constants;
 
@@ -139,5 +140,14 @@ namespace ASC.Core.Users
             "Edit categories and groups");
 
         #endregion
+    }
+
+    public static class ConstantsConfigFactory
+    {
+        public static IServiceCollection AddConstantsService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton<Constants>();
+        }
     }
 }

@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -604,6 +605,16 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
                     log.Error(error.Message);
                 }
             }
+        }
+    }
+
+    public static class TariffConfigFactory
+    {
+        public static IServiceCollection AddTariffService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton<TariffServiceStorage>()
+                    .AddScoped<ITariffService, TariffService>();
         }
     }
 }

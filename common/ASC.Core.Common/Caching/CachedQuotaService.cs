@@ -31,19 +31,20 @@ using ASC.Common.Caching;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Caching
 {
-    public class QuotaServiceCache
+    class QuotaServiceCache
     {
         internal const string KEY_QUOTA = "quota";
         internal const string KEY_QUOTA_ROWS = "quotarows";
 
-        public TrustInterval Interval { get; set; }
-        public ICache Cache { get; }
-        public ICacheNotify<QuotaCacheItem> CacheNotify { get; }
+        internal TrustInterval Interval { get; set; }
+        internal ICache Cache { get; }
+        internal ICacheNotify<QuotaCacheItem> CacheNotify { get; }
 
-        public bool QuotaCacheEnabled { get; }
+        internal bool QuotaCacheEnabled { get; }
 
         public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify)
         {
@@ -74,15 +75,15 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedQuotaService : IQuotaService
+    class CachedQuotaService : IQuotaService
     {
         private readonly IQuotaService service;
         private readonly ICache cache;
         private readonly ICacheNotify<QuotaCacheItem> cacheNotify;
         private readonly TrustInterval interval;
 
-        public TimeSpan CacheExpiration { get; set; }
-        public QuotaServiceCache QuotaServiceCache { get; }
+        private TimeSpan CacheExpiration { get; set; }
+        private QuotaServiceCache QuotaServiceCache { get; }
 
         public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache)
         {
@@ -199,6 +200,18 @@ namespace ASC.Core.Caching
                 }
                 return list.ToList();
             }
+        }
+    }
+
+    public static class QuotaConfigFactory
+    {
+        public static IServiceCollection AddQuotaService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
+                    .AddSingleton<QuotaServiceCache>()
+                    .AddScoped<DbQuotaService>()
+                    .AddScoped<IQuotaService, CachedQuotaService>();
         }
     }
 }

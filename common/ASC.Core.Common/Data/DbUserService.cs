@@ -36,7 +36,7 @@ using ASC.Security.Cryptography;
 
 namespace ASC.Core.Data
 {
-    public class DbUserService : DbBaseService, IUserService
+    class DbUserService : DbBaseService, IUserService
     {
         public DbUserService(DbOptionsManager dbOptionsManager)
             : base(dbOptionsManager, "tenant")

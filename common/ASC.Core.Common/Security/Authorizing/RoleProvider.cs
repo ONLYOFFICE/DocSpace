@@ -35,10 +35,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Security.Authorizing
 {
-    public class RoleProvider : IRoleProvider
+    class RoleProvider : IRoleProvider
     {
         //circ dep
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
         public RoleProvider(IServiceProvider serviceProvider) => (ServiceProvider) = (serviceProvider);
 
         public List<IRole> GetRoles(ISubject account)
@@ -80,6 +80,14 @@ namespace ASC.Core.Security.Authorizing
                 }
             }
             return roles;
+        }
+    }
+
+    public static class RoleProviderConfigFactory
+    {
+        public static IServiceCollection AddRoleProviderService(this IServiceCollection services)
+        {
+            return services.AddSingleton(typeof(IRoleProvider), typeof(RoleProvider));
         }
     }
 }

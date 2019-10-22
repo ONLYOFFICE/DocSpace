@@ -45,8 +45,8 @@ namespace ASC.Common.Utils
 
         private Dictionary<string, string> _translations;
 
-        public IConfiguration Configuration { get; }
-        public ILog Log { get; }
+        private IConfiguration Configuration { get; }
+        private ILog Log { get; }
 
         public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
         {

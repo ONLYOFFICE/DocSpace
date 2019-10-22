@@ -29,14 +29,15 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Caching;
 using ASC.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Caching
 {
-    public class SubscriptionServiceCache
+    class SubscriptionServiceCache
     {
-        public ICache Cache { get; }
-        public ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
-        public ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
+        internal ICache Cache { get; }
+        internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
+        internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
 
         public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod)
         {
@@ -99,14 +100,14 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedSubscriptionService : ISubscriptionService
+    class CachedSubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionService service;
         private readonly ICache cache;
         private readonly ICacheNotify<SubscriptionRecord> notifyRecord;
         private readonly ICacheNotify<SubscriptionMethodCache> notifyMethod;
 
-        public TimeSpan CacheExpiration { get; set; }
+        private TimeSpan CacheExpiration { get; set; }
 
         public CachedSubscriptionService(DbSubscriptionService service, SubscriptionServiceCache subscriptionServiceCache)
         {
@@ -280,6 +281,18 @@ namespace ASC.Core.Caching
         private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods)
         {
             methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
+        }
+    }
+
+    public static class SubscriptionConfigFactory
+    {
+        public static IServiceCollection AddSubscriptionService(this IServiceCollection services)
+        {
+            return services
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
+                    .AddScoped<DbSubscriptionService>()
+                    .AddScoped<ISubscriptionService, CachedSubscriptionService>()
+                    .AddSingleton<SubscriptionServiceCache>();
         }
     }
 }

@@ -28,13 +28,14 @@ using System;
 using System.Collections.Generic;
 using ASC.Common.Caching;
 using ASC.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Caching
 {
-    public class AzServiceCache
+    class AzServiceCache
     {
-        public ICache Cache { get; }
-        public ICacheNotify<AzRecordCache> CacheNotify { get; }
+        internal ICache Cache { get; }
+        internal ICacheNotify<AzRecordCache> CacheNotify { get; }
 
         public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify)
         {
@@ -70,15 +71,15 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedAzService : IAzService
+    class CachedAzService : IAzService
     {
         private readonly IAzService service;
 
         private readonly ICacheNotify<AzRecordCache> cacheNotify;
 
-        public ICache Cache { get; }
+        private ICache Cache { get; }
 
-        public TimeSpan CacheExpiration { get; set; }
+        private TimeSpan CacheExpiration { get; set; }
 
 
         public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
@@ -113,6 +114,17 @@ namespace ASC.Core.Caching
         {
             service.RemoveAce(tenant, r);
             cacheNotify.Publish(r, CacheNotifyAction.Remove);
+        }
+    }
+
+    public static class AzConfigFactory
+    {
+        public static IServiceCollection AddAzService(this IServiceCollection services)
+        {
+            return services.AddScoped<DbAzService>()
+                    .AddScoped<IAzService, CachedAzService>()
+                    .AddSingleton<AzServiceCache>()
+                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
         }
     }
 }

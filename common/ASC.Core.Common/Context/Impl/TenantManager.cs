@@ -34,8 +34,10 @@ using System.Web;
 
 using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
+using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core
 {
@@ -47,9 +49,9 @@ namespace ASC.Core
         private readonly ITariffService tariffService;
         private static List<string> thisCompAddresses = new List<string>();
 
-        public HttpContext HttpContext { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
+        private HttpContext HttpContext { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
 
         static TenantManager()
         {
@@ -277,6 +279,21 @@ namespace ASC.Core
         public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
         {
             return quotaService.FindTenantQuotaRows(query).ToList();
+        }
+    }
+
+    public static class TenantManagerConfigFactory
+    {
+        public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
+        {
+            return services
+                .AddHttpContextAccessor()
+                .AddTenantService()
+                .AddQuotaService()
+                .AddTariffService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddScoped<TenantManager>();
         }
     }
 }

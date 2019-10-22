@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Core.Security.Authorizing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Common.Security.Authorizing
 {
@@ -143,5 +145,15 @@ namespace ASC.Common.Security.Authorizing
         }
 
         #endregion
+    }
+
+    public static class AzManagerConfigFactory
+    {
+        public static IServiceCollection AddAzManagerService(this IServiceCollection services)
+        {
+            return services
+                .AddPermissionProviderService()
+                .AddRoleProviderService();
+        }
     }
 }

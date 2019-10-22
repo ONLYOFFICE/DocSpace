@@ -34,7 +34,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    public class DbSubscriptionService : DbBaseService, ISubscriptionService
+    class DbSubscriptionService : DbBaseService, ISubscriptionService
     {
         public DbSubscriptionService(DbOptionsManager dbOptionsManager)
             : base(dbOptionsManager, "tenant")

@@ -67,9 +67,9 @@ namespace ASC.Common.Data
     }
     public class ConfigureDbManager : IConfigureNamedOptions<DbManager>
     {
-        public DbRegistry DbRegistry { get; }
-        public IOptionsMonitor<LogNLog> Option { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private DbRegistry DbRegistry { get; }
+        private IOptionsMonitor<LogNLog> Option { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option)
         {
