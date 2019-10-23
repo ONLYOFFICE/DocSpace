@@ -24,7 +24,7 @@ const SectionHeaderContent = props => {
 
 function mapStateToProps(state) {
   return {
-    header: state.auth.settings.settingsTree.selectedTitle
+    header: state.auth.settings.settingsTree.selectedSubtitle
   };
 }
 

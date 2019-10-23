@@ -174,11 +174,3 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             .then(user => dispatch(setCurrentUser(user)));
     };
 };
-
-export function selectSettingNode(key, title) {
-    const selectedInfo = {
-        selectedKey: key,
-        selectedTitle: title,
-    };
-    return dispatch => dispatch(setNewSelectedNode(selectedInfo));
-};

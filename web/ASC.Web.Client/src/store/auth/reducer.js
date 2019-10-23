@@ -7,21 +7,25 @@ const settingsTree = [
         title: 'Common',
         key: '0',
         icon: 'SettingsIcon',
+        link: 'common',
         children: [
             {
                 title: 'Customization',
                 key: '0-0',
-                icon: ''
+                icon: '',
+                link: 'customization',
             },
             {
                 title: 'Modules & tools',
                 key: '0-1',
-                icon: ''
+                icon: '',
+                link: 'modules-and-tools',
             },
             {
                 title: 'White label',
                 key: '0-2',
-                icon: ''
+                icon: '',
+                link: 'white-label',
             },
         ]
     },
@@ -29,26 +33,31 @@ const settingsTree = [
         title: 'Security',
         key: '1',
         icon: 'SettingsIcon',
+        link: 'security',
         children: [
             {
                 title: 'Portal Access',
                 key: '1-0',
-                icon: ''
+                icon: '',
+                link: 'portal-access',
             },
             {
                 title: 'Access Rights',
                 key: '1-1',
-                icon: ''
+                icon: '',
+                link: 'access-rights',
             },
             {
                 title: 'Login History',
                 key: '1-2',
-                icon: ''
+                icon: '',
+                link: 'login-history',
             },
             {
                 title: 'Audit Trail',
                 key: '1-3',
-                icon: ''
+                icon: '',
+                link: 'audit-trail',
             },
         ]
     },
@@ -56,21 +65,25 @@ const settingsTree = [
         title: 'Data Management',
         key: '2',
         icon: 'SettingsIcon',
+        link: 'data-management',
         children: [
             {
                 title: 'Migration',
                 key: '2-0',
-                icon: ''
+                icon: '',
+                link: 'migration',
             },
             {
                 title: 'Backup',
                 key: '2-1',
-                icon: ''
+                icon: '',
+                link: 'backup',
             },
             {
                 title: 'Portal Deactivation/Deletion',
                 key: '2-2',
-                icon: ''
+                icon: '',
+                link: 'portal-deactivation-deletion',
             },
         ]
     },
@@ -78,16 +91,19 @@ const settingsTree = [
         title: 'Integration',
         key: '3',
         icon: 'SettingsIcon',
+        link: 'integration',
         children: [
             {
                 title: 'Third-Party Services',
                 key: '3-0',
-                icon: ''
+                icon: '',
+                link: 'third-party-services',
             },
             {
                 title: 'SMTP Settings',
                 key: '3-1',
-                icon: ''
+                icon: '',
+                link: 'smtp-settings',
             }
         ]
     },
@@ -95,6 +111,7 @@ const settingsTree = [
         title: 'Statistics',
         key: '4',
         icon: 'SettingsIcon',
+        link: 'statistics',
     },
 ];
 
@@ -124,7 +141,9 @@ const initialState = {
         settingsTree: {
             list: settingsTree,
             selectedKey: ['0-0'],
-            selectedTitle: 'Customization'
+            selectedTitle: 'Common',
+            selectedSubtitle: 'Customization',
+            selectedLink: '/common/customization',
         }
     }/*,
     password: null*/
