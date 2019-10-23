@@ -1,17 +1,22 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { BooleanValue } from 'react-values'
 import withReadme from 'storybook-readme/with-readme'
 import Readme from './README.md'
+import Section from '../../../.storybook/decorators/section';
 import RowContent from '.';
 import Link from '../link';
 import { Icons } from '../icons';
+import Checkbox from '../checkbox'
 
 storiesOf('Components|RowContent', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
 
     return (
-      <>
+      <Section>
+        <h3>Base demo</h3>
+        <div style={{height: '16px'}}></div>
         <RowContent>
           <Link type='page' title='Demo' isBold={true} fontSize={15} color='#333333' >Demo</Link>
           <>
@@ -51,6 +56,99 @@ storiesOf('Components|RowContent', module)
           <Link type='page' title='0 000 0000000' fontSize={12} color='#A3A9AE' >0 000 0000000</Link>
           <Link containerWidth='160px' type='page' title='demo.demo.demo.demo@demo.com' fontSize={12} color='#A3A9AE' >demo.demo.demo.demo@demo.com</Link>
         </RowContent>
-      </>
+        <div style={{height: '36px'}}></div>
+        <h3>Custom elements</h3>
+        <div style={{height: '16px'}}></div>
+        <RowContent
+          disableSideInfo={true}
+        >
+          <Link type='page' title='John Doe' isBold={true} fontSize={15} color='#333333' >John Doe</Link>
+          <></>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='1'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='2'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='3'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='4'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='5'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='6'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+          <BooleanValue>
+            {({ value, toggle }) => (
+              <Checkbox
+                id='7'
+                name='sample'
+                isChecked={value}
+                onChange={e => {
+                  toggle(e.target.checked);
+                }}
+              />
+            )}
+          </BooleanValue>
+        </RowContent>
+      </Section>
     );
   });

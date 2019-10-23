@@ -21,9 +21,11 @@ const RowContainer = styled.div`
   width: 100%;
   display: inline-flex;
 
-  @media ${tablet} {
-    display: block;
-  }
+  ${props => !props.disableSideInfo && `
+    @media ${tablet} {
+      display: block;
+    }
+  `};
 `;
 
 const MainContainerWrapper = styled.div`
@@ -34,11 +36,13 @@ const MainContainerWrapper = styled.div`
   margin-right: auto;
   min-width: 140px;
 
-  @media ${tablet} {
-    min-width: 140px;
-    margin-right: 8px;
-    margin-top: 6px;
-  }
+  ${props => !props.disableSideInfo && `
+    @media ${tablet} {
+      min-width: 140px;
+      margin-right: 8px;
+      margin-top: 6px;
+    }
+  `};
 `;
 
 const MainContainer = styled.div`
@@ -60,9 +64,11 @@ const SideContainerWrapper = styled.div`
   width: ${props => props.containerWidth ? props.containerWidth : '100px'};
   color: ${props => props.color && props.color};
 
-  @media ${tablet} {
-    display: none;
-  }
+  ${props => !props.disableSideInfo && `
+    @media ${tablet} {
+      display: none;
+    }
+  `};
 `;
 
 const TabletSideInfo = styled.div`
@@ -97,13 +103,13 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children } = props;
+  const { children, disableSideInfo } = props;
 
   const sideInfo = getSideInfo(children);
 
   return (
-    <RowContainer>
-      <MainContainerWrapper>
+    <RowContainer disableSideInfo={disableSideInfo}>
+      <MainContainerWrapper disableSideInfo={disableSideInfo}>
         <MainContainer>
           {children[0]}
         </MainContainer>
@@ -114,21 +120,28 @@ const RowContent = props => {
       {children.map((element, index) => {
         if (index > 1) {
           return (
-            <SideContainerWrapper key={'side-' + index} containerWidth={element.props && element.props.containerWidth} >
+            <SideContainerWrapper disableSideInfo={disableSideInfo} key={'side-' + index} containerWidth={element.props && element.props.containerWidth} >
               {element}
             </SideContainerWrapper>
           );
         }
       })}
+      {!disableSideInfo && 
       <TabletSideInfo >
         {sideInfo}
       </TabletSideInfo>
+      }
     </RowContainer>
   )
 };
 
 RowContent.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  disableSideInfo: PropTypes.bool
+};
+
+RowContent.defaultProps = {
+  disableSideInfo: false
 };
 
 export default RowContent;
