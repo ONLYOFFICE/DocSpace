@@ -54,11 +54,9 @@ const CopyLink = styled.div`
 
 const TooltipStyle = styled.div`
   .__react_component_tooltip {
-    top: 84px !important;
-    left: 15px !important;
+    
   }
 `;
-
 const Progress = styled.div`
   border: 3px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
   border-radius: 2px;
@@ -83,6 +81,9 @@ class PasswordInput extends React.Component {
 
     const { inputValue, inputType } = props;
 
+    this.ref = React.createRef();
+    this.refTooltip = React.createRef();
+
     this.state = {
       type: inputType,
       progressColor: 'transparent',
@@ -102,11 +103,12 @@ class PasswordInput extends React.Component {
     });
   }*/
 
-  /*onBlur = () => {
-    this.setState({
+  onBlur = () => {
+    /*this.setState({
       displayTooltip: false
-    });
-  }*/
+    });*/
+    this.refTooltip.current.hideTooltip();
+  }
 
   changeInputType = () => {
     const newType = this.state.type === 'text' ? 'password' : 'text';
@@ -278,7 +280,8 @@ class PasswordInput extends React.Component {
       onValidateInput,
       id,
       autoComplete,
-      className
+      className,
+      tooltipOffsetLeft
     } = this.props;
     const {
       type,
@@ -326,6 +329,7 @@ class PasswordInput extends React.Component {
           data-for="tooltipContent"
           data-tip=""
           data-event="click"
+          ref={this.ref}
         >
           <InputBlock
             id={id}
@@ -342,7 +346,7 @@ class PasswordInput extends React.Component {
             iconColor={iconsColor}
             isIconFill={true}
             //onFocus={this.onFocus}
-            //onBlur={this.onBlur}
+            onBlur={this.onBlur}
             hasWarning={hasWarning}
             placeholder={placeholder}
             tabIndex={tabIndex}
@@ -353,11 +357,13 @@ class PasswordInput extends React.Component {
           <TooltipStyle>
             <Tooltip
               id="tooltipContent"
-              getContent={() => tooltipContent}
               effect="solid"
               place="top"
-              //maxWidth={250}
-            />
+              offsetLeft={tooltipOffsetLeft}
+              reference={this.refTooltip}
+            >
+              {tooltipContent}
+            </Tooltip>
           </TooltipStyle>
           <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
         </PasswordProgress>
@@ -417,7 +423,9 @@ PasswordInput.propTypes = {
   passwordSettings: PropTypes.object.isRequired,
 
   onValidateInput: PropTypes.func,
-  onCopyToClipboard: PropTypes.func
+  onCopyToClipboard: PropTypes.func,
+
+  tooltipOffsetLeft: PropTypes.number
 }
 
 PasswordInput.defaultProps = {
@@ -433,7 +441,8 @@ PasswordInput.defaultProps = {
   clipPasswordResource: 'Password ',
 
   generatorSpecial: '!@#$%^&*',
-  className: ''
+  className: '',
+  tooltipOffsetLeft: 110
 }
 
 export default PasswordInput;

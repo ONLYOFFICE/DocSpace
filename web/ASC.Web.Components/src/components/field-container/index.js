@@ -70,7 +70,8 @@ class FieldContainer extends React.Component {
       hasError,
       labelText,
       children,
-      tooltipContent
+      tooltipContent,
+      place
     } = this.props;
 
     return (
@@ -86,7 +87,7 @@ class FieldContainer extends React.Component {
           {tooltipContent && (
             <HelpButton
               tooltipContent={tooltipContent}
-              place="bottom"
+              place={place}
             />
           )}
         </div>
@@ -109,7 +110,12 @@ FieldContainer.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  place: PropTypes.string
 };
+
+FieldContainer.defaultProps ={
+  place: "bottom"
+}
 
 export default FieldContainer;

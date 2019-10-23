@@ -53,7 +53,8 @@ storiesOf("Components|FieldContainer", module)
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
-              tooltipContent={"tooltipContent"}
+              tooltipContent={"Paste you tooltip content here"}
+              place="top"
             >
               <TextInput
                 value={value}
@@ -71,7 +72,8 @@ storiesOf("Components|FieldContainer", module)
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
-              tooltipContent={"tooltipContent2"}
+              tooltipContent={"Paste you tooltip content here"}
+              place="top"
             >
               <TextInput
                 value={value}

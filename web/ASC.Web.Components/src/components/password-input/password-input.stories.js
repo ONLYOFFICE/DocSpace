@@ -62,6 +62,7 @@ storiesOf('Components|Input', module)
               maxLength={30}
               onValidateInput={(a) => console.log(a)}
               onCopyToClipboard={(b) => console.log('Data ' + b + ' copied to clipboard')}
+              //tooltipOffsetLeft={150}
             />
           )}
         </StringValue>
