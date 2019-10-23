@@ -10,6 +10,7 @@ export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
+export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
 
 export function setCurrentUser(user) {
     return {
@@ -66,6 +67,13 @@ export function setNewEmail(email) {
     };
 };
 
+export function setNewSelectedNode(selectedNodeData) {
+    return {
+        type: SET_NEW_SETTING_NODE,
+        selectedNodeData
+    };
+};
+
 export function getUser(dispatch) {
     return api.getUser()
         .then(user => dispatch(setCurrentUser(user)));
@@ -83,8 +91,8 @@ export function getModules(dispatch) {
 
 const loadInitInfo = (dispatch) => {
     return getPortalSettings(dispatch)
-    .then(getModules.bind(this, dispatch))
-    .then(() => dispatch(setIsLoaded(true)));
+        .then(getModules.bind(this, dispatch))
+        .then(() => dispatch(setIsLoaded(true)));
 }
 
 export function getUserInfo(dispatch) {
@@ -165,4 +173,12 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             })
             .then(user => dispatch(setCurrentUser(user)));
     };
+};
+
+export function selectSettingNode(key, title) {
+    const selectedInfo = {
+        selectedKey: key,
+        selectedTitle: title,
+    };
+    return dispatch => dispatch(setNewSelectedNode(selectedInfo));
 };

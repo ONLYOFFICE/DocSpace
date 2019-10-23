@@ -38,6 +38,10 @@ const AvatarWrapper = styled.div`
 const EditButtonWrapper = styled.div`
   margin-top: 16px;
   width: 160px;
+
+  & > button {
+    padding: 8px 20px 9px 20px;
+  }
 `;
 
 const ContactTextTruncate = styled.div`
@@ -73,18 +77,17 @@ const InfoItem = styled.div`
 `;
 
 const InfoItemLabel = styled.div`
-  width: 120px;
+  width: 140px;
   white-space: nowrap;
   color: #A3A9AE;
 `;
 
 const InfoItemValue = styled.div`
   width: 240px;
-  display: flex;
-  box-sizing: border-box;
 
   .language-combo {
     padding-top: 4px;
+    float: left;
 
     & > div {
       padding-left: 0px;
@@ -93,6 +96,7 @@ const InfoItemValue = styled.div`
 `;
 
 const TooltipIcon = styled.span`
+  display: inline-flex;
   padding-top: 6px;
 `;
 
@@ -476,7 +480,7 @@ const SectionBodyContent = props => {
           <EditButtonWrapper>
             <Button
               size="big"
-              scale={false}
+              scale={true}
               label={t("EditUserDialogTitle")}
               title={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}

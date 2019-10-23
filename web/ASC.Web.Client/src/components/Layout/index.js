@@ -7,6 +7,7 @@ import { logout } from "../../store/auth/actions";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
 import isEqual from "lodash/isEqual";
+import { isAdmin } from "../../store/auth/selectors";
 
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
@@ -62,9 +63,10 @@ class PureStudioLayout extends React.Component {
 };
 
 
-const getAvailableModules = modules => {
+const getAvailableModules = (modules, currentUser) => {
+  const isUserAdmin = isAdmin(currentUser);
   const separator = { separator: true, id: "nav-separator-1" };
-  const customModules = [
+  const customModules = isUserAdmin ? [
     {
       separator: true,
       id: "nav-separator-2"
@@ -77,7 +79,7 @@ const getAvailableModules = modules => {
       url: '/settings',
       onClick: () => window.open('/settings', "_self"),
       onBadgeClick: e => console.log("SettingsIconBadge Clicked", e)
-    }];
+    }] : [];
   const products =
     modules.map(product => {
       return {
@@ -95,7 +97,7 @@ const getAvailableModules = modules => {
 };
 
 function mapStateToProps(state) {
-  let availableModules = getAvailableModules(state.auth.modules);
+  let availableModules = getAvailableModules(state.auth.modules, state.auth.user);
   return {
     hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
     availableModules: availableModules,

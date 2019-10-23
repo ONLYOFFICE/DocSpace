@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from "react";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
 import { Loader, PageLayout } from "asc-web-components";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-
-const CommonSettings = lazy(() => import("./sub-components/common"));
+import {
+  ArticleHeaderContent,
+  ArticleBodyContent
+} from "./Article";
+import { SectionHeaderContent, SectionBodyContent } from './Section'
 
 
 const Settings = ({ match, language }) => {
@@ -18,13 +20,14 @@ const Settings = ({ match, language }) => {
       <Suspense
         fallback={<Loader className="pageLoader" type="rombs" size={40} />}
       >
-        <Switch>
-        <Route
-            path={`${match.path}/common`}
-            component={CommonSettings}
-          />
-        </Switch>
-    
+        <PageLayout
+          withBodyScroll={false}
+          articleHeaderContent={<ArticleHeaderContent />}
+          articleBodyContent={<ArticleBodyContent />}
+          sectionHeaderContent={<SectionHeaderContent />}
+          sectionBodyContent={<SectionBodyContent />}
+        />
+
       </Suspense>
     </I18nextProvider >
   );
