@@ -190,7 +190,7 @@ class PasswordInput extends React.Component {
         type: 'text'
       });
     }
-    
+
     this.checkPassword(newPassword);
     this.props.onChange && this.props.onChange({ target: { value: newPassword } });
   }
@@ -399,6 +399,8 @@ class PasswordInput extends React.Component {
 }
 
 PasswordInput.propTypes = {
+  id: PropTypes.string,
+  autoComplete: PropTypes.string,
   inputType: PropTypes.oneOf(['text', 'password']),
   inputName: PropTypes.string,
   emailInputName: PropTypes.string.isRequired,
