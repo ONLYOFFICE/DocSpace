@@ -1,22 +1,24 @@
-import React from "react";
+import React, { lazy } from "react";
+import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 
+const CustomizationSettings = lazy(() => import("../../sub-components/common/customization"));
+const NotImplementedSettings = lazy(() => import("../../sub-components/notImplementedSettings"));
 class SectionBodyContent extends React.PureComponent {
 
   render() {
     return (
-      <div>
-        Test
-      </div>
+      <Switch>
+        <Route
+          exact
+          path={[`${this.props.match.path}/common/customization`,`${this.props.match.path}/common`, this.props.match.path]}
+          component={CustomizationSettings}
+        />
+
+        <Route component={NotImplementedSettings} />
+      </Switch>
     );
   };
 };
 
-function mapStateToProps(state) {
-  return {
-
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default withRouter(SectionBodyContent);
