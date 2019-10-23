@@ -65,7 +65,7 @@ const Progress = styled.div`
 `;
 
 const StyledTooltipContainer = styled(Text.Body)`
-  /*margin: 8px 16px 16px 16px;*/
+  //margin: 8px 16px 16px 16px;
 `;
 
 const StyledTooltipItem = styled(Text.Body)`
@@ -184,6 +184,13 @@ class PasswordInput extends React.Component {
       return e.preventDefault();
 
     const newPassword = this.getNewPassword();
+    
+    if (this.state.type !== 'text') {
+      this.setState({
+        type: 'text'
+      });
+    }
+    
     this.checkPassword(newPassword);
     this.props.onChange && this.props.onChange({ target: { value: newPassword } });
   }
@@ -324,7 +331,7 @@ class PasswordInput extends React.Component {
 
     return (
       <StyledInput onValidateInput={onValidateInput} className={className}>
-        <PasswordProgress 
+        <PasswordProgress
           inputWidth={inputWidth}
           data-for="tooltipContent"
           data-tip=""
@@ -352,7 +359,7 @@ class PasswordInput extends React.Component {
             tabIndex={tabIndex}
             maxLength={maxLength}
             autoComplete={autoComplete}
-            >
+          >
           </InputBlock>
           <TooltipStyle>
             <Tooltip
