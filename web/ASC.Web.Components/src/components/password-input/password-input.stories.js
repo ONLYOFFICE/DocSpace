@@ -11,7 +11,7 @@ import Section from '../../../.storybook/decorators/section';
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('advanced password', () => {
+  .add('password input', () => {
     const isDisabled = boolean('isDisabled', false);
     const settingsUpperCase = boolean('settingsUpperCase', false);
     const settingsDigits = boolean('settingsDigits', false);
