@@ -2,6 +2,10 @@ import React, { Component } from "react";
 //import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
+import i18n from "../../i18n";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import styled from "styled-components";
+import { getAdminUsers } from "../../../../../store/people/actions";
 import {
   Text,
   Avatar,
@@ -15,11 +19,6 @@ import {
   Checkbox
   //toastr,
 } from "asc-web-components";
-import i18n from "../i18n";
-import { I18nextProvider, withTranslation } from "react-i18next";
-import styled from "styled-components";
-
-import axios from "axios";
 
 const MainContainer = styled.div`
   padding: 16px 16px 16px 24px;
@@ -45,7 +44,7 @@ const AvatarContainer = styled.div`
   margin-bottom: 24px;
 
   padding: 8px;
-  border: 1px solid grey;
+  border: 1px solid lightgrey;
 `;
 
 const ToggleContentContainer = styled.div`
@@ -102,25 +101,18 @@ class PureAccessRights extends Component {
   }
 
   componentDidMount() {
-    axios
-      //.get("http://localhost:8092/api/2.0/people/filter.json?filters[isAdmin]=true")
-      //.get("http://localhost:8092/api/2.0/people?filters[isAdmin]=true")
-      .get("http://localhost:8092/api/2.0/people")
-      .then(response => {
-        const res = response.data.response;
-        console.log("res", res);
+    const { getAdminUsers } = this.props;
 
-        this.setState({
-          adminUsers: res,
-          portalOwner: res.find(x => x.isOwner === true)
-        });
-        //console.log("adminUsers", this.state.adminUsers);
-        //console.log("portalOwner", this.state.portalOwner);
+    getAdminUsers()
+      .then(res => {
+        console.log("getAdminUsers response", res);
+        this.setState({adminUsers: res, portalOwner: res.find(x=> x.isOwner)})
       })
       .catch(error => {
-        console.log("error", error);
+        console.log(error);
       });
   }
+
   //componentDidUpdate(prevProps, prevState) {}
   //componentWillUnmount() {}
 
@@ -132,8 +124,6 @@ class PureAccessRights extends Component {
   render() {
     const { t } = this.props;
     const { adminUsers, portalOwner } = this.state;
-    console.log(portalOwner);
-    const fakeData = adminUsers;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -175,7 +165,7 @@ class PureAccessRights extends Component {
             isOpen={true}
           >
             <RowContainer manualHeight="200px">
-              {fakeData.map(user => {
+              {adminUsers.map(user => {
                 const element = (
                   <Avatar
                     size="small"
@@ -501,7 +491,7 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  {}
+  { getAdminUsers }
 )(withRouter(withTranslation()(AccessRights)));
 /*
   <AdministratorsHead>

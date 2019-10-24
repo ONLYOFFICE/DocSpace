@@ -128,3 +128,10 @@ export function sendInstructionsToChangePassword(email) {
     data: { email }
   });
 }
+
+export function getUsers() {
+  return request({
+    method: "get",
+    url: "/people"
+  });
+}

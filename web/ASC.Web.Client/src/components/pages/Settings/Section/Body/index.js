@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 
 const CustomizationSettings = lazy(() => import("../../sub-components/common/customization"));
 const NotImplementedSettings = lazy(() => import("../../sub-components/notImplementedSettings"));
-const AccessRight = lazy(() => import("../../sub-components/accessRights"));
+const AccessRight = lazy(() => import("../../sub-components/security/accessRights"));
 class SectionBodyContent extends React.PureComponent {
 
   render() {

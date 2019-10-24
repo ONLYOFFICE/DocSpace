@@ -62,7 +62,13 @@
         "AdminSettings",
         "People",
         "Mail",
-        "AccessRightsFullAccess"
+        "AccessRightsFullAccess",
+        "AccessRightsAccessToProduct",
+        "AccessRightsProductUsersCan",
+        "AccessRightsDisabledProduct",
+        "AccessRightsAllUsers",
+        "AccessRightsUsersFromList",
+        "Employees"
       ],
       "FeedResource": [
         "ProjectsProduct",
