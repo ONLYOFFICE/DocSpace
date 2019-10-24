@@ -23,6 +23,10 @@ When setting focus to input, tooltip will be shown with progress in fulfilling c
 
 You can apply all the parameters of the InputBlock component to the component.
 
+When button is pressed, copy data will be copied to clipboard and copy action will be blocked for 2 seconds. In future, the button is unlocked.
+
+If emailInputName parameter value is empty, copy action will be disabled.
+
 #### Usage
 
 ```js
@@ -73,6 +77,7 @@ const settings = {
 | `clipActionResource`     | `string` |    -     | -                  | -               | Translation of text for copying email data and password               |
 | `clipEmailResource`      | `string` |    -     | -                  | `E-mail`        | Text translation email to copy                                        |
 | `clipPasswordResource`   | `string` |    -     | -                  | `Password`      | Text translation password to copy                                     |
+| `clipCopiedResource`     | `string` |    -     | -                  | `Copied`        | Text translation copy action to copy                                  |
 | `tooltipPasswordTitle`   | `string` |    -     | -                  | -               | Text translation tooltip                                              |
 | `tooltipPasswordLength`  | `string` |    -     | -                  | -               | Password text translation is long tooltip                             |
 | `tooltipPasswordDigits`  | `string` |    -     | -                  | -               | Digit text translation tooltip                                        |

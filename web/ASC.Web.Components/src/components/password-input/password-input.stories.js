@@ -50,6 +50,7 @@ storiesOf('Components|Input', module)
               clipActionResource='Copy e-mail and password'
               clipEmailResource='E-mail: '
               clipPasswordResource='Password: '
+              clipCopiedResource='Copied'
               tooltipPasswordTitle='Password must contain:'
               tooltipPasswordLength={tooltipPasswordLength}
               tooltipPasswordDigits='digits'
