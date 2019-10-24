@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 
 const CustomizationSettings = lazy(() => import("../../sub-components/common/customization"));
 const NotImplementedSettings = lazy(() => import("../../sub-components/notImplementedSettings"));
+const AccessRight = lazy(() => import("../../sub-components/accessRights"));
 class SectionBodyContent extends React.PureComponent {
 
   render() {
@@ -13,6 +14,11 @@ class SectionBodyContent extends React.PureComponent {
           exact
           path={[`${this.props.match.path}/common/customization`,`${this.props.match.path}/common`, this.props.match.path]}
           component={CustomizationSettings}
+        />
+        <Route
+          exact
+          path={`${this.props.match.path}/security/portal-access`}
+          component={AccessRight}
         />
 
         <Route component={NotImplementedSettings} />

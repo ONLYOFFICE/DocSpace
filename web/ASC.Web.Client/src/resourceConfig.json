@@ -53,6 +53,23 @@
         "ChangePasswordSuccess",
         "Remember"
       ]
+    },
+    "Settings": {
+      "Resource": [
+        "PortalOwner",
+        "AccessRightsOwnerCan",
+        "AccessRightsOwnerOpportunities",
+        "AdminSettings",
+        "People",
+        "Mail",
+        "AccessRightsFullAccess"
+      ],
+      "FeedResource": [
+        "ProjectsProduct",
+        "CrmProduct",
+        "CommunityProduct",
+        "DocumentsProduct"
+      ]
     }
   },
   "Layout": {

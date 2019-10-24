@@ -1,3 +1,43 @@
 {
+    "PortalOwner": "Portal Owner",
+    "AccessRightsOwnerCan": "Portal owner can",
+    "AccessRightsOwnerOpportunities": "Do the same as module administrators|Appoint module administrators|Set modules access rights|Manage portal configuration|Manage user accounts|Change portal owner|Backup portal data|Deactivate or delete portal",
+    "AdminSettings": "Administrators",
+    "ProjectsProduct": "Projects",
+    "CrmProduct": "CRM",
+    "CommunityProduct": "Community",
+    "People": "People",
+    "Mail": "Mail",
+    "AccessRightsFullAccess": "Full access",
+    "DocumentsProduct": "Documents",
+    "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
+    "AccessRightsProductUsersCan": "{{category}} users can",
+    "AccessRightsDisabledProduct": "{{module}} module is disabled and is not shown on the portal. To enable it, refer to the Modules &amp; Tools section of the Portal Settings",
 
+
+
+
+
+
+
+
+
+
+    "ViewProfilesAndGroups": "View profiles and groups",
+
+
+    "ProjectsUserCapabilityView": "View projects and take part in discussions",
+    "ProjectsUserCapabilityCreate": "Create and edit milestones, tasks, discussions, documents",
+    "ProjectsUserCapabilityTrack": "Track time for tasks, generate reports",
+    "ProjectsUserCapabilityForm": "Form a project team and set access rights",
+
+    "CRMUserCapabilityCreate": "Create a contact, task, case, opportunity with a possibility to limit access to them",
+    "CRMUserCapabilityEdit": "Edit a contact, task, case, opportunity with the access rights set up",
+    "CommunityUserCapability": "Create and edit milestones, tasks, discussions, documents",
+    "UsersFromTheList": "Users from the list",
+    "AllUsers": "All users",
+    "Sample": "Sample",
+    "ManageOwnMailAccounts": "Manage own mail accounts, receive and send letters",
+    "ManageOwnMailSettings": "Manage own Mail settings",
+    "ManageTheTagsAndAddressBook": "Manage the tags and address book"
 }
