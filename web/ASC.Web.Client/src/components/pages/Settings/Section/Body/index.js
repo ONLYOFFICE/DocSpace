@@ -17,7 +17,7 @@ class SectionBodyContent extends React.PureComponent {
         />
         <Route
           exact
-          path={`${this.props.match.path}/security/portal-access`}
+          path={`${this.props.match.path}/security/access-rights`}
           component={AccessRight}
         />
 

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 //import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import {
   Text,
   Avatar,
@@ -37,6 +38,7 @@ const BodyContainer = styled.div`
 `;
 
 const AvatarContainer = styled.div`
+  display: flex;
   width: 330px;
   height: 100px;
   margin-right: 130px;
@@ -44,12 +46,6 @@ const AvatarContainer = styled.div`
 
   padding: 8px;
   border: 1px solid grey;
-`;
-
-const ItemsContainer = styled.div`
-  .portal_owner {
-    /*margin-left: 20px;*/
-  }
 `;
 
 const ToggleContentContainer = styled.div`
@@ -74,16 +70,25 @@ const ProjectsContainer = styled.div`
 `;
 
 const RadioButtonContainer = styled.div`
-  margin-right: 180px;
+  margin-right: 150px;
   margin-bottom: 16px;
   width: 310px;
 `;
 
 const ProjectsBody = styled.div`
-  .projects_margin {
-    /*margin-left: 24px;*/
-  }
+  width: 280px;
 `;
+
+/*const AdministratorsHead = styled.div`
+  display: flex;
+  margin-right: 70px;
+
+  .category {
+    margin-left: 5px;
+    flex-basis: 12.5%;  (1/elementsCount*100%)
+    text-align: center;
+  }
+`;*/
 
 class PureAccessRights extends Component {
   constructor(props) {
@@ -98,26 +103,22 @@ class PureAccessRights extends Component {
 
   componentDidMount() {
     axios
+      //.get("http://localhost:8092/api/2.0/people/filter.json?filters[isAdmin]=true")
+      //.get("http://localhost:8092/api/2.0/people?filters[isAdmin]=true")
       .get("http://localhost:8092/api/2.0/people")
       .then(response => {
         const res = response.data.response;
-        //console.log(res);
+        console.log("res", res);
 
-        const array = [];
-        for (const item of res) {
-          if (item.isAdmin) {
-            array.push(item);
-          }
-        }
         this.setState({
-          adminUsers: array,
+          adminUsers: res,
           portalOwner: res.find(x => x.isOwner === true)
         });
         //console.log("adminUsers", this.state.adminUsers);
-        console.log("portalOwner", this.state.portalOwner);
+        //console.log("portalOwner", this.state.portalOwner);
       })
       .catch(error => {
-        //console.log(error);
+        console.log("error", error);
       });
   }
   //componentDidUpdate(prevProps, prevState) {}
@@ -129,10 +130,10 @@ class PureAccessRights extends Component {
   };
 
   render() {
-    const fakeData2 = this.state.adminUsers;
-    //console.log("fakeData2", fakeData2);
-
     const { t } = this.props;
+    const { adminUsers, portalOwner } = this.state;
+    console.log(portalOwner);
+    const fakeData = adminUsers;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -144,8 +145,18 @@ class PureAccessRights extends Component {
         <BodyContainer>
           <AvatarContainer>
             <Avatar size="big" role="owner" />
+            {portalOwner ? (
+              <div style={{ marginLeft: "24px" }}>
+                <Text.Body className="avatar_text" fontSize={16} isBold={true}>
+                  {portalOwner.displayName}
+                </Text.Body>
+                <Text.Body className="avatar_text" fontSize={12}>
+                  {portalOwner.department}
+                </Text.Body>
+              </div>
+            ) : null}
           </AvatarContainer>
-          <ItemsContainer>
+          <ProjectsBody>
             <Text.Body className="portal_owner" fontSize={12}>
               {t("AccessRightsOwnerCan")}:
             </Text.Body>
@@ -154,7 +165,7 @@ class PureAccessRights extends Component {
                 <li key={key}>{item};</li>
               ))}
             </Text.Body>
-          </ItemsContainer>
+          </ProjectsBody>
         </BodyContainer>
 
         <ToggleContentContainer>
@@ -164,7 +175,7 @@ class PureAccessRights extends Component {
             isOpen={true}
           >
             <RowContainer manualHeight="200px">
-              {fakeData2.map(user => {
+              {fakeData.map(user => {
                 const element = (
                   <Avatar
                     size="small"
@@ -194,7 +205,7 @@ class PureAccessRights extends Component {
                         fontSize={15}
                         color={nameColor}
                         //href="/products/people/profile.aspx?user=administrator"
-                        //href="/products/people/view/@self"
+                        href={user.profileUrl}
                       >
                         {user.userName}
                       </Link>
@@ -211,37 +222,7 @@ class PureAccessRights extends Component {
                       <Checkbox
                         isChecked={false}
                         onChange={this.onChange}
-                        id={`documents_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`projects_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`crm_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`community_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
                         id={`people_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`sample_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`mail_${user.id}`}
                       />
                     </RowContent>
                   </Row>
@@ -267,10 +248,17 @@ class PureAccessRights extends Component {
                   name="selectGroup"
                   selected="allUsers"
                   options={[
-                    { value: "allUsers", label: t("AllUsers") },
+                    {
+                      value: "allUsers",
+                      label: t("AccessRightsAllUsers", {
+                        users: t("Employees")
+                      })
+                    },
                     {
                       value: "usersFromTheList",
-                      label: t("UsersFromTheList")
+                      label: t("AccessRightsUsersFromList", {
+                        users: t("Employees")
+                      })
                     }
                   ]}
                   className="display-block"
@@ -309,10 +297,17 @@ class PureAccessRights extends Component {
                   name="selectGroup"
                   selected="allUsers"
                   options={[
-                    { value: "allUsers", label: t("AllUsers") },
+                    {
+                      value: "allUsers",
+                      label: t("AccessRightsAllUsers", {
+                        users: t("Employees")
+                      })
+                    },
                     {
                       value: "usersFromTheList",
-                      label: t("UsersFromTheList")
+                      label: t("AccessRightsUsersFromList", {
+                        users: t("Employees")
+                      })
                     }
                   ]}
                   className="display-block"
@@ -349,10 +344,17 @@ class PureAccessRights extends Component {
                   name="selectGroup"
                   selected="allUsers"
                   options={[
-                    { value: "allUsers", label: t("AllUsers") },
+                    {
+                      value: "allUsers",
+                      label: t("AccessRightsAllUsers", {
+                        users: t("Employees")
+                      })
+                    },
                     {
                       value: "usersFromTheList",
-                      label: t("UsersFromTheList")
+                      label: t("AccessRightsUsersFromList", {
+                        users: t("Employees")
+                      })
                     }
                   ]}
                   className="display-block"
@@ -385,10 +387,17 @@ class PureAccessRights extends Component {
                   name="selectGroup"
                   selected="allUsers"
                   options={[
-                    { value: "allUsers", label: t("AllUsers") },
+                    {
+                      value: "allUsers",
+                      label: t("AccessRightsAllUsers", {
+                        users: t("Employees")
+                      })
+                    },
                     {
                       value: "usersFromTheList",
-                      label: t("UsersFromTheList")
+                      label: t("AccessRightsUsersFromList", {
+                        users: t("Employees")
+                      })
                     }
                   ]}
                   className="display-block"
@@ -410,11 +419,9 @@ class PureAccessRights extends Component {
             label={t("Sample")}
             isOpen={true}
           >
-            <ProjectsContainer>
-              <Text.Body fontSize={12}>
-                {t("AccessRightsDisabledProduct", { module: "Sample" })}
-              </Text.Body>
-            </ProjectsContainer>
+            <Text.Body fontSize={12}>
+              {t("AccessRightsDisabledProduct", { module: "Sample" })}
+            </Text.Body>
           </ToggleContent>
 
           <ToggleContent
@@ -431,10 +438,17 @@ class PureAccessRights extends Component {
                   name="selectGroup"
                   selected="allUsers"
                   options={[
-                    { value: "allUsers", label: t("AllUsers") },
+                    {
+                      value: "allUsers",
+                      label: t("AccessRightsAllUsers", {
+                        users: t("Employees")
+                      })
+                    },
                     {
                       value: "usersFromTheList",
-                      label: t("UsersFromTheList")
+                      label: t("AccessRightsUsersFromList", {
+                        users: t("Employees")
+                      })
                     }
                   ]}
                   className="display-block"
@@ -488,18 +502,61 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   {}
-)(AccessRights);
+)(withRouter(withTranslation()(AccessRights)));
 /*
-  <RowContentHeader>
-    <Text.Body>
+  <AdministratorsHead>
+    <div style={{width: 250}}></div>
+    <Text.Body className="category">
       {t("AccessRightsFullAccess")}
-      {t("DocumentsProduct")}
-      {t("ProjectsProduct")}
-      {t("CrmProduct")}
-      {t("CommunityProduct")}
-      {t("People")}
-      {t("Sample")}
-      {t("Mail")}
     </Text.Body>
-  </RowContentHeader>
+    <Text.Body className="category">{t("DocumentsProduct")}</Text.Body>
+    <Text.Body className="category">{t("ProjectsProduct")}</Text.Body>
+    <Text.Body className="category">{t("CrmProduct")}</Text.Body>
+    <Text.Body className="category">{t("CommunityProduct")}</Text.Body>
+    <Text.Body className="category">{t("People")}</Text.Body>
+    <Text.Body className="category">{t("Sample")}</Text.Body>
+    <Text.Body className="category">{t("Mail")}</Text.Body>
+  </AdministratorsHead>
+*/
+/*
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`fullAccess_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`documents_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`projects_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`crm_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`community_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`people_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`sample_${user.id}`}
+  />
+  <Checkbox
+    isChecked={false}
+    onChange={this.onChange}
+    id={`mail_${user.id}`}
+  />
 */
