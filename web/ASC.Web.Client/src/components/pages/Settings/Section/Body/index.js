@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
+import { Scrollbar } from 'asc-web-components'
 
 const CustomizationSettings = lazy(() => import("../../sub-components/common/customization"));
 const NotImplementedSettings = lazy(() => import("../../sub-components/notImplementedSettings"));
@@ -9,6 +10,7 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     return (
+      <Scrollbar stype="mediumBlack">
       <Switch>
         <Route
           exact
@@ -23,6 +25,7 @@ class SectionBodyContent extends React.PureComponent {
 
         <Route component={NotImplementedSettings} />
       </Switch>
+      </Scrollbar>
     );
   };
 };
