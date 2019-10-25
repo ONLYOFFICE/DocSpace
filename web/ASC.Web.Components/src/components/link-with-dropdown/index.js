@@ -97,10 +97,6 @@ const StyledText = styled(SimpleText)`
     `}
 `;
 
-const DataDropDown = ({ data, color, fontSize, title, ...props }) => (
-  <DropDown {...props}></DropDown>
-);
-
 const StyledSpan = styled.span`
 position: relative;
 `;
@@ -171,6 +167,7 @@ class LinkWithDropdown extends React.Component {
       isBold,
       title,
       isOpen,
+      data,
       ...rest
     } = this.props;
     return (
@@ -204,19 +201,19 @@ class LinkWithDropdown extends React.Component {
           </StyledLinkWithDropdown>
         </span>
 
-        <DataDropDown
+        <DropDown
           isOpen={this.state.isOpen}
           withArrow={false}
           {...rest}
         >
-          {this.props.data.map(item => (
+          {data.map(item => (
             <DropDownItem
               key={item.key}
               onClick={this.onDropDownItemClick.bind(this.props, item)}
               {...item}
             />
           ))}
-        </DataDropDown>
+        </DropDown>
       </StyledSpan>
     );
   }
