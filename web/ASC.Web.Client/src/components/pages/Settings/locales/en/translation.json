@@ -16,6 +16,12 @@
     "AccessRightsAllUsers": "All {{users}}",
     "AccessRightsUsersFromList": "{{users}} from the list",
     "Employees": "users",
+    "StudioTimeLanguageSettings": "Language and Time Zone Settings",
+    "Language": "Language",
+    "TimeZone": "Time Zone",
+    "SaveButton": "Save",
+    "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
+    "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
 
 
 
@@ -31,5 +37,9 @@
     "Sample": "Sample",
     "ManageOwnMailAccounts": "Manage own mail accounts, receive and send letters",
     "ManageOwnMailSettings": "Manage own Mail settings",
-    "ManageTheTagsAndAddressBook": "Manage the tags and address book"
+    "ManageTheTagsAndAddressBook": "Manage the tags and address book",
+    "Culture_en": "English (United Kingdom)",
+    "Culture_en-US": "English (United States)",
+    "Culture_ru-RU": "Russian (Russia)",
+    "LearnMore": "Learn more..."
 }

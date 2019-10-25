@@ -15,6 +15,12 @@
   "AccessRightsAllUsers": "Всех участников со статусом {{users}}",
   "AccessRightsUsersFromList": "Участников со статусом Пользователи из списка",
   "Employees": "Пользователи",
+  "StudioTimeLanguageSettings": "Настройки языка и часового пояса",
+  "Language": "Язык",
+  "TimeZone": "Часовой пояс",
+  "SaveButton": "Сохранить",
+  "SuccessfullySaveSettingsMessage": "Настройки успешно обновлены",
+  "NotFoundLanguage": "Если Вы не можете найти свой язык в списке доступных, Вы всегда можете написать нам по адресу <1>{{supportEmail}}</1>, чтобы принять участие в переводе и получить до 1 года бесплатного использования.",
 
 
 
@@ -31,5 +37,9 @@
   "Sample": "Sample",
   "ManageOwnMailAccounts": "Управлять своими учетными записями почты, получать и отправлять письма",
   "ManageOwnMailSettings": "Управлять своими настройками Почты",
-  "ManageTheTagsAndAddressBook": "Управлять тегами и адресной книгой"  
+  "ManageTheTagsAndAddressBook": "Управлять тегами и адресной книгой",
+  "Culture_en": "Английский (Великобритания)",
+  "Culture_en-US": "Английский (США)",
+  "Culture_ru-RU": "Русский (Россия)",
+  "LearnMore":  "Подробнее..."
 }

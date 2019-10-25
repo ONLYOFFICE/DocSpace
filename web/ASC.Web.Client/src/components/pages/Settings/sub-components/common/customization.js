@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
-import { FieldContainer, Text, ComboBox, Loader, Button, toastr } from "asc-web-components";
+import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link } from "asc-web-components";
 import { getCultures, setLanguageAndTime } from '../../../../../store/auth/actions';
 import { getPortalTimezones } from '../../../../../store/services/api';
-import styled from 'styled-components'
-
+import styled from 'styled-components';
+import { Trans } from 'react-i18next';
 
 const StyledComponent = styled.div`
    .margin-top {
@@ -28,12 +28,12 @@ class Customization extends React.Component {
 
 
    componentDidMount() {
-      const { getCultures, portalLanguage, portalTimeZoneId } = this.props;
+      const { getCultures, portalLanguage, portalTimeZoneId, t, i18n } = this.props;
       let languages, timezones;
       getCultures()
          .then((cultures) => {
             languages = cultures.map((culture) => {
-               return { key: culture, label: culture };
+               return { key: culture, label: t(`Culture_${culture}`) };
             });
             return getPortalTimezones();
          })
@@ -45,6 +45,7 @@ class Customization extends React.Component {
             const timezone = timezones.find(item => item.key === portalTimeZoneId);
 
             this.setState({ timezones, timezone, languages, language, isLoadedData: true });
+            i18n.changeLanguage(this.props.language);
          }
          );
    }
@@ -58,19 +59,33 @@ class Customization extends React.Component {
    };
 
    onSaveLngTZSettings = () => {
-      const { setLanguageAndTime } = this.props;
+      const { setLanguageAndTime, t } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
             .then(() => {
                this.setState({ isLoading: false })
-               toastr.success('Settings have been successfully updated');
+               toastr.success(t('SuccessfullySaveSettingsMessage'));
             });
       })
    }
 
    render() {
+      const { t, i18n, language } = this.props;
       const { isLoadedData } = this.state;
-      const tooltipContent = 'Tooltip content 123456';
+      const supportEmail = "documentation@onlyoffice.com";
+      const tooltipLanguage =
+         <Text.Body fontSize={13}>
+            <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
+               "In case you cannot find your language in the list of the
+               available ones, feel free to write to us at
+         <Link href="mailto:documentation@onlyoffice.com" isHovered={true}>
+                  {{ supportEmail }}
+               </Link> to take part in the translation and get up to 1 year free of
+               charge."
+            </Trans>
+            {" "}
+            <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
+         </Text.Body>
 
       console.log("CustomizationSettings render");
       return (
@@ -78,11 +93,11 @@ class Customization extends React.Component {
             <Loader className="pageLoader" type="rombs" size={40} />
             : <>
                <StyledComponent>
-                  <Text.Body fontSize={16}>Language and Time Zone Settings</Text.Body>
+                  <Text.Body fontSize={16}>{t('StudioTimeLanguageSettings')}</Text.Body>
                   <FieldContainer
                      className='margin-top'
-                     labelText="Language:"
-                     tooltipContent={tooltipContent}
+                     labelText={`${t("Language")}:`}
+                     tooltipContent={tooltipLanguage}
                      isVertical={true}>
                      <ComboBox
                         options={this.state.languages}
@@ -97,8 +112,7 @@ class Customization extends React.Component {
                   </FieldContainer>
 
                   <FieldContainer
-                     labelText="Time Zone:"
-                     tooltipContent={tooltipContent}
+                     labelText={`${t("TimeZone")}:`}
                      isVertical={true}>
                      <ComboBox
                         options={this.state.timezones}
@@ -116,7 +130,7 @@ class Customization extends React.Component {
                      className='margin-top'
                      primary={true}
                      size='big'
-                     label='Save'
+                     label={t('SaveButton')}
                      isLoading={this.state.isLoading}
                      onClick={this.onSaveLngTZSettings}
                   />
@@ -130,7 +144,8 @@ class Customization extends React.Component {
 function mapStateToProps(state) {
    return {
       portalLanguage: state.auth.settings.culture,
-      portalTimeZoneId: state.auth.settings.timezone
+      portalTimeZoneId: state.auth.settings.timezone,
+      language: state.auth.user.cultureName || state.auth.settings.culture,
    };
 }
 

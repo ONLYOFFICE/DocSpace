@@ -68,6 +68,11 @@
         "AccessRightsDisabledProduct",
         "AccessRightsAllUsers",
         "AccessRightsUsersFromList",
+        "StudioTimeLanguageSettings",
+        "Language",
+        "TimeZone",
+        "SaveButton",
+        "NotFoundLanguage",
         "Employees"
       ],
       "FeedResource": [
