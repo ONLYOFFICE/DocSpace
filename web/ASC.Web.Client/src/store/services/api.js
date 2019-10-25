@@ -67,7 +67,7 @@ export function createUser(data, key) {
 }
 
 export function changePassword(userId, password, key) {
-    const data = { password };
+  const data = { password };
 
   return request({
     method: "put",
@@ -79,7 +79,7 @@ export function changePassword(userId, password, key) {
 
 export function changeEmail(userId, email, key) {
 
-    const data = { email };
+  const data = { email };
 
   return request({
     method: "put",
@@ -126,6 +126,28 @@ export function sendInstructionsToChangePassword(email) {
     method: "post",
     url: "/people/password.json",
     data: { email }
+  });
+}
+
+export function getPortalCultures() {
+  return request({
+    method: "get",
+    url: "/settings/cultures.json"
+  });
+}
+
+export function setLanguageAndTime(lng, timeZoneID) {
+  return request({
+    method: "put",
+    url: "/settings/timeandlanguage.json",
+    data: { lng, timeZoneID }
+  });
+}
+
+export function getPortalTimezones() {
+  return request({
+    method: "get",
+    url: "/settings/timezones.json"
   });
 }
 

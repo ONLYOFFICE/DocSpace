@@ -1,4 +1,7 @@
-import { SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE } from './actions';
+import {
+    SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE,
+    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME
+} from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
 
@@ -164,6 +167,10 @@ const authReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 settings: { ...state.settings, ...action.settings }
             });
+        case GET_PORTAL_CULTURES:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, cultures: action.cultures }
+            });
         case SET_PASSWORD_SETTINGS:
             return Object.assign({}, state, {
                 settings: { ...state.settings, passwordSettings: action.passwordSettings }
@@ -183,6 +190,10 @@ const authReducer = (state = initialState, action) => {
         case SET_NEW_SETTING_NODE:
             return Object.assign({}, state, {
                 settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, ...action.selectedNodeData } }
+            });
+        case SET_PORTAL_LANGUAGE_AND_TIME:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
             });
         case LOGOUT:
             return initialState;

@@ -11,6 +11,8 @@ export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
 export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
+export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
+export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
 
 export function setCurrentUser(user) {
     return {
@@ -71,6 +73,20 @@ export function setNewSelectedNode(selectedNodeData) {
     return {
         type: SET_NEW_SETTING_NODE,
         selectedNodeData
+    };
+};
+
+export function getPortalCultures(cultures) {
+    return {
+        type: GET_PORTAL_CULTURES,
+        cultures
+    };
+};
+
+export function setPortalLanguageAndTime(newSettings) {
+    return {
+        type: SET_PORTAL_LANGUAGE_AND_TIME,
+        newSettings
     };
 };
 
@@ -174,3 +190,21 @@ export function activateConfirmUser(personalData, loginData, key, userId, activa
             .then(user => dispatch(setCurrentUser(user)));
     };
 };
+
+export function getCultures() {
+    return dispatch => {
+        return api.getPortalCultures()
+            .then(cultures => {
+                dispatch(getPortalCultures(cultures));
+                return cultures;
+            }
+            );
+    };
+}
+
+export function setLanguageAndTime(lng, timeZoneID) {
+    return dispatch => {
+        return api.setLanguageAndTime(lng, timeZoneID)
+            .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
+    };
+}
