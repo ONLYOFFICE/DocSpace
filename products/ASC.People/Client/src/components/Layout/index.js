@@ -6,6 +6,7 @@ import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../../store/auth/actions';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
+import { isAdmin } from "../../store/auth/selectors";
 
 class PurePeopleLayout extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -66,7 +67,23 @@ class PurePeopleLayout extends React.Component {
 };
 
 
-const getAvailableModules = (modules) => {
+const getAvailableModules = (modules, currentUser) => {
+    const isUserAdmin = isAdmin(currentUser);
+    const customModules = isUserAdmin ? [
+        {
+            separator: true,
+            id: "nav-separator-2"
+        },
+        {
+            id: 'testId',
+            title: 'Settings',
+            iconName: "SettingsIcon",
+            notifications: 0,
+            url: '/settings',
+            onClick: () => window.open('/settings', "_self"),
+            onBadgeClick: e => console.log("SettingsIconBadge Clicked", e)
+        }] : [];
+
     const separator = { separator: true, id: 'nav-separator-1' };
     const products = modules.map(product => {
         return {
@@ -80,13 +97,13 @@ const getAvailableModules = (modules) => {
         };
     }) || [];
 
-    return products.length ? [separator, ...products] : products;
+    return products.length ? [separator, ...products, ...customModules] : products;
 };
 
 function mapStateToProps(state) {
     return {
         hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
-        availableModules: getAvailableModules(state.auth.modules),
+        availableModules: getAvailableModules(state.auth.modules, state.auth.user),
         currentUser: state.auth.user,
         currentModuleId: state.auth.settings.currentProductId,
         settings: state.auth.settings,
@@ -96,7 +113,7 @@ function mapStateToProps(state) {
 
 const PeopleLayoutContainer = withTranslation()(PurePeopleLayout);
 
-const PeopleLayout = (props) => { 
+const PeopleLayout = (props) => {
     const { language } = props;
     i18n.changeLanguage(language);
     return (<I18nextProvider i18n={i18n}><PeopleLayoutContainer {...props} /></I18nextProvider>);
