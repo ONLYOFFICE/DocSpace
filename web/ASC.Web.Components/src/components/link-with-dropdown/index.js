@@ -101,6 +101,9 @@ const DataDropDown = ({ data, color, fontSize, title, ...props }) => (
   <DropDown {...props}></DropDown>
 );
 
+const StyledSpan = styled.span`
+position: relative;
+`;
 class LinkWithDropdown extends React.Component {
 
   constructor(props) {
@@ -171,7 +174,7 @@ class LinkWithDropdown extends React.Component {
       ...rest
     } = this.props;
     return (
-      <>
+      <StyledSpan>
         <span
           ref={this.ref}
           onClick={this.clickToDropdown}
@@ -214,7 +217,7 @@ class LinkWithDropdown extends React.Component {
             />
           ))}
         </DataDropDown>
-      </>
+      </StyledSpan>
     );
   }
 }
