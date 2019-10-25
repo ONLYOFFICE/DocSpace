@@ -129,9 +129,9 @@ export function sendInstructionsToChangePassword(email) {
   });
 }
 
-export function getUsers() {
+export function getUserList() {
   return request({
     method: "get",
-    url: "/people"
+    url: "/people/filter?isAdministrator=true"
   });
 }

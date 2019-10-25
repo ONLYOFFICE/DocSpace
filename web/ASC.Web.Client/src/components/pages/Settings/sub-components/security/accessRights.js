@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-//import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import i18n from "../../i18n";
@@ -14,7 +14,6 @@ import {
   RowContent,
   RowContainer,
   RadioButtonGroup,
-  //Icons,
   Link,
   Checkbox
   //toastr,
@@ -95,8 +94,7 @@ class PureAccessRights extends Component {
 
     this.state = {
       isChecked: this.props.isChecked,
-      adminUsers: [],
-      portalOwner: null
+      portalOwner: null,
     };
   }
 
@@ -106,11 +104,11 @@ class PureAccessRights extends Component {
     getAdminUsers()
       .then(res => {
         console.log("getAdminUsers response", res);
-        this.setState({adminUsers: res, portalOwner: res.find(x=> x.isOwner)})
       })
       .catch(error => {
         console.log(error);
       });
+      
   }
 
   //componentDidUpdate(prevProps, prevState) {}
@@ -123,7 +121,8 @@ class PureAccessRights extends Component {
 
   render() {
     const { t } = this.props;
-    const { adminUsers, portalOwner } = this.state;
+    const { users } = this.props;
+    const { portalOwner } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -165,7 +164,7 @@ class PureAccessRights extends Component {
             isOpen={true}
           >
             <RowContainer manualHeight="200px">
-              {adminUsers.map(user => {
+              {users.map(user => {
                 const element = (
                   <Avatar
                     size="small"
@@ -194,7 +193,6 @@ class PureAccessRights extends Component {
                         isBold={true}
                         fontSize={15}
                         color={nameColor}
-                        //href="/products/people/profile.aspx?user=administrator"
                         href={user.profileUrl}
                       >
                         {user.userName}
@@ -468,7 +466,7 @@ PureAccessRights.defaultProps = {
   isChecked: false
 };
 
-const ProfileContainer = withTranslation()(PureAccessRights);
+const AccessRightsContainer = withTranslation()(PureAccessRights);
 
 const AccessRights = props => {
   const { language } = props;
@@ -477,22 +475,29 @@ const AccessRights = props => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...props} />
+      <AccessRightsContainer {...props} />
     </I18nextProvider>
   );
 };
 
 function mapStateToProps(state) {
-  console.log("state", state);
   return {
-    //adminUsers: state.auth.isValidConfirmLink
+    users: state.people.users
   };
 }
+
+AccessRights.defaultProps = {
+  users: []
+};
+
+AccessRights.propTypes = {
+  users: PropTypes.arrayOf(PropTypes.object)
+};
 
 export default connect(
   mapStateToProps,
   { getAdminUsers }
-)(withRouter(withTranslation()(AccessRights)));
+)(withRouter((AccessRights)));
 /*
   <AdministratorsHead>
     <div style={{width: 250}}></div>
