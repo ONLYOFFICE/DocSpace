@@ -71,6 +71,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.3.0",
     "eslint-plugin-react": "^7.14.3",
+    "faker": "^4.1.0",
     "jest": "^24.8.0",
     "jest-enzyme": "^7.1.0",
     "jest-junit": "^8.0.0",
@@ -114,6 +115,7 @@
     "react-tooltip": "^3.11.1",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
+    "react-window-infinite-loader": "^1.0.5",
     "reactstrap": "^8.0.1"
   },
   "resolutions": {

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from '@storybook/addon-actions';
@@ -6,8 +7,11 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import AdvancedSelector from "./";
 import Section from "../../../.storybook/decorators/section";
-import { ArrayValue, BooleanValue } from "react-values";
+import { BooleanValue } from "react-values";
 import Button from "../button";
+import { isEqual } from "lodash";
+import faker, { name } from "faker";
+import { slice } from "lodash/slice";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -79,12 +83,28 @@ const groups = [
 const sizes = ["compact", "full"];
 const displayTypes = ['dropdown', 'aside'];
 
-storiesOf("Components|AdvancedSelector", module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add("base", () => {
-    const optionsCount = number("Users count", 1000);
-    const options = Array.from({ length: optionsCount }, (v, index) => {
+
+class ExampleList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { total, isOpen } = props;
+
+    this.state = {
+      isOpen: isOpen,
+      total: total,
+      options: [],
+      hasNextPage: false,
+      isNextPageLoading: false
+    }
+
+    faker.seed(123);
+    this.persons = new Array(50)
+      .fill(true)
+      .map(() => ({ name: name.findName() }));
+    this.persons.sort((a, b) => a.name.localeCompare(b.name));
+
+    this.AllOptions = Array.from({ length: this.state.total }, (v, index) => {
       const additional_group = groups[getRandomInt(1, 6)];
       groups[0].total++;
       additional_group.total++;
@@ -95,6 +115,115 @@ storiesOf("Components|AdvancedSelector", module)
       };
     });
 
+    console.log(this.persons);
+  }
+
+  loadNextPage = (startIndex, stopIndex) => {
+    this.setState({ isNextPageLoading: true });
+
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        this.setState({
+          hasNextPage: this.AllOptions.length < 100,
+          isNextPageLoading: false
+        });
+
+        resolve(slice(this.AllOptions, startIndex, stopIndex - startIndex));
+      }, 2500);
+    });
+
+    return promise;
+  };
+
+  componentDidUpdate(prevProps) {
+    const {total, options, isOpen} = this.props;
+    if(!isEqual(prevProps.options, options))
+    {
+      this.setState({
+        options: options
+      });
+    }
+
+    if(isOpen !== prevProps.isOpen) {
+      this.setState({
+        isOpen: isOpen
+      });
+    }
+
+    if(total !== prevProps.total) {
+      this.setState({
+        total: total,
+        option: []
+      });
+    }
+  }
+
+  render() {
+    const { isOpen, options, total, hasNextPage, isNextPageLoading } = this.state;
+    return (
+      <AdvancedSelector
+        size={select("size", sizes, "full")}
+        placeholder={text("placeholder", "Search users")}
+        onSearchChanged={value => {
+          action("onSearchChanged")(value);
+          /*set(
+            options.filter(option => {
+              return option.label.indexOf(value) > -1;
+            })
+          );*/
+        }}
+        //options={options}
+        total={total}
+        hasNextPage={hasNextPage} 
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={this.loadNextPage}
+        groups={groups}
+        selectedGroups={[groups[0]]}
+        isMultiSelect={boolean("isMultiSelect", true)}
+        buttonLabel={text("buttonLabel", "Add members")}
+        selectAllLabel={text("selectAllLabel", "Select all")}
+        onSelect={selectedOptions => {
+          action("onSelect")(selectedOptions);
+          //toggle();
+        }}
+        //onCancel={toggle}
+        onChangeGroup={group => {
+          /*set(
+            options.filter(option => {
+              return (
+                option.groups &&
+                option.groups.length > 0 &&
+                option.groups.indexOf(group.key) > -1
+              );
+            })
+          );*/
+        }}
+        allowCreation={boolean("allowCreation", false)}
+        onAddNewClick={() => action("onSelect") }
+        isOpen={isOpen}
+        displayType={select("displayType", displayTypes, "dropdown")}
+      />
+    );
+  }
+
+}
+
+storiesOf("Components|AdvancedSelector", module)
+  .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
+  .add("base", () => {
+    /*const optionsCount = number("Users count", 1000);
+    const options = Array.from({ length: optionsCount }, (v, index) => {
+      const additional_group = groups[getRandomInt(1, 6)];
+      groups[0].total++;
+      additional_group.total++;
+      return {
+        key: `user${index}`,
+        groups: ["group-all", additional_group.key],
+        label: `User${index + 1} (All groups, ${additional_group.label})`
+      };
+    });*/
+
     return (
       <Section>
         <BooleanValue
@@ -104,52 +233,8 @@ storiesOf("Components|AdvancedSelector", module)
           {({ value: isOpen, toggle }) => (
             <div style={{position: "relative"}}>
               <Button label="Toggle dropdown" onClick={toggle} />
-                <ArrayValue
-                  defaultValue={options}
-                  onChange={() => action("options onChange")}
-                >
-                  {({ value, set }) => (
-                    <AdvancedSelector
-                      size={select("size", sizes, "full")}
-                      placeholder={text("placeholder", "Search users")}
-                      onSearchChanged={value => {
-                        action("onSearchChanged")(value);
-                        set(
-                          options.filter(option => {
-                            return option.label.indexOf(value) > -1;
-                          })
-                        );
-                      }}
-                      options={value}
-                      groups={groups}
-                      selectedGroups={[groups[0]]}
-                      isMultiSelect={boolean("isMultiSelect", true)}
-                      buttonLabel={text("buttonLabel", "Add members")}
-                      selectAllLabel={text("selectAllLabel", "Select all")}
-                      onSelect={selectedOptions => {
-                        action("onSelect")(selectedOptions);
-                        toggle();
-                      }}
-                      onCancel={toggle}
-                      onChangeGroup={group => {
-                        set(
-                          options.filter(option => {
-                            return (
-                              option.groups &&
-                              option.groups.length > 0 &&
-                              option.groups.indexOf(group.key) > -1
-                            );
-                          })
-                        );
-                      }}
-                      allowCreation={boolean("allowCreation", false)}
-                      onAddNewClick={() => action("onSelect") }
-                      isOpen={isOpen}
-                      displayType={select("displayType", displayTypes, "dropdown")}
-                    />
-                  )}
-                </ArrayValue>
-              </div>
+              <ExampleList isOpen={isOpen} total={number("Users count", 1000)} />
+            </div>
           )}
         </BooleanValue>
       </Section>
