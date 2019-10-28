@@ -340,31 +340,24 @@ class ADSelectorBody extends React.Component {
         this.props.onChangeGroup && this.props.onChangeGroup(group);
     };
 
-    // Only load 1 page of items at a time.
-    // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-    loadMoreItems = this.props.isNextPageLoading ? () => { } : this.props.loadNextPage;
-
-    // Every row is loaded except for our loading indicator row.
-    isItemLoaded = (index) => !this.props.hasNextPage || index < this.props.total;
-
     render() {
 
         const {
+            options,
+            hasNextPage,
+            isNextPageLoading,
+            loadNextPage,
             value,
             placeholder,
             isDisabled,
             onSearchChanged,
-            options,
             isMultiSelect,
             buttonLabel,
             selectAllLabel,
             size,
             displayType,
             onAddNewClick,
-            allowCreation,
-            hasNextPage,
-            isNextPageLoading,
-            total
+            allowCreation
         } = this.props;
 
         const { selectedOptions, selectedAll, currentGroup, groups } = this.state;
@@ -393,7 +386,7 @@ class ADSelectorBody extends React.Component {
         }
 
         // If there are more items to be loaded then add an extra row to hold a loading indicator.
-        const itemCount = hasNextPage ? options.length + 1 : options.length;
+        //const itemCount = hasNextPage ? options.length + 1 : options.length;
 
         return (
             <StyledBodyContainer
@@ -438,14 +431,15 @@ class ADSelectorBody extends React.Component {
                                 />
                             )}
                             <ADSelectorMainBody
-                                isMultiSelect={this.props.isMultiSelect}
-                                total={total}
-                                isItemLoaded={this.isItemLoaded}
+                                options={options}
+                                hasNextPage={hasNextPage}
                                 isNextPageLoading={isNextPageLoading}
+                                loadNextPage={loadNextPage}
+
+                                isMultiSelect={isMultiSelect}
                                 listHeight={listHeight}
                                 listWidth={listWidth}
                                 itemHeight={itemHeight}
-                                loadNextPage={this.props.loadNextPage}
                                 onRowChecked={this.onChange}
                                 onRowSelect={this.onSelect}
                             />
