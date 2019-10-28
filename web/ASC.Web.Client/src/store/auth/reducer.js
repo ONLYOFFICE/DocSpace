@@ -73,7 +73,7 @@ const authReducer = (state = initialState, action) => {
             });
         case SET_NEW_SETTING_NODE:
             return Object.assign({}, state, {
-                settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, ...action.selectedNodeData } }
+                settings: { ...state.settings, settingsTree: { selectedKey: action.selectedNodeLink } }
             });
         case SET_PORTAL_LANGUAGE_AND_TIME:
             return Object.assign({}, state, {

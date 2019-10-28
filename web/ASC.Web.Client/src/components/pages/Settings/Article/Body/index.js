@@ -41,13 +41,6 @@ const getItems = data => {
   });
 };
 
-const getObjectForState = (key, title, subtitle, link) => {
-  const selectedInfo = {
-    selectedKey: key
-  };
-  return selectedInfo;
-}
-
 const getKeyByLink = (data, linkArr) => {
   const length = linkArr.length;
   if (length === 1 || !linkArr[1].length) {
@@ -95,7 +88,7 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedKeys, match, history } = props;
+    const { selectedKeys, match, history, setNewSelectedNode } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
 
@@ -113,7 +106,7 @@ class ArticleBodyContent extends React.Component {
     const key = getKeyByLink(settingsTree, arrayOfParams);
     const link = getSelectedLinkByKey(key);
 
-    this.sendNewSelectedData([key]);
+    setNewSelectedNode([key]);
     const path = match.path + link;
     history.push(path);
   }
@@ -133,14 +126,8 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
 
-  sendNewSelectedData = (key, title, subtitle, link) => {
-    const { setNewSelectedNode } = this.props;
-    const data = getObjectForState(key, title, subtitle, link);
-    setNewSelectedNode(data);
-  }
-
   onSelect = value => {
-    const { selectedKeys } = this.props;
+    const { selectedKeys, setNewSelectedNode } = this.props;
 
     if (value) {
       if (utils.array.isArrayEqual(value, selectedKeys)) {
@@ -149,11 +136,11 @@ class ArticleBodyContent extends React.Component {
       }
       const selectedKey = value[0];
       if (selectedKey.length === 3) {
-        this.sendNewSelectedData(value);
+        setNewSelectedNode(value);
       }
       else if (selectedKey.length === 1 && (selectedKey.toString() !== selectedKeys.toString()[0] || selectedKeys.toString()[2] !== '0')) {
         const selectedKeys = settingsTree[value].children ? [`${value.toString()}-0`] : value;
-        this.sendNewSelectedData(selectedKeys);
+        setNewSelectedNode(selectedKeys);
       }
     }
   };

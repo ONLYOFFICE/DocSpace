@@ -69,10 +69,10 @@ export function setNewEmail(email) {
     };
 };
 
-export function setNewSelectedNode(selectedNodeData) {
+export function setNewSelectedNode(selectedNodeLink) {
     return {
         type: SET_NEW_SETTING_NODE,
-        selectedNodeData
+        selectedNodeLink
     };
 };
 
