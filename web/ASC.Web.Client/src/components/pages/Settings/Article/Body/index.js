@@ -8,6 +8,7 @@ import {
 } from "asc-web-components";
 import { setNewSelectedNode } from '../../../../../store/auth/actions';
 import { withRouter } from "react-router";
+import { settingsTree } from '../../../../../helpers/constants';
 
 const getItems = data => {
   return data.map(item => {
@@ -42,10 +43,7 @@ const getItems = data => {
 
 const getObjectForState = (key, title, subtitle, link) => {
   const selectedInfo = {
-    selectedKey: key,
-    selectedTitle: title,
-    selectedSubtitle: subtitle,
-    selectedLink: link,
+    selectedKey: key
   };
   return selectedInfo;
 }
@@ -82,17 +80,27 @@ const getKeyByLink = (data, linkArr) => {
   return '0-0';
 }
 
+const getSelectedLinkByKey = key => {
+  const length = key.length;
+  if (length === 1) {
+    return '/' + settingsTree[key].link;
+  }
+  else if (length === 3) {
+    return '/' + settingsTree[key[0]].link + '/' + settingsTree[key[0]].children[key[2]].link;
+  }
+}
+
 class ArticleBodyContent extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const { data, selectedKeys, match, history } = props;
+    const { selectedKeys, match, history } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
 
     if (locationPathname === fullSettingsUrl) {
-      const newPath = match.path + this.getSelectedLinkByKey(selectedKeys[0]);
+      const newPath = match.path + getSelectedLinkByKey(selectedKeys[0]);
       history.push(newPath);
       return;
     }
@@ -102,29 +110,23 @@ class ArticleBodyContent extends React.Component {
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
-    const key = getKeyByLink(data, arrayOfParams);
-    const title = this.getSelectedTitleByKey(key[0]);
-    const subtitle = this.getSelectedTitleByKey(key);
-    const link = this.getSelectedLinkByKey(key);
+    const key = getKeyByLink(settingsTree, arrayOfParams);
+    const link = getSelectedLinkByKey(key);
 
-    this.sendNewSelectedData([key], title, subtitle, link);
+    this.sendNewSelectedData([key]);
     const path = match.path + link;
     history.push(path);
   }
 
   componentDidUpdate() {
     const { selectedKeys, match, history } = this.props;
-    const settingsPath = this.getSelectedLinkByKey(selectedKeys[0]);
+    const settingsPath = getSelectedLinkByKey(selectedKeys[0]);
     const newPath = match.path + settingsPath;
     history.push(newPath);
   }
 
   shouldComponentUpdate(nextProps) {
     if (!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
-      return true;
-    }
-
-    if (!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
       return true;
     }
 
@@ -137,29 +139,8 @@ class ArticleBodyContent extends React.Component {
     setNewSelectedNode(data);
   }
 
-  getSelectedTitleByKey = key => {
-    const { data } = this.props;
-    const length = key.length;
-    if (length === 1) {
-      return data[key].title;
-    }
-    else if (length === 3) {
-      return data[key[0]].children[key[2]].title;
-    }
-  }
-
-  getSelectedLinkByKey = key => {
-    const { data } = this.props;
-    const length = key.length;
-    if (length === 1) {
-      return '/' + data[key].link;
-    }
-    else if (length === 3) {
-      return '/' + data[key[0]].link + '/' + data[key[0]].children[key[2]].link;
-    }
-  }
   onSelect = value => {
-    const { data, selectedKeys } = this.props;
+    const { selectedKeys } = this.props;
 
     if (value) {
       if (utils.array.isArrayEqual(value, selectedKeys)) {
@@ -168,17 +149,11 @@ class ArticleBodyContent extends React.Component {
       }
       const selectedKey = value[0];
       if (selectedKey.length === 3) {
-        const selectedTitle = this.getSelectedTitleByKey(selectedKey[0]);
-        const selectedSubtitle = this.getSelectedTitleByKey(selectedKey);
-        const selectedLink = this.getSelectedLinkByKey(selectedKey);
-        this.sendNewSelectedData(value, selectedTitle, selectedSubtitle, selectedLink);
+        this.sendNewSelectedData(value);
       }
       else if (selectedKey.length === 1 && (selectedKey.toString() !== selectedKeys.toString()[0] || selectedKeys.toString()[2] !== '0')) {
-        const selectedKeys = data[value].children ? [`${value.toString()}-0`] : value;
-        const selectedTitle = this.getSelectedTitleByKey(selectedKey);
-        const selectedSubtitle = this.getSelectedTitleByKey(selectedKeys[0]);
-        const selectedLink = this.getSelectedLinkByKey(selectedKeys[0]);
-        this.sendNewSelectedData(selectedKeys, selectedTitle, selectedSubtitle, selectedLink);
+        const selectedKeys = settingsTree[value].children ? [`${value.toString()}-0`] : value;
+        this.sendNewSelectedData(selectedKeys);
       }
     }
   };
@@ -199,7 +174,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { selectedKeys } = this.props;
 
     console.log("SettingsTreeMenu", this.props);
 
@@ -216,7 +191,7 @@ class ArticleBodyContent extends React.Component {
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
       >
-        {getItems(data)}
+        {getItems(settingsTree)}
       </TreeMenu>
     );
   };
@@ -224,11 +199,7 @@ class ArticleBodyContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    data: state.auth.settings.settingsTree.list,
-    selectedKeys: state.auth.settings.settingsTree.selectedKey,
-    selectedTitle: state.auth.settings.settingsTree.selectedTitle,
-    selectedSubtitle: state.auth.settings.settingsTree.selectedSubtitle,
-    selectedLink: state.auth.settings.settingsTree.selectedLink,
+    selectedKeys: state.auth.settings.settingsTree.selectedKey
   };
 }
 
