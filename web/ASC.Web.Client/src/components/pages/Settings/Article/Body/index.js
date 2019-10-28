@@ -4,18 +4,30 @@ import { connect } from 'react-redux';
 import {
   TreeMenu,
   TreeNode,
-  Icons
+  Icons,
+  Link
 } from "asc-web-components";
 import { setNewSelectedNode } from '../../../../../store/auth/actions';
 import { withRouter } from "react-router";
 import { settingsTree } from '../../../../../helpers/constants';
+import styled from 'styled-components';
 
-const getItems = data => {
+const StyledTreeMenu = styled(TreeMenu)`
+  .inherit-title-link {
+    & > span {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+  }
+`;
+
+const getItems = (data, path) => {
   return data.map(item => {
     if (item.children && item.children.length) {
+      const link = path + getSelectedLinkByKey(item.key);
       return (
         <TreeNode
-          title={item.title}
+          title={<Link className='inherit-title-link' href={link}>{item.title}</Link>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
@@ -23,14 +35,15 @@ const getItems = data => {
             color: 'dimgray',
           })}
         >
-          {getItems(item.children)}
+          {getItems(item.children, path)}
         </TreeNode>
       );
-    }
+    };
+    const link = path + getSelectedLinkByKey(item.key);
     return (
       <TreeNode
         key={item.key}
-        title={item.title}
+        title={<Link className='inherit-title-link' href={link}>{item.title}</Link>}
         icon={item.icon && React.createElement(Icons[item.icon], {
           size: 'scale',
           isfill: true,
@@ -161,12 +174,12 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { selectedKeys } = this.props;
+    const { selectedKeys, match } = this.props;
 
     console.log("SettingsTreeMenu", this.props);
 
     return (
-      <TreeMenu
+      <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
         draggable={false}
@@ -178,8 +191,8 @@ class ArticleBodyContent extends React.Component {
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
       >
-        {getItems(settingsTree)}
-      </TreeMenu>
+        {getItems(settingsTree, match.path)}
+      </StyledTreeMenu>
     );
   };
 };
