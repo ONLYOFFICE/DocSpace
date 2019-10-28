@@ -11,6 +11,12 @@ const StyledComponent = styled.div`
    .margin-top {
       margin-top: 20px;
    }
+
+   .dropdown-item-width {
+      div > div {
+         max-width: 100%;
+      }
+   }
 `;
 class Customization extends React.Component {
 
@@ -70,7 +76,7 @@ class Customization extends React.Component {
    }
 
    render() {
-      const { t, i18n, language } = this.props;
+      const { t, i18n} = this.props;
       const { isLoadedData } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
@@ -124,6 +130,7 @@ class Customization extends React.Component {
                         scaledOptions={true}
                         dropDownMaxHeight={300}
                         size='huge'
+                        className='dropdown-item-width'
                      />
                   </FieldContainer>
                   <Button
