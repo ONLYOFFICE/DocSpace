@@ -13,8 +13,10 @@ const StyledComponent = styled.div`
    }
 
    .dropdown-item-width {
-      div > div {
-         max-width: 100%;
+      & > div:first-child {
+            div:first-child{
+               max-width: 100%;
+            }
       }
    }
 `;
@@ -76,7 +78,7 @@ class Customization extends React.Component {
    }
 
    render() {
-      const { t, i18n} = this.props;
+      const { t, i18n } = this.props;
       const { isLoadedData } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
