@@ -1,6 +1,6 @@
 import {
     SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE,
-    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME
+    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES
 } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
@@ -15,9 +15,11 @@ const initialState = {
     settings: {
         currentProductId: "home",
         culture: "en-US",
+        cultures: [],
         trustedDomains: [],
         trustedDomainsType: 1,
         timezone: "UTC",
+        timezones: [],
         utcOffset: "00:00:00",
         utcHoursOffset: 0,
         homepage: config.homepage,
@@ -78,6 +80,10 @@ const authReducer = (state = initialState, action) => {
         case SET_PORTAL_LANGUAGE_AND_TIME:
             return Object.assign({}, state, {
                 settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
+            });
+        case GET_TIMEZONES:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, timezones: action.timezones }
             });
         case LOGOUT:
             return initialState;

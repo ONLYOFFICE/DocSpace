@@ -2,10 +2,25 @@ import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link } from "asc-web-components";
-import { getCultures, setLanguageAndTime } from '../../../../../store/auth/actions';
-import { getPortalTimezones } from '../../../../../store/services/api';
+import { getCultures, setLanguageAndTime, getPortalTimezones } from '../../../../../store/auth/actions';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
+
+const mapCulturesToArray = (cultures, t) => {
+   return cultures.map((culture) => {
+      return { key: culture, label: t(`Culture_${culture}`) };
+   });
+};
+
+const mapTimezonesToArray = (timezones) => {
+   return timezones.map((timezone) => {
+      return { key: timezone.Id, label: timezone.DisplayName };
+   });
+};
+
+const findSelectedItemByKey = (items, selectedItemKey) => {
+   return items.find(item => item.key === selectedItemKey);
+}
 
 const StyledComponent = styled.div`
    .margin-top {
@@ -22,40 +37,48 @@ const StyledComponent = styled.div`
 `;
 class Customization extends React.Component {
 
-   constructor() {
-      super();
+   constructor(props) {
+      super(props);
+
+      const { portalLanguage, portalTimeZoneId, rawCultures, rawTimezones, t } = props;
+      const languages = mapCulturesToArray(rawCultures, t);
+      const timezones = mapTimezonesToArray(rawTimezones);
+
       this.state = {
          isLoadedData: false,
          isLoading: false,
-         timezones: [],
-         timezone: {},
-         languages: [],
-         language: {},
+         timezones,
+         timezone: findSelectedItemByKey(timezones, portalTimeZoneId),
+         languages,
+         language: findSelectedItemByKey(languages, portalLanguage),
       }
    }
 
 
    componentDidMount() {
-      const { getCultures, portalLanguage, portalTimeZoneId, t, i18n } = this.props;
-      let languages, timezones;
-      getCultures()
-         .then((cultures) => {
-            languages = cultures.map((culture) => {
-               return { key: culture, label: t(`Culture_${culture}`) };
-            });
-            return getPortalTimezones();
-         })
-         .then((timezonesArr) => {
-            timezones = timezonesArr.map((timezone) => {
-               return { key: timezone.Id, label: timezone.DisplayName };
-            });
-            const language = languages.find(item => item.key === portalLanguage);
-            const timezone = timezones.find(item => item.key === portalTimeZoneId);
+      const { getCultures, portalLanguage, portalTimeZoneId, t, i18n, getPortalTimezones } = this.props;
+      const { timezones, languages } = this.state;
 
-            this.setState({ timezones, timezone, languages, language, isLoadedData: true });
-            i18n.changeLanguage(this.props.language);
-         }
-         );
+      if (!timezones.length && !languages.length) {
+         let languages;
+         getCultures()
+            .then(() => {
+               languages = mapCulturesToArray(this.props.rawCultures, t);
+            })
+            .then(() => getPortalTimezones())
+            .then(() => {
+               const timezones = mapTimezonesToArray(this.props.rawTimezones);
+               const timezone = findSelectedItemByKey(timezones, portalTimeZoneId);
+               const language = findSelectedItemByKey(languages, portalLanguage);
+
+               this.setState({ languages, language, timezones, timezone, isLoadedData: true });
+               i18n.changeLanguage(this.props.language);
+            });
+      }
+      else {
+         this.setState({ isLoadedData: true });
+      }
+
    }
 
    onLanguageSelect = (language) => {
@@ -79,7 +102,7 @@ class Customization extends React.Component {
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
          <Text.Body fontSize={13}>
@@ -103,15 +126,17 @@ class Customization extends React.Component {
                <StyledComponent>
                   <Text.Body fontSize={16}>{t('StudioTimeLanguageSettings')}</Text.Body>
                   <FieldContainer
+                     id='fieldContainerLanguage'
                      className='margin-top'
                      labelText={`${t("Language")}:`}
                      tooltipContent={tooltipLanguage}
                      isVertical={true}>
                      <ComboBox
-                        options={this.state.languages}
-                        selectedOption={this.state.language}
+                        id='comboBoxLanguage'
+                        options={languages}
+                        selectedOption={language}
                         onSelect={this.onLanguageSelect}
-                        isDisabled={this.state.isLoading}
+                        isDisabled={isLoading}
                         noBorder={false}
                         scaled={false}
                         scaledOptions={true}
@@ -120,13 +145,15 @@ class Customization extends React.Component {
                   </FieldContainer>
 
                   <FieldContainer
+                     id='fieldContainerTimezone'
                      labelText={`${t("TimeZone")}:`}
                      isVertical={true}>
                      <ComboBox
-                        options={this.state.timezones}
-                        selectedOption={this.state.timezone}
+                        id='comboBoxTimezone'
+                        options={timezones}
+                        selectedOption={timezone}
                         onSelect={this.onTimezoneSelect}
-                        isDisabled={this.state.isLoading}
+                        isDisabled={isLoading}
                         noBorder={false}
                         scaled={false}
                         scaledOptions={true}
@@ -136,11 +163,12 @@ class Customization extends React.Component {
                      />
                   </FieldContainer>
                   <Button
+                     id='btnSaveLngTZ'
                      className='margin-top'
                      primary={true}
                      size='big'
                      label={t('SaveButton')}
-                     isLoading={this.state.isLoading}
+                     isLoading={isLoading}
                      onClick={this.onSaveLngTZSettings}
                   />
                </StyledComponent>
@@ -155,7 +183,9 @@ function mapStateToProps(state) {
       portalLanguage: state.auth.settings.culture,
       portalTimeZoneId: state.auth.settings.timezone,
       language: state.auth.user.cultureName || state.auth.settings.culture,
+      rawTimezones: state.auth.settings.timezones,
+      rawCultures: state.auth.settings.cultures,
    };
 }
 
-export default connect(mapStateToProps, { getCultures, setLanguageAndTime })(withTranslation()(Customization));
+export default connect(mapStateToProps, { getCultures, setLanguageAndTime, getPortalTimezones })(withTranslation()(Customization));
