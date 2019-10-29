@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 
 import Checkbox from '../checkbox'
 import ContextMenuButton from '../context-menu-button'
+import { tablet } from '../../utils/device';
 
 const StyledRow = styled.div`
   cursor: default;
@@ -27,9 +28,11 @@ const StyledContent = styled.div`
 
   min-width: 160px;
 
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @media ${tablet} {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const StyledCheckbox = styled.div`
