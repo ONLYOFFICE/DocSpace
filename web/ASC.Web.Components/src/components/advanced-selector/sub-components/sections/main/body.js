@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../../../../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
-import ADSelectorBodyRow from "./row";
+import ADSelectorRow from "../../row";
 import Loader from "../../../../loader";
 import { Text } from "../../../../text";
 import findIndex from "lodash/findIndex";
@@ -40,7 +40,7 @@ class ADSelectorMainBody extends React.Component {
         : undefined;
 
       content = (
-        <ADSelectorBodyRow
+        <ADSelectorRow
           key={option.key}
           label={option.label}
           isChecked={isChecked}

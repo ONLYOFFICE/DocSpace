@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../../../../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList } from "react-window";
 import { Text } from "../../../../text";
-import ADSelectorBodyRow from "../main/row";
+import ADSelectorRow from "../../row";
 import findIndex from "lodash/findIndex";
 
 class ADSelectorAdditionalBody extends React.Component {
@@ -17,7 +17,7 @@ class ADSelectorAdditionalBody extends React.Component {
 
         //console.log("renderRow", option, isChecked, this.state.selectedOptions);
         return (
-            <ADSelectorBodyRow
+            <ADSelectorRow
                 key={option.key}
                 label={option.label}
                 isChecked={isChecked}

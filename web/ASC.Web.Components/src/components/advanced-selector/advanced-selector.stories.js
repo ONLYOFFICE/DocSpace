@@ -17,6 +17,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import Loader from "../loader";
 import { Text } from "../text";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+import ADSelectorMainBody from "./sub-components/sections/main/body";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -111,8 +112,6 @@ class ADSelectorExample extends React.Component {
         label: `User${index} ${name.findName()}`
       };
     });
-
-    console.log(this.persons);
   }
 
   loadNextPage = (startIndex, stopIndex) => {
@@ -205,104 +204,60 @@ class ADSelectorExample extends React.Component {
 
 }
 
-const ExampleWrapper = ({
-  // Are there more items to load?
-  // (This information comes from the most recent API request.)
-  hasNextPage,
+class MainListExample extends React.PureComponent {
+  constructor(props) {
+    super(props);
 
-  // Are we currently loading a page of items?
-  // (This may be an in-flight flag in your Redux store for example.)
-  isNextPageLoading,
+    this.AllOptions = Array.from({ length: props.total }, (v, index) => {
+      const additional_group = groups[getRandomInt(1, 6)];
+      groups[0].total++;
+      additional_group.total++;
+      return {
+        key: `user${index}`,
+        groups: ["group-all", additional_group.key],
+        label: `User${index} ${name.findName()}`
+      };
+    });
+  }
 
-  // Array of items loaded so far.
-  items,
-
-  // Callback function responsible for loading the next page of items.
-  loadNextPage
-}) => {
-  // If there are more items to be loaded then add an extra row to hold a loading indicator.
-  const itemCount = hasNextPage ? items.length + 1 : items.length;
-
-  // Only load 1 page of items at a time.
-  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
-
-  // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = index => !hasNextPage || index < items.length;
-
-  // Render an item or a loading indicator.
-  const Item = ({ index, style }) => {
-    let content;
-    if (!isItemLoaded(index)) {
-      content = <div style={{display: 'inline-block'}}>
-        <Loader type="oval" size={16} style={{display: 'inline', marginRight: '10px'}}/>
-        <Text.Body as="span">Loading... Please wait...</Text.Body>
-      </div>;
-    } else {
-      content = items[index].name;
-    }
-
-    return <div style={style}>{content}</div>;
-  };
-
-  return (
-    <InfiniteLoader
-      isItemLoaded={isItemLoaded}
-      itemCount={itemCount}
-      loadMoreItems={loadMoreItems}
-    >
-      {({ onItemsRendered, ref }) => (
-        <List
-          className="List"
-          height={150}
-          itemCount={itemCount}
-          itemSize={30}
-          onItemsRendered={onItemsRendered}
-          ref={ref}
-          width={300}
-          outerElementType={CustomScrollbarsVirtualList}
-        >
-          {Item}
-        </List>
-      )}
-    </InfiniteLoader>
-  );
-}
-
-class SingleList extends React.PureComponent {
   state = {
     hasNextPage: true,
     isNextPageLoading: false,
-    items: []
+    options: []
   };
 
-  loadNextPage = (...args) => {
-    console.log("loadNextPage", ...args);
+  loadNextPage = (startIndex, stopIndex) => {
+    console.log(`loadNextPage(startIndex=${startIndex}, stopIndex=${stopIndex})`);
     this.setState({ isNextPageLoading: true }, () => {
       setTimeout(() => {
-        this.setState(state => ({
-          hasNextPage: state.items.length < 100,
+        const { options } = this.state;
+        const newOptions = [...options].concat(slice(this.AllOptions, startIndex, startIndex+100))
+
+        this.setState({
+          hasNextPage: newOptions.length < this.props.total,
           isNextPageLoading: false,
-          items: [...state.items].concat(
-            new Array(10).fill(true).map(() => ({ name: name.findName() }))
-          )
-        }));
+          options: newOptions
+        });
+
       }, 2500);
     });
   };
 
   render() {
-    const { hasNextPage, isNextPageLoading, items } = this.state;
+    const { hasNextPage, isNextPageLoading, options } = this.state;
 
     return (
-      <>
-        <ExampleWrapper
-          hasNextPage={hasNextPage}
-          isNextPageLoading={isNextPageLoading}
-          items={items}
-          loadNextPage={this.loadNextPage}
-        />
-      </>
+      <ADSelectorMainBody 
+        options={options}
+        hasNextPage={hasNextPage} 
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={this.loadNextPage}
+        listHeight={488}
+        listWidth={356}
+        itemHeight={32}
+        onRowChecked={(option) => console.log("onRowChecked", option)}
+        onRowSelect={(option) => console.log("onRowSelect", option)}
+      />
     );
   }
 }
@@ -310,13 +265,6 @@ class SingleList extends React.PureComponent {
 storiesOf("Components|AdvancedSelector", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add("list only", () => {
-    return (
-      <Section>
-        <SingleList />
-      </Section>
-    );
-  })
   .add("base", () => {
     return (
       <Section>
@@ -331,6 +279,13 @@ storiesOf("Components|AdvancedSelector", module)
             </div>
           )}
         </BooleanValue>
+      </Section>
+    );
+  })
+  .add("list only", () => {
+    return (
+      <Section>
+        <MainListExample total={number("Users count", 1000)} />
       </Section>
     );
   });

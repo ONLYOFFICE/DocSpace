@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Checkbox from "../../../../checkbox";
-import Link from "../../../../link";
+import Checkbox from "../../checkbox";
+import Link from "../../link";
 
-const ADSelectorBodyRow = (props) => {
+const ADSelectorRow = (props) => {
     const { key, label, isChecked, style, onChange, onSelect } = props;
 
     return (
@@ -29,7 +29,7 @@ const ADSelectorBodyRow = (props) => {
     );
 };
 
-ADSelectorBodyRow.propTypes = {
+ADSelectorRow.propTypes = {
     key: PropTypes.string,
     label: PropTypes.string,
     isChecked: PropTypes.bool,
@@ -38,4 +38,4 @@ ADSelectorBodyRow.propTypes = {
     onSelect: PropTypes.func
 }
 
-export default ADSelectorBodyRow;
+export default ADSelectorRow;
