@@ -20,14 +20,13 @@ class ADSelectorMainBody extends React.Component {
     let content;
     if (!this.isItemLoaded(index)) {
       content = (
-        <div style={{ display: "inline-block" }}>
+        <div className="option" style={style} key="loader">
           <Loader
             type="oval"
             size={16}
             style={{
               display: "inline",
-              marginRight: "10px",
-              paddingLeft: "10px"
+              marginRight: "10px"
             }}
           />
           <Text.Body as="span">Loading... Please wait...</Text.Body>

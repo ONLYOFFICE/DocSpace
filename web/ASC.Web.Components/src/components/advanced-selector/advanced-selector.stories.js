@@ -88,7 +88,6 @@ const groups = [
 const sizes = ["compact", "full"];
 const displayTypes = ['dropdown', 'aside'];
 
-
 class ADSelectorExample extends React.Component {
   constructor(props) {
     super(props);
@@ -101,12 +100,6 @@ class ADSelectorExample extends React.Component {
       hasNextPage: true,
       isNextPageLoading: false
     }
-
-    /*faker.seed(123);
-    this.persons = new Array(50)
-      .fill(true)
-      .map(() => ({ name: name.findName() }));
-    this.persons.sort((a, b) => a.name.localeCompare(b.name));*/
 
     this.AllOptions = Array.from({ length: total }, (v, index) => {
       const additional_group = groups[getRandomInt(1, 6)];
@@ -122,32 +115,19 @@ class ADSelectorExample extends React.Component {
     console.log(this.persons);
   }
 
-  /*loadNextPage = (startIndex, stopIndex) => {
-    this.setState({ isNextPageLoading: true });
-
-    const promise = new Promise((resolve) => {
-      setTimeout(() => {
-        this.setState({
-          hasNextPage: this.AllOptions.length < 100,
-          isNextPageLoading: false
-        });
-
-        resolve(slice(this.AllOptions, startIndex, stopIndex - startIndex));
-      }, 2500);
-    });
-
-    return promise;
-  };*/
-
   loadNextPage = (startIndex, stopIndex) => {
     console.log(`loadNextPage(startIndex=${startIndex}, stopIndex=${stopIndex})`);
     this.setState({ isNextPageLoading: true }, () => {
       setTimeout(() => {
-        this.setState(state => ({
-          hasNextPage: state.options.length < 100,
+        const { options } = this.state;
+        const newOptions = [...options].concat(slice(this.AllOptions, startIndex, startIndex+100))
+
+        this.setState({
+          hasNextPage: newOptions.length < this.props.total,
           isNextPageLoading: false,
-          options: [...state.options].concat(slice(this.AllOptions, startIndex, startIndex+100))
-        }));
+          options: newOptions
+        });
+
       }, 2500);
     });
   };
