@@ -46,9 +46,13 @@ const MainContainerWrapper = styled.div`
 `;
 
 const MainContainer = styled.div`
-  ${truncateCss};
   height: 20px;
   margin-right: 8px;
+
+  @media ${tablet} {
+    ${truncateCss};
+  }
+
 `;
 
 const MainIcons = styled.div`
@@ -57,8 +61,11 @@ const MainIcons = styled.div`
  `;
 
 const SideContainerWrapper = styled.div`
-  ${truncateCss};
   ${commonCss};
+
+  @media ${tablet} {
+    ${truncateCss};
+  }
 
   align-self: center;
   width: ${props => props.containerWidth ? props.containerWidth : '100px'};
