@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
-import { Text, IconButton, ContextMenuButton, toastr, utils } from "asc-web-components";
+import { Text, IconButton, ContextMenuButton, toastr, utils, TextInput, Button, ModalDialog } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
@@ -9,6 +9,7 @@ import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
 import { fetchProfile } from '../../../../../store/profile/actions';
+import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import styled from 'styled-components';
 
 const wrapperStyle = {
@@ -28,22 +29,103 @@ const Header = styled(Text.ContentHeader)`
 const SectionHeaderContent = props => {
   const { profile, history, settings, isAdmin, viewer, updateUserStatus, fetchProfile } = props;
 
+  const [newEmailState, setNewEmail] = useState(profile.email);
+  const [dialogState, setDialog] = useState(
+    {
+      visible: false,
+      header: "",
+      body: "",
+      buttons: [],
+      newEmail: profile.email,
+    });
+
+  const onEmailChange = event => {
+    const emailRegex = /.+@.+\..+/;
+    const newEmail = (event && event.target.value) || newEmailState;
+    const hasError = !emailRegex.test(newEmail);
+
+    const dialog = {
+      visible: true,
+      header: "Change email",
+      body: (
+        <Text.Body>
+          <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
+          <TextInput
+            id="new-email"
+            scale={true}
+            isAutoFocussed={true}
+            value={newEmail}
+            onChange={onEmailChange}
+            hasError={hasError}
+          />
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={onSendEmailChangeInstructions}
+          isDisabled={hasError}
+        />
+      ],
+      newEmail: newEmail
+    };
+
+    setDialog(dialog);
+  }
+
+  const onSendEmailChangeInstructions = () => {
+    sendInstructionsToChangeEmail(profile.id, newEmailState)
+      .then((res) => {
+        toastr.success(res);
+      })
+      .catch((error) => toastr.error(error))
+      .finally(onDialogClose);
+  }
+
+  const onPasswordChange = () => {
+    const dialog = {
+      visible: true,
+      header: "Change password",
+      body: (
+        <Text.Body>
+          Send the password change instructions to the <a href={`mailto:${profile.email}`}>{profile.email}</a> email address
+        </Text.Body>
+      ),
+      buttons: [
+        <Button
+          key="SendBtn"
+          label="Send"
+          size="medium"
+          primary={true}
+          onClick={onSendPasswordChangeInstructions}
+        />
+      ]
+    };
+
+    setDialog(dialog);
+  }
+
+  const onSendPasswordChangeInstructions = () => {
+    sendInstructionsToChangePassword(profile.email)
+      .then((res) => {
+        toastr.success(res);
+      })
+      .catch((error) => toastr.error(error))
+      .finally(onDialogClose);
+  }
+
+  const onDialogClose = () => {
+    const dialog = { visible: false, newEmailState: profile.email };
+    setDialog(dialog);
+  }
+
   const selectedUserIds = new Array(profile.id);
 
   const onEditClick = () => {
     history.push(`${settings.homepage}/edit/${profile.userName}`);
-  };
-
-  const onChangePasswordClick = () => {
-    toastr.success("Context action: Change password");
-  };
-
-  const onChangePhoneClick = () => {
-    toastr.success("Context action: Change phone");
-  };
-
-  const onChangeEmailClick = () => {
-    toastr.success("Context action: Change e-mail");
   };
 
   const onDisableClick = () => {
@@ -98,24 +180,19 @@ const SectionHeaderContent = props => {
             onClick: onEditClick
           },
           {
-            key: "edit-photo",
-            label: t('EditPhoto'),
-            onClick: onEditPhoto
+            key: "change-password",
+            label: t('PasswordChangeButton'),
+            onClick: onPasswordChange
           },
           {
             key: "change-email",
             label: t('EmailChangeButton'),
-            onClick: onChangeEmailClick
+            onClick: onEmailChange
           },
           {
-            key: "change-phone",
-            label: t('PhoneChange'),
-            onClick: onChangePhoneClick
-          },
-          {
-            key: "change-password",
-            label: t('PasswordChangeButton'),
-            onClick: onChangePasswordClick
+            key: "edit-photo",
+            label: t('EditPhoto'),
+            onClick: onEditPhoto
           },
           {
             key: "disable",
@@ -159,14 +236,14 @@ const SectionHeaderContent = props => {
             onClick: onEditClick
           },
           {
-            key: "edit-photo",
-            label: t('EditPhoto'),
-            onClick: onEditPhoto
-          },
-          {
             key: "invite-again",
             label: t('InviteAgainLbl'),
             onClick: onInviteAgainClick
+          },
+          {
+            key: "edit-photo",
+            label: t('EditPhoto'),
+            onClick: onEditPhoto
           },
           {
             key: "disable",
@@ -200,7 +277,7 @@ const SectionHeaderContent = props => {
         {profile.displayName}
         {profile.isLDAP && ` (${t('LDAPLbl')})`}
       </Header>
-      {(isAdmin || isMe(viewer, profile.userName)) && (
+      {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
         <ContextMenuButton
           directionX="right"
           title={t('Actions')}
@@ -211,6 +288,13 @@ const SectionHeaderContent = props => {
           isDisabled={false}
         />
       )}
+      <ModalDialog
+          visible={dialogState.visible}
+          headerContent={dialogState.header}
+          bodyContent={dialogState.body}
+          footerContent={dialogState.buttons}
+          onClose={onDialogClose}
+        />
     </div>
   );
 };
