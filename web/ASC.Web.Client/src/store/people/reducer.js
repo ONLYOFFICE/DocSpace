@@ -1,27 +1,28 @@
-import { SET_USERS } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER } from "./actions";
 
 const initialState = {
-    users: [],
-    //groups: [],
-    //selection: [],
-    //selected: "none",
-    //selectedGroup: null,
-    //filter: Filter.getDefault(),
-    //selector: {
-    //  users: []
-    //}
-  };
+  users: [],
+  admins: [],
+  owner: {}
+};
 
 const peopleReducer = (state = initialState, action) => {
-    switch (action.type) {
+  switch (action.type) {
+    case SET_USERS:
+      return Object.assign({}, state, {
+        users: action.users
+      });
+    case SET_ADMINS:
+      return Object.assign({}, state, {
+        admins: action.admins
+      });
+    case SET_OWNER:
+      return Object.assign({}, state, {
+        owner: action.owner
+      });
+    default:
+      return state;
+  }
+};
 
-      case SET_USERS:
-        return Object.assign({}, state, {
-          users: action.users
-        });
-      default:
-        return state;
-    }
-  };
-
-  export default peopleReducer;
+export default peopleReducer;
