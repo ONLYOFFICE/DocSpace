@@ -9,11 +9,6 @@ import { Text } from "../../../../text";
 import findIndex from "lodash/findIndex";
 
 class ADSelectorMainBody extends React.Component {
-  state = {
-    selectedAll: false,
-    selectedOptions: []
-  };
-
   renderRow = ({ index, style }) => {
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
 
@@ -33,10 +28,11 @@ class ADSelectorMainBody extends React.Component {
         </div>
       );
     } else {
-      const option = this.props.options[index];
-      var isChecked = this.props.isMultiSelect
-        ? this.state.selectedAll ||
-          findIndex(this.state.selectedOptions, { key: option.key }) > -1
+      const {options, isMultiSelect, selectedAll, selectedOptions} = this.props;
+      const option = options[index];
+      var isChecked = isMultiSelect
+        ? selectedAll ||
+          findIndex(selectedOptions, { key: option.key }) > -1
         : undefined;
 
       content = (
@@ -104,7 +100,10 @@ ADSelectorMainBody.propTypes = {
   isNextPageLoading: PropTypes.bool,
   loadNextPage: PropTypes.func,
 
+  selectedOptions: PropTypes.array,
+  selectedAll: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
+
   listHeight: PropTypes.number,
   listWidth: PropTypes.number,
   itemHeight: PropTypes.number,

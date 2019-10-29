@@ -5,6 +5,7 @@ import Aside from "../layout/sub-components/aside";
 import ADSelectorBody from "./sub-components/body";
 
 const displayTypes = ["dropdown", "aside"];
+const sizes = ["compact", "full"];
 
 class AdvancedSelector extends React.Component {
   render() {
@@ -24,30 +25,35 @@ class AdvancedSelector extends React.Component {
 }
 
 AdvancedSelector.propTypes = {
-  value: PropTypes.string,
-  placeholder: PropTypes.string,
-  isMultiSelect: PropTypes.bool,
-  size: PropTypes.oneOf(["compact", "full"]),
-  maxHeight: PropTypes.number,
-  isDisabled: PropTypes.bool,
-  onSearchChanged: PropTypes.func,
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
   groups: PropTypes.array,
   selectedGroups: PropTypes.array,
-  selectedAll: PropTypes.bool,
+
+  value: PropTypes.string,
+  placeholder: PropTypes.string,
   selectAllLabel: PropTypes.string,
   buttonLabel: PropTypes.string,
-  onSelect: PropTypes.func,
-  onChangeGroup: PropTypes.func,
-  onCancel: PropTypes.func,
+
+  size: PropTypes.oneOf(sizes),
+  displayType: PropTypes.oneOf(displayTypes),
+
+  maxHeight: PropTypes.number,
+
+  isMultiSelect: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  selectedAll: PropTypes.bool,
   isOpen: PropTypes.bool,
   allowCreation: PropTypes.bool,
-  onAddNewClick: PropTypes.func,
   allowAnyClickClose: PropTypes.bool,
-  displayType: PropTypes.oneOf(displayTypes),
   hasNextPage: PropTypes.bool,
   isNextPageLoading: PropTypes.bool,
+
+  onSearchChanged: PropTypes.func,
+  onSelect: PropTypes.func,
+  onGroupChange: PropTypes.func,
+  onCancel: PropTypes.func,
+  onAddNewClick: PropTypes.func,
   loadNextPage: PropTypes.func,
 };
 
