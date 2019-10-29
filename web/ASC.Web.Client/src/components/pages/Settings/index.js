@@ -10,12 +10,13 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { setCurrentProductId } from '../../../store/auth/actions';
 
-const Settings = (props) => {
+const Settings = ({ currentProductId, setCurrentProductId, language }) => {
+  // const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const { currentProductId, setCurrentProductId } = props;
     currentProductId !== 'settings' && setCurrentProductId('settings');
-  }, [props]);
+    i18n.changeLanguage(language);
+  }, [language]);
   console.log("Settings render");
   return (
     <I18nextProvider i18n={i18n}>
@@ -35,4 +36,10 @@ const Settings = (props) => {
   );
 };
 
-export default connect(null, { setCurrentProductId })(Settings);
+function mapStateToProps(state) {
+  return {
+    language: state.auth.user.cultureName
+  };
+}
+
+export default connect(mapStateToProps, { setCurrentProductId })(Settings);

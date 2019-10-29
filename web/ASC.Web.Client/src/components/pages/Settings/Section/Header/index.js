@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import { Text, utils } from 'asc-web-components';
 import styled from 'styled-components';
 import { settingsTree } from '../../../../../helpers/constants';
+import { useTranslation } from 'react-i18next';
 
 const Header = styled(Text.ContentHeader)`
   margin-left: 16px;
@@ -14,22 +15,23 @@ const Header = styled(Text.ContentHeader)`
   }
 `;
 
-const getSelectedTitleByKey = key => {
+const getSelectedLinkByKey = key => {
   const length = key.length;
   if (length === 1) {
-    return settingsTree[key].title;
+    return settingsTree[key].link;
   }
   else if (length === 3) {
-    return settingsTree[key[0]].children[key[2]].title;
+    return settingsTree[key[0]].children[key[2]].link;
   }
 };
 
 const SectionHeaderContent = props => {
+  const { t } = useTranslation();
 
-  const header = getSelectedTitleByKey(props.selectedKey)
+  const header = getSelectedLinkByKey(props.selectedKey)
   return (
     <Header truncate={true}>
-      {header}
+      {t(`Settings_${header}`)}
     </Header>
   );
 };

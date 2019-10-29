@@ -1,8 +1,10 @@
 import React from 'react';
 import { Text } from 'asc-web-components';
+import { useTranslation } from 'react-i18next';
 
 const ArticleHeaderContent = () => {
-  return <Text.MenuHeader>Settings</Text.MenuHeader>;
+  const { t } = useTranslation();
+  return <Text.MenuHeader>{t('Settings')}</Text.MenuHeader>;
 }
 
 export default ArticleHeaderContent;
