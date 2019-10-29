@@ -4,7 +4,7 @@ import peopleReducer from './people/reducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    people: peopleReducer
+    settings: peopleReducer
 });
 
 export default rootReducer;
