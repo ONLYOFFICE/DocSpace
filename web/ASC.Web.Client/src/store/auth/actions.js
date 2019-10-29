@@ -14,6 +14,7 @@ export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
 export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
 export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
 export const GET_TIMEZONES = 'GET_TIMEZONES';
+export const SET_CURRENT_PRODUCT_ID = 'SET_CURRENT_PRODUCT_ID';
 
 export function setCurrentUser(user) {
     return {
@@ -95,6 +96,13 @@ export function getTimezones(timezones) {
     return {
         type: GET_TIMEZONES,
         timezones
+    };
+};
+
+export function setCurrentProductId(currentProductId) {
+    return {
+        type: SET_CURRENT_PRODUCT_ID,
+        currentProductId
     };
 };
 

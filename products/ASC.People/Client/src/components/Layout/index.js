@@ -75,7 +75,7 @@ const getAvailableModules = (modules, currentUser) => {
             id: "nav-separator-2"
         },
         {
-            id: 'testId',
+            id: 'settings',
             title: 'Settings',
             iconName: "SettingsIcon",
             notifications: 0,

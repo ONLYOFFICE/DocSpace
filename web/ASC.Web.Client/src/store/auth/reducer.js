@@ -1,6 +1,6 @@
 import {
     SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE,
-    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES
+    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES, SET_CURRENT_PRODUCT_ID
 } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
@@ -84,6 +84,10 @@ const authReducer = (state = initialState, action) => {
         case GET_TIMEZONES:
             return Object.assign({}, state, {
                 settings: { ...state.settings, timezones: action.timezones }
+            });
+        case SET_CURRENT_PRODUCT_ID:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, currentProductId: action.currentProductId }
             });
         case LOGOUT:
             return initialState;
