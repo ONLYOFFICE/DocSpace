@@ -5,7 +5,12 @@ import { withRouter } from "react-router";
 import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { getAdminUsers } from "../../../../../store/people/actions";
+import {
+  getListUsers,
+  getListAdmins,
+  changeAdmins,
+  getUserById
+} from "../../../../../store/people/actions";
 import {
   Text,
   Avatar,
@@ -13,43 +18,18 @@ import {
   Row,
   RowContent,
   RowContainer,
-  RadioButtonGroup,
   Link,
-  Checkbox
+  RadioButtonGroup,
+  Paging,
+  SearchInput,
+  SelectorAddButton,
+  IconButton
   //toastr,
 } from "asc-web-components";
 
 const MainContainer = styled.div`
   padding: 16px 16px 16px 24px;
   width: 100%;
-`;
-
-const HeaderContainer = styled.div`
-  margin-bottom: 16px;
-`;
-
-const BodyContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const AvatarContainer = styled.div`
-  display: flex;
-  width: 330px;
-  height: 100px;
-  margin-right: 130px;
-  margin-bottom: 24px;
-
-  padding: 8px;
-  border: 1px solid lightgrey;
-`;
-
-const ToggleContentContainer = styled.div`
-  .toggle_content {
-    margin-bottom: 24px;
-  }
 `;
 
 const ProjectsContainer = styled.div`
@@ -73,56 +53,112 @@ const RadioButtonContainer = styled.div`
   width: 310px;
 `;
 
+const HeaderContainer = styled.div`
+  margin-bottom: 16px;
+`;
+
+const BodyContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+`;
+
+const AvatarContainer = styled.div`
+  display: flex;
+  width: 330px;
+  height: 100px;
+  margin-right: 130px;
+  margin-bottom: 24px;
+
+  padding: 8px;
+  border: 1px solid lightgrey;
+`;
+
+const ToggleContentContainer = styled.div`
+  .toggle_content {
+    margin-bottom: 24px;
+  }
+
+  .wrapper {
+    margin-top: 16px;
+  }
+
+  .icon {
+    width: 25px;
+  }
+`;
+
 const ProjectsBody = styled.div`
   width: 280px;
 `;
-
-/*const AdministratorsHead = styled.div`
-  display: flex;
-  margin-right: 70px;
-
-  .category {
-    margin-left: 5px;
-    flex-basis: 12.5%;  (1/elementsCount*100%)
-    text-align: center;
-  }
-`;*/
 
 class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isChecked: this.props.isChecked,
-      portalOwner: null,
+      searchValue: ""
     };
   }
 
   componentDidMount() {
-    const { getAdminUsers } = this.props;
+    const { getListUsers, getListAdmins, getUserById, ownerId } = this.props;
 
-    getAdminUsers()
+    getUserById(ownerId)
       .then(res => {
-        console.log("getAdminUsers response", res);
+        /*console.log("getUserById", res)*/
+      })
+      .catch(res => {
+        /*console.log("getUserById", res)*/
+      });
+
+    getListUsers()
+      .then(res => {
+        //console.log("getUsers response", res);
       })
       .catch(error => {
         console.log(error);
       });
-      
+
+    getListAdmins()
+      .then(res => {
+        //console.log("getUsers response", res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   //componentDidUpdate(prevProps, prevState) {}
   //componentWillUnmount() {}
 
-  onChange = e => {
-    //console.log(e.target.value);
-    //e.target.value = !e.target.value;
+  onSearchChange = value => {
+    this.setState({
+      searchValue: value
+    });
   };
+
+  onChangeAdmin = (user, isAdmin) => {
+    const userId = user.id;
+    const { changeAdmins, productId } = this.props;
+
+    changeAdmins(userId, productId, isAdmin)
+      .then(res => {
+        console.log("Delete admin response", res);
+      })
+      .catch(error => {
+        console.log("onDeleteAdminUser", error);
+      });
+  };
+
+  onShowAdvancedSelector = () => console.log("Add new user");
 
   render() {
     const { t } = this.props;
-    const { users } = this.props;
-    const { portalOwner } = this.state;
+    const { users, owner, admins } = this.props;
+    const { searchValue } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -134,13 +170,13 @@ class PureAccessRights extends Component {
         <BodyContainer>
           <AvatarContainer>
             <Avatar size="big" role="owner" />
-            {portalOwner ? (
+            {owner ? (
               <div style={{ marginLeft: "24px" }}>
                 <Text.Body className="avatar_text" fontSize={16} isBold={true}>
-                  {portalOwner.displayName}
+                  {owner.displayName}
                 </Text.Body>
                 <Text.Body className="avatar_text" fontSize={12}>
-                  {portalOwner.department}
+                  {owner.department}
                 </Text.Body>
               </div>
             ) : null}
@@ -163,202 +199,83 @@ class PureAccessRights extends Component {
             label={t("AdminSettings")}
             isOpen={true}
           >
-            <RowContainer manualHeight="200px">
-              {users.map(user => {
-                const element = (
-                  <Avatar
-                    size="small"
-                    role="admin"
-                    userName={user.userName}
-                    source={user.avatar}
-                  />
-                );
-                const nameColor =
-                  user.status === "pending" ? "#A3A9AE" : "#333333";
+            <SearchInput
+              className="wrapper"
+              id="member-search"
+              //isDisabled={inLoading}
+              scale={true}
+              placeholder="Search"
+              value={searchValue}
+              onChange={this.onSearchChange}
+            />
+            <div className="wrapper">
+              {console.log("manualHeight", admins)}
+              <RowContainer manualHeight={`${admins.length * 50}px`}>
+                {admins.map(user => {
+                  const element = (
+                    <Avatar
+                      size="small"
+                      role="admin"
+                      userName={user.userName}
+                      source={user.avatar}
+                    />
+                  );
+                  const nameColor =
+                    user.status === "pending" ? "#A3A9AE" : "#333333";
 
-                return (
-                  <Row
-                    key={user.id}
-                    status={user.status}
-                    checked={false}
-                    data={user}
-                    element={element}
-                    //contextOptions={user.contextOptions}
-                  >
-                    <RowContent disableSideInfo={true}>
-                      <Link
-                        containerWidth="120px"
-                        type="page"
-                        title={user.userName}
-                        isBold={true}
-                        fontSize={15}
-                        color={nameColor}
-                        href={user.profileUrl}
-                      >
-                        {user.userName}
-                      </Link>
+                  return (
+                    <Row
+                      key={user.id}
+                      status={user.status}
+                      data={user}
+                      element={element}
+                    >
+                      <RowContent disableSideInfo={true}>
+                        <Link
+                          containerWidth="120px"
+                          type="page"
+                          title={user.userName}
+                          isBold={true}
+                          fontSize={15}
+                          color={nameColor}
+                          href={user.profileUrl}
+                        >
+                          {user.userName}
+                        </Link>
 
-                      <div
-                        /*containerWidth='120px'*/ style={{ maxWidth: 120 }}
-                      ></div>
-
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`fullAccess_${user.id}`}
-                      />
-                      <Checkbox
-                        isChecked={false}
-                        onChange={this.onChange}
-                        id={`people_${user.id}`}
-                      />
-                    </RowContent>
-                  </Row>
-                );
-              })}
-            </RowContainer>
-          </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("ProjectsProduct")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", {
-                    product: t("ProjectsProduct")
-                  })}
-                  :
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
+                        <div style={{ maxWidth: 120 }} />
+                        <div style={{ marginLeft: "60px" }}>
+                          <IconButton
+                            size="25"
+                            isDisabled={false}
+                            onClick={this.onChangeAdmin.bind(this, user, false)}
+                            iconName={"CatalogTrashIcon"}
+                            isFill={true}
+                            isClickable={false}
+                          />
+                        </div>
+                      </RowContent>
+                    </Row>
+                  );
+                })}
+              </RowContainer>
+            </div>
+            {admins.length > 25 ? (
+              <div className="wrapper">
+                <Paging
+                  previousLabel="Previous"
+                  nextLabel="Next"
+                  selectedPageItem={{ label: "1 of 1" }}
+                  selectedCountItem={{ label: "25 per page" }}
+                  previousAction={() => console.log("Prev")}
+                  nextAction={() => console.log("Next")}
+                  openDirection="bottom"
+                  onSelectPage={a => console.log(a)}
+                  onSelectCount={a => console.log(a)}
                 />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", {
-                    category: t("ProjectsProduct")
-                  })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("ProjectsUserCapabilityView")}</li>
-                  <li>{t("ProjectsUserCapabilityCreate")}</li>
-                  <li>{t("ProjectsUserCapabilityTrack")}</li>
-                  <li>{t("ProjectsUserCapabilityForm")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
-          </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("CrmProduct")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", {
-                    product: t("CrmProduct")
-                  })}
-                  :
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
-                />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", {
-                    category: t("CrmProduct")
-                  })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("CRMUserCapability")}</li>
-                  <li>{t("CRMUserCapabilityEdit")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
-          </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("CommunityProduct")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", {
-                    product: t("CommunityProduct")
-                  })}
-                  :
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
-                />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", {
-                    category: t("CommunityProduct")
-                  })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("CommunityUserCapability")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
+              </div>
+            ) : null}
+            <SelectorAddButton onClick={this.onShowAdvancedSelector} />
           </ToggleContent>
 
           <ToggleContent
@@ -401,59 +318,6 @@ class PureAccessRights extends Component {
               </ProjectsBody>
             </ProjectsContainer>
           </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("Sample")}
-            isOpen={true}
-          >
-            <Text.Body fontSize={12}>
-              {t("AccessRightsDisabledProduct", { module: "Sample" })}
-            </Text.Body>
-          </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("Mail")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", { product: t("Mail") })}:
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
-                />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", { category: t("Mail") })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("ManageOwnMailAccounts")}</li>
-                  <li>{t("ManageOwnMailSettings")}</li>
-                  <li>{t("ManageTheTagsAndAddressBook")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
-          </ToggleContent>
         </ToggleContentContainer>
       </MainContainer>
     );
@@ -462,9 +326,7 @@ class PureAccessRights extends Component {
 
 PureAccessRights.propTypes = {};
 
-PureAccessRights.defaultProps = {
-  isChecked: false
-};
+PureAccessRights.defaultProps = {};
 
 const AccessRightsContainer = withTranslation()(PureAccessRights);
 
@@ -482,76 +344,31 @@ const AccessRights = props => {
 
 function mapStateToProps(state) {
   return {
-    users: state.people.users
+    users: state.settings.users,
+    admins: state.settings.admins,
+    productId: state.auth.modules[0].id,
+    ownerId: state.auth.settings.ownerId,
+    owner: state.settings.owner
   };
 }
 
 AccessRights.defaultProps = {
-  users: []
+  users: [],
+  admins: [],
+  productId: "",
+  ownerId: "",
+  owner: {}
 };
 
 AccessRights.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object)
+  users: PropTypes.arrayOf(PropTypes.object),
+  admins: PropTypes.arrayOf(PropTypes.object),
+  productId: PropTypes.string,
+  ownerId: PropTypes.string,
+  owner: PropTypes.object
 };
 
 export default connect(
   mapStateToProps,
-  { getAdminUsers }
-)(withRouter((AccessRights)));
-/*
-  <AdministratorsHead>
-    <div style={{width: 250}}></div>
-    <Text.Body className="category">
-      {t("AccessRightsFullAccess")}
-    </Text.Body>
-    <Text.Body className="category">{t("DocumentsProduct")}</Text.Body>
-    <Text.Body className="category">{t("ProjectsProduct")}</Text.Body>
-    <Text.Body className="category">{t("CrmProduct")}</Text.Body>
-    <Text.Body className="category">{t("CommunityProduct")}</Text.Body>
-    <Text.Body className="category">{t("People")}</Text.Body>
-    <Text.Body className="category">{t("Sample")}</Text.Body>
-    <Text.Body className="category">{t("Mail")}</Text.Body>
-  </AdministratorsHead>
-*/
-/*
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`fullAccess_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`documents_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`projects_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`crm_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`community_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`people_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`sample_${user.id}`}
-  />
-  <Checkbox
-    isChecked={false}
-    onChange={this.onChange}
-    id={`mail_${user.id}`}
-  />
-*/
+  { getListUsers, getListAdmins, changeAdmins, getUserById }
+)(withRouter(AccessRights));
