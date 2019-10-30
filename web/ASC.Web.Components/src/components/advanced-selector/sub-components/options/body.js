@@ -40,6 +40,7 @@ class ADSelectorOptionsBody extends React.Component {
           key={option.key}
           label={option.label}
           isChecked={isChecked}
+          isMultiSelect={isMultiSelect}
           style={style}
           onChange={this.props.onRowChecked.bind(this, option)}
           onSelect={this.props.onRowSelect.bind(this, option)}

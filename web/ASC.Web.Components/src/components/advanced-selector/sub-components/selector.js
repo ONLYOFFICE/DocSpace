@@ -9,8 +9,9 @@ import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 
 import ADSelectorOptionsHeader from "./options/header";
-import ADSelectorOptionsBody from "./options/body"
-import ADSelectorGroupBody from "./groups/body";
+import ADSelectorOptionsBody from "./options/body";
+import ADSelectorGroupsHeader from "./groups/header";
+import ADSelectorGroupsBody from "./groups/body";
 import ADSelectorFooter from "./footer";
 
 import { handleAnyClick } from "../../../utils/event";
@@ -467,14 +468,18 @@ class ADSelector extends React.Component {
               size === "full" &&
               groups &&
               groups.length > 0 && (
-                <ADSelectorGroupBody
-                  options={groups}
-                  selectedOptions={selectedGroups}
-                  listHeight={listHeight}
-                  itemHeight={itemHeight}
-                  onRowChecked={this.onGroupChange}
-                  onRowSelect={this.onGroupSelect}
-                />
+                <div className="data_column_two">
+                  <ADSelectorGroupsHeader headerLabel="Groups" />
+                  <ADSelectorGroupsBody
+                    options={groups}
+                    selectedOptions={selectedGroups}
+                    isMultiSelect={isMultiSelect}
+                    listHeight={listHeight}
+                    itemHeight={itemHeight}
+                    onRowChecked={this.onGroupChange}
+                    onRowSelect={this.onGroupSelect}
+                  />
+                </div>
               )}
           </div>
           {isMultiSelect && (
