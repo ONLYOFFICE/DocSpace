@@ -1,6 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
-import { Text, IconButton, ContextMenuButton, toastr, utils, TextInput, Button, ModalDialog } from "asc-web-components";
+import {
+  Text,
+  IconButton,
+  ContextMenuButton,
+  toastr,
+  utils,
+  TextInput,
+  Button,
+  ModalDialog,
+  AvatarEditor
+} from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
@@ -9,7 +19,13 @@ import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
 import { fetchProfile } from '../../../../../store/profile/actions';
-import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
+import {
+  sendInstructionsToChangePassword,
+  sendInstructionsToChangeEmail,
+  createThumbnailsAvatar,
+  loadAvatar,
+  deleteAvatar
+} from "../../../../../store/services/api";
 import styled from 'styled-components';
 
 const wrapperStyle = {
@@ -38,6 +54,81 @@ const SectionHeaderContent = props => {
       buttons: [],
       newEmail: profile.email,
     });
+  const [avatarState, setAvatar] = useState(
+    {
+      tmpFile: "",
+      image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+      defaultWidth: 0,
+      defaultHeight: 0
+    });
+  const [avatarEditorState, setAvatarEditorVisible] = useState(false);
+
+  const openAvatarEditor = () => {
+    let avatarDefault = profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null;
+    if (avatarDefault !== null) {
+      let img = new Image();
+      img.onload = function () {
+        setAvatar({
+          defaultWidth: img.width,
+          defaultHeight: img.height
+        })
+      };
+      img.src = avatarDefault;
+    }
+    setAvatarEditorVisible(true);
+  }
+
+  const onLoadFileAvatar = (file) => {
+    let data = new FormData();
+    data.append("file", file);
+    data.append("Autosave", false);
+    loadAvatar(profile.id, data)
+      .then((response) => {
+        var img = new Image();
+        img.onload = function () {
+          var stateCopy = Object.assign({}, avatarState);
+          stateCopy = {
+            tmpFile: response.data,
+            image: response.data,
+            defaultWidth: img.width,
+            defaultHeight: img.height
+          }
+
+          setAvatar(stateCopy);
+        };
+        img.src = response.data;
+      })
+      .catch((error) => toastr.error(error));
+  }
+
+  const onSaveAvatar = (isUpdate, result) => {
+    if (isUpdate) {
+      createThumbnailsAvatar(profile.id, {
+        x: Math.round(result.x * avatarState.defaultWidth - result.width / 2),
+        y: Math.round(result.y * avatarState.defaultHeight - result.height / 2),
+        width: result.width,
+        height: result.height,
+        tmpFile: avatarState.tmpFile
+      })
+        .then((response) => {
+          setAvatarEditorVisible(false);
+          setAvatar({ tmpFile: '' });
+          fetchProfile(profile.id);
+          toastr.success("Success");
+        })
+        .catch((error) => toastr.error(error));
+    } else {
+      deleteAvatar(profile.id)
+        .then((response) => {
+          setAvatarEditorVisible(false);
+          fetchProfile(profile.id);
+          toastr.success("Success");
+        })
+        .catch((error) => toastr.error(error));
+    }
+  }
+
+  const onCloseAvatarEditor = () => setAvatarEditorVisible(false);
 
   const onEmailChange = event => {
     const emailRegex = /.+@.+\..+/;
@@ -135,7 +226,7 @@ const SectionHeaderContent = props => {
   };
 
   const onEditPhoto = () => {
-    toastr.success("Context action: Edit Photo");
+    openAvatarEditor();
   };
 
   const onEnableClick = () => {
@@ -289,12 +380,24 @@ const SectionHeaderContent = props => {
         />
       )}
       <ModalDialog
-          visible={dialogState.visible}
-          headerContent={dialogState.header}
-          bodyContent={dialogState.body}
-          footerContent={dialogState.buttons}
-          onClose={onDialogClose}
-        />
+        visible={dialogState.visible}
+        headerContent={dialogState.header}
+        bodyContent={dialogState.body}
+        footerContent={dialogState.buttons}
+        onClose={onDialogClose}
+      />
+      <AvatarEditor
+        image={avatarState.image}
+        visible={avatarEditorState}
+        onClose={onCloseAvatarEditor}
+        onSave={onSaveAvatar}
+        onLoadFile={onLoadFileAvatar}
+        headerLabel={t("editAvatar")}
+        chooseFileLabel={t("chooseFileLabel")}
+        unknownTypeError={t("unknownTypeError")}
+        maxSizeFileError={t("maxSizeFileError")}
+        unknownError={t("unknownError")}
+      />
     </div>
   );
 };

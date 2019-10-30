@@ -36,5 +36,11 @@
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
   "Culture_ru-RU": "Russian (Russia)",
-  "LearnMore": "Learn more..."
+  "LearnMore": "Learn more...",
+
+  "chooseFileLabel":  "Drop file here, or click to select file",
+  "unknownTypeError": "Unknown image file type",
+  "maxSizeFileError": "Maximum file size exceeded",
+  "unknownError":     "Error",
+  "editAvatar": "Edit photo"
 }
