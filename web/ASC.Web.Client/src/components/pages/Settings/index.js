@@ -17,7 +17,7 @@ const Settings = ({ currentProductId, setCurrentProductId, language }) => {
     currentProductId !== 'settings' && setCurrentProductId('settings');
     i18n.changeLanguage(language);
   }, [language]);
-  console.log("Settings render");
+  console.log("Settings render, LANG=", language);
   return (
     <I18nextProvider i18n={i18n}>
       <Suspense

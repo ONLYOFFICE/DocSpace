@@ -146,7 +146,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("timezones")]
-        public IEnumerable<TimeZoneInfo> GetTimeZones()
+        public List<object> GetTimeZones()
         {
             var timeZones =  TimeZoneInfo.GetSystemTimeZones().ToList();
 
@@ -155,7 +155,22 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            return timeZones;
+            List<object> listOfTimezones = new List<object>();
+
+            foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
+            {
+                var displayName = tz.DisplayName;
+                if (tz.StandardName.StartsWith("GMT") && tz.BaseUtcOffset != TimeSpan.Zero)
+                {
+                    displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + tz.Id;
+                   
+                }
+
+                listOfTimezones.Add(new TimezonesModel { Id = tz.Id, DisplayName = displayName });
+
+            }
+
+            return listOfTimezones;
         }
 
         [Read("recalculatequota")]
