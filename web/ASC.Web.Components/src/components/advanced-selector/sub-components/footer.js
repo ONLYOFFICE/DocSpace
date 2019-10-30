@@ -17,7 +17,7 @@ const Container = ({
 
 const StyledContainer = styled(Container)`
     border-top: 1px solid #eceef1;
-    display: ${props => props.isMultiSelect || !props.selectedOptions || !props.selectedOptions.length ? 'none' : 'flex'};
+    display: ${props => !props.isMultiSelect || !props.selectedOptions || !props.selectedOptions.length ? 'none' : 'flex'};
 
     .add_members_btn {
       margin: 16px;

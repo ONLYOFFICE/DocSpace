@@ -367,6 +367,7 @@ class ADSelector extends React.Component {
   };
 
   render() {
+    //console.log("ADSelector render");
     const {
       options,
       hasNextPage,
@@ -496,6 +497,7 @@ class ADSelector extends React.Component {
             }
             isMultiSelect={isMultiSelect}
             onClick={this.onButtonClick}
+            selectedOptions={selectedOptions}
           />
         </div>
       </StyledContainer>
