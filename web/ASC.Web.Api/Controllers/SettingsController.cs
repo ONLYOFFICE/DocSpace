@@ -162,7 +162,7 @@ namespace ASC.Api.Settings
                 var displayName = tz.DisplayName;
                 if (tz.StandardName.StartsWith("GMT") && !tz.StandardName.StartsWith("GMT "))
                 {
-                    displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset == TimeSpan.Zero ? "" : (tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+"), tz.BaseUtcOffset.ToString(@"hh\:mm")) + tz.Id;
+                    displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + tz.Id;
                    
                 }
 
