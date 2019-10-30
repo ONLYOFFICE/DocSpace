@@ -7,13 +7,14 @@ import findIndex from "lodash/findIndex";
 
 class ADSelectorGroupsBody extends React.Component {
   renderRow = ({ data, index, style }) => {
-    const {isMultiSelect, selectedAll, selectedOptions} = this.props;
+    const {isMultiSelect, selectedAll, selectedOptions, currentGroup} = this.props;
 
     const option = data[index];
-    var isChecked = isMultiSelect
+    const isChecked = isMultiSelect
       ? selectedAll ||
         findIndex(selectedOptions, { key: option.key }) > -1
       : undefined;
+    const isSelected = currentGroup.key === option.key;
 
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
     return (
@@ -23,8 +24,8 @@ class ADSelectorGroupsBody extends React.Component {
         isChecked={isChecked}
         isMultiSelect={isMultiSelect}
         style={style}
+        isSelected={isSelected}
         onChange={this.props.onRowChecked.bind(this, option)}
-        onSelect={this.props.onRowSelect.bind(this, option)}
       />
     );
   };
@@ -51,6 +52,7 @@ ADSelectorGroupsBody.propTypes = {
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
   selectedAll: PropTypes.bool,
+  currentGroup: PropTypes.object,
   isMultiSelect: PropTypes.bool,
   listHeight: PropTypes.number,
   itemHeight: PropTypes.number,

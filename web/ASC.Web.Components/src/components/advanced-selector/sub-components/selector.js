@@ -46,6 +46,7 @@ const Container = ({
   hasNextPage,
   isNextPageLoading,
   loadNextPage,
+  isSelected,
   ...props
 }) => <div {...props} />;
 /* eslint-enable react/prop-types */
@@ -177,6 +178,10 @@ const StyledContainer = styled(Container)`
           &:hover {
             background-color: #eceef1;
           }
+        }
+
+        .option.selected {
+          background-color: #ECEEF1;
         }
       }
     }
@@ -339,16 +344,26 @@ class ADSelector extends React.Component {
     });
   };
 
-  onGroupSelect = option => {
-    this.props.onGroupSelect && this.props.onGroupSelect(option);
-  };
-
-  onGroupChange = group => {
-    this.setState({
+  onGroupChange = (group, e) => {
+    /*this.setState({
       currentGroup: group
     });
 
-    this.props.onGroupChange && this.props.onGroupChange(group);
+    this.props.onGroupChange && this.props.onGroupChange(group);*/
+
+    const { selectedGroups } = this.state;
+    const newSelectedGroups = e.target.checked
+      ? [...selectedGroups, group]
+      : filter(selectedGroups, obj => obj.key !== group.key);
+
+    //console.log("onChange", option, e.target.checked, newSelectedOptions);
+
+    this.setState({
+      selectedGroups: newSelectedGroups,
+      currentGroup: group
+    });
+
+    this.props.onGroupSelect && this.props.onGroupSelect(group);
   };
 
   render() {
@@ -465,10 +480,10 @@ class ADSelector extends React.Component {
                     options={groups}
                     selectedOptions={selectedGroups}
                     isMultiSelect={isMultiSelect}
+                    currentGroup={currentGroup}
                     listHeight={listHeight}
                     itemHeight={itemHeight}
                     onRowChecked={this.onGroupChange}
-                    onRowSelect={this.onGroupSelect}
                   />
                 </div>
               )}
