@@ -176,7 +176,7 @@ const StyledContainer = styled(Container)`
           }
 
           &:hover {
-            background-color: #eceef1;
+            background-color: #f8f9f9;
           }
         }
 
