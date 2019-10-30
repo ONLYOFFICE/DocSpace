@@ -105,6 +105,7 @@ class ArticleBodyContent extends React.Component {
     const { selectedKeys, match, history, setNewSelectedNode,  i18n, language  } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
+    i18n.changeLanguage(language);
 
     if (locationPathname === fullSettingsUrl) {
       const newPath = match.path + getSelectedLinkByKey(selectedKeys[0]);
@@ -124,7 +125,6 @@ class ArticleBodyContent extends React.Component {
     const path = match.path + link;
     history.push(path);
 
-    i18n.changeLanguage(language);
   }
 
   componentDidUpdate() {
