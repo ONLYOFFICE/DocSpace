@@ -56,7 +56,7 @@ class Customization extends React.Component {
 
 
    componentDidMount() {
-      const { getCultures, portalLanguage, portalTimeZoneId, t, i18n, getPortalTimezones } = this.props;
+      const { getCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
       const { timezones, languages } = this.state;
 
       if (!timezones.length && !languages.length) {
@@ -72,7 +72,6 @@ class Customization extends React.Component {
                const language = findSelectedItemByKey(languages, portalLanguage);
 
                this.setState({ languages, language, timezones, timezone, isLoadedData: true });
-               i18n.changeLanguage(this.props.language);
             });
       }
       else {

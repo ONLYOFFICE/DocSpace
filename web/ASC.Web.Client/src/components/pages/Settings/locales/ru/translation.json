@@ -21,7 +21,7 @@
   "SaveButton": "Сохранить",
   "SuccessfullySaveSettingsMessage": "Настройки успешно обновлены",
   "NotFoundLanguage": "Если Вы не можете найти свой язык в списке доступных, Вы всегда можете написать нам по адресу <1>{{supportEmail}}</1>, чтобы принять участие в переводе и получить до 1 года бесплатного использования.",
-
+  "Settings": "Настройки",
 
 
 
@@ -41,5 +41,22 @@
   "Culture_en": "Английский (Великобритания)",
   "Culture_en-US": "Английский (США)",
   "Culture_ru-RU": "Русский (Россия)",
-  "LearnMore":  "Подробнее..."
+  "LearnMore":  "Подробнее...",
+  "Settings_common": "Общие",
+  "Settings_customization": "Кастомизация",
+  "Settings_modules-and-tools": "Модули и инструменты",
+  "Settings_white-label": "Ребрендинг",
+  "Settings_security": "Безопасность",
+  "Settings_portal-access": "Доступ к порталу",
+  "Settings_access-rights": "Права доступа",
+  "Settings_login-history": "История входов в систему",
+  "Settings_audit-trail": "Журнал аудита",
+  "Settings_data-management": "Управление данными",
+  "Settings_migration": "Миграция",
+  "Settings_backup": "Резервное копирование",
+  "Settings_portal-deactivation-deletion": "Деактивация/Удаление портала",
+  "Settings_integration": "Интеграция",
+  "Settings_third-party-services": "Сторонние сервисы",
+  "Settings_smtp-settings": "Настройки SMTP",
+  "Settings_statistics": "Статистика"
 }

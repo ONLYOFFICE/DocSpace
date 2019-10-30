@@ -11,6 +11,7 @@ import { setNewSelectedNode } from '../../../../../store/auth/actions';
 import { withRouter } from "react-router";
 import { settingsTree } from '../../../../../helpers/constants';
 import styled from 'styled-components';
+import { withTranslation } from 'react-i18next';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -21,13 +22,13 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 `;
 
-const getItems = (data, path) => {
+const getItems = (data, path, t) => {
   return data.map(item => {
     if (item.children && item.children.length) {
       const link = path + getSelectedLinkByKey(item.key);
       return (
         <TreeNode
-          title={<Link className='inherit-title-link' href={link}>{item.title}</Link>}
+          title={<Link className='inherit-title-link' href={link}>{t(`Settings_${item.link}`)}</Link>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
@@ -35,7 +36,7 @@ const getItems = (data, path) => {
             color: 'dimgray',
           })}
         >
-          {getItems(item.children, path)}
+          {getItems(item.children, path, t)}
         </TreeNode>
       );
     };
@@ -43,7 +44,7 @@ const getItems = (data, path) => {
     return (
       <TreeNode
         key={item.key}
-        title={<Link className='inherit-title-link' href={link}>{item.title}</Link>}
+        title={<Link className='inherit-title-link' href={link}>{t(`Settings_${item.link}`)}</Link>}
         icon={item.icon && React.createElement(Icons[item.icon], {
           size: 'scale',
           isfill: true,
@@ -101,7 +102,7 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedKeys, match, history, setNewSelectedNode } = props;
+    const { selectedKeys, match, history, setNewSelectedNode,  i18n, language  } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
 
@@ -122,6 +123,8 @@ class ArticleBodyContent extends React.Component {
     setNewSelectedNode([key]);
     const path = match.path + link;
     history.push(path);
+
+    i18n.changeLanguage(language);
   }
 
   componentDidUpdate() {
@@ -174,7 +177,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { selectedKeys, match } = this.props;
+    const { selectedKeys, match, t } = this.props;
 
     console.log("SettingsTreeMenu", this.props);
 
@@ -191,7 +194,7 @@ class ArticleBodyContent extends React.Component {
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
       >
-        {getItems(settingsTree, match.path)}
+        {getItems(settingsTree, match.path, t)}
       </StyledTreeMenu>
     );
   };
@@ -199,8 +202,9 @@ class ArticleBodyContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    selectedKeys: state.auth.settings.settingsTree.selectedKey
+    selectedKeys: state.auth.settings.settingsTree.selectedKey,
+    language: state.auth.user.cultureName
   };
 }
 
-export default connect(mapStateToProps, { setNewSelectedNode })(withRouter(ArticleBodyContent));
+export default connect(mapStateToProps, { setNewSelectedNode })(withRouter(withTranslation()(ArticleBodyContent)));

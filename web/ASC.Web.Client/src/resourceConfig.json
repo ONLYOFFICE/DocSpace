@@ -80,6 +80,9 @@
         "CrmProduct",
         "CommunityProduct",
         "DocumentsProduct"
+      ],
+      "PeopleResource": [
+        "Settings"
       ]
     }
   },

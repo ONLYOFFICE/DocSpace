@@ -22,6 +22,7 @@
     "SaveButton": "Save",
     "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
     "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
+    "Settings": "Settings",
 
 
 
@@ -41,5 +42,22 @@
     "Culture_en": "English (United Kingdom)",
     "Culture_en-US": "English (United States)",
     "Culture_ru-RU": "Russian (Russia)",
-    "LearnMore": "Learn more..."
+    "LearnMore": "Learn more...",
+    "Settings_common": "Common",
+    "Settings_customization": "Customization",
+    "Settings_modules-and-tools": "Modules & tools",
+    "Settings_white-label": "White label",
+    "Settings_security": "Security",
+    "Settings_portal-access": "Portal Access",
+    "Settings_access-rights": "Access Rights",
+    "Settings_login-history": "Login History",
+    "Settings_audit-trail": "Audit Trail",
+    "Settings_data-management": "Data Management",
+    "Settings_migration": "Migration",
+    "Settings_backup": "Backup",
+    "Settings_portal-deactivation-deletion": "Portal Deactivation/Deletion",
+    "Settings_integration": "Integration",
+    "Settings_third-party-services": "Third-Party Services",
+    "Settings_smtp-settings": "SMTP Settings",
+    "Settings_statistics": "Statistics"
 }

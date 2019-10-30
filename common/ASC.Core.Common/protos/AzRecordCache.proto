@@ -1,15 +1,15 @@
 ﻿syntax = "proto3";
-
+import "google/protobuf/wrappers.proto";
 package ASC.Core;
 
 message AzRecordCache {
-    string SubjectId  = 1;
+    google.protobuf.StringValue SubjectId  = 1;
 
-    string ActionId  = 2;
+    google.protobuf.StringValue ActionId  = 2;
 
-    string ObjectId = 3;
+    google.protobuf.StringValue ObjectId = 3;
 
-    string Reaction = 4;
+    google.protobuf.StringValue  Reaction = 4;
 
     int32 Tenant = 5;
 }
