@@ -225,7 +225,7 @@ storiesOf("Components|AdvancedSelector", module)
   .add("base", () => {
     return (
       <Section>
-        <ADSelectorExample total={number("Users count", 10000)} />
+        <ADSelectorExample isOpen={boolean("isOpen", true)} total={number("Users count", 10000)} />
       </Section>
     );
   });
