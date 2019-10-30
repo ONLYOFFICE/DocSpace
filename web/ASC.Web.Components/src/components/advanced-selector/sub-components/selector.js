@@ -51,7 +51,7 @@ const Container = ({
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
-const StyledBodyContainer = styled(Container)`
+const StyledContainer = styled(Container)`
   display: flex;
   flex-direction: column;
 
@@ -408,7 +408,7 @@ class ADSelector extends React.Component {
     //const itemCount = hasNextPage ? options.length + 1 : options.length;
 
     return (
-      <StyledBodyContainer
+      <StyledContainer
         containerHeight={containerHeight}
         containerWidth={containerWidth}
         {...this.props}
@@ -493,7 +493,7 @@ class ADSelector extends React.Component {
             />
           )}
         </div>
-      </StyledBodyContainer>
+      </StyledContainer>
     );
   }
 }
