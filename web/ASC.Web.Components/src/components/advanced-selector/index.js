@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import DropDown from "../drop-down";
 import Aside from "../layout/sub-components/aside";
-import ADSelectorBody from "./sub-components/body";
+import ADSelector from "./sub-components/selector";
 
 const displayTypes = ["dropdown", "aside"];
 const sizes = ["compact", "full"];
@@ -15,10 +15,10 @@ class AdvancedSelector extends React.Component {
     return (
         displayType === "dropdown" 
         ? <DropDown opened={isOpen} className="dropdown-container">
-            <ADSelectorBody {...this.props} />
+            <ADSelector {...this.props} />
           </DropDown>
         : <Aside visible={isOpen} scale={false} className="aside-container">
-            <ADSelectorBody {...this.props} />
+            <ADSelector {...this.props} />
           </Aside>
     );
   }

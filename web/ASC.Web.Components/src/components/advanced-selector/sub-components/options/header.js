@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import SearchInput from "../../../../search-input";
-import Button from "../../../../button";
-import { Icons } from "../../../../icons";
+import SearchInput from "../../../search-input";
+import Button from "../../../button";
+import { Icons } from "../../../icons";
 
-const ADSelectorMainHeader = (props) => {
+const ADSelectorOptionsHeader = (props) => {
     const { searchPlaceHolder, value, isDisabled, allowCreation, onSearchChanged, onAddNewClick } = props;
 
     return (
@@ -40,7 +40,7 @@ const ADSelectorMainHeader = (props) => {
     );
 };
 
-ADSelectorMainHeader.propTypes = {
+ADSelectorOptionsHeader.propTypes = {
     searchPlaceHolder: PropTypes.string,
     value: PropTypes.string,
     isDisabled: PropTypes.bool,
@@ -50,4 +50,4 @@ ADSelectorMainHeader.propTypes = {
     onAddNewClick: PropTypes.func
 }
 
-export default ADSelectorMainHeader;
+export default ADSelectorOptionsHeader;

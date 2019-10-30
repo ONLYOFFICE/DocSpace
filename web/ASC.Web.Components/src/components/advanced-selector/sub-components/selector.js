@@ -2,20 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Checkbox from "../../checkbox";
-
 import ComboBox from "../../combobox";
 
 import filter from "lodash/filter";
 import isEqual from "lodash/isEqual";
-
-import { handleAnyClick } from "../../../utils/event";
 import isEmpty from "lodash/isEmpty";
 
+import ADSelectorOptionsHeader from "./options/header";
+import ADSelectorOptionsBody from "./options/body"
+import ADSelectorGroupBody from "./groups/body";
 import ADSelectorFooter from "./footer";
 
-import ADSelectorMainHeader from "./sections/main/header";
-import ADSelectorMainBody from "./sections/main/body";
-import ADSelectorAdditionalBody from "./sections/additional/body";
+import { handleAnyClick } from "../../../utils/event";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -193,7 +191,7 @@ const StyledBodyContainer = styled(Container)`
   }
 `;
 
-class ADSelectorBody extends React.Component {
+class ADSelector extends React.Component {
   constructor(props) {
     super(props);
 
@@ -417,7 +415,7 @@ class ADSelectorBody extends React.Component {
         <div ref={this.ref}>
           <div className="data_container">
             <div className="data_column_one">
-              <ADSelectorMainHeader
+              <ADSelectorOptionsHeader
                 value={value}
                 searchPlaceHolder={placeholder}
                 isDisabled={isDisabled}
@@ -450,7 +448,7 @@ class ADSelectorBody extends React.Component {
                   onChange={this.onSelectedAllChange}
                 />
               )}
-              <ADSelectorMainBody
+              <ADSelectorOptionsBody
                 options={options}
                 hasNextPage={hasNextPage}
                 isNextPageLoading={isNextPageLoading}
@@ -469,7 +467,7 @@ class ADSelectorBody extends React.Component {
               size === "full" &&
               groups &&
               groups.length > 0 && (
-                <ADSelectorAdditionalBody
+                <ADSelectorGroupBody
                   options={groups}
                   selectedOptions={selectedGroups}
                   listHeight={listHeight}
@@ -495,7 +493,7 @@ class ADSelectorBody extends React.Component {
   }
 }
 
-ADSelectorBody.propTypes = {
+ADSelector.propTypes = {
     isOpen: PropTypes.bool,
     options: PropTypes.array,
     groups: PropTypes.array,
@@ -524,4 +522,4 @@ ADSelectorBody.propTypes = {
     allowAnyClickClose: PropTypes.bool,
 };
 
-export default ADSelectorBody;
+export default ADSelector;

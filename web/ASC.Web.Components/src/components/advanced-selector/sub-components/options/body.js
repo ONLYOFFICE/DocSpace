@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CustomScrollbarsVirtualList from "../../../../scrollbar/custom-scrollbars-virtual-list";
+import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
-import ADSelectorRow from "../../row";
-import Loader from "../../../../loader";
-import { Text } from "../../../../text";
+import ADSelectorRow from "../row";
+import Loader from "../../../loader";
+import { Text } from "../../../text";
 import findIndex from "lodash/findIndex";
 
-class ADSelectorMainBody extends React.Component {
+class ADSelectorOptionsBody extends React.Component {
   renderRow = ({ index, style }) => {
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
 
@@ -94,7 +94,7 @@ class ADSelectorMainBody extends React.Component {
   }
 }
 
-ADSelectorMainBody.propTypes = {
+ADSelectorOptionsBody.propTypes = {
   options: PropTypes.array,
   hasNextPage: PropTypes.bool,
   isNextPageLoading: PropTypes.bool,
@@ -111,4 +111,4 @@ ADSelectorMainBody.propTypes = {
   onRowSelect: PropTypes.func
 };
 
-export default ADSelectorMainBody;
+export default ADSelectorOptionsBody;

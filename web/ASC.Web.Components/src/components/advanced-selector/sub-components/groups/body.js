@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CustomScrollbarsVirtualList from "../../../../scrollbar/custom-scrollbars-virtual-list";
+import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList } from "react-window";
-import { Text } from "../../../../text";
-import ADSelectorRow from "../../row";
+import { Text } from "../../../text";
+import ADSelectorRow from "../row";
 import findIndex from "lodash/findIndex";
 
-class ADSelectorAdditionalBody extends React.Component {
+class ADSelectorGroupBody extends React.Component {
   renderRow = ({ data, index, style }) => {
     const option = data[index];
     var isChecked = this.props.isMultiSelect
@@ -49,7 +49,7 @@ class ADSelectorAdditionalBody extends React.Component {
   }
 }
 
-ADSelectorAdditionalBody.propTypes = {
+ADSelectorGroupBody.propTypes = {
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
   selectedAll: PropTypes.bool,
@@ -60,4 +60,4 @@ ADSelectorAdditionalBody.propTypes = {
   onRowSelect: PropTypes.func
 };
 
-export default ADSelectorAdditionalBody;
+export default ADSelectorGroupBody;
