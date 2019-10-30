@@ -115,7 +115,7 @@ class ADSelectorExample extends React.Component {
           isNextPageLoading: false,
           options: newOptions
         });
-      }, 500);
+      }, 1000);
     });
   };
 
