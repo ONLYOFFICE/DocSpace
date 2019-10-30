@@ -4,10 +4,10 @@ import Checkbox from "../../checkbox";
 import Link from "../../link";
 
 const ADSelectorRow = (props) => {
-    const { key, label, isChecked, style, onChange, onSelect, isMultiSelect } = props;
+    const { label, isChecked, style, onChange, onSelect, isMultiSelect } = props;
 
     return (
-        <div className="option" style={style} key={key}>
+        <div className="option" style={style}>
         {isMultiSelect ? (
           <Checkbox
             label={label}
@@ -30,7 +30,6 @@ const ADSelectorRow = (props) => {
 };
 
 ADSelectorRow.propTypes = {
-    key: PropTypes.string,
     label: PropTypes.string,
     isChecked: PropTypes.bool,
     isMultiSelect: PropTypes.bool,
