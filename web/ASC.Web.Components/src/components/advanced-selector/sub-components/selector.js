@@ -181,15 +181,6 @@ const StyledContainer = styled(Container)`
       }
     }
   }
-
-  .button_container {
-    border-top: 1px solid #eceef1;
-    display: flex;
-
-    .add_members_btn {
-      margin: 16px;
-    }
-  }
 `;
 
 class ADSelector extends React.Component {
@@ -482,16 +473,15 @@ class ADSelector extends React.Component {
                 </div>
               )}
           </div>
-          {isMultiSelect && (
-            <ADSelectorFooter
-              buttonLabel={buttonLabel}
-              isDisabled={
-                !this.state.selectedOptions ||
-                !this.state.selectedOptions.length
-              }
-              onClick={this.onButtonClick}
-            />
-          )}
+          <ADSelectorFooter
+            buttonLabel={buttonLabel}
+            isDisabled={
+              !this.state.selectedOptions ||
+              !this.state.selectedOptions.length
+            }
+            isMultiSelect={isMultiSelect}
+            onClick={this.onButtonClick}
+          />
         </div>
       </StyledContainer>
     );
