@@ -39,13 +39,13 @@ class PureHome extends React.Component {
       headerVisible && selection.length > 0 && selection.length < users.length;
     const headerChecked = headerVisible && selection.length === users.length;
 
-    console.log(`renderGroupButtonMenu()
+    /*console.log(`renderGroupButtonMenu()
       headerVisible=${headerVisible} 
       headerIndeterminate=${headerIndeterminate} 
       headerChecked=${headerChecked}
       selection.length=${selection.length}
       users.length=${users.length}
-      selected=${selected}`);
+      selected=${selected}`);*/
 
     let newState = {};
 
@@ -143,24 +143,29 @@ class PureHome extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    users: state.people.users,
-    selection: state.people.selection,
-    selected: state.people.selected,
-    isLoaded: state.auth.isLoaded
-  };
-}
-
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = (props) => <I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>;
+const Home = (props) => { 
+  const {language} = props;
+  i18n.changeLanguage(language);
+  return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
+}
 
 Home.propTypes = {
   users: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool
 };
+
+function mapStateToProps(state) {
+  return {
+    users: state.people.users,
+    selection: state.people.selection,
+    selected: state.people.selected,
+    isLoaded: state.auth.isLoaded,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+  };
+}
 
 export default connect(
   mapStateToProps,

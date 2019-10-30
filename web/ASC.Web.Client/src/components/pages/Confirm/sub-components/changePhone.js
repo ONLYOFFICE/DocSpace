@@ -42,6 +42,7 @@ const PhoneForm = props => {
   const { t, currentPhone } = props;
 
   const [phone, setPhone] = useState(currentPhone);
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
 
   const subTitleTranslation = `Enter mobile phone number`;

@@ -1,10 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, toastr, AvatarEditor } from 'asc-web-components'
-import { withTranslation } from 'react-i18next';
+import { Avatar, Button, Textarea, toastr, AvatarEditor, Text } from 'asc-web-components'
+import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile, loadAvatar } from '../../../../../store/profile/actions';
+import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -14,6 +14,7 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
+import { createThumbnailsAvatar, loadAvatar } from "../../../../../store/services/api";
 
 class CreateUserForm extends React.Component {
 
@@ -43,38 +44,86 @@ class CreateUserForm extends React.Component {
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.createAvatar = this.createAvatar.bind(this);
+    this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
+
   }
 
   createAvatar(userId,userName){
-    this.props.updateAvatar(
-        userId,
-        {
-          croppedImage:  this.state.croppedAvatarImage,
-          defaultImage:  this.state.defaultAvatarImage
-        })
-      .then((result) => {
+    createThumbnailsAvatar(userId, {
+      x: this.state.avatar.x,
+      y: this.state.avatar.y,
+      width: this.state.avatar.width,
+      height: this.state.avatar.height,
+      tmpFile: this.state.avatar.tmpFile
+    })
+    .then(() => {
         toastr.success("Success");
         this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
-      })
-      .catch((error) => {
-        toastr.error(error.message);
-        this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
-      });
+    })
+    .catch((error) => toastr.error(error));
   }
   openAvatarEditor(){
+    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
+    let _this = this;
+    if(avatarDefault !== null){
+      let img = new Image();
+      img.onload = function () {
+        _this.setState({
+          avatar:{
+            defaultWidth: img.width,
+            defaultHeight: img.height
+          }
+        })
+      };
+      img.src = avatarDefault;
+    }
     this.setState({
       visibleAvatarEditor: true,
     });
   }
-  onSaveAvatar(result){
-    this.setState({
-      croppedAvatarImage: result.croppedImage,
-      defaultAvatarImage: result.defaultImage,
-    })
+  onLoadFileAvatar(file) {
+    let data = new FormData();
+    let _this = this;
+    data.append("file", file);
+    data.append("Autosave", false);
+
+    loadAvatar(0, data)
+      .then((response) => {
+        var img = new Image();
+        img.onload = function () {
+            var stateCopy = Object.assign({}, _this.state);
+            stateCopy.avatar =  {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height
+            }
+            _this.setState(stateCopy);
+        };
+        img.src = response.data;
+      })
+      .catch((error) => toastr.error(error));
+  }
+  onSaveAvatar(isUpdate, result, file){
+    var stateCopy = Object.assign({}, this.state);
+
+    stateCopy.visibleAvatarEditor = false;
+    stateCopy.croppedAvatarImage = file;
+    if(isUpdate){
+      stateCopy.avatar.x = Math.round(result.x*this.state.avatar.defaultWidth - result.width/2);
+      stateCopy.avatar.y = Math.round(result.y*this.state.avatar.defaultHeight - result.height/2);
+      stateCopy.avatar.width = result.width;
+      stateCopy.avatar.height = result.height;
+    }
+    this.setState(stateCopy);
   }
   onCloseAvatarEditor(){
     this.setState({
       visibleAvatarEditor: false,
+      croppedAvatarImage: "",
+      avatar:{
+        tmpFile: ""
+      }
     });
   }
 
@@ -95,7 +144,6 @@ class CreateUserForm extends React.Component {
     return {
       visibleAvatarEditor: false,
       croppedAvatarImage: "",
-      defaultAvatarImage: "",
       isLoading: false,
       errors: {
         firstName: false,
@@ -109,6 +157,16 @@ class CreateUserForm extends React.Component {
         allOptions: allOptions,
         options: [...allOptions],
         selected: selected
+      },
+      avatar: {
+        tmpFile:"",
+        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        defaultWidth: 0,
+        defaultHeight: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
       }
     };
   }
@@ -153,12 +211,15 @@ class CreateUserForm extends React.Component {
 
     this.props.createProfile(this.state.profile)
       .then((profile) => {
-        toastr.success("Success");
-        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
-        //if(this.state.defaultImage !== '') this.createAvatar(profile.id,profile.userName);
+        if(this.state.avatar.tmpFile !== ""){
+          this.createAvatar(profile.id,profile.userName);
+        }else{
+          toastr.success("Success");
+          this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+        }
       })
       .catch((error) => {
-        toastr.error(error.message)
+        toastr.error(error);
         this.setState({ isLoading: false })
       });
   }
@@ -232,7 +293,7 @@ class CreateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector } = this.state;
-    const { t, settings } = this.props;
+    const { t, settings, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -249,11 +310,19 @@ class CreateUserForm extends React.Component {
               editLabel={t("AddPhoto")}
               editAction={this.openAvatarEditor}
             />
-           <AvatarEditor 
-              image={profile.avatarDefault ? "data:image/png;base64,"+profile.avatarDefault : null} 
-              visible={this.state.visibleAvatarEditor} 
-              onClose={this.onCloseAvatarEditor} 
-              onSave={this.onSaveAvatar} />
+            <AvatarEditor
+              image={this.state.avatar.image}
+              visible={this.state.visibleAvatarEditor}
+              onClose={this.onCloseAvatarEditor}
+              onSave={this.onSaveAvatar}
+              onLoadFile={this.onLoadFileAvatar}
+              headerLabel={t("editAvatar")}
+              chooseFileLabel ={t("chooseFileLabel")}
+              unknownTypeError={t("unknownTypeError")}
+              maxSizeFileError={t("maxSizeFileError")}
+              unknownError    ={t("unknownError")}
+            />
+           
           </AvatarContainer>
           <MainFieldsContainer>
             <TextField
@@ -286,6 +355,12 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={3}
+
+              tooltipContent={
+                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p className="tooltip_email" style={{marginTop: "1rem", marginBottom: "1rem"}} >You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
+                </Trans>
+              }
             />
             <PasswordField
               isRequired={true}
@@ -309,6 +384,7 @@ class CreateUserForm extends React.Component {
               passwordSettings={settings.passwordSettings}
             />
             <DateField
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -328,6 +404,7 @@ class CreateUserForm extends React.Component {
               radioOnChange={this.onInputChange}
             />
             <DateField
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
@@ -402,7 +479,6 @@ class CreateUserForm extends React.Component {
     );
   };
 }
-
 const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
@@ -413,7 +489,6 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    createProfile,
-    loadAvatar
+    createProfile
   }
 )(withRouter(withTranslation()(CreateUserForm)));

@@ -84,7 +84,7 @@ namespace ASC.Web.Api.Controllers
         public string GeInviteLink(EmployeeType employeeType)
         {
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, AuthContext.CurrentAccount.ID)
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
                    + $"&emplType={employeeType:d}";
         }
 

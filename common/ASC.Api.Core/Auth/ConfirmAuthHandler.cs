@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Security.Authentication;
 using System.Security.Claims;
@@ -8,8 +9,6 @@ using System.Threading.Tasks;
 using ASC.Core;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -56,32 +55,45 @@ namespace ASC.Api.Core.Auth
         {
             var emailValidationKeyModel = EmailValidationKeyModel.FromRequest(Context.Request);
 
-            if (SecurityContext.IsAuthenticated && emailValidationKeyModel.Type != ConfirmType.EmailChange)
+            if (!emailValidationKeyModel.Type.HasValue)
             {
-                return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
+                return SecurityContext.IsAuthenticated
+                    ? Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)))
+                    : Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
             }
 
-            var checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, AuthManager);
+            EmailValidationKeyProvider.ValidationResult checkKeyResult;
+            try
+            {
+                checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
+            }
+            catch (ArgumentNullException)
+            {
+                checkKeyResult = EmailValidationKeyProvider.ValidationResult.Invalid;
+            }
 
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Role, emailValidationKeyModel.Type.ToString())
             };
 
-            if (!SecurityContext.IsAuthenticated)
+            if (checkKeyResult == EmailValidationKeyProvider.ValidationResult.Ok)
             {
-                if (emailValidationKeyModel.UiD.HasValue)
+                if (!SecurityContext.IsAuthenticated)
                 {
-                    SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
+                    if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
+                    {
+                        SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
+                    }
+                    else
+                    {
+                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                    }
                 }
                 else
                 {
-                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                    SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
                 }
-            }
-            else
-            {
-                SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
             }
 
             var result = checkKeyResult switch

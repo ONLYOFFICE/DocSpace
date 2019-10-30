@@ -256,7 +256,7 @@ namespace ASC.Api.Settings
                 settings.TrustedDomains = Tenant.TrustedDomains;
                 settings.TrustedDomainsType = Tenant.TrustedDomainsType;
                 var timeZone = Tenant.TimeZone;
-                settings.Timezone = timeZone.ToSerializedString();
+                settings.Timezone = timeZone.Id;
                 settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
             }
@@ -275,6 +275,19 @@ namespace ASC.Api.Settings
         public List<CultureInfo> GetSupportedCultures()
         {
             return SetupInfo.EnabledCultures;
+        }
+
+        [Read("timezones")]
+        public IEnumerable<TimeZoneInfo> GetTimeZones()
+        {
+            var timeZones =  TimeZoneInfo.GetSystemTimeZones().ToList();
+
+            if (timeZones.All(tz => tz.Id != "UTC"))
+            {
+                timeZones.Add(TimeZoneInfo.Utc);
+            }
+
+            return timeZones;
         }
 
         //[Read("recalculatequota")]
@@ -380,7 +393,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/password")]
-        [Authorize(AuthenticationSchemes = "confirm")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
             var UserPasswordSettings = PasswordSettings.Load();

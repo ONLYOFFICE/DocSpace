@@ -60,7 +60,8 @@ Each not main child can take containerWidth property for task of width of child'
 
 #### Properties
 
-| Props            | Type     | Required | Values | Default                                     | Description                            |
-| ---------------- | -------- | :------: | ------ | ------------------------------------------- | -------------------------------------- |
-| `children`       | `node`   |    ✅    |        | `` | Components displayed inside RowContent |
-| `containerWidth` | `string` |    -     |        | `100px`                                     | For task of width of child's container |
+| Props             | Type     | Required | Values | Default | Description                            |
+| ----------------- | -------- | :------: | ------ | ------- | -------------------------------------- |
+| `children`        | `node`   |    ✅    | -      | -       | Components displayed inside RowContent |
+| `containerWidth`  | `string` |    -     | -      | `100px` | For task of width of child's container |
+| `disableSideInfo` | `bool`   |    -     | -      | `false` | If you do not need SideElements        |

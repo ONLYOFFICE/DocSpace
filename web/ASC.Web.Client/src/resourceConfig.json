@@ -22,7 +22,11 @@
         "RegistrationEmailWatermark",
         "MessageEmailConfirmed",
         "MessageAuthorize",
-        "LoginButton"
+        "LoginButton",
+        "ForgotPassword",
+        "PasswordRecoveryTitle",
+        "MessageSendPasswordRecoveryInstructionsOnEmail",
+        "RememberHelper"
       ]
     },
     "Confirm": {
@@ -40,7 +44,45 @@
         "ErrorPasswordNoUpperCase",
         "ErrorPasswordNoSpecialSymbols",
         "EmailAndPasswordCopiedToClipboard",
-        "LastName"
+        "LastName",
+        "DeleteProfileBtn",
+        "DeleteProfileSuccessMessage",
+        "DeleteProfileSuccessMessageInfo",
+        "DeleteProfileConfirmation",
+        "DeleteProfileConfirmationInfo",
+        "ChangePasswordSuccess",
+        "Remember"
+      ]
+    },
+    "Settings": {
+      "Resource": [
+        "PortalOwner",
+        "AccessRightsOwnerCan",
+        "AccessRightsOwnerOpportunities",
+        "AdminSettings",
+        "People",
+        "Mail",
+        "AccessRightsFullAccess",
+        "AccessRightsAccessToProduct",
+        "AccessRightsProductUsersCan",
+        "AccessRightsDisabledProduct",
+        "AccessRightsAllUsers",
+        "AccessRightsUsersFromList",
+        "StudioTimeLanguageSettings",
+        "Language",
+        "TimeZone",
+        "SaveButton",
+        "NotFoundLanguage",
+        "Employees"
+      ],
+      "FeedResource": [
+        "ProjectsProduct",
+        "CrmProduct",
+        "CommunityProduct",
+        "DocumentsProduct"
+      ],
+      "PeopleResource": [
+        "Settings"
       ]
     }
   },

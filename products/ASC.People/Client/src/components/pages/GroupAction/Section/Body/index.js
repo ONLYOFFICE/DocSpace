@@ -28,7 +28,7 @@ import {
   updateGroup
 } from "../../../../../store/group/actions";
 import styled from "styled-components";
-import { fetchSelectorUsers } from "../../../../../store/people/actions";
+import { fetchSelectorUsers, fetchPeople, fetchGroups } from "../../../../../store/people/actions";
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import isEqual from "lodash/isEqual";
 
@@ -110,34 +110,40 @@ class SectionBodyContent extends React.Component {
             key: 0,
             label: t("CustomAddEmployee", { typeUser })
           },
-      groupMembers: group && group.members ? group.members.map(m => {
-        return {
-          key: m.id,
-          label: m.displayName
-        }
-      }) : [],
-      groupManager: group && group.manager ? {
-        key: group.manager.id,
-        label: group.manager.displayName
-      } : {
-        key: GUID_EMPTY,
-        label: t("CustomAddEmployee", { typeUser })
-      }
+      groupMembers:
+        group && group.members
+          ? group.members.map(m => {
+              return {
+                key: m.id,
+                label: m.displayName
+              };
+            })
+          : [],
+      groupManager:
+        group && group.manager
+          ? {
+              key: group.manager.id,
+              label: group.manager.displayName
+            }
+          : {
+              key: GUID_EMPTY,
+              label: t("CustomAddEmployee", { typeUser })
+            }
     };
 
     return newState;
-  }
+  };
 
   componentDidMount() {
     const { users, fetchSelectorUsers } = this.props;
-    if(!users || !users.length) {
+    if (!users || !users.length) {
       fetchSelectorUsers();
     }
   }
 
   componentDidUpdate(prevProps) {
     //const { users, group } = this.props;
-    if(!isEqual(this.props, prevProps)) {
+    if (!isEqual(this.props, prevProps)) {
       this.setState(this.mapPropsToState());
     }
   }
@@ -163,12 +169,12 @@ class SectionBodyContent extends React.Component {
   };
 
   onHeadSelectorSelect = option => {
-    this.setState({ 
+    this.setState({
       groupManager: {
         key: option.key,
         label: option.label
       },
-      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen 
+      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen
     });
   };
 
@@ -178,24 +184,24 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onUsersSelectorSearch = (value) => {
+  onUsersSelectorSearch = value => {
     /*setOptions(
       options.filter(option => {
         return option.label.indexOf(value) > -1;
       })
     );*/
   };
-  onUsersSelectorSelect = (selectedOptions) => {
+  onUsersSelectorSelect = selectedOptions => {
     //console.log("onSelect", selectedOptions);
     //this.onUsersSelectorClick();
-    this.setState({ 
+    this.setState({
       groupMembers: selectedOptions.map(option => {
         return {
           key: option.key,
           label: option.label
         };
       }),
-      isUsersSelectorOpen: !this.state.isUsersSelectorOpen 
+      isUsersSelectorOpen: !this.state.isUsersSelectorOpen
     });
   };
 
@@ -211,31 +217,36 @@ class SectionBodyContent extends React.Component {
     });
   };
 
+  save = (group) => {
+    const { createGroup, updateGroup } = this.props;
+    return group.id
+      ? updateGroup(group.id, group.name, group.managerKey, group.members)
+      : createGroup(group.name, group.managerKey, group.members);
+  };
+
   onSave = () => {
-    const { history, group, createGroup, updateGroup, resetGroup } = this.props;
+    const { group } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
     if (!groupName || !groupName.trim().length) return false;
 
     this.setState({ inLoading: true });
 
-    (group && group.id
-      ? updateGroup(
-          group.id,
-          groupName,
-          groupManager.key,
-          groupMembers.map(u => u.key)
-        )
-      : createGroup(groupName, groupManager.key, groupMembers.map(u => u.key))
-    )
-      .then(() => {
-        toastr.success("Success");
-        //this.setState({ inLoading: true });
-        history.goBack();
-        resetGroup();
+    const newGroup = {
+      name: groupName,
+      managerKey: groupManager.key,
+      members: groupMembers.map(u => u.key)
+    };
+
+    if(group && group.id)
+      newGroup.id = group.id;
+
+    this.save(newGroup)
+      .then(group => {
+        toastr.success(`Group '${group.name}' has been saved successfully`);
       })
       .catch(error => {
-        toastr.error(error.message);
+        toastr.error(error);
         this.setState({ inLoading: false });
       });
   };
@@ -247,11 +258,11 @@ class SectionBodyContent extends React.Component {
     history.goBack();
   };
 
-  onSelectedItemClose = (member) => {
-    this.setState({ 
+  onSelectedItemClose = member => {
+    this.setState({
       groupMembers: this.state.groupMembers.filter(g => g.key !== member.key)
     });
-  }
+  };
 
   renderModal = () => {
     const { groups, modalVisible } = this.state;
@@ -413,7 +424,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
-            isDropDown={true}
+            displayType="dropdown"
             isOpen={isHeadSelectorOpen}
             size="full"
             placeholder={"Search"}
@@ -435,7 +446,7 @@ class SectionBodyContent extends React.Component {
           isRequired={false}
           hasError={false}
           isVertical={true}
-          labelText="Members"
+          labelText={t("Members")}
         >
           <ComboButton
             id="users-selector"
@@ -455,7 +466,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboButton>
           <AdvancedSelector
-            isDropDown={true}
+            displayType="dropdown"
             isOpen={isUsersSelectorOpen}
             size="full"
             placeholder={"Search"}
@@ -559,11 +570,11 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
   };
 }
 
 export default connect(
   mapStateToProps,
-  { resetGroup, createGroup, updateGroup, fetchSelectorUsers }
+  { resetGroup, createGroup, updateGroup, fetchSelectorUsers, fetchPeople, fetchGroups }
 )(withRouter(withTranslation()(SectionBodyContent)));

@@ -1,7 +1,8 @@
 import * as api from "../services/api";
-import { setGroups, fetchPeopleAsync } from "../people/actions";
-import setAuthorizationToken from "../../store/services/setAuthorizationToken";
+import { fetchGroups, fetchPeople } from "../people/actions";
+import { setAuthorizationToken } from "../../store/services/client";
 import { getFilterByLocation } from "../../helpers/converters";
+import config from "../../../package.json";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -48,35 +49,26 @@ export async function getUserInfo(dispatch) {
   const { user, modules, settings } = await api.getInitInfo();
   let newSettings = settings;
   if (user.isAdmin) {
-    const inviteLinkResp = await api.getInvitationLinks();
-    newSettings = Object.assign(newSettings, inviteLinkResp);
+    const inviteLinks = await api.getInvitationLinks();
+    newSettings = Object.assign(newSettings, inviteLinks);
   }
 
   dispatch(setCurrentUser(user));
   dispatch(setModules(modules));
   dispatch(setSettings(newSettings));
 
-  const groupResp = await api.getGroupList();
+  await fetchGroups(dispatch);
 
-  dispatch(setGroups(groupResp.data.response));
+  var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+  const match = window.location.pathname.match(re);
 
-  const newFilter = getFilterByLocation(window.location);
-
-  await fetchPeopleAsync(dispatch, newFilter);
+  if (match && match.length > 0)
+  {
+    const newFilter = getFilterByLocation(window.location);
+    await fetchPeople(newFilter, dispatch);
+  }
 
   return dispatch(setIsLoaded(true));
-}
-
-export function login(data) {
-  return dispatch => {
-    return api
-      .login(data)
-      .then(res => {
-        const token = res.data.response.token;
-        setAuthorizationToken(token);
-      })
-      .then(() => getUserInfo(dispatch));
-  };
 }
 
 export function logout() {

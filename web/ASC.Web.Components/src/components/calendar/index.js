@@ -51,7 +51,6 @@ const CalendarContainer = styled.div`
 const CalendarStyle = styled.div`
   ${props => (props.size === "base" ? "width: 260px;" : `width: 294px;`)}
 
-  padding: 16px 16px 16px 17px;
   box-sizing: content-box;
   ${props =>
     props.isDisabled

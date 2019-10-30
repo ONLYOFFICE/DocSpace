@@ -1,0 +1,24 @@
+{
+  "InviteTitle": "Вы приглашены присоединиться к этому порталу!",
+  "LoginRegistryButton": "Присоединиться",
+  "LoginWithAccount": "или войдите с:",
+  "Email": "Email",
+  "InvitePassword": "Пароль",
+  "FirstName": "Имя",
+  "LastName": "Фамилия",
+  "CopyEmailAndPassword": "Скопировать email и пароль",
+  "ErrorPasswordMessage": "Пароль должен содержать",
+  "ErrorPasswordLength": "от {{fromNumber}} до {{toNumber}} символов",
+  "ErrorPasswordNoDigits": "цифры",
+  "ErrorPasswordNoUpperCase": "заглавные буквы",
+  "ErrorPasswordNoSpecialSymbols": "специальные символы",
+  "EmailAndPasswordCopiedToClipboard": "Email и пароль скопированы",
+  "PassworResetTitle": "Теперь вы можете создать новый пароль.",
+  "PasswordCustomMode": "Пароль",
+  "ImportContactsOkButton": "OK",
+  "LoadingProcessing": "Загрузка...",
+  "ChangePasswordSuccess": "Пароль был успешно изменен",
+  
+
+  "CustomWelcomePageTitle": "{{welcomePageTitle}}"
+}

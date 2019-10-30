@@ -6,8 +6,7 @@ import Tree from 'rc-tree';
 const StyledTreeMenu = styled(Tree)`
 
     margin: 0;
-    padding: 5px;
-
+    padding: 0;
     
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
         background: none;
@@ -53,12 +52,12 @@ const StyledTreeMenu = styled(Tree)`
         margin-right: 2px;
         vertical-align: top;
     }
-    ${props => props.switcherIcon != null ? 
+    ${props => props.switcherIcon != null ?
         css`
             li span.rc-tree-switcher{
                 background: none;
             }
-        ` 
+        `
         : ''
     }
   
@@ -66,9 +65,9 @@ const StyledTreeMenu = styled(Tree)`
 
 const TreeMenu = props => {
     //console.log("TreeMenu render");
-    const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon, 
-            onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-            defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys} = props;
+    const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
+        onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
+        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className } = props;
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
@@ -76,38 +75,39 @@ const TreeMenu = props => {
     }
     return (
         <StyledTreeMenu
-          checkable = {!!checkable}
-          draggable = {!!draggable}
-          disabled = {!!disabled}
-          multiple = {!!multiple}
-          showLine = {!!showLine}
-          showIcon = {!!showIcon}
-          defaultExpandAll = {!!defaultExpandAll}
-          defaultExpandParent = {!!defaultExpandParent}
-          icon = {icon}
+            className={className}
+            checkable={!!checkable}
+            draggable={!!draggable}
+            disabled={!!disabled}
+            multiple={!!multiple}
+            showLine={!!showLine}
+            showIcon={!!showIcon}
+            defaultExpandAll={!!defaultExpandAll}
+            defaultExpandParent={!!defaultExpandParent}
+            icon={icon}
 
-          selectedKeys={selectedKeys}
-          defaultSelectedKeys={defaultSelectedKeys}
-          defaultExpandedKeys={defaultExpandedKeys}
-          defaultCheckedKeys={defaultCheckedKeys}
+            selectedKeys={selectedKeys}
+            defaultSelectedKeys={defaultSelectedKeys}
+            defaultExpandedKeys={defaultExpandedKeys}
+            defaultCheckedKeys={defaultCheckedKeys}
 
-          onDragStart={onDragStart}
-          onDrop={onDrop}
-          onDragEnd={onDragEnd}
-          onDragLeave={onDragLeave}
-          onDragOver={onDragOver}
+            onDragStart={onDragStart}
+            onDrop={onDrop}
+            onDragEnd={onDragEnd}
+            onDragLeave={onDragLeave}
+            onDragOver={onDragOver}
 
-          switcherIcon = {switcherIcon}
-          onSelect={onTreeNodeSelect}
-          onDragEnter={onDragEnter}
+            switcherIcon={switcherIcon}
+            onSelect={onTreeNodeSelect}
+            onDragEnter={onDragEnter}
 
-          onCheck={onCheck}
-          onExpand={onExpand}
-         
-          onLoad={onLoad}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          onRightClick={onRightClick}
+            onCheck={onCheck}
+            onExpand={onExpand}
+
+            onLoad={onLoad}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+            onRightClick={onRightClick}
         >
             {children}
         </StyledTreeMenu>
@@ -133,7 +133,7 @@ TreeMenu.propTypes = {
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
     ])
-    
+
 }
 
 export default TreeMenu

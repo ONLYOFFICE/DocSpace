@@ -38,7 +38,7 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'base' && '20px') ||
         (props.size === 'middle' && '20px') ||
         (props.size === 'big' && '20px') ||
-        (props.size === 'huge' && '20px')
+        (props.size === 'huge' && '21px')
     };
     font-size: ${props =>
         (props.size === 'base' && '13px') ||
@@ -94,7 +94,7 @@ class TextInput extends React.Component {
 TextInput.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
-    type: PropTypes.oneOf(['text', 'password']),
+    type: PropTypes.oneOf(['text', 'password', 'email']),
     value: PropTypes.string.isRequired,
     maxLength: PropTypes.number,
     placeholder: PropTypes.string,

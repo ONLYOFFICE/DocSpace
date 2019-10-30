@@ -11,7 +11,8 @@ import {
   SORT_BY,
   SORT_ORDER,
   PAGE,
-  PAGE_COUNT
+  PAGE_COUNT,
+  EmployeeStatus
 } from "../../helpers/constants";
 
 export const SET_GROUPS = "SET_GROUPS";
@@ -68,7 +69,7 @@ export function selectGroup(groupId) {
     let newFilter = filter.clone();
     newFilter.group = groupId;
 
-    return fetchPeopleByFilter(dispatch, newFilter);
+    return fetchPeople(newFilter, dispatch);
   };
 }
 
@@ -86,7 +87,7 @@ export function deselectUser(user) {
   };
 }
 
-export function setFilter(filter) {
+export function setFilterUrl(filter) {
   const defaultFilter = Filter.getDefault();
   const params = [];
 
@@ -114,13 +115,17 @@ export function setFilter(filter) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
   }
 
-  params.push(`${PAGE}=${filter.page+1}`);
+  params.push(`${PAGE}=${filter.page + 1}`);
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
   if (params.length > 0) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
   }
+}
+
+export function setFilter(filter) {
+  setFilterUrl(filter);
   return {
     type: SET_FILTER,
     filter
@@ -136,55 +141,57 @@ export function setSelectorUsers(users) {
 
 export function fetchSelectorUsers() {
   return dispatch => {
-    api
-      .getSelectorUserList()
-      .then(res => dispatch(setSelectorUsers(res.data.response)));
+    api.getSelectorUserList().then(data => {
+      const users = data.items;
+      return dispatch(setSelectorUsers(users));
+    });
   };
 }
 
-export function fetchPeople(filter) {
-  return dispatch => {
-    return fetchPeopleByFilter(dispatch, filter);
-  };
+export function fetchGroups(dispatchFunc = null) {
+  return api.getGroupList().then(groups => {
+    return dispatchFunc
+      ? dispatchFunc(setGroups(groups))
+      : Promise.resolve(dispatch => dispatch(setGroups(groups)));
+  });
 }
 
-export function fetchPeopleByFilter(dispatch, filter) {
-  let filterData = (filter && filter.clone()) || Filter.getDefault();
+export function fetchPeople(filter, dispatchFunc = null) {
+  return dispatchFunc
+    ? fetchPeopleByFilter(dispatchFunc, filter)
+    : (dispatch, getState) => {
+        if (filter) {
+          return fetchPeopleByFilter(dispatch, filter);
+        } else {
+          const { people } = getState();
+          const { filter } = people;
+          return fetchPeopleByFilter(dispatch, filter);
+        }
+      };
+}
 
-  return api.getUserList(filterData).then(res => {
-    filterData.total = res.data.total;
+function fetchPeopleByFilter(dispatch, filter) {
+  let filterData = filter && filter.clone();
+
+  if (!filterData) {
+    filterData = Filter.getDefault();
+    filterData.employeeStatus = EmployeeStatus.Active;
+  }
+
+  return api.getUserList(filterData).then(data => {
+    filterData.total = data.total;
     dispatch(setFilter(filterData));
     dispatch({
       type: SELECT_GROUP,
       groupId: filterData.group
     });
-    return dispatch(setUsers(res.data.response));
+    return dispatch(setUsers(data.items));
   });
-}
-
-export async function fetchPeopleAsync(dispatch, filter = null) {
-  let filterData = (filter && filter.clone()) || Filter.getDefault();
-
-  const usersResp = await api.getUserList(filterData);
-
-  filterData.total = usersResp.data.total;
-
-  dispatch(setFilter(filterData));
-  dispatch({
-    type: SELECT_GROUP,
-    groupId: filterData.group
-  });
-  dispatch(setUsers(usersResp.data.response));
 }
 
 export function updateUserStatus(status, userIds) {
   return dispatch => {
-    return api.updateUserStatus(status, userIds).then(res => {
-      if (res && res.data && res.data.error && res.data.error.message)
-        throw res.data.error.message;
-
-      const users = res.data.response;
-
+    return api.updateUserStatus(status, userIds).then(users => {
       users.forEach(user => {
         dispatch(setUser(user));
       });
@@ -194,12 +201,7 @@ export function updateUserStatus(status, userIds) {
 
 export function updateUserType(type, userIds) {
   return dispatch => {
-    return api.updateUserType(type, userIds).then(res => {
-      if (res && res.data && res.data.error && res.data.error.message)
-        throw res.data.error.message;
-
-      const users = res.data.response;
-
+    return api.updateUserType(type, userIds).then(users => {
       users.forEach(user => {
         dispatch(setUser(user));
       });
@@ -214,6 +216,6 @@ export function resetFilter() {
 
     const newFilter = filter.clone(true);
 
-    return fetchPeopleByFilter(dispatch, newFilter);
+    return fetchPeople(newFilter, dispatch);
   };
 }

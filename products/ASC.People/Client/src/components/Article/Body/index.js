@@ -88,10 +88,11 @@ class ArticleBodyContent extends React.Component {
   render() {
     const { data, selectedKeys } = this.props;
 
-    console.log("PeopleTreeMenu", this.props);
+    //console.log("PeopleTreeMenu", this.props);
 
     return (
       <TreeMenu
+        className="people-tree-menu"
         checkable={false}
         draggable={false}
         disabled={false}

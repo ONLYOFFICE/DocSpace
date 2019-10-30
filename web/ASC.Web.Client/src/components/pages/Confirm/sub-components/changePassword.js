@@ -1,29 +1,38 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Row, Col, Card, CardImg, CardTitle } from "reactstrap";
-import { Button, PageLayout, Text, PasswordInput } from "asc-web-components";
-import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
+import { Container, Row, Col, Card, CardTitle, CardImg } from "reactstrap";
+import {
+  Button,
+  PageLayout,
+  Text,
+  PasswordInput,
+  Loader,
+  toastr
+} from "asc-web-components";
 import { welcomePageTitle } from "../../../../helpers/customNames";
-import { changePassword } from "../../../../../src/store/auth/actions";
+import {
+  changePassword,
+  getConfirmationInfo,
+  logout
+} from "../../../../../src/store/auth/actions";
 
-const BodyStyle = styled.div`
+const BodyStyle = styled(Container)`
   margin-top: 70px;
-
   p {
     margin-bottom: 5px;
+  }
+  .button-style {
+    margin-top: 20px;
   }
 
   .password-row {
     margin: 23px 0 0;
-
     .password-card {
       border: none;
-
       .card-img {
         max-width: 216px;
         max-height: 35px;
@@ -39,160 +48,180 @@ const BodyStyle = styled.div`
   }
 `;
 
-const Form = props => {
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
-  const { match, location, history, changePassword } = props;
-  const { params } = match;
-  const { t } = useTranslation("translation", { i18n });
+class Form extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    const { linkData } = props;
 
-  const onSubmit = useCallback(
-    e => {
-      errorText && setErrorText("");
-
-      let hasError = false;
-
-      if (!password.trim()) {
-        hasError = true;
-        setPasswordValid(!hasError);
-      }
-
-      if (hasError) return false;
-
-      setIsLoading(true);
-      console.log("changePassword onSubmit", match, location, history);
-
-      const str = location.search.split("&");
-      const userId = str[1].slice(4);
-      const key = `type=PasswordChange&${location.search.slice(1)}`;
-
-      changePassword(userId, {password}, key)
-        .then(() => {
-          console.log("UPDATE PASSWORD");
-          history.push("/");
-        })
-        .catch(e => {
-          history.push("/");
-          console.log("ERROR UPDATE PASSWORD", e);
-        });
-    },
-    [errorText, history, location, changePassword, match, password]
-  );
-
-  const onKeyPress = useCallback(
-    target => {
-      if (target.key === "Enter") {
-        onSubmit();
-      }
-    },
-    [onSubmit]
-  );
-
-  useEffect(() => {
-    params.error && setErrorText(params.error);
-    window.addEventListener("keydown", onKeyPress);
-    window.addEventListener("keyup", onKeyPress);
-    // Remove event listeners on cleanup
-    return () => {
-      window.removeEventListener("keydown", onKeyPress);
-      window.removeEventListener("keyup", onKeyPress);
+    this.state = {
+      password: "",
+      passwordValid: true,
+      isValidConfirmLink: false,
+      isLoading: false,
+      passwordEmpty: false,
+      key: linkData.confirmHeader,
+      userId: linkData.uid
     };
-  }, [onKeyPress, params.error]);
+  }
 
-  const settings = {
-    minLength: 6,
-    upperCase: false,
-    digits: false,
-    specSymbols: false
+  onKeyPress = target => {
+    if (target.key === "Enter") {
+      this.onSubmit();
+    }
   };
 
-  const tooltipPasswordLength =
-    "from " + settings.minLength + " to 30 characters";
+  onChange = event => {
+    this.setState({ password: event.target.value });
+    !this.state.passwordValid && this.setState({ passwordValid: true });
+    event.target.value.trim() && this.setState({ passwordEmpty: false });
+    this.onKeyPress(event);
+  };
 
-  const mdOptions = { size: 6, offset: 3 };
-  return (
-    <BodyStyle>
-      <Row className="password-row">
-        <Col sm="12" md={mdOptions}>
-          <Card className="password-card">
-            <CardImg
-              className="card-img"
-              src="images/dark_general.png"
-              alt="Logo"
-              top
+  onSubmit = e => {
+    this.setState({ isLoading: true }, function() {
+      const { userId, password, key } = this.state;
+      const { history, changePassword } = this.props;
+      let hasError = false;
+
+      if (!this.state.passwordValid) {
+        hasError = true;
+        this.setState({ passwordValid: !hasError });
+      }
+
+      !this.state.password.trim() && this.setState({ passwordEmpty: true });
+
+      if (hasError) {
+        this.setState({ isLoading: false });
+        return false;
+      }
+
+      changePassword(userId, password, key)
+        .then(() => {
+          history.push("/");
+          toastr.success(this.props.t("ChangePasswordSuccess"));
+        })
+        .catch(error => {
+          toastr.error(this.props.t(`${error}`));
+          this.setState({ isLoading: false });
+        });
+    });
+  };
+
+  componentDidMount() {
+    const { getConfirmationInfo, history } = this.props;
+    getConfirmationInfo(this.state.key)
+    .catch(error => {
+      toastr.error(this.props.t(`${error}`));
+      history.push("/");
+    });
+
+    window.addEventListener("keydown", this.onKeyPress);
+    window.addEventListener("keyup", this.onKeyPress);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.onKeyPress);
+    window.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  validatePassword = value => this.setState({ passwordValid: value });
+
+  render() {
+    const { settings, isConfirmLoaded, t } = this.props;
+    const { isLoading, password, passwordEmpty } = this.state;
+    const mdOptions = { size: 6, offset: 3 };
+
+    return !isConfirmLoaded ? (
+      <Loader className="pageLoader" type="rombs" size={40} />
+    ) : (
+      <BodyStyle>
+        <Row className="password-row">
+          <Col sm="12" md={mdOptions}>
+            <Card className="password-card">
+              <CardImg
+                className="card-img"
+                src="images/dark_general.png"
+                alt="Logo"
+                top
+              />
+              <CardTitle className="card-title">
+                {t("CustomWelcomePageTitle", { welcomePageTitle })}
+              </CardTitle>
+            </Card>
+            <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
+
+            <PasswordInput
+              id="password"
+              name="password"
+              inputName="password"
+              inputValue={password}
+              size="huge"
+              scale={true}
+              type="password"
+              isDisabled={isLoading}
+              hasError={passwordEmpty}
+              onValidateInput={this.validatePassword}
+              generatorSpecial="!@#$%^&*"
+              tabIndex={1}
+              value={password}
+              onChange={this.onChange}
+              emailInputName="E-mail"
+              passwordSettings={settings}
+              tooltipPasswordTitle="Password must contain:"
+              tooltipPasswordLength={`${t("ErrorPasswordLength", {
+                fromNumber: 6,
+                toNumber: 30
+              })}:`}
+              placeholder={t("PasswordCustomMode")}
+              maxLength={30}
+              onKeyDown={this.onKeyPress}
+              isAutoFocussed={true}
+              inputWidth="490px"
             />
-            <CardTitle className="card-title">
-              {t("CustomWelcomePageTitle", { welcomePageTitle })}
-            </CardTitle>
-          </Card>
+            <Button
+              className="button-style"
+              primary
+              size="big"
+              tabIndex={2}
+              label={
+                isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+              }
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={this.onSubmit}
+            />
+          </Col>
+        </Row>
+      </BodyStyle>
+    );
+  }
+}
 
-          <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
-          <PasswordInput
-            id="password"
-            name="password"
-            size="huge"
-            scale={true}
-            type="password"
-            isDisabled={isLoading}
-            hasError={!passwordValid}
-            tabIndex={1}
-            value={password}
-            onChange={event => {
-              setPassword(event.target.value);
-              !passwordValid && setPasswordValid(true);
-              errorText && setErrorText("");
-              onKeyPress(event.target);
-            }}
-            emailInputName="E-mail"
-            passwordSettings={settings}
-            tooltipPasswordTitle="Password must contain:"
-            tooltipPasswordLength={tooltipPasswordLength}
-            placeholder={t("PasswordCustomMode")}
-            maxLength={30}
-
-            //isAutoFocussed={true}
-            //autocomple="current-password"
-            //onKeyDown={event => onKeyPress(event.target)}
-          />
-        </Col>
-      </Row>
-      <Row className="password-row">
-        <Col sm="12" md={mdOptions}>
-          <Button
-            primary
-            size="big"
-            tabIndex={3}
-            label={
-              isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-            }
-            isDisabled={isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
-          />
-        </Col>
-      </Row>
-    </BodyStyle>
-  );
-};
-
-const ChangePasswordForm = props => {
-  return <PageLayout sectionBodyContent={<Form {...props} />} />;
-};
-
-ChangePasswordForm.propTypes = {
-  match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+Form.propTypes = {
   history: PropTypes.object.isRequired,
-  changePassword: PropTypes.func.isRequired
+  changePassword: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  linkData: PropTypes.object.isRequired
 };
 
-ChangePasswordForm.defaultProps = {
+Form.defaultProps = {
   password: ""
 };
 
+const ChangePasswordForm = props => (
+  <PageLayout sectionBodyContent={<Form {...props} />} />
+);
+
+function mapStateToProps(state) {
+  return {
+    isValidConfirmLink: state.auth.isValidConfirmLink,
+    isConfirmLoaded: state.auth.isConfirmLoaded,
+    settings: state.auth.settings.passwordSettings,
+    isAuthenticated: state.auth.isAuthenticated
+  };
+}
+
 export default connect(
-  null,
-  { changePassword }
+  mapStateToProps,
+  { changePassword, getConfirmationInfo, logout }
 )(withRouter(withTranslation()(ChangePasswordForm)));

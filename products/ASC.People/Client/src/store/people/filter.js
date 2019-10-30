@@ -1,12 +1,11 @@
 import { toUrlParams } from "../services/converter";
-import { EmployeeStatus } from "../../helpers/constants";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "firstname";
 const DEFAULT_SORT_ORDER = "ascending";
-const DEFAULT_EMPLOYEE_STATUS = EmployeeStatus.Active;
+const DEFAULT_EMPLOYEE_STATUS = null;
 const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = null;

@@ -135,22 +135,33 @@ export function createUser() {
   return fakeResponse(data);
 }
 
-export function validateActivatingEmail(payload, key) {
-  const data = {
-    email: payload.email
-  };
-  return fakeResponse(data);
-}
-
-export function validateConfirmLink(link) {
-  const data = {
-    isValid: true
-  };
-  return fakeResponse(data);
-}
-
 export function changePassword() {
   const data = { password: "password" };
 
   return fakeResponse(data);
+}
+
+export function updateActivationStatus() {
+
+  return fakeResponse();
+}
+
+export function updateUser(data) {
+  return fakeResponse(data);
+}
+
+export function checkConfirmLink(data) {
+  return fakeResponse(data);
+}
+
+export function deleteUser(data) {
+  return fakeResponse(data);
+}
+
+export function updateUserStatus(data) {
+  return fakeResponse(data);
+}
+
+export function sendInstructionsToChangePassword() {
+  return fakeResponse("Instruction has been sent successfully");
 }

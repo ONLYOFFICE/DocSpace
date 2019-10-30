@@ -1,24 +1,19 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
-import { department as departmentName, position, employedSinceDate } from '../../../../../helpers/customNames';
-import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import {
   Text,
-  TextInput,
   Avatar,
   Button,
   ToggleContent,
-  IconButton,
-  Link,
-  toastr,
-  ModalDialog,
-  ComboBox
+  IconButton
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
+import { updateProfileCulture } from "../../../../../store/profile/actions";
+import ProfileInfo from "./ProfileInfo/ProfileInfo"
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -35,6 +30,10 @@ const AvatarWrapper = styled.div`
 const EditButtonWrapper = styled.div`
   margin-top: 16px;
   width: 160px;
+
+  & > button {
+    padding: 8px 20px 9px 20px;
+  }
 `;
 
 const ContactTextTruncate = styled.div`
@@ -55,78 +54,6 @@ const ContactWrapper = styled.div`
   width: 300px;
 `;
 
-const InfoContainer = styled.div`
-  margin-bottom: 24px;
-`;
-
-const InfoItem = styled.div`
-  font-family: Open Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 13px;
-  line-height: 24px;
-  display: flex;
-  width: 400px;
-`;
-
-const InfoItemLabel = styled.div`
-  width: 120px;
-  white-space: nowrap;
-  color: #A3A9AE;
-`;
-
-const InfoItemValue = styled.div`
-  width: 220px;
-
-  .language-combo {
-    padding-top: 4px;
-
-    & > div {
-      padding-left: 0px;
-
-      & > div {
-        line-height: 18px;
-      }
-    }
-  }
-`;
-
-const IconButtonWrapper = styled.div`
-  ${props => props.isBefore
-    ? `margin-right: 8px;`
-    : `margin-left: 8px;`
-  }
-
-  display: inline-flex;
-
-  :hover {
-    & > div > svg > path {
-      fill: #3B72A7;
-    }
-  }
-`;
-
-const getFormattedDepartments = departments => {
-  const splittedDepartments = departments.split(",");
-  const departmentsLength = splittedDepartments.length - 1;
-  const formattedDepartments = splittedDepartments.map((department, index) => {
-    return (
-      <span key={index}>
-        <Link type="page" fontSize={13} isHovered={true}>
-          {department.trim()}
-        </Link>
-        {departmentsLength !== index ? ", " : ""}
-      </span>
-    );
-  });
-
-  return formattedDepartments;
-};
-
-const capitalizeFirstLetter = string => {
-  return string && string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 const createContacts = contacts => {
   const styledContacts = contacts.map((contact, index) => {
     return (
@@ -140,278 +67,13 @@ const createContacts = contacts => {
   return styledContacts;
 };
 
-class ProfileInfo extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = this.mapPropsToState(props);
-  }
-
-  mapPropsToState = (props) => {
-    const newState = {
-      profile: props.profile,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: props.profile.email,
-      }
-    };
-
-    return newState;
-  };
-
-  onEmailChange = e => {
-    const emailRegex = /.+@.+\..+/;
-    const newEmail = e.target.value || this.state.dialog.newEmail || this.props.profile.email;
-    const hasError = !emailRegex.test(newEmail);
-
-    const dialog = {
-      visible: true,
-      header: "Change email",
-      body: (
-        <Text.Body>
-          <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
-          <TextInput
-            id="new-email"
-            scale={true}
-            isAutoFocussed={true}
-            value={newEmail}
-            onChange={this.onEmailChange}
-            hasError={hasError}
-          />
-        </Text.Body>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendEmailChangeInstructions}
-          isDisabled={hasError}
-        />
-      ],
-      value: newEmail
-    };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.value)
-      .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
-      })
-      .catch((error) => toastr.error(error.message))
-      .finally(this.onDialogClose);
-  }
-
-  onSentInviteAgain = id => {
-    resendUserInvites(new Array(id))
-      .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
-  };
-
-
-
-  onDialogClose = value => {
-    const dialog = { visible: false, value: value };
-    this.setState({ dialog: dialog })
-  }
-
-  onEmailClick = (e, email) => {
-    if (e.target.title)
-      window.open("mailto:" + email);
-  }
-
-  render() {
-    const { dialog } = this.state;
-    const { isVisitor, email, activationStatus, department, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
-    const isAdmin = this.props.isAdmin;
-    const isSelf = this.props.isSelf;
-    const t = this.props.t;
-    const type = isVisitor ? "Guest" : "Employee";
-    const fakeLanguage = [{
-      key: "en-US",
-      label: "English (United States)"
-    },
-    {
-      key: "ru-RU",
-      label: "Russian (Russia)"
-    }];
-    const language = cultureName || currentCulture;
-    const workFromDate = new Date(workFrom).toLocaleDateString(language);
-    const birthDayDate = new Date(birthday).toLocaleDateString(language);
-    const formatedSex = capitalizeFirstLetter(sex);
-    const formatedDepartments = getFormattedDepartments(department);
-
-    return (
-      <InfoContainer>
-        <InfoItem>
-          <InfoItemLabel>
-            {t('UserType')}:
-        </InfoItemLabel>
-          <InfoItemValue>
-            {type}
-          </InfoItemValue>
-        </InfoItem>
-        {email &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Email')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              <Link
-                type="page"
-                fontSize={13}
-                isHovered={true}
-                title={email}
-                onClick={this.onEmailClick.bind(email)}
-              >
-                {activationStatus === 2 && (isAdmin || isSelf) &&
-                  <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
-                    <IconButton
-                      color='#C96C27'
-                      size={16}
-                      iconName='DangerIcon'
-                      isFill={true} />
-                  </IconButtonWrapper>
-                }
-                {email}
-                {(isAdmin || isSelf) &&
-                  <IconButtonWrapper title={t('EmailChangeButton')} >
-                    <IconButton
-                      color="#A3A9AE"
-                      size={16}
-                      iconName='AccessEditIcon'
-                      isFill={true}
-                      onClick={this.onEmailChange} />
-                  </IconButtonWrapper>
-                }
-                {activationStatus === 2 && (isAdmin || isSelf) &&
-                  <IconButtonWrapper title={t('SendInviteAgain')}>
-                    <IconButton
-                      color="#A3A9AE"
-                      size={16}
-                      iconName='FileActionsConvertIcon'
-                      isFill={true}
-                      onClick={this.onSentInviteAgain.bind(this, id)} />
-                  </IconButtonWrapper>
-                }
-              </Link>
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {department &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomDepartment", { department: departmentName })}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {formatedDepartments}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {title &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomPosition", { position })}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {title}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {(mobilePhone || isSelf) &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('PhoneLbl')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {mobilePhone}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {sex &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Sex')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {formatedSex}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {workFrom &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomEmployedSinceDate", { employedSinceDate })}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {workFromDate}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {birthday &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Birthdate')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {birthDayDate}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {location &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Location')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              {location}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {isSelf &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Language')}:
-          </InfoItemLabel>
-            <InfoItemValue>
-              <ComboBox
-                options={fakeLanguage}
-                onSelect={() => { }}
-                selectedOption={fakeLanguage.find(item => item.key === language)}
-                isDisabled={false}
-                noBorder={true}
-                dropDownMaxHeight={250}
-                scaled={false}
-                scaledOptions={true}
-                size='content'
-                className='language-combo'
-              />
-            </InfoItemValue>
-          </InfoItem>
-        }
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose.bind(this, email)}
-        />
-      </InfoContainer>
-    );
-  }
-};
-
 const SectionBodyContent = props => {
   const { t } = useTranslation();
-  const { profile, history, settings, isAdmin, viewer } = props;
+  const { profile, updateProfileCulture, history, settings, isAdmin, viewer } = props;
 
   const contacts = profile.contacts && getUserContacts(profile.contacts);
   const role = getUserRole(profile);
-  const socialContacts = contacts && createContacts(contacts.social);
+  const socialContacts = (contacts && contacts.social && contacts.social.length > 0 && createContacts(contacts.social)) || null;
   const infoContacts = contacts && createContacts(contacts.contact);
   const isSelf = isMe(viewer, profile.userName);
 
@@ -440,12 +102,13 @@ const SectionBodyContent = props => {
               size="big"
               scale={true}
               label={t("EditUserDialogTitle")}
+              title={t("EditUserDialogTitle")}
               onClick={onEditProfileClick}
             />
           </EditButtonWrapper>
         )}
       </AvatarWrapper>
-      <ProfileInfo profile={profile} isSelf={isSelf} isAdmin={isAdmin} t={t} />
+      <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} cultures={settings.cultures} culture={settings.culture} />
       {isSelf && (
         <ToggleWrapper isSelf={true} >
           <ToggleContent label={t('Subscriptions')} isOpen={true} >
@@ -474,7 +137,7 @@ const SectionBodyContent = props => {
           </ToggleContent>
         </ToggleWrapper>
       )}
-      {profile.contacts && (
+      {socialContacts && (
         <ToggleWrapper isContacts={true} >
           <ToggleContent label={t('SocialProfiles')} isOpen={true} >
             <Text.Body as="span">{socialContacts}</Text.Body>
@@ -493,4 +156,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(mapStateToProps, { updateProfileCulture })(withRouter(SectionBodyContent));

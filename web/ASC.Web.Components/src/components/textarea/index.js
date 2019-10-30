@@ -4,6 +4,7 @@ import Scrollbar from '../scrollbar/index';
 import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
+import { tablet } from "../../utils/device";
 
 const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
@@ -18,9 +19,9 @@ const StyledScrollbar = styled(ClearScrollbar)`
   height: 91px !important;
   background-color: ${props => props.isDisabled && '#F8F9F9'};
 
-  @media only screen and (max-width: 768px) {
+  @media ${tablet} {
     height: 190px !important;
-}
+  }
 
 `;
 const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {...props} />

@@ -56,7 +56,7 @@ class ToggleContent extends React.Component {
   render() {
     //console.log("ToggleContent render");
     return (
-      <div>
+      <div className={this.props.className}>
         <StyledSpan onClick={() => {
           this.toggleContent(!this.state.isOpen);
           this.props.onChange && this.props.onChange(!this.state.isOpen);
@@ -73,7 +73,8 @@ class ToggleContent extends React.Component {
 ToggleContent.propTypes = {
   label: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  className: PropTypes.string
 }
 
 ToggleContent.defaultProps = {

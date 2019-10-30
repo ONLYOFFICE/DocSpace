@@ -51,7 +51,7 @@ class DepartmentField extends React.Component {
           className="department-add-btn"
         />
         <AdvancedSelector
-          isDropDown={true}
+          displayType="dropdown"
           isOpen={selectorIsVisible}
           maxHeight={336}
           width={379}

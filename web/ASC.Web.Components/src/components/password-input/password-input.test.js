@@ -136,4 +136,72 @@ describe('<PasswordInput />', () => {
 
     expect(shouldUpdate).toBe(true);
   });
+
+  it('generate password with props: 10 , false , false , false', () => {
+    const newPasswordSettings = {
+      minLength: 10,
+      upperCase: false,
+      digits: false,
+      specSymbols: false
+    };
+
+    const wrapper = shallow(<PasswordInput {...baseProps} passwordSettings={newPasswordSettings} />);
+    const instance = wrapper.instance();
+
+    instance.onGeneratePassword();
+
+    expect(wrapper.state('type')).toBe('text');
+    expect(wrapper.state('progressWidth')).toBe(100);
+  });
+
+  it('generate password with props: 10 , true , false , false', () => {
+    const newPasswordSettings = {
+      minLength: 10,
+      upperCase: true,
+      digits: false,
+      specSymbols: false
+    };
+
+    const wrapper = shallow(<PasswordInput {...baseProps} passwordSettings={newPasswordSettings} />);
+    const instance = wrapper.instance();
+
+    instance.onGeneratePassword();
+
+    expect(wrapper.state('type')).toBe('text');
+    expect(wrapper.state('progressWidth')).toBe(100);
+  });
+
+  it('generate password with props: 10 , true , true , false', () => {
+    const newPasswordSettings = {
+      minLength: 10,
+      upperCase: true,
+      digits: true,
+      specSymbols: false
+    };
+
+    const wrapper = shallow(<PasswordInput {...baseProps} passwordSettings={newPasswordSettings} />);
+    const instance = wrapper.instance();
+
+    instance.onGeneratePassword();
+
+    expect(wrapper.state('type')).toBe('text');
+    expect(wrapper.state('progressWidth')).toBe(100);
+  });
+
+  it('generate password with props: 10 , true , true , true', () => {
+    const newPasswordSettings = {
+      minLength: 10,
+      upperCase: true,
+      digits: true,
+      specSymbols: true
+    };
+
+    const wrapper = shallow(<PasswordInput {...baseProps} passwordSettings={newPasswordSettings} />);
+    const instance = wrapper.instance();
+
+    instance.onGeneratePassword();
+
+    expect(wrapper.state('type')).toBe('text');
+    expect(wrapper.state('progressWidth')).toBe(100);
+  });
 });

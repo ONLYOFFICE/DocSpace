@@ -6,15 +6,13 @@ import { Layout, Toast } from "asc-web-components";
 import { logout } from "../../store/auth/actions";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
+import isEqual from "lodash/isEqual";
+import { isAdmin } from "../../store/auth/selectors";
 
 class PureStudioLayout extends React.Component {
-    shouldComponentUpdate(nextProps) {
-        if(this.props.hasChanges !== nextProps.hasChanges) {
-            return true;
-        }
-
-        return false;
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+  }
 
     onProfileClick = () => {
         window.location.href = "/products/people/view/@self";
@@ -65,8 +63,23 @@ class PureStudioLayout extends React.Component {
 };
 
 
-const getAvailableModules = modules => {
+const getAvailableModules = (modules, currentUser) => {
+  const isUserAdmin = isAdmin(currentUser);
   const separator = { separator: true, id: "nav-separator-1" };
+  const customModules = isUserAdmin ? [
+    {
+      separator: true,
+      id: "nav-separator-2"
+    },
+    {
+      id: 'settings',
+      title: 'Settings',
+      iconName: "SettingsIcon",
+      notifications: 0,
+      url: '/settings',
+      onClick: () => window.open('/settings', "_self"),
+      onBadgeClick: e => console.log("SettingsIconBadge Clicked", e)
+    }] : [];
   const products =
     modules.map(product => {
       return {
@@ -80,21 +93,27 @@ const getAvailableModules = modules => {
       };
     }) || [];
 
-  return products.length ? [separator, ...products] : products;
+  return products.length ? [separator, ...products, ...customModules] : products;
 };
 
 function mapStateToProps(state) {
-  let availableModules = getAvailableModules(state.auth.modules);
+  let availableModules = getAvailableModules(state.auth.modules, state.auth.user);
   return {
     hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
     availableModules: availableModules,
     currentUser: state.auth.user,
-    currentModuleId: state.auth.settings.currentModuleId
+    currentModuleId: state.auth.settings.currentProductId,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 };
 const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 
-const StudioLayout = (props) => <I18nextProvider i18n={i18n}><StudioLayoutContainer {...props} /></I18nextProvider>;
+const StudioLayout = (props) => { 
+  const { language } = props;
+  i18n.changeLanguage(language);
+  return (<I18nextProvider i18n={i18n}><StudioLayoutContainer {...props} /></I18nextProvider>);
+};
+
 StudioLayout.propTypes = {
   logout: PropTypes.func.isRequired
 };

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
-import { Text, IconButton, ContextMenuButton, toastr } from "asc-web-components";
+import { Text, IconButton, ContextMenuButton, toastr, utils } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus } from "../../../../../store/people/selectors";
@@ -8,19 +8,25 @@ import { useTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
+import { fetchProfile } from '../../../../../store/profile/actions';
+import styled from 'styled-components';
 
 const wrapperStyle = {
   display: "flex",
   alignItems: "center"
 };
 
-const textStyle = {
-  marginLeft: "16px",
-  marginRight: "16px"
-};
+const Header = styled(Text.ContentHeader)`
+  margin-left: 16px;
+  margin-right: 16px;
+  max-width: calc(100vw - 430px);
+  @media ${utils.device.tablet} {
+    max-width: calc(100vw - 96px);
+  }
+`;
 
 const SectionHeaderContent = props => {
-  const { profile, history, settings, isAdmin, viewer, updateUserStatus } = props;
+  const { profile, history, settings, isAdmin, viewer, updateUserStatus, fetchProfile } = props;
 
   const selectedUserIds = new Array(profile.id);
 
@@ -41,8 +47,9 @@ const SectionHeaderContent = props => {
   };
 
   const onDisableClick = () => {
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
+    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => fetchProfile(profile.id));
   };
 
   const onEditPhoto = () => {
@@ -50,8 +57,9 @@ const SectionHeaderContent = props => {
   };
 
   const onEnableClick = () => {
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
+    updateUserStatus(EmployeeStatus.Active, selectedUserIds)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .then(() => fetchProfile(profile.id));
   };
 
   const onReassignDataClick = user => {
@@ -70,7 +78,7 @@ const SectionHeaderContent = props => {
   const onInviteAgainClick = () => {
     resendUserInvites(selectedUserIds)
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
+      .catch(error => toastr.error(error));
   };
   const getUserContextOptions = (user, viewer, t) => {
 
@@ -174,6 +182,10 @@ const SectionHeaderContent = props => {
   const { t } = useTranslation();
   const contextOptions = () => getUserContextOptions(profile, viewer, t);
 
+  const onClick = useCallback(() => {
+    history.goBack();
+  }, [history]);
+
   return (
     <div style={wrapperStyle}>
       <div style={{ width: "16px" }}>
@@ -181,13 +193,13 @@ const SectionHeaderContent = props => {
           iconName={"ArrowPathIcon"}
           color="#A3A9AE"
           size="16"
-          onClick={() => history.push(settings.homepage)}
+          onClick={onClick}
         />
       </div>
-      <Text.ContentHeader truncate={true} style={textStyle}>
+      <Header truncate={true}>
         {profile.displayName}
         {profile.isLDAP && ` (${t('LDAPLbl')})`}
-      </Text.ContentHeader>
+      </Header>
       {(isAdmin || isMe(viewer, profile.userName)) && (
         <ContextMenuButton
           directionX="right"
@@ -211,4 +223,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { updateUserStatus })(withRouter(SectionHeaderContent));
+export default connect(mapStateToProps, { updateUserStatus, fetchProfile })(withRouter(SectionHeaderContent));

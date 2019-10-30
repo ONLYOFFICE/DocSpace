@@ -1,11 +1,13 @@
 import React, { useCallback } from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
   Text,
   toastr,
-  ContextMenuButton
+  ContextMenuButton,
+  IconButton
 } from "asc-web-components";
 import { connect } from "react-redux";
 import {
@@ -28,13 +30,25 @@ import {
   resendUserInvites,
   deleteUsers
 } from "../../../../../store/services/api";
-import { deleteGroup } from '../../../../../store/group/actions';
+import { deleteGroup } from "../../../../../store/group/actions";
 
+const StyledContainer = styled.div`
+  .group-button-menu-container {
+    margin: 0 -16px;
+  }
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
+  .header-container {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    max-width: calc(100vw - 32px);
+
+    .add-group-button {
+      margin-left: 8px;
+    }
+  }
+`;
 
 const SectionHeaderContent = props => {
   const {
@@ -50,7 +64,7 @@ const SectionHeaderContent = props => {
     selection,
     updateUserStatus,
     updateUserType,
-    onLoading, 
+    onLoading,
     filter,
     history,
     settings,
@@ -83,7 +97,7 @@ const SectionHeaderContent = props => {
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
       .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(e => toastr.error("ERROR"));
+      .catch(error => toastr.error(error));
   }, [selectedUserIds]);
 
   const onDelete = useCallback(() => {
@@ -93,7 +107,7 @@ const SectionHeaderContent = props => {
         toastr.success("Users have been removed successfully");
         return fetchPeople(filter);
       })
-      .catch(e => toastr.error("ERROR"))
+      .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   }, [selectedUserIds, onLoading, filter]);
 
@@ -148,11 +162,15 @@ const SectionHeaderContent = props => {
     }
   ];
 
-  const onEditGroup = useCallback(() =>  history.push(`${settings.homepage}/group/edit/${group.id}`), [history, settings, group]);
+  const onEditGroup = useCallback(
+    () => history.push(`${settings.homepage}/group/edit/${group.id}`),
+    [history, settings, group]
+  );
 
   const onDeleteGroup = useCallback(() => {
-    deleteGroup(group.id)
-    .then(() => toastr.success("Group has been removed successfully"));
+    deleteGroup(group.id).then(() =>
+      toastr.success("Group has been removed successfully")
+    );
   }, [deleteGroup, group]);
 
   const getContextOptions = useCallback(() => {
@@ -170,37 +188,60 @@ const SectionHeaderContent = props => {
     ];
   }, [t, onEditGroup, onDeleteGroup]);
 
-  return isHeaderVisible ? (
-    <div style={{ margin: "0 -16px" }}>
-      <GroupButtonsMenu
-        checked={isHeaderChecked}
-        isIndeterminate={isHeaderIndeterminate}
-        onChange={onCheck}
-        menuItems={menuItems}
-        visible={isHeaderVisible}
-        moreLabel={t("More")}
-        closeTitle={t("CloseButton")}
-        onClose={onClose}
-        selected={menuItems[0].label}
-      />
-    </div>
-  ) : group ? (
-    <div style={wrapperStyle}>
-      <Text.ContentHeader>{group.name}</Text.ContentHeader>
-      {isAdmin && (
-        <ContextMenuButton
-          directionX="right"
-          title={t("Actions")}
-          iconName="VerticalDotsIcon"
-          size={16}
-          color="#A3A9AE"
-          getData={getContextOptions.bind(this, t)}
-          isDisabled={false}
-        />
+  const onAddDepartmentsClick = useCallback(() => {
+    history.push(`${settings.homepage}/group/create`);
+  }, [history, settings]);
+
+  return (
+    <StyledContainer>
+      {isHeaderVisible ? (
+        <div className="group-button-menu-container">
+          <GroupButtonsMenu
+            checked={isHeaderChecked}
+            isIndeterminate={isHeaderIndeterminate}
+            onChange={onCheck}
+            menuItems={menuItems}
+            visible={isHeaderVisible}
+            moreLabel={t("More")}
+            closeTitle={t("CloseButton")}
+            onClose={onClose}
+            selected={menuItems[0].label}
+          />
+        </div>
+      ) : (
+        <div className="header-container">
+          {group ? (
+            <>
+              <Text.ContentHeader truncate={true}>{group.name}</Text.ContentHeader>
+              {isAdmin && (
+                <ContextMenuButton
+                  directionX="right"
+                  title={t("Actions")}
+                  iconName="VerticalDotsIcon"
+                  size={16}
+                  color="#A3A9AE"
+                  getData={getContextOptions.bind(this, t)}
+                  isDisabled={false}
+                />
+              )}
+            </>
+          ) : (
+            <>
+              <Text.ContentHeader>Departments</Text.ContentHeader>
+              {isAdmin && (
+                <IconButton
+                  className="add-group-button"
+                  size={16}
+                  iconName="PlusIcon"
+                  isFill={false}
+                  onClick={onAddDepartmentsClick}
+                />
+              )}
+            </>
+          )}
+        </div>
       )}
-    </div>
-  ) : (
-    <Text.ContentHeader>{t("People")}</Text.ContentHeader>
+    </StyledContainer>
   );
 };
 

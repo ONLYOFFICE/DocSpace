@@ -1,10 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor } from 'asc-web-components'
-import { withTranslation } from 'react-i18next';
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
+import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile, loadAvatar, createThumbnailsAvatar, deleteAvatar } from '../../../../../store/profile/actions';
+import { updateProfile } from '../../../../../store/profile/actions';
 import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
@@ -15,6 +15,20 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
+import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
+import styled from "styled-components";
+
+const Table = styled.table`
+  width: 100%;
+  margin-bottom: 23px;
+`;
+
+const Th = styled.th`
+  padding: 11px 0 10px 0px;
+  border-top: 1px solid #ECEEF1;
+`;
+
+const Td = styled.td``;
 
 class UpdateUserForm extends React.Component {
 
@@ -153,8 +167,8 @@ class UpdateUserForm extends React.Component {
         this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
-        toastr.error(error.message)
-        this.setState({isLoading: false})
+        toastr.error(error);
+        this.setState({isLoading: false});
       });
   }
 
@@ -201,9 +215,9 @@ class UpdateUserForm extends React.Component {
   onSendEmailChangeInstructions() {
     sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
       .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+        toastr.success(res);
       })
-      .catch((error) => toastr.error(error.message))
+      .catch((error) => toastr.error(error))
       .finally(this.onDialogClose);
   }
 
@@ -232,9 +246,9 @@ class UpdateUserForm extends React.Component {
   onSendPasswordChangeInstructions() {
     sendInstructionsToChangePassword(this.state.profile.email)
       .then((res) => {
-        res.data.error ? toastr.error(res.data.error.message) : toastr.success(res.data.response)
+        toastr.success(res);
       })
-      .catch((error) => toastr.error(error.message))
+      .catch((error) => toastr.error(error))
       .finally(this.onDialogClose);
   }
 
@@ -324,61 +338,51 @@ class UpdateUserForm extends React.Component {
     let _this = this;
     data.append("file", file);
     data.append("Autosave", false);
-    this.props.loadAvatar(this.state.profile.id, data)
-      .then((result) => {
+    loadAvatar(this.state.profile.id, data)
+      .then((response) => {
         var img = new Image();
         img.onload = function () {
             var stateCopy = Object.assign({}, _this.state);
             stateCopy.avatar =  {
-              tmpFile: result.data.response.data,
-              image: result.data.response.data,
+              tmpFile: response.data,
+              image: response.data,
               defaultWidth: img.width,
               defaultHeight: img.height
             }
             _this.setState(stateCopy);
         };
-        img.src = result.data.response.data;
+        img.src = response.data;
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
   }
   onSaveAvatar(isUpdate, result) {
     if(isUpdate){
-      this.props.createThumbnailsAvatar(this.state.profile.id, {
+      createThumbnailsAvatar(this.state.profile.id, {
         x: Math.round(result.x*this.state.avatar.defaultWidth - result.width/2),
         y: Math.round(result.y*this.state.avatar.defaultHeight - result.height/2),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile
       })
-      .then((result) => {
-        if(result.status === 200){
+      .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = '';
-          stateCopy.profile.avatarMax = result.data.response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
+          stateCopy.profile.avatarMax = response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
           toastr.success("Success");
           this.setState(stateCopy);
-        }
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
     }else{
-      this.props.deleteAvatar(this.state.profile.id)
-      .then((result) => {
-        if(result.status === 200){
+      deleteAvatar(this.state.profile.id)
+      .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.profile.avatarMax = result.data.response.big;
+          stateCopy.profile.avatarMax = response.big;
           toastr.success("Success");
           this.setState(stateCopy);
-        }
       })
-      .catch((error) => {
-        toastr.error(error.message);
-      });
+      .catch((error) => toastr.error(error));
     }
   }
   onCloseAvatarEditor() {
@@ -422,10 +426,49 @@ class UpdateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, dialog, selector } = this.state;
-    const { t } = this.props;
+    const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    const tooltipTypeContent = 
+      <>
+        <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
+        <Table>
+          <tbody>
+            <tr>
+              <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
+            </tr>
+            <tr>
+              <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
+            </tr>
+            <tr>
+              <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
+            </tr>
+            <tr>
+              <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
+            </tr>
+            <tr>
+              <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
+            </tr>
+            <tr>
+              <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
+            </tr>
+          </tbody>
+        </Table>
+        <Link 
+          color="#316DAA" 
+          isHovered={true} 
+          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block" 
+          style={{marginTop: 23}}>
+            {t("TermsOfUsePopupHelperLink")}
+        </Link>
+      </>;
 
     return (
       <>
@@ -446,6 +489,7 @@ class UpdateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
+              headerLabel={t("editAvatar")}
               chooseFileLabel ={t("chooseFileLabel")}
               unknownTypeError={t("unknownTypeError")}
               maxSizeFileError={t("maxSizeFileError")}
@@ -461,6 +505,12 @@ class UpdateUserForm extends React.Component {
               buttonIsDisabled={isLoading}
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
+
+              tooltipContent={
+                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p style={{height: "0", visibility: "hidden"}}>You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
+                </Trans>
+              }
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
@@ -502,6 +552,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={5}
             />
             <DateField
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -530,8 +581,11 @@ class UpdateUserForm extends React.Component {
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
+
+              tooltipContent={tooltipTypeContent}
             />
             <DateField
+              calendarHeaderContent={t("CalendarSelectDate")}
               labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
@@ -625,9 +679,6 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    updateProfile,
-    loadAvatar,
-    deleteAvatar,
-    createThumbnailsAvatar
+    updateProfile
   }
 )(withRouter(withTranslation()(UpdateUserForm)));

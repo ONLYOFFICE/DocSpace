@@ -151,20 +151,20 @@ namespace ASC.Security.Cryptography
         public EmployeeType? EmplType { get; set; }
         public string Email { get; set; }
         public Guid? UiD { get; set; }
-        public ConfirmType Type { get; set; }
+        public ConfirmType? Type { get; set; }
         public int? P { get; set; }
 
-        public ValidationResult Validate(EmailValidationKeyProvider provider, AuthContext authContext, TenantManager tenantManager, AuthManager authentication)
+        public ValidationResult Validate(EmailValidationKeyProvider provider, AuthContext authContext, TenantManager tenantManager, UserManager userManager, AuthManager authentication)
         {
             ValidationResult checkKeyResult;
 
             switch (Type)
             {
                 case ConfirmType.EmpInvite:
-                    checkKeyResult = provider.ValidateEmailKey(Email + Type + EmplType, Key, provider.ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + (int)EmplType, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.LinkInvite:
-                    checkKeyResult = provider.ValidateEmailKey(Type.ToString() + EmplType.ToString(), Key, provider.ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Type.ToString() + (int)EmplType, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.EmailChange:
                     checkKeyResult = provider.ValidateEmailKey(Email + Type + authContext.CurrentAccount.ID, Key, provider.ValidInterval);
@@ -183,6 +183,17 @@ namespace ASC.Security.Cryptography
                 case ConfirmType.Activation:
                     checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD, Key, provider.ValidInterval);
                     break;
+                case ConfirmType.ProfileRemove:
+                    // validate UiD
+                    if (P == 1)
+                    {
+                        var user = userManager.GetUsers(UiD.GetValueOrDefault());
+                        if (user == null || user.Status == EmployeeStatus.Terminated || authContext.IsAuthenticated && authContext.CurrentAccount.ID != UiD)
+                            return ValidationResult.Invalid;
+                    }
+
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD, Key, provider.ValidInterval);
+                    break;
                 default:
                     checkKeyResult = provider.ValidateEmailKey(Email + Type, Key, provider.ValidInterval);
                     break;
@@ -196,7 +207,12 @@ namespace ASC.Security.Cryptography
             var Request = QueryHelpers.ParseQuery(httpRequest.Headers["confirm"]);
 
             _ = Request.TryGetValue("type", out var type);
-            _ = Enum.TryParse<ConfirmType>(type, out var confirmType);
+
+            ConfirmType? cType = null;
+            if (Enum.TryParse<ConfirmType>(type, out var confirmType))
+            {
+                cType = confirmType;
+            }
 
             _ = Request.TryGetValue("key", out var key);
 
@@ -213,7 +229,7 @@ namespace ASC.Security.Cryptography
             return new EmailValidationKeyModel
             {
                 Key = key,
-                Type = confirmType,
+                Type = cType,
                 Email = _email,
                 EmplType = employeeType,
                 UiD = userId,
@@ -221,7 +237,7 @@ namespace ASC.Security.Cryptography
             };
         }
 
-        public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType confirmType, out int? p)
+        public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType? confirmType, out int? p)
             => (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
     }
 }

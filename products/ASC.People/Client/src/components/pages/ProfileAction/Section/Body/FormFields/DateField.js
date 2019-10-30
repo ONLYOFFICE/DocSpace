@@ -14,6 +14,7 @@ class DateField extends React.Component {
       isRequired,
       hasError,
       labelText,
+      calendarHeaderContent,
 
       inputName,
       inputValue,
@@ -35,6 +36,8 @@ class DateField extends React.Component {
           onChange={inputOnChange}
           hasError={hasError}
           tabIndex={inputTabIndex}
+          displayType="auto"
+          calendarHeaderContent={calendarHeaderContent}
         />
       </FieldContainer>
     );

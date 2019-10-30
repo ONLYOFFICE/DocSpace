@@ -1,0 +1,13 @@
+{
+  "AboutCompanyTitle": "О программе",
+  "AboutCompanyVersion": "Версия",
+  "AboutCompanyLicensor": "АВТОРСКИЕ ПРАВА",
+  "AboutCompanyAddressTitle": "адрес",
+  "AboutCompanyEmailTitle": "email",
+  "AboutCompanyTelTitle": "тел.",
+  "LicensedUnder": "Это программное обеспечение лицензируется под {{license}}",
+
+
+
+  "SourceCode": "Исходный код программы доступен по cсылке"
+}

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { IconButton, Text } from 'asc-web-components';
+import { IconButton, Text, utils } from 'asc-web-components';
 import { useTranslation } from 'react-i18next';
 import {typeUser, typeGuest } from './../../../../../helpers/customNames';
 
@@ -13,6 +13,10 @@ const Wrapper = styled.div`
 
 const Header = styled(Text.ContentHeader)`
   margin-left: 16px;
+  max-width: calc(100vw - 430px);
+  @media ${utils.device.tablet} {
+    max-width: calc(100vw - 64px);
+  }
 `;
 
 const SectionHeaderContent = (props) => {
@@ -29,13 +33,13 @@ const SectionHeaderContent = (props) => {
       : "";
 
   const onClick = useCallback(() => {
-    history.push(settings.homepage)
-  }, [history, settings]);
+    history.goBack();
+  }, [history]);
 
   return (
     <Wrapper>
       <IconButton iconName={'ArrowPathIcon'} size="16" onClick={onClick}/>
-      <Header>{headerText}</Header>
+      <Header truncate={true}>{headerText}</Header>
     </Wrapper>
   );
 };

@@ -36,7 +36,8 @@ class Layout extends React.Component {
       hash += props.currentModuleId;
     }
     if (props.currentUser) {
-      hash += props.currentUser.id;
+      const { id, displayName, email, avatarSmall } = props.currentUser;
+      hash += id + displayName + email + avatarSmall;
     }
     if (props.availableModules) {
       for (let i = 0, l = props.availableModules.length; i < l; i++) {

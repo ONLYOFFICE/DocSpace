@@ -3,35 +3,41 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { logout, changeEmail } from '../../../../store/auth/actions';
+import { changeEmail } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
 
 class ChangeEmail extends React.PureComponent {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            queryString: `type=EmailChange&${props.location.search.slice(1)}`
-        };
+    componentDidMount() {
+        const { changeEmail, userId, isLoaded, linkData } = this.props;
+        if (isLoaded) {
+            const [email, key] = [linkData.email, linkData.confirmHeader];
+            changeEmail(userId, email , key)
+                .then((res) => {
+                    console.log('change client email success', res)
+                    window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
+                })
+                .catch((e) => {
+                    console.log('change client email error', e)
+                    window.location.href = `${window.location.origin}/error=${e}`;
+                });
+        }
     }
 
-    componentDidUpdate(){
-        const { logout, changeEmail, userId, isLoaded } = this.props;
-        if (isLoaded){
-        const queryParams = this.state.queryString.split('&');
-        const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-        const linkParams = Object.fromEntries(arrayOfQueryParams);
-        // logout();
-        const email = decodeURIComponent(linkParams.email);
-        changeEmail(userId, {email}, this.state.queryString)
-            .then((res) => {
-                console.log('change client email success', res)
-                window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
-            })
-            .catch((e) => {
-                console.log('change client email error', e)
-            });
+    componentDidUpdate() {
+        const { changeEmail, userId, isLoaded, linkData } = this.props;
+        if (isLoaded) {
+            const [email, key] = [linkData.email, linkData.confirmHeader];
+            changeEmail(userId, email, key)
+                .then((res) => {
+                    console.log('change client email success', res)
+                    window.location.href = `${window.location.origin}/products/people/view/@self?email_change=success`;
+                })
+                .catch((e) => {
+                    console.log('change client email error', e)
+                });
+        } else {
+            window.location.href = '/';
         }
     }
 
@@ -43,11 +49,9 @@ class ChangeEmail extends React.PureComponent {
     }
 }
 
-
-
 ChangeEmail.propTypes = {
     location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired
+    changeEmail: PropTypes.func.isRequired
 };
 const ChangeEmailForm = (props) => (<PageLayout sectionBodyContent={<ChangeEmail {...props} />} />);
 
@@ -58,4 +62,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { logout, changeEmail })(withRouter(withTranslation()(ChangeEmailForm)));
+export default connect(mapStateToProps, { changeEmail })(withRouter(withTranslation()(ChangeEmailForm)));

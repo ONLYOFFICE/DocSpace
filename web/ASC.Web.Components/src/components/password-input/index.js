@@ -8,7 +8,9 @@ import InputBlock from '../input-block'
 import { Icons } from '../icons'
 import Link from '../link'
 import { Text } from '../text'
-import DropDown from '../drop-down'
+//import DropDown from '../drop-down'
+
+import Tooltip from "../tooltip";
 
 // eslint-disable-next-line no-unused-vars
 const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => <div {...props}></div>;
@@ -50,6 +52,11 @@ const CopyLink = styled.div`
   }
 `;
 
+const TooltipStyle = styled.div`
+  .__react_component_tooltip {
+    
+  }
+`;
 const Progress = styled.div`
   border: 3px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
   border-radius: 2px;
@@ -58,7 +65,7 @@ const Progress = styled.div`
 `;
 
 const StyledTooltipContainer = styled(Text.Body)`
-  margin: 8px 16px 16px 16px;
+  //margin: 8px 16px 16px 16px;
 `;
 
 const StyledTooltipItem = styled(Text.Body)`
@@ -72,13 +79,18 @@ class PasswordInput extends React.Component {
   constructor(props) {
     super(props);
 
-    const { inputValue, inputType } = props;
+    const { inputValue, inputType, clipActionResource, emailInputName } = props;
+
+    this.ref = React.createRef();
+    this.refTooltip = React.createRef();
 
     this.state = {
       type: inputType,
       progressColor: 'transparent',
       progressWidth: 0,
       inputValue: inputValue,
+      copyLabel: clipActionResource,
+      disableCopyAction: emailInputName ? false : true,
       displayTooltip: false,
       validLength: false,
       validDigits: false,
@@ -87,16 +99,17 @@ class PasswordInput extends React.Component {
     }
   }
 
-  onFocus = () => {
+  /*onFocus = () => {
     this.setState({
       displayTooltip: true
     });
-  }
+  }*/
 
   onBlur = () => {
-    this.setState({
+    /*this.setState({
       displayTooltip: false
-    });
+    });*/
+    this.refTooltip.current.hideTooltip();
   }
 
   changeInputType = () => {
@@ -173,6 +186,13 @@ class PasswordInput extends React.Component {
       return e.preventDefault();
 
     const newPassword = this.getNewPassword();
+    
+    if (this.state.type !== 'text') {
+      this.setState({
+        type: 'text'
+      });
+    }
+
     this.checkPassword(newPassword);
     this.props.onChange && this.props.onChange({ target: { value: newPassword } });
   }
@@ -223,14 +243,20 @@ class PasswordInput extends React.Component {
   }
 
   copyToClipboard = emailInputName => {
-    const { clipEmailResource, clipPasswordResource, isDisabled, onCopyToClipboard } = this.props;
+    const { clipEmailResource, clipPasswordResource, clipActionResource, clipCopiedResource, isDisabled, onCopyToClipboard } = this.props;
+    const { disableCopyAction, inputValue } = this.state;
 
-    if (isDisabled)
+    if (isDisabled || disableCopyAction)
       return event.preventDefault();
+
+    this.setState({
+      disableCopyAction: true,
+      copyLabel: clipCopiedResource
+    })
 
     const textField = document.createElement('textarea');
     const emailValue = document.getElementsByName(emailInputName)[0].value;
-    const formattedText = clipEmailResource + emailValue + ' | ' + clipPasswordResource + this.state.inputValue;
+    const formattedText = clipEmailResource + emailValue + ' | ' + clipPasswordResource + inputValue;
 
     textField.innerText = formattedText;
     document.body.appendChild(textField);
@@ -239,6 +265,13 @@ class PasswordInput extends React.Component {
     textField.remove();
 
     onCopyToClipboard && onCopyToClipboard(formattedText);
+
+    setTimeout(() => {
+      this.setState({
+        disableCopyAction: false,
+        copyLabel: clipActionResource
+      })
+    }, 2000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -252,7 +285,6 @@ class PasswordInput extends React.Component {
       isDisabled,
       scale,
       size,
-      clipActionResource,
       tooltipPasswordTitle,
       tooltipPasswordLength,
       tooltipPasswordDigits,
@@ -269,18 +301,21 @@ class PasswordInput extends React.Component {
       onValidateInput,
       id,
       autoComplete,
-      className
+      className,
+      tooltipOffsetLeft
     } = this.props;
     const {
       type,
       progressColor,
       progressWidth,
       inputValue,
+      copyLabel,
       validLength,
       validDigits,
       validCapital,
       validSpecial,
-      displayTooltip
+      disableCopyAction
+      //displayTooltip
     } = this.state;
 
     const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
@@ -312,7 +347,13 @@ class PasswordInput extends React.Component {
 
     return (
       <StyledInput onValidateInput={onValidateInput} className={className}>
-        <PasswordProgress inputWidth={inputWidth}>
+        <PasswordProgress
+          inputWidth={inputWidth}
+          data-for="tooltipContent"
+          data-tip=""
+          data-event="click"
+          ref={this.ref}
+        >
           <InputBlock
             id={id}
             name={inputName}
@@ -327,7 +368,7 @@ class PasswordInput extends React.Component {
             type={type}
             iconColor={iconsColor}
             isIconFill={true}
-            onFocus={this.onFocus}
+            //onFocus={this.onFocus}
             onBlur={this.onBlur}
             hasWarning={hasWarning}
             placeholder={placeholder}
@@ -335,12 +376,18 @@ class PasswordInput extends React.Component {
             maxLength={maxLength}
             autoComplete={autoComplete}
           >
-            {displayTooltip &&
-              <DropDown directionY='top' manualY='150%' isOpen={true}>
-                {tooltipContent}
-              </DropDown>
-            }
           </InputBlock>
+          <TooltipStyle>
+            <Tooltip
+              id="tooltipContent"
+              effect="solid"
+              place="top"
+              offsetLeft={tooltipOffsetLeft}
+              reference={this.refTooltip}
+            >
+              {tooltipContent}
+            </Tooltip>
+          </TooltipStyle>
           <Progress progressColor={progressColor} progressWidth={progressWidth} isDisabled={isDisabled} />
         </PasswordProgress>
         <NewPasswordButton>
@@ -357,9 +404,10 @@ class PasswordInput extends React.Component {
             isHovered={true}
             fontSize={13}
             color={iconsColor}
+            isSemitransparent={disableCopyAction}
             onClick={this.copyToClipboard.bind(this, emailInputName)}
           >
-            {clipActionResource}
+            {copyLabel}
           </Link>
         </CopyLink>
       </StyledInput>
@@ -368,6 +416,8 @@ class PasswordInput extends React.Component {
 }
 
 PasswordInput.propTypes = {
+  id: PropTypes.string,
+  autoComplete: PropTypes.string,
   inputType: PropTypes.oneOf(['text', 'password']),
   inputName: PropTypes.string,
   emailInputName: PropTypes.string.isRequired,
@@ -388,6 +438,7 @@ PasswordInput.propTypes = {
   clipActionResource: PropTypes.string,
   clipEmailResource: PropTypes.string,
   clipPasswordResource: PropTypes.string,
+  clipCopiedResource: PropTypes.string,
 
   tooltipPasswordTitle: PropTypes.string,
   tooltipPasswordLength: PropTypes.string,
@@ -399,7 +450,9 @@ PasswordInput.propTypes = {
   passwordSettings: PropTypes.object.isRequired,
 
   onValidateInput: PropTypes.func,
-  onCopyToClipboard: PropTypes.func
+  onCopyToClipboard: PropTypes.func,
+
+  tooltipOffsetLeft: PropTypes.number
 }
 
 PasswordInput.defaultProps = {
@@ -413,9 +466,18 @@ PasswordInput.defaultProps = {
 
   clipEmailResource: 'E-mail ',
   clipPasswordResource: 'Password ',
+  clipCopiedResource: 'Copied',
 
   generatorSpecial: '!@#$%^&*',
-  className: ''
+  className: '',
+  tooltipOffsetLeft: 110
 }
 
 export default PasswordInput;
+/*
+            {displayTooltip &&
+              <DropDown directionY='top' manualY='150%' isOpen={true}>
+                {tooltipContent}
+              </DropDown>
+            }
+*/

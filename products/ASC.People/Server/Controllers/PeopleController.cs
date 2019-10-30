@@ -486,6 +486,42 @@ namespace ASC.Employee.Core.Controllers
             return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
         }
 
+        [Update("{userid}/culture")]
+        public EmployeeWraperFull UpdateMemberCulture(string userid, UpdateMemberModel memberModel)
+        {
+            var user = GetUserInfo(userid);
+
+            if (UserManager.IsSystemUser(user.ID))
+                throw new SecurityException();
+
+            PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
+
+            var curLng = user.CultureName;
+
+            if (SetupInfo.EnabledCultures.Find(c => string.Equals(c.Name, memberModel.CultureName, StringComparison.InvariantCultureIgnoreCase)) != null)
+            {
+                if (curLng != memberModel.CultureName)
+                {
+                    user.CultureName = memberModel.CultureName;
+
+                    try
+                    {
+                        UserManager.SaveUserInfo(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        user.CultureName = curLng;
+                        throw ex;
+                    }
+
+                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+
+                }
+            }
+
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings); ;
+        }
+
         [Update("{userid}")]
         public EmployeeWraperFull UpdateMember(string userid, UpdateMemberModel memberModel)
         {
@@ -617,6 +653,50 @@ namespace ASC.Employee.Core.Controllers
             QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+        }
+
+        [Delete("@self")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+        public EmployeeWraperFull DeleteProfile()
+        {
+            ApiContext.AuthByClaim();
+
+            if (UserManager.IsSystemUser(SecurityContext.CurrentAccount.ID))
+                throw new SecurityException();
+
+            var user = GetUserInfo(SecurityContext.CurrentAccount.ID.ToString());
+
+            if (!UserManager.UserExists(user))
+                throw new Exception(Resource.ErrorUserNotFound);
+
+            if (user.IsLDAP())
+                throw new SecurityException();
+
+            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+
+            user.Status = EmployeeStatus.Terminated;
+
+            UserManager.SaveUserInfo(user);
+
+            var userName = user.DisplayUserName(false, DisplayUserSettings);
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
+
+            CookiesManager.ResetUserCookie(user.ID);
+            MessageService.Send(MessageAction.CookieSettingsUpdated);
+
+            if (CoreBaseSettings.Personal)
+            {
+                UserPhotoManager.RemovePhoto(user.ID);
+                UserManager.DeleteUser(user.ID);
+                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
+            }
+            else
+            {
+                //StudioNotifyService.Instance.SendMsgProfileHasDeletedItself(user);
+                //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
+            }
 
             return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
         }

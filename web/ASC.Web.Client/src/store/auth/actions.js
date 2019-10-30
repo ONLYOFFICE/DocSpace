@@ -1,5 +1,5 @@
 import * as api from '../services/api';
-import setAuthorizationToken from '../services/setAuthorizationToken';
+import { setAuthorizationToken } from '../services/client';
 
 export const LOGIN_POST = 'LOGIN_POST';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -9,8 +9,12 @@ export const SET_IS_LOADED = 'SET_IS_LOADED';
 export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
-export const SET_NEW_PASSWORD = 'SET_NEW_PASSWORD';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
+export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
+export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
+export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
+export const GET_TIMEZONES = 'GET_TIMEZONES';
+export const SET_CURRENT_PRODUCT_ID = 'SET_CURRENT_PRODUCT_ID';
 
 export function setCurrentUser(user) {
     return {
@@ -53,17 +57,10 @@ export function setLogout() {
     };
 };
 
-export function setPasswordSettings(password) {
+export function setPasswordSettings(passwordSettings) {
     return {
         type: SET_PASSWORD_SETTINGS,
-        password
-    };
-};
-
-export function setNewPasswordSettings(password) {
-    return {
-        type: SET_NEW_PASSWORD,
-        password
+        passwordSettings
     };
 };
 
@@ -74,92 +71,164 @@ export function setNewEmail(email) {
     };
 };
 
-
-export function getUserInfo(dispatch) {
-    return api.getUser()
-        .then((res) => dispatch(setCurrentUser(res.data.response)))
-        .then(() => api.getSettings())
-        .then(res => dispatch(setSettings(res.data.response)))
-        .then(api.getModulesList)
-        .then((res) => dispatch(setModules(res.data.response)))
-        .then(() => dispatch(setIsLoaded(true)));
+export function setNewSelectedNode(selectedNodeLink) {
+    return {
+        type: SET_NEW_SETTING_NODE,
+        selectedNodeLink
+    };
 };
 
-export function login(data) {
+export function getPortalCultures(cultures) {
+    return {
+        type: GET_PORTAL_CULTURES,
+        cultures
+    };
+};
+
+export function setPortalLanguageAndTime(newSettings) {
+    return {
+        type: SET_PORTAL_LANGUAGE_AND_TIME,
+        newSettings
+    };
+};
+
+export function getTimezones(timezones) {
+    return {
+        type: GET_TIMEZONES,
+        timezones
+    };
+};
+
+export function setCurrentProductId(currentProductId) {
+    return {
+        type: SET_CURRENT_PRODUCT_ID,
+        currentProductId
+    };
+};
+
+export function getUser(dispatch) {
+    return api.getUser()
+        .then(user => dispatch(setCurrentUser(user)));
+}
+
+export function getPortalSettings(dispatch) {
+    return api.getSettings()
+        .then(settings => dispatch(setSettings(settings)));
+}
+
+export function getModules(dispatch) {
+    return api.getModulesList()
+        .then(modules => dispatch(setModules(modules)));
+}
+
+const loadInitInfo = (dispatch) => {
+    return getPortalSettings(dispatch)
+        .then(getModules.bind(this, dispatch))
+        .then(() => dispatch(setIsLoaded(true)));
+}
+
+export function getUserInfo(dispatch) {
+    return getUser(dispatch)
+        .then(loadInitInfo.bind(this, dispatch));
+};
+
+export function login(user, pass) {
     return dispatch => {
-        return api.login(data)
-            .then(res => {
-                const token = res.data.response.token;
-                setAuthorizationToken(token);
-            })
+        return api.login(user, pass)
             .then(() => getUserInfo(dispatch));
     }
 };
 
 
-export function logout() {
-    return dispatch => {
+export function logout(dispatch = null) {
+    return dispatch ? () => {
         setAuthorizationToken();
-        return dispatch(setLogout());
+        return Promise.resolve(dispatch(setLogout()));
+    } : dispatch => {
+        setAuthorizationToken();
+        return Promise.resolve(dispatch(setLogout()));
     };
 };
 
-export function getPasswordSettings(token) {
+export function getConfirmationInfo(token, type) {
     return dispatch => {
         return api.getPasswordSettings(token)
-            .then((res) => dispatch(setPasswordSettings(res.data.response)))
+            .then((settings) => dispatch(setPasswordSettings(settings)))
             .then(() => dispatch(setIsConfirmLoaded(true)));
     }
 };
 
 export function createConfirmUser(registerData, loginData, key) {
     const data = Object.assign({}, registerData, loginData);
-    return dispatch => {
+    return (dispatch) => {
         return api.createUser(data, key)
-            .then(res => {
-                checkResponseError(res);
-                console.log('register success:', res.data.response);
-                return api.login(loginData);
-
-            })
-            .then(res => {
-                console.log("log in, result:", res);
-                checkResponseError(res);
-                const token = res.data.response.token;
-                setAuthorizationToken(token);
-                return getUserInfo(dispatch);
-            });
+            .then(user => dispatch(setCurrentUser(user)))
+            .then(() => api.login(loginData.userName, loginData.password))
+            .then(loadInitInfo.bind(this, dispatch));
     };
 };
-
-export function validateActivatingEmail(data, key) {
-    return dispatch => {
-        return api.validateActivatingEmail(data, key);
-    }
-};
-
-export function checkResponseError(res) {
-    if (res && res.data && res.data.error) {
-        console.error(res.data.error);
-        throw new Error(res.data.error.message);
-    }
-}
 
 export function changePassword(userId, password, key) {
     return dispatch => {
         return api.changePassword(userId, password, key)
-            .then(res => {
-                //checkResponseError(res);
-                dispatch(setNewPasswordSettings(res.data.response));
-            })
+            .then(() => logout(dispatch));
     }
 }
 
 export function changeEmail(userId, email, key) {
     return dispatch => {
-        return api.changePassword(userId, email, key)
-            .then(res => {
-                dispatch(setNewEmail(res.data.response.email));
-            })
+        return api.changeEmail(userId, email, key)
+            .then(user => dispatch(setNewEmail(user.email)));
     }
 }
+
+export function activateConfirmUser(personalData, loginData, key, userId, activationStatus) {
+    const changedData = {
+        id: userId,
+        FirstName: personalData.firstname,
+        LastName: personalData.lastname
+    }
+
+    return dispatch => {
+        return api.changePassword(userId, loginData.password, key)
+            .then(data => {
+                console.log('set password success:', data);
+                return api.updateActivationStatus(activationStatus, userId, key);
+            })
+            .then(data => {
+                console.log("activation success, result:", data);
+                return dispatch(login(loginData.userName, loginData.password));
+            })
+            .then(data => {
+                console.log("log in, result:", data);
+                return api.updateUser(changedData);
+            })
+            .then(user => dispatch(setCurrentUser(user)));
+    };
+};
+
+export function getCultures() {
+    return dispatch => {
+        return api.getPortalCultures()
+            .then(cultures => {
+                dispatch(getPortalCultures(cultures));
+            }
+            );
+    };
+}
+
+export function setLanguageAndTime(lng, timeZoneID) {
+    return dispatch => {
+        return api.setLanguageAndTime(lng, timeZoneID)
+            .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
+    };
+}
+
+export function getPortalTimezones() {
+    return dispatch => {
+        return api.getPortalTimezones()
+        .then((timezones) => {
+            dispatch(getTimezones(timezones))
+        });
+    };
+};

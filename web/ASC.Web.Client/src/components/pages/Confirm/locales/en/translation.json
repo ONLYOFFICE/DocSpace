@@ -13,10 +13,16 @@
   "ErrorPasswordNoUpperCase": "capital letters",
   "ErrorPasswordNoSpecialSymbols": "special characters",
   "EmailAndPasswordCopiedToClipboard": "Email and password copied to clipboard",
-  "PassworResetTitle": "Now you can create a new password.",  "_comment":"SYNTAX ERROR 'Passwor' Reset Title",
+  "PassworResetTitle": "Now you can create a new password.",
   "PasswordCustomMode": "Password",
   "ImportContactsOkButton": "OK",
   "LoadingProcessing": "Loading...",
+  "ChangePasswordSuccess": "Password has been successfully changed",
+  "DeleteProfileBtn": "Delete my account",
+  "DeleteProfileConfirmation": "Attention! You are about to delete your account.",
+  "DeleteProfileConfirmationInfo": "By clicking the \"Delete my account\" button you agree with our Privacy policy.",
+  "DeleteProfileSuccessMessage": "Your account has been successfully deleted.",
+  "DeleteProfileSuccessMessageInfo": "See our Privacy policy to learn more about deleting your account and data accociated with it.",
   
 
   "CustomWelcomePageTitle": "{{welcomePageTitle}}"

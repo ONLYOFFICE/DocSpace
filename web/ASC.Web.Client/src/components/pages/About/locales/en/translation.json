@@ -5,11 +5,11 @@
   "AboutCompanyAddressTitle": "address",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "tel.",
-  "LicensedUnder": "This software is licensed under", "_comment": "{0}GNU GPL v.3{1}",
+  "LicensedUnder": "This software is licensed under {{license}}",
 
 
 
 
-  "SourceCode": "Source code is available on", "_comment": "{0}GNU GPL v.3{1}","_comment":"SYNTAX ERROR"
+  "SourceCode": "Source code is available on"
 
 }

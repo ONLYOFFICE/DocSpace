@@ -212,7 +212,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEmailActivationInstructions(UserInfo user, string email)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmailActivation, null, AuthContext.CurrentAccount.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
 
@@ -496,7 +496,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgProfileDeletion(UserInfo user)
         {
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.ProfileRemove);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.ProfileRemove, AuthContext.CurrentAccount.ID, AuthContext.CurrentAccount.ID);
 
             string greenButtonText() => CoreBaseSettings.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
 
@@ -919,7 +919,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             var confirmUrl = CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Activation, user.ID, user.ID);
 
-            return confirmUrl + $"firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
+            return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
 
         #endregion

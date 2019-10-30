@@ -11,7 +11,7 @@ import Section from '../../../.storybook/decorators/section';
 storiesOf('Components|Input', module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('advanced password', () => {
+  .add('password input', () => {
     const isDisabled = boolean('isDisabled', false);
     const settingsUpperCase = boolean('settingsUpperCase', false);
     const settingsDigits = boolean('settingsDigits', false);
@@ -50,6 +50,7 @@ storiesOf('Components|Input', module)
               clipActionResource='Copy e-mail and password'
               clipEmailResource='E-mail: '
               clipPasswordResource='Password: '
+              clipCopiedResource='Copied'
               tooltipPasswordTitle='Password must contain:'
               tooltipPasswordLength={tooltipPasswordLength}
               tooltipPasswordDigits='digits'
@@ -62,6 +63,7 @@ storiesOf('Components|Input', module)
               maxLength={30}
               onValidateInput={(a) => console.log(a)}
               onCopyToClipboard={(b) => console.log('Data ' + b + ' copied to clipboard')}
+              //tooltipOffsetLeft={150}
             />
           )}
         </StringValue>

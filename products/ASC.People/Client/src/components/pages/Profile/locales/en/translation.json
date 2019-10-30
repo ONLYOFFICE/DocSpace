@@ -22,6 +22,7 @@
   "EditButton": "Edit",
   "Actions": "Actions",
   "ChangeEmailSuccess": "Mail has been successfully changed",
+  "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
   
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",
@@ -31,5 +32,9 @@
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}"
+  "CustomDepartment": "{{department}}",
+  "Culture_en": "English (United Kingdom)",
+  "Culture_en-US": "English (United States)",
+  "Culture_ru-RU": "Russian (Russia)",
+  "LearnMore": "Learn more..."
 }

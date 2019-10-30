@@ -7,6 +7,11 @@ import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
+import Aside from "../layout/sub-components/aside";
+import { desktop } from "../../utils/device";
+import Backdrop from "../backdrop";
+import { Text } from "../text";
+import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
   max-width: 110px;
@@ -14,7 +19,35 @@ const DateInputStyle = styled.div`
 `;
 
 const DropDownStyle = styled.div`
+  .drop-down {
+    padding: 16px 16px 16px 17px;
+  }
   position: relative;
+`;
+
+const Content = styled.div`
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  padding: 0 16px 16px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+`;
+
+const Body = styled.div`
+  position: relative;
+  padding: 16px 0;
+`;
+
+const HeaderText = styled(Text.ContentHeader)`
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 class DatePicker extends Component {
@@ -35,7 +68,8 @@ class DatePicker extends Component {
       selectedDate: moment(selectedDate).toDate(),
       value: moment(selectedDate).format("L"),
       mask: this.getMask,
-      hasError
+      hasError,
+      displayType: this.getTypeByWidth()
     };
 
     if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
@@ -46,6 +80,7 @@ class DatePicker extends Component {
     }
 
     this.state = newState;
+    this.throttledResize = throttle(this.resize, 300);
   }
 
   handleClick = e => {
@@ -101,6 +136,10 @@ class DatePicker extends Component {
     if (!this.state.hasError) {
       this.setState({ isOpen });
     }
+  };
+
+  onClose = () => {
+    this.setState({ isOpen: false });
   };
 
   compareDate = date => {
@@ -163,12 +202,42 @@ class DatePicker extends Component {
     return false;
   };
 
+  getTypeByWidth = () => {
+    if (this.props.displayType !== "auto") return this.props.displayType;
+    return window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "dropdown";
+  };
+
+  resize = () => {
+    if (this.props.displayType !== "auto") return;
+    const type = this.getTypeByWidth();
+    if (type === this.state.displayType) return;
+    this.setState({ displayType: type });
+  };
+
+  popstate = () => {
+    window.removeEventListener("popstate", this.popstate, false);
+    this.onClose();
+    window.history.go(1);
+  };
+
+  componentDidMount() {
+    window.addEventListener("resize", this.throttledResize);
+  }
+
   componentWillUnmount() {
+    window.removeEventListener("resize", this.throttledResize);
     handleAnyClick(false, this.handleClick);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { locale, isOpen, selectedDate, maxDate, minDate } = this.props;
+    const {
+      locale,
+      isOpen,
+      selectedDate,
+      maxDate,
+      minDate,
+      displayType
+    } = this.props;
     const { hasError, value } = this.state;
     let newState = {};
 
@@ -227,23 +296,52 @@ class DatePicker extends Component {
       });
     }
 
+    if (displayType !== prevProps.displayType) {
+      newState = Object.assign({}, newState, {
+        displayType: this.getTypeByWidth()
+      });
+    }
+
+    if (isOpen && this.state.displayType === "aside") {
+      window.addEventListener("popstate", this.popstate, false);
+    }
+
     if (!isEmpty(newState)) {
       this.setState(newState);
     }
   }
 
-  render() {
+  renderBody = () => {
     const {
       isDisabled,
-      isReadOnly,
-      //hasWarning,
       minDate,
       maxDate,
       locale,
       themeColor
     } = this.props;
+    const { selectedDate, displayType } = this.state;
 
-    const { value, isOpen, mask, selectedDate, hasError } = this.state;
+    let calendarSize;
+    (displayType === "aside") ? calendarSize = "big" : calendarSize = "base";
+
+    return (
+      <Calendar
+        locale={locale}
+        themeColor={themeColor}
+        minDate={minDate}
+        maxDate={maxDate}
+        isDisabled={isDisabled}
+        openToDate={selectedDate}
+        selectedDate={selectedDate}
+        onChange={this.onChange}
+        size={calendarSize}
+      />
+    );
+  };
+
+  render() {
+    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent } = this.props;
+    const { value, isOpen, mask, hasError, displayType } = this.state;
 
     return (
       <DateInputStyle ref={this.ref}>
@@ -253,7 +351,6 @@ class DatePicker extends Component {
           isReadOnly={isReadOnly}
           hasError={hasError}
           onFocus={this.onClick.bind(this, true)}
-          //hasWarning={hasWarning}
           iconName={"CalendarIcon"}
           onIconClick={this.onClick.bind(this, !isOpen)}
           value={value}
@@ -264,22 +361,33 @@ class DatePicker extends Component {
           //showMask={true}
         />
         {isOpen ? (
-          <DropDownStyle>
-            <DropDown opened={isOpen}>
-              {
-                <Calendar
-                  locale={locale}
-                  themeColor={themeColor}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  isDisabled={isDisabled}
-                  openToDate={selectedDate}
-                  selectedDate={selectedDate}
-                  onChange={this.onChange}
-                />
-              }
-            </DropDown>
-          </DropDownStyle>
+          displayType === "dropdown" ? (
+            <DropDownStyle>
+              <DropDown className="drop-down" opened={isOpen}>
+                {this.renderBody()}
+              </DropDown>
+            </DropDownStyle>
+          ) : (
+            <>
+              <Backdrop
+                onClick={this.onClose}
+                visible={isOpen}
+                zIndex={zIndex}
+              />
+              <Aside visible={isOpen} scale={false} zIndex={zIndex}>
+                <Content>
+                  <Header>
+                    <HeaderText>
+                      <Text.Body isBold={true} fontSize={21}>
+                        {calendarHeaderContent}
+                      </Text.Body>
+                    </HeaderText>
+                  </Header>
+                  <Body>{this.renderBody()}</Body>
+                </Content>
+              </Aside>
+            </>
+          )
         ) : null}
       </DateInputStyle>
     );
@@ -298,13 +406,19 @@ DatePicker.propTypes = {
   isReadOnly: PropTypes.bool,
   hasError: PropTypes.bool,
   hasWarning: PropTypes.bool,
-  isOpen: PropTypes.bool
+  isOpen: PropTypes.bool,
+  calendarSize: PropTypes.oneOf(["base", "big"]),
+  displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
+  zIndex: PropTypes.number,
+  calendarHeaderContent: PropTypes.string
 };
 
 DatePicker.defaultProps = {
   minDate: new Date("1970/01/01"),
   maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
-  selectedDate: moment(new Date()).toDate()
+  selectedDate: moment(new Date()).toDate(),
+  displayType: "auto",
+  zIndex: 310
 };
 
 export default DatePicker;
