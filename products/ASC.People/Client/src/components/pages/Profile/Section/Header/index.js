@@ -254,7 +254,6 @@ const SectionHeaderContent = props => {
       .catch(error => toastr.error(error));
   };
   const getUserContextOptions = (user, viewer, t) => {
-
     let status = "";
 
     if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
@@ -285,11 +284,19 @@ const SectionHeaderContent = props => {
             label: t('EditPhoto'),
             onClick: onEditPhoto
           },
-          {
-            key: "disable",
-            label: t('DisableUserButton'),
-            onClick: onDisableClick
-          }
+          isMe(user, viewer.userName)
+            ? viewer.isOwner
+              ? {}
+              : {
+                key: "delete-profile",
+                label: t("DeleteSelfProfile"),
+                onClick: onDeleteProfileClick
+              }
+            : {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: onDisableClick
+            }
         ];
       case "disabled":
         return [
@@ -336,15 +343,28 @@ const SectionHeaderContent = props => {
             label: t('EditPhoto'),
             onClick: onEditPhoto
           },
-          {
-            key: "disable",
-            label: t('DisableUserButton'),
-            onClick: onDisableClick
+          !isMe(user, viewer.userName) &&
+          (user.status === EmployeeStatus.Active
+            ? {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: onDisableClick
+            }
+            : {
+              key: "enable",
+              label: t("EnableUserButton"),
+              onClick: onEnableClick
+            }),
+          isMe(user, viewer.userName) && {
+            key: "delete-profile",
+            label: t("DeleteSelfProfile"),
+            onClick: onDeleteProfileClick
           }
         ];
       default:
         return [];
     }
+
   };
 
   const { t } = useTranslation();
