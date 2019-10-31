@@ -4,8 +4,15 @@ import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-vi
 import { FixedSizeList } from "react-window";
 import ADSelectorRow from "../row";
 import findIndex from "lodash/findIndex";
+import isEqual from "lodash/isEqual";
 
 class ADSelectorGroupsBody extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    const needUpdate = !isEqual(this.props, nextProps);
+    return needUpdate;
+  }
+
   renderRow = ({ data, index, style }) => {
     const {isMultiSelect, selectedAll, selectedOptions, currentGroup} = this.props;
 
