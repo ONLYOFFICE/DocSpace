@@ -14,6 +14,7 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api.Controllers
@@ -149,6 +150,26 @@ namespace ASC.Web.Api.Controllers
         public string GetFullAbsolutePath(string virtualPath)
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
+        }
+    }
+
+    public static class PortalControllerFactory
+    {
+        public static IServiceCollection AddPortalController(this IServiceCollection services)
+        {
+            return services
+                .AddUrlShortener()
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddEmailValidationKeyProviderService()
+                .AddPaymentManagerService()
+                .AddCommonLinkUtilityService()
+                .AddPermissionContextService();
         }
     }
 }

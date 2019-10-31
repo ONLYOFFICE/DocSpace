@@ -30,6 +30,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.SMS
 {
@@ -49,9 +50,9 @@ namespace ASC.Web.Studio.Core.SMS
 
 
         public StudioSmsNotificationSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
-            TenantManager tenantManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
             TenantExtra tenantExtra,
             CoreBaseSettings coreBaseSettings,
             SetupInfo setupInfo) : base(authContext, settingsManager, tenantManager)
@@ -93,6 +94,18 @@ namespace ASC.Web.Studio.Core.SMS
                         && !quota.NonProfit
                         && !quota.Free
                         && !quota.Open);
+        }
+    }
+
+    public static class StudioSmsNotificationSettingsFactory
+    {
+        public static IServiceCollection AddStudioSmsNotificationSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddTenantExtraService()
+                .AddCoreBaseSettingsService()
+                .AddSetupInfo()
+                .AddSettingsService<StudioSmsNotificationSettings>();
         }
     }
 }

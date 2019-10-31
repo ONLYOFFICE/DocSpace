@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Storage;
@@ -72,6 +73,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
@@ -1318,6 +1320,61 @@ namespace ASC.Api.Settings
             }
 
             return new { Url = hubUrl };
+        }
+    }
+
+    public static class SettingsControllerFactory
+    {
+        public static IServiceCollection AddSettingsController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageTargetService()
+                .AddCoreConfigurationService()
+                .AddIPRestrictionsService()
+                .AddDisplayUserSettingsService()
+                .AddSetupInfo()
+                .AddCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddTenantUtilService()
+                .AddEmailValidationKeyProviderService()
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddUserPhotoManagerService()
+                .AddAuthContextService()
+                .AddCookiesManagerService()
+                .AddWebItemSecurity()
+                .AddStudioNotifyHelperService()
+                .AddLicenseReaderService()
+                .AddPermissionContextService()
+                .AddWebItemManager()
+                .AddWebItemManagerSecurity()
+                .AddCdnStorageSettingsService()
+                .AddStorageSettingsService()
+                .AddStorageFactoryService()
+                .AddStorageFactoryConfigService()
+                .AddSettingsService<TfaAppUserSettings>()
+                .AddSettingsService<CollaboratorSettings>()
+                .AddSettingsService<PersonalQuotaSettings>()
+                .AddSettingsService<WizardSettings>()
+                .AddSettingsService<CustomNavigationSettings>()
+                .AddTenantInfoSettingsService()
+                .AddSettingsService<PasswordSettings>()
+                .AddSettingsService<StudioDefaultPageSettings>()
+                .AddSettingsService<TfaAppAuthSettings>()
+                .AddSettingsService<ColorThemesSettings>()
+                .AddTenantWhiteLabelSettingsService()
+                .AddStudioSmsNotificationSettingsService()
+                .AddCompanyWhiteLabelSettingsService()
+                .AddTfaManagerService()
+                .AddStorageHelperService()
+                .AddTenantLogoManagerService()
+                .AddBuildVersionService()
+                .AddStatisticManagerService();
         }
     }
 }

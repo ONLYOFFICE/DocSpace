@@ -4,6 +4,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -16,8 +17,8 @@ namespace ASC.Web.Api.Controllers
         public WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public ModulesController(
-            UserManager userManager, 
-            TenantManager tenantManager, 
+            UserManager userManager,
+            TenantManager tenantManager,
             WebItemManagerSecurity webItemManagerSecurity)
         {
             UserManager = userManager;
@@ -36,6 +37,17 @@ namespace ASC.Web.Api.Controllers
             }
 
             return result;
+        }
+    }
+
+    public static class ModulesControllerExtension
+    {
+        public static IServiceCollection AddModulesController(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddWebItemManagerSecurity();
         }
     }
 }

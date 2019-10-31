@@ -7,6 +7,7 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
@@ -113,6 +114,21 @@ namespace ASC.Web.Api.Controllers
                 Tfa = false,
                 TfaKey = null
             };
+        }
+    }
+
+    public static class AuthenticationControllerExtension
+    {
+        public static IServiceCollection AddAuthenticationController(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddTenantCookieSettingsService()
+                .AddEmailValidationKeyProviderService()
+                .AddAuthContextService()
+                .AddAuthManager();
         }
     }
 }

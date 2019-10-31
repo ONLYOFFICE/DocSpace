@@ -6,6 +6,8 @@ using System.Web;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility
 {
@@ -96,6 +98,15 @@ namespace ASC.Web.Core.Utility
         public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             return null;
+        }
+    }
+
+    public static class UrlShortenerExtension
+    {
+        public static IServiceCollection AddUrlShortener(this IServiceCollection services)
+        {
+            services.TryAddSingleton<UrlShortener>();
+            return services;
         }
     }
 }

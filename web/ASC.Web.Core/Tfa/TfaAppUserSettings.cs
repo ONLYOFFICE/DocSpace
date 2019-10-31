@@ -31,6 +31,7 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -136,6 +137,16 @@ namespace ASC.Web.Studio.Core.TFA
                         && !quota.NonProfit
                         && !quota.Free
                         && !quota.Open);
+        }
+    }
+
+    public static class TfaAppUserSettingsFactory
+    {
+        public static IServiceCollection AddTfaAppUserSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddCoreBaseSettingsService()
+                .AddSettingsService<TfaAppUserSettings>();
         }
     }
 }

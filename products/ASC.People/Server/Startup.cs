@@ -106,11 +106,11 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
+            services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+
             services
                 .AddPeopleController()
                 .AddGroupController();
-
-            services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -26,6 +26,8 @@
 
 using System.Runtime.Serialization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Settings
 {
@@ -92,6 +94,16 @@ namespace ASC.Api.Settings
             }
 
             return null;*/
+        }
+    }
+
+    public static class BuildVersionFactory
+    {
+        public static IServiceCollection AddBuildVersionService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<BuildVersion>();
+
+            return services;
         }
     }
 }

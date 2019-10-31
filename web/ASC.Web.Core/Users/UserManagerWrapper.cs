@@ -30,6 +30,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.IPSecurity;
@@ -369,7 +370,7 @@ namespace ASC.Web.Core.Users
                 .AddIPSecurityService()
                 .AddTenantUtilService()
                 .AddCustomNamingPeopleService()
-                .AddPasswordSettingsService()
+                .AddSettingsService<PasswordSettings>()
                 .AddStudioNotifyServiceService()
                 .AddUserManagerService()
                 .AddSecurityContextService()

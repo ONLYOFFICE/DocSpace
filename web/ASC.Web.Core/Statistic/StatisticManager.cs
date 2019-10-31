@@ -30,6 +30,8 @@ using System.Data;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Statistic
 {
@@ -172,6 +174,16 @@ new UserVisit
         private IDbManager GetDb()
         {
             return DbManager;
+        }
+    }
+
+    public static class StatisticManagerFactory
+    {
+        public static IServiceCollection AddStatisticManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StatisticManager>();
+
+            return services.AddDbManagerService();
         }
     }
 }

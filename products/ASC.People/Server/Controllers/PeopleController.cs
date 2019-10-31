@@ -15,6 +15,7 @@ using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
@@ -1584,7 +1585,7 @@ namespace ASC.Employee.Core.Controllers
                 .AddMessageTargetService()
                 .AddAccountLinkerStorageService()
                 .AddFileSizeCommentService()
-                .AddPasswordSettingsService()
+                .AddSettingsService<PasswordSettings>()
                 .AddCookiesManagerService()
                 .AddUserPhotoManagerService()
                 .AddCustomNamingPeopleService()

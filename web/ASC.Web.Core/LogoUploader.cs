@@ -32,6 +32,8 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.CustomNavigation
@@ -181,6 +183,18 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             using var stream = new MemoryStream(data);
             stream.Seek(0, SeekOrigin.Begin);
             return store.Save(fileName, stream).ToString();
+        }
+    }
+
+    public static class StorageHelperFactory
+    {
+        public static IServiceCollection AddStorageHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StorageHelper>();
+            return services
+                .AddUserPhotoManagerService()
+                .AddStorageFactoryService()
+                .AddTenantManagerService();
         }
     }
 }

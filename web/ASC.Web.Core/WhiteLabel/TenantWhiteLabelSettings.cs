@@ -38,6 +38,7 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using TMResourceData;
 
@@ -580,5 +581,18 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         #endregion
+    }
+
+    public static class TenantWhiteLabelSettingsFactory
+    {
+        public static IServiceCollection AddTenantWhiteLabelSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddUserPhotoManagerService()
+                .AddWebImageSupplierService()
+                .AddStorageFactoryService()
+                .AddWhiteLabelHelperService()
+                .AddSettingsService<TenantWhiteLabelSettings>();
+        }
     }
 }

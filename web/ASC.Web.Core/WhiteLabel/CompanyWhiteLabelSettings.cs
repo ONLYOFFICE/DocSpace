@@ -28,6 +28,7 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -111,5 +112,15 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public CoreSettings CoreSettings { get; }
+    }
+
+    public static class CompanyWhiteLabelSettingsFactory
+    {
+        public static IServiceCollection AddCompanyWhiteLabelSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddCoreSettingsService()
+                .AddSettingsService<CompanyWhiteLabelSettings>();
+        }
     }
 }

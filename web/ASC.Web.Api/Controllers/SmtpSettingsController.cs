@@ -40,6 +40,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Settings
 {
@@ -245,6 +246,25 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }
+        }
+    }
+
+    public static class SmtpSettingsControllerFactory
+    {
+        public static IServiceCollection AddSmtpSettingsController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddPermissionContextService()
+                .AddTenantManagerService()
+                .AddCoreSettingsService()
+                .AddCoreConfigurationService()
+                .AddCoreBaseSettingsService()
+                ;
         }
     }
 }

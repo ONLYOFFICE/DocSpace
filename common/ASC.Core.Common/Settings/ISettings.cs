@@ -28,6 +28,7 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Common.Settings
 {
@@ -134,6 +135,12 @@ namespace ASC.Core.Common.Settings
                 .AddAuthContextService()
                 .AddSettingsManagerService()
                 .AddTenantManagerService();
+        }
+
+        public static IServiceCollection AddSettingsService<T>(this IServiceCollection services) where T : class, ISettings
+        {
+            services.TryAddScoped<T>();
+            return services.AddBaseSettingsService();
         }
     }
 }

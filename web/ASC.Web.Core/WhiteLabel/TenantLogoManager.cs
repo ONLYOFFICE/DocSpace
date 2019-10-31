@@ -31,12 +31,13 @@ using ASC.Common.Caching;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     public class TenantLogoManager
     {
-
         private string CacheKey
         {
             get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
@@ -197,6 +198,19 @@ namespace ASC.Web.Core.WhiteLabel
         public void RemoveMailLogoDataFromCache()
         {
             CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public static class TenantLogoManagerFactory
+    {
+        public static IServiceCollection AddTenantLogoManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantLogoManager>();
+
+            return services
+                .AddTenantWhiteLabelSettingsService()
+                .AddTenantInfoSettingsService()
+                .AddTenantManagerService();
         }
     }
 }

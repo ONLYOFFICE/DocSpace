@@ -34,6 +34,7 @@ using ASC.Core.Common.Settings;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -53,9 +54,9 @@ namespace ASC.Web.Core.WhiteLabel
         {
         }
         public TenantInfoSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
-            WebImageSupplier webImageSupplier, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            WebImageSupplier webImageSupplier,
             TenantManager tenantManager,
             StorageFactory storageFactory,
             IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
@@ -169,5 +170,16 @@ namespace ASC.Web.Core.WhiteLabel
         public IConfiguration Configuration { get; }
 
         #endregion
+    }
+
+    public static class TenantInfoSettingsFactory
+    {
+        public static IServiceCollection AddTenantInfoSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddWebImageSupplierService()
+                .AddStorageFactoryService()
+                .AddSettingsService<TenantInfoSettings>();
+        }
     }
 }

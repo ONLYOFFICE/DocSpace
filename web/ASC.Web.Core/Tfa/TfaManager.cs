@@ -35,11 +35,13 @@ using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Security;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using Google.Authenticator;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -186,6 +188,22 @@ namespace ASC.Web.Studio.Core.TFA
         private string GenerateAccessToken(UserInfo user)
         {
             return Signature.Create(TfaAppUserSettings.GetSalt(user.ID)).Substring(0, 10);
+        }
+    }
+
+    public static class TfaManagerFactory
+    {
+        public static IServiceCollection AddTfaManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TfaManager>();
+
+            return services
+                .AddSettingsService<TfaAppAuthSettings>()
+                .AddTfaAppUserSettingsService()
+                .AddSetupInfo()
+                .AddSignatureService()
+                .AddCookiesManagerService()
+                .AddSecurityContextService();
         }
     }
 }

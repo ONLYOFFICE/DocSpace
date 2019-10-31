@@ -42,6 +42,8 @@ using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace TMResourceData
@@ -355,6 +357,15 @@ namespace TMResourceData
             }
 
             return resourceValue;
+        }
+    }
+
+    public static class WhiteLabelHelperFactory
+    {
+        public static IServiceCollection AddWhiteLabelHelperService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WhiteLabelHelper>();
+            return services;
         }
     }
 }
