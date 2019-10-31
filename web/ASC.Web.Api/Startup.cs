@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -74,13 +75,13 @@ namespace ASC.Web.Api
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             services
-                    .AddStorage(Configuration)
-                    .AddWebItemManager()
-                    .AddScoped<ApiContext>()
-                    .AddScoped<StudioNotifyService>()
-                    .AddScoped<MessageService>()
-                    .AddScoped<QueueWorkerReassign>()
-                    .AddScoped<QueueWorkerRemove>();
+                    .AddStorage()
+                    .AddWebItemManager();
+            services.TryAddScoped<ApiContext>();
+            services.TryAddScoped<StudioNotifyService>();
+            services.TryAddScoped<MessageService>();
+            services.TryAddScoped<QueueWorkerReassign>();
+            services.TryAddScoped<QueueWorkerRemove>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

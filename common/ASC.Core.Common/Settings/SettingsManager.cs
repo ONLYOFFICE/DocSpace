@@ -28,17 +28,32 @@ using System;
 using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Settings
 {
     public class SettingsManager : DbSettingsManager
     {
-        public SettingsManager(IServiceProvider serviceProvider, DbSettingsManagerCache dbSettingsManagerCache, DbOptionsManager optionsDbManager,
+        public SettingsManager(
+            IServiceProvider serviceProvider,
+            DbSettingsManagerCache dbSettingsManagerCache,
+            DbOptionsManager optionsDbManager,
             IOptionsMonitor<LogNLog> option)
             : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, option)
         {
 
+        }
+    }
+
+    public static class SettingsManagerFactory
+    {
+        public static IServiceCollection AddSettingsManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SettingsManager>();
+
+            return services.AddDbSettingsManagerService();
         }
     }
 }

@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
@@ -90,6 +92,16 @@ namespace ASC.MessagingSystem
         public override string ToString()
         {
             return string.Join(",", _items);
+        }
+    }
+
+    public static class MessageTargetExtension
+    {
+        public static IServiceCollection AddMessageTargetService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MessageTarget>();
+
+            return services;
         }
     }
 }

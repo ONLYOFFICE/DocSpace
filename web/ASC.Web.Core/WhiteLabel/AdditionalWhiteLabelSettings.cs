@@ -30,6 +30,8 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -99,7 +101,11 @@ namespace ASC.Web.Core.WhiteLabel
 
         }
 
-        public AdditionalWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
+        public AdditionalWhiteLabelSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
         {
             Configuration = configuration;
         }
@@ -207,5 +213,15 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public IConfiguration Configuration { get; }
+    }
+
+    public static class AdditionalWhiteLabelSettingsFactory
+    {
+        public static IServiceCollection AddAdditionalWhiteLabelSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<AdditionalWhiteLabelSettings>();
+
+            return services.AddBaseSettingsService();
+        }
     }
 }

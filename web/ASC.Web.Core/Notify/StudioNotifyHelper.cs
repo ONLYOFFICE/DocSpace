@@ -34,6 +34,8 @@ using ASC.Notify.Model;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -48,10 +50,11 @@ namespace ASC.Web.Studio.Core.Notify
 
         public readonly IRecipientProvider RecipientsProvider;
 
-        public UserManager UserManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantManager TenantManager { get; }
-        public ILog Log { get; }
+
+        private UserManager UserManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private TenantManager TenantManager { get; }
+        private ILog Log { get; }
 
         public StudioNotifyHelper(
             StudioNotifySource studioNotifySource,
@@ -181,6 +184,22 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
             }
+        }
+    }
+
+    public static class StudioNotifyHelperFactory
+    {
+        public static IServiceCollection AddStudioNotifyHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifyHelper>();
+
+            return services
+                .AddStudioNotifySourceService()
+                .AddUserManagerService()
+                .AddAdditionalWhiteLabelSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddTenantManagerService()
+                .AddSetupInfo();
         }
     }
 }

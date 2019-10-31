@@ -30,6 +30,8 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -79,7 +81,11 @@ namespace ASC.Web.Core.WhiteLabel
 
         }
 
-        public MailWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : 
+        public MailWhiteLabelSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            IConfiguration configuration) :
             base(authContext, settingsManager, tenantManager)
         {
             Configuration = configuration;
@@ -166,5 +172,15 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         public IConfiguration Configuration { get; }
+    }
+
+    public static class MailWhiteLabelSettingsFactory
+    {
+        public static IServiceCollection AddMailWhiteLabelSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailWhiteLabelSettings>();
+
+            return services.AddBaseSettingsService();
+        }
     }
 }

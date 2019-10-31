@@ -37,6 +37,7 @@ using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -297,6 +298,32 @@ namespace ASC.Data.Storage
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);
+        }
+    }
+
+
+    public static class StorageFactoryExtension
+    {
+        public static IServiceCollection AddStorageFactoryConfigService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StorageFactoryConfig>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddStorageFactoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StorageFactory>();
+            services.TryAddSingleton<StorageFactoryListener>();
+
+            return services
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddPathUtilsService()
+                .AddEmailValidationKeyProviderService()
+                .AddHttpContextAccessor()
+                .AddStorageSettingsService()
+                .AddStorageFactoryConfigService();
         }
     }
 }

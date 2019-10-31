@@ -27,6 +27,8 @@
 using System;
 using ASC.Common.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem.DbSender
@@ -43,7 +45,7 @@ namespace ASC.MessagingSystem.DbSender
             log = options.Get("ASC.Messaging");
         }
 
-        public MessagesRepository MessagesRepository { get; }
+        private MessagesRepository MessagesRepository { get; }
         private bool MessagingEnabled { get; }
 
 
@@ -61,6 +63,17 @@ namespace ASC.MessagingSystem.DbSender
             {
                 log.Error("Failed to send a message", ex);
             }
+        }
+    }
+
+    public static class DbMessageSenderFactory
+    {
+        public static IServiceCollection AddDbMessageSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbMessageSender>();
+            services.TryAddSingleton<MessagesRepository>();
+
+            return services;
         }
     }
 }

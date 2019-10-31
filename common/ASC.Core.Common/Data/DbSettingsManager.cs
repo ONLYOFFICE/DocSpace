@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
@@ -70,10 +71,10 @@ namespace ASC.Core.Data
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
         private readonly string dbId;
 
-        public ICache Cache { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public DbSettingsManagerCache DbSettingsManagerCache { get; }
-        public DbManager DbManager { get; }
+        private ICache Cache { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private DbSettingsManagerCache DbSettingsManagerCache { get; }
+        private DbManager DbManager { get; }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
@@ -219,6 +220,17 @@ namespace ASC.Core.Data
                 }
                 return jsonSerializers[type];
             }
+        }
+    }
+
+    public static class DbSettingsManagerFactory
+    {
+        public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbSettingsManagerCache>();
+            services.TryAddScoped<DbSettingsManager>();
+
+            return services.AddDbManagerService();
         }
     }
 }

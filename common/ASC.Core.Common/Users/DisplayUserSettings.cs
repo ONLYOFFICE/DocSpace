@@ -30,6 +30,8 @@ using System.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -53,11 +55,11 @@ namespace ASC.Web.Core.Users
         }
 
         public DisplayUserSettings(
-            AuthContext authContext, 
-            SettingsManager settingsManager, 
+            AuthContext authContext,
+            SettingsManager settingsManager,
             TenantManager tenantManager,
             UserManager userManager,
-            UserFormatter userFormatter) : 
+            UserFormatter userFormatter) :
             base(authContext, settingsManager, tenantManager)
         {
             UserManager = userManager;
@@ -72,7 +74,7 @@ namespace ASC.Web.Core.Users
             };
         }
 
-        public string GetFullUserName( Guid userID, bool withHtmlEncode = true)
+        public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
         {
             return GetFullUserName(UserManager.GetUsers(userID), withHtmlEncode);
         }
@@ -98,6 +100,19 @@ namespace ASC.Web.Core.Users
         public string HtmlEncode(string str)
         {
             return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
+        }
+    }
+
+    public static class DisplayUserSettingsFactory
+    {
+        public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DisplayUserSettings>();
+
+            return services
+                .AddBaseSettingsService()
+                .AddUserFormatter()
+                .AddUserManagerService();
         }
     }
 }

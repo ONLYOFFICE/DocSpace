@@ -34,6 +34,8 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
@@ -86,16 +88,16 @@ namespace ASC.Web.Core
     {
         private static readonly SecurityAction Read = new SecurityAction(new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ReadWebItem", false, true);
 
-        public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
-        public PermissionContext PermissionContext { get; }
-        public AuthManager Authentication { get; }
+        private UserManager UserManager { get; }
+        private AuthContext AuthContext { get; }
+        private PermissionContext PermissionContext { get; }
+        private AuthManager Authentication { get; }
         public WebItemManager WebItemManager { get; }
-        public TenantAccessSettings TenantAccessSettings { get; }
-        public TenantManager TenantManager { get; }
-        public AuthorizationManager AuthorizationManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public WebItemSecurityCache WebItemSecurityCache { get; }
+        private TenantAccessSettings TenantAccessSettings { get; }
+        private TenantManager TenantManager { get; }
+        private AuthorizationManager AuthorizationManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private WebItemSecurityCache WebItemSecurityCache { get; }
 
         public WebItemSecurity(
             UserManager userManager,
@@ -426,6 +428,31 @@ namespace ASC.Web.Core
             {
                 throw new NotImplementedException();
             }
+        }
+    }
+
+    public static class WebItemSecurityExtension
+    {
+        public static IServiceCollection AddWebItemSecurity(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebItemSecurity>();
+
+            return services
+                .AddPermissionContextService()
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddWebItemManager()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddAuthorizationManagerService()
+                .AddWebItemSecurityCache()
+                .AddAuthManager()
+                .AddTenantAccessSettingsService();
+        }
+        public static IServiceCollection AddWebItemSecurityCache(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WebItemSecurityCache>();
+            return services;
         }
     }
 }

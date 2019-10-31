@@ -31,6 +31,8 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
@@ -221,6 +223,19 @@ namespace ASC.Core.Common
 
 
             return baseUri.ToString().TrimEnd('/');
+        }
+    }
+
+    public static class BaseCommonLinkUtilityFactory
+    {
+        public static IServiceCollection AddBaseCommonLinkUtilityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<BaseCommonLinkUtility>(); ;
+
+            return services
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddTenantManagerService();
         }
     }
 }

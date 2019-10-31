@@ -31,6 +31,7 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
@@ -126,9 +127,8 @@ namespace ASC.Core.Security.Authorizing
     {
         public static IServiceCollection AddPermissionResolverService(this IServiceCollection services)
         {
-            return services
-                .AddAzManagerService()
-                .AddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
+            services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
+            return services.AddAzManagerService();
         }
     }
 }

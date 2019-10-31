@@ -34,6 +34,8 @@ using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin
 {
@@ -160,6 +162,17 @@ namespace ASC.FederatedLogin
             db.ExecuteScalar<int>(sql);
 
             AccountLinkerStorage.RemoveFromCache(obj);
+        }
+    }
+
+    public static class AccountLinkerStorageExtension
+    {
+        public static IServiceCollection AddAccountLinkerStorageService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<AccountLinkerStorage>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services;
         }
     }
 }

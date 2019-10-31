@@ -45,6 +45,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -64,15 +65,14 @@ namespace ASC.Core
             get => AuthContext.IsAuthenticated;
         }
 
-        public UserManager UserManager { get; }
-        public AuthManager Authentication { get; }
-        public AuthContext AuthContext { get; }
-        public TenantCookieSettings TenantCookieSettings { get; }
-        public TenantManager TenantManager { get; }
-        public UserFormatter UserFormatter { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public CookieStorage CookieStorage { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private UserManager UserManager { get; }
+        private AuthManager Authentication { get; }
+        private AuthContext AuthContext { get; }
+        private TenantCookieSettings TenantCookieSettings { get; }
+        private TenantManager TenantManager { get; }
+        private UserFormatter UserFormatter { get; }
+        private CookieStorage CookieStorage { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
             IHttpContextAccessor httpContextAccessor,
@@ -346,19 +346,34 @@ namespace ASC.Core
 
     public static class AuthContextConfigFactory
     {
+        public static IServiceCollection AddSecurityContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SecurityContext>();
+
+            return services
+                .AddCookieStorageService()
+                .AddTenantCookieSettingsService()
+                .AddAuthManager()
+                .AddUserFormatter()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddHttpContextAccessor();
+        }
         public static IServiceCollection AddAuthContextService(this IServiceCollection services)
         {
+            services.TryAddScoped<AuthContext>();
             return services
-                .AddHttpContextAccessor()
-                .AddScoped<AuthContext>();
+                .AddHttpContextAccessor();
         }
 
         public static IServiceCollection AddPermissionContextService(this IServiceCollection services)
         {
+            services.TryAddScoped<PermissionContext>();
+
             return services
                 .AddAuthContextService()
-                .AddPermissionResolverService()
-                .AddScoped<PermissionContext>();
+                .AddPermissionResolverService();
         }
     }
 }

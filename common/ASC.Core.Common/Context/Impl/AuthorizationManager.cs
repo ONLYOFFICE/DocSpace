@@ -31,6 +31,7 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -132,10 +133,10 @@ namespace ASC.Core
     {
         public static IServiceCollection AddAuthorizationManagerService(this IServiceCollection services)
         {
+            services.TryAddScoped<AuthorizationManager>();
             return services
                 .AddAzService()
-                .AddTenantManagerService()
-                .AddScoped<AuthorizationManager>();
+                .AddTenantManagerService();
         }
     }
 }

@@ -34,6 +34,8 @@ using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Data
@@ -364,6 +366,18 @@ namespace ASC.Common.Data
         public ISqlDialect GetSqlDialect(string databaseId)
         {
             return DbRegistry.GetSqlDialect(databaseId);
+        }
+    }
+
+    public static class DbManagerFactory
+    {
+        public static IServiceCollection AddDbManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DbOptionsManager>();
+            services.TryAddScoped<DbManager>();
+            services.AddScoped<IConfigureOptions<DbManager>, ConfigureDbManager>();
+
+            return services.AddDbRegistryService();
         }
     }
 }

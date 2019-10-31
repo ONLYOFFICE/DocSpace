@@ -31,6 +31,7 @@ using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 namespace ASC.Core
@@ -315,22 +316,23 @@ namespace ASC.Core
     {
         public static IServiceCollection AddCoreBaseSettingsService(this IServiceCollection services)
         {
-            return services.AddSingleton<CoreBaseSettings>();
+            services.TryAddSingleton<CoreBaseSettings>();
+            return services;
         }
 
         public static IServiceCollection AddCoreSettingsService(this IServiceCollection services)
         {
+            services.TryAddScoped<CoreSettings>();
+            services.TryAddScoped<CoreConfiguration>();
             return services
                 .AddCoreBaseSettingsService()
-                .AddTenantService()
-                .AddScoped<CoreSettings>()
-                .AddScoped<CoreConfiguration>();
+                .AddTenantService();
         }
         public static IServiceCollection AddCoreConfigurationService(this IServiceCollection services)
         {
+            services.TryAddScoped<CoreConfiguration>();
             return services
-                .AddCoreSettingsService()
-                .AddScoped<CoreConfiguration>();
+                .AddCoreSettingsService();
         }
     }
 }

@@ -13,6 +13,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
@@ -227,6 +228,23 @@ namespace ASC.Employee.Core.Controllers
                 UserManager.SetDepartmentManager(@group.ID, userId);
             }
             UserManager.AddUserIntoGroup(userId, @group.ID);
+        }
+    }
+
+    public static class GroupControllerFactory
+    {
+        public static IServiceCollection AddGroupController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddUserPhotoManagerService()
+                .AddSecurityContextService()
+                .AddPermissionContextService()
+                .AddCommonLinkUtilityService()
+                .AddDisplayUserSettingsService()
+                .AddMessageTargetService();
         }
     }
 }

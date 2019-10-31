@@ -38,6 +38,7 @@ using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -286,14 +287,15 @@ namespace ASC.Core
     {
         public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
         {
+            services.TryAddScoped<TenantManager>();
+
             return services
                 .AddHttpContextAccessor()
                 .AddTenantService()
                 .AddQuotaService()
                 .AddTariffService()
                 .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddScoped<TenantManager>();
+                .AddCoreSettingsService();
         }
     }
 }

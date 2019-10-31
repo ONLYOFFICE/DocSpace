@@ -39,6 +39,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -276,6 +277,18 @@ namespace ASC.Data.Storage
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
                 StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
+        }
+    }
+
+    public static class StaticUploaderExtension
+    {
+        public static IServiceCollection AddStaticUploaderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StaticUploader>();
+
+            return services
+                .AddTenantManagerService()
+                .AddCdnStorageSettingsService();
         }
     }
 }

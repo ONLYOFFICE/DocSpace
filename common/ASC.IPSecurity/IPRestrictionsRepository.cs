@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -75,6 +77,15 @@ namespace ASC.IPSecurity
 
             tx.Commit();
             return ipsList;
+        }
+    }
+    public static class IPRestrictionsRepositoryFactory
+    {
+        public static IServiceCollection AddIPRestrictionsRepositoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPRestrictionsRepository>();
+
+            return services.AddDbManagerService();
         }
     }
 }

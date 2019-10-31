@@ -30,6 +30,8 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.PublicResources;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -253,6 +255,19 @@ namespace ASC.Web.Studio.Core.Notify
                     return action;
                 }
             }
+        }
+    }
+
+    public static class StudioNotifySourceFactory
+    {
+        public static IServiceCollection AddStudioNotifySourceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifySource>();
+
+            return services
+                .AddUserManagerService()
+                .AddRecipientProviderImplService()
+                .AddSubscriptionManagerService();
         }
     }
 }

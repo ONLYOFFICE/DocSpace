@@ -33,6 +33,8 @@ using System.Xml;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.PublicResources;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -394,6 +396,23 @@ namespace ASC.Web.Core.Users
                     .Replace("{!userpost}", item.UserPostCaption.ToLower());
             }
             return text;
+        }
+    }
+
+    public static class CustomNamingPeopleFactory
+    {
+        public static IServiceCollection AddCustomNamingPeopleService(this IServiceCollection services)
+        {
+            services.TryAddScoped<CustomNamingPeople>();
+
+            return services.AddPeopleNamesSettingsService();
+        }
+
+        public static IServiceCollection AddPeopleNamesSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PeopleNamesSettings>();
+
+            return services.AddBaseSettingsService();
         }
     }
 }

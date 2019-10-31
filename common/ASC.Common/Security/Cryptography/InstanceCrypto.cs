@@ -28,6 +28,8 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Security.Cryptography
 {
@@ -82,6 +84,17 @@ namespace ASC.Security.Cryptography
         private byte[] EKey()
         {
             return MachinePseudoKeys.GetMachineConstant(32);
+        }
+    }
+    public static class InstanceCryptoFactory
+    {
+        public static IServiceCollection AddInstanceCryptoService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<InstanceCrypto>();
+
+            return services
+                .AddHttpContextAccessor()
+                .AddMachinePseudoKeysService();
         }
     }
 }

@@ -33,6 +33,8 @@ using ASC.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
@@ -135,6 +137,21 @@ namespace ASC.IPSecurity
         {
             var portIdx = ip.IndexOf(':');
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
+        }
+    }
+
+    public static class IPSecurityFactory
+    {
+        public static IServiceCollection AddIPSecurityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPSecurity>();
+
+            return services
+                .AddIPRestrictionsService()
+                .AddIPRestrictionsSettingsService()
+                .AddHttpContextAccessor()
+                .AddAuthContextService()
+                .AddTenantManagerService();
         }
     }
 }

@@ -43,6 +43,7 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
@@ -248,6 +249,18 @@ namespace ASC.Data.Reassigns
             if (!_notify) return;
 
             studioNotifyService.SendMsgRemoveUserDataFailed(_currentUserId, User, userName, errorMessage);
+        }
+    }
+
+    public static class RemoveProgressItemFactory
+    {
+        public static IServiceCollection AddRemoveProgressItemService(this IServiceCollection services)
+        {
+
+            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+            services.AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            return services;
         }
     }
 }

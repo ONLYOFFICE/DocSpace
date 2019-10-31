@@ -32,6 +32,7 @@ using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -273,14 +274,14 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddTenantService(this IServiceCollection services)
         {
-            return services
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
-                    .AddCoreBaseSettingsService()
-                    .AddSingleton<TenantDomainValidator>()
-                    .AddSingleton<TimeZoneConverter>()
-                    .AddSingleton<TenantServiceCache>()
-                    .AddScoped<DbTenantService>()
-                    .AddScoped<ITenantService, CachedTenantService>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddSingleton<TenantDomainValidator>();
+            services.TryAddSingleton<TimeZoneConverter>();
+            services.TryAddSingleton<TenantServiceCache>();
+            services.TryAddScoped<DbTenantService>();
+            services.TryAddScoped<ITenantService, CachedTenantService>();
+
+            return services.AddCoreBaseSettingsService();
         }
     }
 }

@@ -32,6 +32,8 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Dialects;
 using ASC.Common.Utils;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.Data
 {
@@ -190,6 +192,16 @@ namespace ASC.Common.Data
                 }
                 RegisterDatabase(cs.Name, cs);
             }
+        }
+    }
+
+    public static class DbRegistryExtension
+    {
+        public static IServiceCollection AddDbRegistryService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbRegistry>();
+
+            return services;
         }
     }
 }

@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify
 {
@@ -153,6 +155,17 @@ namespace ASC.Core.Notify
                 catch (OverflowException) { }
             }
             return false;
+        }
+    }
+
+    public static class RecipientProviderImplFactory
+    {
+        public static IServiceCollection AddRecipientProviderImplService(this IServiceCollection services)
+        {
+            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
+
+            return services
+                .AddUserManagerService();
         }
     }
 }

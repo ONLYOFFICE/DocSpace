@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Users
 {
@@ -141,6 +143,14 @@ namespace ASC.Core.Users
         public static bool IsValidUserName(string firstName, string lastName)
         {
             return UserNameRegex.IsMatch(firstName + lastName);
+        }
+    }
+    public static class UserFormatterExtension
+    {
+        public static IServiceCollection AddUserFormatter(this IServiceCollection services)
+        {
+            services.TryAddSingleton<UserFormatter>();
+            return services;
         }
     }
 }

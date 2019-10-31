@@ -32,6 +32,7 @@ using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -207,11 +208,11 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddQuotaService(this IServiceCollection services)
         {
-            return services
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
-                    .AddSingleton<QuotaServiceCache>()
-                    .AddScoped<DbQuotaService>()
-                    .AddScoped<IQuotaService, CachedQuotaService>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddSingleton<QuotaServiceCache>();
+            services.TryAddScoped<DbQuotaService>();
+            services.TryAddScoped<IQuotaService, CachedQuotaService>();
+            return services;
         }
     }
 }

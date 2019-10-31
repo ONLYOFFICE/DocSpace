@@ -28,6 +28,8 @@ using System;
 using ASC.Core.Tenants;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -155,6 +157,18 @@ namespace ASC.Web.Studio.Core
                 resultSize /= Math.Pow(1024d, power);
             }
             return string.Format("{0:#,0.##} {1}", resultSize, sizeNames[power]);
+        }
+    }
+
+    public static class FileSizeCommentExtension
+    {
+        public static IServiceCollection AddFileSizeCommentService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileSizeComment>();
+
+            return services
+                .AddTenantExtraService()
+                .AddSetupInfo();
         }
     }
 }

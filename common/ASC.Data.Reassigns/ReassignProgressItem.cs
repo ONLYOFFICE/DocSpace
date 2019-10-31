@@ -41,6 +41,7 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
@@ -212,6 +213,17 @@ namespace ASC.Data.Reassigns
                 messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
             else
                 messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+        }
+    }
+
+    public static class ReassignProgressItemFactory
+    {
+        public static IServiceCollection AddReassignProgressItemService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>(); ;
+            return services;
         }
     }
 }

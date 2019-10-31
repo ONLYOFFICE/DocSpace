@@ -32,10 +32,13 @@ using System.Text.RegularExpressions;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -58,9 +61,9 @@ namespace ASC.Web.Core.Users
         public DisplayUserSettings DisplayUserSettings { get; }
 
         public UserManagerWrapper(
-            StudioNotifyService studioNotifyService, 
-            UserManager userManager, 
-            SecurityContext securityContext, 
+            StudioNotifyService studioNotifyService,
+            UserManager userManager,
+            SecurityContext securityContext,
             AuthContext authContext,
             PasswordSettings passwordSettings,
             MessageService messageService,
@@ -354,6 +357,26 @@ namespace ASC.Web.Core.Users
                                    + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
             const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
             return new Regex(pattern, options).IsMatch(email);
+        }
+    }
+    public static class UserManagerWrapperFactory
+    {
+        public static IServiceCollection AddUserManagerWrapperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<UserManagerWrapper>();
+
+            return services
+                .AddIPSecurityService()
+                .AddTenantUtilService()
+                .AddCustomNamingPeopleService()
+                .AddPasswordSettingsService()
+                .AddStudioNotifyServiceService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddMessageServiceService()
+                .AddDisplayUserSettingsService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

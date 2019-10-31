@@ -29,6 +29,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
@@ -47,7 +49,11 @@ namespace ASC.Core.Tenants
         public TenantCookieSettings()
         {
         }
-        public TenantCookieSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : 
+        public TenantCookieSettings(
+            AuthContext authContext,
+            SettingsManager settingsManager,
+            TenantManager tenantManager,
+            IConfiguration configuration) :
             base(authContext, settingsManager, tenantManager)
         {
             IsVisibleSettings = !(configuration["web:hide-settings"] ?? string.Empty)
@@ -117,6 +123,17 @@ namespace ASC.Core.Tenants
             var settingsTenant = GetForTenant(tenantId);
             var expires = settingsTenant.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(settingsTenant.LifeTime);
             return expires;
+        }
+    }
+
+    public static class TenantCookieSettingsFactory
+    {
+        public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantCookieSettings>();
+
+            return services
+                .AddBaseSettingsService();
         }
     }
 }

@@ -37,6 +37,8 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Utility
@@ -509,5 +511,21 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
+    }
+
+    public static class CommonLinkUtilityFactory
+    {
+        public static IServiceCollection AddCommonLinkUtilityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<CommonLinkUtility>();
+
+            return services
+                .AddHttpContextAccessor()
+                .AddUserManagerService()
+                .AddBaseCommonLinkUtilityService()
+                .AddWebItemManagerSecurity()
+                .AddWebItemManager()
+                .AddEmailValidationKeyProviderService();
+        }
     }
 }

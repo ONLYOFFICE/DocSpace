@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using ASC.Common.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -57,7 +59,9 @@ namespace ASC.IPSecurity
 
         public IPRestrictionsRepository IPRestrictionsRepository { get; }
 
-        public IPRestrictionsService(IPRestrictionsRepository iPRestrictionsRepository, IPRestrictionsServiceCache iPRestrictionsServiceCache)
+        public IPRestrictionsService(
+            IPRestrictionsRepository iPRestrictionsRepository,
+            IPRestrictionsServiceCache iPRestrictionsServiceCache)
         {
             IPRestrictionsRepository = iPRestrictionsRepository;
             cache = iPRestrictionsServiceCache.Cache;
@@ -80,6 +84,17 @@ namespace ASC.IPSecurity
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
+        }
+    }
+
+    public static class IPRestrictionsServiceFactory
+    {
+        public static IServiceCollection AddIPRestrictionsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPRestrictionsService>();
+            services.TryAddSingleton<IPRestrictionsServiceCache>();
+
+            return services.AddIPRestrictionsRepositoryService();
         }
     }
 }

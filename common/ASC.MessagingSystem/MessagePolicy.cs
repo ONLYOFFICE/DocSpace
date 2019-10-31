@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.MessagingSystem
 {
@@ -58,6 +60,16 @@ namespace ASC.MessagingSystem
 
             var portIdx = ip.IndexOf(':');
             return portIdx > -1 ? ip.Substring(0, portIdx) : ip;
+        }
+    }
+
+    public static class MessagePolicyFactory
+    {
+        public static IServiceCollection AddMessagePolicyService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MessagePolicy>();
+
+            return services;
         }
     }
 }

@@ -31,6 +31,8 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
@@ -133,7 +135,15 @@ namespace ASC.MessagingSystem
                 return null;
             }
         }
-
-
+    }
+    public static class MessageFactoryFactory
+    {
+        public static IServiceCollection AddMessageFactoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MessageFactory>();
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService();
+        }
     }
 }

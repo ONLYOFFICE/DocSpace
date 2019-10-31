@@ -30,6 +30,8 @@ using System.Linq;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.UserControls.Statistics
 {
@@ -68,6 +70,18 @@ namespace ASC.Web.Studio.UserControls.Statistics
         {
             return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
+        }
+    }
+
+    public static class TenantStatisticsProviderFactory
+    {
+        public static IServiceCollection AddTenantStatisticsProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantStatisticsProvider>();
+
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService();
         }
     }
 }

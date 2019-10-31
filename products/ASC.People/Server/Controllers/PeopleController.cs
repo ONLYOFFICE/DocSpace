@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -1572,6 +1573,45 @@ namespace ASC.Employee.Core.Controllers
             {
                 throw new UnknownImageFormatException();
             }
+        }
+    }
+
+    public static class PeopleControllerFactory
+    {
+        public static IServiceCollection AddPeopleController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageTargetService()
+                .AddAccountLinkerStorageService()
+                .AddFileSizeCommentService()
+                .AddPasswordSettingsService()
+                .AddCookiesManagerService()
+                .AddUserPhotoManagerService()
+                .AddCustomNamingPeopleService()
+                .AddSignatureService()
+                .AddApiContextService()
+                .AddUserManagerWrapperService()
+                .AddInstanceCryptoService()
+                .AddTenantUtilService()
+                .AddSecurityContextService()
+                .AddWebItemSecurityCache()
+                .AddDbManagerService()
+                .AddDisplayUserSettingsService()
+                .AddTenantManagerService()
+                .AddSetupInfo()
+                .AddCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddWebItemManager()
+                .AddAuthContextService()
+                .AddWebItemSecurity()
+                .AddPermissionContextService()
+                .AddTenantStatisticsProviderService()
+                .AddTenantExtraService()
+                .AddMessageServiceService()
+                .AddQueueWorkerRemoveService()
+                .AddQueueWorkerReassignService()
+                .AddStudioNotifyServiceService()
+                .AddUserManagerService();
         }
     }
 }

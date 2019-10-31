@@ -28,6 +28,8 @@ using System;
 using ASC.Data.Storage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility.Skins
 {
@@ -107,6 +109,19 @@ namespace ASC.Web.Core.Utility.Skins
                           webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf("/")) :
                           webitem.StartURL.TrimEnd('/');
             return dir + "/app_themes";
+        }
+    }
+
+    public static class WebImageSupplierExtension
+    {
+        public static IServiceCollection AddWebImageSupplierService(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebImageSupplier>();
+
+            return services
+                .AddWebPathService()
+                .AddHttpContextAccessor()
+                .AddWebItemManager();
         }
     }
 }

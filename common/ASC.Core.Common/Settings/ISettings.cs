@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.Serialization;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.Settings
 {
@@ -123,5 +124,16 @@ namespace ASC.Core.Common.Settings
         public TenantManager TenantManager { get; }
 
         public abstract ISettings GetDefault();
+    }
+
+    public static class BaseSettingsFactory
+    {
+        public static IServiceCollection AddBaseSettingsService(this IServiceCollection services)
+        {
+            return services
+                .AddAuthContextService()
+                .AddSettingsManagerService()
+                .AddTenantManagerService();
+        }
     }
 }

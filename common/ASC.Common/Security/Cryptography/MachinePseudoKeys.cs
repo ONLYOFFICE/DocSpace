@@ -30,6 +30,8 @@ using System.Linq;
 using System.Text;
 using ASC.Common.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Security.Cryptography
 {
@@ -71,6 +73,15 @@ namespace ASC.Security.Cryptography
             var buff = new byte[bytesCount];
             rnd.NextBytes(buff);
             return buff;
+        }
+    }
+    public static class MachinePseudoKeysFactory
+    {
+        public static IServiceCollection AddMachinePseudoKeysService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MachinePseudoKeys>();
+
+            return services;
         }
     }
 }

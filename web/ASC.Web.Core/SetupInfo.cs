@@ -32,6 +32,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ASC.Common.Web;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -212,6 +214,16 @@ namespace ASC.Web.Studio.Core
                 }
             }
             return defaultValue;
+        }
+    }
+
+    public static class SetupInfoFactory
+    {
+        public static IServiceCollection AddSetupInfo(this IServiceCollection services)
+        {
+            services.TryAddSingleton<SetupInfo>();
+
+            return services;
         }
     }
 }

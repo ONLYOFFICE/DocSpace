@@ -36,6 +36,8 @@ using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -52,9 +54,9 @@ namespace ASC.Web.Studio.Utility
         public SetupInfo SetupInfo { get; }
 
         public TenantExtra(
-            UserManager userManager, 
-            TenantStatisticsProvider tenantStatisticsProvider, 
-            AuthContext authContext, 
+            UserManager userManager,
+            TenantStatisticsProvider tenantStatisticsProvider,
+            AuthContext authContext,
             TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
             PaymentManager paymentManager,
@@ -246,6 +248,25 @@ namespace ASC.Web.Studio.Utility
                 }
                 return SetupInfo.ChunkUploadSize;
             }
+        }
+    }
+
+    public static class TenantExtraFactory
+    {
+        public static IServiceCollection AddTenantExtraService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantExtra>();
+
+            return services
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddSetupInfo()
+                .AddPaymentManagerService()
+                .AddLicenseReaderService()
+                .AddTenantStatisticsProviderService()
+                .AddTenantAccessSettingsService();
         }
     }
 }

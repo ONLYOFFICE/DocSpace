@@ -28,6 +28,8 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility.Settings
 {
@@ -63,5 +65,15 @@ namespace ASC.Web.Core.Utility.Settings
         }
 
         #endregion
+    }
+
+    public static class TenantAccessSettingsFactory
+    {
+        public static IServiceCollection AddTenantAccessSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantAccessSettings>();
+
+            return services.AddBaseSettingsService();
+        }
     }
 }

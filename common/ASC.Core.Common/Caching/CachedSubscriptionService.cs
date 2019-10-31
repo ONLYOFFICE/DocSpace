@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Caching;
 using ASC.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -288,11 +289,11 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddSubscriptionService(this IServiceCollection services)
         {
-            return services
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
-                    .AddScoped<DbSubscriptionService>()
-                    .AddScoped<ISubscriptionService, CachedSubscriptionService>()
-                    .AddSingleton<SubscriptionServiceCache>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddScoped<DbSubscriptionService>();
+            services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
+            services.TryAddSingleton<SubscriptionServiceCache>();
+            return services;
         }
     }
 }

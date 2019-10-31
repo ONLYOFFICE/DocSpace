@@ -35,6 +35,7 @@ using ASC.Core.Common.Settings;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
@@ -290,4 +291,32 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
+    public static class StorageSettingsFactory
+    {
+        public static IServiceCollection AddBaseStorageSettingsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddSingleton<BaseStorageSettingsListener>();
+
+            return services
+                .AddStorageFactoryConfigService()
+                .AddPathUtilsService()
+                .AddEmailValidationKeyProviderService()
+                .AddHttpContextAccessor();
+        }
+
+        public static IServiceCollection AddCdnStorageSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<CdnStorageSettings>();
+
+            return services.AddBaseStorageSettingsService();
+        }
+
+        public static IServiceCollection AddStorageSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StorageSettings>();
+
+            return services.AddBaseStorageSettingsService();
+        }
+    }
 }

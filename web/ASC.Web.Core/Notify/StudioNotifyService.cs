@@ -45,6 +45,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -55,21 +56,20 @@ namespace ASC.Web.Studio.Core.Notify
 
         private static string EMailSenderName { get { return ASC.Core.Configuration.Constants.NotifyEMailSenderSysName; } }
 
-        public UserManager UserManager { get; }
-        public StudioNotifyHelper StudioNotifyHelper { get; }
-        public TenantExtra TenantExtra { get; }
-        public AuthManager Authentication { get; }
-        public AuthContext AuthContext { get; }
-        public MailWhiteLabelSettings MailWhiteLabelSettings { get; }
-        public AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public TenantManager TenantManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public SetupInfo SetupInfo { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public DisplayUserSettings DisplayUserSettings { get; }
-        public ILog Log { get; }
+        private UserManager UserManager { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private TenantExtra TenantExtra { get; }
+        private AuthManager Authentication { get; }
+        private AuthContext AuthContext { get; }
+        private MailWhiteLabelSettings MailWhiteLabelSettings { get; }
+        private AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private SetupInfo SetupInfo { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private DisplayUserSettings DisplayUserSettings { get; }
+        private ILog Log { get; }
 
         public StudioNotifyService(
             UserManager userManager,
@@ -80,7 +80,6 @@ namespace ASC.Web.Studio.Core.Notify
             AuthContext authContext,
             MailWhiteLabelSettings mailWhiteLabelSettings,
             AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
@@ -96,7 +95,6 @@ namespace ASC.Web.Studio.Core.Notify
             AuthContext = authContext;
             MailWhiteLabelSettings = mailWhiteLabelSettings;
             AdditionalWhiteLabelSettings = additionalWhiteLabelSettings;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
@@ -923,5 +921,28 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
         #endregion
+    }
+
+    public static class StudioNotifyServiceFactory
+    {
+        public static IServiceCollection AddStudioNotifyServiceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifyService>();
+
+            return services
+                .AddDisplayUserSettingsService()
+                .AddMailWhiteLabelSettingsService()
+                .AddAdditionalWhiteLabelSettingsService()
+                .AddStudioNotifyServiceHelper()
+                .AddUserManagerService()
+                .AddStudioNotifyHelperService()
+                .AddTenantExtraService()
+                .AddAuthManager()
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddSetupInfo();
+        }
     }
 }

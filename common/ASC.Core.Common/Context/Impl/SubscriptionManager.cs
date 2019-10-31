@@ -26,6 +26,9 @@
 
 using System;
 using System.Linq;
+using ASC.Core.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -33,7 +36,7 @@ namespace ASC.Core
     {
         private readonly ISubscriptionService service;
 
-        public TenantManager TenantManager { get; }
+        private TenantManager TenantManager { get; }
 
         public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager)
         {
@@ -143,6 +146,17 @@ namespace ASC.Core
         private int GetTenant()
         {
             return TenantManager.GetCurrentTenant().TenantId;
+        }
+    }
+
+    public static class SubscriptionConfigFactory
+    {
+        public static IServiceCollection AddSubscriptionManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SubscriptionManager>();
+            return services
+                    .AddSubscriptionService()
+                    .AddTenantManagerService();
         }
     }
 }

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using ASC.Common.Caching;
 using ASC.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -121,10 +122,12 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddAzService(this IServiceCollection services)
         {
-            return services.AddScoped<DbAzService>()
-                    .AddScoped<IAzService, CachedAzService>()
-                    .AddSingleton<AzServiceCache>()
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddScoped<DbAzService>();
+            services.TryAddScoped<IAzService, CachedAzService>();
+            services.TryAddSingleton<AzServiceCache>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services;
         }
     }
 }

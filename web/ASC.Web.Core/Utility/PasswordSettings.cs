@@ -29,6 +29,8 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility
 {
@@ -93,6 +95,16 @@ namespace ASC.Web.Core.Utility
             }
 
             return _default;
+        }
+    }
+
+    public static class PasswordSettingsFactory
+    {
+        public static IServiceCollection AddPasswordSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PasswordSettings>();
+
+            return services.AddBaseSettingsService();
         }
     }
 }

@@ -34,6 +34,7 @@ using ASC.Web.Core.WebZones;
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
@@ -257,8 +258,16 @@ namespace ASC.Web.Core
     {
         public static IServiceCollection AddWebItemManager(this IServiceCollection services)
         {
-            services.AddSingleton<WebItemManager>();
+            services.TryAddSingleton<WebItemManager>();
             return services;
+        }
+        public static IServiceCollection AddWebItemManagerSecurity(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebItemManagerSecurity>();
+            return services
+                .AddAuthContextService()
+                .AddWebItemSecurity()
+                .AddWebItemManager();
         }
     }
 }

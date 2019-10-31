@@ -69,7 +69,7 @@ namespace ASC.Web.Api.Controllers
         [Create("confirm", false)]
         public ValidationResult CheckConfirm([FromBody]EmailValidationKeyModel model)
         {
-            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, AuthManager);
+            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
         }
 
         private UserInfo GetUser(int tenantId, string userName, string password)

@@ -33,6 +33,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -616,14 +617,15 @@ namespace ASC.Core
     {
         public static IServiceCollection AddUserManagerService(this IServiceCollection services)
         {
+            services.TryAddSingleton<UserManagerConstants>();
+            services.TryAddScoped<UserManager>();
+
             return services
                 .AddUserService()
                 .AddHttpContextAccessor()
                 .AddTenantManagerService()
                 .AddConstantsService()
-                .AddPermissionContextService()
-                .AddSingleton<UserManagerConstants>()
-                .AddScoped<UserManager>();
+                .AddPermissionContextService();
         }
     }
 }

@@ -33,6 +33,7 @@ using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -460,12 +461,12 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddUserService(this IServiceCollection services)
         {
-            return services
-                    .AddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>))
-                    .AddCoreSettingsService()
-                    .AddScoped<DbUserService>()
-                    .AddScoped<IUserService, CachedUserService>()
-                    .AddSingleton<UserServiceCache>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.AddCoreSettingsService();
+            services.TryAddScoped<DbUserService>();
+            services.TryAddScoped<IUserService, CachedUserService>();
+            services.TryAddSingleton<UserServiceCache>();
+            return services;
         }
     }
 }

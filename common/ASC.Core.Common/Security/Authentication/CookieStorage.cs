@@ -33,6 +33,8 @@ using ASC.Core.Tenants;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Security.Authentication
@@ -41,10 +43,10 @@ namespace ASC.Core.Security.Authentication
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
-        public InstanceCrypto InstanceCrypto { get; }
-        public TenantCookieSettings TenantCookieSettings { get; }
-        public HttpContext HttpContext { get; }
-        public ILog Log { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private TenantCookieSettings TenantCookieSettings { get; }
+        private HttpContext HttpContext { get; }
+        private ILog Log { get; }
 
         public CookieStorage(
             IHttpContextAccessor httpContextAccessor,
@@ -134,6 +136,18 @@ namespace ASC.Core.Security.Authentication
             }
             catch { }
             return Hasher.Base64Hash(data ?? string.Empty, HashAlg.SHA256);
+        }
+    }
+
+    public static class CookieStorageFactory
+    {
+        public static IServiceCollection AddCookieStorageService(this IServiceCollection services)
+        {
+            services.TryAddScoped<CookieStorage>();
+
+            return services
+                .AddTenantCookieSettingsService()
+                .AddInstanceCryptoService();
         }
     }
 }

@@ -28,6 +28,8 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -55,6 +57,16 @@ namespace ASC.IPSecurity
         public override ISettings GetDefault()
         {
             return new IPRestrictionsSettings { Enable = false };
+        }
+    }
+
+    public static class IPRestrictionsSettingsFactory
+    {
+        public static IServiceCollection AddIPRestrictionsSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPRestrictionsSettings>();
+
+            return services.AddBaseSettingsService();
         }
     }
 }

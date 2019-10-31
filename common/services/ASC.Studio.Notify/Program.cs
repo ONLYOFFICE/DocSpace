@@ -7,6 +7,7 @@ using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Studio.Notify
@@ -41,10 +42,10 @@ namespace ASC.Studio.Notify
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddWebItemManager();
-                    services.AddSingleton<StudioNotifyServiceSender>();
+                    services.TryAddSingleton<StudioNotifyServiceSender>();
                     services.AddHostedService<ServiceLauncher>();
                     services.AddHttpContextAccessor()
-                            .AddStorage(hostContext.Configuration);
+                .AddStorage();
                 })
                 .UseConsoleLifetime()
                 .Build();

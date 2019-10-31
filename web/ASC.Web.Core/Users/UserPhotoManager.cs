@@ -40,6 +40,8 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core.Users
@@ -1034,5 +1036,42 @@ namespace ASC.Web.Core.Users
     {
         public static void Deconstruct(this Size size, out int w, out int h) =>
             (w, h) = (size.Width, size.Height);
+    }
+
+    public static class ResizeWorkerItemFactory
+    {
+        public static IServiceCollection AddResizeWorkerItemService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>();
+            services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
+            services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
+
+            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
+            {
+                r.workerCount = 2;
+                r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
+                r.errorCount = 1;
+                r.stopAfterFinsih = true;
+            });
+
+            return services;
+        }
+    }
+
+    public static class UserPhotoManagerExtension
+    {
+        public static IServiceCollection AddUserPhotoManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<UserPhotoManager>();
+            services.TryAddSingleton<UserPhotoManagerCache>();
+
+            return services
+                .AddStorageFactoryService()
+                .AddUserPhotoThumbnailSettingsService()
+                .AddWebImageSupplierService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddResizeWorkerItemService();
+        }
     }
 }

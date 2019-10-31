@@ -30,6 +30,9 @@ using System.Linq;
 using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
 {
@@ -133,6 +136,31 @@ namespace ASC.Data.Reassigns
         public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
         {
             return Start(tenantId, user.ID, () => new RemoveProgressItem(ServiceProvider, HttpContextAccessor.HttpContext, this, tenantId, user, currentUserId, notify)) as RemoveProgressItem;
+        }
+    }
+
+    public static class QueueFactory
+    {
+        public static IServiceCollection AddQueueWorkerRemoveService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+            services.AddSingleton<IConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            services.TryAddScoped<QueueWorkerRemove>();
+
+            return services
+                .AddHttpContextAccessor();
+        }
+        public static IServiceCollection AddQueueWorkerReassignService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            services.TryAddScoped<QueueWorkerReassign>();
+
+            return services
+                .AddQueueWorkerRemoveService()
+                .AddHttpContextAccessor();
         }
     }
 }

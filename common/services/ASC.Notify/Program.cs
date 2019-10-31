@@ -8,6 +8,7 @@ using ASC.Web.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
@@ -44,11 +45,11 @@ namespace ASC.Notify
                     var serviceProvider = services.BuildServiceProvider();
                     var c = hostContext.Configuration.GetSetting<NotifyServiceCfg>("notify");
                     c.Init();
-                    services.AddSingleton(c);
-                    services.AddSingleton<DbWorker>();
-                    services.AddSingleton<NotifyCleaner>();
-                    services.AddSingleton<NotifySender>();
-                    services.AddSingleton<NotifyService>();
+                    services.TryAddSingleton(c);
+                    services.TryAddSingleton<DbWorker>();
+                    services.TryAddSingleton<NotifyCleaner>();
+                    services.TryAddSingleton<NotifySender>();
+                    services.TryAddSingleton<NotifyService>();
                     services.AddHostedService<NotifyServiceLauncher>();
                 })
                 .UseConsoleLifetime()

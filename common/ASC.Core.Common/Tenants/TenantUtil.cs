@@ -25,6 +25,8 @@
 
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
@@ -90,6 +92,16 @@ namespace ASC.Core.Tenants
         public static DateTime DateTimeNow(TimeZoneInfo timeZone)
         {
             return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+        }
+    }
+
+    public static class TenantUtilFactory
+    {
+        public static IServiceCollection AddTenantUtilService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantUtil>();
+
+            return services.AddTenantManagerService();
         }
     }
 }

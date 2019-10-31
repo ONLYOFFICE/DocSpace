@@ -36,6 +36,8 @@ using ASC.Data.Storage.Configuration;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -223,6 +225,27 @@ namespace ASC.Data.Storage
             {
                 return false;
             }
+        }
+    }
+
+    public static class WebPathExtension
+    {
+        public static IServiceCollection AddWebPathService(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebPath>();
+
+            return services
+                .AddStaticUploaderService()
+                .AddCdnStorageSettingsService()
+                .AddWebPathSettingsService()
+                .AddCoreBaseSettingsService()
+                .AddHttpContextAccessor();
+        }
+        public static IServiceCollection AddWebPathSettingsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WebPathSettings>();
+
+            return services.AddStorage();
         }
     }
 }

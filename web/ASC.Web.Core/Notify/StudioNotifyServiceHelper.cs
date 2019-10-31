@@ -6,6 +6,8 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Notify
 {
@@ -105,6 +107,20 @@ namespace ASC.Web.Core.Notify
             item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
 
             Cache.Publish(item, CacheNotifyAction.Any);
+        }
+    }
+
+    public static class StudioNotifyServiceHelperFactory
+    {
+        public static IServiceCollection AddStudioNotifyServiceHelper(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifyServiceHelper>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services
+                .AddAuthContextService()
+                .AddStudioNotifyHelperService()
+                .AddTenantManagerService();
         }
     }
 }

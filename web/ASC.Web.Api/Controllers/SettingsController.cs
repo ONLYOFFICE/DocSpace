@@ -280,7 +280,7 @@ namespace ASC.Api.Settings
         [Read("timezones")]
         public IEnumerable<TimeZoneInfo> GetTimeZones()
         {
-            var timeZones =  TimeZoneInfo.GetSystemTimeZones().ToList();
+            var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
             if (timeZones.All(tz => tz.Id != "UTC"))
             {

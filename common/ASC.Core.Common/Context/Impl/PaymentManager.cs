@@ -36,9 +36,12 @@ using System.Threading;
 using System.Web;
 using System.Xml.Linq;
 using ASC.Core.Billing;
+using ASC.Core.Caching;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 
@@ -212,6 +215,20 @@ namespace ASC.Core
             public string exceptionMessage = null;
             public string exceptionType = null;
             public string stackTrace = null;
+        }
+    }
+
+    public static class PaymentManagerFactory
+    {
+        public static IServiceCollection AddPaymentManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PaymentManager>();
+
+            return services
+                .AddCoreSettingsService()
+                .AddTenantManagerService()
+                .AddQuotaService()
+                .AddTariffService();
         }
     }
 }

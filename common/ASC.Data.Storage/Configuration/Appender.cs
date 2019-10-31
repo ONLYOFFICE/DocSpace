@@ -4,14 +4,16 @@ using System.Linq;
 using ASC.Common.Utils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigFactory
     {
-        public static IServiceCollection AddStorage(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddStorage(this IServiceCollection services)
         {
-            return services.AddSingleton(r => configuration.GetSetting<Storage>("Storage"));
+            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
+            return services;
         }
     }
 

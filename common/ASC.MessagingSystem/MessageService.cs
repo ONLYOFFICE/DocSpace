@@ -31,6 +31,8 @@ using ASC.Common.Logging;
 using ASC.MessagingSystem.DbSender;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
@@ -41,10 +43,16 @@ namespace ASC.MessagingSystem
         private readonly IMessageSender sender;
         private readonly HttpRequest request;
 
-        public MessageFactory MessageFactory { get; }
-        public MessagePolicy MessagePolicy { get; }
+        private MessageFactory MessageFactory { get; }
+        private MessagePolicy MessagePolicy { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, MessageFactory messageFactory, DbMessageSender sender, MessagePolicy messagePolicy, IOptionsMonitor<LogNLog> options)
+        public MessageService(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            MessageFactory messageFactory,
+            DbMessageSender sender,
+            MessagePolicy messagePolicy,
+            IOptionsMonitor<LogNLog> options)
         {
             if (configuration["messaging:enabled"] != "true")
             {
@@ -276,6 +284,20 @@ namespace ASC.MessagingSystem
             if (!MessagePolicy.Check(message)) return;
 
             sender.Send(message);
+        }
+    }
+
+    public static class MessageServiceFactory
+    {
+        public static IServiceCollection AddMessageServiceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MessageService>();
+
+            return services
+                .AddMessagePolicyService()
+                .AddHttpContextAccessor()
+                .AddDbMessageSenderService()
+                .AddMessageFactoryService();
         }
     }
 }

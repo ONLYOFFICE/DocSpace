@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using ASC.Core.Security.Authorizing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.Security.Authorizing
 {
@@ -151,6 +152,8 @@ namespace ASC.Common.Security.Authorizing
     {
         public static IServiceCollection AddAzManagerService(this IServiceCollection services)
         {
+            services.TryAddScoped<AzManager>();
+
             return services
                 .AddPermissionProviderService()
                 .AddRoleProviderService();

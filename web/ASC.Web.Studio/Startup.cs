@@ -41,7 +41,7 @@ namespace ASC.Web.Studio
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             services.AddHttpContextAccessor()
-                .AddStorage(Configuration);
+                .AddStorage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

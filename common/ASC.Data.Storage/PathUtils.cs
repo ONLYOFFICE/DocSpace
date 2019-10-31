@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Data.Storage
 {
@@ -105,6 +107,16 @@ namespace ASC.Data.Storage
                 physPath = Path.GetFullPath(Path.Combine(WebHostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
+        }
+    }
+
+    public static class PathUtilsExtension
+    {
+        public static IServiceCollection AddPathUtilsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<PathUtils>();
+
+            return services;
         }
     }
 }

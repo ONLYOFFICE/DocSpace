@@ -29,6 +29,8 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -78,6 +80,16 @@ namespace ASC.Web.Core.Users
                 Size = new Size(UserPhotoManager.MaxFotoSize.Width, UserPhotoManager.MaxFotoSize.Height),
                 IsDefault = true
             };
+        }
+    }
+
+    public static class UserPhotoThumbnailSettingsFactory
+    {
+        public static IServiceCollection AddUserPhotoThumbnailSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<UserPhotoThumbnailSettings>();
+
+            return services.AddBaseSettingsService();
         }
     }
 }

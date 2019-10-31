@@ -33,6 +33,8 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
@@ -239,5 +241,16 @@ namespace ASC.Security.Cryptography
 
         public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType? confirmType, out int? p)
             => (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
+    }
+
+    public static class EmailValidationKeyProviderExtension
+    {
+        public static IServiceCollection AddEmailValidationKeyProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<EmailValidationKeyProvider>();
+
+            return services
+                .AddTenantManagerService();
+        }
     }
 }

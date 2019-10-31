@@ -41,6 +41,7 @@ using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -612,9 +613,9 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
     {
         public static IServiceCollection AddTariffService(this IServiceCollection services)
         {
-            return services
-                    .AddSingleton<TariffServiceStorage>()
-                    .AddScoped<ITariffService, TariffService>();
+            services.TryAddSingleton<TariffServiceStorage>();
+            services.TryAddScoped<ITariffService, TariffService>();
+            return services;
         }
     }
 }

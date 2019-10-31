@@ -35,6 +35,8 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -333,5 +335,19 @@ namespace ASC.Core.Billing
         public PaymentManager PaymentManager { get; }
         public CoreSettings CoreSettings { get; }
         public IConfiguration Configuration { get; }
+    }
+
+    public static class LicenseReaderFactory
+    {
+        public static IServiceCollection AddLicenseReaderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<LicenseReader>();
+
+            return services
+                .AddUserManagerService()
+                .AddPaymentManagerService()
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
+        }
     }
 }

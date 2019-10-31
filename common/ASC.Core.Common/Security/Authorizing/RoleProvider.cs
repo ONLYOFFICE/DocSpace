@@ -32,6 +32,7 @@ using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Users;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Security.Authorizing
 {
@@ -87,7 +88,8 @@ namespace ASC.Core.Security.Authorizing
     {
         public static IServiceCollection AddRoleProviderService(this IServiceCollection services)
         {
-            return services.AddSingleton(typeof(IRoleProvider), typeof(RoleProvider));
+            services.TryAddSingleton(typeof(IRoleProvider), typeof(RoleProvider));
+            return services;
         }
     }
 }

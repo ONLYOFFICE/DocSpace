@@ -30,6 +30,8 @@ using System.Text;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
@@ -94,6 +96,15 @@ namespace ASC.Common.Utils
         {
             using var md5 = MD5.Create();
             return Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
+        }
+    }
+
+    public static class SignatureExtension
+    {
+        public static IServiceCollection AddSignatureService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<Signature>();
+            return services.AddMachinePseudoKeysService();
         }
     }
 }
