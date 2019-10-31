@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import isEqual from "lodash/isEqual";
 import TextInput from '../text-input'
 import { EmailSettings, parseAddress, checkAndConvertEmailSettings, isEqualEmailSettings } from '../../utils/email/';
-import punycode from 'punycode';
 
 const borderColor = {
   default: '#D0D5DA',
@@ -79,9 +78,7 @@ class EmailInput extends React.Component {
   onChangeAction = (e) => {
     this.props.onChange && this.props.onChange(e);
 
-// Google Chrome doesn't support IDN for TLDs and is converting them to Punycode. There is variable 'inputValue' against Chrome`s converting
-    const inputValue = punycode.toUnicode(e.target.value);
-    this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(inputValue);
+    this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(e.target.value);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -100,7 +97,7 @@ class EmailInput extends React.Component {
         isValidEmail={isValid || isValidEmail}
         value={inputValue}
         onChange={this.onChangeAction}
-        type='email'
+        type='text'
         onValidateInput={onValidateInput}
         {...rest}
       />
