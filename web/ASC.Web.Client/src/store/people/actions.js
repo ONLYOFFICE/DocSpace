@@ -41,13 +41,13 @@ export function changeAdmins(userId, productId, isAdmin) {
   return dispatch => {
     return api
       .changeProductAdmin(userId, productId, isAdmin)
+      .then(() => dispatch(getListUsers()))
       .then(() => dispatch(getListAdmins()));
   };
 }
 
 export function getUserById(userId) {
   return dispatch => {
-    return api.getUserById(userId)
-    .then(owner => dispatch(setOwner(owner)));
+    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
   };
 }
