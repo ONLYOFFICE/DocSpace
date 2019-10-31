@@ -35,10 +35,8 @@ using ASC.Common.Web;
 using ASC.Core;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.DiscStorage
@@ -152,10 +150,10 @@ namespace ASC.Data.Storage.DiscStorage
     {
         public static IEndpointRouteBuilder RegisterStorageHandler(this IEndpointRouteBuilder builder, string module, string domain, bool publicRoute = false)
         {
-            var pathUtils = new PathUtils(builder.ServiceProvider.GetService<IConfiguration>(), builder.ServiceProvider.GetService<IWebHostEnvironment>());
+            var pathUtils = builder.ServiceProvider.GetService<PathUtils>();
             var virtPath = pathUtils.ResolveVirtualPath(module, domain);
             virtPath = virtPath.TrimStart('/');
-            
+
             var handler = new StorageHandler(builder.ServiceProvider, string.Empty, module, domain, !publicRoute);
             var url = virtPath + "{*pathInfo}";
 
@@ -172,6 +170,14 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             return builder;
+        }
+        public static IServiceCollection AddStorageHandlerService(this IServiceCollection services)
+        {
+            return services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddStorageFactoryService()
+                .AddEmailValidationKeyProviderService();
         }
     }
 }

@@ -1,13 +1,18 @@
 using ASC.Api.Core.Auth;
+using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
+using ASC.Data.Storage.DiscStorage;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Studio
@@ -40,11 +45,20 @@ namespace ASC.Web.Studio
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            services.AddHttpContextAccessor()
-                .AddStorage();
+            services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+
+            services.Configure<LogNLog>(r => r.Name = "ASC");
+            services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
+
+            services.Configure<DbManager>(r => { });
+            services.Configure<DbManager>("default", r => { });
+
+            services
+                .AddStorage()
+                .AddPathUtilsService()
+                .AddStorageHandlerService();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
