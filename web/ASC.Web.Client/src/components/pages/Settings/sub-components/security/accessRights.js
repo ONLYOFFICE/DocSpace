@@ -6,11 +6,11 @@ import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
-  getListUsers,
-  getListAdmins,
   changeAdmins,
-  getUserById
+  getListAdmins,
+  getListUsers
 } from "../../../../../store/people/actions";
+//import { filter } from "lodash";
 import {
   Text,
   Avatar,
@@ -21,10 +21,10 @@ import {
   Link,
   RadioButtonGroup,
   Paging,
-  SearchInput,
   SelectorAddButton,
-  IconButton
-  //toastr,
+  IconButton,
+  AdvancedSelector,
+  toastr
 } from "asc-web-components";
 
 const MainContainer = styled.div`
@@ -71,9 +71,20 @@ const AvatarContainer = styled.div`
   height: 100px;
   margin-right: 130px;
   margin-bottom: 24px;
-
   padding: 8px;
   border: 1px solid lightgrey;
+
+  .avatar_wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  .avatar_body {
+    margin-left: 24px;
+    max-width: 190px;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
 `;
 
 const ToggleContentContainer = styled.div`
@@ -85,8 +96,12 @@ const ToggleContentContainer = styled.div`
     margin-top: 16px;
   }
 
-  .icon {
-    width: 25px;
+  .advanced-selector {
+    position: relative;
+  }
+
+  .selector-button {
+    max-width: 34px;
   }
 `;
 
@@ -98,67 +113,101 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
+    //const users = this.filterUsersSelectorOptions(props.users);
+
     this.state = {
-      searchValue: ""
+      showSelector: false,
+      //users,
+      //advancedOptions: this.AdvancedSelectorFunction(users),
+      //admins: this.filterAdminsSelectorOptions(props.admins, props.ownerId)
     };
   }
 
   componentDidMount() {
-    const { getListUsers, getListAdmins, getUserById, ownerId } = this.props;
-
-    getUserById(ownerId)
-      .then(res => {
-        /*console.log("getUserById", res)*/
-      })
-      .catch(res => {
-        /*console.log("getUserById", res)*/
-      });
+    const { getListAdmins, getListUsers } = this.props;
 
     getListUsers()
       .then(res => {
-        //console.log("getUsers response", res);
+        //console.log("getListAdmins", res);
       })
       .catch(error => {
-        console.log(error);
+        toastr("accessRights getListAdmins", error);
       });
 
     getListAdmins()
       .then(res => {
-        //console.log("getUsers response", res);
+        //console.log("getListAdmins", res);
       })
       .catch(error => {
-        console.log(error);
+        toastr("accessRights getListAdmins", error);
       });
   }
-
   //componentDidUpdate(prevProps, prevState) {}
   //componentWillUnmount() {}
 
-  onSearchChange = value => {
-    this.setState({
-      searchValue: value
-    });
-  };
-
-  onChangeAdmin = (user, isAdmin) => {
-    const userId = user.id;
-    const { changeAdmins, productId } = this.props;
+  onChangeAdmin = (userId, isAdmin) => {
+    const { changeAdmins, getListAdmins, productId } = this.props;
 
     changeAdmins(userId, productId, isAdmin)
       .then(res => {
-        console.log("Delete admin response", res);
+        //console.log("Delete admin response", res);
       })
       .catch(error => {
-        console.log("onDeleteAdminUser", error);
+        toastr("accessRights onChangeAdmin", error);
       });
+
+    getListAdmins()
+      .then(res => {
+        //console.log("getListAdmins", res);
+      })
+      .catch(error => {
+        toastr("accessRights getListAdmins", error);
+      });
+    console.log("this.props.admins", this.props.admins);
+
   };
 
-  onShowAdvancedSelector = () => console.log("Add new user");
+  onShowGroupSelector = () =>
+    this.setState({ showSelector: !this.state.showSelector });
+
+  AdvancedSelectorFunction = users =>
+    users.map(user => {
+      return {
+        key: user.id,
+        label: user.displayName
+      };
+    });
+
+  onSelect = selected => {
+    selected.map(user => this.onChangeAdmin(user.key, true));
+    this.onShowGroupSelector();
+  };
+
+  onSearchUsers = template => {
+    const { advancedOptions } = this.state;
+    this.setState({
+      advancedOptions: this.filterUserSelectorOptions(advancedOptions, template)
+    });
+  };
+
+  /*filterUserSelectorOptions = (options, template) => {
+    return options.filter(option => option.label.indexOf(template) > -1);
+  };
+
+  filterAdminsSelectorOptions = (options, template) => {
+    console.log("options", options);
+    return filter(options, function(f) {
+      return f.id !== template;
+    });
+  };
+
+  filterUsersSelectorOptions = options => {
+    return filter(options, ["isAdmin", false]);
+  };*/
 
   render() {
-    const { t } = this.props;
-    const { users, owner, admins } = this.props;
-    const { searchValue } = this.state;
+    const { t, owner, admins, users } = this.props;
+    const { showSelector } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -169,17 +218,22 @@ class PureAccessRights extends Component {
 
         <BodyContainer>
           <AvatarContainer>
-            <Avatar size="big" role="owner" />
-            {owner ? (
-              <div style={{ marginLeft: "24px" }}>
-                <Text.Body className="avatar_text" fontSize={16} isBold={true}>
-                  {owner.displayName}
-                </Text.Body>
-                <Text.Body className="avatar_text" fontSize={12}>
-                  {owner.department}
-                </Text.Body>
-              </div>
-            ) : null}
+            <div className="avatar_wrapper">
+              <Avatar
+                size="big"
+                role="owner"
+                userName={owner.userName}
+                source={owner.avatar}
+              />
+            </div>
+            <div className="avatar_body">
+              <Text.Body className="avatar_text" fontSize={16} isBold={true}>
+                {owner.displayName}
+              </Text.Body>
+              <Text.Body className="avatar_text" fontSize={12}>
+                {owner.department}
+              </Text.Body>
+            </div>
           </AvatarContainer>
           <ProjectsBody>
             <Text.Body className="portal_owner" fontSize={12}>
@@ -199,17 +253,33 @@ class PureAccessRights extends Component {
             label={t("AdminSettings")}
             isOpen={true}
           >
-            <SearchInput
-              className="wrapper"
-              id="member-search"
-              //isDisabled={inLoading}
-              scale={true}
-              placeholder="Search"
-              value={searchValue}
-              onChange={this.onSearchChange}
-            />
+            <div className="selector-button">
+              <SelectorAddButton
+                //isDisabled={isDisabled}
+                //title={showGroupSelectorButtonTitle}
+                onClick={this.onShowGroupSelector}
+              />
+            </div>
+
+            <div className="advanced-selector">
+              <AdvancedSelector
+                displayType="dropdown"
+                isOpen={showSelector}
+                placeholder="placeholder"
+                //options={advancedOptions}
+                options={this.AdvancedSelectorFunction(users)}
+                onSearchChanged={this.onSearchUsers}
+                //groups={groups}
+                isMultiSelect={true}
+                buttonLabel="Add members"
+                onSelect={this.onSelect}
+                onCancel={this.onShowGroupSelector}
+                onAddNewClick={() => console.log("onAddNewClick")}
+                selectAllLabel="selectorSelectAllText"
+              />
+            </div>
+
             <div className="wrapper">
-              {console.log("manualHeight", admins)}
               <RowContainer manualHeight={`${admins.length * 50}px`}>
                 {admins.map(user => {
                   const element = (
@@ -246,9 +316,13 @@ class PureAccessRights extends Component {
                         <div style={{ maxWidth: 120 }} />
                         <div style={{ marginLeft: "60px" }}>
                           <IconButton
-                            size="25"
+                            size="16"
                             isDisabled={false}
-                            onClick={this.onChangeAdmin.bind(this, user, false)}
+                            onClick={this.onChangeAdmin.bind(
+                              this,
+                              user.id,
+                              false
+                            )}
                             iconName={"CatalogTrashIcon"}
                             isFill={true}
                             isClickable={false}
@@ -275,7 +349,6 @@ class PureAccessRights extends Component {
                 />
               </div>
             ) : null}
-            <SelectorAddButton onClick={this.onShowAdvancedSelector} />
           </ToggleContent>
 
           <ToggleContent
@@ -324,10 +397,6 @@ class PureAccessRights extends Component {
   }
 }
 
-PureAccessRights.propTypes = {};
-
-PureAccessRights.defaultProps = {};
-
 const AccessRightsContainer = withTranslation()(PureAccessRights);
 
 const AccessRights = props => {
@@ -347,8 +416,8 @@ function mapStateToProps(state) {
     users: state.settings.users,
     admins: state.settings.admins,
     productId: state.auth.modules[0].id,
-    ownerId: state.auth.settings.ownerId,
-    owner: state.settings.owner
+    owner: state.settings.owner,
+    ownerId: state.auth.settings.ownerId
   };
 }
 
@@ -370,5 +439,5 @@ AccessRights.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { getListUsers, getListAdmins, changeAdmins, getUserById }
+  { changeAdmins, getListAdmins, getListUsers }
 )(withRouter(AccessRights));

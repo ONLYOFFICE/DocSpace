@@ -8,6 +8,7 @@ import {
   Link
 } from "asc-web-components";
 import { setNewSelectedNode } from '../../../../../store/auth/actions';
+import { getUserById, getListAdmins, getListUsers } from '../../../../../store/people/actions';
 import { withRouter } from "react-router";
 import { settingsTree } from '../../../../../helpers/constants';
 import styled from 'styled-components';
@@ -127,6 +128,34 @@ class ArticleBodyContent extends React.Component {
 
   }
 
+  componentDidMount() {
+    const { getListUsers, getListAdmins, getUserById, ownerId } = this.props;
+
+    getUserById(ownerId)
+      .then(res => {
+        /*console.log("getUserById", res)*/
+      })
+      .catch(res => {
+        /*console.log("getUserById", res)*/
+      });
+
+    getListUsers()
+      .then(res => {
+        //console.log("getUsers response", res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    getListAdmins()
+      .then(res => {
+        //console.log("getUsers response", res);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
   componentDidUpdate() {
     const { selectedKeys, match, history } = this.props;
     const settingsPath = getSelectedLinkByKey(selectedKeys[0]);
@@ -203,8 +232,9 @@ class ArticleBodyContent extends React.Component {
 function mapStateToProps(state) {
   return {
     selectedKeys: state.auth.settings.settingsTree.selectedKey,
-    language: state.auth.user.cultureName
+    language: state.auth.user.cultureName,
+    ownerId: state.auth.settings.ownerId,
   };
 }
 
-export default connect(mapStateToProps, { setNewSelectedNode })(withRouter(withTranslation()(ArticleBodyContent)));
+export default connect(mapStateToProps, { setNewSelectedNode, getUserById, getListAdmins, getListUsers })(withRouter(withTranslation()(ArticleBodyContent)));
