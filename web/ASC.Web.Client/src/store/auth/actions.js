@@ -10,7 +10,6 @@ export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
-export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
 export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
 export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
 export const GET_TIMEZONES = 'GET_TIMEZONES';
@@ -68,13 +67,6 @@ export function setNewEmail(email) {
     return {
         type: SET_NEW_EMAIL,
         email
-    };
-};
-
-export function setNewSelectedNode(selectedNodeLink) {
-    return {
-        type: SET_NEW_SETTING_NODE,
-        selectedNodeLink
     };
 };
 
