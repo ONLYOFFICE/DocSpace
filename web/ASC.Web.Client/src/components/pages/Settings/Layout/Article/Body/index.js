@@ -7,9 +7,9 @@ import {
   Icons,
   Link
 } from "asc-web-components";
-import { setNewSelectedNode } from '../../../../../store/auth/actions';
+import { setNewSelectedNode } from '../../../../../../store/auth/actions';
 import { withRouter } from "react-router";
-import { settingsTree } from '../../../../../helpers/constants';
+import { settingsTree } from '../../../../../../helpers/constants';
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
 
@@ -102,16 +102,10 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedKeys, match, history, setNewSelectedNode,  i18n, language  } = props;
+    const { match, history, setNewSelectedNode, i18n, language } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
     i18n.changeLanguage(language);
-
-    if (locationPathname === fullSettingsUrl) {
-      const newPath = match.path + getSelectedLinkByKey(selectedKeys[0]);
-      history.push(newPath);
-      return;
-    }
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
 
