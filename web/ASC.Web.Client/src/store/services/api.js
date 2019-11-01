@@ -149,15 +149,17 @@ export function getPortalTimezones() {
   });
 }
 
-export function getUserList(role) {
-  let params =  "";
-  if(role === "admin") {
-    params =  "/filter?isAdministrator=true";
-  }
-
+export function getUserList() {
   return request({
     method: "get",
-    url: `/people${params}`
+    url: `/people`
+  });
+}
+
+export function getProductAdminsList(productId) {
+  return request({
+    method: "get",
+    url: `/settings/security/administrator/${productId}`
   });
 }
 

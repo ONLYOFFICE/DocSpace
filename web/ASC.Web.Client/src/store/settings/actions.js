@@ -31,18 +31,20 @@ export function getListUsers() {
   };
 }
 
-export function getListAdmins() {
+export function getListAdmins(productId) {
   return dispatch => {
-    return api.getUserList("admin").then(admins => dispatch(setAdmins(admins)));
+    return api
+      .getProductAdminsList(productId)
+      .then(admins => dispatch(setAdmins(admins)));
   };
 }
 
 export function changeAdmins(userId, productId, isAdmin) {
   return dispatch => {
-    return api
-      .changeProductAdmin(userId, productId, isAdmin)
-      .then(() => dispatch(getListUsers()))
-      .then(() => dispatch(getListAdmins()));
+    return api.changeProductAdmin(userId, productId, isAdmin).then(() => {
+      dispatch(getListUsers());
+      dispatch(getListAdmins(productId));
+    });
   };
 }
 
