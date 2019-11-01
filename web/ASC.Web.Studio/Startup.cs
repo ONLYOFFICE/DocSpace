@@ -54,6 +54,7 @@ namespace ASC.Web.Studio
             services.Configure<DbManager>("default", r => { });
 
             services
+                .AddCookieAuthHandler()
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService();

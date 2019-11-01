@@ -72,6 +72,15 @@ namespace ASC.People
 
             var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
+            services
+                .AddConfirmAuthHandler()
+                .AddCookieAuthHandler()
+                .AddCultureMiddleware()
+                .AddIpSecurityFilter()
+                .AddPaymentFilter()
+                .AddProductSecurityFilter()
+                .AddTenantStatusFilter();
+
             services.Configure<LogNLog>(r => r.Name = "ASC");
             services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
             services.Configure<LogNLog>("ASC.Api", r => r.Name = "ASC.Api");

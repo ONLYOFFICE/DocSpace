@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ASC.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -47,6 +48,14 @@ namespace ASC.Api.Core.Middleware
         public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<CultureMiddleware>();
+        }
+
+        public static IServiceCollection AddCultureMiddleware(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddAuthContextService();
         }
     }
 }

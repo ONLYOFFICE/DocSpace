@@ -7,6 +7,7 @@ using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
@@ -44,6 +45,15 @@ namespace ASC.Api.Core.Middleware
                     log.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
                 }
             }
+        }
+    }
+
+    public static class PaymentFilterExtension
+    {
+        public static IServiceCollection AddPaymentFilter(this IServiceCollection services)
+        {
+            return services
+                .AddTenantExtraService();
         }
     }
 }

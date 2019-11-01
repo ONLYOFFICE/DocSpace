@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
@@ -117,6 +118,18 @@ namespace ASC.Api.Core.Middleware
                 return products[name];
             }
             return default;
+        }
+    }
+
+    public static class ProductSecurityFilterExtension
+    {
+        public static IServiceCollection AddProductSecurityFilter(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddWebItemSecurity()
+                .AddAuthContextService();
         }
     }
 }

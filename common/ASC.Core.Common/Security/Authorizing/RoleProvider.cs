@@ -88,7 +88,7 @@ namespace ASC.Core.Security.Authorizing
     {
         public static IServiceCollection AddRoleProviderService(this IServiceCollection services)
         {
-            services.TryAddSingleton(typeof(IRoleProvider), typeof(RoleProvider));
+            services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
             return services;
         }
     }

@@ -4,6 +4,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASC.Core;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -33,6 +34,14 @@ namespace ASC.Api.Core.Auth
                      AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
                      AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString()))
                      );
+        }
+    }
+
+    public static class CookieAuthHandlerExtension
+    {
+        public static IServiceCollection AddCookieAuthHandler(this IServiceCollection services)
+        {
+            return services.AddSecurityContextService();
         }
     }
 }

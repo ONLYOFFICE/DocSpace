@@ -4,6 +4,7 @@ using ASC.Core;
 using ASC.IPSecurity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
@@ -38,6 +39,17 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
                 return;
             }
+        }
+    }
+
+    public static class IpSecurityFilterExtension
+    {
+        public static IServiceCollection AddIpSecurityFilter(this IServiceCollection services)
+        {
+            return services
+                .AddIPRestrictionsSettingsService()
+                .AddAuthContextService()
+                .AddIPSecurityService();
         }
     }
 }

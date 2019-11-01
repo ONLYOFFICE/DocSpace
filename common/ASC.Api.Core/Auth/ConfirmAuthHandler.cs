@@ -10,6 +10,7 @@ using ASC.Core;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Core;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -103,6 +104,21 @@ namespace ASC.Api.Core.Auth
             };
 
             return Task.FromResult(result);
+        }
+    }
+
+    public static class ConfirmAuthHandlerExtension
+    {
+        public static IServiceCollection AddConfirmAuthHandler(this IServiceCollection services)
+        {
+            return services
+                .AddSecurityContextService()
+                .AddEmailValidationKeyProviderService()
+                .AddSetupInfo()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddAuthManager()
+                .AddAuthContextService();
         }
     }
 }
