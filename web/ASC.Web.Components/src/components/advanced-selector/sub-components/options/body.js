@@ -1,19 +1,44 @@
 import React from "react";
 import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-virtual-list";
-import { FixedSizeList } from "react-window";
+import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
-import ADSelectorRow from "../row";
+//import ADSelectorRow from "../row";
+import Checkbox from "../../../checkbox";
 import Loader from "../../../loader";
 import { Text } from "../../../text";
 import findIndex from "lodash/findIndex";
+//import isEqual from "lodash/isEqual";
 
 class ADSelectorOptionsBody extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.listRef = React.createRef();
+    //this.hasMountedRef = React.createRef(false);
+  }
+
+  /*componentDidMount() {
+    this.hasMountedRef.current = true;
+  }
+
+  componentDidUpdate(prevProps) {
+    if(!isEqual(this.props.selectedOptions, prevProps.selectedOptions)) {
+      if(this.listRef.current && this.hasMountedRef.current) {
+        //this.listRef.current.resetloadMoreItemsCache(true);
+        //console.log("this.listRef.current", this.listRef.current)
+      }
+    }
+
+  }*/
+
   renderRow = ({ index, style }) => {
     //console.log("renderRow", option, isChecked, this.state.selectedOptions);
 
     let content;
-    if (!this.isItemLoaded(index)) {
+    const isLoaded = this.isItemLoaded(index);
+    let key = "loader";
+    if (!isLoaded) {
       content = (
         <div className="option" style={style} key="loader">
           <Loader
@@ -34,9 +59,17 @@ class ADSelectorOptionsBody extends React.Component {
         ? selectedAll ||
           findIndex(selectedOptions, { key: option.key }) > -1
         : undefined;
+        key = option.key;
 
       content = (
-        <ADSelectorRow
+        <Checkbox
+            key={option.key}
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            onChange={this.props.onRowChecked.bind(this, option)}
+          />
+        /*<ADSelectorRow
           key={option.key}
           label={option.label}
           isChecked={isChecked}
@@ -44,11 +77,23 @@ class ADSelectorOptionsBody extends React.Component {
           style={style}
           onChange={this.props.onRowChecked.bind(this, option)}
           onSelect={this.props.onRowSelect.bind(this, option)}
-        />
+        />*/
+        /*<div className="option" style={style}>
+          <input
+            id={option.key}
+            type="checkbox"
+            onChange={(e) => { 
+              console.log("checkbox click", e);
+              this.props.onRowChecked(option, e);
+            }}
+            checked={isChecked}
+          />
+          <label htmlFor={option.key}>{option.label}</label>
+        </div>*/
       );
     }
 
-    return <>{content}</>;
+    return <div className="option" style={style} key={key}>{content}</div>;
   };
 
   isItemLoaded = index =>
@@ -71,12 +116,13 @@ class ADSelectorOptionsBody extends React.Component {
     return (
       <div>
         <InfiniteLoader
+          ref={this.listRef}
           isItemLoaded={this.isItemLoaded}
           itemCount={itemCount}
           loadMoreItems={this.loadMoreItems}
         >
           {({ onItemsRendered, ref }) => (
-            <FixedSizeList
+            <List
               className="options_list"
               height={listHeight}
               width={listWidth}
@@ -87,7 +133,7 @@ class ADSelectorOptionsBody extends React.Component {
               outerElementType={CustomScrollbarsVirtualList}
             >
               {this.renderRow}
-            </FixedSizeList>
+            </List>
           )}
         </InfiniteLoader>
       </div>

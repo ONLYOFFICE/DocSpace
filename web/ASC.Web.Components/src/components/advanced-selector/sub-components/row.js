@@ -15,10 +15,10 @@ class ADSelectorRow extends React.Component {
       isSelected
     } = this.props;
 
-    console.log("ADSelectorRow render", label, isChecked);
+    //console.log("ADSelectorRow render", label, isChecked);
 
     return (
-      <div className={`option ${isSelected && "selected"}`} style={style}>
+      <div className={`option${isSelected ? "selected" : ""}`} style={style}>
         {isMultiSelect ? (
           <Checkbox
             label={label}
