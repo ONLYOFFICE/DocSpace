@@ -10,7 +10,7 @@ import {
   getListAdmins,
   getListUsers,
   getUserById
-} from "../../../../../store/people/actions";
+} from "../../../../../store/settings/actions";
 import { filter } from "lodash";
 import {
   Text,
