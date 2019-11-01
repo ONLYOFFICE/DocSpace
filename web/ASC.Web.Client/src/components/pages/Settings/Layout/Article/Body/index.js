@@ -8,10 +8,9 @@ import {
   Link
 } from "asc-web-components";
 import { withRouter } from "react-router";
-import { settingsTree } from '../../../../../../helpers/constants';
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink } from '../../../utils';
+import { getKeyByLink, settingsTree } from '../../../utils';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {

@@ -2,9 +2,8 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Text, utils } from 'asc-web-components';
 import styled from 'styled-components';
-import { settingsTree } from '../../../../../../helpers/constants';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink } from '../../../utils';
+import { getKeyByLink, settingsTree } from '../../../utils';
 
 const Header = styled(Text.ContentHeader)`
   margin-right: 16px;
