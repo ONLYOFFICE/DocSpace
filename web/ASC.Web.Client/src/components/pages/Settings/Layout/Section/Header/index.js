@@ -40,7 +40,6 @@ class SectionHeaderContent extends React.Component {
     const key = getKeyByLink(settingsTree, arrayOfParams);
     const header = getSelectedTitleByKey(key);
     this.state = {
-      selectedKey: key,
       header
     }
 
@@ -60,7 +59,7 @@ class SectionHeaderContent extends React.Component {
 
     const key = getKeyByLink(settingsTree, arrayOfParams);
     const header = getSelectedTitleByKey(key);
-    header !== this.state.header && this.setState({ key, header });
+    header !== this.state.header && this.setState({ header });
   }
 
   render() {
