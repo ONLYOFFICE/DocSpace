@@ -115,7 +115,8 @@ class PureAccessRights extends Component {
     super(props);
 
     this.state = {
-      showSelector: false
+      showSelector: false,
+      advancedOptions: []
     };
   }
 
@@ -123,15 +124,18 @@ class PureAccessRights extends Component {
     const { getListAdmins, getListUsers, getUserById, ownerId } = this.props;
 
     getUserById(ownerId).catch(error => {
-      toastr("accessRights getUserById", error);
+      toastr.error("accessRights getUserById", error);
+      //console.log("accessRights getUserById", error);
     });
 
     getListUsers().catch(error => {
-      toastr("accessRights getListAdmins", error);
+      toastr.error("accessRights getListAdmins", error);
+      //console.log("accessRights getListAdmins", error);
     });
 
     getListAdmins().catch(error => {
-      toastr("accessRights getListAdmins", error);
+      toastr.error("accessRights getListAdmins", error);
+      //console.log("accessRights getListAdmins", error);
     });
   }
 
@@ -139,33 +143,37 @@ class PureAccessRights extends Component {
     const { changeAdmins, productId } = this.props;
 
     changeAdmins(userId, productId, isAdmin).catch(error => {
-      toastr("accessRights onChangeAdmin", error);
+      toastr.error("accessRights onChangeAdmin", error);
+      //console.log("accessRights onChangeAdmin", error)
     });
   };
 
   onShowGroupSelector = () =>
-    this.setState({ showSelector: !this.state.showSelector });
+    this.setState({
+      showSelector: !this.state.showSelector,
+      advancedOptions: this.props.advancedOptions
+    });
 
   onSelect = selected => {
     selected.map(user => this.onChangeAdmin(user.key, true));
     this.onShowGroupSelector();
   };
 
-  onSearchUsers = template => {
-    const { advancedOptions } = this.state;
+  onSearchUsers = template =>
     this.setState({
-      //advancedOptions: this.filterUserSelectorOptions(advancedOptions, template)
+      advancedOptions: this.filterUserSelectorOptions(
+        this.props.advancedOptions,
+        template
+      )
     });
-  };
 
-  /*filterUserSelectorOptions = (options, template) => {
+  filterUserSelectorOptions = (options, template) => {
     return options.filter(option => option.label.indexOf(template) > -1);
   };
-  */
 
   render() {
-    const { t, owner, admins, advancedOptions } = this.props;
-    const { showSelector } = this.state;
+    const { t, owner, admins } = this.props;
+    const { showSelector, advancedOptions } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     return (
@@ -369,18 +377,12 @@ const AccessRights = props => {
   );
 };
 
-const filterAdminsSelectorOptions = (admins, ownerId) =>
-  filter(admins, function(f) {
-    return f.id !== ownerId;
-  });
-
 const filterOwner = (users, ownerId) =>
   filter(users, function(f) {
     return f.id !== ownerId;
   });
 const filterAdminUsers = users => {
   return users.filter(user => user.listAdminModules === undefined);
-  //options.filter(option => option.label.indexOf(template) > -1);
 };
 
 const AdvancedSelectorFunction = users =>
@@ -394,13 +396,12 @@ const AdvancedSelectorFunction = users =>
 function mapStateToProps(state) {
   const { ownerId } = state.auth.settings;
   const { admins, users } = state.settings;
-
   const arrayUsers = filterOwner(users, ownerId);
   const filterArrayUsers = filterAdminUsers(arrayUsers);
 
   return {
     users: filterArrayUsers,
-    admins: filterAdminsSelectorOptions(admins, ownerId),
+    admins: filterOwner(admins, ownerId),
     productId: state.auth.modules[0].id,
     owner: state.settings.owner,
     ownerId,
