@@ -29,7 +29,6 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -64,9 +63,7 @@ namespace ASC.IPSecurity
     {
         public static IServiceCollection AddIPRestrictionsSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<IPRestrictionsSettings>();
-
-            return services.AddBaseSettingsService();
+            return services.AddSettingsService<IPRestrictionsSettings>();
         }
     }
 }

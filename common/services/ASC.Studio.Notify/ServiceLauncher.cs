@@ -73,6 +73,7 @@ namespace ASC.Notify
             return services
                 .AddWebItemManager()
                 .AddStudioNotifyServiceSender()
+                .AddNotifyConfiguration()
                 ;
         }
     }

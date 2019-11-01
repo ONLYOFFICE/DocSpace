@@ -33,11 +33,10 @@ using System.Net;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
-
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -148,7 +147,7 @@ namespace ASC.Data.Storage
         public StaticUploader StaticUploader { get; }
         public CdnStorageSettings CdnStorageSettings { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        public IHostEnvironment HostEnvironment { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IOptionsMonitor<LogNLog> Options { get; }
 
@@ -157,7 +156,7 @@ namespace ASC.Data.Storage
             StaticUploader staticUploader,
             CdnStorageSettings cdnStorageSettings,
             IHttpContextAccessor httpContextAccessor,
-            IWebHostEnvironment webHostEnvironment,
+            IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<LogNLog> options)
         {
@@ -165,7 +164,7 @@ namespace ASC.Data.Storage
             StaticUploader = staticUploader;
             CdnStorageSettings = cdnStorageSettings;
             HttpContextAccessor = httpContextAccessor;
-            WebHostEnvironment = webHostEnvironment;
+            HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
             Options = options;
         }
@@ -201,7 +200,7 @@ namespace ASC.Data.Storage
                 if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(Path.Combine(WebHostEnvironment.ContentRootPath, path));
+                    Existing[path] = File.Exists(Path.Combine(HostEnvironment.ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {

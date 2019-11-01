@@ -30,7 +30,6 @@ using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
@@ -130,10 +129,8 @@ namespace ASC.Core.Tenants
     {
         public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<TenantCookieSettings>();
-
             return services
-                .AddBaseSettingsService();
+                .AddSettingsService<TenantCookieSettings>();
         }
     }
 }

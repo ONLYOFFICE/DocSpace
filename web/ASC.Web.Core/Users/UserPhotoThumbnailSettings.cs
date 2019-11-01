@@ -30,7 +30,6 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -87,9 +86,7 @@ namespace ASC.Web.Core.Users
     {
         public static IServiceCollection AddUserPhotoThumbnailSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<UserPhotoThumbnailSettings>();
-
-            return services.AddBaseSettingsService();
+            return services.AddSettingsService<UserPhotoThumbnailSettings>();
         }
     }
 }

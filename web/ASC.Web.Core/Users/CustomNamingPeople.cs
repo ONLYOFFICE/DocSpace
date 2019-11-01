@@ -410,9 +410,7 @@ namespace ASC.Web.Core.Users
 
         public static IServiceCollection AddPeopleNamesSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<PeopleNamesSettings>();
-
-            return services.AddBaseSettingsService();
+            return services.AddSettingsService<PeopleNamesSettings>();
         }
     }
 }

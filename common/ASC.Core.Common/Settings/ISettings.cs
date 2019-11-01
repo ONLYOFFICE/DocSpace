@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.Serialization;
 using ASC.Core.Tenants;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -139,6 +140,7 @@ namespace ASC.Core.Common.Settings
 
         public static IServiceCollection AddSettingsService<T>(this IServiceCollection services) where T : class, ISettings
         {
+            services.AddAutoMapper(typeof(T));
             services.TryAddScoped<T>();
             return services.AddBaseSettingsService();
         }

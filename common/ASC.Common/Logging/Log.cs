@@ -594,9 +594,18 @@ namespace ASC.Common.Logging
 
         public string LogDirectory { get { return NLog.LogManager.Configuration.Variables["logDirectory"].Text; } }
 
+        private string name;
         public string Name
         {
-            get; set;
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+                Loger = NLog.LogManager.GetLogger(name);
+            }
         }
     }
 

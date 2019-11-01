@@ -363,4 +363,25 @@ namespace ASC.Web.Studio.Core.Notify
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
         }
     }
+
+    public static class NotifyConfigurationExtension
+    {
+        public static IServiceCollection AddNotifyConfiguration(this IServiceCollection services)
+        {
+            return services
+                .AddTenantManagerService()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddDisplayUserSettingsService()
+                .AddTenantExtraService()
+                .AddWebItemManagerSecurity()
+                .AddWebItemManager()
+                .AddTenantLogoManagerService()
+                .AddTenantUtilService()
+                .AddCoreBaseSettingsService()
+                .AddAdditionalWhiteLabelSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddMailWhiteLabelSettingsService();
+        }
+    }
 }

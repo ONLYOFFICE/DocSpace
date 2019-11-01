@@ -28,6 +28,7 @@ using System;
 using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core.Data;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -40,8 +41,9 @@ namespace ASC.Core.Common.Settings
             IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
             DbOptionsManager optionsDbManager,
+            IMapper mapper,
             IOptionsMonitor<LogNLog> option)
-            : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, option)
+            : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, mapper, option)
         {
 
         }

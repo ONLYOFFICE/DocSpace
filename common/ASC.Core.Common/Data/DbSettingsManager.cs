@@ -38,7 +38,7 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
-
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -74,16 +74,19 @@ namespace ASC.Core.Data
         private ICache Cache { get; }
         private IServiceProvider ServiceProvider { get; }
         private DbSettingsManagerCache DbSettingsManagerCache { get; }
+        public IMapper Mapper { get; }
         private DbManager DbManager { get; }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
             DbOptionsManager optionsDbManager,
+            IMapper mapper,
             IOptionsMonitor<LogNLog> option) : this(null)
         {
             ServiceProvider = serviceProvider;
             DbSettingsManagerCache = dbSettingsManagerCache;
+            Mapper = mapper;
             Cache = dbSettingsManagerCache.Cache;
             DbManager = optionsDbManager.Value;
             log = option.Get("ASC");
@@ -163,8 +166,10 @@ namespace ASC.Core.Data
 
             try
             {
-                var settings = Cache.Get<T>(key);
-                if (settings != null) return settings;
+                //var settings = Cache.Get<T>(key);
+                //if (settings != null) return settings;
+
+                T settings = null;
 
                 var db = DbManager;
                 var q = new SqlQuery("webstudio_settings")
@@ -183,6 +188,8 @@ namespace ASC.Core.Data
                 {
                     settings = (T)settingsInstance.GetDefault();
                 }
+
+                settings = (T)Mapper.Map(settingsInstance, settings, typeof(T), typeof(T));
 
                 Cache.Insert(key, settings, expirationTimeout);
                 return settings;

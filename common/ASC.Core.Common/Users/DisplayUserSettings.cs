@@ -31,7 +31,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -107,10 +106,8 @@ namespace ASC.Web.Core.Users
     {
         public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<DisplayUserSettings>();
-
             return services
-                .AddBaseSettingsService()
+                .AddSettingsService<DisplayUserSettings>()
                 .AddUserFormatter()
                 .AddUserManagerService();
         }

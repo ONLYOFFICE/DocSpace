@@ -76,6 +76,11 @@ namespace ASC.Data.Storage.Configuration
         public bool Count { get; set; }
 
         public IEnumerable<Module> Domain { get; set; }
+
+        public Module()
+        {
+            Domain = new List<Module>();
+        }
     }
 }
 

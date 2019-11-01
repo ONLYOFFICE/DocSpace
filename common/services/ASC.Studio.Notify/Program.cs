@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Notify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Studio.Notify
@@ -36,6 +38,13 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<LogNLog>(r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC.Notify", r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC.Notify.Messages", r => r.Name = "ASC.Notify.Messages");
+
+                    services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();
                     services.AddServiceLauncher();

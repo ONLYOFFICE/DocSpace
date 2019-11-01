@@ -31,6 +31,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage
 {
@@ -38,13 +39,19 @@ namespace ASC.Data.Storage
     {
         private string StorageRoot { get; }
         public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
 
-        public PathUtils(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
-            WebHostEnvironment = webHostEnvironment;
+            HostEnvironment = hostEnvironment;
             StorageRoot = Configuration[Constants.STORAGE_ROOT_PARAM];
+        }
+
+        public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment, IWebHostEnvironment webHostEnvironment) : this(configuration, hostEnvironment)
+        {
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public static string Normalize(string path, bool addTailingSeparator = false)
@@ -104,7 +111,7 @@ namespace ASC.Data.Storage
 
             if (!Path.IsPathRooted(physPath))
             {
-                physPath = Path.GetFullPath(Path.Combine(WebHostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
+                physPath = Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
         }

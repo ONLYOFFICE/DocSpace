@@ -31,7 +31,6 @@ using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -178,9 +177,7 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static IServiceCollection AddMailWhiteLabelSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<MailWhiteLabelSettings>();
-
-            return services.AddBaseSettingsService();
+            return services.AddSettingsService<MailWhiteLabelSettings>();
         }
     }
 }

@@ -29,7 +29,6 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility.Settings
 {
@@ -71,9 +70,7 @@ namespace ASC.Web.Core.Utility.Settings
     {
         public static IServiceCollection AddTenantAccessSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<TenantAccessSettings>();
-
-            return services.AddBaseSettingsService();
+            return services.AddSettingsService<TenantAccessSettings>();
         }
     }
 }
