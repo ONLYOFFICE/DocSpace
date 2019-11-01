@@ -6,7 +6,7 @@ import DropDown from '../drop-down'
 import IconButton from '../icon-button'
 import { handleAnyClick } from '../../utils/event';
 
-const StyledOuther = styled.div`
+const StyledOuter = styled.div`
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -29,7 +29,7 @@ class ContextMenuButton extends React.Component {
     this.onIconButtonClick = this.onIconButtonClick.bind(this);
     this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
 
-    if(props.opened)
+    if (props.opened)
       handleAnyClick(true, this.handleClick);
   }
 
@@ -42,23 +42,21 @@ class ContextMenuButton extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Store prevId in state so we can compare when props change.
-    // Clear out previously-loaded data (so we don't render stale stuff).
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
 
-    if(this.state.isOpen !== prevState.isOpen) {
+    if (this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
     }
   }
 
   onIconButtonClick = () => {
-    if(!this.props.isDisabled) {
-        this.setState({ 
-          data: this.props.getData(),
-          isOpen: !this.state.isOpen
-        });
+    if (!this.props.isDisabled) {
+      this.setState({
+        data: this.props.getData(),
+        isOpen: !this.state.isOpen
+      });
     }
     else {
       this.stopAction
@@ -79,35 +77,51 @@ class ContextMenuButton extends React.Component {
 
   render() {
     //console.log("ContextMenuButton render");
+    const {
+      color,
+      hoverColor,
+      clickColor,
+      size,
+      iconName,
+      iconHoverName,
+      iconClickName,
+      isDisabled,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseOver,
+      onMouseOut,
+      directionX
+    } = this.props;
+
+    const { isOpen } = this.state;
+
     return (
-      <StyledOuther ref={this.ref}>
+      <StyledOuter ref={this.ref}>
         <IconButton
-          color={this.props.color}
-          hoverColor={this.props.hoverColor}
-          clickColor={this.props.clickColor}
-          size={this.props.size}
-          iconName={this.props.iconName}
-          iconHoverName={this.props.iconHoverName}
-          iconClickName={this.props.iconClickName}
+          color={color}
+          hoverColor={hoverColor}
+          clickColor={clickColor}
+          size={size}
+          iconName={iconName}
+          iconHoverName={iconHoverName}
+          iconClickName={iconClickName}
           isFill={false}
-          isDisabled={this.props.isDisabled}
+          isDisabled={isDisabled}
           onClick={this.onIconButtonClick}
-          onMouseEnter={this.props.onMouseEnter}
-          onMouseLeave={this.props.onMouseLeave}
-          onMouseOver={this.props.onMouseOver}
-          onMouseOut={this.props.onMouseOut}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onMouseOver={onMouseOver}
+          onMouseOut={onMouseOut}
         />
-        <DropDown directionX={this.props.directionX || 'left'} isOpen={this.state.isOpen}>
+        <DropDown directionX={directionX} isOpen={isOpen}>
           {
-            this.state.data.map(item =>
-              <DropDownItem
-                {...item}
-                onClick={this.onDropDownItemClick.bind(this, item)}
+            this.state.data.map((item, index) =>
+              (item.label || item.icon)  && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
               />
             )
           }
         </DropDown>
-      </StyledOuther>
+      </StyledOuter>
     );
   }
 }
@@ -120,7 +134,20 @@ ContextMenuButton.propTypes = {
   iconName: PropTypes.string,
   size: PropTypes.number,
   color: PropTypes.string,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
+
+  hoverColor: PropTypes.string,
+  clickColor: PropTypes.string,
+
+  iconHoverName: PropTypes.string,
+  iconClickName: PropTypes.string,
+
+  onMouseEnter: PropTypes.func,
+  onMouseLeave: PropTypes.func,
+  onMouseOver: PropTypes.func,
+  onMouseOut: PropTypes.func,
+
+  directionX: PropTypes.string
 };
 
 ContextMenuButton.defaultProps = {
@@ -129,7 +156,8 @@ ContextMenuButton.defaultProps = {
   title: '',
   iconName: 'VerticalDotsIcon',
   size: 16,
-  isDisabled: false
+  isDisabled: false,
+  directionX: 'left'
 };
 
 export default ContextMenuButton

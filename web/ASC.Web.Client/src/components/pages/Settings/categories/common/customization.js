@@ -14,7 +14,7 @@ const mapCulturesToArray = (cultures, t) => {
 
 const mapTimezonesToArray = (timezones) => {
    return timezones.map((timezone) => {
-      return { key: timezone.Id, label: timezone.DisplayName };
+      return { key: timezone.id, label: timezone.displayName };
    });
 };
 
@@ -139,6 +139,7 @@ class Customization extends React.Component {
                         noBorder={false}
                         scaled={false}
                         scaledOptions={true}
+                        // dropDownMaxHeight={300}
                         size='huge'
                      />
                   </FieldContainer>

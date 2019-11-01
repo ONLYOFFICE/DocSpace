@@ -77,6 +77,7 @@ class EmailInput extends React.Component {
 
   onChangeAction = (e) => {
     this.props.onChange && this.props.onChange(e);
+
     this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(e.target.value);
   }
 
@@ -96,7 +97,7 @@ class EmailInput extends React.Component {
         isValidEmail={isValid || isValidEmail}
         value={inputValue}
         onChange={this.onChangeAction}
-        type='email'
+        type='text'
         onValidateInput={onValidateInput}
         {...rest}
       />

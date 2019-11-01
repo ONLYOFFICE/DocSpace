@@ -1,0 +1,1 @@
+export { getKeyByLink } from './getKeyByLink';

@@ -1,7 +1,7 @@
 import emailAddresses from "email-addresses";
 import punycode from "punycode";
 import { parseErrorTypes } from "./../constants";
-import { EmailSettings } from './index';
+import { EmailSettings } from './emailSettings';
 
 const getParts = string => {
   let mass = [];
