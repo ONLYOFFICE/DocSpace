@@ -85,8 +85,9 @@ namespace ASC.Web.Studio.Utility
             WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options) :
-            this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options)
+            IOptionsMonitor<LogNLog> options,
+            IOptions<CommonLinkUtilitySettings> settings) :
+            this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
         {
         }
 
@@ -99,8 +100,9 @@ namespace ASC.Web.Studio.Utility
             WebItemManagerSecurity webItemManagerSecurity,
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options) :
-            base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options) =>
+            IOptionsMonitor<LogNLog> options,
+            IOptions<CommonLinkUtilitySettings> settings) :
+            base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
             (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
         public string Logout

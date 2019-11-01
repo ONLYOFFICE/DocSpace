@@ -29,7 +29,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
@@ -60,6 +61,19 @@ namespace ASC.Notify
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    public static class ServiceLauncherFactory
+    {
+        public static IServiceCollection AddServiceLauncher(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioNotifyServiceSender>();
+
+            return services
+                .AddWebItemManager()
+                .AddStudioNotifyServiceSender()
+                ;
         }
     }
 }

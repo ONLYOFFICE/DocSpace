@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ASC.Common.Logging;
+using ASC.Core.Common;
 using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
@@ -39,6 +40,21 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    public class ConfigureCommonLinkUtilitySettings : IConfigureOptions<CommonLinkUtilitySettings>
+    {
+        public ConfigureCommonLinkUtilitySettings(IOptions<NotifyServiceCfg> notifyServiceCfg)
+        {
+            NotifyServiceCfg = notifyServiceCfg.Value;
+        }
+
+        public NotifyServiceCfg NotifyServiceCfg { get; }
+
+        public void Configure(CommonLinkUtilitySettings clu)
+        {
+            clu.ServerUri = NotifyServiceCfg.ServerRoot;
+        }
+    }
+
     public class NotifyServiceLauncher : IHostedService
     {
         public NotifyServiceCfg NotifyServiceCfg { get; }
@@ -49,7 +65,8 @@ namespace ASC.Notify
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
-        public NotifyServiceLauncher(NotifyServiceCfg notifyServiceCfg,
+        public NotifyServiceLauncher(
+            IOptions<NotifyServiceCfg> notifyServiceCfg,
             NotifySender notifySender,
             NotifyService notifyService,
             NotifyCleaner notifyCleaner,
@@ -57,7 +74,7 @@ namespace ASC.Notify
             IServiceProvider serviceProvider,
             IOptionsMonitor<LogNLog> options)
         {
-            NotifyServiceCfg = notifyServiceCfg;
+            NotifyServiceCfg = notifyServiceCfg.Value;
             NotifyService = notifyService;
             NotifySender = notifySender;
             NotifyCleaner = notifyCleaner;
@@ -100,10 +117,6 @@ namespace ASC.Notify
 
         private void InitializeNotifySchedulers()
         {
-            var scope = ServiceProvider.CreateScope();
-            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-            //resolve with options
-            commonLinkUtility.Initialize(NotifyServiceCfg.ServerRoot);
             NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
@@ -111,6 +124,19 @@ namespace ASC.Notify
                 Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
                 pair.MethodInfo.Invoke(null, null);
             }
+        }
+    }
+
+    public static class NotifyServiceLauncherFactory
+    {
+        public static IServiceCollection AddNotifyServiceLauncher(this IServiceCollection services)
+        {
+            return services
+                .AddCommonLinkUtilityService()
+                .AddNotifySender()
+                .AddNotifyService()
+                .AddWebItemManager()
+                .AddNotifyCleaner();
         }
     }
 }

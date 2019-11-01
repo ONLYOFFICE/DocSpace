@@ -46,24 +46,33 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioPeriodicNotify
     {
-        public static void SendSaasLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public IServiceProvider ServiceProvider { get; }
+        public ILog Log { get; }
+
+        public StudioPeriodicNotify(IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> log)
         {
-            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
+            ServiceProvider = serviceProvider;
+            Log = log.Get("ASC.Notify");
+        }
+
+        public void SendSaasLetters(string senderName, DateTime scheduleDate)
+        {
             var now = scheduleDate.Date;
             const string dbid = "webstudio";
 
-            log.Info("Start SendSaasTariffLetters");
+            Log.Info("Start SendSaasTariffLetters");
 
             var activeTenants = new List<Tenant>();
             var monthQuotasIds = new List<int>();
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = ServiceProvider.CreateScope())
             {
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
@@ -71,7 +80,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 if (activeTenants.Count <= 0)
                 {
-                    log.Info("End SendSaasTariffLetters");
+                    Log.Info("End SendSaasTariffLetters");
                     return;
                 }
 
@@ -86,7 +95,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    using var scope = serviceProvider.CreateScope();
+                    using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
@@ -302,22 +311,22 @@ namespace ASC.Web.Studio.Core.Notify
                             {
                                 try
                                 {
-                                    log.InfoFormat("start CreateCoupon to {0}", tenant.TenantAlias);
+                                    Log.InfoFormat("start CreateCoupon to {0}", tenant.TenantAlias);
 
                                     coupon = SetupInfo.IsSecretEmail(userManager.GetUsers(tenant.OwnerId).Email)
                                                 ? tenant.TenantAlias
                                                 : couponManager.CreateCoupon(tenantManager);
 
-                                    log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.TenantAlias, coupon);
+                                    Log.InfoFormat("end CreateCoupon to {0} coupon = {1}", tenant.TenantAlias, coupon);
                                 }
                                 catch (AggregateException ae)
                                 {
                                     foreach (var ex in ae.InnerExceptions)
-                                        log.Error(ex);
+                                        Log.Error(ex);
                                 }
                                 catch (Exception ex)
                                 {
-                                    log.Error(ex);
+                                    Log.Error(ex);
                                 }
                             }
 
@@ -513,24 +522,23 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    Log.Error(err);
                 }
             }
 
-            log.Info("End SendSaasTariffLetters");
+            Log.Info("End SendSaasTariffLetters");
         }
 
-        public static void SendEnterpriseLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
         {
-            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var now = scheduleDate.Date;
             const string dbid = "webstudio";
 
-            log.Info("Start SendTariffEnterpriseLetters");
+            Log.Info("Start SendTariffEnterpriseLetters");
 
             var activeTenants = new List<Tenant>();
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = ServiceProvider.CreateScope())
             {
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
@@ -538,7 +546,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 if (activeTenants.Count <= 0)
                 {
-                    log.Info("End SendTariffEnterpriseLetters");
+                    Log.Info("End SendTariffEnterpriseLetters");
                     return;
                 }
             }
@@ -547,7 +555,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    using var scope = serviceProvider.CreateScope();
+                    using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                     var defaultRebranding = scope.ServiceProvider.GetService<MailWhiteLabelSettings>().Instance.IsDefault;
 
@@ -909,23 +917,22 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    Log.Error(err);
                 }
             }
 
-            log.Info("End SendTariffEnterpriseLetters");
+            Log.Info("End SendTariffEnterpriseLetters");
         }
 
-        public static void SendOpensourceLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
         {
-            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
             var now = scheduleDate.Date;
 
-            log.Info("Start SendOpensourceTariffLetters");
+            Log.Info("Start SendOpensourceTariffLetters");
 
             var activeTenants = new List<Tenant>();
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = ServiceProvider.CreateScope())
             {
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
@@ -933,7 +940,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 if (activeTenants.Count <= 0)
                 {
-                    log.Info("End SendOpensourceTariffLetters");
+                    Log.Info("End SendOpensourceTariffLetters");
                     return;
                 }
             }
@@ -942,7 +949,7 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 try
                 {
-                    using var scope = serviceProvider.CreateScope();
+                    using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
@@ -1097,23 +1104,21 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    Log.Error(err);
                 }
             }
 
-            log.Info("End SendOpensourceTariffLetters");
+            Log.Info("End SendOpensourceTariffLetters");
         }
 
-        public static void SendPersonalLetters(string senderName, DateTime scheduleDate, IServiceProvider serviceProvider)
+        public void SendPersonalLetters(string senderName, DateTime scheduleDate)
         {
-            var log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
-
-            log.Info("Start SendLettersPersonal...");
+            Log.Info("Start SendLettersPersonal...");
 
 
             var activeTenants = new List<Tenant>();
 
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = ServiceProvider.CreateScope())
             {
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
@@ -1129,7 +1134,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var sendCount = 0;
 
-                    using var scope = serviceProvider.CreateScope();
+                    using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
                     tenantManager.SetCurrentTenant(tenant.TenantId);
@@ -1141,7 +1146,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
-                    log.InfoFormat("Current tenant: {0}", tenant.TenantId);
+                    Log.InfoFormat("Current tenant: {0}", tenant.TenantId);
 
                     var users = userManager.GetUsers(EmployeeStatus.Active);
 
@@ -1161,7 +1166,7 @@ namespace ASC.Web.Studio.Core.Notify
                             catch (CultureNotFoundException exception)
                             {
 
-                                log.Error(exception);
+                                Log.Error(exception);
                             }
                         }
 
@@ -1207,7 +1212,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         if (action == null) continue;
 
-                        log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
+                        Log.InfoFormat(@"Send letter personal '{1}'  to {0} culture {2}. tenant id: {3} user culture {4} create on {5} now date {6}",
                               user.Email, action.ID, culture, tenant.TenantId, user.GetCulture(), user.CreateDate, scheduleDate.Date);
 
                         sendCount++;
@@ -1223,15 +1228,15 @@ namespace ASC.Web.Studio.Core.Notify
                           new TagValue(CommonTags.Footer, coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"));
                     }
 
-                    log.InfoFormat("Total send count: {0}", sendCount);
+                    Log.InfoFormat("Total send count: {0}", sendCount);
                 }
                 catch (Exception err)
                 {
-                    log.Error(err);
+                    Log.Error(err);
                 }
             }
 
-            log.Info("End SendLettersPersonal.");
+            Log.Info("End SendLettersPersonal.");
         }
 
         public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)
@@ -1243,6 +1248,30 @@ namespace ASC.Web.Studio.Core.Notify
             studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
 
             return !isSubscribe;
+        }
+    }
+    public static class StudioPeriodicNotifyFactory
+    {
+        public static IServiceCollection AddStudioPeriodicNotify(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioPeriodicNotify>();
+            services.TryAddSingleton<CouponManager>();
+
+            return services
+                .AddApiSystemHelper()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddStudioNotifyHelperService()
+                .AddPaymentManagerService()
+                .AddTenantExtraService()
+                .AddAuthContextService()
+                .AddCommonLinkUtilityService()
+                .AddSetupInfo()
+                .AddDbManagerService()
+                .AddCoreBaseSettingsService()
+                .AddDisplayUserSettingsService()
+                .AddSecurityContextService()
+                .AddAuthManager();
         }
     }
 }

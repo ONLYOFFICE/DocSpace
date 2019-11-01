@@ -33,6 +33,8 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -46,10 +48,10 @@ namespace ASC.Notify
 
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
-        public NotifySender(NotifyServiceCfg notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<LogNLog> options)
+        public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<LogNLog> options)
         {
             log = options.Get("ASC");
-            NotifyServiceCfg = notifyServiceCfg;
+            NotifyServiceCfg = notifyServiceCfg.Value;
             db = dbWorker;
         }
 
@@ -143,6 +145,17 @@ namespace ASC.Notify
             {
                 log.Error(e);
             }
+        }
+    }
+
+    public static class NotifySenderFactory
+    {
+        public static IServiceCollection AddNotifySender(this IServiceCollection services)
+        {
+            services.TryAddSingleton<NotifySender>();
+
+            return services
+                .AddDbWorker();
         }
     }
 }

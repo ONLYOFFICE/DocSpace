@@ -32,6 +32,7 @@ using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -104,6 +105,18 @@ namespace ASC.Notify
         public void Dispose()
         {
             cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+        }
+    }
+
+    public static class NotifyServiceFactory
+    {
+        public static IServiceCollection AddNotifyService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<NotifyService>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services
+                .AddDbWorker();
         }
     }
 }

@@ -36,6 +36,8 @@ using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
@@ -163,6 +165,15 @@ namespace ASC.Web.Core.Helpers
             using var stream = response.GetResponseStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
+        }
+    }
+
+    public static class ApiSystemHelperFactory
+    {
+        public static IServiceCollection AddApiSystemHelper(this IServiceCollection services)
+        {
+            services.TryAddScoped<ApiSystemHelper>();
+            return services;
         }
     }
 }

@@ -33,6 +33,7 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace ASC.Feed.Data
@@ -384,6 +385,18 @@ namespace ASC.Feed.Data
                 comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
             }
             return feedMin;
+        }
+    }
+
+    public static class FeedAggregateDataProviderFactory
+    {
+        public static IServiceCollection AddFeedAggregateDataProvider(this IServiceCollection services)
+        {
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddDbManagerService();
         }
     }
 }

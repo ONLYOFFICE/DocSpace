@@ -36,6 +36,8 @@ using ASC.Notify.Config;
 using ASC.Notify.Messages;
 using Google.Protobuf.Collections;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASC.Notify
@@ -48,10 +50,10 @@ namespace ASC.Notify
         public IServiceProvider ServiceProvider { get; }
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
-        public DbWorker(IServiceProvider serviceProvider, NotifyServiceCfg notifyServiceCfg)
+        public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
         {
             ServiceProvider = serviceProvider;
-            NotifyServiceCfg = notifyServiceCfg;
+            NotifyServiceCfg = notifyServiceCfg.Value;
             dbid = NotifyServiceCfg.ConnectionStringName;
         }
 
@@ -166,6 +168,17 @@ namespace ASC.Notify
                 db.ExecuteNonQuery(u);
             }
             tx.Commit();
+        }
+    }
+
+    public static class DbWorkerFactory
+    {
+        public static IServiceCollection AddDbWorker(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbWorker>();
+
+            return services
+                .AddDbManagerService();
         }
     }
 }

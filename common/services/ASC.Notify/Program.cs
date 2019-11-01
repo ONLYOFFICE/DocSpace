@@ -2,14 +2,14 @@
 using System.Threading.Tasks;
 
 using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
+using ASC.Core.Common;
 using ASC.Notify.Config;
-using ASC.Web.Core;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -40,16 +40,14 @@ namespace ASC.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    services.AddWebItemManager();
 
-                    var serviceProvider = services.BuildServiceProvider();
-                    var c = hostContext.Configuration.GetSetting<NotifyServiceCfg>("notify");
-                    c.Init();
-                    services.TryAddSingleton(c);
-                    services.TryAddSingleton<DbWorker>();
-                    services.TryAddSingleton<NotifyCleaner>();
-                    services.TryAddSingleton<NotifySender>();
-                    services.TryAddSingleton<NotifyService>();
+                    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
+                    services.Configure<NotifyServiceCfg>(r => r.Init());
+
+                    services.TryAddSingleton<CommonLinkUtilitySettings>();
+                    services.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
+
+                    services.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
                 })
                 .UseConsoleLifetime()

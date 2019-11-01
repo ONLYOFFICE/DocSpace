@@ -38,6 +38,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -145,28 +146,53 @@ namespace ASC.Web.Studio.Core.Notify
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
             //remove client
-            StudioPeriodicNotify.SendSaasLetters(EMailSenderName, scheduleDate, ServiceProvider);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendEnterpriseLetters(EMailSenderName, scheduleDate, ServiceProvider);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendOpensourceTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendOpensourceLetters(EMailSenderName, scheduleDate, ServiceProvider);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendLettersPersonal(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendPersonalLetters(EMailSenderName, scheduleDate, ServiceProvider);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             using var scope = ServiceProvider.CreateScope();
             scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        }
+    }
+
+    public static class ServiceLauncherFactory
+    {
+        public static IServiceCollection AddStudioNotifyServiceSender(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioNotifyServiceSender>();
+
+            return services
+                .AddStudioPeriodicNotify()
+                .AddStudioWhatsNewNotify()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddStudioNotifyHelperService()
+                .AddDisplayUserSettingsService()
+                .AddTenantExtraService()
+                .AddCoreBaseSettingsService()
+                ;
         }
     }
 }

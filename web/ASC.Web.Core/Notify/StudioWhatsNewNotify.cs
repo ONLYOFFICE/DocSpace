@@ -44,6 +44,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -299,6 +300,31 @@ namespace ASC.Web.Studio.Core.Notify
             public string UserAbsoluteURL { get; set; }
             public DateTime Date { get; set; }
             public string Action { get; set; }
+        }
+    }
+
+    public static class StudioWhatsNewNotifyFactory
+    {
+        public static IServiceCollection AddStudioWhatsNewNotify(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioWhatsNewNotify>();
+
+            return services
+                .AddWebItemManager()
+                .AddFeedAggregateDataProvider()
+
+                .AddTenantManagerService()
+                .AddPaymentManagerService()
+                .AddStudioNotifyHelperService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddAuthManager()
+                .AddTenantUtilService()
+                .AddCommonLinkUtilityService()
+                .AddDisplayUserSettingsService()
+                .AddCoreSettingsService()
+                ;
         }
     }
 }

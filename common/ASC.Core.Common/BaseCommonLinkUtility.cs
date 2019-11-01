@@ -38,6 +38,12 @@ using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common
 {
+    public class CommonLinkUtilitySettings
+    {
+        public string ServerUri { get; set; }
+    }
+
+
     public class BaseCommonLinkUtility
     {
         private const string LOCALHOST = "localhost";
@@ -51,8 +57,9 @@ namespace ASC.Core.Common
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             TenantManager tenantManager,
-            IOptionsMonitor<LogNLog> options)
-            : this(null, coreBaseSettings, coreSettings, tenantManager, options)
+            IOptionsMonitor<LogNLog> options,
+            IOptions<CommonLinkUtilitySettings> settings)
+            : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
         {
         }
 
@@ -61,39 +68,39 @@ namespace ASC.Core.Common
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             TenantManager tenantManager,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<LogNLog> options,
+            IOptions<CommonLinkUtilitySettings> settings)
         {
-            try
+            var serverUri = settings.Value.ServerUri;
+
+            if (!string.IsNullOrEmpty(serverUri))
             {
-                HttpContext = httpContextAccessor?.HttpContext;
-                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LOCALHOST);
-                if (HttpContext?.Request != null)
-                {
-                    var u = HttpContext.Request.GetUrlRewriter();
-                    uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
-                }
-                _serverRoot = uriBuilder;
+                var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
+                _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+                _vpath = "/" + uri.AbsolutePath.Trim('/');
             }
-            catch (Exception error)
+            else
             {
-                options.Get("ASC.Web").Error(error);
+                try
+                {
+                    HttpContext = httpContextAccessor?.HttpContext;
+                    var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LOCALHOST);
+                    if (HttpContext?.Request != null)
+                    {
+                        var u = HttpContext.Request.GetUrlRewriter();
+                        uriBuilder = new UriBuilder(u.Scheme, LOCALHOST, u.Port);
+                    }
+                    _serverRoot = uriBuilder;
+                }
+                catch (Exception error)
+                {
+                    options.Get("ASC.Web").Error(error);
+                }
             }
 
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             TenantManager = tenantManager;
-        }
-
-        public void Initialize(string serverUri)
-        {
-            if (string.IsNullOrEmpty(serverUri))
-            {
-                throw new ArgumentNullException("serverUri");
-            }
-
-            var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
-            _vpath = "/" + uri.AbsolutePath.Trim('/');
         }
 
         public string VirtualRoot

@@ -31,6 +31,7 @@ using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -43,10 +44,10 @@ namespace ASC.Notify
         public IServiceProvider ServiceProvider { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
-        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> options)
+        public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> options)
         {
             log = options.Get("ASC.Notify");
-            NotifyServiceCfg = notifyServiceCfg;
+            NotifyServiceCfg = notifyServiceCfg.Value;
             ServiceProvider = serviceProvider;
             CancellationTokenSource = new CancellationTokenSource();
         }
@@ -96,6 +97,16 @@ namespace ASC.Notify
                     break;
                 }
             }
+        }
+    }
+
+    public static class NotifyCleanerFactory
+    {
+        public static IServiceCollection AddNotifyCleaner(this IServiceCollection services)
+        {
+            services.TryAddSingleton<NotifyCleaner>();
+
+            return services;
         }
     }
 }
