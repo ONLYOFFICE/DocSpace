@@ -12,7 +12,7 @@ const Container = ({
 /* eslint-enable no-unused-vars */
 
 const StyledContainer = styled(Container)`
-    height: 64px;
+    /*height: 64px;*/
     `;
 
 class ADSelectorHeader extends React.Component {

@@ -180,6 +180,7 @@ class ADSelectorExample extends React.Component {
           searchPlaceHolderLabel={text("searchPlaceHolderLabel", "Search users")}
           selectButtonLabel={text("selectButtonLabel", "Add members")}
           selectAllLabel={text("selectAllLabel", "Select all")}
+          groupsHeaderLabel={text("groupsHeaderLabel", "Groups")}
           
           onSelect={selectedOptions => {
             action("onSelect")(selectedOptions);

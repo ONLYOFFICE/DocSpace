@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Checkbox from "../../checkbox";
 //import ComboBox from "../../combobox";
+import SearchInput from "../../search-input";
 import Loader from "../../loader";
 import { Text } from "../../text";
 import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
@@ -36,9 +37,10 @@ const StyledContainer = styled(Container)`
             display: grid;
             background-color: gold;
             padding: 16px 16px 0 16px;
+            grid-row-gap: 16px;
 
             grid-template-columns: 1fr;
-            grid-template-rows: 64px 1fr;
+            grid-template-rows: 30px 1fr;
             grid-template-areas: "header2" "body2";
 
             .header2 {
@@ -65,14 +67,15 @@ const StyledContainer = styled(Container)`
         display: grid;
         background-color: red;
         padding: 16px 16px 0 16px;
+        grid-row-gap: 16px;
 
         grid-template-columns: 1fr;
-        grid-template-rows: 64px 1fr;
+        grid-template-rows: 30px 1fr;
         grid-template-areas: "header1" "body1";
 
         .header1 {
             grid-area: header1; 
-            background-color: lightblue;
+            background-color: white;
         }
 
         .body1 {
@@ -89,12 +92,16 @@ const StyledContainer = styled(Container)`
 
 
 const ADSelector = props => {
-    const { displayType, groups, selectButtonLabel, isDisabled, isMultiSelect, hasNextPage, options, isNextPageLoading, loadNextPage, selectedOptions, selectedGroups } = props;
+    const { displayType, groups, selectButtonLabel, 
+        isDisabled, isMultiSelect, hasNextPage, options, 
+        isNextPageLoading, loadNextPage, 
+        selectedOptions, selectedGroups,
+        groupsHeaderLabel, searchPlaceHolderLabel} = props;
 
     const listRef = useRef(null);
-    //const hasMountedRef = useRef(false);
     const [selectedOptionList, setSelectedOptionList] = useState(selectedOptions || []);
     const [selectedGroupList, setSelectedGroupList] = useState(selectedGroups || []);
+    const [searchValue, setSearchValue] = useState("");
 
     const convertGroups = items => {
         if (!items) return [];
@@ -147,6 +154,14 @@ const ADSelector = props => {
     const onCurrentGroupChange = (e, item) => {
         //console.log("onCurrentGroupChange", item);
         setCurrentGroup(item);
+    };
+
+    const onSearchChange = (e) => {
+        setSearchValue(e.target.value);
+    };
+
+    const onSearchReset = () => {
+        setSearchValue("");
     };
 
     // Render an item or a loading indicator.
@@ -212,7 +227,17 @@ const ADSelector = props => {
         <StyledContainer displayType={displayType}>
             <ADSelectorColumn className="column1" displayType={displayType}>
                 <ADSelectorHeader className="header1">
-                    <span>Header 1</span>
+                    <SearchInput
+                        className="options_searcher"
+                        isDisabled={isDisabled}
+                        size="base"
+                        scale={true}
+                        isNeedFilter={false}
+                        placeholder={searchPlaceHolderLabel}
+                        value={searchValue}
+                        onChange={onSearchChange}
+                        onClearSearch={onSearchReset}
+                    />
                 </ADSelectorHeader>
                 <ADSelectorBody className="body1">
                     <InfiniteLoader
@@ -245,7 +270,9 @@ const ADSelector = props => {
             {displayType === "dropdown" && groups && groups.length > 0 &&
                 <ADSelectorColumn className="column2" displayType={displayType}>
                     <ADSelectorHeader className="header2">
-                        <span>Header 2</span>
+                        <Text.Body as="p" className="group_header" fontSize={15} isBold={true}>
+                            {groupsHeaderLabel}
+                        </Text.Body>
                     </ADSelectorHeader>
                     <ADSelectorBody className="body2">
                         <AutoSizer>
@@ -290,6 +317,7 @@ ADSelector.propTypes = {
     selectButtonLabel: PropTypes.string,
     selectAllLabel: PropTypes.string,
     searchPlaceHolderLabel: PropTypes.string,
+    groupsHeaderLabel: PropTypes.string,
 
     //size: PropTypes.oneOf(["compact", "full"]),
     displayType: PropTypes.oneOf(["dropdown", "aside"]),
