@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Button from "../../button";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -9,7 +9,6 @@ const Container = ({
   selectButtonLabel,
   isDisabled,
   isVisible,
-  isMultiSelect,
   onClick,
   ...props
 }) => <div {...props} />;
@@ -20,6 +19,8 @@ const StyledContainer = styled(Container)`
     border-top: 1px solid #eceef1;
     padding: 16px;
     height: 69px;
+
+    ${props => !props.isVisible && css`display: none;`}
 `;
 
 const ADSelectorFooter = props => {
@@ -44,7 +45,6 @@ ADSelectorFooter.propTypes = {
   selectButtonLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
   isVisible: PropTypes.bool,
-  isMultiSelect: PropTypes.bool,
   onClick: PropTypes.func
 };
 
