@@ -19,6 +19,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 /* eslint-disable react/prop-types */
 const Container = ({
     displayType,
+    groups,
     ...props
 }) => <div {...props} />;
 /* eslint-enable react/prop-types */
@@ -34,8 +35,15 @@ const StyledContainer = styled(Container)`
         .column2 { 
             grid-area: column2; 
 
+            ${props => props.groups &&
+                props.groups.length > 0
+                ? css`
+                    border-left: 1px solid #eceef1;
+                `
+                : ""}
+
             display: grid;
-            background-color: gold;
+            /* background-color: gold; */
             padding: 16px 16px 0 16px;
             grid-row-gap: 16px;
 
@@ -45,12 +53,12 @@ const StyledContainer = styled(Container)`
 
             .header2 {
                 grid-area: header2; 
-                background-color: white;
+                /* background-color: white; */
             }
 
             .body2 {
                 grid-area: body2;
-                background-color: white;
+                /* background-color: white; */
             }
         }
     `
@@ -65,7 +73,7 @@ const StyledContainer = styled(Container)`
         grid-area: column1;
 
         display: grid;
-        background-color: red;
+        /* background-color: red; */
         padding: 16px 16px 0 16px;
         grid-row-gap: 16px;
 
@@ -75,17 +83,18 @@ const StyledContainer = styled(Container)`
 
         .header1 {
             grid-area: header1; 
-            background-color: white;
+            /* background-color: white; */
         }
 
         .body1 {
             grid-area: body1;
-            background-color: white;
+            /* background-color: white; */
         }
     }
 
     .row-block {
         line-height: 32px;
+        padding-left: 8px;
         cursor: pointer;
 
         &:hover {
@@ -234,7 +243,7 @@ const ADSelector = props => {
     const loadMoreItems = isNextPageLoading ? () => { } : loadNextPage;
 
     return (
-        <StyledContainer displayType={displayType}>
+        <StyledContainer displayType={displayType} groups={groups}>
             <ADSelectorColumn className="column1" displayType={displayType}>
                 <ADSelectorHeader className="header1">
                     <SearchInput
