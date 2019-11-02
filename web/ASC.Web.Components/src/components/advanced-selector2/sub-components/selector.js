@@ -45,7 +45,7 @@ const StyledContainer = styled(Container)`
 
             .header2 {
                 grid-area: header2; 
-                background-color: cyan;
+                background-color: white;
             }
 
             .body2 {
