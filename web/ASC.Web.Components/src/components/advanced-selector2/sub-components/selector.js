@@ -84,6 +84,19 @@ const StyledContainer = styled(Container)`
         }
     }
 
+    .row-block {
+        line-height: 32px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f8f9f9;
+        }
+    }
+
+    .row-block.selected {
+        background-color: #ECEEF1;
+    }
+
     .footer { 
         grid-area: footer; 
     }
@@ -149,11 +162,7 @@ const ADSelector = props => {
             : selectedGroupList.filter(el => el.key !== group.key);
         //console.log("onGroupChange", item);
         setSelectedGroupList(newSelectedGroups);
-    };
-
-    const onCurrentGroupChange = (e, item) => {
-        //console.log("onCurrentGroupChange", item);
-        setCurrentGroup(item);
+        setCurrentGroup(group);
     };
 
     const onSearchChange = (e) => {
@@ -196,14 +205,15 @@ const ADSelector = props => {
             );
         }
 
-        return <div style={style}>{content}</div>;
+        return <div style={style} className="row-block">{content}</div>;
     };
 
     // eslint-disable-next-line react/prop-types
     const renderGroup = ({ index, style }) => {
         const group = groups[index];
         const checked = selectedGroupList.findIndex(el => el.key === group.key) > -1;
-        return <div style={style}>
+        const isSelected = currentGroup.key === group.key;
+        return <div style={style} className={`row-block${isSelected ? " selected" : ""}`}>
             <Checkbox
                 id={group.key}
                 value={`${index}`}
