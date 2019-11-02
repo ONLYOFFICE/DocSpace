@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import styled, {css} from "styled-components";
 import ADSelectorColumn from "./column";
 import ADSelectorFooter from "./footer";
+import ADSelectorHeader from "./header";
+import ADSelectorBody from "./body";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -22,7 +24,25 @@ const StyledContainer = styled(Container)`
 
         .column2 { 
             grid-area: column2; 
+
+            display: grid;
             background-color: gold;
+            padding: 16px 16px 0 16px;
+
+            grid-template-columns: 1fr;
+            grid-template-rows: 64px 1fr;
+            grid-template-areas: "header2" "body2";
+
+            .header2 {
+                grid-area: header2; 
+                background-color: white;
+            }
+
+            .body2 {
+                grid-area: body2;
+                background-color: cyan;
+                
+            }
         }
     `
     : css`
@@ -33,8 +53,25 @@ const StyledContainer = styled(Container)`
     `}   
 
     .column1 { 
-        grid-area: column1; 
+        grid-area: column1;
+
+        display: grid;
         background-color: red;
+        padding: 16px 16px 0 16px;
+
+        grid-template-columns: 1fr;
+        grid-template-rows: 64px 1fr;
+        grid-template-areas: "header1" "body1";
+
+        .header1 {
+            grid-area: header1; 
+            background-color: white;
+        }
+
+        .body1 {
+            grid-area: body1;
+            background-color: lightblue;
+        }
     }
 
     .footer { 
@@ -54,11 +91,21 @@ class ADSelector extends React.Component {
         return (
             <StyledContainer displayType={displayType}>
                 <ADSelectorColumn className="column1" displayType={displayType}>
-                    <span>Column 1</span>
+                    <ADSelectorHeader className="header1">
+                        <span>Header 1</span>    
+                    </ADSelectorHeader>
+                    <ADSelectorBody className="body1">
+                        <span>Body 1</span>
+                    </ADSelectorBody>
                 </ADSelectorColumn>
                 {displayType === "dropdown" && groups && groups.length > 0 &&
                     <ADSelectorColumn className="column2" displayType={displayType}>
-                        <span>Column 2</span>
+                        <ADSelectorHeader className="header2">
+                            <span>Header 2</span>    
+                        </ADSelectorHeader>
+                        <ADSelectorBody className="body2">
+                            <span>Body 2</span>
+                        </ADSelectorBody>
                     </ADSelectorColumn>
                 }
                 <ADSelectorFooter
