@@ -43,12 +43,12 @@ const StyledContainer = styled(Container)`
 
             .header2 {
                 grid-area: header2; 
-                background-color: white;
+                background-color: cyan;
             }
 
             .body2 {
                 grid-area: body2;
-                background-color: cyan;
+                background-color: white;
             }
         }
     `
@@ -89,11 +89,38 @@ const StyledContainer = styled(Container)`
 
 
 const ADSelector = props => {
-    const { displayType, groups, selectButtonLabel, isDisabled, isMultiSelect, hasNextPage, options, isNextPageLoading, loadNextPage, selectedOptions } = props;
+    const { displayType, groups, selectButtonLabel, isDisabled, isMultiSelect, hasNextPage, options, isNextPageLoading, loadNextPage, selectedOptions, selectedGroups } = props;
 
     const listRef = useRef(null);
     //const hasMountedRef = useRef(false);
-    const [selected, setSelected] = useState(selectedOptions || []);
+    const [selectedOptionList, setSelectedOptionList] = useState(selectedOptions || []);
+    const [selectedGroupList, setSelectedGroupList] = useState(selectedGroups || []);
+
+    const convertGroups = items => {
+        if (!items) return [];
+
+        const wrappedGroups = items.map(convertGroup);
+
+        return wrappedGroups;
+    };
+
+    const convertGroup = group => {
+        return {
+            key: group.key,
+            label: `${group.label} (${group.total})`,
+            total: group.total
+        };
+    };
+
+    const getCurrentGroup = items => {
+        const currentGroup = items.length > 0 ? items[0] : "No groups";
+        return currentGroup;
+    };
+
+    const convertedGroups = convertGroups(groups);
+    const curGroup = getCurrentGroup(convertedGroups);
+
+    const [currentGroup, setCurrentGroup] = useState(curGroup);
 
     // Every row is loaded except for our loading indicator row.
     const isItemLoaded = (index) => {
@@ -103,14 +130,28 @@ const ADSelector = props => {
     const onChange = (e) => {
         const option = options[+e.target.value];
         const newSelected = e.target.checked
-            ? [option, ...selected]
-            : selected.filter(el => el.key !== option.key);
-        setSelected(newSelected);
+            ? [option, ...selectedOptionList]
+            : selectedOptionList.filter(el => el.key !== option.key);
+        setSelectedOptionList(newSelected);
+    };
+
+    const onGroupChange = (e) => {
+        const group = groups[+e.target.value];
+        const newSelectedGroups = e.target.checked
+            ? [group, ...selectedGroupList]
+            : selectedGroupList.filter(el => el.key !== group.key);
+        //console.log("onGroupChange", item);
+        setSelectedGroupList(newSelectedGroups);
+    };
+
+    const onCurrentGroupChange = (e, item) => {
+        //console.log("onCurrentGroupChange", item);
+        setCurrentGroup(item);
     };
 
     // Render an item or a loading indicator.
     // eslint-disable-next-line react/prop-types
-    const renderRow = ({ index, style }) => {
+    const renderOption = ({ index, style }) => {
         let content;
         if (!isItemLoaded(index)) {
             content = <div className="option" style={style} key="loader">
@@ -126,7 +167,7 @@ const ADSelector = props => {
             </div>;
         } else {
             const option = options[index];
-            const checked = selected.findIndex(el => el.key === option.key) > -1;
+            const checked = selectedOptionList.findIndex(el => el.key === option.key) > -1;
             //console.log("Item render", item, checked, selected);
             content = (
                 <Checkbox
@@ -143,6 +184,23 @@ const ADSelector = props => {
         return <div style={style}>{content}</div>;
     };
 
+    // eslint-disable-next-line react/prop-types
+    const renderGroup = ({ index, style }) => {
+        const group = groups[index];
+        const checked = selectedGroupList.findIndex(el => el.key === group.key) > -1;
+        return <div style={style}>
+            <Checkbox
+                id={group.key}
+                value={`${index}`}
+                label={group.label}
+                isChecked={checked}
+                className="group_checkbox"
+                onChange={onGroupChange}
+            />
+        </div>;
+
+    }
+
     // If there are more items to be loaded then add an extra row to hold a loading indicator.
     const itemCount = hasNextPage ? options.length + 1 : options.length;
 
@@ -157,15 +215,15 @@ const ADSelector = props => {
                     <span>Header 1</span>
                 </ADSelectorHeader>
                 <ADSelectorBody className="body1">
-                    <AutoSizer>
-                        {({ height, width }) => (
-                            <InfiniteLoader
-                                ref={listRef}
-                                isItemLoaded={isItemLoaded}
-                                itemCount={itemCount}
-                                loadMoreItems={loadMoreItems}
-                            >
-                                {({ onItemsRendered, ref }) => (
+                    <InfiniteLoader
+                        ref={listRef}
+                        isItemLoaded={isItemLoaded}
+                        itemCount={itemCount}
+                        loadMoreItems={loadMoreItems}
+                    >
+                        {({ onItemsRendered, ref }) => (
+                            <AutoSizer>
+                                {({ height, width }) => (
                                     <List
                                         className="options_list"
                                         height={height}
@@ -176,12 +234,12 @@ const ADSelector = props => {
                                         width={width}
                                         outerElementType={CustomScrollbarsVirtualList}
                                     >
-                                        {renderRow}
+                                        {renderOption}
                                     </List>
                                 )}
-                            </InfiniteLoader>
+                            </AutoSizer>
                         )}
-                    </AutoSizer>
+                    </InfiniteLoader>
                 </ADSelectorBody>
             </ADSelectorColumn>
             {displayType === "dropdown" && groups && groups.length > 0 &&
@@ -190,7 +248,21 @@ const ADSelector = props => {
                         <span>Header 2</span>
                     </ADSelectorHeader>
                     <ADSelectorBody className="body2">
-                        <span>Body 2</span>
+                        <AutoSizer>
+                            {({ height, width }) => (
+                                <List
+                                    className="group_list"
+                                    height={height}
+                                    width={width}
+                                    itemSize={32}
+                                    itemCount={groups.length}
+                                    itemData={groups}
+                                    outerElementType={CustomScrollbarsVirtualList}
+                                >
+                                    {renderGroup}
+                                </List>
+                            )}
+                        </AutoSizer>
                     </ADSelectorBody>
                 </ADSelectorColumn>
             }
@@ -198,7 +270,7 @@ const ADSelector = props => {
                 className="footer"
                 selectButtonLabel={selectButtonLabel}
                 isDisabled={isDisabled}
-                isVisible={isMultiSelect && selected.length > 0}
+                isVisible={isMultiSelect && selectedOptionList.length > 0}
             />
         </StyledContainer>
     );
