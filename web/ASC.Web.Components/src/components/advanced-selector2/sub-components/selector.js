@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Checkbox from "../../checkbox";
+import Link from "../../link";
 //import ComboBox from "../../combobox";
 import SearchInput from "../../search-input";
 import Loader from "../../loader";
@@ -97,7 +98,7 @@ const StyledContainer = styled(Container)`
             /* background-color: white; */
 
             .row-block {
-                padding-left: ${props => (props.isMultiSelect ? 8 : 0)}px;
+                padding-left: 8px;
             }
         }
     }
@@ -125,7 +126,7 @@ const ADSelector = props => {
         isDisabled, isMultiSelect, hasNextPage, options, 
         isNextPageLoading, loadNextPage, 
         selectedOptions, selectedGroups,
-        groupsHeaderLabel, searchPlaceHolderLabel} = props;
+        groupsHeaderLabel, searchPlaceHolderLabel, onSelect} = props;
 
     const listRef = useRef(null);
     const [selectedOptionList, setSelectedOptionList] = useState(selectedOptions || []);
@@ -178,8 +179,13 @@ const ADSelector = props => {
             : selectedGroupList.filter(el => el.key !== group.key);
         //console.log("onGroupChange", item);
         setSelectedGroupList(newSelectedGroups);
-        setCurrentGroup(group);
+        onGroupSelect(group);
+        
     };
+
+    const onGroupSelect = (group) => {
+        setCurrentGroup(group);
+    }
 
     const onSearchChange = (e) => {
         setSearchValue(e.target.value);
@@ -188,6 +194,10 @@ const ADSelector = props => {
     const onSearchReset = () => {
         setSearchValue("");
     };
+
+    const onSelectOptions = (options) => {
+        onSelect(options);
+    }
 
     // Render an item or a loading indicator.
     // eslint-disable-next-line react/prop-types
@@ -210,6 +220,7 @@ const ADSelector = props => {
             const checked = selectedOptionList.findIndex(el => el.key === option.key) > -1;
             //console.log("Item render", item, checked, selected);
             content = (
+                isMultiSelect ? 
                 <Checkbox
                     id={option.key}
                     value={`${index}`}
@@ -218,6 +229,15 @@ const ADSelector = props => {
                     className="option_checkbox"
                     onChange={onChange}
                 />
+                : <Link
+                    as="span"
+                    key={option.key}
+                    truncate={true}
+                    className="option_link"
+                    onClick={() => onSelectOptions([option])}
+                >
+                    {option.label}
+                </Link>
             );
         }
 
@@ -230,14 +250,26 @@ const ADSelector = props => {
         const checked = selectedGroupList.findIndex(el => el.key === group.key) > -1;
         const isSelected = currentGroup.key === group.key;
         return <div style={style} className={`row-block${isSelected ? " selected" : ""}`}>
-            <Checkbox
-                id={group.key}
-                value={`${index}`}
-                label={group.label}
-                isChecked={checked}
-                className="group_checkbox"
-                onChange={onGroupChange}
-            />
+            {isMultiSelect ? 
+                <Checkbox
+                    id={group.key}
+                    value={`${index}`}
+                    label={group.label}
+                    isChecked={checked}
+                    className="group_checkbox"
+                    onChange={onGroupChange}
+                />
+                :
+                <Link
+                    as="span"
+                    key={group.key}
+                    truncate={true}
+                    className="group_link"
+                    onClick={() => onGroupSelect(group)}
+                >
+                    {group.label}
+                </Link>
+                }
         </div>;
 
     }
@@ -282,7 +314,7 @@ const ADSelector = props => {
                                         itemSize={32}
                                         onItemsRendered={onItemsRendered}
                                         ref={ref}
-                                        width={width + (isMultiSelect ? 8 : 0)}
+                                        width={width + 8}
                                         outerElementType={CustomScrollbarsVirtualList}
                                     >
                                         {renderOption}
