@@ -58,7 +58,12 @@ const StyledContainer = styled(Container)`
 
             .body2 {
                 grid-area: body2;
+                margin-left: -8px;
                 /* background-color: white; */
+
+                .row-block {
+                    padding-left: 8px;
+                }
             }
         }
     `
@@ -88,13 +93,17 @@ const StyledContainer = styled(Container)`
 
         .body1 {
             grid-area: body1;
+            margin-left: -8px;
             /* background-color: white; */
+
+            .row-block {
+                padding-left: ${props => (props.isMultiSelect ? 8 : 0)}px;
+            }
         }
     }
 
     .row-block {
         line-height: 32px;
-        padding-left: 8px;
         cursor: pointer;
 
         &:hover {
@@ -110,8 +119,6 @@ const StyledContainer = styled(Container)`
         grid-area: footer; 
     }
 `;
-
-
 
 const ADSelector = props => {
     const { displayType, groups, selectButtonLabel, 
@@ -243,7 +250,7 @@ const ADSelector = props => {
     const loadMoreItems = isNextPageLoading ? () => { } : loadNextPage;
 
     return (
-        <StyledContainer displayType={displayType} groups={groups}>
+        <StyledContainer displayType={displayType} groups={groups} isMultiSelect={isMultiSelect}>
             <ADSelectorColumn className="column1" displayType={displayType}>
                 <ADSelectorHeader className="header1">
                     <SearchInput
@@ -275,7 +282,7 @@ const ADSelector = props => {
                                         itemSize={32}
                                         onItemsRendered={onItemsRendered}
                                         ref={ref}
-                                        width={width}
+                                        width={width + (isMultiSelect ? 8 : 0)}
                                         outerElementType={CustomScrollbarsVirtualList}
                                     >
                                         {renderOption}
@@ -299,7 +306,7 @@ const ADSelector = props => {
                                 <List
                                     className="group_list"
                                     height={height}
-                                    width={width}
+                                    width={width + 8}
                                     itemSize={32}
                                     itemCount={groups.length}
                                     itemData={groups}
