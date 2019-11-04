@@ -21,6 +21,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 const Container = ({
     displayType,
     groups,
+    isMultiSelect,
     ...props
 }) => <div {...props} />;
 /* eslint-enable react/prop-types */
@@ -37,11 +38,11 @@ const StyledContainer = styled(Container)`
             grid-area: column2; 
 
             ${props => props.groups &&
-                props.groups.length > 0
-                ? css`
+            props.groups.length > 0
+            ? css`
                     border-left: 1px solid #eceef1;
                 `
-                : ""}
+            : ""}
 
             display: grid;
             /* background-color: gold; */
@@ -122,14 +123,15 @@ const StyledContainer = styled(Container)`
 `;
 
 const ADSelector = props => {
-    const { displayType, groups, selectButtonLabel, 
-        isDisabled, isMultiSelect, hasNextPage, options, 
-        isNextPageLoading, loadNextPage, 
+    const { displayType, groups, selectButtonLabel,
+        isDisabled, isMultiSelect, hasNextPage, options,
+        isNextPageLoading, loadNextPage,
         selectedOptions, selectedGroups,
-        groupsHeaderLabel, searchPlaceHolderLabel, onSelect} = props;
+        groupsHeaderLabel, searchPlaceHolderLabel, onSelect } = props;
 
     const listRef = useRef(null);
     const [selectedOptionList, setSelectedOptionList] = useState(selectedOptions || []);
+    //const [uncheckedOptionList, setUncheckedOptionList] = useState([]);
     const [selectedGroupList, setSelectedGroupList] = useState(selectedGroups || []);
     const [searchValue, setSearchValue] = useState("");
 
@@ -145,42 +147,113 @@ const ADSelector = props => {
         return {
             key: group.key,
             label: `${group.label} (${group.total})`,
-            total: group.total
+            total: group.total,
+            selected: 0
         };
     };
+
+    const convertedGroups = convertGroups(groups);
+    //const curGroup = getCurrentGroup(convertedGroups);
 
     const getCurrentGroup = items => {
         const currentGroup = items.length > 0 ? items[0] : "No groups";
         return currentGroup;
     };
 
-    const convertedGroups = convertGroups(groups);
-    const curGroup = getCurrentGroup(convertedGroups);
-
-    const [currentGroup, setCurrentGroup] = useState(curGroup);
+    const [currentGroup, setCurrentGroup] = useState(getCurrentGroup(convertedGroups));
 
     // Every row is loaded except for our loading indicator row.
     const isItemLoaded = (index) => {
         return !hasNextPage || index < options.length
     };
 
-    const onChange = (e) => {
+    const onOptionChange = (e) => {
         const option = options[+e.target.value];
         const newSelected = e.target.checked
             ? [option, ...selectedOptionList]
             : selectedOptionList.filter(el => el.key !== option.key);
         setSelectedOptionList(newSelected);
+
+        const newSelectedGroups = [];
+        const removedSelectedGroups = [];
+
+        if (e.target.checked) {
+            option.groups.forEach(g => {
+                let index = selectedGroupList.findIndex(sg => sg.key === g)
+                if (index > -1) {
+                    // exists
+                    const selectedGroup = selectedGroupList[index];
+                    const newSelected = selectedGroup.selected + 1;
+                    newSelectedGroups.push(Object.assign({}, selectedGroup, {
+                        selected: newSelected
+                    }));
+                }
+                else {
+                    index = groups.findIndex(sg => sg.key === g);
+                    const notSelectedGroup = convertGroup(groups[index]);
+                    newSelectedGroups.push(Object.assign({}, notSelectedGroup, {
+                        selected: 1
+                    }));
+                }
+            });
+
+
+        }
+        else {
+            option.groups.forEach(g => {
+                let index = selectedGroupList.findIndex(sg => sg.key === g)
+                if (index > -1) {
+                    // exists
+                    const selectedGroup = selectedGroupList[index];
+                    const newSelected = selectedGroup.selected - 1;
+                    if(newSelected > 0) {
+                        newSelectedGroups.push(Object.assign({}, selectedGroup, {
+                            selected: newSelected
+                        }));
+                    }
+                    else {
+                        removedSelectedGroups.push(Object.assign({}, selectedGroup, {
+                            selected: newSelected
+                        }));
+                    }
+                }
+            });
+        }
+
+        selectedGroupList.forEach(g => {
+            const indexNew = newSelectedGroups.findIndex(sg => sg.key === g.key)
+
+            if (indexNew === -1) {
+                const indexRemoved = removedSelectedGroups.findIndex(sg => sg.key === g.key)
+
+                if (indexRemoved === -1) {
+                    newSelectedGroups.push(g);
+                }
+            }
+        });
+
+        setSelectedGroupList(newSelectedGroups);
     };
 
     const onGroupChange = (e) => {
-        const group = groups[+e.target.value];
+        const group = convertGroup(groups[+e.target.value]);
+        group.selected = e.target.checked ? group.total : 0;
         const newSelectedGroups = e.target.checked
             ? [group, ...selectedGroupList]
             : selectedGroupList.filter(el => el.key !== group.key);
         //console.log("onGroupChange", item);
         setSelectedGroupList(newSelectedGroups);
         onGroupSelect(group);
-        
+
+        if (e.target.checked) {
+            //const newSelectedOptions = [];
+
+            //options.forEach(o => o.groups.forEach(gKey => group.))
+
+            //setSelectedOptionList()
+
+            //TODO: Implement  setSelectedOptionList changes
+        }
     };
 
     const onGroupSelect = (group) => {
@@ -195,8 +268,23 @@ const ADSelector = props => {
         setSearchValue("");
     };
 
-    const onSelectOptions = (options) => {
-        onSelect(options);
+    const onSelectOptions = (items) => {
+        onSelect && onSelect(items);
+    }
+
+    const isOptionChecked = (option) => {    
+        const checked = selectedOptionList.findIndex(el => el.key === option.key) > -1
+            || option.groups.filter(gKey => {
+                const selectedGroup = selectedGroupList.find(sg => sg.key === gKey)
+
+                if(!selectedGroup)
+                    return false;
+                
+                return selectedGroup.total === selectedGroup.selected;
+                
+            }).length > 0;
+
+        return checked;
     }
 
     // Render an item or a loading indicator.
@@ -204,7 +292,7 @@ const ADSelector = props => {
     const renderOption = ({ index, style }) => {
         let content;
         if (!isItemLoaded(index)) {
-            content = <div className="option" style={style} key="loader">
+            content = <div className="row-block" style={style} key="loader">
                 <Loader
                     type="oval"
                     size={16}
@@ -217,45 +305,65 @@ const ADSelector = props => {
             </div>;
         } else {
             const option = options[index];
-            const checked = selectedOptionList.findIndex(el => el.key === option.key) > -1;
+            const isChecked = isOptionChecked(option);
             //console.log("Item render", item, checked, selected);
             content = (
-                isMultiSelect ? 
-                <Checkbox
-                    id={option.key}
-                    value={`${index}`}
-                    label={option.label}
-                    isChecked={checked}
-                    className="option_checkbox"
-                    onChange={onChange}
-                />
-                : <Link
-                    as="span"
-                    key={option.key}
-                    truncate={true}
-                    className="option_link"
-                    onClick={() => onSelectOptions([option])}
-                >
-                    {option.label}
-                </Link>
+                isMultiSelect ?
+                    <Checkbox
+                        id={option.key}
+                        value={`${index}`}
+                        label={option.label}
+                        isChecked={isChecked}
+                        className="option_checkbox"
+                        onChange={onOptionChange}
+                    />
+                    : <Link
+                        as="span"
+                        key={option.key}
+                        truncate={true}
+                        className="option_link"
+                        onClick={() => onSelectOptions([option])}
+                    >
+                        {option.label}
+                    </Link>
             );
         }
 
         return <div style={style} className="row-block">{content}</div>;
     };
 
+    const isGroupChecked = (group) => {
+        const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+        return !!selectedGroup;;
+    }
+
+    const isGroupIndeterminate = (group) => {
+        const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+        return selectedGroup && selectedGroup.selected > 0 && group.total !== selectedGroup.selected;;
+    }
+
+    const getGroupSelected = (group) => {
+        const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+        return isGroupIndeterminate(group) ? selectedGroup.selected : isGroupChecked(group) ? group.total : 0;
+    }
+
     // eslint-disable-next-line react/prop-types
     const renderGroup = ({ index, style }) => {
         const group = groups[index];
-        const checked = selectedGroupList.findIndex(el => el.key === group.key) > -1;
+
+        const isChecked = isGroupChecked(group);
+        const isIndeterminate = isGroupIndeterminate(group);
         const isSelected = currentGroup.key === group.key;
+        const selected = getGroupSelected(group);
+
         return <div style={style} className={`row-block${isSelected ? " selected" : ""}`}>
-            {isMultiSelect ? 
+            {isMultiSelect ?
                 <Checkbox
                     id={group.key}
                     value={`${index}`}
-                    label={group.label}
-                    isChecked={checked}
+                    label={`${group.label} (${group.total}/${selected})`}
+                    isChecked={isChecked}
+                    isIndeterminate={isIndeterminate}
                     className="group_checkbox"
                     onChange={onGroupChange}
                 />
@@ -269,9 +377,13 @@ const ADSelector = props => {
                 >
                     {group.label}
                 </Link>
-                }
+            }
         </div>;
 
+    }
+
+    const hasSelected = () => {
+        return selectedOptionList.length > 0 || selectedGroupList.length > 0;
     }
 
     // If there are more items to be loaded then add an extra row to hold a loading indicator.
@@ -305,11 +417,11 @@ const ADSelector = props => {
                         loadMoreItems={loadMoreItems}
                     >
                         {({ onItemsRendered, ref }) => (
-                            <AutoSizer>
-                                {({ height, width }) => (
+                            <AutoSizer disableHeight={true}>
+                                {({ width }) => (
                                     <List
                                         className="options_list"
-                                        height={height}
+                                        height={(isMultiSelect && hasSelected() ? 484 : 468)}
                                         itemCount={itemCount}
                                         itemSize={32}
                                         onItemsRendered={onItemsRendered}
@@ -355,7 +467,7 @@ const ADSelector = props => {
                 className="footer"
                 selectButtonLabel={selectButtonLabel}
                 isDisabled={isDisabled}
-                isVisible={isMultiSelect && selectedOptionList.length > 0}
+                isVisible={isMultiSelect && hasSelected()}
             />
         </StyledContainer>
     );
