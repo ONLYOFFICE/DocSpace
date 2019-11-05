@@ -11,7 +11,11 @@ import {
   getListUsers,
   getUserById
 } from "../../../../../store/settings/actions";
-import { filter } from "lodash";
+import {
+  getUsers,
+  getAdmins,
+  getSelectorOptions
+} from "../../../../../store/settings/selectors";
 import {
   Text,
   Avatar,
@@ -25,12 +29,18 @@ import {
   SelectorAddButton,
   IconButton,
   AdvancedSelector,
-  toastr
+  toastr,
+  RequestLoader
 } from "asc-web-components";
 
 const MainContainer = styled.div`
   padding: 16px 16px 16px 24px;
   width: 100%;
+
+  .page_loader {
+    position: fixed;
+    left: 48%;
+  }
 `;
 
 const ProjectsContainer = styled.div`
@@ -69,7 +79,7 @@ const BodyContainer = styled.div`
 const AvatarContainer = styled.div`
   display: flex;
   width: 330px;
-  height: 100px;
+  height: 120px;
   margin-right: 130px;
   margin-bottom: 24px;
   padding: 8px;
@@ -116,7 +126,9 @@ class PureAccessRights extends Component {
 
     this.state = {
       showSelector: false,
-      advancedOptions: []
+      options: [],
+      isLoading: false,
+      selectedOptions: []
     };
   }
 
@@ -146,40 +158,49 @@ class PureAccessRights extends Component {
   }
 
   onChangeAdmin = (userId, isAdmin) => {
+    this.onLoading(true);
     const { changeAdmins, productId } = this.props;
 
-    changeAdmins(userId, productId, isAdmin).catch(error => {
-      toastr.error("accessRights onChangeAdmin", error);
-      //console.log("accessRights onChangeAdmin", error)
-    });
+    changeAdmins(userId, productId, isAdmin)
+      .catch(error => {
+        toastr.error("accessRights onChangeAdmin", error);
+        //console.log("accessRights onChangeAdmin", error)
+      })
+      .finally(() => this.onLoading(false));
   };
 
   onShowGroupSelector = () =>
     this.setState({
       showSelector: !this.state.showSelector,
-      advancedOptions: this.props.advancedOptions
+      options: this.props.options,
+      selectedOptions: []
     });
 
   onSelect = selected => {
     selected.map(user => this.onChangeAdmin(user.key, true));
     this.onShowGroupSelector();
+    this.setState({ selectedOptions: selected });
   };
 
-  onSearchUsers = template =>
+  onSearchUsers = template => {
+    this.onLoading(true);
     this.setState({
-      advancedOptions: this.filterUserSelectorOptions(
-        this.props.advancedOptions,
-        template
-      )
+      options: this.filterUserSelectorOptions(this.props.options, template)
     });
+    this.onLoading(false);
+  };
 
-  filterUserSelectorOptions = (options, template) => {
-    return options.filter(option => option.label.indexOf(template) > -1);
+  filterUserSelectorOptions = (options, template) =>
+    options.filter(option => option.label.indexOf(template) > -1);
+
+  onLoading = status => {
+    console.log("onLoading status", status);
+    this.setState({ isLoading: status });
   };
 
   render() {
     const { t, owner, admins } = this.props;
-    const { showSelector, advancedOptions } = this.state;
+    const { showSelector, options, selectedOptions, isLoading } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
     const countItems = [
@@ -188,22 +209,33 @@ class PureAccessRights extends Component {
       { key: 100, label: t("CountPerPage", { count: 100 }) }
     ];
 
+    console.log("isLoading", isLoading);
+
     return (
       <MainContainer>
+        <RequestLoader
+          visible={isLoading}
+          zIndex={256}
+          loaderSize={16}
+          loaderColor={"#999"}
+          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+          fontSize={12}
+          fontColor={"#999"}
+          className="page_loader"
+        />
         <HeaderContainer>
           <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
         </HeaderContainer>
 
         <BodyContainer>
           <AvatarContainer>
-            <div className="avatar_wrapper">
-              <Avatar
-                size="big"
-                role="owner"
-                userName={owner.userName}
-                source={owner.avatar}
-              />
-            </div>
+            <Avatar
+              className="avatar_wrapper"
+              size="big"
+              role="owner"
+              userName={owner.userName}
+              source={owner.avatar}
+            />
             <div className="avatar_body">
               <Text.Body className="avatar_text" fontSize={16} isBold={true}>
                 {owner.displayName}
@@ -234,20 +266,18 @@ class PureAccessRights extends Component {
             label={t("AdminSettings")}
             isOpen={true}
           >
-            <div className="selector-button">
-              <SelectorAddButton
-                //isDisabled={isDisabled}
-                //title={showGroupSelectorButtonTitle}
-                onClick={this.onShowGroupSelector}
-              />
-            </div>
-
+            <SelectorAddButton
+              className="selector-button"
+              isDisabled={isLoading}
+              //title={showGroupSelectorButtonTitle}
+              onClick={this.onShowGroupSelector}
+            />
             <div className="advanced-selector">
               <AdvancedSelector
                 displayType="dropdown"
                 isOpen={showSelector}
                 placeholder="placeholder"
-                options={advancedOptions}
+                options={options}
                 onSearchChanged={this.onSearchUsers}
                 //groups={groups}
                 isMultiSelect={true}
@@ -256,9 +286,9 @@ class PureAccessRights extends Component {
                 onCancel={this.onShowGroupSelector}
                 onAddNewClick={() => console.log("onAddNewClick")}
                 selectAllLabel="selectorSelectAllText"
+                selectedOptions={selectedOptions}
               />
             </div>
-
             <div className="wrapper">
               <RowContainer manualHeight={`${admins.length * 50}px`}>
                 {admins.map(user => {
@@ -297,7 +327,7 @@ class PureAccessRights extends Component {
                         <div style={{ marginLeft: "60px" }}>
                           <IconButton
                             size="16"
-                            isDisabled={false}
+                            isDisabled={isLoading}
                             onClick={this.onChangeAdmin.bind(
                               this,
                               user.id,
@@ -368,7 +398,9 @@ class PureAccessRights extends Component {
               </RadioButtonContainer>
               <ProjectsBody>
                 <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", { category: t("People") })}
+                  {t("AccessRightsProductUsersCan", {
+                    category: t("People")
+                  })}
                 </Text.Body>
                 <Text.Body fontSize={12}>
                   <li>{t("ViewProfilesAndGroups")}</li>
@@ -396,45 +428,20 @@ const AccessRights = props => {
   );
 };
 
-const filterUsers = (users, ownerId) =>
-  filter(users, function(f) {
-    return f.id !== ownerId;
-  });
-const filterAdminUsers = users => {
-  const newArray = [];
-  users.map(user => {
-    if (user.listAdminModules !== undefined) {
-      if (!user.listAdminModules.includes("people")) {
-        newArray.push(user);
-      }
-    } else {
-      newArray.push(user);
-    }
-  });
-  return newArray.filter(user => !user.isVisitor);
-};
-
-const AdvancedSelectorFunction = users =>
-  users.map(user => {
-    return {
-      key: user.id,
-      label: user.displayName
-    };
-  });
-
 function mapStateToProps(state) {
   const { ownerId } = state.auth.settings;
-  const { admins, users } = state.settings;
-  const arrayUsers = filterUsers(users, ownerId);
-  const filterArrayUsers = filterAdminUsers(arrayUsers);
+  const { admins, users, owner } = state.settings;
+  const arrayUsers = getUsers(users, ownerId);
+  const filterArrayUsers = getAdmins(arrayUsers);
+  const options = getSelectorOptions(filterArrayUsers);
 
   return {
     users: filterArrayUsers,
-    admins: filterUsers(admins, ownerId),
+    admins: getUsers(admins, ownerId),
     productId: state.auth.modules[0].id,
-    owner: state.settings.owner,
+    owner,
     ownerId,
-    advancedOptions: AdvancedSelectorFunction(filterArrayUsers)
+    options
   };
 }
 
@@ -444,7 +451,7 @@ AccessRights.defaultProps = {
   productId: "",
   ownerId: "",
   owner: {},
-  advancedOptions: []
+  options: []
 };
 
 AccessRights.propTypes = {
@@ -453,7 +460,7 @@ AccessRights.propTypes = {
   productId: PropTypes.string,
   ownerId: PropTypes.string,
   owner: PropTypes.object,
-  advancedOptions: PropTypes.arrayOf(PropTypes.object)
+  options: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default connect(

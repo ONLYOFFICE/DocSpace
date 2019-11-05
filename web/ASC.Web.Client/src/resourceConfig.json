@@ -26,7 +26,8 @@
         "ForgotPassword",
         "PasswordRecoveryTitle",
         "MessageSendPasswordRecoveryInstructionsOnEmail",
-        "RememberHelper"
+        "RememberHelper",
+        "LoadingDescription"
       ]
     },
     "Confirm": {
@@ -88,6 +89,10 @@
         "DeactivationDeletionPortal",
         "ThirdPartyAuthorization",
         "SmtpSettings",
+        "GreetingSettingsTitle",
+        "GreetingTitle",
+        "RestoreDefaultButton",
+        "SuccessfullySaveGreetingSettingsMessage",
         "Employees"
       ],
       "FeedResource": [
