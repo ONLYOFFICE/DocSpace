@@ -49,8 +49,8 @@ class ADSelectorExample extends React.Component {
   generateGroups = () => {
     return [
       {
-        key: "group-all",
-        label: "All groups",
+        key: "group-administration",
+        label: "Administration",
         total: 0
       },
       {
@@ -88,12 +88,12 @@ class ADSelectorExample extends React.Component {
 
   generateUsers = (count, groups) => {
     return Array.from({ length: count }, (v, index) => {
-      const additional_group = groups[getRandomInt(1, 6)];
-      groups[0].total++;
+      const additional_group = groups[getRandomInt(0, 6)];
+      //groups[0].total++;
       additional_group.total++;
       return {
         key: `user${index}`,
-        groups: ["group-all", additional_group.key],
+        groups: [additional_group.key],
         label: `${name.findName()} (User${index})`
       };
     });
