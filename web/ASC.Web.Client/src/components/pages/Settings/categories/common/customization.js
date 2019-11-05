@@ -189,7 +189,7 @@ class Customization extends React.Component {
                            noBorder={false}
                            scaled={false}
                            scaledOptions={true}
-                           // dropDownMaxHeight={300}
+                           dropDownMaxHeight={300}
                            size='huge'
                         />
                      </FieldContainer>
