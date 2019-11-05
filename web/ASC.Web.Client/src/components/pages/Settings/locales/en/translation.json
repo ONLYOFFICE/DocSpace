@@ -42,8 +42,12 @@
     "ThirdPartyAuthorization": "Third Party Authorization",
     "SmtpSettings": "SMTP Settings",
     "ManagementCategoryStatistic": "Statistics",
-    "LoadingProcessing": "Loading...",
-    "LoadingDescription": "Please wait...",
+	"LoadingProcessing": "Loading...",
+    "LoadingDescription": "Please wait...",    
+    "GreetingSettingsTitle": "Welcome Page Settings",
+    "GreetingTitle": "Title",
+    "RestoreDefaultButton": "Restore to Default",
+    "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
 
 
 

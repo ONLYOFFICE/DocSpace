@@ -1,9 +1,10 @@
-import { SET_USERS, SET_ADMINS, SET_OWNER } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER, SET_GREETING_SETTINGS } from "./actions";
 
 const initialState = {
   users: [],
   admins: [],
-  owner: {}
+  owner: {},
+  greetingSettings: ''
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -19,6 +20,10 @@ const peopleReducer = (state = initialState, action) => {
     case SET_OWNER:
       return Object.assign({}, state, {
         owner: action.owner
+      });
+    case SET_GREETING_SETTINGS:
+      return Object.assign({}, state, {
+        greetingSettings: action.title
       });
     default:
       return state;
