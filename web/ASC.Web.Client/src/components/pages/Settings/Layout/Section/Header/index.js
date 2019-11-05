@@ -57,7 +57,7 @@ class SectionHeaderContent extends React.Component {
 
     return (
       <Header truncate={true}>
-        {t(`Settings_${header}`)}
+        {t(header)}
       </Header>
     );
   }

@@ -73,6 +73,21 @@
         "TimeZone",
         "SaveButton",
         "NotFoundLanguage",
+        "ManagementCategoryCommon",
+        "Customization",
+        "ProductsAndInstruments",
+        "WhiteLabel",
+        "ManagementCategorySecurity",
+        "PortalSecurity",
+        "AccessRights",
+        "ManagementCategoryIntegration",
+        "ManagementCategoryStatistic",
+        "DataManagement",
+        "Migration",
+        "Backup",
+        "DeactivationDeletionPortal",
+        "ThirdPartyAuthorization",
+        "SmtpSettings",
         "Employees"
       ],
       "FeedResource": [
@@ -83,6 +98,10 @@
       ],
       "PeopleResource": [
         "Settings"
+      ],
+      "AuditResource": [
+        "LoginHistoryNav",
+        "AuditTrailNav"
       ],
       "UserControlsCommonResource": [
         "NextPage",

@@ -6,13 +6,13 @@ export const settingsTree = [
         key: '0',
         icon: 'SettingsIcon',
         link: 'common',
-        tKey: 'common',
+        tKey: 'ManagementCategoryCommon',
         children: [
             {
                 key: '0-0',
                 icon: '',
                 link: 'customization',
-                tKey: 'customization',
+                tKey: 'Customization',
             }
         ]
     },
@@ -20,13 +20,13 @@ export const settingsTree = [
         key: '1',
         icon: 'SettingsIcon',
         link: 'security',
-        tKey: 'security',
+        tKey: 'ManagementCategorySecurity',
         children: [
             {
                 key: '1-0',
                 icon: '',
                 link: 'accessrights',
-                tKey: 'access-rights',
+                tKey: 'AccessRights',
             },
         ]
     },

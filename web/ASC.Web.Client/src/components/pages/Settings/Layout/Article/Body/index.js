@@ -25,10 +25,9 @@ const getTreeItems = (data, path, t) => {
   return data.map(item => {
     if (item.children && item.children.length) {
       const link = path + getSelectedLinkByKey(item.key, settingsTree);
-      const tName = `Settings_${item.link}`;
       return (
         <TreeNode
-          title={<Link className='inherit-title-link' href={link}>{t(tName)}</Link>}
+          title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
@@ -41,11 +40,10 @@ const getTreeItems = (data, path, t) => {
       );
     };
     const link = path + getSelectedLinkByKey(item.key, settingsTree);
-    const tName = `Settings_${item.link}`;
     return (
       <TreeNode
         key={item.key}
-        title={<Link className='inherit-title-link' href={link}>{t(tName)}</Link>}
+        title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
         icon={item.icon && React.createElement(Icons[item.icon], {
           size: 'scale',
           isfill: true,
