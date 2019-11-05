@@ -43,7 +43,7 @@ namespace ASC.Core.Tenants
         [DataMember(Name = "LifeTime")]
         public int LifeTime { get; set; }
 
-        private readonly bool IsVisibleSettings;
+        public bool IsVisibleSettings { get; internal set; }
 
         public TenantCookieSettings()
         {

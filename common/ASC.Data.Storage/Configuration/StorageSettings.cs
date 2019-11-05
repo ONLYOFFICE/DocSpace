@@ -193,7 +193,7 @@ namespace ASC.Data.Storage.Configuration
         public IOptionsMonitor<LogNLog> Options { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        private readonly ICacheNotify<DataStoreCacheItem> Cache;
+        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
     }
 
     [Serializable]

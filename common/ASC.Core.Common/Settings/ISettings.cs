@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Reflection;
 using System.Runtime.Serialization;
 using ASC.Core.Tenants;
 using AutoMapper;
@@ -121,9 +122,9 @@ namespace ASC.Core.Common.Settings
         }
 
         public abstract Guid ID { get; }
-        public AuthContext AuthContext { get; }
-        public SettingsManager SettingsManager { get; }
-        public TenantManager TenantManager { get; }
+        public AuthContext AuthContext { get; internal set; }
+        public SettingsManager SettingsManager { get; internal set; }
+        public TenantManager TenantManager { get; internal set; }
 
         public abstract ISettings GetDefault();
     }
@@ -138,11 +139,45 @@ namespace ASC.Core.Common.Settings
                 .AddTenantManagerService();
         }
 
-        public static IServiceCollection AddSettingsService<T>(this IServiceCollection services) where T : class, ISettings
+        public static IServiceCollection AddSettingsService<T>(this IServiceCollection services) where T : BaseSettings<T>
         {
-            services.AddAutoMapper(typeof(T));
+            services.AddAutoMapper(r =>
+            {
+                r.ShouldMapField = (a) => true;
+                r.ShouldMapProperty = (a) =>
+                {
+                    return true;
+                };
+                r.CreateMap<T, T>().ForAllMembers(o => o.IgnoreSourceWhenDefault());
+
+            }, typeof(T));
             services.TryAddScoped<T>();
             return services.AddBaseSettingsService();
+        }
+    }
+
+    public static class Extensions
+    {
+        public static void IgnoreSourceWhenDefault<TSource, TDestination>(this IMemberConfigurationExpression<TSource, TDestination, object> opt)
+        {
+            var destinationType = opt.DestinationMember.GetMemberType();
+            var defaultValue = destinationType.GetTypeInfo().IsValueType ? Activator.CreateInstance(destinationType) : null;
+            opt.Condition((src, dest, srcValue) =>
+            {
+                var a = opt.DestinationMember;
+                return !Equals(srcValue, defaultValue);
+            });
+        }
+
+        public static Type GetMemberType(this MemberInfo memberInfo)
+        {
+            if (memberInfo is MethodInfo)
+                return ((MethodInfo)memberInfo).ReturnType;
+            if (memberInfo is PropertyInfo)
+                return ((PropertyInfo)memberInfo).PropertyType;
+            if (memberInfo is FieldInfo)
+                return ((FieldInfo)memberInfo).FieldType;
+            return null;
         }
     }
 }

@@ -189,7 +189,7 @@ namespace ASC.Core.Data
                     settings = (T)settingsInstance.GetDefault();
                 }
 
-                settings = (T)Mapper.Map(settingsInstance, settings, typeof(T), typeof(T));
+                settings = Mapper.Map((T)settingsInstance, settings);
 
                 Cache.Insert(key, settings, expirationTimeout);
                 return settings;
