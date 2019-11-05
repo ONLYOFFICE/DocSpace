@@ -25,9 +25,9 @@ import { login } from "../../../store/auth/actions";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { welcomePageTitle } from "./../../../helpers/customNames";
 import { sendInstructionsToChangePassword } from "../../../store/services/api";
 import SubModalDialog from "./sub-components/modal-dialog";
+import { getGreetingSettings } from '../../../store/services/api';
 
 const FormContainer = styled(Container)`
   margin-top: 70px;
@@ -106,6 +106,7 @@ const Form = props => {
   const [email, setEmail] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsisChecked] = useState(false);
+  const [greetingTitle, setGreetingTitle] = useState('');
 
   const onClick = () => {
     setOpenDialog(true);
@@ -182,6 +183,13 @@ const Form = props => {
     };
   }, [onKeyPress, params, language]);
 
+  useEffect(() => {
+    getGreetingSettings()
+      .then((res) => {
+        setGreetingTitle(res)
+      });
+  }, []);
+
   const onChangePassword = event => {
     setPassword(event.target.value);
     !passwordValid && setPasswordValid(true);
@@ -212,7 +220,7 @@ const Form = props => {
               top
             />
             <CardTitle className="card-title">
-              {t("CustomWelcomePageTitle", { welcomePageTitle })}
+              {greetingTitle}
             </CardTitle>
           </Card>
         </Col>
