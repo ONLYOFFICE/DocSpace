@@ -1,5 +1,5 @@
 import React, { lazy } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
 
 const AccessRightsSettings = lazy(() => import("./accessRights"));
@@ -11,14 +11,8 @@ const Security = () => {
     <Switch>
       <Route
         exact
-        path={[`${basePath}/access-rights`, basePath]}
+        path={[`${basePath}/accessrights`, basePath]}
         component={AccessRightsSettings}
-      />
-
-      <Redirect
-        to={{
-          pathname: "/error/404",
-        }}
       />
 
     </Switch>
