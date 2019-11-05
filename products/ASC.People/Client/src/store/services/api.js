@@ -42,7 +42,7 @@ export function getPortalPasswordSettings() {
 export function getUser(userId) {
   return request({
     method: "get",
-    url: "/people/@self.json"
+    url: `/people/${userId || "@self"}.json`
   });
 }
 
