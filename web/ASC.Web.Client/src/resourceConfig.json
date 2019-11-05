@@ -83,6 +83,10 @@
       ],
       "PeopleResource": [
         "Settings"
+      ],
+      "UserControlsCommonResource": [
+        "NextPage",
+        "PreviousPage"
       ]
     }
   },

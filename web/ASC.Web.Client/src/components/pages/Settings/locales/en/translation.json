@@ -23,6 +23,8 @@
     "SuccessfullySaveSettingsMessage": "Settings have been successfully updated",
     "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
     "Settings": "Settings",
+    "PreviousPage": "Previous",
+    "NextPage": "Next",
 
 
 
@@ -59,5 +61,6 @@
     "Settings_integration": "Integration",
     "Settings_third-party-services": "Third-Party Services",
     "Settings_smtp-settings": "SMTP Settings",
-    "Settings_statistics": "Statistics"
+    "Settings_statistics": "Statistics",
+    "CountPerPage": "{{count}} per page"
 }

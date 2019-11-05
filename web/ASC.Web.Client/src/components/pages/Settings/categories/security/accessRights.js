@@ -121,20 +121,26 @@ class PureAccessRights extends Component {
   }
 
   componentDidMount() {
-    const { getListAdmins, getListUsers, getUserById, ownerId } = this.props;
+    const {
+      getListAdmins,
+      getListUsers,
+      getUserById,
+      ownerId,
+      productId
+    } = this.props;
 
     getUserById(ownerId).catch(error => {
-      toastr.error("accessRights getUserById", error);
+      toastr.error(error);
       //console.log("accessRights getUserById", error);
     });
 
     getListUsers().catch(error => {
-      toastr.error("accessRights getListAdmins", error);
+      toastr.error(error);
       //console.log("accessRights getListAdmins", error);
     });
 
-    getListAdmins().catch(error => {
-      toastr.error("accessRights getListAdmins", error);
+    getListAdmins(productId).catch(error => {
+      toastr.error(error);
       //console.log("accessRights getListAdmins", error);
     });
   }
@@ -176,6 +182,12 @@ class PureAccessRights extends Component {
     const { showSelector, advancedOptions } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
+    const countItems = [
+      { key: 25, label: t("CountPerPage", { count: 25 }) },
+      { key: 50, label: t("CountPerPage", { count: 50 }) },
+      { key: 100, label: t("CountPerPage", { count: 100 }) }
+    ];
+
     return (
       <MainContainer>
         <HeaderContainer>
@@ -196,9 +208,12 @@ class PureAccessRights extends Component {
               <Text.Body className="avatar_text" fontSize={16} isBold={true}>
                 {owner.displayName}
               </Text.Body>
-              <Text.Body className="avatar_text" fontSize={12}>
-                {owner.department}
-              </Text.Body>
+              {owner.groups &&
+                owner.groups.map(group => (
+                  <Link fontSize={12} key={group.id} href={owner.profileUrl}>
+                    {group.name}
+                  </Link>
+                ))}
             </div>
           </AvatarContainer>
           <ProjectsBody>
@@ -233,7 +248,6 @@ class PureAccessRights extends Component {
                 isOpen={showSelector}
                 placeholder="placeholder"
                 options={advancedOptions}
-                //options={this.AdvancedSelectorFunction(users)}
                 onSearchChanged={this.onSearchUsers}
                 //groups={groups}
                 isMultiSelect={true}
@@ -252,8 +266,8 @@ class PureAccessRights extends Component {
                     <Avatar
                       size="small"
                       role="admin"
-                      userName={user.userName}
-                      source={user.avatar}
+                      userName={user.displayName}
+                      source={user.avatarSmall}
                     />
                   );
                   const nameColor =
@@ -270,13 +284,13 @@ class PureAccessRights extends Component {
                         <Link
                           containerWidth="120px"
                           type="page"
-                          title={user.userName}
+                          title={user.displayName}
                           isBold={true}
                           fontSize={15}
                           color={nameColor}
                           href={user.profileUrl}
                         >
-                          {user.userName}
+                          {user.displayName}
                         </Link>
 
                         <div style={{ maxWidth: 120 }} />
@@ -303,15 +317,20 @@ class PureAccessRights extends Component {
             {admins.length > 25 ? (
               <div className="wrapper">
                 <Paging
-                  previousLabel="Previous"
-                  nextLabel="Next"
+                  previousLabel={t("PreviousPage")}
+                  nextLabel={t("NextPage")}
+                  openDirection="top"
+                  displayItems={false}
+                  countItems={countItems}
                   selectedPageItem={{ label: "1 of 1" }}
                   selectedCountItem={{ label: "25 per page" }}
-                  previousAction={() => console.log("Prev")}
-                  nextAction={() => console.log("Next")}
-                  openDirection="bottom"
+                  previousAction={() => console.log("previousAction")}
+                  nextAction={() => console.log("nextAction")}
                   onSelectPage={a => console.log(a)}
                   onSelectCount={a => console.log(a)}
+                  //pageItems={pageItems}
+                  //disablePrevious={!filter.hasPrev()}
+                  //disableNext={!filter.hasNext()}
                 />
               </div>
             ) : null}
@@ -377,12 +396,22 @@ const AccessRights = props => {
   );
 };
 
-const filterOwner = (users, ownerId) =>
+const filterUsers = (users, ownerId) =>
   filter(users, function(f) {
     return f.id !== ownerId;
   });
 const filterAdminUsers = users => {
-  return users.filter(user => user.listAdminModules === undefined);
+  const newArray = [];
+  users.map(user => {
+    if (user.listAdminModules !== undefined) {
+      if (!user.listAdminModules.includes("people")) {
+        newArray.push(user);
+      }
+    } else {
+      newArray.push(user);
+    }
+  });
+  return newArray.filter(user => !user.isVisitor);
 };
 
 const AdvancedSelectorFunction = users =>
@@ -396,12 +425,12 @@ const AdvancedSelectorFunction = users =>
 function mapStateToProps(state) {
   const { ownerId } = state.auth.settings;
   const { admins, users } = state.settings;
-  const arrayUsers = filterOwner(users, ownerId);
+  const arrayUsers = filterUsers(users, ownerId);
   const filterArrayUsers = filterAdminUsers(arrayUsers);
 
   return {
     users: filterArrayUsers,
-    admins: filterOwner(admins, ownerId),
+    admins: filterUsers(admins, ownerId),
     productId: state.auth.modules[0].id,
     owner: state.settings.owner,
     ownerId,
@@ -414,7 +443,8 @@ AccessRights.defaultProps = {
   admins: [],
   productId: "",
   ownerId: "",
-  owner: {}
+  owner: {},
+  advancedOptions: []
 };
 
 AccessRights.propTypes = {
@@ -422,7 +452,8 @@ AccessRights.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
   ownerId: PropTypes.string,
-  owner: PropTypes.object
+  owner: PropTypes.object,
+  advancedOptions: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default connect(
