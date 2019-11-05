@@ -1,31 +1,16 @@
-export const getKeyByLink = (data, linkArr) => {
- const length = linkArr.length;
- if (length === 1 || !linkArr[1].length) {
-   const arrLength = data.length;
-   for (let i = 0; i < arrLength; i++) {
-     if (data[i].link === linkArr[0]) {
-       return data[i].children ? data[i].children[0].key : data[i].key;
-     }
-   }
- } else if (length === 2) {
-   const arrLength = data.length;
-   let key;
+export const getKeyByLink = (linkArr, data, index = 0) => {
+  const length = linkArr.length;
+  const currentElement = linkArr[index];
+  const item = data.find(item => item.link === currentElement);
 
-   for (let i = 0; i < arrLength; i++) {
-     if (data[i].link === linkArr[0]) {
-       key = i;
-       break;
-     }
-   }
-
-   const selectedArr = data[key].children;
-   const childrenLength = selectedArr.length;
-   for (let i = 0; i < childrenLength; i++) {
-     if (selectedArr[i].link === linkArr[1]) {
-       return selectedArr[i].key;
-     }
-
-   }
- }
- return '0-0';
+  if (index === length - 1 && item) {
+    return item.key;
+  }
+  else if (!item || !item.children) {
+    return '0';
+  }
+  else {
+    const newIndex = index + 1;
+    return getKeyByLink(linkArr, item.children, newIndex);
+  }
 }

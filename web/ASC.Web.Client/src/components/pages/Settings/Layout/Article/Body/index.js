@@ -7,12 +7,10 @@ import {
   Icons,
   Link
 } from "asc-web-components";
-import { setNewSelectedNode } from '../../../../../../store/auth/actions';
 import { withRouter } from "react-router";
-import { settingsTree } from '../../../../../../helpers/constants';
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink } from '../../../utils';
+import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement } from '../../../utils';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -23,13 +21,13 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 `;
 
-const getItems = (data, path, t) => {
+const getTreeItems = (data, path, t) => {
   return data.map(item => {
     if (item.children && item.children.length) {
-      const link = path + getSelectedLinkByKey(item.key);
+      const link = path + getSelectedLinkByKey(item.key, settingsTree);
       return (
         <TreeNode
-          title={<Link className='inherit-title-link' href={link}>{t(`Settings_${item.link}`)}</Link>}
+          title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
           key={item.key}
           icon={item.icon && React.createElement(Icons[item.icon], {
             size: 'scale',
@@ -37,15 +35,15 @@ const getItems = (data, path, t) => {
             color: 'dimgray',
           })}
         >
-          {getItems(item.children, path, t)}
+          {getTreeItems(item.children, path, t)}
         </TreeNode>
       );
     };
-    const link = path + getSelectedLinkByKey(item.key);
+    const link = path + getSelectedLinkByKey(item.key, settingsTree);
     return (
       <TreeNode
         key={item.key}
-        title={<Link className='inherit-title-link' href={link}>{t(`Settings_${item.link}`)}</Link>}
+        title={<Link className='inherit-title-link' href={link}>{t(item.tKey)}</Link>}
         icon={item.icon && React.createElement(Icons[item.icon], {
           size: 'scale',
           isfill: true,
@@ -56,49 +54,54 @@ const getItems = (data, path, t) => {
   });
 };
 
-const getSelectedLinkByKey = key => {
-  const length = key.length;
-  if (length === 1) {
-    return '/' + settingsTree[key].link;
-  }
-  else if (length === 3) {
-    return '/' + settingsTree[key[0]].link + '/' + settingsTree[key[0]].children[key[2]].link;
-  }
-}
 
 class ArticleBodyContent extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const { match, history, setNewSelectedNode, i18n, language } = props;
+    const { match, history, i18n, language } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
     i18n.changeLanguage(language);
 
-    const fullSettingsUrlLength = fullSettingsUrl.length;
+    if (locationPathname === fullSettingsUrl) {
+      const defaultKey = ['0'];
+      const rightKey = selectKeyOfTreeElement(defaultKey[0], settingsTree)
+      const newPath = match.path + getSelectedLinkByKey(rightKey[0], settingsTree);
+      history.push(newPath);
+      this.state = {
+        selectedKeys: rightKey
+      };
+      return;
+    }
 
+    const fullSettingsUrlLength = fullSettingsUrl.length;
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
-    const key = getKeyByLink(settingsTree, arrayOfParams);
-    const link = getSelectedLinkByKey(key);
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const rightKey = selectKeyOfTreeElement(key[0], settingsTree)
+    const link = getSelectedLinkByKey(rightKey[0], settingsTree);
 
-    setNewSelectedNode([key]);
     const path = match.path + link;
     history.push(path);
 
+    this.state = {
+      selectedKeys: rightKey
+    };
   }
 
   componentDidUpdate() {
-    const { selectedKeys, match, history } = this.props;
-    const settingsPath = getSelectedLinkByKey(selectedKeys[0]);
+    const { selectedKeys } = this.state;
+    const { match, history } = this.props;
+    const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
     const newPath = match.path + settingsPath;
     history.push(newPath);
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!utils.array.isArrayEqual(nextState.selectedKeys, this.state.selectedKeys)) {
       return true;
     }
 
@@ -106,22 +109,14 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = value => {
-    const { selectedKeys, setNewSelectedNode } = this.props;
+    const { selectedKeys } = this.state;
 
-    if (value) {
-      if (utils.array.isArrayEqual(value, selectedKeys)) {
-
-        return;
-      }
-      const selectedKey = value[0];
-      if (selectedKey.length === 3) {
-        setNewSelectedNode(value);
-      }
-      else if (selectedKey.length === 1 && (selectedKey.toString() !== selectedKeys.toString()[0] || selectedKeys.toString()[2] !== '0')) {
-        const selectedKeys = settingsTree[value].children ? [`${value.toString()}-0`] : value;
-        setNewSelectedNode(selectedKeys);
-      }
+    if (utils.array.isArrayEqual(value, selectedKeys)) {
+      return;
     }
+
+    const key = selectKeyOfTreeElement(value, settingsTree);
+    this.setState({ selectedKeys: key });
   };
 
   switcherIcon = obj => {
@@ -140,7 +135,8 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { selectedKeys, match, t } = this.props;
+    const { selectedKeys } = this.state;
+    const { match, t } = this.props;
 
     console.log("SettingsTreeMenu", this.props);
 
@@ -157,7 +153,7 @@ class ArticleBodyContent extends React.Component {
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}
       >
-        {getItems(settingsTree, match.path, t)}
+        {getTreeItems(settingsTree, match.path, t)}
       </StyledTreeMenu>
     );
   };
@@ -165,10 +161,8 @@ class ArticleBodyContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    selectedKeys: state.auth.settings.settingsTree.selectedKey,
     language: state.auth.user.cultureName,
-    ownerId: state.auth.settings.ownerId,
   };
 }
 
-export default connect(mapStateToProps, { setNewSelectedNode })(withRouter(withTranslation()(ArticleBodyContent)));
+export default connect(mapStateToProps)(withRouter(withTranslation()(ArticleBodyContent)));

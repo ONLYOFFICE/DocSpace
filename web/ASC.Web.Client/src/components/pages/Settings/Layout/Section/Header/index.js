@@ -1,10 +1,9 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, utils } from 'asc-web-components';
 import styled from 'styled-components';
-import { settingsTree } from '../../../../../../helpers/constants';
-import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
+import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
 
 const Header = styled(Text.ContentHeader)`
   margin-right: 16px;
@@ -14,31 +13,54 @@ const Header = styled(Text.ContentHeader)`
   }
 `;
 
-const getSelectedTitleByKey = key => {
-  const length = key.length;
-  if (length === 1) {
-    return settingsTree[key].link;
+class SectionHeaderContent extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    const { match, location } = props;
+    const fullSettingsUrl = match.url;
+    const locationPathname = location.pathname;
+
+    const fullSettingsUrlLength = fullSettingsUrl.length;
+
+    const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
+    const arrayOfParams = resultPath.split('/');
+
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const header = getTKeyByKey(key, settingsTree);
+    this.state = {
+      header
+    };
+
   }
-  else if (length === 3) {
-    return settingsTree[key[0]].children[key[2]].link;
+
+  componentDidUpdate() {
+    const { match, location } = this.props;
+    const fullSettingsUrl = match.url;
+    const locationPathname = location.pathname;
+
+
+    const fullSettingsUrlLength = fullSettingsUrl.length;
+    const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
+    const arrayOfParams = resultPath.split('/');
+
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const header = getTKeyByKey(key, settingsTree);
+    header !== this.state.header && this.setState({ header });
+
+  }
+
+  render() {
+    const { t } = this.props;
+    const { header } = this.state;
+
+    return (
+      <Header truncate={true}>
+        {t(header)}
+      </Header>
+    );
   }
 };
 
-const SectionHeaderContent = props => {
-  const { t } = useTranslation();
-
-  const header = getSelectedTitleByKey(props.selectedKey)
-  return (
-    <Header truncate={true}>
-      {t(`Settings_${header}`)}
-    </Header>
-  );
-};
-
-function mapStateToProps(state) {
-  return {
-    selectedKey: state.auth.settings.settingsTree.selectedKey[0]
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(SectionHeaderContent));
+export default withRouter(withTranslation()(SectionHeaderContent));
