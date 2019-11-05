@@ -10,7 +10,7 @@ import {
 import { withRouter } from "react-router";
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink, settingsTree } from '../../../utils';
+import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement } from '../../../utils';
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -24,7 +24,7 @@ const StyledTreeMenu = styled(TreeMenu)`
 const getTreeItems = (data, path, t) => {
   return data.map(item => {
     if (item.children && item.children.length) {
-      const link = path + getSelectedLinkByKey(item.key);
+      const link = path + getSelectedLinkByKey(item.key, settingsTree);
       const tName = `Settings_${item.link}`;
       return (
         <TreeNode
@@ -40,7 +40,7 @@ const getTreeItems = (data, path, t) => {
         </TreeNode>
       );
     };
-    const link = path + getSelectedLinkByKey(item.key);
+    const link = path + getSelectedLinkByKey(item.key, settingsTree);
     const tName = `Settings_${item.link}`;
     return (
       <TreeNode
@@ -56,53 +56,48 @@ const getTreeItems = (data, path, t) => {
   });
 };
 
-const getSelectedLinkByKey = key => {
-  const length = key.length;
-  if (length === 1) {
-    return '/' + settingsTree[key].link;
-  }
-  else if (length === 3) {
-    return '/' + settingsTree[key[0]].link + '/' + settingsTree[key[0]].children[key[2]].link;
-  }
-}
 
 class ArticleBodyContent extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const { match, history,  i18n, language  } = props;
+    const { match, history, i18n, language } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
     i18n.changeLanguage(language);
 
     if (locationPathname === fullSettingsUrl) {
-      const newPath = match.path + getSelectedLinkByKey('0-0');
+      const defaultKey = ['0'];
+      const rightKey = selectKeyOfTreeElement(defaultKey[0], settingsTree)
+      const newPath = match.path + getSelectedLinkByKey(rightKey[0], settingsTree);
       history.push(newPath);
+      this.state = {
+        selectedKeys: rightKey
+      };
       return;
     }
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
-
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
-    const key = getKeyByLink(settingsTree, arrayOfParams);
-    const link = getSelectedLinkByKey(key);
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const rightKey = selectKeyOfTreeElement(key[0], settingsTree)
+    const link = getSelectedLinkByKey(rightKey[0], settingsTree);
 
     const path = match.path + link;
     history.push(path);
 
     this.state = {
-      selectedKeys: [key]
+      selectedKeys: rightKey
     };
-
   }
 
   componentDidUpdate() {
-    const {selectedKeys } =  this.state;
+    const { selectedKeys } = this.state;
     const { match, history } = this.props;
-    const settingsPath = getSelectedLinkByKey(selectedKeys[0]);
+    const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
     const newPath = match.path + settingsPath;
     history.push(newPath);
   }
@@ -116,22 +111,14 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = value => {
-    const {selectedKeys } =  this.state;
+    const { selectedKeys } = this.state;
 
-    if (value) {
-      if (utils.array.isArrayEqual(value, selectedKeys)) {
-
-        return;
-      }
-      const selectedKey = value[0];
-      if (selectedKey.length === 3) {
-        this.setState({selectedKeys: value});
-      }
-      else if (selectedKey.length === 1 && (selectedKey.toString() !== selectedKeys.toString()[0] || selectedKeys.toString()[2] !== '0')) {
-        const selectedKeys = settingsTree[value].children ? [`${value.toString()}-0`] : value;
-        this.setState({selectedKeys});
-      }
+    if (utils.array.isArrayEqual(value, selectedKeys)) {
+      return;
     }
+
+    const key = selectKeyOfTreeElement(value, settingsTree);
+    this.setState({ selectedKeys: key });
   };
 
   switcherIcon = obj => {
@@ -150,7 +137,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const {selectedKeys } =  this.state;
+    const { selectedKeys } = this.state;
     const { match, t } = this.props;
 
     console.log("SettingsTreeMenu", this.props);

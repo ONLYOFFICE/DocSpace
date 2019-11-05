@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { Text, utils } from 'asc-web-components';
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
-import { getKeyByLink, settingsTree } from '../../../utils';
+import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
 
 const Header = styled(Text.ContentHeader)`
   margin-right: 16px;
@@ -12,16 +12,6 @@ const Header = styled(Text.ContentHeader)`
     max-width: calc(100vw - 96px);
   }
 `;
-
-const getSelectedTitleByKey = key => {
-  const length = key.length;
-  if (length === 1) {
-    return settingsTree[key].link;
-  }
-  else if (length === 3) {
-    return settingsTree[key[0]].children[key[2]].link;
-  }
-};
 
 class SectionHeaderContent extends React.Component {
 
@@ -37,12 +27,11 @@ class SectionHeaderContent extends React.Component {
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
-    const key = getKeyByLink(settingsTree, arrayOfParams);
-    const header = getSelectedTitleByKey(key);
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const header = getTKeyByKey(key, settingsTree);
     this.state = {
       header
-    }
-
+    };
 
   }
 
@@ -53,13 +42,13 @@ class SectionHeaderContent extends React.Component {
 
 
     const fullSettingsUrlLength = fullSettingsUrl.length;
-
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
-    const key = getKeyByLink(settingsTree, arrayOfParams);
-    const header = getSelectedTitleByKey(key);
+    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const header = getTKeyByKey(key, settingsTree);
     header !== this.state.header && this.setState({ header });
+
   }
 
   render() {
