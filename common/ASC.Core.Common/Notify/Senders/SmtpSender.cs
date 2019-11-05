@@ -36,6 +36,7 @@ using MailKit;
 using MailKit.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -314,6 +315,17 @@ namespace ASC.Core.Notify.Senders
             {
                 return null;
             }
+        }
+    }
+
+    public static class SmtpSenderExtension
+    {
+        public static IServiceCollection AddSmtpSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<SmtpSender>();
+            return services
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

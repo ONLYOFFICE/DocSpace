@@ -31,6 +31,7 @@ using ASC.Common.Logging;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
@@ -71,6 +72,15 @@ namespace ASC.Core.Notify.Senders
                        e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
             return NoticeSendResult.OK;
+        }
+    }
+
+    public static class JabberSenderExtension
+    {
+        public static IServiceCollection AddJabberSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<JabberSender>();
+            return services.AddJabberServiceClient();
         }
     }
 }

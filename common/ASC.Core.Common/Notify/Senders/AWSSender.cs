@@ -38,6 +38,7 @@ using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
@@ -224,6 +225,17 @@ namespace ASC.Core.Notify.Senders
         private bool IsRefreshNeeded()
         {
             return quota == null || (DateTime.UtcNow - lastRefresh) > refreshTimeout;
+        }
+    }
+
+    public static class AWSSenderExtension
+    {
+        public static IServiceCollection AddAWSSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<AWSSender>();
+            return services
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

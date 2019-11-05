@@ -2,7 +2,9 @@
 using System.Threading.Tasks;
 
 using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Core.Common;
+using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
 using Microsoft.Extensions.Configuration;
@@ -41,14 +43,26 @@ namespace ASC.Notify
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
+                    services.Configure<LogNLog>(r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC.Notify", r => r.Name = "ASC");
+                    services.Configure<LogNLog>("ASC.Notify.Messages", r => r.Name = "ASC.Notify.Messages");
+
+                    services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-                    services.Configure<NotifyServiceCfg>(r => r.Init());
+                    services.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
                     services.TryAddSingleton<CommonLinkUtilitySettings>();
                     services.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
 
                     services.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
+
+                    services
+                    .AddJabberSenderService()
+                    .AddSmtpSenderService()
+                    .AddAWSSenderService();
                 })
                 .UseConsoleLifetime()
                 .Build();

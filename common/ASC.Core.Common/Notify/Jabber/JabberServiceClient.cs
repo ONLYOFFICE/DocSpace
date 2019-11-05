@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using ASC.Core.Common.Notify.Jabber;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify.Jabber
 {
@@ -235,6 +237,18 @@ namespace ASC.Core.Notify.Jabber
         private JabberServiceClientWcf GetService()
         {
             return new JabberServiceClientWcf();
+        }
+    }
+
+    public static class JabberServiceClientExtension
+    {
+        public static IServiceCollection AddJabberServiceClient(this IServiceCollection services)
+        {
+            services.TryAddScoped<JabberServiceClient>();
+            return services
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddTenantManagerService();
         }
     }
 }
