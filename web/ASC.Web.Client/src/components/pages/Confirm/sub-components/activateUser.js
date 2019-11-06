@@ -5,7 +5,6 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
-import { welcomePageTitle } from './../../../../helpers/customNames';
 import { EmployeeActivationStatus } from './../../../../helpers/constants';
 import { getConfirmationInfo, activateConfirmUser } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
@@ -180,7 +179,7 @@ class Confirm extends React.PureComponent {
 
   render() {
     console.log('ActivateUser render');
-    const { settings, isConfirmLoaded, t } = this.props;
+    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
     return (
       !isConfirmLoaded
         ? (
@@ -196,7 +195,7 @@ class Confirm extends React.PureComponent {
                   <a href='/login'>
                     <img src="images/dark_general.png" alt="Logo" />
                   </a>
-                  <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+                  <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
                 </div>
               </div>
 
@@ -321,7 +320,8 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.auth.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings
+    settings: state.auth.settings.passwordSettings,
+    greetingTitle: state.auth.settings.companyName
   };
 }
 

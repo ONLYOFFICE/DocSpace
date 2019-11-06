@@ -5,7 +5,6 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
-import { welcomePageTitle } from './../../../../helpers/customNames';
 import { getConfirmationInfo, createConfirmUser, logout, login } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
 
@@ -127,9 +126,9 @@ class Confirm extends React.PureComponent {
             const registerData = Object.assign(personalData, { isVisitor: isVisitor })
 
             createConfirmUser(registerData, loginData, this.state.key)
-                .then(() => { 
-                   toastr.success("User has been created successfully");
-                   return history.push('/');
+                .then(() => {
+                    toastr.success("User has been created successfully");
+                    return history.push('/');
                 })
                 .catch((error) => {
                     console.error("confirm error", error);
@@ -154,11 +153,6 @@ class Confirm extends React.PureComponent {
         const { getConfirmationInfo, history } = this.props;
 
         getConfirmationInfo(this.state.key, this.state.linkType)
-            .then(
-                function () {
-                    console.log("get settings success");
-                }
-            )
             .catch(e => {
                 console.error("get settings error", e);
                 history.push(`/login/error=${e}`);
@@ -201,7 +195,7 @@ class Confirm extends React.PureComponent {
 
     render() {
         console.log('createUser render');
-        const { settings, isConfirmLoaded, t } = this.props;
+        const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
         return (
             !isConfirmLoaded
                 ? (
@@ -217,7 +211,7 @@ class Confirm extends React.PureComponent {
                                     <a href='/login'>
                                         <img src="images/dark_general.png" alt="Logo" />
                                     </a>
-                                    <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+                                    <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
                                 </div>
                             </div>
 
@@ -348,7 +342,8 @@ function mapStateToProps(state) {
     return {
         isConfirmLoaded: state.auth.isConfirmLoaded,
         isAuthenticated: state.auth.isAuthenticated,
-        settings: state.auth.settings.passwordSettings
+        settings: state.auth.settings.passwordSettings,
+        greetingTitle: state.auth.settings.companyName
     };
 }
 
