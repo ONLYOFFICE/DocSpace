@@ -27,7 +27,6 @@ import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { sendInstructionsToChangePassword } from "../../../store/services/api";
 import SubModalDialog from "./sub-components/modal-dialog";
-import { getGreetingSettings } from '../../../store/services/api';
 
 const FormContainer = styled(Container)`
   margin-top: 70px;
@@ -93,7 +92,7 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
   const { t } = useTranslation("translation", { i18n });
-  const { login, match, history, language } = props;
+  const { login, match, history, language, greetingTitle } = props;
   const { params } = match;
   const [identifier, setIdentifier] = useState(params.confirmedEmail || "");
   const [identifierValid, setIdentifierValid] = useState(true);
@@ -106,7 +105,6 @@ const Form = props => {
   const [email, setEmail] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsisChecked] = useState(false);
-  const [greetingTitle, setGreetingTitle] = useState('');
 
   const onClick = () => {
     setOpenDialog(true);
@@ -182,13 +180,6 @@ const Form = props => {
       window.removeEventListener("keyup", onKeyPress);
     };
   }, [onKeyPress, params, language]);
-
-  useEffect(() => {
-    getGreetingSettings()
-      .then((res) => {
-        setGreetingTitle(res)
-      });
-  }, []);
 
   const onChangePassword = event => {
     setPassword(event.target.value);
@@ -354,7 +345,8 @@ LoginForm.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+    greetingTitle: state.auth.settings.companyName
   };
 }
 
