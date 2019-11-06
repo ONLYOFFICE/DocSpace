@@ -205,7 +205,7 @@ class ADSelectorExample extends React.Component {
             console.log("onOptionTooltipShow", index, user);
 
             return (
-              <div style={{width: 253, height: 63, display: "grid", gridTemplateColumns: "30px 1fr", gridTemplateRows: "1fr", gridColumnGap: 8 }}>
+              <div style={{width: 253, minHeight: 63, display: "grid", gridTemplateColumns: "30px 1fr", gridTemplateRows: "1fr", gridColumnGap: 8 }}>
                 <Avatar size="small" role="user" source={user.avatarUrl} userName="" editing={false} />
                 <div>
                   <Text.Body isBold={true} fontSize={16}>

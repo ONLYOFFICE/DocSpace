@@ -12,7 +12,7 @@ class HelpButton extends React.Component {
     this.state = { isOpen: false };
     this.ref = React.createRef();
     this.refTooltip = React.createRef();
-    this.id = uniqueId();
+    this.id = `tooltip_${uniqueId()}`;
   }
 
   afterShow = () => {
@@ -46,17 +46,21 @@ class HelpButton extends React.Component {
   }
 
   render() {
-    const { tooltipContent, place, offsetRight, offsetLeft } = this.props;
+    const { tooltipContent, place, offsetRight, offsetLeft, iconName, color, getContent, className, dataTip } = this.props;
 
     return (
       <div ref={this.ref}>
         <IconButton
           id={this.id}
-          className="icon-button"
+          className={className}
           isClickable={true}
-          iconName="QuestionIcon"
+          iconName={iconName}
           size={13}
+          color={color}
+          data-for={this.id}
+          dataTip={dataTip}
         />
+        {getContent ? 
         <Tooltip
           id={this.id}
           reference={this.refTooltip}
@@ -66,9 +70,23 @@ class HelpButton extends React.Component {
           offsetLeft={offsetLeft}
           afterShow={this.afterShow}
           afterHide={this.afterHide}
+          getContent={getContent}
+        />
+        :
+        <Tooltip
+          id={this.id}
+          reference={this.refTooltip}
+          effect="solid"
+          place={place}
+          offsetRight={offsetRight}
+          offsetLeft={offsetLeft}
+          afterShow={this.afterShow}
+          afterHide={this.afterHide}
+          getContent={getContent}
         >
           {tooltipContent}
         </Tooltip>
+        }
       </div>
     );
   }
@@ -84,13 +102,19 @@ HelpButton.propTypes = {
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
   place: PropTypes.string,
-  offsetLeft: PropTypes.number
+  offsetLeft: PropTypes.number,
+  iconName: PropTypes.string,
+  color: PropTypes.string,
+  className: PropTypes.string,
+  dataTip: PropTypes.string,
+  getContent: PropTypes.func
 };
 
 HelpButton.defaultProps = {
   place: "top",
   offsetRight: 120,
-  offsetLeft: 0
+  offsetLeft: 0,
+  iconName: "QuestionIcon"
 }
 
 export default HelpButton;

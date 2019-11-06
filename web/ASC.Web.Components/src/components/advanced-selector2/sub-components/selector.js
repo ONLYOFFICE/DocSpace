@@ -17,6 +17,7 @@ import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ReactTooltip from "react-tooltip";
+import HelpButton from "../../help-button";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -101,6 +102,12 @@ const StyledContainer = styled(Container)`
 
       .row-block {
         padding-left: 8px;
+
+        .option-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
       }
     }
   }
@@ -313,6 +320,7 @@ const ADSelector = props => {
   const renderOption = ({ index, style }) => {
     let content;
     const isLoaded = isItemLoaded(index);
+    let tooltipProps = {};
     if (!isLoaded) {
       content = (
         <div key="loader">
@@ -330,17 +338,36 @@ const ADSelector = props => {
     } else {
       const option = options[index];
       const isChecked = isOptionChecked(option);
+
+      if(displayType === "dropdown")
+        tooltipProps = { "data-for": "user", "data-tip": index };
+
       ReactTooltip.rebuild();
       //console.log("Item render", item, checked, selected);
       content = isMultiSelect ? (
-        <Checkbox
-          id={option.key}
-          value={`${index}`}
-          label={option.label}
-          isChecked={isChecked}
-          className="option_checkbox"
-          onChange={onOptionChange}
-        />
+          <>
+            <Checkbox
+                id={option.key}
+                value={`${index}`}
+                label={option.label}
+                isChecked={isChecked}
+                className="option_checkbox"
+                onChange={onOptionChange}
+
+            />
+            {displayType === "aside" && 
+              <HelpButton
+                id={`info-${option.key}`}
+                className="option-info"
+                iconName="InfoIcon"
+                color="#D8D8D8"
+                getContent={getOptionTooltipContent}
+                place="top"
+                offsetLeft={160}
+                dataTip={`${index}`}
+                />
+            }
+        </>
       ) : (
         <Link
           as="span"
@@ -355,7 +382,7 @@ const ADSelector = props => {
     }
 
     return (
-      <div style={style} className="row-block" data-for="user" data-tip={isLoaded ? index : null}>
+      <div style={style} className="row-block" {...tooltipProps}>
         {content}
       </div>
     );
@@ -462,11 +489,11 @@ const ADSelector = props => {
             loadMoreItems={loadMoreItems}
           >
             {({ onItemsRendered, ref }) => (
-              <AutoSizer disableHeight={true}>
-                {({ width }) => (
+              <AutoSizer>
+                {({ width, height }) => (
                   <List
                     className="options_list"
-                    height={isMultiSelect && hasSelected() ? 484 : 468}
+                    height={height}
                     itemCount={itemCount}
                     itemSize={32}
                     onItemsRendered={onItemsRendered}

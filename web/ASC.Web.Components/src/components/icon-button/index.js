@@ -129,7 +129,8 @@ class IconButton extends React.PureComponent {
       isFill,
       isClickable,
       onClick,
-      id
+      id,
+      dataTip
     } = this.props;
 
     return (
@@ -142,7 +143,7 @@ class IconButton extends React.PureComponent {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         isClickable={typeof onClick === "function" || isClickable}
-        data-tip=""
+        data-tip={dataTip}
         data-event="click focus"
         data-for={id}
         //{...this.props}
@@ -173,7 +174,8 @@ IconButton.propTypes = {
   onMouseEnter: PropTypes.func,
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  dataTip: PropTypes.string
 };
 
 IconButton.defaultProps = {
@@ -182,7 +184,8 @@ IconButton.defaultProps = {
   isFill: true,
   iconName: "AZSortingIcon",
   isDisabled: false,
-  isClickable: false
+  isClickable: false,
+  dataTip: ""
 };
 
 export default IconButton;
