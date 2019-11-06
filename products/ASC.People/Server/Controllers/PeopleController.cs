@@ -117,7 +117,7 @@ namespace ASC.Employee.Core.Controllers
             AccountLinkerStorage accountLinkerStorage,
             WebItemSecurityCache webItemSecurityCache,
             MessageTarget messageTarget,
-            IOptionsMonitor<LogNLog> option)
+            IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;

@@ -63,7 +63,7 @@ namespace ASC.Web.Studio.Core.Notify
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             TenantManager tenantManager,
-            IOptionsMonitor<LogNLog> option)
+            IOptionsMonitor<ILog> option)
         {
             Helplink = commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
             NotifySource = studioNotifySource;
@@ -72,7 +72,7 @@ namespace ASC.Web.Studio.Core.Notify
             TenantManager = tenantManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
-            Log = option.Get("ASC");
+            Log = option.CurrentValue;
         }
 
 

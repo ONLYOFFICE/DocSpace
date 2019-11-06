@@ -41,12 +41,12 @@ namespace ASC.Common.Threading.Progress
 
     public class ConfigureProgressQueue<T> : IConfigureOptions<ProgressQueue<T>> where T : class, IProgressItem
     {
-        public ConfigureProgressQueue(IOptionsMonitor<LogNLog> log)
+        public ConfigureProgressQueue(IOptionsMonitor<ILog> log)
         {
             Log = log;
         }
 
-        public IOptionsMonitor<LogNLog> Log { get; }
+        public IOptionsMonitor<ILog> Log { get; }
 
         public void Configure(ProgressQueue<T> queue)
         {

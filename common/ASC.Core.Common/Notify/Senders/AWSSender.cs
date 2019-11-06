@@ -54,7 +54,7 @@ namespace ASC.Core.Notify.Senders
         private GetSendQuotaResponse quota;
 
         public AWSSender(IServiceProvider serviceProvider,
-            IOptionsMonitor<LogNLog> options) : base(serviceProvider, options)
+            IOptionsMonitor<ILog> options) : base(serviceProvider, options)
         {
             Log = options.Get("ASC.Notify.AmazonSES");
         }

@@ -54,13 +54,13 @@ namespace ASC.Api.Core.Middleware
 
 
         public ProductSecurityFilter(
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             UserManager userManager,
             TenantManager tenantManager,
             WebItemSecurity webItemSecurity,
             AuthContext authContext)
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             UserManager = userManager;
             TenantManager = tenantManager;
             WebItemSecurity = webItemSecurity;

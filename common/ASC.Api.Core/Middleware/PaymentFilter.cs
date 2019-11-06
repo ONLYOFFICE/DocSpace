@@ -16,9 +16,9 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public PaymentFilter(IOptionsMonitor<LogNLog> options, TenantExtra tenantExtra)
+        public PaymentFilter(IOptionsMonitor<ILog> options, TenantExtra tenantExtra)
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             TenantExtra = tenantExtra;
         }
 

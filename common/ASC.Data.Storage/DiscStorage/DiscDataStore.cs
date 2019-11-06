@@ -69,7 +69,7 @@ namespace ASC.Data.Storage.DiscStorage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }

@@ -57,7 +57,7 @@ namespace TMResourceData
                     : base(filename, assembly)
         {
         }
-        public DBResourceManager(IConfiguration configuration, IOptionsMonitor<LogNLog> option, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
+        public DBResourceManager(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
                     : base(filename, assembly)
         {
             Configuration = configuration;
@@ -66,15 +66,15 @@ namespace TMResourceData
         }
 
 
-        public static void PatchAssemblies(IOptionsMonitor<LogNLog> option)
+        public static void PatchAssemblies(IOptionsMonitor<ILog> option)
         {
             AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
             Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
         }
 
-        public static void PatchAssembly(IOptionsMonitor<LogNLog> option, Assembly a, bool onlyAsc = true)
+        public static void PatchAssembly(IOptionsMonitor<ILog> option, Assembly a, bool onlyAsc = true)
         {
-            var log = option.Get("ASC");
+            var log = option.CurrentValue;
 
             if (!onlyAsc || Accept(a))
             {
@@ -129,7 +129,7 @@ namespace TMResourceData
         }
 
         public IConfiguration Configuration { get; }
-        public IOptionsMonitor<LogNLog> Option { get; }
+        public IOptionsMonitor<ILog> Option { get; }
         public DbOptionsManager OptionsDbManager { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
@@ -158,10 +158,10 @@ namespace TMResourceData
             private readonly ILog log;
 
             public IConfiguration Configuration { get; }
-            public IOptionsMonitor<LogNLog> Option { get; }
+            public IOptionsMonitor<ILog> Option { get; }
             public DbOptionsManager OptionsDbManager { get; }
 
-            public DBResourceSet(IConfiguration configuration, IOptionsMonitor<LogNLog> option, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
             {
                 if (culture == null)
                 {
@@ -175,7 +175,7 @@ namespace TMResourceData
                 Configuration = configuration;
                 Option = option;
                 OptionsDbManager = optionsDbManager;
-                log = option.Get("ASC");
+                log = option.CurrentValue;
 
                 try
                 {
@@ -279,7 +279,7 @@ namespace TMResourceData
 
         public IConfiguration Configuration { get; }
 
-        public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             log = option.Get("ASC.Resources");
             whiteLabelDictionary = new ConcurrentDictionary<int, string>();

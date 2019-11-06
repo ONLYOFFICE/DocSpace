@@ -73,7 +73,7 @@ namespace ASC.Core
             DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
             : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, options, null)
         {
         }
@@ -86,7 +86,7 @@ namespace ASC.Core
             DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             string region)
         {
             tenantService = new DbTenantService(null, null, null);

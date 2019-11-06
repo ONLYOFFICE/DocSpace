@@ -83,10 +83,10 @@ namespace ASC.Core
             TenantManager tenantManager,
             UserFormatter userFormatter,
             CookieStorage cookieStorage,
-            IOptionsMonitor<LogNLog> options
+            IOptionsMonitor<ILog> options
             )
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             UserManager = userManager;
             Authentication = authentication;
             AuthContext = authContext;

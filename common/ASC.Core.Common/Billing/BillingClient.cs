@@ -48,17 +48,17 @@ namespace ASC.Core.Billing
         private string Security { get; set; }
         private string PartnersProduct { get; set; }
 
-        public BillingClient(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        public BillingClient(IConfiguration configuration, IOptionsMonitor<ILog> option)
             : this(false, configuration, option)
         {
         }
 
-        public BillingClient(bool test, IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        public BillingClient(bool test, IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             this.test = test;
             Security = configuration["core:payment:security"];
             PartnersProduct = configuration["core:payment:partners-product"];
-            log = option.Get("ASC");
+            log = option.CurrentValue;
         }
 
 

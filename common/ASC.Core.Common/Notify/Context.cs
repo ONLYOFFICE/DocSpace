@@ -72,8 +72,8 @@ namespace ASC.Notify
 
         public Context(IServiceProvider serviceProvider)
         {
-            var options = serviceProvider.GetService<IOptionsMonitor<LogNLog>>();
-            Log = options.Get("ASC");
+            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+            Log = options.CurrentValue;
             NotifyEngine = new NotifyEngine(this, serviceProvider);
             DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
         }

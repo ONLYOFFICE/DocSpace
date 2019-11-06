@@ -61,9 +61,9 @@ namespace ASC.Core.Notify.Signalr
             Timeout = TimeSpan.FromSeconds(1);
         }
 
-        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
+        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
             this.hub = hub.Trim('/');
             TenantManager = tenantManager;
             CoreSettings = coreSettings;

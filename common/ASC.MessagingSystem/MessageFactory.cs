@@ -48,11 +48,11 @@ namespace ASC.MessagingSystem
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
 
-        public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
+        public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
-            log = options.Get("ASC");
+            log = options.CurrentValue;
         }
 
         public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)

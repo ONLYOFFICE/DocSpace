@@ -53,10 +53,10 @@ namespace ASC.Core.Common.Billing
         private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
         private readonly ILog Log;
 
-        public CouponManager(IOptionsMonitor<LogNLog> option)
+        public CouponManager(IOptionsMonitor<ILog> option)
         {
             SemaphoreSlim = new SemaphoreSlim(1, 1);
-            Log = option.Get("ASC");
+            Log = option.CurrentValue;
 
             try
             {

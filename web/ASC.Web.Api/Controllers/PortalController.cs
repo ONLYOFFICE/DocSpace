@@ -41,7 +41,7 @@ namespace ASC.Web.Api.Controllers
 
 
         public PortalController(
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,
@@ -55,7 +55,7 @@ namespace ASC.Web.Api.Controllers
             PermissionContext permissionContext
             )
         {
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;

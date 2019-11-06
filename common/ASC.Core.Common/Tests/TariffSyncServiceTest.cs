@@ -45,7 +45,7 @@ namespace ASC.Core.Common.Tests
         public IConfiguration Configuration { get; set; }
         public DbRegistry DbRegistry { get; set; }
 
-        public IOptionsMonitor<LogNLog> Options { get; set; }
+        public IOptionsMonitor<ILog> Options { get; set; }
 
         public TariffSyncServiceTest()
         {

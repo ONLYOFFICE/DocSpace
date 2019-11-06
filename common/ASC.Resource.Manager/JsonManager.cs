@@ -39,7 +39,7 @@ namespace ASC.Resource.Manager
 {
     public static class JsonManager
     {
-        public static void Upload(IOptionsMonitor<LogNLog> option, ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
+        public static void Upload(IOptionsMonitor<ILog> option, ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
         {
             var culture = GetCultureFromFileName(fileName);
 
@@ -65,7 +65,7 @@ namespace ASC.Resource.Manager
                     }
                     catch (Exception e)
                     {
-                        option.Get("ASC").ErrorFormat("parse xml " + fileName, e);
+                        option.CurrentValue.ErrorFormat("parse xml " + fileName, e);
                     }
                 }
             }

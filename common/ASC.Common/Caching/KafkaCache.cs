@@ -28,9 +28,9 @@ namespace ASC.Common.Caching
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
 
-        public KafkaCache(IConfiguration configuration, IOptionsMonitor<LogNLog> options)
+        public KafkaCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
             Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
             Actions = new ConcurrentDictionary<string, Action<T>>();
             Key = Guid.NewGuid();

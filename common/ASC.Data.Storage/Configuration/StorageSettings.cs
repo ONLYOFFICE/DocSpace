@@ -92,7 +92,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IHttpContextAccessor httpContextAccessor) :
             base(authContext, settingsManager, tenantManager)
         {
@@ -113,7 +113,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options) :
+            IOptionsMonitor<ILog> options) :
             this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
         {
         }
@@ -190,7 +190,7 @@ namespace ASC.Data.Storage.Configuration
         public StorageFactoryConfig StorageFactoryConfig { get; }
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
@@ -214,7 +214,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options) :
+            IOptionsMonitor<ILog> options) :
             this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
         {
         }
@@ -227,7 +227,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IHttpContextAccessor httpContextAccessor) :
             base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
         {
@@ -257,7 +257,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options) :
+            IOptionsMonitor<ILog> options) :
             this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
         {
         }
@@ -271,7 +271,7 @@ namespace ASC.Data.Storage.Configuration
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IHttpContextAccessor httpContextAccessor) :
             base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
         {

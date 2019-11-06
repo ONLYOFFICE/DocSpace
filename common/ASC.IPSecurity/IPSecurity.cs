@@ -61,7 +61,7 @@ namespace ASC.IPSecurity
             IPRestrictionsSettings iPRestrictionsSettings,
             TenantManager tenantManager,
             IPRestrictionsService iPRestrictionsService,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             Log = options.Get("ASC.IPSecurity");
             Configuration = configuration;

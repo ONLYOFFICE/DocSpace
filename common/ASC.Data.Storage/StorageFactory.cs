@@ -162,7 +162,7 @@ namespace ASC.Data.Storage
         public CoreBaseSettings CoreBaseSettings { get; }
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
         public StorageFactory(
@@ -173,7 +173,7 @@ namespace ASC.Data.Storage
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options) :
+            IOptionsMonitor<ILog> options) :
             this(storageFactoryListener, storageFactoryConfig, storageSettings, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null)
         {
         }
@@ -185,7 +185,7 @@ namespace ASC.Data.Storage
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IHttpContextAccessor httpContextAccessor)
         {
             StorageFactoryListener = storageFactoryListener;

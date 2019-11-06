@@ -45,7 +45,7 @@ namespace ASC.Core.Notify.Senders
         public JabberSender(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
+            log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
         public void Init(IDictionary<string, string> properties)

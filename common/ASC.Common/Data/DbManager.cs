@@ -70,16 +70,16 @@ namespace ASC.Common.Data
     public class ConfigureDbManager : IConfigureNamedOptions<DbManager>
     {
         private DbRegistry DbRegistry { get; }
-        private IOptionsMonitor<LogNLog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
 
-        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option)
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<ILog> option)
         {
             DbRegistry = dbRegistry;
             Option = option;
         }
 
-        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<LogNLog> option, IHttpContextAccessor httpContextAccessor) : this(dbRegistry, option)
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<ILog> option, IHttpContextAccessor httpContextAccessor) : this(dbRegistry, option)
         {
             HttpContextAccessor = httpContextAccessor;
         }

@@ -44,7 +44,7 @@ namespace ASC.Notify
         public IServiceProvider ServiceProvider { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
-        public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> options)
+        public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             log = options.Get("ASC.Notify");
             NotifyServiceCfg = notifyServiceCfg.Value;

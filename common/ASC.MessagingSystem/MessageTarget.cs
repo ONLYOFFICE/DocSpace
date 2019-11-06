@@ -39,9 +39,9 @@ namespace ASC.MessagingSystem
         private IEnumerable<string> _items;
 
         public ILog Log { get; set; }
-        public IOptionsMonitor<LogNLog> Option { get; }
+        public IOptionsMonitor<ILog> Option { get; }
 
-        public MessageTarget(IOptionsMonitor<LogNLog> option)
+        public MessageTarget(IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Messaging");
             Option = option;

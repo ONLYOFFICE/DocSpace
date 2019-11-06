@@ -117,12 +117,12 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
         public TenantManager TenantManager { get; }
         public ILog Log { get; set; }
 
-        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
+        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {
             UserPhotoManager = userPhotoManager;
             StorageFactory = storageFactory;
             TenantManager = tenantManager;
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
         }
 
         public string SaveTmpLogo(string tmpLogoPath)

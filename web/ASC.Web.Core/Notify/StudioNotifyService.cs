@@ -86,7 +86,7 @@ namespace ASC.Web.Studio.Core.Notify
             SetupInfo setupInfo,
             IServiceProvider serviceProvider,
             DisplayUserSettings displayUserSettings,
-            IOptionsMonitor<LogNLog> option)
+            IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
             client = studioNotifyServiceHelper;

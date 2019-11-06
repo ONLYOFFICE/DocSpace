@@ -52,7 +52,7 @@ namespace ASC.Core.Billing
             IServiceProvider serviceProvider,
             IConfiguration configuration,
             DbQuotaService dbQuotaService,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             config = TariffSyncServiceSection.GetSection();
             ServiceProvider = serviceProvider;

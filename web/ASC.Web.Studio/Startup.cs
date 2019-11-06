@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Studio
@@ -45,10 +44,7 @@ namespace ASC.Web.Studio
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
-
-            services.Configure<LogNLog>(r => r.Name = "ASC");
-            services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
+            services.AddLogManager<LogNLog>("ASC.Api", "ASC.Web");
 
             services.Configure<DbManager>(r => { });
             services.Configure<DbManager>("default", r => { });

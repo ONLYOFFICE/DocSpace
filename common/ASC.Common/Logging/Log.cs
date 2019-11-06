@@ -29,6 +29,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using log4net.Config;
 using log4net.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using NLog;
 
 namespace ASC.Common.Logging
@@ -773,5 +776,45 @@ namespace ASC.Common.Logging
         public string LogDirectory { get { return ""; } }
 
         public string Name { get; set; }
+    }
+
+
+    public class LogManager<T> : OptionsMonitor<T> where T : class, ILog, new()
+    {
+        public LogManager(IOptionsFactory<T> factory, IEnumerable<IOptionsChangeTokenSource<T>> sources, IOptionsMonitorCache<T> cache) : base(factory, sources, cache)
+        {
+        }
+
+        public override T Get(string name)
+        {
+            var log = base.Get(name);
+
+            if (string.IsNullOrEmpty(log?.Name))
+            {
+                log = CurrentValue;
+            }
+
+            return log;
+        }
+    }
+
+    public static class StudioNotifyHelperFactory
+    {
+        public static IServiceCollection AddLogManager<T>(this IServiceCollection services, params string[] additionalLoggers) where T : class, ILog, new()
+        {
+            const string baseName = "ASC";
+            var baseSqlName = $"{baseName}.SQL";
+            services.Configure<T>(r => r.Name = baseName);
+            services.Configure<T>(baseName, r => r.Name = baseName);
+            services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
+
+            foreach (var l in additionalLoggers)
+            {
+                services.Configure<T>(l, r => r.Name = l);
+            }
+
+            services.TryAddSingleton(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
+            return services;
+        }
     }
 }

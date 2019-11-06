@@ -66,7 +66,7 @@ namespace ASC.Core.Notify.Senders
 
         public SmtpSender(
             IServiceProvider serviceProvider,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             Log = options.Get("ASC.Notify");
             Configuration = serviceProvider.GetService<IConfiguration>();

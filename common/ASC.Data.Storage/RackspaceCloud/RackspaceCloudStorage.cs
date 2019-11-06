@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.RackspaceCloud
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
             _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");

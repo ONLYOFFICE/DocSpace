@@ -45,7 +45,7 @@ namespace ASC.Core.Common.Notify
         public PushSenderSink(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            _log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
+            _log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
         public IServiceProvider ServiceProvider { get; }

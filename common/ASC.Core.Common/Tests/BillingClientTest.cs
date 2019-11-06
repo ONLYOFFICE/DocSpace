@@ -41,7 +41,7 @@ namespace ASC.Core.Common.Tests
         private readonly BillingClient billingClient;
 
 
-        public BillingClientTest(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        public BillingClientTest(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             billingClient = new BillingClient(configuration, option);
         }

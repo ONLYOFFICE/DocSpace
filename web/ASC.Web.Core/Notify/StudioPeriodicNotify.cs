@@ -56,7 +56,7 @@ namespace ASC.Web.Studio.Core.Notify
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
-        public StudioPeriodicNotify(IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> log)
+        public StudioPeriodicNotify(IServiceProvider serviceProvider, IOptionsMonitor<ILog> log)
         {
             ServiceProvider = serviceProvider;
             Log = log.Get("ASC.Notify");

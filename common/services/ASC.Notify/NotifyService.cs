@@ -47,12 +47,12 @@ namespace ASC.Notify
 
         public IServiceProvider ServiceProvider { get; }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<LogNLog> options)
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<ILog> options)
         {
             this.db = db;
             ServiceProvider = serviceProvider;
             this.cacheNotify = cacheNotify;
-            log = options.Get("ASC");
+            log = options.CurrentValue;
         }
 
         public void Start()

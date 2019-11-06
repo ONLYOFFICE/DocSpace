@@ -37,7 +37,7 @@ namespace ASC.MessagingSystem.DbSender
     {
         private readonly ILog log;
 
-        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<LogNLog> options)
+        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
         {
             var setting = configuration["messaging:enabled"];
             MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";

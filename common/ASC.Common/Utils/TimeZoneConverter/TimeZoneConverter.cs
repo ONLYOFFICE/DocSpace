@@ -48,7 +48,7 @@ namespace ASC.Common.Utils
         private IConfiguration Configuration { get; }
         private ILog Log { get; }
 
-        public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<LogNLog> option)
+        public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             Log = option.CurrentValue;
             InitMapZones();

@@ -40,7 +40,7 @@ namespace ASC.Data.Storage
         private readonly long maxChunkUploadSize;
         private readonly int chunksize;
 
-        public CrossModuleTransferUtility(IOptionsMonitor<LogNLog> option, IDataStore source, IDataStore destination)
+        public CrossModuleTransferUtility(IOptionsMonitor<ILog> option, IDataStore source, IDataStore destination)
         {
             Log = option.Get("ASC.CrossModuleTransferUtility");
             Option = option;
@@ -50,7 +50,7 @@ namespace ASC.Data.Storage
             chunksize = 5 * 1024 * 1024;
         }
 
-        public IOptionsMonitor<LogNLog> Option { get; }
+        public IOptionsMonitor<ILog> Option { get; }
 
         public void CopyFile(string srcDomain, string srcPath, string destDomain, string destPath)
         {

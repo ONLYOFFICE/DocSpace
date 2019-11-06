@@ -63,7 +63,7 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             StorageFactory storageFactory,
             WhiteLabelHelper whiteLabelHelper,
-            IOptionsMonitor<LogNLog> option) : base(authContext, settingsManager, tenantManager)
+            IOptionsMonitor<ILog> option) : base(authContext, settingsManager, tenantManager)
         {
             WebImageSupplier = webImageSupplier;
             UserPhotoManager = userPhotoManager;

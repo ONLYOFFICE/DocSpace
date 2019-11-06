@@ -49,24 +49,17 @@ namespace ASC.Core.Data
     {
         public ICache Cache { get; }
         public ICacheNotify<SettingsCacheItem> Notify { get; }
-        public IServiceProvider ServiceProvider { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, IServiceProvider serviceProvider)
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
         {
             Cache = AscCache.Memory;
             Notify = notify;
-            ServiceProvider = serviceProvider;
             Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }
 
         public void Remove(string key)
         {
             Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
-        }
-
-        public ISettings Get<T>() where T : class, ISettings
-        {
-            return ServiceProvider.GetService<T>();
         }
     }
 
@@ -85,16 +78,18 @@ namespace ASC.Core.Data
         private DbManager DbManager { get; }
 
         public DbSettingsManager(
+            IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
             DbOptionsManager optionsDbManager,
             IMapper mapper,
-            IOptionsMonitor<LogNLog> option) : this(null)
+            IOptionsMonitor<ILog> option) : this(null)
         {
+            ServiceProvider = serviceProvider;
             DbSettingsManagerCache = dbSettingsManagerCache;
             Mapper = mapper;
             Cache = dbSettingsManagerCache.Cache;
             DbManager = optionsDbManager.Value;
-            log = option.Get("ASC");
+            log = option.CurrentValue;
         }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
@@ -166,15 +161,15 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = DbSettingsManagerCache.Get<T>();
+            var settingsInstance = (ISettings)ServiceProvider.GetService<T>();
             var key = settingsInstance.ID.ToString() + tenantId + userId;
 
             try
             {
-                var settings = Cache.Get<T>(key);
-                if (settings != null) return settings;
+                //var settings = Cache.Get<T>(key);
+                //if (settings != null) return settings;
 
-                //T settings = null;
+                T settings = null;
 
                 var db = DbManager;
                 var q = new SqlQuery("webstudio_settings")

@@ -128,7 +128,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 

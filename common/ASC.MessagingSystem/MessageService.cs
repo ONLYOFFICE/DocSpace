@@ -52,7 +52,7 @@ namespace ASC.MessagingSystem
             MessageFactory messageFactory,
             DbMessageSender sender,
             MessagePolicy messagePolicy,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             if (configuration["messaging:enabled"] != "true")
             {
@@ -63,7 +63,7 @@ namespace ASC.MessagingSystem
             MessagePolicy = messagePolicy;
             request = httpContextAccessor?.HttpContext?.Request;
             MessageFactory = messageFactory;
-            log = options.Get("ASC");
+            log = options.CurrentValue;
         }
 
         #region HttpRequest

@@ -71,7 +71,7 @@ namespace ASC.Data.Storage.S3
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
         }

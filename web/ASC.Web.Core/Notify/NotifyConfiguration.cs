@@ -195,7 +195,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -226,7 +226,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -266,7 +266,7 @@ namespace ASC.Web.Studio.Core.Notify
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-            var log = scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().CurrentValue;
+            var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)

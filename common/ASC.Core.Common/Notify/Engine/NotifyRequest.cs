@@ -97,7 +97,7 @@ namespace ASC.Notify.Engine
                     }
                     catch (Exception err)
                     {
-                        serviceScope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
+                        serviceScope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").ErrorFormat("{0} {1} {2}: {3}", interceptor.Name, NotifyAction, Recipient, err);
                     }
                 }
             }

@@ -95,7 +95,7 @@ namespace ASC.Data.Reassigns
         public void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();
-            var logger = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Web");
+            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
 

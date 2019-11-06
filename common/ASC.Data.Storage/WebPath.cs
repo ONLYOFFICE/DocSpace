@@ -55,7 +55,7 @@ namespace ASC.Data.Storage
             }
         }
 
-        public string GetRelativePath(HttpContext httpContext, IOptionsMonitor<LogNLog> options, string absolutePath)
+        public string GetRelativePath(HttpContext httpContext, IOptionsMonitor<ILog> options, string absolutePath)
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
@@ -72,7 +72,7 @@ namespace ASC.Data.Storage
                 absolutePath.Remove(0, appender.Append.Length);
         }
 
-        public string GetPath(HttpContext httpContext, IOptionsMonitor<LogNLog> options, string relativePath)
+        public string GetPath(HttpContext httpContext, IOptionsMonitor<ILog> options, string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
@@ -149,7 +149,7 @@ namespace ASC.Data.Storage
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IHostEnvironment HostEnvironment { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
         public WebPath(
             WebPathSettings webPathSettings,
@@ -158,7 +158,7 @@ namespace ASC.Data.Storage
             IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             WebPathSettings = webPathSettings;
             StaticUploader = staticUploader;

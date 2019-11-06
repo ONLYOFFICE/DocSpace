@@ -38,13 +38,13 @@ namespace ASC.Core.ChunkedUploader
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        public IOptionsMonitor<LogNLog> Option { get; }
+        public IOptionsMonitor<ILog> Option { get; }
         private IDataStore DataStore { get; set; }
         private string Domain { get; set; }
         private long MaxChunkUploadSize { get; set; }
         private const string StoragePath = "sessions";
 
-        public CommonChunkedUploadSessionHolder(IOptionsMonitor<LogNLog> option, IDataStore dataStore, string domain, long maxChunkUploadSize = 10 * 1024 * 1024)
+        public CommonChunkedUploadSessionHolder(IOptionsMonitor<ILog> option, IDataStore dataStore, string domain, long maxChunkUploadSize = 10 * 1024 * 1024)
         {
             Option = option;
             DataStore = dataStore;
@@ -61,7 +61,7 @@ namespace ASC.Core.ChunkedUploader
             }
             catch (Exception err)
             {
-                Option.Get("ASC").Error(err);
+                Option.CurrentValue.Error(err);
             }
         }
 

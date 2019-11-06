@@ -57,7 +57,7 @@ namespace ASC.Core.Common
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             TenantManager tenantManager,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IOptions<CommonLinkUtilitySettings> settings)
             : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
         {
@@ -68,7 +68,7 @@ namespace ASC.Core.Common
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             TenantManager tenantManager,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             IOptions<CommonLinkUtilitySettings> settings)
         {
             var serverUri = settings.Value.ServerUri;

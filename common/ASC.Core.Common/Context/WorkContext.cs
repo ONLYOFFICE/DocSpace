@@ -98,7 +98,7 @@ namespace ASC.Core
 
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
-                var options = serviceProvider.GetService<IOptionsMonitor<LogNLog>>();
+                var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
 
                 NotifyContext = new NotifyContext(serviceProvider);
 

@@ -48,14 +48,14 @@ namespace ASC.Data.Storage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             HttpContextAccessor = httpContextAccessor;
             Options = options;
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
         }
 
         #region IDataStore Members
@@ -218,7 +218,7 @@ namespace ASC.Data.Storage
         public PathUtils PathUtils { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
         #endregion
 

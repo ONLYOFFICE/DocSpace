@@ -56,7 +56,7 @@ namespace ASC.Security.Cryptography
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
 
-        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
+        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             Configuration = configuration;
@@ -66,7 +66,7 @@ namespace ASC.Security.Cryptography
             }
 
             ValidInterval = validInterval;
-            log = options.Get("ASC");
+            log = options.CurrentValue;
         }
 
         public string GetEmailKey(string email)

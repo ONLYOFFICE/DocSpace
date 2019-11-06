@@ -48,9 +48,9 @@ namespace ASC.Notify
 
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
-        public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<LogNLog> options)
+        public NotifySender(IOptions<NotifyServiceCfg> notifyServiceCfg, DbWorker dbWorker, IOptionsMonitor<ILog> options)
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             NotifyServiceCfg = notifyServiceCfg.Value;
             db = dbWorker;
         }

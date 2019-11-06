@@ -136,7 +136,7 @@ namespace ASC.Data.Storage
             StorageFactoryConfig = storageFactoryConfig;
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             StepCount = Modules.Count();
-            Log = serviceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
+            Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
 
         public IServiceProvider ServiceProvider { get; }
@@ -154,7 +154,7 @@ namespace ASC.Data.Storage
 
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-                var options = scope.ServiceProvider.GetService<IOptionsMonitor<LogNLog>>();
+                var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
 
                 SecurityContext.AuthenticateMe(tenant.OwnerId);
 

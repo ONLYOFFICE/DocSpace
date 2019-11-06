@@ -116,7 +116,7 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
+        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Container = container;
             Configuration = configuration;

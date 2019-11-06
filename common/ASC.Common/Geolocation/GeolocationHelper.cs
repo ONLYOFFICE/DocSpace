@@ -41,7 +41,7 @@ namespace ASC.Geolocation
         public ILog Log { get; }
         public DbOptionsManager DbOptions { get; }
 
-        public GeolocationHelper(DbOptionsManager dbOptions, IOptionsMonitor<LogNLog> option, string dbid)
+        public GeolocationHelper(DbOptionsManager dbOptions, IOptionsMonitor<ILog> option, string dbid)
         {
             Log = option.CurrentValue;
             DbOptions = dbOptions;

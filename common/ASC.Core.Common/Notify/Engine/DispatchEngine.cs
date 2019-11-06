@@ -42,7 +42,7 @@ namespace ASC.Notify.Engine
         private readonly bool logOnly;
 
 
-        public DispatchEngine(Context context, IConfiguration configuration, IOptionsMonitor<LogNLog> options)
+        public DispatchEngine(Context context, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             log = options.Get("ASC.Notify");
             logMessages = options.Get("ASC.Notify.Messages");

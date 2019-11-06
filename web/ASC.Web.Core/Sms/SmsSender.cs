@@ -41,11 +41,11 @@ namespace ASC.Web.Core.Sms
         public TenantManager TenantManager { get; }
         public ILog Log { get; }
 
-        public SmsSender(IConfiguration configuration, TenantManager tenantManager, IOptionsMonitor<LogNLog> options)
+        public SmsSender(IConfiguration configuration, TenantManager tenantManager, IOptionsMonitor<ILog> options)
         {
             Configuration = configuration;
             TenantManager = tenantManager;
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
         }
 
         public bool SendSMS(string number, string message)

@@ -102,7 +102,7 @@ namespace ASC.Core.Billing
         public CoreSettings CoreSettings { get; }
         public IConfiguration Configuration { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
         public TariffService(
             IQuotaService quotaService,
@@ -112,7 +112,7 @@ namespace ASC.Core.Billing
             IConfiguration configuration,
             DbOptionsManager dbOptionsManager,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
             : base(dbOptionsManager, "tenant")
         {
             log = options.CurrentValue;

@@ -62,7 +62,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
-            var log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC.Notify");
+            var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
             var WebItemManager = ServiceProvider.GetService<WebItemManager>();
 
             if (WebItemManager.GetItemsAll<IProduct>().Count == 0)

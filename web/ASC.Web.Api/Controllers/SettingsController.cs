@@ -142,7 +142,7 @@ namespace ASC.Api.Settings
 
         public SettingsController(
             IServiceProvider serviceProvider,
-            IOptionsMonitor<LogNLog> option,
+            IOptionsMonitor<ILog> option,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
             ApiContext apiContext,

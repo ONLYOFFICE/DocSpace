@@ -56,7 +56,7 @@ namespace ASC.Core.Billing
             PaymentManager paymentManager,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             UserManager = userManager;
             TenantManager = tenantManager;

@@ -64,7 +64,7 @@ namespace ASC.MessagingSystem.DbSender
         public ILog Log { get; set; }
         public IServiceProvider ServiceProvider { get; }
 
-        public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<LogNLog> options)
+        public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
@@ -74,7 +74,7 @@ namespace ASC.MessagingSystem.DbSender
 
             ClearTimer = new Timer(DeleteOldEvents);
             ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
         }
 

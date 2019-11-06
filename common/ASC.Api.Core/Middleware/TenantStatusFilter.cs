@@ -13,9 +13,9 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public TenantStatusFilter(IOptionsMonitor<LogNLog> options, TenantManager tenantManager)
+        public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             TenantManager = tenantManager;
         }
 

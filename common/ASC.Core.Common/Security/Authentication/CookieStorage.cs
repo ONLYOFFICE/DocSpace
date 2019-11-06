@@ -52,12 +52,12 @@ namespace ASC.Core.Security.Authentication
             IHttpContextAccessor httpContextAccessor,
             InstanceCrypto instanceCrypto,
             TenantCookieSettings tenantCookieSettings,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             InstanceCrypto = instanceCrypto;
             TenantCookieSettings = tenantCookieSettings;
             HttpContext = httpContextAccessor.HttpContext;
-            Log = options.Get("ASC");
+            Log = options.CurrentValue;
         }
 
         public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)

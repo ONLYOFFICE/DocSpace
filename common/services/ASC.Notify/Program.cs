@@ -43,12 +43,7 @@ namespace ASC.Notify
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                    services.Configure<LogNLog>(r => r.Name = "ASC");
-                    services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
-                    services.Configure<LogNLog>("ASC.Notify", r => r.Name = "ASC");
-                    services.Configure<LogNLog>("ASC.Notify.Messages", r => r.Name = "ASC.Notify.Messages");
-
-                    services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+                    services.AddLogManager<LogNLog>("ASC.Notify", "ASC.Notify.Messages");
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
                     services.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();

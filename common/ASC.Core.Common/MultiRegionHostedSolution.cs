@@ -53,7 +53,7 @@ namespace ASC.Core
         public DbRegistry DbRegistry { get; }
         public DbOptionsManager DbOptions { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
-        public IOptionsMonitor<LogNLog> Options { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
@@ -63,7 +63,7 @@ namespace ASC.Core
             DbRegistry dbRegistry,
             DbOptionsManager dbOptions,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             this.dbid = dbid;
             Configuraion = configuraion;

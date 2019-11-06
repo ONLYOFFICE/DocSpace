@@ -189,7 +189,7 @@ namespace ASC.Data.Storage
         public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
             ServiceProvider = serviceProvider;
-            Log = ServiceProvider.GetService<IOptionsMonitor<LogNLog>>().Get("ASC");
+            Log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
             this.tenantId = tenantId;
             this.path = path.TrimStart('/');
             this.mappedPath = mappedPath;

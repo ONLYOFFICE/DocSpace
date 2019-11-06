@@ -42,12 +42,12 @@ namespace ASC.Common.Threading.Workers
 
     public class ConfigureWorkerQueue<T> : IConfigureOptions<WorkerQueue<T>>
     {
-        public ConfigureWorkerQueue(IOptionsMonitor<LogNLog> log)
+        public ConfigureWorkerQueue(IOptionsMonitor<ILog> log)
         {
             Log = log;
         }
 
-        public IOptionsMonitor<LogNLog> Log { get; }
+        public IOptionsMonitor<ILog> Log { get; }
 
         public void Configure(Workers.WorkerQueue<T> queue)
         {

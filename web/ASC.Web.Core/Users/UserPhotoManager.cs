@@ -216,7 +216,7 @@ namespace ASC.Web.Core.Users
             TenantManager tenantManager,
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue)
         {
             ResizeQueue = optionsQueue.Value;

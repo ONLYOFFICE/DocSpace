@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -81,10 +80,6 @@ namespace ASC.People
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.Configure<LogNLog>(r => r.Name = "ASC");
-            services.Configure<LogNLog>("ASC", r => r.Name = "ASC");
-            services.Configure<LogNLog>("ASC.Api", r => r.Name = "ASC.Api");
-
             services.Configure<DbManager>(r => { });
             services.Configure<DbManager>("default", r => { });
             services.Configure<DbManager>("messages", r => { r.CommandTimeout = 180000; });
@@ -115,7 +110,7 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.TryAddSingleton(typeof(ILog), typeof(LogNLog));
+            services.AddLogManager<LogNLog>("ASC.Api", "ASC.Web");
 
             services
                 .AddPeopleController()

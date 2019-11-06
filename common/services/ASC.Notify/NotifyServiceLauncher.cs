@@ -72,7 +72,7 @@ namespace ASC.Notify
             NotifyCleaner notifyCleaner,
             WebItemManager webItemManager,
             IServiceProvider serviceProvider,
-            IOptionsMonitor<LogNLog> options)
+            IOptionsMonitor<ILog> options)
         {
             NotifyServiceCfg = notifyServiceCfg.Value;
             NotifyService = notifyService;

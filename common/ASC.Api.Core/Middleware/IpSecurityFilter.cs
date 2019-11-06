@@ -14,11 +14,11 @@ namespace ASC.Api.Core.Middleware
         private readonly ILog log;
 
         public IpSecurityFilter(
-            IOptionsMonitor<LogNLog> options,
+            IOptionsMonitor<ILog> options,
             AuthContext authContext,
             IPSecurity.IPSecurity IPSecurity)
         {
-            log = options.Get("ASC");
+            log = options.CurrentValue;
             AuthContext = authContext;
             this.IPSecurity = IPSecurity;
         }
