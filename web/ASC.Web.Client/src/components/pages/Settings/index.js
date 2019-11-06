@@ -1,31 +1,38 @@
-import React, { Suspense } from "react";
-import { Loader, PageLayout } from "asc-web-components";
-import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
-import {
-  ArticleHeaderContent,
-  ArticleBodyContent
-} from "./Article";
-import { SectionHeaderContent, SectionBodyContent } from './Section';
+import React, { lazy } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { withRouter } from "react-router";
+import Layout from './Layout';
+
+const CommonSettings = lazy(() => import("./categories/common"));
+const SecuritySettings = lazy(() => import("./categories/security"));
+
 
 const Settings = () => {
-  console.log("Settings render");
+
+  const basePath = '/settings';
   return (
-    <I18nextProvider i18n={i18n}>
-      <Suspense
-        fallback={<Loader className="pageLoader" type="rombs" size={40} />}
-      >
-        <PageLayout
-          withBodyScroll={false}
-          articleHeaderContent={<ArticleHeaderContent />}
-          articleBodyContent={<ArticleBodyContent />}
-          sectionHeaderContent={<SectionHeaderContent />}
-          sectionBodyContent={<SectionBodyContent />}
+    <Layout key='1'>
+      <Switch>
+
+        <Route
+          path={`${basePath}/security`}
+          component={SecuritySettings}
         />
 
-      </Suspense>
-    </I18nextProvider >
+        <Route
+          path={[`${basePath}/common`, basePath]}
+          component={CommonSettings}
+        />
+
+        <Redirect
+          to={{
+            pathname: "/error/404",
+          }}
+        />
+
+      </Switch>
+    </Layout>
   );
 };
 
-export default Settings;
+export default withRouter(Settings);

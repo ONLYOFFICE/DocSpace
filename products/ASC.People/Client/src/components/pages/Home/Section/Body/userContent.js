@@ -1,38 +1,75 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, Icons } from "asc-web-components";
+import { RowContent, Link, LinkWithDropdown, Icons, toastr } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 import { useTranslation } from 'react-i18next';
-import { headOfDepartment } from './../../../../../helpers/customNames';
+import history from "../../../../../history";
+
+const getFormatedGroups = groups => {
+  let temp = [];
+
+  if (!groups) temp.push({ key: 0, label: '' });
+
+  groups && groups.map(group =>
+    temp.push(
+      {
+        key: group.id,
+        label: group.name,
+        onClick: () => history.push(`/products/people/filter?group=${group.id}`)
+      }
+    )
+  );
+
+  if (temp.length <= 1) {
+    return (
+      <Link
+        containerWidth='160px'
+        type='action'
+        title={temp[0].label}
+        fontSize={12}
+        onClick={temp[0].onClick}
+      >
+        {temp[0].label}
+      </Link>);
+  } else {
+    return (
+      <LinkWithDropdown
+        isTextOverflow={true}
+        containerWidth='160px'
+        type='action'
+        title={temp[0].label}
+        fontSize={12}
+        data={temp}
+      >
+        {temp[0].label}
+      </LinkWithDropdown>);
+  }
+};
 
 const UserContent = ({ user, history, settings }) => {
-  const { userName, displayName, headDepartment, department, mobilePhone, email } = user;
+  const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
+  const groups = getFormatedGroups(user.groups);
 
   const onUserNameClick = useCallback(() => {
     console.log("User name action");
     history.push(`${settings.homepage}/view/${userName}`);
   }, [history, settings.homepage, userName]);
 
-  const onHeadDepartmentClick = useCallback(
-    () => console.log("Head of department action"),
-    []
+  const onUserTitleClick = useCallback(
+    () => toastr.success(`Filter action by user title: ${title}`),
+    [title]
   );
-
-  const onDepartmentClick = useCallback(
-    () => console.log("Department action"),
-    []
-  );
-
+ 
   const onPhoneClick = useCallback(
-    () => console.log("Phone action"),
-    []
+    () => window.open(`sms:${mobilePhone}`),
+    [mobilePhone]
   );
 
   const onEmailClick = useCallback(
-    () => console.log("Email action"),
-    []
+    () => window.open(`mailto:${email}`),
+    [email]
   );
 
   const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
@@ -40,7 +77,7 @@ const UserContent = ({ user, history, settings }) => {
   const { t } = useTranslation();
 
   const headDepartmentStyle = {
-    width: '80px'
+    width: '110px'
   }
 
   return (
@@ -50,20 +87,20 @@ const UserContent = ({ user, history, settings }) => {
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
-      {headDepartment
+      {title
         ? <Link
-          containerWidth='80px'
+          containerWidth='110px'
           type='page'
-          title={t('CustomHeadOfDepartment', { headOfDepartment })}
+          title={title}
           fontSize={12}
           color={sideInfoColor}
-          onClick={onHeadDepartmentClick}
+          onClick={onUserTitleClick}
         >
-          {t('CustomHeadOfDepartment', { headOfDepartment })}
+          {title}
         </Link>
         : <div style={headDepartmentStyle}></div>
       }
-      <Link containerWidth='160px' type='action' title={department} fontSize={12} color={sideInfoColor} onClick={onDepartmentClick} >{department}</Link>
+      {groups}
       <Link type='page' title={mobilePhone} fontSize={12} color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
       <Link containerWidth='220px' type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
     </RowContent>

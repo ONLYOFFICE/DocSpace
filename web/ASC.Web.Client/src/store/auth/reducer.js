@@ -1,122 +1,10 @@
 import {
-    SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL, SET_NEW_SETTING_NODE,
-    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME
+    SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_IS_CONFIRM_LOADED, SET_NEW_EMAIL,
+    GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES, SET_CURRENT_PRODUCT_ID
 } from './actions';
 import isEmpty from 'lodash/isEmpty';
 import config from "../../../package.json";
 
-const settingsTree = [
-    {
-        title: 'Common',
-        key: '0',
-        icon: 'SettingsIcon',
-        link: 'common',
-        children: [
-            {
-                title: 'Customization',
-                key: '0-0',
-                icon: '',
-                link: 'customization',
-            },
-            {
-                title: 'Modules & tools',
-                key: '0-1',
-                icon: '',
-                link: 'modules-and-tools',
-            },
-            {
-                title: 'White label',
-                key: '0-2',
-                icon: '',
-                link: 'white-label',
-            },
-        ]
-    },
-    {
-        title: 'Security',
-        key: '1',
-        icon: 'SettingsIcon',
-        link: 'security',
-        children: [
-            {
-                title: 'Portal Access',
-                key: '1-0',
-                icon: '',
-                link: 'portal-access',
-            },
-            {
-                title: 'Access Rights',
-                key: '1-1',
-                icon: '',
-                link: 'access-rights',
-            },
-            {
-                title: 'Login History',
-                key: '1-2',
-                icon: '',
-                link: 'login-history',
-            },
-            {
-                title: 'Audit Trail',
-                key: '1-3',
-                icon: '',
-                link: 'audit-trail',
-            },
-        ]
-    },
-    {
-        title: 'Data Management',
-        key: '2',
-        icon: 'SettingsIcon',
-        link: 'data-management',
-        children: [
-            {
-                title: 'Migration',
-                key: '2-0',
-                icon: '',
-                link: 'migration',
-            },
-            {
-                title: 'Backup',
-                key: '2-1',
-                icon: '',
-                link: 'backup',
-            },
-            {
-                title: 'Portal Deactivation/Deletion',
-                key: '2-2',
-                icon: '',
-                link: 'portal-deactivation-deletion',
-            },
-        ]
-    },
-    {
-        title: 'Integration',
-        key: '3',
-        icon: 'SettingsIcon',
-        link: 'integration',
-        children: [
-            {
-                title: 'Third-Party Services',
-                key: '3-0',
-                icon: '',
-                link: 'third-party-services',
-            },
-            {
-                title: 'SMTP Settings',
-                key: '3-1',
-                icon: '',
-                link: 'smtp-settings',
-            }
-        ]
-    },
-    {
-        title: 'Statistics',
-        key: '4',
-        icon: 'SettingsIcon',
-        link: 'statistics',
-    },
-];
 
 const initialState = {
     isAuthenticated: false,
@@ -127,9 +15,11 @@ const initialState = {
     settings: {
         currentProductId: "home",
         culture: "en-US",
+        cultures: [],
         trustedDomains: [],
         trustedDomainsType: 1,
         timezone: "UTC",
+        timezones: [],
         utcOffset: "00:00:00",
         utcHoursOffset: 0,
         homepage: config.homepage,
@@ -142,11 +32,7 @@ const initialState = {
             timePattern: "h:mm tt"
         },
         settingsTree: {
-            list: settingsTree,
-            selectedKey: ['0-0'],
-            selectedTitle: 'Common',
-            selectedSubtitle: 'Customization',
-            selectedLink: '/common/customization',
+            selectedKey: ['0-0']
         }
     }/*,
     password: null*/
@@ -187,13 +73,17 @@ const authReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 user: { ...state.user, email: action.email }
             });
-        case SET_NEW_SETTING_NODE:
-            return Object.assign({}, state, {
-                settings: { ...state.settings, settingsTree: { ...state.settings.settingsTree, ...action.selectedNodeData } }
-            });
         case SET_PORTAL_LANGUAGE_AND_TIME:
             return Object.assign({}, state, {
                 settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
+            });
+        case GET_TIMEZONES:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, timezones: action.timezones }
+            });
+        case SET_CURRENT_PRODUCT_ID:
+            return Object.assign({}, state, {
+                settings: { ...state.settings, currentProductId: action.currentProductId }
             });
         case LOGOUT:
             return initialState;

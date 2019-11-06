@@ -89,7 +89,8 @@ Link.propTypes = {
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
-  children: PropTypes.string
+  children: PropTypes.string,
+  className: PropTypes.string
 };
 
 Link.defaultProps = {
@@ -103,6 +104,7 @@ Link.defaultProps = {
   rel: "noopener noreferrer",
   tabIndex: -1,
   type: "page",
+  className: "",
 };
 
 export default Link;

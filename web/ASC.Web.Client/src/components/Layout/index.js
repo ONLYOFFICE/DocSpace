@@ -72,7 +72,7 @@ const getAvailableModules = (modules, currentUser) => {
       id: "nav-separator-2"
     },
     {
-      id: 'testId',
+      id: 'settings',
       title: 'Settings',
       iconName: "SettingsIcon",
       notifications: 0,
@@ -102,7 +102,7 @@ function mapStateToProps(state) {
     hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
     availableModules: availableModules,
     currentUser: state.auth.user,
-    currentModuleId: state.auth.settings.currentModuleId,
+    currentModuleId: state.auth.settings.currentProductId,
     language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 };

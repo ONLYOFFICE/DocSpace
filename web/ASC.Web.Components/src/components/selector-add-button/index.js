@@ -36,6 +36,7 @@ const SelectorAddButton = (props) => {
         iconName='PlusIcon'
         isFill={true}
         isDisabled={isDisabled}
+        isClickable={!isDisabled}
       />
     </StyledButton>
   );

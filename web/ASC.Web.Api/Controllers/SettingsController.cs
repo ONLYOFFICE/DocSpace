@@ -126,6 +126,7 @@ namespace ASC.Api.Settings
                 settings.Timezone = timeZone.Id;
                 settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
+                settings.OwnerId = Tenant.OwnerId;
             }
 
             return settings;
@@ -145,7 +146,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("timezones")]
-        public IEnumerable<TimeZoneInfo> GetTimeZones()
+        public List<object> GetTimeZones()
         {
             var timeZones =  TimeZoneInfo.GetSystemTimeZones().ToList();
 
@@ -154,7 +155,72 @@ namespace ASC.Api.Settings
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            return timeZones;
+            List<object> listOfTimezones = new List<object>();
+
+            foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
+            {
+                var displayName = tz.DisplayName;
+                if (tz.StandardName.StartsWith("GMT") && !tz.StandardName.StartsWith("GMT "))
+                {
+                    displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + tz.Id;
+                   
+                }
+
+                listOfTimezones.Add(new TimezonesModel { Id = tz.Id, DisplayName = displayName });
+
+            }
+
+            return listOfTimezones;
+        }
+
+        [AllowAnonymous]
+        [Read("greetingsettings")]
+        public string GetGreetingSettings()
+        {
+            return Tenant.Name;
+        }
+
+        [Create("greetingsettings")]
+        public object SaveGreetingSettings(GreetingSettingsModel model)
+        {
+            try
+            {
+                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+
+                Tenant.Name = model.Title;
+                CoreContext.TenantManager.SaveTenant(Tenant);
+
+                MessageService.Send(MessageAction.GreetingSettingsUpdated);
+
+                return new { Status = 1, Message = Resource.SuccessfullySaveGreetingSettingsMessage };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
+        }
+
+        [Create("greetingsettings/restore")]
+        public object RestoreGreetingSettings()
+        {
+            try
+            {
+                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+
+               TenantInfoSettings.Load().RestoreDefaultTenantName();
+                //_tenantInfoSettings.Save();
+
+                return new
+                {
+                    Status = 1,
+                    Message = Resource.SuccessfullySaveGreetingSettingsMessage,
+                    CompanyName = CoreContext.TenantManager.GetCurrentTenant().Name
+                };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
         }
 
         [Read("recalculatequota")]

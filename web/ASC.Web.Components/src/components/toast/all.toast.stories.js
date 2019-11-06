@@ -48,6 +48,5 @@ class TostWrapper extends React.Component {
 }
 
 storiesOf('Components|Toast', module)
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
   .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (<TostWrapper />));

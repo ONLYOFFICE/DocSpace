@@ -26,7 +26,8 @@
         "ForgotPassword",
         "PasswordRecoveryTitle",
         "MessageSendPasswordRecoveryInstructionsOnEmail",
-        "RememberHelper"
+        "RememberHelper",
+        "LoadingDescription"
       ]
     },
     "Confirm": {
@@ -68,6 +69,30 @@
         "AccessRightsDisabledProduct",
         "AccessRightsAllUsers",
         "AccessRightsUsersFromList",
+        "StudioTimeLanguageSettings",
+        "Language",
+        "TimeZone",
+        "SaveButton",
+        "NotFoundLanguage",
+        "ManagementCategoryCommon",
+        "Customization",
+        "ProductsAndInstruments",
+        "WhiteLabel",
+        "ManagementCategorySecurity",
+        "PortalSecurity",
+        "AccessRights",
+        "ManagementCategoryIntegration",
+        "ManagementCategoryStatistic",
+        "DataManagement",
+        "Migration",
+        "Backup",
+        "DeactivationDeletionPortal",
+        "ThirdPartyAuthorization",
+        "SmtpSettings",
+        "GreetingSettingsTitle",
+        "GreetingTitle",
+        "RestoreDefaultButton",
+        "SuccessfullySaveGreetingSettingsMessage",
         "Employees"
       ],
       "FeedResource": [
@@ -75,6 +100,17 @@
         "CrmProduct",
         "CommunityProduct",
         "DocumentsProduct"
+      ],
+      "PeopleResource": [
+        "Settings"
+      ],
+      "AuditResource": [
+        "LoginHistoryNav",
+        "AuditTrailNav"
+      ],
+      "UserControlsCommonResource": [
+        "NextPage",
+        "PreviousPage"
       ]
     }
   },

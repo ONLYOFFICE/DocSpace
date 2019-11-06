@@ -49,8 +49,7 @@ const getButtons = (primary) => {
 };
 
 storiesOf('Components|Buttons', module)
-  // To set a default viewport for all the stories for this component
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
+
   .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (
     <Section>

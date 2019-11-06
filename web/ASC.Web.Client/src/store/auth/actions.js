@@ -10,9 +10,10 @@ export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
-export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
 export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
 export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
+export const GET_TIMEZONES = 'GET_TIMEZONES';
+export const SET_CURRENT_PRODUCT_ID = 'SET_CURRENT_PRODUCT_ID';
 
 export function setCurrentUser(user) {
     return {
@@ -69,13 +70,6 @@ export function setNewEmail(email) {
     };
 };
 
-export function setNewSelectedNode(selectedNodeData) {
-    return {
-        type: SET_NEW_SETTING_NODE,
-        selectedNodeData
-    };
-};
-
 export function getPortalCultures(cultures) {
     return {
         type: GET_PORTAL_CULTURES,
@@ -87,6 +81,20 @@ export function setPortalLanguageAndTime(newSettings) {
     return {
         type: SET_PORTAL_LANGUAGE_AND_TIME,
         newSettings
+    };
+};
+
+export function getTimezones(timezones) {
+    return {
+        type: GET_TIMEZONES,
+        timezones
+    };
+};
+
+export function setCurrentProductId(currentProductId) {
+    return {
+        type: SET_CURRENT_PRODUCT_ID,
+        currentProductId
     };
 };
 
@@ -196,7 +204,6 @@ export function getCultures() {
         return api.getPortalCultures()
             .then(cultures => {
                 dispatch(getPortalCultures(cultures));
-                return cultures;
             }
             );
     };
@@ -208,3 +215,12 @@ export function setLanguageAndTime(lng, timeZoneID) {
             .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
     };
 }
+
+export function getPortalTimezones() {
+    return dispatch => {
+        return api.getPortalTimezones()
+        .then((timezones) => {
+            dispatch(getTimezones(timezones))
+        });
+    };
+};

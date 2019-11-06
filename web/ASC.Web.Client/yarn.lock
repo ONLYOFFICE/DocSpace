@@ -1802,10 +1802,12 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.147"
+  version "1.0.152"
   dependencies:
+    email-addresses "^3.0.3"
     moment "^2.24.0"
     prop-types "^15.7.2"
+    punycode "^2.1.1"
     rc-tree "^2.1.2"
     react-autosize-textarea "^7.0.0"
     react-avatar-editor "^11.0.7"

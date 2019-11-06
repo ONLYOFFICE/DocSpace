@@ -78,7 +78,6 @@ export function changePassword(userId, password, key) {
 }
 
 export function changeEmail(userId, email, key) {
-
   const data = { email };
 
   return request({
@@ -89,7 +88,6 @@ export function changeEmail(userId, email, key) {
   });
 }
 export function updateActivationStatus(activationStatus, userId, key) {
-
   return request({
     method: "put",
     url: `/people/activationstatus/${activationStatus}.json`,
@@ -154,6 +152,54 @@ export function getPortalTimezones() {
 export function getUserList() {
   return request({
     method: "get",
-    url: "/people/filter?isAdministrator=true"
+    url: `/people`
+  });
+}
+
+export function getProductAdminsList(productId) {
+  return request({
+    method: "get",
+    url: `/settings/security/administrator/${productId}`
+  });
+}
+
+export function changeProductAdmin(userId, productId, administrator) {
+  return request({
+    method: "put",
+    url: "/settings/security/administrator",
+    data: {
+      productId,
+      userId,
+      administrator
+    }
+  });
+}
+
+export function getUserById(userId) {
+  return request({
+    method: "get",
+    url: `/people/${userId}`,
+  });
+}
+
+export function getGreetingSettings() {
+  return request({
+    method: "get",
+    url: `/settings/greetingsettings.json`,
+  });
+}
+
+export function setGreetingSettings(title) {
+  return request({
+    method: "post",
+    url: `/settings/greetingsettings.json`,
+    data: { title }
+  });
+}
+
+export function restoreGreetingSettings() {
+  return request({
+    method: "post",
+    url: `/settings/greetingsettings/restore.json`
   });
 }
