@@ -311,7 +311,7 @@ const ADSelector = props => {
     let content;
     if (!isItemLoaded(index)) {
       content = (
-        <div className="row-block" style={style} key="loader">
+        <div key="loader">
           <Loader
             type="oval"
             size={16}
