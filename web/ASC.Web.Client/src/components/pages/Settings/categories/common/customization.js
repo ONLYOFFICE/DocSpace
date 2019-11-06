@@ -2,8 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
-import { getCultures, setLanguageAndTime, getPortalTimezones } from '../../../../../store/auth/actions';
-import { getGreetingTitle, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+import { getCultures, setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/auth/actions';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 
@@ -72,13 +71,8 @@ class Customization extends React.Component {
 
 
    componentDidMount() {
-      const { getCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones, getGreetingTitle } = this.props;
-      const { timezones, languages, greetingTitle } = this.state;
-
-      if (!greetingTitle) {
-         getGreetingTitle()
-            .then(() => this.setState({ greetingTitle: this.props.greetingSettings }));
-      }
+      const { getCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
+      const { timezones, languages } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
@@ -98,8 +92,8 @@ class Customization extends React.Component {
    }
 
    componentDidUpdate(prevProps, prevState) {
-      const { timezones, languages, greetingTitle } = this.state;
-      if (greetingTitle !== null && timezones.length && languages.length && !prevState.isLoadedData) {
+      const { timezones, languages } = this.state;
+      if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
    }
@@ -280,11 +274,11 @@ function mapStateToProps(state) {
       language: state.auth.user.cultureName || state.auth.settings.culture,
       rawTimezones: state.auth.settings.timezones,
       rawCultures: state.auth.settings.cultures,
-      greetingSettings: state.settings.greetingSettings,
+      greetingSettings: state.auth.settings.greetingSettings,
    };
 }
 
 export default connect(mapStateToProps, {
    getCultures, setLanguageAndTime, getPortalTimezones,
-   getGreetingTitle, setGreetingTitle, restoreGreetingTitle
+   setGreetingTitle, restoreGreetingTitle
 })(withTranslation()(Customization));
