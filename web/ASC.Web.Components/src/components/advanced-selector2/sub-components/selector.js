@@ -32,10 +32,10 @@ const StyledContainer = styled(Container)`
 
     ${props => props.displayType === "dropdown" ? css`
         grid-auto-rows: max-content;
-        grid-template-areas: "column1 column2" "footer footer";
+        grid-template-areas: "column-options column-groups" "footer footer";
 
-        .column2 { 
-            grid-area: column2; 
+        .column-groups { 
+            grid-area: column-groups; 
 
             ${props => props.groups &&
             props.groups.length > 0
@@ -51,15 +51,15 @@ const StyledContainer = styled(Container)`
 
             grid-template-columns: 1fr;
             grid-template-rows: 30px 1fr;
-            grid-template-areas: "header2" "body2";
+            grid-template-areas: "header-groups" "body-groups";
 
-            .header2 {
-                grid-area: header2; 
+            .header-groups {
+                grid-area: header-groups; 
                 /* background-color: white; */
             }
 
-            .body2 {
-                grid-area: body2;
+            .body-groups {
+                grid-area: body-groups;
                 margin-left: -8px;
                 /* background-color: white; */
 
@@ -73,11 +73,11 @@ const StyledContainer = styled(Container)`
         height: 100%;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr 69px;
-        grid-template-areas: "column1" "footer";
+        grid-template-areas: "column-options" "footer";
     `}   
 
-    .column1 { 
-        grid-area: column1;
+    .column-options { 
+        grid-area: column-options;
 
         display: grid;
         /* background-color: red; */
@@ -86,15 +86,15 @@ const StyledContainer = styled(Container)`
 
         grid-template-columns: 1fr;
         grid-template-rows: 30px 1fr;
-        grid-template-areas: "header1" "body1";
+        grid-template-areas: "header-options" "body-options";
 
-        .header1 {
-            grid-area: header1; 
+        .header-options {
+            grid-area: header-options; 
             /* background-color: white; */
         }
 
-        .body1 {
-            grid-area: body1;
+        .body-options {
+            grid-area: body-options;
             margin-left: -8px;
             /* background-color: white; */
 
@@ -395,8 +395,8 @@ const ADSelector = props => {
 
     return (
         <StyledContainer displayType={displayType} groups={groups} isMultiSelect={isMultiSelect}>
-            <ADSelectorColumn className="column1" displayType={displayType}>
-                <ADSelectorHeader className="header1">
+            <ADSelectorColumn className="column-options" displayType={displayType}>
+                <ADSelectorHeader className="header-options">
                     <SearchInput
                         className="options_searcher"
                         isDisabled={isDisabled}
@@ -409,7 +409,7 @@ const ADSelector = props => {
                         onClearSearch={onSearchReset}
                     />
                 </ADSelectorHeader>
-                <ADSelectorBody className="body1">
+                <ADSelectorBody className="body-options">
                     <InfiniteLoader
                         ref={listRef}
                         isItemLoaded={isItemLoaded}
@@ -438,13 +438,13 @@ const ADSelector = props => {
                 </ADSelectorBody>
             </ADSelectorColumn>
             {displayType === "dropdown" && groups && groups.length > 0 &&
-                <ADSelectorColumn className="column2" displayType={displayType}>
-                    <ADSelectorHeader className="header2">
+                <ADSelectorColumn className="column-groups" displayType={displayType}>
+                    <ADSelectorHeader className="header-groups">
                         <Text.Body as="p" className="group_header" fontSize={15} isBold={true}>
                             {groupsHeaderLabel}
                         </Text.Body>
                     </ADSelectorHeader>
-                    <ADSelectorBody className="body2">
+                    <ADSelectorBody className="body-groups">
                         <AutoSizer>
                             {({ height, width }) => (
                                 <List
