@@ -7,8 +7,6 @@ import ModuleTile from '../module-tile';
 const rowStyle = { marginTop: 8 };
 
 storiesOf('Components|ModuleTile', module)
-    // To set a default viewport for all the stories for this component
-    .addParameters({ viewport: { defaultViewport: 'responsive' } })
     .addParameters({ options: { showAddonPanel: false }})
     .add('all', () => (
         <Container>
