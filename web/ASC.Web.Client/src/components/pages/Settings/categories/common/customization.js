@@ -65,7 +65,8 @@ class Customization extends React.Component {
          languages,
          language: findSelectedItemByKey(languages, portalLanguage),
          greetingTitle: greetingSettings,
-         isLoadingGreeting: false,
+         isLoadingGreetingSave: false,
+         isLoadingGreetingRestore: false,
       }
    }
 
@@ -125,10 +126,10 @@ class Customization extends React.Component {
 
    onSaveGreetingSettings = () => {
       const { setGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreeting: true }, function () {
+      this.setState({ isLoadingGreetingSave: true }, function () {
          setGreetingTitle(this.state.greetingTitle)
             .then(() => {
-               this.setState({ isLoadingGreeting: false })
+               this.setState({ isLoadingGreetingSave: false })
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
             });
       })
@@ -136,11 +137,11 @@ class Customization extends React.Component {
 
    onRestoreGreetingSettings = () => {
       const { restoreGreetingTitle, t } = this.props;
-      this.setState({ isLoadingGreeting: true }, function () {
+      this.setState({ isLoadingGreetingRestore: true }, function () {
          restoreGreetingTitle()
             .then(() => {
                this.setState({
-                  isLoadingGreeting: false,
+                  isLoadingGreetingRestore: false,
                   greetingTitle: this.props.greetingSettings
                })
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
@@ -150,7 +151,7 @@ class Customization extends React.Component {
 
    render() {
       const { t, i18n } = this.props;
-      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreeting } = this.state;
+      const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
          <Text.Body fontSize={13}>
@@ -235,7 +236,7 @@ class Customization extends React.Component {
                            scale={true}
                            value={greetingTitle}
                            onChange={this.onChangeGreetingTitle}
-                           isDisabled={isLoadingGreeting}
+                           isDisabled={isLoadingGreetingSave || isLoadingGreetingRestore}
                         />
 
                      </FieldContainer>
@@ -246,7 +247,8 @@ class Customization extends React.Component {
                         primary={true}
                         size='medium'
                         label={t('SaveButton')}
-                        isLoading={isLoadingGreeting}
+                        isLoading={isLoadingGreetingSave}
+                        isDisabled={isLoadingGreetingRestore}
                         onClick={this.onSaveGreetingSettings}
                      />
 
@@ -255,7 +257,8 @@ class Customization extends React.Component {
                         className='margin-top margin-left'
                         size='medium'
                         label={t('RestoreDefaultButton')}
-                        isDisabled={isLoadingGreeting}
+                        isLoading={isLoadingGreetingRestore}
+                        isDisabled={isLoadingGreetingSave}
                         onClick={this.onRestoreGreetingSettings}
                      />
                   </div>
