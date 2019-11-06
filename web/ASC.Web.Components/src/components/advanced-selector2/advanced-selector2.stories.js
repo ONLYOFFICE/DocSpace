@@ -14,8 +14,10 @@ import Readme from "./README.md";
 import AdvancedSelector2 from "./";
 import Section from "../../../.storybook/decorators/section";
 import Button from "../button";
+import Avatar from "../avatar";
+import { Text } from "../text";
 import { isEqual, slice } from "lodash";
-import { name } from "faker";
+import { name, image, internet } from "faker";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -94,7 +96,10 @@ class ADSelectorExample extends React.Component {
       return {
         key: `user${index}`,
         groups: [additional_group.key],
-        label: `${name.findName()} (User${index})`
+        label: name.findName(),
+        avatarUrl: image.avatar(),
+        position: name.jobTitle(),
+        email: internet.email()
       };
     });
   };
@@ -157,36 +162,32 @@ class ADSelectorExample extends React.Component {
       isNextPageLoading
     } = this.state;
     return (
-      <div style={{position: 'relative'}}>
+      <div style={{ position: "relative" }}>
         <Button label="Toggle dropdown" onClick={this.toggle} />
         <AdvancedSelector2
           options={options}
           groups={groups}
-
           hasNextPage={hasNextPage}
           isNextPageLoading={isNextPageLoading}
           loadNextPage={this.loadNextPage}
-
           size={select("size", sizes, "full")}
           displayType={select("displayType", displayTypes, "dropdown")}
-          
           selectedOptions={selectedOptions}
           selectedGroups={selectedGroups}
-
           isOpen={isOpen}
           isMultiSelect={boolean("isMultiSelect", true)}
           isDisabled={boolean("isDisabled", false)}
-
-          searchPlaceHolderLabel={text("searchPlaceHolderLabel", "Search users")}
+          searchPlaceHolderLabel={text(
+            "searchPlaceHolderLabel",
+            "Search users"
+          )}
           selectButtonLabel={text("selectButtonLabel", "Add members")}
           selectAllLabel={text("selectAllLabel", "Select all")}
           groupsHeaderLabel={text("groupsHeaderLabel", "Groups")}
-          
           onSelect={selectedOptions => {
             action("onSelect")(selectedOptions);
             this.toggle();
           }}
-
           onSearchChanged={value => {
             action("onSearchChanged")(value);
             /*set(
@@ -195,9 +196,31 @@ class ADSelectorExample extends React.Component {
             })
           );*/
           }}
-          
-          
-          
+          getOptionTooltipContent={index => {
+            if(!index)
+              return null;
+
+            const user = options[+index];
+
+            console.log("onOptionTooltipShow", index, user);
+
+            return (
+              <div style={{width: 253, height: 63, display: "grid", gridTemplateColumns: "30px 1fr", gridTemplateRows: "1fr", gridColumnGap: 8 }}>
+                <Avatar size="small" role="user" source={user.avatarUrl} userName="" editing={false} />
+                <div>
+                  <Text.Body isBold={true} fontSize={16}>
+                    {user.label}
+                  </Text.Body>
+                  <Text.Body color="#A3A9AE" fontSize={13} style={{paddingBottom: 8}}>
+                    {user.email}
+                  </Text.Body>
+                  <Text.Body fontSize={13}>
+                    {user.position}
+                  </Text.Body>
+                </div>
+              </div>
+              );
+          }}
         />
       </div>
     );
@@ -211,7 +234,10 @@ storiesOf("Components|AdvancedSelector2", module)
   .add("base", () => {
     return (
       <Section>
-        <ADSelectorExample isOpen={boolean("isOpen", true)} total={number("Users count", 10000)} />
+        <ADSelectorExample
+          isOpen={boolean("isOpen", true)}
+          total={number("Users count", 10000)}
+        />
       </Section>
     );
   });

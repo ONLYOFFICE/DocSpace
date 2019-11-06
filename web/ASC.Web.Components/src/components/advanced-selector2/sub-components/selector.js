@@ -7,6 +7,7 @@ import Link from "../../link";
 import SearchInput from "../../search-input";
 import Loader from "../../loader";
 import { Text } from "../../text";
+import Tooltip from "../../tooltip";
 import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
 import ADSelectorColumn from "./column";
 import ADSelectorFooter from "./footer";
@@ -15,6 +16,7 @@ import ADSelectorBody from "./body";
 import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
+import ReactTooltip from "react-tooltip";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -136,7 +138,8 @@ const ADSelector = props => {
     selectedGroups,
     groupsHeaderLabel,
     searchPlaceHolderLabel,
-    onSelect
+    onSelect,
+    getOptionTooltipContent
   } = props;
 
   const listOptionsRef = useRef(null);
@@ -309,7 +312,8 @@ const ADSelector = props => {
   // eslint-disable-next-line react/prop-types
   const renderOption = ({ index, style }) => {
     let content;
-    if (!isItemLoaded(index)) {
+    const isLoaded = isItemLoaded(index);
+    if (!isLoaded) {
       content = (
         <div key="loader">
           <Loader
@@ -326,6 +330,7 @@ const ADSelector = props => {
     } else {
       const option = options[index];
       const isChecked = isOptionChecked(option);
+      ReactTooltip.rebuild();
       //console.log("Item render", item, checked, selected);
       content = isMultiSelect ? (
         <Checkbox
@@ -350,7 +355,7 @@ const ADSelector = props => {
     }
 
     return (
-      <div style={style} className="row-block">
+      <div style={style} className="row-block" data-for="user" data-tip={isLoaded ? index : null}>
         {content}
       </div>
     );
@@ -475,6 +480,11 @@ const ADSelector = props => {
               </AutoSizer>
             )}
           </InfiniteLoader>
+          <Tooltip
+            id="user"
+            offsetRight={90}
+            getContent={getOptionTooltipContent}
+          />
         </ADSelectorBody>
       </ADSelectorColumn>
       {displayType === "dropdown" && groups && groups.length > 0 && (
@@ -542,7 +552,8 @@ ADSelector.propTypes = {
   selectedGroups: PropTypes.array,
 
   onSelect: PropTypes.func,
-  onSearchChanged: PropTypes.func
+  onSearchChanged: PropTypes.func,
+  getOptionTooltipContent: PropTypes.func
 };
 
 export default ADSelector;
