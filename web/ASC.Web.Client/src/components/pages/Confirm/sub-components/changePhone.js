@@ -118,7 +118,7 @@ function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
     currentPhone: state.auth.user.mobilePhone,
-    greetingTitle: state.auth.settings.companyName
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 

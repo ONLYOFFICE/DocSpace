@@ -346,7 +346,7 @@ LoginForm.defaultProps = {
 function mapStateToProps(state) {
   return {
     language: state.auth.user.cultureName || state.auth.settings.culture,
-    greetingTitle: state.auth.settings.companyName
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 

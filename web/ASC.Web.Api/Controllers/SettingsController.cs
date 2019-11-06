@@ -120,7 +120,7 @@ namespace ASC.Api.Settings
 
             if (!SecurityContext.IsAuthenticated)
             {
-                settings.CompanyName = Tenant.Name;
+                settings.GreetingSettings = Tenant.Name;
             }
 
             if (SecurityContext.IsAuthenticated)

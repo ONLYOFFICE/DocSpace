@@ -58,7 +58,7 @@ namespace ASC.Api.Settings
         public Guid OwnerId { get; set; }
 
         [DataMember(EmitDefaultValue = false)]
-        public string CompanyName { get; set; }
+        public string GreetingSettings { get; set; }
 
         public static SettingsWrapper GetSample()
         {
@@ -70,7 +70,7 @@ namespace ASC.Api.Settings
                 UtcHoursOffset = -8.5,
                 UtcOffset = TimeSpan.FromHours(-8.5),
                 OwnerId = Guid.NewGuid(),
-                CompanyName = "Web Office Applications"
+                GreetingSettings = "Web Office Applications"
             };
         }
     }

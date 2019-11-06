@@ -321,7 +321,7 @@ function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.auth.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.companyName
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 

@@ -120,7 +120,7 @@ const ProfileRemoveForm = (props) => (<PageLayout sectionBodyContent={<ProfileRe
 
 function mapStateToProps(state) {
   return {
-    greetingTitle: state.auth.settings.companyName,
+    greetingTitle: state.auth.settings.greetingSettings,
     greetingTitleSettings: state.settings.greetingSettings
   };
 }

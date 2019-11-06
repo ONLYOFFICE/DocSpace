@@ -343,7 +343,7 @@ function mapStateToProps(state) {
         isConfirmLoaded: state.auth.isConfirmLoaded,
         isAuthenticated: state.auth.isAuthenticated,
         settings: state.auth.settings.passwordSettings,
-        greetingTitle: state.auth.settings.companyName
+        greetingTitle: state.auth.settings.greetingSettings
     };
 }
 
