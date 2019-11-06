@@ -82,8 +82,6 @@ function getRandomInt(min, max) {
 
 storiesOf("EXAMPLES|AdvancedSelector", module)
   .addDecorator(withKnobs)
-  // To set a default viewport for all the stories for this component
-  .addParameters({ viewport: { defaultViewport: "responsive" } })
   .add("people group selector", () => {
     return (
       <Section>

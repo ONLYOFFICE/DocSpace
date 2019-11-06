@@ -42,7 +42,11 @@
   "SmtpSettings": "Настройки SMTP",
   "ManagementCategoryStatistic": "Статистика",
   "LoadingProcessing": "Загрузка...",
-  "LoadingDescription": "Пожалуйста подождите...",
+  "LoadingDescription": "Пожалуйста подождите...",  
+  "GreetingSettingsTitle": "Настройки страницы приветствия",
+  "GreetingTitle": "Заголовок",
+  "RestoreDefaultButton": "Настройки по умолчанию",
+  "SuccessfullySaveGreetingSettingsMessage": "Настройки страницы приветствия успешно сохранены",
 
 
 

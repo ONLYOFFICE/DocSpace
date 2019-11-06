@@ -173,6 +173,56 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
+        [AllowAnonymous]
+        [Read("greetingsettings")]
+        public string GetGreetingSettings()
+        {
+            return Tenant.Name;
+        }
+
+        [Create("greetingsettings")]
+        public object SaveGreetingSettings(GreetingSettingsModel model)
+        {
+            try
+            {
+                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+
+                Tenant.Name = model.Title;
+                CoreContext.TenantManager.SaveTenant(Tenant);
+
+                MessageService.Send(MessageAction.GreetingSettingsUpdated);
+
+                return new { Status = 1, Message = Resource.SuccessfullySaveGreetingSettingsMessage };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
+        }
+
+        [Create("greetingsettings/restore")]
+        public object RestoreGreetingSettings()
+        {
+            try
+            {
+                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+
+               TenantInfoSettings.Load().RestoreDefaultTenantName();
+                //_tenantInfoSettings.Save();
+
+                return new
+                {
+                    Status = 1,
+                    Message = Resource.SuccessfullySaveGreetingSettingsMessage,
+                    CompanyName = CoreContext.TenantManager.GetCurrentTenant().Name
+                };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
+        }
+
         [Read("recalculatequota")]
         public void RecalculateQuota()
         {

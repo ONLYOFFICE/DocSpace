@@ -167,7 +167,7 @@ export function changeProductAdmin(userId, productId, administrator) {
   return request({
     method: "put",
     url: "/settings/security/administrator",
-    data: { 
+    data: {
       productId,
       userId,
       administrator
@@ -179,5 +179,27 @@ export function getUserById(userId) {
   return request({
     method: "get",
     url: `/people/${userId}`,
+  });
+}
+
+export function getGreetingSettings() {
+  return request({
+    method: "get",
+    url: `/settings/greetingsettings.json`,
+  });
+}
+
+export function setGreetingSettings(title) {
+  return request({
+    method: "post",
+    url: `/settings/greetingsettings.json`,
+    data: { title }
+  });
+}
+
+export function restoreGreetingSettings() {
+  return request({
+    method: "post",
+    url: `/settings/greetingsettings/restore.json`
   });
 }

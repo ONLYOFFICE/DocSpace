@@ -10,8 +10,6 @@ import Readme from './README.md';
 const rowStyle = { marginTop: 8 };
 
 storiesOf('Components|ModuleTile', module)
-    // To set a default viewport for all the stories for this component
-    .addParameters({ viewport: { defaultViewport: 'responsive' } })
     .addDecorator(withKnobs)
     .addDecorator(withReadme(Readme))
     .add('base', () => (
