@@ -25,7 +25,6 @@ const data = [
 const dropdownType = ['alwaysDashed', 'appearDashedAfterHover'];
 
 storiesOf('Components|LinkWithDropdown', module)
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
   .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (
     <>

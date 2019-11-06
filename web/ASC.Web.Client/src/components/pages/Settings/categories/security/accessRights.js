@@ -12,11 +12,6 @@ import {
   getUserById
 } from "../../../../../store/settings/actions";
 import {
-  getUsers,
-  getAdmins,
-  getSelectorOptions
-} from "../../../../../store/settings/selectors";
-import {
   Text,
   Avatar,
   ToggleContent,
@@ -157,16 +152,18 @@ class PureAccessRights extends Component {
     });
   }
 
-  onChangeAdmin = (userId, isAdmin) => {
+  onChangeAdmin = (userIds, isAdmin) => {
     this.onLoading(true);
     const { changeAdmins, productId } = this.props;
 
-    changeAdmins(userId, productId, isAdmin)
+    changeAdmins(userIds, productId, isAdmin)
       .catch(error => {
         toastr.error("accessRights onChangeAdmin", error);
         //console.log("accessRights onChangeAdmin", error)
       })
-      .finally(() => this.onLoading(false));
+      .finally(() => {
+        this.onLoading(false);
+      });
   };
 
   onShowGroupSelector = () =>
@@ -177,7 +174,7 @@ class PureAccessRights extends Component {
     });
 
   onSelect = selected => {
-    selected.map(user => this.onChangeAdmin(user.key, true));
+    this.onChangeAdmin(selected.map(user => user.key), true);
     this.onShowGroupSelector();
     this.setState({ selectedOptions: selected });
   };
@@ -208,8 +205,6 @@ class PureAccessRights extends Component {
       { key: 50, label: t("CountPerPage", { count: 50 }) },
       { key: 100, label: t("CountPerPage", { count: 100 }) }
     ];
-
-    console.log("isLoading", isLoading);
 
     return (
       <MainContainer>
@@ -330,7 +325,7 @@ class PureAccessRights extends Component {
                             isDisabled={isLoading}
                             onClick={this.onChangeAdmin.bind(
                               this,
-                              user.id,
+                              [user.id],
                               false
                             )}
                             iconName={"CatalogTrashIcon"}
@@ -430,14 +425,12 @@ const AccessRights = props => {
 
 function mapStateToProps(state) {
   const { ownerId } = state.auth.settings;
-  const { admins, users, owner } = state.settings;
-  const arrayUsers = getUsers(users, ownerId);
-  const filterArrayUsers = getAdmins(arrayUsers);
-  const options = getSelectorOptions(filterArrayUsers);
+  const { admins, options, owner } = state.settings.accessRight;
+
+  //console.log("ADSelector options", users);
 
   return {
-    users: filterArrayUsers,
-    admins: getUsers(admins, ownerId),
+    admins,
     productId: state.auth.modules[0].id,
     owner,
     ownerId,
@@ -446,7 +439,6 @@ function mapStateToProps(state) {
 }
 
 AccessRights.defaultProps = {
-  users: [],
   admins: [],
   productId: "",
   ownerId: "",
@@ -455,7 +447,6 @@ AccessRights.defaultProps = {
 };
 
 AccessRights.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.object),
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
   ownerId: PropTypes.string,
