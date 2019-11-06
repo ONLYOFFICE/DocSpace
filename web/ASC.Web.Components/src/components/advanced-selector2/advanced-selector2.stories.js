@@ -111,7 +111,7 @@ class ADSelectorExample extends React.Component {
         );
 
         this.setState({
-          hasNextPage: newOptions.length < this.props.total,
+          hasNextPage: options.length < this.props.total,
           isNextPageLoading: false,
           options: newOptions
         });
