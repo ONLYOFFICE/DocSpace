@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core.Data;
@@ -38,12 +37,11 @@ namespace ASC.Core.Common.Settings
     public class SettingsManager : DbSettingsManager
     {
         public SettingsManager(
-            IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
             DbOptionsManager optionsDbManager,
             IMapper mapper,
             IOptionsMonitor<LogNLog> option)
-            : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, mapper, option)
+            : base(dbSettingsManagerCache, optionsDbManager, mapper, option)
         {
 
         }
