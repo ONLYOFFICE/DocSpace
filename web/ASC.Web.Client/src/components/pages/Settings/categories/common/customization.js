@@ -75,7 +75,7 @@ class Customization extends React.Component {
       const { getCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones, getGreetingTitle } = this.props;
       const { timezones, languages, greetingTitle } = this.state;
 
-      if (!greetingTitle.length) {
+      if (!greetingTitle) {
          getGreetingTitle()
             .then(() => this.setState({ greetingTitle: this.props.greetingSettings }));
       }
@@ -92,13 +92,16 @@ class Customization extends React.Component {
                const timezone = findSelectedItemByKey(timezones, portalTimeZoneId);
                const language = findSelectedItemByKey(languages, portalLanguage);
 
-               this.setState({ languages, language, timezones, timezone, isLoadedData: true });
+               this.setState({ languages, language, timezones, timezone });
             });
       }
-      else {
+   }
+
+   componentDidUpdate(prevProps, prevState) {
+      const { timezones, languages, greetingTitle } = this.state;
+      if (greetingTitle !== null && timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
-
    }
 
    onLanguageSelect = (language) => {
