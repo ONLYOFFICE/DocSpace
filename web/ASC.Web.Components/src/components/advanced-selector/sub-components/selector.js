@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { FixedSizeList as List } from "react-window";
@@ -285,6 +285,10 @@ const ADSelector = props => {
     setSelectedAll(item);
   };
 
+  const onSearchReset = () => {
+    onSearchChanged && onSearchChanged("");
+  }
+
   const onButtonClick = () => {
     onSelect && onSelect(selectedAll ? options : selectedOptions);
   };
@@ -381,7 +385,7 @@ const ADSelector = props => {
             allowCreation={allowCreation}
             onAddNewClick={onAddNewClick}
             onChange={onSearchChanged}
-            onClearSearch={onSearchChanged.bind(this, "")}
+            onClearSearch={onSearchReset}
           />
           {displayType === "aside" && convertedGroups && convertedGroups.length > 0 && (
             <ComboBox
