@@ -7,7 +7,7 @@ const initialState = {
     admins: [],
     owner: {}
   },
-  greetingSettings: ''
+  greetingSettings: null
 };
 
 const peopleReducer = (state = initialState, action) => {

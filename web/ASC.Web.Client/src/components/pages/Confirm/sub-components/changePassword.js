@@ -13,12 +13,12 @@ import {
   Loader,
   toastr
 } from "asc-web-components";
-import { welcomePageTitle } from "../../../../helpers/customNames";
 import {
   changePassword,
   getConfirmationInfo,
   logout
 } from "../../../../../src/store/auth/actions";
+import { getGreetingTitle } from '../../../../store/settings/actions';
 
 const BodyStyle = styled(Container)`
   margin-top: 70px;
@@ -108,12 +108,13 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { getConfirmationInfo, history, getGreetingTitle } = this.props;
     getConfirmationInfo(this.state.key)
     .catch(error => {
       toastr.error(this.props.t(`${error}`));
       history.push("/");
     });
+    getGreetingTitle();
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -127,7 +128,7 @@ class Form extends React.PureComponent {
   validatePassword = value => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, isConfirmLoaded, t } = this.props;
+    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
     const mdOptions = { size: 6, offset: 3 };
 
@@ -145,7 +146,7 @@ class Form extends React.PureComponent {
                 top
               />
               <CardTitle className="card-title">
-                {t("CustomWelcomePageTitle", { welcomePageTitle })}
+                {greetingTitle}
               </CardTitle>
             </Card>
             <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
@@ -217,11 +218,12 @@ function mapStateToProps(state) {
     isValidConfirmLink: state.auth.isValidConfirmLink,
     isConfirmLoaded: state.auth.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    greetingTitle: state.settings.greetingSettings,
   };
 }
 
 export default connect(
   mapStateToProps,
-  { changePassword, getConfirmationInfo, logout }
+  { changePassword, getConfirmationInfo, logout, getGreetingTitle }
 )(withRouter(withTranslation()(ChangePasswordForm)));
