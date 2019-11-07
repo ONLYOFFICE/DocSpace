@@ -31,9 +31,7 @@ const initialState = {
             dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
             timePattern: "h:mm tt"
         },
-        settingsTree: {
-            selectedKey: ['0-0']
-        }
+        greetingSettings: 'Web Office Applications'
     }/*,
     password: null*/
 }
@@ -90,7 +88,9 @@ const authReducer = (state = initialState, action) => {
                 settings: { ...state.settings, greetingSettings: action.title }
             });
         case LOGOUT:
-            return initialState;
+            return Object.assign({}, initialState, {
+                settings: { greetingSettings: state.settings.greetingSettings, culture: state.settings.culture }
+            });
         default:
             return state;
     }
