@@ -28,13 +28,13 @@ SimpleLinkWithDropdown.propTypes = {
 const color = props => props.color;
 
 // eslint-disable-next-line react/prop-types 
-const ExpanderDownIcon = ({ isSemitransparent, dropdownType, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
+const ExpanderDownIcon = ({ isSemitransparent, dropdownType, isOpen, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
 
 const Caret = styled(ExpanderDownIcon)`
-  width: 10px;
-  min-width: 10px;
-  height: 10px;
-  min-height: 10px;
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  min-height: 8px;
   margin-left: 5px;
   margin-top: -4px;
   
@@ -49,6 +49,11 @@ const Caret = styled(ExpanderDownIcon)`
   }
 
   ${props => props.dropdownType === "appearDashedAfterHover" && `opacity: 0`};
+
+  ${props => props.isOpen && `
+    bottom: -1px;
+    transform: scale(1, -1);
+  `}
 `;
 
 const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
@@ -199,6 +204,7 @@ class LinkWithDropdown extends React.Component {
             <Caret
               color={color}
               dropdownType={dropdownType}
+              isOpen={this.state.isOpen}
             />
           </StyledLinkWithDropdown>
         </span>
