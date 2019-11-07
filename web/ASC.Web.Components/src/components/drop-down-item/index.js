@@ -40,7 +40,7 @@ const StyledDropdownItem = styled.div`
     ${fontStyle}
 
     font-weight: 600;
-    font-size: 13px;
+    font-size: ${props => props.fontSize}px;
     color: #333333;
     text-transform: none;
 
@@ -122,7 +122,8 @@ DropDownItem.propTypes = {
   icon: PropTypes.string,
   noHover: PropTypes.bool,
   onClick: PropTypes.func,
-  children: PropTypes.any
+  children: PropTypes.any,
+  fontSize: PropTypes.number,
 };
 
 DropDownItem.defaultProps = {
@@ -131,7 +132,8 @@ DropDownItem.defaultProps = {
   tabIndex: -1,
   label: '',
   disabled: false,
-  noHover: false
+  noHover: false,
+  fontSize: 13
 };
 
 export default DropDownItem

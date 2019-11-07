@@ -210,6 +210,7 @@ class LinkWithDropdown extends React.Component {
         >
           {data.map(item => (
             <DropDownItem
+              fontSize={fontSize}
               key={item.key}
               onClick={this.onDropDownItemClick.bind(this.props, item)}
               {...item}
