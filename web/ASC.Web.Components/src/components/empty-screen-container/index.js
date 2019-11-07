@@ -23,6 +23,11 @@ const EmptyContentBody = styled.div`
   min-width: 320px;
   max-width: 742px;
 
+  .ec-image {
+    grid-area: img;
+    margin: auto 0;
+  }
+
   .ec-header {
     grid-area: header;
   }
@@ -32,8 +37,17 @@ const EmptyContentBody = styled.div`
     padding-top: 5px;
   }
 
+  .ec-buttons {
+    grid-area: button; 
+    padding-top: 10px;
+  }
+
   @media (max-height: 400px) and (orientation: landscape){
     padding: 20px;
+
+    .ec-image {
+      height: 40vh;
+    }
 
     .ec-header {
       font-size: 18px;
@@ -52,6 +66,10 @@ const EmptyContentBody = styled.div`
     grid-template-columns: 1fr;
     padding: 20px;
 
+    .ec-image {
+      display: none;
+    }
+
     .ec-header {
       font-size: 18px;
     }
@@ -63,22 +81,9 @@ const EmptyContentImage = styled.img.attrs(props => ({
   alt: props.imageAlt
 }))`
   background: no-repeat 0 0 transparent;
-  grid-area: img; 
-  margin: auto 0;
-
-  @media ${mobile} {      
-    display: none;
-  }
-
-  @media (max-height: 400px) and (orientation: landscape){
-    height: 40vh;
-  }
 `;
 
-const EmptyContentButtonsContainer = styled.div`
-  grid-area: button; 
-  padding-top: 10px;
-`;
+const EmptyContentButtonsContainer = styled.div``;
 
 const EmptyScreenContainer = props => {
   const { imageSrc, imageAlt, headerText, descriptionText, buttons } = props;
@@ -86,7 +91,7 @@ const EmptyScreenContainer = props => {
     <EmptyContentContainer>
       <EmptyContentBody {...props}>
 
-        <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} />
+        <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image"/>
 
         {headerText && (
           <Text.Body as="span" color="#333333" fontSize={24} className="ec-header">{headerText}</Text.Body>
@@ -97,7 +102,7 @@ const EmptyScreenContainer = props => {
         )}
 
         {buttons && (
-          <EmptyContentButtonsContainer>
+          <EmptyContentButtonsContainer className="ec-buttons">
             {buttons}
           </EmptyContentButtonsContainer>
         )}
