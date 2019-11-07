@@ -83,8 +83,6 @@ const EmptyContentImage = styled.img.attrs(props => ({
   background: no-repeat 0 0 transparent;
 `;
 
-const EmptyContentButtonsContainer = styled.div``;
-
 const EmptyScreenContainer = props => {
   const { imageSrc, imageAlt, headerText, descriptionText, buttons } = props;
   return (
@@ -102,9 +100,9 @@ const EmptyScreenContainer = props => {
         )}
 
         {buttons && (
-          <EmptyContentButtonsContainer className="ec-buttons">
+          <div className="ec-buttons">
             {buttons}
-          </EmptyContentButtonsContainer>
+          </div>
         )}
 
       </EmptyContentBody>
