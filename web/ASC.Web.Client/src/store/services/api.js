@@ -182,12 +182,12 @@ export function getUserById(userId) {
   });
 }
 
-export function getGreetingSettings() {
+/* export function getGreetingSettings() {
   return request({
     method: "get",
     url: `/settings/greetingsettings.json`,
   });
-}
+} */
 
 export function setGreetingSettings(title) {
   return request({

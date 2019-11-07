@@ -116,12 +116,8 @@ namespace ASC.Api.Settings
             var settings = new SettingsWrapper
             {
                 Culture = Tenant.GetCulture().ToString(),
+                GreetingSettings = Tenant.Name
             };
-
-            if (!SecurityContext.IsAuthenticated)
-            {
-                settings.GreetingSettings = Tenant.Name;
-            }
 
             if (SecurityContext.IsAuthenticated)
             {
@@ -178,11 +174,11 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
-        [Read("greetingsettings")]
+/*        [Read("greetingsettings")]
         public string GetGreetingSettings()
         {
             return Tenant.Name;
-        }
+        }*/
 
         [Create("greetingsettings")]
         public object SaveGreetingSettings(GreetingSettingsModel model)

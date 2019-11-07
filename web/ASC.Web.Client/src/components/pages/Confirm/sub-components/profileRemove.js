@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { deleteSelf } from './../../../../store/services/api';
 import { logout } from '../../../../store/auth/actions';
-import { getGreetingTitle } from '../../../../store/settings/actions';
 
 const ProfileRemoveContainer = styled.div`
     display: flex;
@@ -30,23 +29,12 @@ const ProfileRemoveContainer = styled.div`
 
 class ProfileRemove extends React.PureComponent {
 
-  constructor(props) {
-    super(props);
-    const { greetingTitle } = props;
+  constructor() {
+    super();
 
     this.state = {
       isProfileDeleted: false,
-      greetingTitle
     };
-  }
-
-  componentDidMount() {
-    const { greetingTitle } = this.state;
-    const { getGreetingTitle } = this.props;
-    if (!greetingTitle) {
-      getGreetingTitle()
-        .then(() => this.setState({ greetingTitle: this.props.greetingTitleSettings }));
-    }
   }
 
   onDeleteProfile = () => {
@@ -72,8 +60,8 @@ class ProfileRemove extends React.PureComponent {
 
   render() {
     console.log('profileRemove render');
-    const { t } = this.props;
-    const { isProfileDeleted, greetingTitle } = this.state;
+    const { t, greetingTitle } = this.props;
+    const { isProfileDeleted } = this.state;
     return (
       <ProfileRemoveContainer>
         <div className='start-basis'>
@@ -120,9 +108,8 @@ const ProfileRemoveForm = (props) => (<PageLayout sectionBodyContent={<ProfileRe
 
 function mapStateToProps(state) {
   return {
-    greetingTitle: state.auth.settings.greetingSettings,
-    greetingTitleSettings: state.settings.greetingSettings
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 
-export default connect(mapStateToProps, { logout, getGreetingTitle })(withRouter(withTranslation()(ProfileRemoveForm)));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(ProfileRemoveForm)));

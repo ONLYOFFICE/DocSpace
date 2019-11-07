@@ -18,7 +18,6 @@ import {
   getConfirmationInfo,
   logout
 } from "../../../../../src/store/auth/actions";
-import { getGreetingTitle } from '../../../../store/settings/actions';
 
 const BodyStyle = styled(Container)`
   margin-top: 70px;
@@ -108,13 +107,12 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, history, getGreetingTitle } = this.props;
+    const { getConfirmationInfo, history } = this.props;
     getConfirmationInfo(this.state.key)
     .catch(error => {
       toastr.error(this.props.t(`${error}`));
       history.push("/");
     });
-    getGreetingTitle();
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -219,11 +217,11 @@ function mapStateToProps(state) {
     isConfirmLoaded: state.auth.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.settings.greetingSettings,
+    greetingTitle: state.auth.settings.greetingSettings,
   };
 }
 
 export default connect(
   mapStateToProps,
-  { changePassword, getConfirmationInfo, logout, getGreetingTitle }
+  { changePassword, getConfirmationInfo, logout }
 )(withRouter(withTranslation()(ChangePasswordForm)));
