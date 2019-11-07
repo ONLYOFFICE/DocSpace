@@ -86,8 +86,7 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 
 `;
 
-const SimpleText = ({ isTextOverflow, fontSize, color, ...props }) => (<Text.Body as="span" {...props} />);
-const StyledText = styled(SimpleText)`
+const StyledText = styled(Text.Body)`
 
   color: ${color};
 
@@ -185,6 +184,7 @@ class LinkWithDropdown extends React.Component {
             color={color}
           >
             <StyledText
+              as='span'
               isTextOverflow={isTextOverflow}
               truncate={isTextOverflow}
               fontSize={fontSize}
