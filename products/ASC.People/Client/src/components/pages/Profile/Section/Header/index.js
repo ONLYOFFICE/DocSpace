@@ -143,7 +143,7 @@ class SectionHeaderContent extends React.PureComponent {
           this.setState(stateCopy);
         })
         .catch((error) => toastr.error(error))
-        .then(() => fetchProfile(this.state.profile.id));
+        .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
       deleteAvatar(this.state.profile.id)
         .then((response) => {
