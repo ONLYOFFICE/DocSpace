@@ -18,7 +18,7 @@ import { getUserStatus, toEmployeeWrapper } from "../../../../../store/people/se
 import { withTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
-import { updateUserStatus } from "../../../../../store/people/actions";
+import { updateUserStatus, fetchPeople } from "../../../../../store/people/actions";
 import { fetchProfile } from '../../../../../store/profile/actions';
 import {
   sendInstructionsToDelete,
@@ -26,7 +26,8 @@ import {
   sendInstructionsToChangeEmail,
   createThumbnailsAvatar,
   loadAvatar,
-  deleteAvatar
+  deleteAvatar,
+  deleteUser
 } from "../../../../../store/services/api";
 import styled from 'styled-components';
 
@@ -269,8 +270,66 @@ class SectionHeaderContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   }
 
-  onDeleteProfileClick = () => {
-    toastr.success("Context action: Delete profile");
+  onDeleteProfileClick = user => {
+    this.setState({
+      dialog: {
+        visible: true,
+        header: "Confirmation",
+        body: (
+          <>
+            <Text.Body>
+              User <b>{user.displayName}</b> will be deleted.
+            </Text.Body>
+            <Text.Body>Note: this action cannot be undone.</Text.Body>
+            <Text.Body color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+              Warning!
+            </Text.Body>
+            <Text.Body>
+              User personal documents which are available to others will be
+              deleted. To avoid this, you must start the data reassign process
+              before deleting.
+            </Text.Body>
+          </>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="OK"
+            size="medium"
+            primary={true}
+            onClick={() => {
+              deleteUser(user.id)
+                .then(() => {
+                  const { filter, fetchPeople } = this.props;
+                  toastr.success("User has been removed successfully");
+                  return fetchPeople(filter);
+                })
+                .catch(error => toastr.error(error));
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="ReassignBtn"
+            label="Reassign data"
+            size="medium"
+            primary={true}
+            onClick={() => {
+              toastr.success("Context action: Reassign profile");
+              this.onDialogClose();
+            }}
+            style={{ marginLeft: "8px" }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            size="medium"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
+      }
+    });
   }
 
   onDeleteSelfProfileClick = email => {
@@ -293,8 +352,6 @@ class SectionHeaderContent extends React.PureComponent {
             size="medium"
             primary={true}
             onClick={() => {
-              const { onLoading } = this.props;
-              onLoading(true);
               sendInstructionsToDelete()
                 .then(() =>
                   toastr.success(
@@ -304,8 +361,7 @@ class SectionHeaderContent extends React.PureComponent {
                     </Text.Body>
                   )
                 )
-                .catch(error => toastr.error(error))
-                .finally(() => onLoading(false));
+                .catch(error => toastr.error(error));
               this.onDialogClose();
             }}
           />,
@@ -404,7 +460,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t('DeleteSelfProfile'),
-            onClick: this.onDeleteProfileClick
+            onClick: this.onDeleteProfileClick.bind(this, user)
           }
         ];
       case "pending":
@@ -511,8 +567,9 @@ const mapStateToProps = (state) => {
     settings: state.auth.settings,
     profile: state.profile.targetUser,
     viewer: state.auth.user,
-    isAdmin: isAdmin(state.auth.user)
+    isAdmin: isAdmin(state.auth.user),
+    filter: state.people.filter
   };
 }
 
-export default connect(mapStateToProps, { updateUserStatus, fetchProfile })(withRouter(withTranslation()(SectionHeaderContent)));
+export default connect(mapStateToProps, { updateUserStatus, fetchProfile, fetchPeople })(withRouter(withTranslation()(SectionHeaderContent)));
