@@ -28,13 +28,13 @@ SimpleLinkWithDropdown.propTypes = {
 const color = props => props.color;
 
 // eslint-disable-next-line react/prop-types 
-const ExpanderDownIcon = ({ isSemitransparent, dropdownType, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
+const ExpanderDownIcon = ({ isSemitransparent, dropdownType, isOpen, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
 
 const Caret = styled(ExpanderDownIcon)`
-  width: 10px;
-  min-width: 10px;
-  height: 10px;
-  min-height: 10px;
+  width: 8px;
+  min-width: 8px;
+  height: 8px;
+  min-height: 8px;
   margin-left: 5px;
   margin-top: -4px;
   
@@ -49,6 +49,11 @@ const Caret = styled(ExpanderDownIcon)`
   }
 
   ${props => props.dropdownType === "appearDashedAfterHover" && `opacity: 0`};
+
+  ${props => props.isOpen && `
+    bottom: -1px;
+    transform: scale(1, -1);
+  `}
 `;
 
 const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
@@ -86,7 +91,7 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 
 `;
 
-const SimpleText = ({ isTextOverflow, fontSize, color, ...props }) => (<Text.Body as="span" {...props} />);
+const SimpleText = ({ color, ...props }) => (<Text.Body as="span" {...props} />);
 const StyledText = styled(SimpleText)`
 
   color: ${color};
@@ -167,11 +172,13 @@ class LinkWithDropdown extends React.Component {
       isBold,
       title,
       isOpen,
+      className,
       data,
       ...rest
     } = this.props;
     return (
-      <StyledSpan>
+      <StyledSpan
+        className={className}>
         <span
           ref={this.ref}
           onClick={this.clickToDropdown}
@@ -197,6 +204,7 @@ class LinkWithDropdown extends React.Component {
             <Caret
               color={color}
               dropdownType={dropdownType}
+              isOpen={this.state.isOpen}
             />
           </StyledLinkWithDropdown>
         </span>
@@ -208,6 +216,8 @@ class LinkWithDropdown extends React.Component {
         >
           {data.map(item => (
             <DropDownItem
+              fontSize={fontSize}
+              color={color}
               key={item.key}
               onClick={this.onDropDownItemClick.bind(this.props, item)}
               {...item}
@@ -229,7 +239,8 @@ LinkWithDropdown.propTypes = {
   isTextOverflow: PropTypes.bool,
   title: PropTypes.string,
   isOpen: PropTypes.bool,
-  children: PropTypes.any
+  children: PropTypes.any,
+  className: PropTypes.string
 };
 
 LinkWithDropdown.defaultProps = {
@@ -240,7 +251,8 @@ LinkWithDropdown.defaultProps = {
   isBold: false,
   isSemitransparent: false,
   isTextOverflow: true,
-  isOpen: false
+  isOpen: false,
+  className: "",
 };
 
 export default LinkWithDropdown;
