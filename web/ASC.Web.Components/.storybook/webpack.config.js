@@ -26,7 +26,7 @@ module.exports = ({ config }) => {
     // add story source
     {
       test: /\.stories\.js$/,
-      loaders: [require.resolve('@storybook/addon-storysource/loader')],
+      loaders: [require.resolve('@storybook/source-loader')],
       enforce: 'pre',
     },
     // Process JS with Babel.

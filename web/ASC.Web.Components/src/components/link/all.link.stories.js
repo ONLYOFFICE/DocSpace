@@ -17,7 +17,6 @@ const headerStyle = {
 
 
 storiesOf('Components|Link', module)
-  .addParameters({ viewport: { defaultViewport: 'responsive' } })
   .addParameters({ options: { showAddonPanel: false } })
   .add('all', () => (
     <>

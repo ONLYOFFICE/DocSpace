@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Button, PageLayout, Text } from 'asc-web-components';
 import styled from 'styled-components';
-import { welcomePageTitle } from './../../../../helpers/customNames';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { deleteSelf } from './../../../../store/services/api';
@@ -34,7 +33,7 @@ class ProfileRemove extends React.PureComponent {
     super();
 
     this.state = {
-      isProfileDeleted: false
+      isProfileDeleted: false,
     };
   }
 
@@ -61,7 +60,7 @@ class ProfileRemove extends React.PureComponent {
 
   render() {
     console.log('profileRemove render');
-    const { t } = this.props;
+    const { t, greetingTitle } = this.props;
     const { isProfileDeleted } = this.state;
     return (
       <ProfileRemoveContainer>
@@ -71,7 +70,7 @@ class ProfileRemove extends React.PureComponent {
             <a href='/login'>
               <img src="images/dark_general.png" alt="Logo" />
             </a>
-            <Text.Body as='p' fontSize={24} color='#116d9d'>{t('CustomWelcomePageTitle', { welcomePageTitle })}</Text.Body>
+            <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
           </div>
 
           {!isProfileDeleted
@@ -107,5 +106,10 @@ ProfileRemove.propTypes = {
 };
 const ProfileRemoveForm = (props) => (<PageLayout sectionBodyContent={<ProfileRemove {...props} />} />);
 
+function mapStateToProps(state) {
+  return {
+    greetingTitle: state.auth.settings.greetingSettings
+  };
+}
 
-export default connect(null, { logout })(withRouter(withTranslation()(ProfileRemoveForm)));
+export default connect(mapStateToProps, { logout })(withRouter(withTranslation()(ProfileRemoveForm)));

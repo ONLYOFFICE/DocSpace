@@ -60,9 +60,9 @@ class GroupButtonsMenu extends React.PureComponent {
     this.state = {
       priorityItems: props.menuItems,
       moreItems: [],
-      visible: true
+      visible: props.visible
     }
-  
+
     this.throttledResize = throttle(this.updateMenu, 300);
   }
 
@@ -78,30 +78,38 @@ class GroupButtonsMenu extends React.PureComponent {
   };
 
   componentDidMount() {
-    const groupMenuItems = document.getElementById("groupMenu") 
-      ? document.getElementById("groupMenu").children 
-      : [];
+    const groupMenuElement = document.getElementById("groupMenu");
+
+    const groupMenuItems = groupMenuElement ? groupMenuElement.children : [0];
     const groupMenuItemsArray = [...groupMenuItems];
 
-    this.widthsArray = groupMenuItemsArray.map(item => item.getBoundingClientRect().width);
+    this.widthsArray = groupMenuItemsArray.map(item => item.offsetWidth);
+
     window.addEventListener('resize', this.throttledResize);
+
     this.updateMenu();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.visible !== prevProps.visible) {
       this.setState({ visible: this.props.visible });
     }
 
-    if(!isArrayEqual(this.props.menuItems, prevProps.menuItems)){
+    if (!isArrayEqual(this.props.menuItems, prevProps.menuItems)) {
       this.setState({ priorityItems: this.props.menuItems, });
+    }
+
+    if (this.state.priorityItems.length !== prevState.priorityItems.length || this.state.moreItems.length !== prevState.moreItems.length) {
       this.updateMenu();
     }
   }
 
-  countMenuItems = (array, outerWidth, initialWidth) => {
-    let total = (initialWidth + 80);
-    for (let i = 0, len = array.length; i < len; i++) {
+  countMenuItems = (array, outerWidth, moreWidth) => {
+    const itemsArray = array || []
+    const moreButton = moreWidth || 0;
+    let total = (moreButton + 80);
+
+    for (let i = 0, len = itemsArray.length; i < len; i++) {
       if (total + array[i] > outerWidth) {
         return i < 1 ? 1 : i;
       } else {
@@ -114,12 +122,12 @@ class GroupButtonsMenu extends React.PureComponent {
     const moreMenuElement = document.getElementById("moreMenu");
     const groupMenuOuterElement = document.getElementById("groupMenuOuter");
 
-    const moreMenuWidth = moreMenuElement ? moreMenuElement.getBoundingClientRect().width : 0;
-    const groupMenuOuterWidth = groupMenuOuterElement ? groupMenuOuterElement.getBoundingClientRect().width : 0;
+    const moreMenuWidth = moreMenuElement && moreMenuElement.getBoundingClientRect().width;
+    const groupMenuOuterWidth = groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect().width;
 
     const visibleItemsCount = this.countMenuItems(this.widthsArray, groupMenuOuterWidth, moreMenuWidth);
     const navItemsCopy = this.props.menuItems;
-    
+
     const priorityItems = navItemsCopy.slice(0, visibleItemsCount);
     const moreItems = priorityItems.length !== navItemsCopy.length ? navItemsCopy.slice(visibleItemsCount, navItemsCopy.length) : [];
 
@@ -137,12 +145,12 @@ class GroupButtonsMenu extends React.PureComponent {
     //console.log("GroupButtonsMenu render");
     const { selected, moreLabel, closeTitle } = this.props;
     const { priorityItems, moreItems, visible } = this.state;
-    
+
     return (
       <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible} >
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.map((item, i) =>
-            <GroupButton 
+            <GroupButton
               key={`navItem-${i}`}
               label={item.label}
               isDropdown={item.isDropdown}
@@ -160,8 +168,8 @@ class GroupButtonsMenu extends React.PureComponent {
           )}
         </GroupMenuWrapper>
         {moreItems.length > 0 &&
-          <GroupButton 
-            id="moreMenu" 
+          <GroupButton
+            id="moreMenu"
             isDropdown={true}
             label={moreLabel}
           >
@@ -197,7 +205,7 @@ GroupButtonsMenu.propTypes = {
 GroupButtonsMenu.defaultProps = {
   checked: false,
   selected: 'Select',
-  visible: PropTypes.bool,
+  visible: true,
   moreLabel: 'More',
   closeTitle: 'Close'
 }

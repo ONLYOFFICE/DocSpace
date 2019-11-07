@@ -25,7 +25,6 @@ import { login } from "../../../store/auth/actions";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { welcomePageTitle } from "./../../../helpers/customNames";
 import { sendInstructionsToChangePassword } from "../../../store/services/api";
 import SubModalDialog from "./sub-components/modal-dialog";
 
@@ -93,7 +92,7 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
   const { t } = useTranslation("translation", { i18n });
-  const { login, match, history, language } = props;
+  const { login, match, history, language, greetingTitle } = props;
   const { params } = match;
   const [identifier, setIdentifier] = useState(params.confirmedEmail || "");
   const [identifierValid, setIdentifierValid] = useState(true);
@@ -212,7 +211,7 @@ const Form = props => {
               top
             />
             <CardTitle className="card-title">
-              {t("CustomWelcomePageTitle", { welcomePageTitle })}
+              {greetingTitle}
             </CardTitle>
           </Card>
         </Col>
@@ -346,7 +345,8 @@ LoginForm.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language: state.auth.user.cultureName || state.auth.settings.culture,
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 
