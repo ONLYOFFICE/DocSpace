@@ -1,5 +1,6 @@
 export function isAdmin(user) {
-    return user.isAdmin || user.isOwner;
+    let isPeopleAdmin = user.listAdminModules ? user.listAdminModules.includes('people') : false;
+    return user.isAdmin || user.isOwner || isPeopleAdmin;
 };
 
 export function isMe(user, userName) {

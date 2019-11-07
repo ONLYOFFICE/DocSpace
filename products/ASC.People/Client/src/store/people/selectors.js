@@ -1,5 +1,6 @@
 import { find, filter, cloneDeep } from "lodash";
 import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
+import { isAdmin } from "../auth/selectors";
 
 export function getSelectedUser(selection, userId) {
     return find(selection, function (obj) {
@@ -40,7 +41,7 @@ export const getUserStatus = user => {
 
 export const getUserRole = user => {
     if (user.isOwner) return "owner";
-    else if (user.isAdmin) return "admin";
+    else if (isAdmin(user)) return "admin";
     else if (user.isVisitor) return "guest";
     else return "user";
 };
