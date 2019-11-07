@@ -13,7 +13,6 @@ import {
   Loader,
   toastr
 } from "asc-web-components";
-import { welcomePageTitle } from "../../../../helpers/customNames";
 import {
   changePassword,
   getConfirmationInfo,
@@ -127,7 +126,7 @@ class Form extends React.PureComponent {
   validatePassword = value => this.setState({ passwordValid: value });
 
   render() {
-    const { settings, isConfirmLoaded, t } = this.props;
+    const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
     const mdOptions = { size: 6, offset: 3 };
 
@@ -145,7 +144,7 @@ class Form extends React.PureComponent {
                 top
               />
               <CardTitle className="card-title">
-                {t("CustomWelcomePageTitle", { welcomePageTitle })}
+                {greetingTitle}
               </CardTitle>
             </Card>
             <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
@@ -217,7 +216,8 @@ function mapStateToProps(state) {
     isValidConfirmLink: state.auth.isValidConfirmLink,
     isConfirmLoaded: state.auth.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    greetingTitle: state.auth.settings.greetingSettings,
   };
 }
 

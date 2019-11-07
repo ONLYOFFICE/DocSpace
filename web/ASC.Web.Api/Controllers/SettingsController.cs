@@ -115,7 +115,8 @@ namespace ASC.Api.Settings
         {
             var settings = new SettingsWrapper
             {
-                Culture = Tenant.GetCulture().ToString()
+                Culture = Tenant.GetCulture().ToString(),
+                GreetingSettings = Tenant.Name
             };
 
             if (SecurityContext.IsAuthenticated)
@@ -173,12 +174,11 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
-        [AllowAnonymous]
-        [Read("greetingsettings")]
+/*        [Read("greetingsettings")]
         public string GetGreetingSettings()
         {
             return Tenant.Name;
-        }
+        }*/
 
         [Create("greetingsettings")]
         public object SaveGreetingSettings(GreetingSettingsModel model)
@@ -208,7 +208,6 @@ namespace ASC.Api.Settings
                 SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
                TenantInfoSettings.Load().RestoreDefaultTenantName();
-                //_tenantInfoSettings.Save();
 
                 return new
                 {

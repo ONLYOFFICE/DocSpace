@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import styled from "styled-components";
 import { Button, TextInput, PageLayout, Text } from "asc-web-components";
 //import { useTranslation } from "react-i18next";
-import { welcomePageTitle } from "../../../../helpers/customNames";
 //import { login } from '../../../../../src/store/auth/actions';
 
 const BodyStyle = styled.div`
@@ -39,7 +38,7 @@ const BodyStyle = styled.div`
 `;
 
 const PhoneForm = props => {
-  const { t, currentPhone } = props;
+  const { t, currentPhone, greetingTitle } = props;
 
   const [phone, setPhone] = useState(currentPhone);
   // eslint-disable-next-line no-unused-vars
@@ -68,7 +67,7 @@ const PhoneForm = props => {
       <div className="edit-header">
         <img className="header-logo" src="images/dark_general.png" alt="Logo" />
         <div className="header-title">
-          {t("CustomWelcomePageTitle", { welcomePageTitle })}
+          {greetingTitle}
         </div>
       </div>
       <Text.Body className="edit-text" isBold fontSize={14}>{subTitleTranslation}</Text.Body>
@@ -118,7 +117,8 @@ const ChangePhoneForm = props => {
 function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
-    currentPhone: state.auth.user.mobilePhone
+    currentPhone: state.auth.user.mobilePhone,
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 

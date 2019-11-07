@@ -1,29 +1,33 @@
-import { SET_USERS, SET_ADMINS, SET_OWNER, SET_GREETING_SETTINGS } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER } from "./actions";
 
 const initialState = {
-  users: [],
-  admins: [],
-  owner: {},
-  greetingSettings: ''
+
+  accessRight: {
+    options: [],
+    admins: [],
+    owner: {}
+  },
 };
 
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USERS:
       return Object.assign({}, state, {
-        users: action.users
+        accessRight: Object.assign({}, state.accessRight, {
+          options: action.options
+        })
       });
     case SET_ADMINS:
       return Object.assign({}, state, {
-        admins: action.admins
+        accessRight: Object.assign({}, state.accessRight, {
+          admins: action.admins
+        })
       });
     case SET_OWNER:
       return Object.assign({}, state, {
-        owner: action.owner
-      });
-    case SET_GREETING_SETTINGS:
-      return Object.assign({}, state, {
-        greetingSettings: action.title
+        accessRight: Object.assign({}, state.accessRight, {
+          owner: action.owner
+        })
       });
     default:
       return state;
@@ -31,3 +35,10 @@ const peopleReducer = (state = initialState, action) => {
 };
 
 export default peopleReducer;
+/*
+      return Object.assign({}, state, {
+        selector: Object.assign({}, state.selector, { 
+          users: action.users
+        })
+      });
+*/

@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import {
   Text,
+  Link,
   IconButton,
   ContextMenuButton,
   toastr,
@@ -13,13 +14,14 @@ import {
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { getUserStatus } from "../../../../../store/people/selectors";
-import { useTranslation } from 'react-i18next';
+import { getUserStatus, toEmployeeWrapper } from "../../../../../store/people/selectors";
+import { withTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus } from "../../../../../store/people/actions";
 import { fetchProfile } from '../../../../../store/profile/actions';
 import {
+  sendInstructionsToDelete,
   sendInstructionsToChangePassword,
   sendInstructionsToChangeEmail,
   createThumbnailsAvatar,
@@ -42,97 +44,128 @@ const Header = styled(Text.ContentHeader)`
   }
 `;
 
-const SectionHeaderContent = props => {
-  const { profile, history, settings, isAdmin, viewer, updateUserStatus, fetchProfile } = props;
+class SectionHeaderContent extends React.PureComponent {
+  constructor(props) {
+    super(props);
 
-  const [newEmailState, setNewEmail] = useState(profile.email);
-  const [dialogState, setDialog] = useState(
-    {
-      visible: false,
-      header: "",
-      body: "",
-      buttons: [],
-      newEmail: profile.email,
-    });
-  const [avatarState, setAvatar] = useState(
-    {
-      tmpFile: "",
-      image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
-      defaultWidth: 0,
-      defaultHeight: 0
-    });
-  const [avatarEditorState, setAvatarEditorVisible] = useState(false);
+    this.state = this.mapPropsToState(props);
+  }
 
-  const openAvatarEditor = () => {
-    let avatarDefault = profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null;
+  componentDidUpdate(prevProps) {
+    if (this.props.profile.userName !== prevProps.profile.userName) {
+      console.log(this.props.profile.userName);
+      this.setState(this.mapPropsToState(this.props));
+    }
+  }
+
+  mapPropsToState = props => {
+    let profile = toEmployeeWrapper(props.profile);
+
+    const newState = {
+      profile: profile,
+      visibleAvatarEditor: false,
+      dialog: {
+        visible: false,
+        header: "",
+        body: "",
+        buttons: [],
+        newEmail: profile.email,
+      },
+      avatar: {
+        tmpFile: "",
+        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        defaultWidth: 0,
+        defaultHeight: 0
+      }
+    };
+
+    return newState;
+  }
+
+  openAvatarEditor = () => {
+    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
+    let _this = this;
     if (avatarDefault !== null) {
       let img = new Image();
       img.onload = function () {
-        setAvatar({
-          defaultWidth: img.width,
-          defaultHeight: img.height
+        _this.setState({
+          avatar: {
+            defaultWidth: img.width,
+            defaultHeight: img.height
+          }
         })
       };
       img.src = avatarDefault;
     }
-    setAvatarEditorVisible(true);
+    this.setState({
+      visibleAvatarEditor: true,
+    });
   }
 
-  const onLoadFileAvatar = (file) => {
+  onLoadFileAvatar = file => {
     let data = new FormData();
+    let _this = this;
     data.append("file", file);
     data.append("Autosave", false);
-    loadAvatar(profile.id, data)
+    loadAvatar(this.state.profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          var stateCopy = Object.assign({}, avatarState);
-          stateCopy = {
+          var stateCopy = Object.assign({}, _this.state);
+          stateCopy.avatar = {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
             defaultHeight: img.height
           }
-
-          setAvatar(stateCopy);
+          _this.setState(stateCopy);
         };
         img.src = response.data;
       })
       .catch((error) => toastr.error(error));
   }
 
-  const onSaveAvatar = (isUpdate, result) => {
+  onSaveAvatar = (isUpdate, result) => {
     if (isUpdate) {
-      createThumbnailsAvatar(profile.id, {
-        x: Math.round(result.x * avatarState.defaultWidth - result.width / 2),
-        y: Math.round(result.y * avatarState.defaultHeight - result.height / 2),
+      createThumbnailsAvatar(this.state.profile.id, {
+        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
+        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
         width: result.width,
         height: result.height,
-        tmpFile: avatarState.tmpFile
+        tmpFile: this.state.avatar.tmpFile
       })
         .then((response) => {
-          setAvatarEditorVisible(false);
-          setAvatar({ tmpFile: '' });
-          fetchProfile(profile.id);
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.avatar.tmpFile = '';
+          stateCopy.profile.avatarMax = response.max + '?_=' + Math.floor(Math.random() * Math.floor(10000));
           toastr.success("Success");
+          this.setState(stateCopy);
         })
-        .catch((error) => toastr.error(error));
+        .catch((error) => toastr.error(error))
+        .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
-      deleteAvatar(profile.id)
+      deleteAvatar(this.state.profile.id)
         .then((response) => {
-          setAvatarEditorVisible(false);
-          fetchProfile(profile.id);
+          let stateCopy = Object.assign({}, this.state);
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.profile.avatarMax = response.big;
           toastr.success("Success");
+          this.setState(stateCopy);
         })
         .catch((error) => toastr.error(error));
     }
   }
 
-  const onCloseAvatarEditor = () => setAvatarEditorVisible(false);
+  onCloseAvatarEditor = () => {
+    this.setState({
+      visibleAvatarEditor: false,
+    });
+  }
 
-  const onEmailChange = event => {
+  onEmailChange = event => {
     const emailRegex = /.+@.+\..+/;
-    const newEmail = (event && event.target.value) || newEmailState;
+    const newEmail = (event && event.target.value) || this.state.dialog.newEmail;
     const hasError = !emailRegex.test(newEmail);
 
     const dialog = {
@@ -146,7 +179,7 @@ const SectionHeaderContent = props => {
             scale={true}
             isAutoFocussed={true}
             value={newEmail}
-            onChange={onEmailChange}
+            onChange={this.onEmailChange}
             hasError={hasError}
           />
         </Text.Body>
@@ -157,33 +190,32 @@ const SectionHeaderContent = props => {
           label="Send"
           size="medium"
           primary={true}
-          onClick={onSendEmailChangeInstructions}
+          onClick={this.onSendEmailChangeInstructions}
           isDisabled={hasError}
         />
       ],
       newEmail: newEmail
     };
-
-    setDialog(dialog);
+    this.setState({ dialog: dialog })
   }
 
-  const onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(profile.id, newEmailState)
+  onSendEmailChangeInstructions = () => {
+    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
       .then((res) => {
         toastr.success(res);
       })
       .catch((error) => toastr.error(error))
-      .finally(onDialogClose);
+      .finally(this.onDialogClose);
   }
 
-  const onPasswordChange = () => {
+  onPasswordChange = () => {
     const dialog = {
       visible: true,
       header: "Change password",
       body: (
         <Text.Body>
-          Send the password change instructions to the <a href={`mailto:${profile.email}`}>{profile.email}</a> email address
-        </Text.Body>
+          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
+      </Text.Body>
       ),
       buttons: [
         <Button
@@ -191,70 +223,119 @@ const SectionHeaderContent = props => {
           label="Send"
           size="medium"
           primary={true}
-          onClick={onSendPasswordChangeInstructions}
+          onClick={this.onSendPasswordChangeInstructions}
         />
       ]
     };
-
-    setDialog(dialog);
+    this.setState({ dialog: dialog })
   }
 
-  const onSendPasswordChangeInstructions = () => {
-    sendInstructionsToChangePassword(profile.email)
+  onSendPasswordChangeInstructions = () => {
+    sendInstructionsToChangePassword(this.state.profile.email)
       .then((res) => {
         toastr.success(res);
       })
       .catch((error) => toastr.error(error))
-      .finally(onDialogClose);
+      .finally(this.onDialogClose);
   }
 
-  const onDialogClose = () => {
-    const dialog = { visible: false, newEmailState: profile.email };
-    setDialog(dialog);
+  onDialogClose = () => {
+    const dialog = { visible: false, newEmail: this.state.profile.email };
+    this.setState({ dialog: dialog })
   }
 
-  const selectedUserIds = new Array(profile.id);
+  onEditClick = () => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/edit/${this.state.profile.userName}`);
+  }
 
-  const onEditClick = () => {
-    history.push(`${settings.homepage}/edit/${profile.userName}`);
-  };
+  onUpdateUserStatus = (status, userId) => {
+    const { fetchProfile, updateUserStatus } = this.props;
 
-  const onDisableClick = () => {
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .then(() => fetchProfile(profile.id));
-  };
+    updateUserStatus(status, new Array(userId))
+      .then(() => fetchProfile(userId));
+  }
 
-  const onEditPhoto = () => {
-    openAvatarEditor();
-  };
+  onDisableClick = () => this.onUpdateUserStatus(EmployeeStatus.Disabled, this.state.profile.id);
 
-  const onEnableClick = () => {
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .then(() => fetchProfile(profile.id));
-  };
+  onEnableClick = () => this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
 
-  const onReassignDataClick = user => {
-    const { history, settings } = props;
+  onReassignDataClick = user => {
+    const { history, settings } = this.props;
     history.push(`${settings.homepage}/reassign/${user.userName}`);
-  };
+  }
 
-  const onDeletePersonalDataClick = () => {
+  onDeletePersonalDataClick = () => {
     toastr.success("Context action: Delete personal data");
-  };
+  }
 
-  const onDeleteProfileClick = () => {
+  onDeleteProfileClick = () => {
     toastr.success("Context action: Delete profile");
-  };
+  }
 
-  const onInviteAgainClick = () => {
-    resendUserInvites(selectedUserIds)
-      .then(() => toastr.success("The invitation was successfully sent"))
+  onDeleteSelfProfileClick = email => {
+    this.setState({
+      dialog: {
+        visible: true,
+        header: "Delete profile dialog",
+        body: (
+          <Text.Body>
+            Send the profile deletion instructions to the email address{" "}
+            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
+              {email}
+            </Link>
+          </Text.Body>
+        ),
+        buttons: [
+          <Button
+            key="OkBtn"
+            label="Send"
+            size="medium"
+            primary={true}
+            onClick={() => {
+              const { onLoading } = this.props;
+              onLoading(true);
+              sendInstructionsToDelete()
+                .then(() =>
+                  toastr.success(
+                    <Text.Body>
+                      Instructions to delete your profile has been sent to{" "}
+                      <b>{email}</b> email address
+                    </Text.Body>
+                  )
+                )
+                .catch(error => toastr.error(error))
+                .finally(() => onLoading(false));
+              this.onDialogClose();
+            }}
+          />,
+          <Button
+            key="CancelBtn"
+            label="Cancel"
+            size="medium"
+            primary={false}
+            onClick={this.onDialogClose}
+            style={{ marginLeft: "8px" }}
+          />
+        ]
+      }
+    });
+  }
+
+  onInviteAgainClick = () => {
+    resendUserInvites(new Array(this.state.profile.id))
+      .then(() => toastr.success(
+        <Text.Body>
+          The email activation instructions have been sent to the{" "}
+          <b>{this.state.profile.email}</b> email address
+        </Text.Body>
+      ))
       .catch(error => toastr.error(error));
-  };
-  const getUserContextOptions = (user, viewer, t) => {
+  }
+
+  getUserContextOptions = (user, viewer) => {
     let status = "";
+    const { t } = this.props;
 
     if (isAdmin || (!isAdmin && isMe(user, viewer.userName))) {
       status = getUserStatus(user);
@@ -267,22 +348,22 @@ const SectionHeaderContent = props => {
           {
             key: "edit",
             label: t('EditUserDialogTitle'),
-            onClick: onEditClick
+            onClick: this.onEditClick
           },
           {
             key: "change-password",
             label: t('PasswordChangeButton'),
-            onClick: onPasswordChange
+            onClick: this.onPasswordChange
           },
           {
             key: "change-email",
             label: t('EmailChangeButton'),
-            onClick: onEmailChange
+            onClick: this.onEmailChange
           },
           {
             key: "edit-photo",
             label: t('EditPhoto'),
-            onClick: onEditPhoto
+            onClick: this.openAvatarEditor
           },
           isMe(user, viewer.userName)
             ? viewer.isOwner
@@ -290,12 +371,12 @@ const SectionHeaderContent = props => {
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
-                onClick: onDeleteProfileClick
+                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
             : {
               key: "disable",
               label: t("DisableUserButton"),
-              onClick: onDisableClick
+              onClick: this.onDisableClick
             }
         ];
       case "disabled":
@@ -303,27 +384,27 @@ const SectionHeaderContent = props => {
           {
             key: "enable",
             label: t('EnableUserButton'),
-            onClick: onEnableClick
+            onClick: this.onEnableClick
           },
           {
             key: "edit-photo",
             label: t('EditPhoto'),
-            onClick: onEditPhoto
+            onClick: this.openAvatarEditor
           },
           {
             key: "reassign-data",
             label: t('ReassignData'),
-            onClick: onReassignDataClick.bind(this, user)
+            onClick: this.onReassignDataClick.bind(this, user)
           },
           {
             key: "delete-personal-data",
             label: t('RemoveData'),
-            onClick: onDeletePersonalDataClick
+            onClick: this.onDeletePersonalDataClick
           },
           {
             key: "delete-profile",
             label: t('DeleteSelfProfile'),
-            onClick: onDeleteProfileClick
+            onClick: this.onDeleteProfileClick
           }
         ];
       case "pending":
@@ -331,103 +412,107 @@ const SectionHeaderContent = props => {
           {
             key: "edit",
             label: t('EditButton'),
-            onClick: onEditClick
+            onClick: this.onEditClick
           },
           {
             key: "invite-again",
             label: t('InviteAgainLbl'),
-            onClick: onInviteAgainClick
+            onClick: this.onInviteAgainClick
           },
           {
             key: "edit-photo",
             label: t('EditPhoto'),
-            onClick: onEditPhoto
+            onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
           (user.status === EmployeeStatus.Active
             ? {
               key: "disable",
               label: t("DisableUserButton"),
-              onClick: onDisableClick
+              onClick: this.onDisableClick
             }
             : {
               key: "enable",
               label: t("EnableUserButton"),
-              onClick: onEnableClick
+              onClick: this.onEnableClick
             }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: onDeleteProfileClick
+            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
           }
         ];
       default:
         return [];
     }
+  }
 
-  };
+  goBack = () => {
+    this.props.history.goBack();
+  }
 
-  const { t } = useTranslation();
-  const contextOptions = () => getUserContextOptions(profile, viewer, t);
+  render() {
+    const { profile, isAdmin, viewer, t } = this.props;
+    const { dialog, avatar, visibleAvatarEditor } = this.state;
 
-  const onClick = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
-  return (
-    <div style={wrapperStyle}>
-      <div style={{ width: "16px" }}>
-        <IconButton
-          iconName={"ArrowPathIcon"}
-          color="#A3A9AE"
-          size="16"
-          onClick={onClick}
+    return (
+      <div style={wrapperStyle}>
+        <div style={{ width: "16px" }}>
+          <IconButton
+            iconName={"ArrowPathIcon"}
+            color="#A3A9AE"
+            size="16"
+            onClick={this.goBack}
+          />
+        </div>
+        <Header truncate={true}>
+          {profile.displayName}
+          {profile.isLDAP && ` (${t('LDAPLbl')})`}
+        </Header>
+        {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
+          <ContextMenuButton
+            directionX="right"
+            title={t('Actions')}
+            iconName="VerticalDotsIcon"
+            size={16}
+            color="#A3A9AE"
+            getData={contextOptions}
+            isDisabled={false}
+          />
+        )}
+        <ModalDialog
+          visible={dialog.visible}
+          headerContent={dialog.header}
+          bodyContent={dialog.body}
+          footerContent={dialog.buttons}
+          onClose={this.onDialogClose}
+        />
+        <AvatarEditor
+          image={avatar.image}
+          visible={visibleAvatarEditor}
+          onClose={this.onCloseAvatarEditor}
+          onSave={this.onSaveAvatar}
+          onLoadFile={this.onLoadFileAvatar}
+          headerLabel={t("editAvatar")}
+          chooseFileLabel={t("chooseFileLabel")}
+          unknownTypeError={t("unknownTypeError")}
+          maxSizeFileError={t("maxSizeFileError")}
+          unknownError={t("unknownError")}
         />
       </div>
-      <Header truncate={true}>
-        {profile.displayName}
-        {profile.isLDAP && ` (${t('LDAPLbl')})`}
-      </Header>
-      {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
-        <ContextMenuButton
-          directionX="right"
-          title={t('Actions')}
-          iconName="VerticalDotsIcon"
-          size={16}
-          color="#A3A9AE"
-          getData={contextOptions}
-          isDisabled={false}
-        />
-      )}
-      <ModalDialog
-        visible={dialogState.visible}
-        headerContent={dialogState.header}
-        bodyContent={dialogState.body}
-        footerContent={dialogState.buttons}
-        onClose={onDialogClose}
-      />
-      <AvatarEditor
-        image={avatarState.image}
-        visible={avatarEditorState}
-        onClose={onCloseAvatarEditor}
-        onSave={onSaveAvatar}
-        onLoadFile={onLoadFileAvatar}
-        headerLabel={t("editAvatar")}
-        chooseFileLabel={t("chooseFileLabel")}
-        unknownTypeError={t("unknownTypeError")}
-        maxSizeFileError={t("maxSizeFileError")}
-        unknownError={t("unknownError")}
-      />
-    </div>
-  );
-};
+    );
+  }
+}
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
+    profile: state.profile.targetUser,
     viewer: state.auth.user,
     isAdmin: isAdmin(state.auth.user)
   };
 }
 
-export default connect(mapStateToProps, { updateUserStatus, fetchProfile })(withRouter(SectionHeaderContent));
+export default connect(mapStateToProps, { updateUserStatus, fetchProfile })(withRouter(withTranslation()(SectionHeaderContent)));

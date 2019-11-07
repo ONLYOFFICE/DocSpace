@@ -1,13 +1,15 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, LinkWithDropdown, Icons, toastr } from "asc-web-components";
+import { RowContent, Link, LinkWithDropdown, Icons, toastr, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 import { useTranslation } from 'react-i18next';
 import history from "../../../../../history";
 
-const getFormatedGroups = groups => {
+const getFormatedGroups = (user, status) => {
   let temp = [];
+  const groups = user.groups;
+  const linkColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
 
   if (!groups) temp.push({ key: 0, label: '' });
 
@@ -28,6 +30,7 @@ const getFormatedGroups = groups => {
         type='action'
         title={temp[0].label}
         fontSize={12}
+        color={linkColor}
         onClick={temp[0].onClick}
       >
         {temp[0].label}
@@ -37,9 +40,9 @@ const getFormatedGroups = groups => {
       <LinkWithDropdown
         isTextOverflow={true}
         containerWidth='160px'
-        type='action'
         title={temp[0].label}
         fontSize={12}
+        color={linkColor}
         data={temp}
       >
         {temp[0].label}
@@ -50,18 +53,18 @@ const getFormatedGroups = groups => {
 const UserContent = ({ user, history, settings }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
-  const groups = getFormatedGroups(user.groups);
+  const groups = getFormatedGroups(user, status);
 
-  const onUserNameClick = useCallback(() => {
-    console.log("User name action");
-    history.push(`${settings.homepage}/view/${userName}`);
-  }, [history, settings.homepage, userName]);
+  const onUserNameClick = useCallback(
+    () => history.push(`${settings.homepage}/view/${userName}`),
+    [history, settings.homepage, userName]
+  );
 
   const onUserTitleClick = useCallback(
     () => toastr.success(`Filter action by user title: ${title}`),
     [title]
   );
- 
+
   const onPhoneClick = useCallback(
     () => window.open(`sms:${mobilePhone}`),
     [mobilePhone]
@@ -88,16 +91,18 @@ const UserContent = ({ user, history, settings }) => {
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
       {title
-        ? <Link
-          containerWidth='110px'
-          type='page'
-          title={title}
-          fontSize={12}
-          color={sideInfoColor}
-          onClick={onUserTitleClick}
-        >
-          {title}
-        </Link>
+        ?
+        <span style={headDepartmentStyle}>
+          <Text.Body
+            as="span"
+            color={sideInfoColor}
+            fontSize={12}
+            title={title}
+            truncate={true}
+          >
+            {title}
+          </Text.Body>
+        </span>
         : <div style={headDepartmentStyle}></div>
       }
       {groups}
