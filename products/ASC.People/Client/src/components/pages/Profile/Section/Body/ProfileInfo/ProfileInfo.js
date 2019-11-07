@@ -255,26 +255,6 @@ class ProfileInfo extends React.PureComponent {
                 >
                   {email}
                 </Link>
-                {(isAdmin || isSelf) &&
-                  <IconButtonWrapper title={t('EmailChangeButton')} >
-                    <IconButton
-                      color="#A3A9AE"
-                      size={16}
-                      iconName='AccessEditIcon'
-                      isFill={true}
-                      onClick={this.onEmailChange} />
-                  </IconButtonWrapper>
-                }
-                {activationStatus === 2 && (isAdmin || isSelf) &&
-                  <IconButtonWrapper title={t('SendInviteAgain')}>
-                    <IconButton
-                      color="#A3A9AE"
-                      size={16}
-                      iconName='FileActionsConvertIcon'
-                      isFill={true}
-                      onClick={this.onSentInviteAgain.bind(this, id)} />
-                  </IconButtonWrapper>
-                }
               </>
             </InfoItemValue>
           </InfoItem>
