@@ -167,11 +167,13 @@ class LinkWithDropdown extends React.Component {
       isBold,
       title,
       isOpen,
+      className,
       data,
       ...rest
     } = this.props;
     return (
-      <StyledSpan>
+      <StyledSpan
+        className={className}>
         <span
           ref={this.ref}
           onClick={this.clickToDropdown}
@@ -229,7 +231,8 @@ LinkWithDropdown.propTypes = {
   isTextOverflow: PropTypes.bool,
   title: PropTypes.string,
   isOpen: PropTypes.bool,
-  children: PropTypes.any
+  children: PropTypes.any,
+  className: PropTypes.string
 };
 
 LinkWithDropdown.defaultProps = {
@@ -240,7 +243,8 @@ LinkWithDropdown.defaultProps = {
   isBold: false,
   isSemitransparent: false,
   isTextOverflow: true,
-  isOpen: false
+  isOpen: false,
+  className: "",
 };
 
 export default LinkWithDropdown;
