@@ -215,8 +215,8 @@ class PureAccessRights extends Component {
     const { filter, fetchPeople } = this.props;
 
     const newFilter = filter.clone();
-    newFilter.pageCount = pageItem.key;
     newFilter.page = 0;
+    newFilter.pageCount = pageItem.key;
     this.onLoading(true);
     fetchPeople(newFilter)
       .catch(res => console.log(res))
@@ -279,9 +279,10 @@ class PureAccessRights extends Component {
       label: t("CountPerPage", { count: 25 })
     };
 
+    const countItems = this.countItems();
+
     return (
-      this.countItems().find(x => x.key === filter.pageCount) ||
-      emptyCountSelection
+      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection
     );
   };
 
