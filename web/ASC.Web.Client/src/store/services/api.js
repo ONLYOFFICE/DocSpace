@@ -165,6 +165,13 @@ export function getListAdmins(filter = Filter.getDefault()) {
   });
 }
 
+export function getAdmins() {
+  return request({
+    method: "get",
+    url: `/people/filter.json?isadministrator=true`
+  });
+}
+
 export function changeProductAdmin(userId, productId, administrator) {
   return request({
     method: "put",

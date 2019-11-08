@@ -58,16 +58,20 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
         )
       )
       .then(() =>
-        axios.all([api.getUserList(filterData), api.getListAdmins(filterData)])
+        axios.all([
+          api.getUserList(filterData),
+          api.getListAdmins(filterData),
+          api.getAdmins()
+        ])
       )
       .then(
-        axios.spread((users, admins) => {
-          const options = getUserOptions(users, admins);
+        axios.spread((users, filterAdmins, admins) => {
+          const options = getUserOptions(users, filterAdmins);
           const newOptions = getSelectorOptions(options);
           filterData.total = admins.length;
 
           dispatch(setUsers(newOptions));
-          dispatch(setAdmins(admins));
+          dispatch(setAdmins(filterAdmins));
           dispatch(setFilter(filterData));
         })
       );
@@ -79,22 +83,28 @@ export function fetchPeople(filter) {
   if (!filterData) {
     filterData = Filter.getDefault();
   }
+
   return dispatch => {
-    return api.getUserList().then(users => {
-      api.getListAdmins(filterData).then(admins => {
-        const options = getUserOptions(users, admins);
-        const newOptions = getSelectorOptions(options);
-        filterData.total = admins.length;
+    return axios
+      .all([
+        api.getUserList(filterData),
+        api.getListAdmins(filterData),
+        api.getAdmins()
+      ])
+      .then(
+        axios.spread((users, filterAdmins, admins) => {
+          const options = getUserOptions(users, admins);
+          const newOptions = getSelectorOptions(options);
+          filterData.total = admins.length;
 
-        const owner = admins.find(x => x.isOwner);
+          const owner = admins.find(x => x.isOwner);
 
-        dispatch(setUsers(newOptions));
-        dispatch(setAdmins(admins));
-        dispatch(setFilter(filterData));
-
-        dispatch(setOwner(owner));
-      });
-    });
+          dispatch(setAdmins(filterAdmins));
+          dispatch(setUsers(newOptions));
+          dispatch(setFilter(filterData));
+          dispatch(setOwner(owner));
+        })
+      );
   };
 }
 
