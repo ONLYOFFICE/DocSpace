@@ -53,7 +53,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "ItemId")]
         public string ItemID { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new PeopleNamesSettings { ItemID = PeopleNamesItem.DefaultID };
         }

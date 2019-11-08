@@ -46,7 +46,7 @@ namespace ASC.Web.Core.Utility.Settings
         }
 
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new WizardSettings
             {

@@ -108,7 +108,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         #region ISettings Members
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantWhiteLabelSettings
             {

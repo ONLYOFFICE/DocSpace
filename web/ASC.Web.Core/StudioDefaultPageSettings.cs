@@ -47,7 +47,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{48328C27-4C85-4987-BA0E-D6BB17356B10}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new StudioDefaultPageSettings { DefaultProductID = Guid.Empty };
         }

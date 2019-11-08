@@ -43,7 +43,7 @@ namespace ASC.Core.Tenants
         }
 
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new PersonalQuotaSettings
             {

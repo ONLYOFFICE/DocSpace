@@ -36,7 +36,7 @@ namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class MailWhiteLabelSettings : ISettingsExt
+    public class MailWhiteLabelSettings : ISettings
     {
         [DataMember(Name = "FooterEnabled")]
         public bool FooterEnabled { get; set; }
@@ -62,15 +62,6 @@ namespace ASC.Web.Core.WhiteLabel
         public Guid ID
         {
             get { return new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}"); }
-        }
-
-        public ISettings GetDefault()
-        {
-            return new MailWhiteLabelSettings
-            {
-                FooterEnabled = true,
-                FooterSocialEnabled = true
-            };
         }
 
         public ISettings GetDefault(IConfiguration configuration)

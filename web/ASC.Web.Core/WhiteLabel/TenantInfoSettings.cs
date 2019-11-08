@@ -51,7 +51,7 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "Default")]
         internal bool _isDefault { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantInfoSettings()
             {
@@ -178,7 +178,6 @@ namespace ASC.Web.Core.WhiteLabel
                 .AddWebImageSupplierService()
                 .AddStorageFactoryService()
                 .AddTenantManagerService()
-                .AddTenantLogoManagerService()
                 .AddSettingsManagerService();
         }
     }

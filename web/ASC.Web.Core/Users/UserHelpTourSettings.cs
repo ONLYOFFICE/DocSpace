@@ -46,7 +46,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsNewUser")]
         public bool IsNewUser { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new UserHelpTourSettings
             {

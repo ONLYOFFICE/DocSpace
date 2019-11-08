@@ -34,7 +34,7 @@ namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
     [DataContract]
-    public class WebItemSettings : ISettingsExt
+    public class WebItemSettings : ISettings
     {
         public Guid ID
         {
@@ -47,11 +47,6 @@ namespace ASC.Web.Core.Utility.Settings
         public WebItemSettings()
         {
             SettingsCollection = new List<WebItemOption>();
-        }
-
-        public ISettings GetDefault()
-        {
-            return new WebItemSettings();
         }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)

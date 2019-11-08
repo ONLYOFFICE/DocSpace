@@ -47,7 +47,7 @@ namespace ASC.Web.Studio.Core.TFA
             get { return new Guid("{EAF10611-BE1E-4634-B7A1-57F913042F78}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TfaAppUserSettings
             {
@@ -91,9 +91,9 @@ namespace ASC.Web.Studio.Core.TFA
             return settingsManager.LoadForUser<TfaAppUserSettings>(guid).CodesSetting.Any();
         }
 
-        public static void DisableForUser(SettingsManager settingsManager, Guid guid)
+        public static void DisableForUser(IServiceProvider serviceProvider, SettingsManager settingsManager, Guid guid)
         {
-            if (new TfaAppUserSettings().GetDefault() is TfaAppUserSettings defaultSettings)
+            if (new TfaAppUserSettings().GetDefault(serviceProvider) is TfaAppUserSettings defaultSettings)
             {
                 settingsManager.SaveForUser(defaultSettings, guid);
             }

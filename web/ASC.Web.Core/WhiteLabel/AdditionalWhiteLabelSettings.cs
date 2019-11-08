@@ -36,7 +36,7 @@ namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class AdditionalWhiteLabelSettings : ISettingsExt
+    public class AdditionalWhiteLabelSettings : ISettings
     {
         [DataMember(Name = "StartDocsEnabled")]
         public bool StartDocsEnabled { get; set; }

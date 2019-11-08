@@ -42,7 +42,7 @@ namespace ASC.Core.Tenants
             get { return new Guid("{02943039-F399-421E-A552-23D70651AEBD}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantAnalyticsSettings
             {

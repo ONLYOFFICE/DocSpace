@@ -79,7 +79,7 @@ namespace ASC.Data.Storage.Configuration
         [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
-        public ISettings GetDefault() => new T();
+        public ISettings GetDefault(IServiceProvider serviceProvider) => new T();
         public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
         public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }

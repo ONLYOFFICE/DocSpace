@@ -92,6 +92,7 @@ namespace ASC.Api.Settings
         public MessageService MessageService { get; }
         public StudioNotifyService StudioNotifyService { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public IServiceProvider ServiceProvider { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -169,10 +170,12 @@ namespace ASC.Api.Settings
             StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
             CoreSettings coreSettings,
             StorageSettingsHelper storageSettingsHelper,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IServiceProvider serviceProvider)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
+            ServiceProvider = serviceProvider;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -458,7 +461,7 @@ namespace ASC.Api.Settings
                 }
                 else if (productId == defaultPageSettings.DefaultProductID)
                 {
-                    SettingsManager.Save(defaultPageSettings.GetDefault() as StudioDefaultPageSettings);
+                    SettingsManager.Save(defaultPageSettings.GetDefault(ServiceProvider) as StudioDefaultPageSettings);
                 }
 
                 WebItemSecurity.SetSecurity(item.Key, item.Value, subjects);
@@ -848,7 +851,7 @@ namespace ASC.Api.Settings
             if (user.IsVisitor(UserManager) || user.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            TfaAppUserSettings.DisableForUser(SettingsManager, user.ID);
+            TfaAppUserSettings.DisableForUser(ServiceProvider, SettingsManager, user.ID);
             MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (isMe)
@@ -1066,7 +1069,7 @@ namespace ASC.Api.Settings
 
             if (!instance.IsDefault(CoreSettings) && !instance.IsLicensor)
             {
-                result.Add(instance.GetDefault() as CompanyWhiteLabelSettings);
+                result.Add(instance.GetDefault(ServiceProvider) as CompanyWhiteLabelSettings);
             }
 
             return result;

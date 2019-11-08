@@ -45,7 +45,7 @@ namespace ASC.Core.Tenants
         public int LifeTime { get; set; }
 
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return GetInstance();
         }

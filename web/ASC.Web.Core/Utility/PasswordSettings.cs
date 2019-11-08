@@ -34,7 +34,7 @@ namespace ASC.Web.Core.Utility
 {
     [Serializable]
     [DataContract]
-    public sealed class PasswordSettings : ISettingsExt
+    public sealed class PasswordSettings : ISettings
     {
         public Guid ID
         {
@@ -67,10 +67,6 @@ namespace ASC.Web.Core.Utility
         [DataMember]
         public bool SpecSymbols { get; set; }
 
-        public ISettings GetDefault()
-        {
-            return new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
-        }
         public ISettings GetDefault(IConfiguration configuration)
         {
             var def = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };

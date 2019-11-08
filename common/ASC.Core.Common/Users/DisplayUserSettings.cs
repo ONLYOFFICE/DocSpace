@@ -47,7 +47,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new DisplayUserSettings
             {

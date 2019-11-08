@@ -202,6 +202,7 @@ namespace ASC.Web.Core.Users
         public StorageFactory StorageFactory { get; }
         public UserPhotoManagerCache UserPhotoManagerCache { get; }
         public SettingsManager SettingsManager { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         private Tenant tenant;
@@ -218,7 +219,8 @@ namespace ASC.Web.Core.Users
             UserPhotoManagerCache userPhotoManagerCache,
             IOptionsMonitor<ILog> options,
             WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            IServiceProvider serviceProvider)
         {
             ResizeQueue = optionsQueue.Value;
             UserManager = userManager;
@@ -227,6 +229,7 @@ namespace ASC.Web.Core.Users
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
             SettingsManager = settingsManager;
+            ServiceProvider = serviceProvider;
             Log = options.Get("ASC.Web.Photo");
         }
 
@@ -505,7 +508,7 @@ namespace ASC.Web.Core.Users
         }
         public void ResetThumbnailSettings(Guid userId)
         {
-            var thumbSettings = new UserPhotoThumbnailSettings().GetDefault() as UserPhotoThumbnailSettings;
+            var thumbSettings = new UserPhotoThumbnailSettings().GetDefault(ServiceProvider) as UserPhotoThumbnailSettings;
             SettingsManager.SaveForUser(thumbSettings, userId);
         }
 

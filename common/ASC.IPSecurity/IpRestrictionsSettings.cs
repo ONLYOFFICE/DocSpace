@@ -42,7 +42,7 @@ namespace ASC.IPSecurity
             get { return new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new IPRestrictionsSettings { Enable = false };
         }

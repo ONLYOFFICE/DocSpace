@@ -65,7 +65,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsDefault")]
         public bool IsDefault { get; private set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new UserPhotoThumbnailSettings
             {

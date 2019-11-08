@@ -45,7 +45,7 @@ namespace ASC.Web.Core.Utility.Settings
             get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
         }

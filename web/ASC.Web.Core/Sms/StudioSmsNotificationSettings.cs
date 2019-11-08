@@ -44,7 +44,7 @@ namespace ASC.Web.Studio.Core.SMS
             get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new StudioSmsNotificationSettings { EnableSetting = false, };
         }

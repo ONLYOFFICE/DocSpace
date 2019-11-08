@@ -35,7 +35,7 @@ namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class CompanyWhiteLabelSettings : ISettingsExt
+    public class CompanyWhiteLabelSettings : ISettings
     {
         [DataMember(Name = "CompanyName")]
         public string CompanyName { get; set; }
@@ -75,11 +75,6 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         private static CompanyWhiteLabelSettings _default;
-
-        public ISettings GetDefault()
-        {
-            return new CompanyWhiteLabelSettings();
-        }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {

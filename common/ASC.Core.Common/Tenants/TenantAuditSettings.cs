@@ -49,7 +49,7 @@ namespace ASC.Core.Tenants
             get { return Guid; }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantAuditSettings
             {

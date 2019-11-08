@@ -49,7 +49,7 @@ namespace ASC.Web.Studio.UserControls.Management
         [DataMember(Name = "LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TariffSettings
             {

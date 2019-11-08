@@ -136,12 +136,7 @@ namespace ASC.Core.Data
                 var data = Serialize(settings);
 
                 var db = DbManager;
-                var def = (T)settings.GetDefault();
-
-                if (def is ISettingsExt)
-                {
-                    def = (T)((ISettingsExt)settings).GetDefault(ServiceProvider);
-                }
+                var def = (T)settings.GetDefault(ServiceProvider);
 
                 var defaultData = Serialize(def);
 
@@ -181,12 +176,7 @@ namespace ASC.Core.Data
         {
             var settingsInstance = Activator.CreateInstance<T>();
             var key = settingsInstance.ID.ToString() + tenantId + userId;
-            var def = (T)settingsInstance.GetDefault();
-
-            if (def is ISettingsExt)
-            {
-                def = (T)((ISettingsExt)settingsInstance).GetDefault(ServiceProvider);
-            }
+            var def = (T)settingsInstance.GetDefault(ServiceProvider);
 
             try
             {

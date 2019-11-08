@@ -28,10 +28,10 @@ using System;
 using System.IO;
 using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Core.Utility
 {
@@ -49,7 +49,7 @@ namespace ASC.Web.Core.Utility
         [DataMember(Name = "FirstRequest")]
         public bool FirstRequest { get; set; }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new ColorThemesSettings
             {
@@ -67,31 +67,28 @@ namespace ASC.Web.Core.Utility
     public class ColorThemesSettingsHelper
     {
         public SettingsManager SettingsManager { get; }
-        public IUrlHelper UrlHelper { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        public IHostEnvironment HostEnvironment { get; }
 
         public ColorThemesSettingsHelper(
             SettingsManager settingsManager,
-            IUrlHelper urlHelper,
-            IWebHostEnvironment webHostEnvironment)
+            IHostEnvironment hostEnvironment)
         {
             SettingsManager = settingsManager;
-            UrlHelper = urlHelper;
-            WebHostEnvironment = webHostEnvironment;
+            HostEnvironment = hostEnvironment;
         }
 
-        public string GetThemeFolderName(string path)
+        public string GetThemeFolderName(IUrlHelper urlHelper, string path)
         {
             var folderName = GetColorThemesSettings();
             var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, folderName);
 
             //TODO check
-            if (!UrlHelper.IsLocalUrl(resolvedPath))
-                resolvedPath = UrlHelper.Action(resolvedPath);
+            if (!urlHelper.IsLocalUrl(resolvedPath))
+                resolvedPath = urlHelper.Action(resolvedPath);
 
             try
             {
-                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
             }
@@ -99,10 +96,10 @@ namespace ASC.Web.Core.Utility
             {
                 resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, "default");
 
-                if (!UrlHelper.IsLocalUrl(resolvedPath))
-                    resolvedPath = UrlHelper.Action(resolvedPath);
+                if (!urlHelper.IsLocalUrl(resolvedPath))
+                    resolvedPath = urlHelper.Action(resolvedPath);
 
-                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
@@ -133,7 +130,7 @@ namespace ASC.Web.Core.Utility
 
             try
             {
-                var filePath = Path.Combine(WebHostEnvironment.ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
                     SettingsManager.Save(settings);

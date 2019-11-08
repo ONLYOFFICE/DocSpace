@@ -39,7 +39,7 @@ namespace ASC.Web.Studio.Core.TFA
             get { return new Guid("{822CA059-AA8F-4588-BEE3-6CD2AA920CDB}"); }
         }
 
-        public ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TfaAppAuthSettings { EnableSetting = false, };
         }
