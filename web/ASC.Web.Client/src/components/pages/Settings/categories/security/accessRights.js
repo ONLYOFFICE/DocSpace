@@ -23,7 +23,8 @@ import {
   IconButton,
   AdvancedSelector,
   toastr,
-  RequestLoader
+  RequestLoader,
+  FilterInput
 } from "asc-web-components";
 import { getUserRole } from "../../../../../store/settings/selectors";
 
@@ -108,6 +109,11 @@ const ToggleContentContainer = styled.div`
   .selector-button {
     max-width: 34px;
   }
+
+  .filter_container {
+    margin-bottom: 50px;
+    margin-top: 16px;
+  }
 `;
 
 const ProjectsBody = styled.div`
@@ -129,7 +135,7 @@ class PureAccessRights extends Component {
   componentDidMount() {
     const { fetchPeople } = this.props;
 
-    const newFilter = this.onFilter();
+    const newFilter = this.onAdminsFilter();
 
     fetchPeople(newFilter).catch(error => {
       toastr.error(error);
@@ -139,7 +145,7 @@ class PureAccessRights extends Component {
   onChangeAdmin = (userIds, isAdmin) => {
     this.onLoading(true);
     const { changeAdmins, productId } = this.props;
-    const newFilter = this.onFilter();
+    const newFilter = this.onAdminsFilter();
 
     changeAdmins(userIds, productId, isAdmin, newFilter)
       .catch(error => {
@@ -178,7 +184,7 @@ class PureAccessRights extends Component {
     this.setState({ isLoading: status });
   };
 
-  onFilter = () => {
+  onAdminsFilter = () => {
     const { filter } = this.props;
 
     const newFilter = filter.clone();
@@ -186,6 +192,21 @@ class PureAccessRights extends Component {
     newFilter.role = "admin";
 
     return newFilter;
+  };
+
+  onFilter = data => {
+    const { filter, fetchPeople } = this.props;
+
+    const search = data.inputValue || null;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.role = "admin";
+    newFilter.search = search;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(this.onLoading(false));
   };
 
   pageItems = () => {
@@ -354,6 +375,25 @@ class PureAccessRights extends Component {
               //title={showGroupSelectorButtonTitle}
               onClick={this.onShowGroupSelector}
             />
+
+            <FilterInput
+              className="filter_container"
+              getFilterData={() => [
+                {
+                  key: "filter-example",
+                  group: "filter-example",
+                  label: "example group",
+                  isHeader: true
+                },
+                { key: "0", group: "filter-example", label: "Test" }
+              ]}
+              getSortData={() => [
+                { key: "name", label: "Name" },
+                { key: "surname", label: "Surname" }
+              ]}
+              onFilter={this.onFilter}
+            />
+
             <div className="advanced-selector">
               <AdvancedSelector
                 displayType="dropdown"
