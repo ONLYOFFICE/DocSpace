@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, LinkWithDropdown, Icons, toastr, Text } from "asc-web-components";
+import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 import { useTranslation } from 'react-i18next';
@@ -60,11 +60,6 @@ const UserContent = ({ user, history, settings }) => {
     [history, settings.homepage, userName]
   );
 
-  const onUserTitleClick = useCallback(
-    () => toastr.success(`Filter action by user title: ${title}`),
-    [title]
-  );
-
   const onPhoneClick = useCallback(
     () => window.open(`sms:${mobilePhone}`),
     [mobilePhone]
@@ -77,7 +72,7 @@ const UserContent = ({ user, history, settings }) => {
 
   const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
   const sideInfoColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
-  const { t } = useTranslation();
+  //const { t } = useTranslation();
 
   const headDepartmentStyle = {
     width: '110px'
