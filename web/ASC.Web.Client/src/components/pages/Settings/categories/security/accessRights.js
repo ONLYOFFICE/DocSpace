@@ -201,30 +201,30 @@ class PureAccessRights extends Component {
   };
 
   onChangePage = pageItem => {
-    const { filter, getListAdmins } = this.props;
+    const { filter, fetchPeople } = this.props;
 
     const newFilter = filter.clone();
     newFilter.page = pageItem.key;
     this.onLoading(true);
-    getListAdmins(newFilter)
+    fetchPeople(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onChangePageSize = pageItem => {
-    const { filter, getListAdmins } = this.props;
+    const { filter, fetchPeople } = this.props;
 
     const newFilter = filter.clone();
     newFilter.pageCount = pageItem.key;
     newFilter.page = 0;
     this.onLoading(true);
-    getListAdmins(newFilter)
+    fetchPeople(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onPrevClick = e => {
-    const { filter, getListAdmins } = this.props;
+    const { filter, fetchPeople } = this.props;
 
     if (!filter.hasPrev()) {
       e.preventDefault();
@@ -233,13 +233,13 @@ class PureAccessRights extends Component {
     const newFilter = filter.clone();
     newFilter.page--;
     this.onLoading(true);
-    getListAdmins(newFilter)
+    fetchPeople(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onNextClick = e => {
-    const { filter, getListAdmins } = this.props;
+    const { filter, fetchPeople } = this.props;
 
     if (!filter.hasNext()) {
       e.preventDefault();
@@ -248,22 +248,19 @@ class PureAccessRights extends Component {
     const newFilter = filter.clone();
     newFilter.page++;
     this.onLoading(true);
-    getListAdmins(newFilter)
+    fetchPeople(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  render() {
-    const { t, owner, admins, filter } = this.props;
-    const { showSelector, options, selectedOptions, isLoading } = this.state;
-    const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
+  countItems = () => [
+    { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
+    { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
+    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) }
+  ];
 
-    const countItems = [
-      { key: 25, label: t("CountPerPage", { count: 25 }) },
-      { key: 50, label: t("CountPerPage", { count: 50 }) },
-      { key: 100, label: t("CountPerPage", { count: 100 }) }
-    ];
-
+  selectedPageItem = () => {
+    const { filter, t } = this.props;
     const pageItems = this.pageItems();
 
     const emptyPageSelection = {
@@ -271,16 +268,29 @@ class PureAccessRights extends Component {
       label: t("PageOfTotalPage", { page: 1, totalPage: 1 })
     };
 
+    return pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+  };
+
+  selectedCountItem = () => {
+    const { filter, t } = this.props;
+
     const emptyCountSelection = {
       key: 0,
       label: t("CountPerPage", { count: 25 })
     };
 
-    const selectedPageItem =
-      pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+    return (
+      this.countItems().find(x => x.key === filter.pageCount) ||
+      emptyCountSelection
+    );
+  };
 
-    const selectedCountItem =
-      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection;
+  render() {
+    const { t, owner, admins, filter } = this.props;
+    const { showSelector, options, selectedOptions, isLoading } = this.state;
+    const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
+
+    //console.log("accessRight render");
 
     return (
       <MainContainer>
@@ -419,25 +429,24 @@ class PureAccessRights extends Component {
               </RowContainer>
             </div>
 
-              <div className="wrapper">
-                <Paging
-                  previousLabel={t("PreviousPage")}
-                  nextLabel={t("NextPage")}
-                  openDirection="top"
-                  countItems={countItems}
-                  pageItems={pageItems}
-                  displayItems={false}
-                  selectedPageItem={selectedPageItem}
-                  selectedCountItem={selectedCountItem}
-                  onSelectPage={this.onChangePage}
-                  onSelectCount={this.onChangePageSize}
-                  previousAction={this.onPrevClick}
-                  nextAction={this.onNextClick}
-                  disablePrevious={!filter.hasPrev()}
-                  disableNext={!filter.hasNext()}
-                />
-              </div>
-
+            <div className="wrapper">
+              <Paging
+                previousLabel={t("PreviousPage")}
+                nextLabel={t("NextPage")}
+                openDirection="top"
+                countItems={this.countItems()}
+                pageItems={this.pageItems()}
+                displayItems={false}
+                selectedPageItem={this.selectedPageItem()}
+                selectedCountItem={this.selectedCountItem()}
+                onSelectPage={this.onChangePage}
+                onSelectCount={this.onChangePageSize}
+                previousAction={this.onPrevClick}
+                nextAction={this.onNextClick}
+                disablePrevious={!filter.hasPrev()}
+                disableNext={!filter.hasNext()}
+              />
+            </div>
           </ToggleContent>
 
           <ToggleContent
