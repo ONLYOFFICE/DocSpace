@@ -104,9 +104,9 @@ const StyledContainer = styled(Container)`
         padding-left: 8px;
 
         .option-info {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+          position: absolute;
+          top: 10px;
+          right: 10px;
         }
       }
     }
@@ -145,16 +145,21 @@ const ADSelector = props => {
     selectedGroups,
     groupsHeaderLabel,
     searchPlaceHolderLabel,
+    emptySearchOptionsLabel,
+    emptyOptionsLabel,
     onSelect,
-    getOptionTooltipContent
+    getOptionTooltipContent,
+    onSearchChanged,
+    onGroupChanged
   } = props;
 
   const listOptionsRef = useRef(null);
   const listGroupsRef = useRef(null);
+
   const [selectedOptionList, setSelectedOptionList] = useState(
     selectedOptions || []
   );
-  //const [uncheckedOptionList, setUncheckedOptionList] = useState([]);
+
   const [selectedGroupList, setSelectedGroupList] = useState(
     selectedGroups || []
   );
@@ -177,16 +182,13 @@ const ADSelector = props => {
     };
   };
 
-  const convertedGroups = convertGroups(groups);
-  //const curGroup = getCurrentGroup(convertedGroups);
-
   const getCurrentGroup = items => {
     const currentGroup = items.length > 0 ? items[0] : "No groups";
     return currentGroup;
   };
 
   const [currentGroup, setCurrentGroup] = useState(
-    getCurrentGroup(convertedGroups)
+    getCurrentGroup(convertGroups(groups))
   );
 
   // Every row is loaded except for our loading indicator row.
@@ -285,16 +287,26 @@ const ADSelector = props => {
     }
   };
 
-  const onGroupSelect = group => {
-    setCurrentGroup(group);
+  const resetCache = () => {
+    if (listOptionsRef && listOptionsRef.current) {
+      listOptionsRef.current.resetloadMoreItemsCache();
+    }
   };
 
-  const onSearchChange = e => {
-    setSearchValue(e.target.value);
+  const onGroupSelect = group => {
+    resetCache();
+    setCurrentGroup(group);
+    onGroupChanged && onGroupChanged(group);
+  };
+
+  const onSearchChange = value => {
+    resetCache();
+    setSearchValue(value);
+    onSearchChanged && onSearchChanged(value);
   };
 
   const onSearchReset = () => {
-    setSearchValue("");
+    onSearchChange("");
   };
 
   const onSelectOptions = items => {
@@ -339,34 +351,33 @@ const ADSelector = props => {
       const option = options[index];
       const isChecked = isOptionChecked(option);
 
-      if(displayType === "dropdown")
+      if (displayType === "dropdown")
         tooltipProps = { "data-for": "user", "data-tip": index };
 
       ReactTooltip.rebuild();
       //console.log("Item render", item, checked, selected);
       content = isMultiSelect ? (
-          <>
-            <Checkbox
-                id={option.key}
-                value={`${index}`}
-                label={option.label}
-                isChecked={isChecked}
-                className="option_checkbox"
-                onChange={onOptionChange}
-
+        <>
+          <Checkbox
+            id={option.key}
+            value={`${index}`}
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            onChange={onOptionChange}
+          />
+          {displayType === "aside" && (
+            <HelpButton
+              id={`info-${option.key}`}
+              className="option-info"
+              iconName="InfoIcon"
+              color="#D8D8D8"
+              getContent={getOptionTooltipContent}
+              place="top"
+              offsetLeft={160}
+              dataTip={`${index}`}
             />
-            {displayType === "aside" && 
-              <HelpButton
-                id={`info-${option.key}`}
-                className="option-info"
-                iconName="InfoIcon"
-                color="#D8D8D8"
-                getContent={getOptionTooltipContent}
-                place="top"
-                offsetLeft={160}
-                dataTip={`${index}`}
-                />
-            }
+          )}
         </>
       ) : (
         <Link
@@ -459,7 +470,16 @@ const ADSelector = props => {
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
+  const loadMoreItems = startIndex => {
+    if (isNextPageLoading) return;
+
+    loadNextPage &&
+      loadNextPage({
+        startIndex: startIndex || 0,
+        searchValue,
+        currentGroup: currentGroup ? currentGroup.key : null
+      });
+  };
 
   return (
     <StyledContainer
@@ -507,6 +527,13 @@ const ADSelector = props => {
               </AutoSizer>
             )}
           </InfiniteLoader>
+          {!hasNextPage && itemCount === 0 && (
+            <div className="row-block">
+              <Text.Body>
+                {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
+              </Text.Body>
+            </div>
+          )}
           <Tooltip
             id="user"
             offsetRight={90}
@@ -571,6 +598,8 @@ ADSelector.propTypes = {
   selectAllLabel: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
   groupsHeaderLabel: PropTypes.string,
+  emptySearchOptionsLabel: PropTypes.string,
+  emptyOptionsLabel: PropTypes.string,
 
   //size: PropTypes.oneOf(["compact", "full"]),
   displayType: PropTypes.oneOf(["dropdown", "aside"]),
@@ -580,6 +609,7 @@ ADSelector.propTypes = {
 
   onSelect: PropTypes.func,
   onSearchChanged: PropTypes.func,
+  onGroupChanged: PropTypes.func,
   getOptionTooltipContent: PropTypes.func
 };
 

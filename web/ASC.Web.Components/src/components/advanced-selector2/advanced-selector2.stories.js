@@ -16,7 +16,7 @@ import Section from "../../../.storybook/decorators/section";
 import Button from "../button";
 import Avatar from "../avatar";
 import { Text } from "../text";
-import { isEqual, slice } from "lodash";
+import { isEqual } from "lodash";
 import { name, image, internet } from "faker";
 
 function getRandomInt(min, max) {
@@ -104,19 +104,31 @@ class ADSelectorExample extends React.Component {
     });
   };
 
-  loadNextPage = (startIndex, stopIndex) => {
+  loadNextPage = ({ startIndex, searchValue, currentGroup }) => {
     console.log(
-      `loadNextPage(startIndex=${startIndex}, stopIndex=${stopIndex})`
+      `loadNextPage(startIndex=${startIndex}, searchValue=${searchValue}, currentGroup=${currentGroup &&
+        currentGroup.label})`
     );
     this.setState({ isNextPageLoading: true }, () => {
       setTimeout(() => {
         const { options } = this.state;
+
+        let filtered = [...this.state.allOptions];
+
+        if (currentGroup) {
+          filtered = filtered.filter(o => o.groups.indexOf(currentGroup) > -1);
+        }
+
+        if (searchValue) {
+          filtered = filtered.filter(o => o.label.indexOf(searchValue) > -1);
+        }
+
         const newOptions = [...options].concat(
-          slice(this.state.allOptions, startIndex, startIndex + 100)
+          filtered.slice(startIndex, startIndex + 100)
         );
 
         this.setState({
-          hasNextPage: options.length < this.props.total,
+          hasNextPage: newOptions.length < filtered.length,
           isNextPageLoading: false,
           options: newOptions
         });
@@ -184,42 +196,65 @@ class ADSelectorExample extends React.Component {
           selectButtonLabel={text("selectButtonLabel", "Add members")}
           selectAllLabel={text("selectAllLabel", "Select all")}
           groupsHeaderLabel={text("groupsHeaderLabel", "Groups")}
+          emptySearchOptionsLabel={text(
+            "emptySearchOptionsLabel",
+            "There are no users with such name"
+          )}
+          emptyOptionsLabel={text("emptyOptionsLabel", "There are no users")}
           onSelect={selectedOptions => {
             action("onSelect")(selectedOptions);
             this.toggle();
           }}
           onSearchChanged={value => {
             action("onSearchChanged")(value);
-            /*set(
-            options.filter(option => {
-              return option.label.indexOf(value) > -1;
-            })
-          );*/
+            this.setState({ options: [], hasNextPage: true });
+          }}
+          onGroupChanged={group => {
+            action("onGroupChanged")(group);
+            this.setState({ options: [], hasNextPage: true });
           }}
           getOptionTooltipContent={index => {
-            if(!index)
-              return null;
+            if (!index) return null;
 
             const user = options[+index];
+
+            if (!user) return null;
 
             console.log("onOptionTooltipShow", index, user);
 
             return (
-              <div style={{width: 253, minHeight: 63, display: "grid", gridTemplateColumns: "30px 1fr", gridTemplateRows: "1fr", gridColumnGap: 8 }}>
-                <Avatar size="small" role="user" source={user.avatarUrl} userName="" editing={false} />
+              <div
+                style={{
+                  width: 253,
+                  minHeight: 63,
+                  display: "grid",
+                  gridTemplateColumns: "30px 1fr",
+                  gridTemplateRows: "1fr",
+                  gridColumnGap: 8
+                }}
+              >
+                <Avatar
+                  size="small"
+                  role="user"
+                  source={user.avatarUrl}
+                  userName=""
+                  editing={false}
+                />
                 <div>
                   <Text.Body isBold={true} fontSize={16}>
                     {user.label}
                   </Text.Body>
-                  <Text.Body color="#A3A9AE" fontSize={13} style={{paddingBottom: 8}}>
+                  <Text.Body
+                    color="#A3A9AE"
+                    fontSize={13}
+                    style={{ paddingBottom: 8 }}
+                  >
                     {user.email}
                   </Text.Body>
-                  <Text.Body fontSize={13}>
-                    {user.position}
-                  </Text.Body>
+                  <Text.Body fontSize={13}>{user.position}</Text.Body>
                 </div>
               </div>
-              );
+            );
           }}
         />
       </div>
