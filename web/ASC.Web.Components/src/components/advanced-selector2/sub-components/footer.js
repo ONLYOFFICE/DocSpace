@@ -3,31 +3,29 @@ import PropTypes from "prop-types";
 import Button from "../../button";
 import styled, { css } from "styled-components";
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-const Container = ({
-  selectButtonLabel,
-  isDisabled,
-  isVisible,
-  onClick,
-  ...props
-}) => <div {...props} />;
-/* eslint-enable react/prop-types */
-/* eslint-enable no-unused-vars */
+const StyledContainer = styled.div`
+  border-top: 1px solid #eceef1;
+  padding: 16px;
+  height: 69px;
 
-const StyledContainer = styled(Container)`
-    border-top: 1px solid #eceef1;
-    padding: 16px;
-    height: 69px;
-
-    ${props => !props.isVisible && css`display: none;`}
+  ${props =>
+    !props.isVisible &&
+    css`
+      display: none;
+    `}
 `;
 
 const ADSelectorFooter = props => {
-  const { selectButtonLabel, isDisabled, onClick } = props;
+  const {
+    selectButtonLabel,
+    isDisabled,
+    onClick,
+    isVisible,
+    className
+  } = props;
 
   return (
-    <StyledContainer {...props}>
+    <StyledContainer isVisible={isVisible} className={className}>
       <Button
         className="add_members_btn"
         primary={true}
@@ -42,6 +40,7 @@ const ADSelectorFooter = props => {
 };
 
 ADSelectorFooter.propTypes = {
+  className: PropTypes.string,
   selectButtonLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
   isVisible: PropTypes.bool,
