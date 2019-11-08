@@ -6,7 +6,7 @@ import { Layout, Toast } from 'asc-web-components';
 import { logout } from '../../store/auth/actions';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
-import { isAdmin } from "../../store/auth/selectors";
+//import { isAdmin } from "../../store/auth/selectors";
 
 class PurePeopleLayout extends React.Component {
     shouldComponentUpdate(nextProps) {
@@ -68,7 +68,7 @@ class PurePeopleLayout extends React.Component {
 
 
 const getAvailableModules = (modules, currentUser) => {
-    const isUserAdmin = isAdmin(currentUser);
+    const isUserAdmin = currentUser.isAdmin;
     const customModules = isUserAdmin ? [
         {
             separator: true,
