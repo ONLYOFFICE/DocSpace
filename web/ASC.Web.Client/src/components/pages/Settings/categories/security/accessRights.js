@@ -418,7 +418,7 @@ class PureAccessRights extends Component {
                 })}
               </RowContainer>
             </div>
-            {filter.total > filter.pageCount ? (
+
               <div className="wrapper">
                 <Paging
                   previousLabel={t("PreviousPage")}
@@ -437,7 +437,7 @@ class PureAccessRights extends Component {
                   disableNext={!filter.hasNext()}
                 />
               </div>
-            ) : null}
+
           </ToggleContent>
 
           <ToggleContent
