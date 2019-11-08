@@ -1,5 +1,6 @@
 import { request, setAuthorizationToken } from "./client";
 import axios from "axios";
+import Filter from "../settings/filter";
 
 export function login(userName, password) {
   const data = {
@@ -156,10 +157,11 @@ export function getUserList() {
   });
 }
 
-export function getProductAdminsList(productId) {
+export function getListAdmins(filter = Filter.getDefault()) {
+  const params = filter.toUrlParams();
   return request({
     method: "get",
-    url: `/settings/security/administrator/${productId}`
+    url: `/people/filter.json?${params}`
   });
 }
 
@@ -178,7 +180,7 @@ export function changeProductAdmin(userId, productId, administrator) {
 export function getUserById(userId) {
   return request({
     method: "get",
-    url: `/people/${userId}`,
+    url: `/people/${userId}`
   });
 }
 

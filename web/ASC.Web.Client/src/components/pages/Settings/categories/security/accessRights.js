@@ -7,9 +7,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   changeAdmins,
-  getListAdmins,
-  getListUsers,
-  getUserById
+  fetchPeople
 } from "../../../../../store/settings/actions";
 import {
   Text,
@@ -27,6 +25,7 @@ import {
   toastr,
   RequestLoader
 } from "asc-web-components";
+import { getUserRole } from "../../../../../store/settings/selectors";
 
 const MainContainer = styled.div`
   padding: 16px 16px 16px 24px;
@@ -128,38 +127,23 @@ class PureAccessRights extends Component {
   }
 
   componentDidMount() {
-    const {
-      getListAdmins,
-      getListUsers,
-      getUserById,
-      ownerId,
-      productId
-    } = this.props;
+    const { fetchPeople } = this.props;
 
-    getUserById(ownerId).catch(error => {
-      toastr.error(error);
-      //console.log("accessRights getUserById", error);
-    });
+    const newFilter = this.onFilter();
 
-    getListUsers().catch(error => {
+    fetchPeople(newFilter).catch(error => {
       toastr.error(error);
-      //console.log("accessRights getListAdmins", error);
-    });
-
-    getListAdmins(productId).catch(error => {
-      toastr.error(error);
-      //console.log("accessRights getListAdmins", error);
     });
   }
 
   onChangeAdmin = (userIds, isAdmin) => {
     this.onLoading(true);
     const { changeAdmins, productId } = this.props;
+    const newFilter = this.onFilter();
 
-    changeAdmins(userIds, productId, isAdmin)
+    changeAdmins(userIds, productId, isAdmin, newFilter)
       .catch(error => {
         toastr.error("accessRights onChangeAdmin", error);
-        //console.log("accessRights onChangeAdmin", error)
       })
       .finally(() => {
         this.onLoading(false);
@@ -191,12 +175,86 @@ class PureAccessRights extends Component {
     options.filter(option => option.label.indexOf(template) > -1);
 
   onLoading = status => {
-    console.log("onLoading status", status);
     this.setState({ isLoading: status });
   };
 
+  onFilter = () => {
+    const { filter } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.role = "admin";
+
+    return newFilter;
+  };
+
+  pageItems = () => {
+    const { t, filter } = this.props;
+    if (filter.total < filter.pageCount) return [];
+    const totalPages = Math.ceil(filter.total / filter.pageCount);
+    return [...Array(totalPages).keys()].map(item => {
+      return {
+        key: item,
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
+      };
+    });
+  };
+
+  onChangePage = pageItem => {
+    const { filter, getListAdmins } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = pageItem.key;
+    this.onLoading(true);
+    getListAdmins(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onChangePageSize = pageItem => {
+    const { filter, getListAdmins } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.pageCount = pageItem.key;
+    newFilter.page = 0;
+    this.onLoading(true);
+    getListAdmins(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onPrevClick = e => {
+    const { filter, getListAdmins } = this.props;
+
+    if (!filter.hasPrev()) {
+      e.preventDefault();
+      return;
+    }
+    const newFilter = filter.clone();
+    newFilter.page--;
+    this.onLoading(true);
+    getListAdmins(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onNextClick = e => {
+    const { filter, getListAdmins } = this.props;
+
+    if (!filter.hasNext()) {
+      e.preventDefault();
+      return;
+    }
+    const newFilter = filter.clone();
+    newFilter.page++;
+    this.onLoading(true);
+    getListAdmins(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
   render() {
-    const { t, owner, admins } = this.props;
+    const { t, owner, admins, filter } = this.props;
     const { showSelector, options, selectedOptions, isLoading } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
@@ -205,6 +263,24 @@ class PureAccessRights extends Component {
       { key: 50, label: t("CountPerPage", { count: 50 }) },
       { key: 100, label: t("CountPerPage", { count: 100 }) }
     ];
+
+    const pageItems = this.pageItems();
+
+    const emptyPageSelection = {
+      key: 0,
+      label: t("PageOfTotalPage", { page: 1, totalPage: 1 })
+    };
+
+    const emptyCountSelection = {
+      key: 0,
+      label: t("CountPerPage", { count: 25 })
+    };
+
+    const selectedPageItem =
+      pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+
+    const selectedCountItem =
+      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection;
 
     return (
       <MainContainer>
@@ -290,7 +366,7 @@ class PureAccessRights extends Component {
                   const element = (
                     <Avatar
                       size="small"
-                      role="admin"
+                      role={getUserRole(user)}
                       userName={user.displayName}
                       source={user.avatarSmall}
                     />
@@ -317,45 +393,48 @@ class PureAccessRights extends Component {
                         >
                           {user.displayName}
                         </Link>
-
                         <div style={{ maxWidth: 120 }} />
-                        <div style={{ marginLeft: "60px" }}>
-                          <IconButton
-                            size="16"
-                            isDisabled={isLoading}
-                            onClick={this.onChangeAdmin.bind(
-                              this,
-                              [user.id],
-                              false
-                            )}
-                            iconName={"CatalogTrashIcon"}
-                            isFill={true}
-                            isClickable={false}
-                          />
-                        </div>
+                        {!user.isOwner ? (
+                          <div style={{ marginLeft: "60px" }}>
+                            <IconButton
+                              size="16"
+                              isDisabled={isLoading}
+                              onClick={this.onChangeAdmin.bind(
+                                this,
+                                [user.id],
+                                false
+                              )}
+                              iconName={"CatalogTrashIcon"}
+                              isFill={true}
+                              isClickable={false}
+                            />
+                          </div>
+                        ) : (
+                          <div />
+                        )}
                       </RowContent>
                     </Row>
                   );
                 })}
               </RowContainer>
             </div>
-            {admins.length > 25 ? (
+            {filter.total > filter.pageCount ? (
               <div className="wrapper">
                 <Paging
                   previousLabel={t("PreviousPage")}
                   nextLabel={t("NextPage")}
                   openDirection="top"
-                  displayItems={false}
                   countItems={countItems}
-                  selectedPageItem={{ label: "1 of 1" }}
-                  selectedCountItem={{ label: "25 per page" }}
-                  previousAction={() => console.log("previousAction")}
-                  nextAction={() => console.log("nextAction")}
-                  onSelectPage={a => console.log(a)}
-                  onSelectCount={a => console.log(a)}
-                  //pageItems={pageItems}
-                  //disablePrevious={!filter.hasPrev()}
-                  //disableNext={!filter.hasNext()}
+                  pageItems={pageItems}
+                  displayItems={false}
+                  selectedPageItem={selectedPageItem}
+                  selectedCountItem={selectedCountItem}
+                  onSelectPage={this.onChangePage}
+                  onSelectCount={this.onChangePageSize}
+                  previousAction={this.onPrevClick}
+                  nextAction={this.onNextClick}
+                  disablePrevious={!filter.hasPrev()}
+                  disableNext={!filter.hasNext()}
                 />
               </div>
             ) : null}
@@ -424,24 +503,21 @@ const AccessRights = props => {
 };
 
 function mapStateToProps(state) {
-  const { ownerId } = state.auth.settings;
   const { admins, options, owner } = state.settings.accessRight;
-
-  //console.log("ADSelector options", users);
+  const { filter } = state.settings;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
-    ownerId,
-    options
+    options,
+    filter
   };
 }
 
 AccessRights.defaultProps = {
   admins: [],
   productId: "",
-  ownerId: "",
   owner: {},
   options: []
 };
@@ -449,12 +525,11 @@ AccessRights.defaultProps = {
 AccessRights.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
-  ownerId: PropTypes.string,
   owner: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.object)
 };
 
 export default connect(
   mapStateToProps,
-  { getUserById, changeAdmins, getListAdmins, getListUsers }
+  { changeAdmins, fetchPeople }
 )(withRouter(AccessRights));
