@@ -67,6 +67,10 @@ const StyledContainer = styled(Container)`
 
               .row-block {
                 padding-left: 8px;
+
+                .group_checkbox {
+                    display: inline-block;
+                }
               }
             }
           }
@@ -277,6 +281,7 @@ const ADSelector = props => {
       : selectedGroupList.filter(el => el.key !== group.key);
     //console.log("onGroupChange", item);
     setSelectedGroupList(newSelectedGroups);
+
     onGroupSelect(group);
 
     if (e.target.checked) {
@@ -294,6 +299,9 @@ const ADSelector = props => {
   };
 
   const onGroupSelect = group => {
+    if(!currentGroup || !group || currentGroup.key === group.key)
+        return;
+
     resetCache();
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
@@ -436,27 +444,27 @@ const ADSelector = props => {
         style={style}
         className={`row-block${isSelected ? " selected" : ""}`}
       >
-        {isMultiSelect ? (
+        {isMultiSelect && (
           <Checkbox
             id={group.key}
             value={`${index}`}
-            label={`${group.label} (${group.total}/${selected})`}
             isChecked={isChecked}
             isIndeterminate={isIndeterminate}
             className="group_checkbox"
             onChange={onGroupChange}
           />
-        ) : (
-          <Link
-            as="span"
-            key={group.key}
-            truncate={true}
-            className="group_link"
-            onClick={() => onGroupSelect(group)}
-          >
-            {group.label}
-          </Link>
         )}
+        <Link
+          as="span"
+          key={group.key}
+          truncate={true}
+          className="group_link"
+          onClick={() => onGroupSelect(group)}
+        >
+          {isMultiSelect
+            ? `${group.label} (${group.total}/${selected})`
+            : group.label}
+        </Link>
       </div>
     );
   };
