@@ -83,8 +83,8 @@ class Customization extends React.Component {
             .then(() => getPortalTimezones())
             .then(() => {
                const timezones = mapTimezonesToArray(this.props.rawTimezones);
-               const timezone = findSelectedItemByKey(timezones, portalTimeZoneId);
-               const language = findSelectedItemByKey(languages, portalLanguage);
+               const timezone = findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0];
+               const language = findSelectedItemByKey(languages, portalLanguage) || languages[0];
 
                this.setState({ languages, language, timezones, timezone });
             });
