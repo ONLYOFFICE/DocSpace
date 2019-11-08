@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 using ASC.Core.Caching;
+using ASC.Core.Common.Settings;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
@@ -198,9 +199,9 @@ namespace ASC.Core
             Configuration = configuration;
         }
 
-        public long PersonalMaxSpace(PersonalQuotaSettings personalQuotaSettings)
+        public long PersonalMaxSpace(SettingsManager settingsManager)
         {
-            var quotaSettings = personalQuotaSettings.LoadForCurrentUser();
+            var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
 
             if (quotaSettings.MaxSpace != long.MaxValue)
                 return quotaSettings.MaxSpace;

@@ -31,7 +31,6 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Statistics;
@@ -68,7 +67,6 @@ namespace ASC.Employee.Core.Controllers
         public PermissionContext PermissionContext { get; }
         public AuthContext AuthContext { get; }
         public WebItemManager WebItemManager { get; }
-        public PasswordSettings PasswordSettings { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
         public TenantManager TenantManager { get; }
@@ -76,13 +74,14 @@ namespace ASC.Employee.Core.Controllers
         public CommonLinkUtility CommonLinkUtility { get; }
         public SetupInfo SetupInfo { get; }
         public FileSizeComment FileSizeComment { get; }
-        public DisplayUserSettings DisplayUserSettings { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
         public WebItemSecurityCache WebItemSecurityCache { get; }
         public MessageTarget MessageTarget { get; }
+        public SettingsManager SettingsManager { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -102,7 +101,6 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext permissionContext,
             AuthContext authContext,
             WebItemManager webItemManager,
-            PasswordSettings passwordSettings,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
             TenantManager tenantManager,
@@ -110,13 +108,14 @@ namespace ASC.Employee.Core.Controllers
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
-            DisplayUserSettings displayUserSettings,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
             Signature signature,
             InstanceCrypto instanceCrypto,
             DbOptionsManager dbOptions,
             AccountLinkerStorage accountLinkerStorage,
             WebItemSecurityCache webItemSecurityCache,
             MessageTarget messageTarget,
+            SettingsManager settingsManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Api");
@@ -136,7 +135,6 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext = permissionContext;
             AuthContext = authContext;
             WebItemManager = webItemManager;
-            PasswordSettings = passwordSettings;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
             TenantManager = tenantManager;
@@ -144,13 +142,14 @@ namespace ASC.Employee.Core.Controllers
             CommonLinkUtility = commonLinkUtility;
             SetupInfo = setupInfo;
             FileSizeComment = fileSizeComment;
-            DisplayUserSettings = displayUserSettings;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
             DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
             WebItemSecurityCache = webItemSecurityCache;
             MessageTarget = messageTarget;
+            SettingsManager = settingsManager;
         }
 
         [Read("info")]
@@ -179,13 +178,13 @@ namespace ASC.Employee.Core.Controllers
                 query = query.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
                 ApiContext.SetDataFiltered();
             }
-            return query.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return query.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return new EmployeeWraperFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Read("email")]
@@ -199,7 +198,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new ItemNotFoundException("User not found");
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Read("{username}", order: int.MaxValue)]
@@ -224,7 +223,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new ItemNotFoundException("User not found");
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Read("@search/{query}")]
@@ -239,7 +238,7 @@ namespace ASC.Employee.Core.Controllers
                     groupId = new Guid(ApiContext.FilterValue);
                 }
 
-                return UserManager.Search(query, EmployeeStatus.Active, groupId).Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+                return UserManager.Search(query, EmployeeStatus.Active, groupId).Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
             }
             catch (Exception error)
             {
@@ -273,7 +272,7 @@ namespace ASC.Employee.Core.Controllers
                 list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
                                        (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Contacts != null && x.Contacts.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
-                return list.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+                return list.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
             }
             catch (Exception error)
             {
@@ -339,7 +338,7 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-            return users.Select(u => new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return users.Select(u => new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
         [Read("simple/filter")]
@@ -347,7 +346,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-            return users.Select(u => new EmployeeWraper(u, ApiContext, DisplayUserSettings, UserPhotoManager, CommonLinkUtility));
+            return users.Select(u => new EmployeeWraper(u, ApiContext, DisplayUserSettingsHelper, UserPhotoManager, CommonLinkUtility));
         }
 
         private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
@@ -434,7 +433,7 @@ namespace ASC.Employee.Core.Controllers
             user = UserManagerWrapper.AddUser(user, memberModel.Password, false, true, memberModel.IsVisitor);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             UpdateDepartments(memberModel.Department, user);
 
@@ -443,7 +442,7 @@ namespace ASC.Employee.Core.Controllers
                 UpdatePhotoUrl(memberModel.Files, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Create("active")]
@@ -485,7 +484,7 @@ namespace ASC.Employee.Core.Controllers
                 UpdatePhotoUrl(memberModel.Files, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Update("{userid}/culture")]
@@ -516,12 +515,12 @@ namespace ASC.Employee.Core.Controllers
                         throw ex;
                     }
 
-                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+                    MessageService.Send(MessageAction.UserUpdatedLanguage, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
                 }
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings); ;
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper); ;
         }
 
         [Update("{userid}")]
@@ -622,7 +621,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             UserManager.SaveUserInfo(user, memberModel.IsVisitor);
-            MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
             {
@@ -630,7 +629,7 @@ namespace ASC.Employee.Core.Controllers
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Delete("{userid}")]
@@ -648,7 +647,7 @@ namespace ASC.Employee.Core.Controllers
 
             CheckReassignProccess(new[] { user.ID });
 
-            var userName = user.DisplayUserName(false, DisplayUserSettings);
+            var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
 
             UserPhotoManager.RemovePhoto(user.ID);
             UserManager.DeleteUser(user.ID);
@@ -656,7 +655,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Delete("@self")]
@@ -682,7 +681,7 @@ namespace ASC.Employee.Core.Controllers
 
             UserManager.SaveUserInfo(user);
 
-            var userName = user.DisplayUserName(false, DisplayUserSettings);
+            var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
             MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
 
             CookiesManager.ResetUserCookie(user.ID);
@@ -700,7 +699,7 @@ namespace ASC.Employee.Core.Controllers
                 //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Update("{userid}/contacts")]
@@ -713,7 +712,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Create("{userid}/contacts")]
@@ -726,7 +725,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Delete("{userid}/contacts")]
@@ -739,7 +738,7 @@ namespace ASC.Employee.Core.Controllers
 
             DeleteContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
         [Read("{userid}/photo")]
@@ -966,7 +965,7 @@ namespace ASC.Employee.Core.Controllers
             }
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
@@ -984,7 +983,7 @@ namespace ASC.Employee.Core.Controllers
             UserPhotoManager.RemovePhoto(user.ID);
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
@@ -1006,18 +1005,18 @@ namespace ASC.Employee.Core.Controllers
                 var data = UserPhotoManager.GetTempPhotoData(fileName);
 
                 var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
-                settings.SaveForUser(user.ID);
+                SettingsManager.SaveForUser(settings, user.ID);
 
                 UserPhotoManager.SaveOrUpdatePhoto(user.ID, data);
                 UserPhotoManager.RemoveTempPhoto(fileName);
             }
             else
             {
-                UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
+                UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, SettingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
             }
 
             UserManager.SaveUserInfo(user);
-            MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
@@ -1066,7 +1065,7 @@ namespace ASC.Employee.Core.Controllers
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
-            return new EmployeeWraperFull(GetUserInfo(userid.ToString()), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings);
+            return new EmployeeWraperFull(GetUserInfo(userid.ToString()), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
         }
 
 
@@ -1112,7 +1111,7 @@ namespace ASC.Employee.Core.Controllers
                 StudioNotifyService.SendEmailActivationInstructions(user, email);
             }
 
-            MessageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, DisplayUserSettings));
+            MessageService.Send(MessageAction.UserSentEmailChangeInstructions, user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return string.Format(Resource.MessageEmailChangeInstuctionsSentOnEmail, email);
         }
@@ -1149,7 +1148,7 @@ namespace ASC.Employee.Core.Controllers
 
                 u.ActivationStatus = activationstatus;
                 UserManager.SaveUserInfo(u);
-                retuls.Add(new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+                retuls.Add(new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
             }
 
             return retuls;
@@ -1188,9 +1187,9 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettings)));
+            MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
         [Update("status/{status}")]
@@ -1229,9 +1228,9 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettings)));
+            MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
 
@@ -1264,9 +1263,9 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettings)));
+            MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
         [Update("delete", Order = -1)]
@@ -1280,7 +1279,7 @@ namespace ASC.Employee.Core.Controllers
                 .Where(u => !UserManager.IsSystemUser(u.ID) && !u.IsLDAP())
                 .ToList();
 
-            var userNames = users.Select(x => x.DisplayUserName(false, DisplayUserSettings)).ToList();
+            var userNames = users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)).ToList();
 
             foreach (var user in users)
             {
@@ -1293,7 +1292,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettings));
+            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
         }
 
 
@@ -1411,7 +1410,7 @@ namespace ASC.Employee.Core.Controllers
                 if (reassignStatus == null || reassignStatus.IsCompleted)
                     continue;
 
-                var userName = UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettings);
+                var userName = UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettingsHelper);
                 throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
             }
         }
@@ -1585,7 +1584,6 @@ namespace ASC.Employee.Core.Controllers
                 .AddMessageTargetService()
                 .AddAccountLinkerStorageService()
                 .AddFileSizeCommentService()
-                .AddSettingsService<PasswordSettings>()
                 .AddCookiesManagerService()
                 .AddUserPhotoManagerService()
                 .AddCustomNamingPeopleService()
@@ -1612,7 +1610,8 @@ namespace ASC.Employee.Core.Controllers
                 .AddQueueWorkerRemoveService()
                 .AddQueueWorkerReassignService()
                 .AddStudioNotifyServiceService()
-                .AddUserManagerService();
+                .AddUserManagerService()
+                .AddSettingsManagerService();
         }
     }
 }

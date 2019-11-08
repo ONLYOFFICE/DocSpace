@@ -31,47 +31,41 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class DisplayUserSettings : BaseSettings<DisplayUserSettings>
+    public class DisplayUserSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
         }
 
         [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
-        public UserManager UserManager { get; }
-        public UserFormatter UserFormatter { get; }
 
-        public DisplayUserSettings()
-        {
-
-        }
-
-        public DisplayUserSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            UserManager userManager,
-            UserFormatter userFormatter) :
-            base(authContext, settingsManager, tenantManager)
-        {
-            UserManager = userManager;
-            UserFormatter = userFormatter;
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new DisplayUserSettings
             {
                 IsDisableGettingStarted = false,
             };
         }
+    }
+
+    public class DisplayUserSettingsHelper
+    {
+        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter)
+        {
+            UserManager = userManager;
+            UserFormatter = userFormatter;
+        }
+
+        public UserManager UserManager { get; }
+        public UserFormatter UserFormatter { get; }
 
         public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
         {
@@ -106,8 +100,9 @@ namespace ASC.Web.Core.Users
     {
         public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
         {
+            services.TryAddScoped<DisplayUserSettingsHelper>();
+
             return services
-                .AddSettingsService<DisplayUserSettings>()
                 .AddUserFormatter()
                 .AddUserManagerService();
         }

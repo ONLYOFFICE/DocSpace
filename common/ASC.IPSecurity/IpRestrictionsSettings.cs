@@ -26,44 +26,25 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.IPSecurity
 {
     [Serializable]
     [DataContract]
-    public class IPRestrictionsSettings : BaseSettings<IPRestrictionsSettings>
+    public class IPRestrictionsSettings : ISettings
     {
         [DataMember(Name = "Enable")]
         public bool Enable { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}"); }
         }
 
-        public IPRestrictionsSettings()
-        {
-
-        }
-
-        public IPRestrictionsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new IPRestrictionsSettings { Enable = false };
-        }
-    }
-
-    public static class IPRestrictionsSettingsFactory
-    {
-        public static IServiceCollection AddIPRestrictionsSettingsService(this IServiceCollection services)
-        {
-            return services.AddSettingsService<IPRestrictionsSettings>();
         }
     }
 }

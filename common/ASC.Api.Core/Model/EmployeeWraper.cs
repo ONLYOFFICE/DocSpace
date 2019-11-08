@@ -40,10 +40,10 @@ namespace ASC.Web.Api.Models
         {
         }
 
-        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext, DisplayUserSettings displayUserSettings, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
+        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
         {
             Id = userInfo.ID;
-            DisplayName = displayUserSettings.GetFullUserName(userInfo);
+            DisplayName = displayUserSettingsHelper.GetFullUserName(userInfo);
             if (!string.IsNullOrEmpty(userInfo.Title))
             {
                 Title = userInfo.Title;
@@ -78,9 +78,9 @@ namespace ASC.Web.Api.Models
         [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
-        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context, DisplayUserSettings displayUserSettings, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
+        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
         {
-            return new EmployeeWraper(userInfo, context, displayUserSettings, userPhotoManager, commonLinkUtility);
+            return new EmployeeWraper(userInfo, context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility);
         }
 
         public static EmployeeWraper GetSample()

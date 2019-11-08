@@ -90,7 +90,7 @@ namespace ASC.Web.Api.Models
 
         [DataMember(Order = 20)]
         public string AvatarDefault { get; set; }
-        
+
         [DataMember(Order = 20)]
         public string AvatarMedium { get; set; }
 
@@ -131,15 +131,15 @@ namespace ASC.Web.Api.Models
         }
 
         public EmployeeWraperFull(
-            UserInfo userInfo, 
-            ApiContext context, 
-            UserManager userManager, 
-            UserPhotoManager userphotomanager, 
+            UserInfo userInfo,
+            ApiContext context,
+            UserManager userManager,
+            UserPhotoManager userphotomanager,
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            DisplayUserSettings displayUserSettings)
-            : base(userInfo, context, displayUserSettings, userphotomanager, commonLinkUtility)
+            DisplayUserSettingsHelper displayUserSettingsHelper)
+            : base(userInfo, context, displayUserSettingsHelper, userphotomanager, commonLinkUtility)
         {
             UserName = userInfo.UserName;
             FirstName = userInfo.FirstName;
@@ -256,37 +256,37 @@ namespace ASC.Web.Api.Models
         }
 
         public static EmployeeWraperFull GetFull(
-            Guid userId, 
-            ApiContext context, 
-            UserManager userManager, 
-            UserPhotoManager userPhotoManager, 
+            Guid userId,
+            ApiContext context,
+            UserManager userManager,
+            UserPhotoManager userPhotoManager,
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            DisplayUserSettings displayUserSettings)
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             try
             {
-                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
+                return GetFull(userManager.GetUsers(userId), context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettingsHelper);
 
             }
             catch (Exception)
             {
-                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
+                return GetFull(Constants.LostUser, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettingsHelper);
             }
         }
 
         public static EmployeeWraperFull GetFull(
-            UserInfo userInfo, 
-            ApiContext context, 
-            UserManager userManager, 
+            UserInfo userInfo,
+            ApiContext context,
+            UserManager userManager,
             UserPhotoManager userPhotoManager,
             WebItemSecurity webItemSecurity,
-            TenantManager tenantManager, 
+            TenantManager tenantManager,
             CommonLinkUtility commonLinkUtility,
-            DisplayUserSettings displayUserSettings)
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettings);
+            return new EmployeeWraperFull(userInfo, context, userManager, userPhotoManager, webItemSecurity, tenantManager, commonLinkUtility, displayUserSettingsHelper);
         }
 
         public new static EmployeeWraperFull GetSample()

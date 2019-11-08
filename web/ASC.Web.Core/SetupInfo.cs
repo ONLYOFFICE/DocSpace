@@ -179,6 +179,7 @@ namespace ASC.Web.Studio.Core
         }
 
 
+        //TODO
         public static bool IsVisibleSettings<TSettings>()
         {
             return IsVisibleSettings(typeof(TSettings).Name);

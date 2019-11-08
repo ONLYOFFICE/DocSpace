@@ -27,32 +27,23 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class CustomNavigationSettings : BaseSettings<CustomNavigationSettings>
+    public class CustomNavigationSettings : ISettings
     {
         [DataMember]
         public List<CustomNavigationItem> Items { get; set; }
-        public CustomNavigationSettings()
-        {
 
-        }
-
-        public CustomNavigationSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{32E02E4C-925D-4391-BAA4-3B5D223A2104}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new CustomNavigationSettings { Items = new List<CustomNavigationItem>() };
         }

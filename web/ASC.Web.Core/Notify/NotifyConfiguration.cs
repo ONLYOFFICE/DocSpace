@@ -34,6 +34,7 @@ using System.Threading;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify;
@@ -46,6 +47,7 @@ using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 using Google.Protobuf;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MimeKit.Utils;
@@ -243,7 +245,7 @@ namespace ASC.Web.Studio.Core.Notify
             var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
             var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
             var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
-            var displayUserSettings = serviceScope.ServiceProvider.GetService<DisplayUserSettings>();
+            var displayUserSettingsHelper = serviceScope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
 
             if (authContext.IsAuthenticated)
             {
@@ -251,7 +253,7 @@ namespace ASC.Web.Studio.Core.Notify
                 var user = userManager.GetUsers(aid);
                 if (userManager.UserExists(user))
                 {
-                    aname = user.DisplayUserName(false, displayUserSettings)
+                    aname = user.DisplayUserName(false, displayUserSettingsHelper)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }
@@ -260,12 +262,13 @@ namespace ASC.Web.Studio.Core.Notify
             var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
             var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
             var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
-            var mailWhiteLabelSettings = scope.ServiceProvider.GetService<MailWhiteLabelSettings>();
+            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
             var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
-            var additionalWhiteLabelSettings = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettings>();
+            var additionalWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettingsHelper>();
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
             var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
@@ -275,7 +278,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !mailWhiteLabelSettings.Instance.IsDefault)
+            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager, configuration))
             {
                 logoText = tenantLogoManager.GetLogoText();
             }
@@ -290,9 +293,9 @@ namespace ASC.Web.Studio.Core.Notify
             request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
             request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
-            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false)));
+            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
             request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, mailWhiteLabelSettings.Instance));
+            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
 
             if (!request.Arguments.Any(x => CommonTags.SendFrom.Equals(x.Tag)))
             {

@@ -35,6 +35,7 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -152,16 +153,18 @@ namespace ASC.Data.Storage
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
 
-                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
                 var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
+                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
+                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
 
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
                     var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, settings.DataStoreConsumer);
+                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
                     var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                     var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
@@ -195,7 +198,7 @@ namespace ASC.Data.Storage
                     StepDone();
                 }
 
-                settings.Save();
+                settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
                 tenantManager.SaveTenant(tenant);
             }

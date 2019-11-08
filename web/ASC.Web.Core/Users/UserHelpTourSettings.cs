@@ -27,16 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class UserHelpTourSettings : BaseSettings<UserHelpTourSettings>
+    public class UserHelpTourSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{DF4B94B7-42C8-4fce-AAE2-D479F3B39BDD}"); }
         }
@@ -47,33 +46,13 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsNewUser")]
         public bool IsNewUser { get; set; }
 
-        public UserHelpTourSettings()
-        {
-
-        }
-
-        public UserHelpTourSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new UserHelpTourSettings
             {
                 ModuleHelpTour = new Dictionary<Guid, int>(),
                 IsNewUser = false
             };
-        }
-
-        public bool NewUser
-        {
-            get { return LoadForCurrentUser().IsNewUser; }
-            set
-            {
-                var settings = LoadForCurrentUser();
-                settings.IsNewUser = value;
-                settings.SaveForCurrentUser();
-            }
         }
     }
 }

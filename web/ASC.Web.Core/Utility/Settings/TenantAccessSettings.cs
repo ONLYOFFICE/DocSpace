@@ -26,15 +26,13 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
     [DataContract]
-    public class TenantAccessSettings : BaseSettings<TenantAccessSettings>
+    public class TenantAccessSettings : ISettings
     {
         [DataMember(Name = "Anyone")]
         public bool Anyone { get; set; }
@@ -42,35 +40,14 @@ namespace ASC.Web.Core.Utility.Settings
         [DataMember(Name = "RegisterUsersImmediately")]
         public bool RegisterUsersImmediately { get; set; }
 
-        public TenantAccessSettings()
-        {
-
-        }
-
-        public TenantAccessSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        #region ISettings Members
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
-        }
-
-        #endregion
-    }
-
-    public static class TenantAccessSettingsFactory
-    {
-        public static IServiceCollection AddTenantAccessSettingsService(this IServiceCollection services)
-        {
-            return services.AddSettingsService<TenantAccessSettings>();
         }
     }
 }

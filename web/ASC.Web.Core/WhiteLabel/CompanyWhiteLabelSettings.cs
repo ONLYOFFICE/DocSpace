@@ -35,7 +35,7 @@ namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class CompanyWhiteLabelSettings : BaseSettings<CompanyWhiteLabelSettings>
+    public class CompanyWhiteLabelSettings : ISettingsExt
     {
         [DataMember(Name = "CompanyName")]
         public string CompanyName { get; set; }
@@ -55,46 +55,44 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "IsLicensor")]
         public bool IsLicensor { get; set; }
 
-        public bool IsDefault
+        public bool IsDefault(CoreSettings coreSettings)
         {
-            get
-            {
-                if (!(GetDefault() is CompanyWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(coreSettings) is CompanyWhiteLabelSettings defaultSettings)) return false;
 
-                return CompanyName == defaultSettings.CompanyName &&
-                       Site == defaultSettings.Site &&
-                       Email == defaultSettings.Email &&
-                       Address == defaultSettings.Address &&
-                       Phone == defaultSettings.Phone &&
-                       IsLicensor == defaultSettings.IsLicensor;
-            }
-        }
-
-        public CompanyWhiteLabelSettings()
-        {
-
-        }
-
-        public CompanyWhiteLabelSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, CoreSettings coreSettings) :
-            base(authContext, settingsManager, tenantManager)
-        {
-            CoreSettings = coreSettings;
+            return CompanyName == defaultSettings.CompanyName &&
+                    Site == defaultSettings.Site &&
+                    Email == defaultSettings.Email &&
+                    Address == defaultSettings.Address &&
+                    Phone == defaultSettings.Phone &&
+                    IsLicensor == defaultSettings.IsLicensor;
         }
 
         #region ISettings Members
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
         }
 
         private static CompanyWhiteLabelSettings _default;
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
+        {
+            return new CompanyWhiteLabelSettings();
+        }
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             if (_default != null) return _default;
 
-            var settings = CoreSettings.GetSetting("CompanyWhiteLabelSettings");
+            return GetDefault(serviceProvider.GetService<CoreSettings>());
+        }
+
+        public ISettings GetDefault(CoreSettings coreSettings)
+        {
+            if (_default != null) return _default;
+
+            var settings = coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
             _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
 
@@ -103,24 +101,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public CompanyWhiteLabelSettings Instance
+        public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
         {
-            get
-            {
-                return LoadForDefaultTenant();
-            }
-        }
-
-        public CoreSettings CoreSettings { get; }
-    }
-
-    public static class CompanyWhiteLabelSettingsFactory
-    {
-        public static IServiceCollection AddCompanyWhiteLabelSettingsService(this IServiceCollection services)
-        {
-            return services
-                .AddCoreSettingsService()
-                .AddSettingsService<CompanyWhiteLabelSettings>();
+            return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
         }
     }
 }

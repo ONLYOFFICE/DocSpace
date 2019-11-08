@@ -26,33 +26,23 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class EmailActivationSettings : BaseSettings<EmailActivationSettings>
+    public class EmailActivationSettings : ISettings
     {
         [DataMember(Name = "Show")]
         public bool Show { get; set; }
 
-        public EmailActivationSettings()
-        {
-
-        }
-
-        public EmailActivationSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new EmailActivationSettings { Show = true };
         }

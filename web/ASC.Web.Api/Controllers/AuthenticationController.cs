@@ -20,7 +20,7 @@ namespace ASC.Web.Api.Controllers
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-        public TenantCookieSettings TenantCookieSettings { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public AuthContext AuthContext { get; }
         public AuthManager AuthManager { get; }
@@ -29,7 +29,7 @@ namespace ASC.Web.Api.Controllers
             UserManager userManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            TenantCookieSettings tenantCookieSettings,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
             EmailValidationKeyProvider emailValidationKeyProvider,
             AuthContext authContext,
             AuthManager authManager)
@@ -37,7 +37,7 @@ namespace ASC.Web.Api.Controllers
             UserManager = userManager;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            TenantCookieSettings = tenantCookieSettings;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             AuthContext = authContext;
             AuthManager = authManager;
@@ -52,7 +52,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
-                var expires = TenantCookieSettings.GetExpiresTime(tenant.TenantId);
+                var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData
                 {

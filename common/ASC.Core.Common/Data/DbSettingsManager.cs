@@ -38,7 +38,7 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
-using AutoMapper;
+using ASC.Core.Tenants;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -74,19 +74,21 @@ namespace ASC.Core.Data
         private ICache Cache { get; }
         private IServiceProvider ServiceProvider { get; }
         private DbSettingsManagerCache DbSettingsManagerCache { get; }
-        public IMapper Mapper { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
         private DbManager DbManager { get; }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
             DbOptionsManager optionsDbManager,
-            IMapper mapper,
-            IOptionsMonitor<ILog> option) : this(null)
+            IOptionsMonitor<ILog> option,
+            AuthContext authContext, TenantManager tenantManager) : this(null)
         {
             ServiceProvider = serviceProvider;
             DbSettingsManagerCache = dbSettingsManagerCache;
-            Mapper = mapper;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
             DbManager = optionsDbManager.Value;
             log = option.CurrentValue;
@@ -95,6 +97,16 @@ namespace ASC.Core.Data
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
             dbId = connectionString != null ? connectionString.Name : "default";
+        }
+
+        private int TenantID
+        {
+            get { return TenantManager.GetCurrentTenant().TenantId; }
+        }
+        //
+        private Guid CurrentUserID
+        {
+            get { return AuthContext.CurrentAccount.ID; }
         }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
@@ -124,8 +136,14 @@ namespace ASC.Core.Data
                 var data = Serialize(settings);
 
                 var db = DbManager;
+                var def = (T)settings.GetDefault();
 
-                var defaultData = Serialize(settings.GetDefault());
+                if (def is ISettingsExt)
+                {
+                    def = (T)((ISettingsExt)settings).GetDefault(ServiceProvider);
+                }
+
+                var defaultData = Serialize(def);
 
                 ISqlInstruction i;
                 if (data.SequenceEqual(defaultData))
@@ -161,15 +179,19 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = (ISettings)ServiceProvider.GetService<T>();
+            var settingsInstance = Activator.CreateInstance<T>();
             var key = settingsInstance.ID.ToString() + tenantId + userId;
+            var def = (T)settingsInstance.GetDefault();
+
+            if (def is ISettingsExt)
+            {
+                def = (T)((ISettingsExt)settingsInstance).GetDefault(ServiceProvider);
+            }
 
             try
             {
-                //var settings = Cache.Get<T>(key);
-                //if (settings != null) return settings;
-
-                T settings = null;
+                var settings = Cache.Get<T>(key);
+                if (settings != null) return settings;
 
                 var db = DbManager;
                 var q = new SqlQuery("webstudio_settings")
@@ -186,10 +208,8 @@ namespace ASC.Core.Data
                 }
                 else
                 {
-                    settings = (T)settingsInstance.GetDefault();
+                    settings = def;
                 }
-
-                settings = Mapper.Map((T)settingsInstance, settings);
 
                 Cache.Insert(key, settings, expirationTimeout);
                 return settings;
@@ -198,7 +218,62 @@ namespace ASC.Core.Data
             {
                 log.Error(ex);
             }
-            return (T)settingsInstance.GetDefault();
+            return def;
+        }
+
+        public T Load<T>() where T : class, ISettings
+        {
+            return LoadSettings<T>(TenantID);
+        }
+
+        public T LoadForCurrentUser<T>() where T : class, ISettings
+        {
+            return LoadForUser<T>(CurrentUserID);
+        }
+
+        public T LoadForUser<T>(Guid userId) where T : class, ISettings
+        {
+            return LoadSettingsFor<T>(TenantID, userId);
+        }
+
+        public T LoadForDefaultTenant<T>() where T : class, ISettings
+        {
+            return LoadForTenant<T>(Tenant.DEFAULT_TENANT);
+        }
+
+        public T LoadForTenant<T>(int tenantId) where T : class, ISettings
+        {
+            return LoadSettings<T>(tenantId);
+        }
+
+        public virtual bool Save<T>(T data) where T : class, ISettings
+        {
+            return SaveSettings(data, TenantID);
+        }
+
+        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
+        {
+            return SaveForUser<T>(data, CurrentUserID);
+        }
+
+        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
+        {
+            return SaveSettingsFor(data, TenantID, userId);
+        }
+
+        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
+        {
+            return SaveForTenant<T>(data, Tenant.DEFAULT_TENANT);
+        }
+
+        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
+        {
+            return SaveSettings<T>(data, tenantId);
+        }
+
+        public void ClearCache<T>() where T : class, ISettings
+        {
+            ClearCache<T>(TenantID);
         }
 
         private T Deserialize<T>(byte[] data)

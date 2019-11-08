@@ -31,6 +31,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.Security.Cryptography;
@@ -157,7 +158,8 @@ namespace ASC.Data.Storage
 
         public StorageFactoryListener StorageFactoryListener { get; }
         public StorageFactoryConfig StorageFactoryConfig { get; }
-        public StorageSettings StorageSettings { get; }
+        public SettingsManager SettingsManager { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public PathUtils PathUtils { get; }
@@ -168,19 +170,21 @@ namespace ASC.Data.Storage
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
-            StorageSettings storageSettings,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options) :
-            this(storageFactoryListener, storageFactoryConfig, storageSettings, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null)
+            this(storageFactoryListener, storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null)
         {
         }
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
-            StorageSettings storageSettings,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             PathUtils pathUtils,
@@ -190,7 +194,8 @@ namespace ASC.Data.Storage
         {
             StorageFactoryListener = storageFactoryListener;
             StorageFactoryConfig = storageFactoryConfig;
-            StorageSettings = storageSettings;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             PathUtils = pathUtils;
@@ -234,9 +239,9 @@ namespace ASC.Data.Storage
                     throw new InvalidOperationException("config section not found");
                 }
 
-                var settings = StorageSettings.LoadForTenant(tenantId);
+                var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
 
-                store = GetStoreAndCache(tenant, module, settings.DataStoreConsumer, controller);
+                store = GetStoreAndCache(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
             }
             return store;
         }

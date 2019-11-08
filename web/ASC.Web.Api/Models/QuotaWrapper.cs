@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Web.Core;
 using ASC.Web.Studio.UserControls.Statistics;
@@ -93,7 +94,7 @@ namespace ASC.Web.Studio.Core.Quota
 
         }
 
-        public QuotaWrapper(Tenant tenant, CoreBaseSettings coreBaseSettings, CoreConfiguration configuration, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, PersonalQuotaSettings personalQuotaSettings, WebItemManager webItemManager)
+        public QuotaWrapper(Tenant tenant, CoreBaseSettings coreBaseSettings, CoreConfiguration configuration, TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider, AuthContext authContext, SettingsManager settingsManager, WebItemManager webItemManager)
         {
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
@@ -112,7 +113,7 @@ namespace ASC.Web.Studio.Core.Quota
 
             if (coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
-                UserStorageSize = configuration.PersonalMaxSpace(personalQuotaSettings);
+                UserStorageSize = configuration.PersonalMaxSpace(settingsManager);
 
                 var webItem = WebItemManager[WebItemManager.DocumentsProductID];
                 if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)

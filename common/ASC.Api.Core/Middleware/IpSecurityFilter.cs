@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -47,7 +48,7 @@ namespace ASC.Api.Core.Middleware
         public static IServiceCollection AddIpSecurityFilter(this IServiceCollection services)
         {
             return services
-                .AddIPRestrictionsSettingsService()
+                .AddSettingsManagerService()
                 .AddAuthContextService()
                 .AddIPSecurityService();
         }

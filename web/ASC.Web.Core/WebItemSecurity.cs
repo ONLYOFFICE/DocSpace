@@ -32,6 +32,7 @@ using ASC.Common.Caching;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,11 +94,11 @@ namespace ASC.Web.Core
         private PermissionContext PermissionContext { get; }
         private AuthManager Authentication { get; }
         public WebItemManager WebItemManager { get; }
-        private TenantAccessSettings TenantAccessSettings { get; }
         private TenantManager TenantManager { get; }
         private AuthorizationManager AuthorizationManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private WebItemSecurityCache WebItemSecurityCache { get; }
+        public SettingsManager SettingsManager { get; }
 
         public WebItemSecurity(
             UserManager userManager,
@@ -105,22 +106,22 @@ namespace ASC.Web.Core
             PermissionContext permissionContext,
             AuthManager authentication,
             WebItemManager webItemManager,
-            TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
             AuthorizationManager authorizationManager,
             CoreBaseSettings coreBaseSettings,
-            WebItemSecurityCache webItemSecurityCache)
+            WebItemSecurityCache webItemSecurityCache,
+            SettingsManager settingsManager)
         {
             UserManager = userManager;
             AuthContext = authContext;
             PermissionContext = permissionContext;
             Authentication = authentication;
             WebItemManager = webItemManager;
-            TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
             AuthorizationManager = authorizationManager;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurityCache = webItemSecurityCache;
+            SettingsManager = settingsManager;
         }
 
         //
@@ -208,7 +209,7 @@ namespace ASC.Web.Core
 
         public void SetSecurity(string id, bool enabled, params Guid[] subjects)
         {
-            if (TenantAccessSettings.Load().Anyone)
+            if (SettingsManager.Load<TenantAccessSettings>().Anyone)
                 throw new SecurityException("Security settings are disabled for an open portal");
 
             var securityObj = WebItemSecurityObject.Create(id, WebItemManager);
@@ -447,7 +448,7 @@ namespace ASC.Web.Core
                 .AddAuthorizationManagerService()
                 .AddWebItemSecurityCache()
                 .AddAuthManager()
-                .AddTenantAccessSettingsService();
+                .AddSettingsManagerService();
         }
         public static IServiceCollection AddWebItemSecurityCache(this IServiceCollection services)
         {

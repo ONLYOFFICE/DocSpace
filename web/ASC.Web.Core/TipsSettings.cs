@@ -26,33 +26,23 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class TipsSettings : BaseSettings<TipsSettings>
+    public class TipsSettings : ISettings
     {
         [DataMember(Name = "Show")]
         public bool Show { get; set; }
 
-        public TipsSettings()
-        {
-
-        }
-
-        public TipsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{27909339-B4D4-466F-8F40-A64C9D2FC041}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TipsSettings { Show = true };
         }

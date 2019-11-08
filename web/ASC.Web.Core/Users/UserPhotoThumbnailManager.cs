@@ -27,22 +27,23 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
 {
     public class UserPhotoThumbnailManager
     {
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, int x, int y, int width, int height, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
         {
-            return SaveThumbnails(userPhotoManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
+            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, Point point, Size size, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
         {
-            return SaveThumbnails(userPhotoManager, new UserPhotoThumbnailSettings(point, size), userId);
+            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
         {
             if (thumbnailSettings.Size.IsEmpty) return null;
 
@@ -63,7 +64,7 @@ namespace ASC.Web.Core.Users
 
             thumbnailsData.Save(resultBitmaps);
 
-            thumbnailSettings.SaveForUser(userId);
+            settingsManager.SaveForUser(thumbnailSettings, userId);
 
             return thumbnailsData.ThumbnailList();
         }

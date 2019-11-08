@@ -26,17 +26,17 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
     [DataContract]
-    public sealed class PasswordSettings : BaseSettings<PasswordSettings>
+    public sealed class PasswordSettings : ISettingsExt
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }
         }
@@ -66,33 +66,26 @@ namespace ASC.Web.Core.Utility
         /// </summary>
         [DataMember]
         public bool SpecSymbols { get; set; }
-        public IConfiguration Configuration { get; }
 
-        private static PasswordSettings _default;
-
-        public PasswordSettings()
+        public ISettings GetDefault()
         {
-
+            return new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
         }
-
-        public PasswordSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager, IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
+        public ISettings GetDefault(IConfiguration configuration)
         {
-            Configuration = configuration;
-        }
+            var def = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
 
-        public override ISettings GetDefault()
-        {
-            if (_default == null)
+            if (int.TryParse(configuration["web.password.min"], out var defaultMinLength))
             {
-                _default = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
-
-                if (int.TryParse(Configuration["web.password.min"], out var defaultMinLength))
-                {
-                    _default.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
-                }
+                def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }
 
-            return _default;
+            return def;
+        }
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return GetDefault(serviceProvider.GetService<IConfiguration>());
         }
     }
 }

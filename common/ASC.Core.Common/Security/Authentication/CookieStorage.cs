@@ -44,18 +44,18 @@ namespace ASC.Core.Security.Authentication
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
 
         private InstanceCrypto InstanceCrypto { get; }
-        private TenantCookieSettings TenantCookieSettings { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         private HttpContext HttpContext { get; }
         private ILog Log { get; }
 
         public CookieStorage(
             IHttpContextAccessor httpContextAccessor,
             InstanceCrypto instanceCrypto,
-            TenantCookieSettings tenantCookieSettings,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
             IOptionsMonitor<ILog> options)
         {
             InstanceCrypto = instanceCrypto;
-            TenantCookieSettings = tenantCookieSettings;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             HttpContext = httpContextAccessor.HttpContext;
             Log = options.CurrentValue;
         }
@@ -101,9 +101,9 @@ namespace ASC.Core.Security.Authentication
 
         public string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
         {
-            var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
-            var expires = TenantCookieSettings.GetExpiresTime(tenant);
-            var settingsUser = TenantCookieSettings.GetForUser(tenant, userid);
+            var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
+            var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
+            var settingsUser = TenantCookieSettingsHelper.GetForUser(tenant, userid);
             return EncryptCookie(tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
         }
 

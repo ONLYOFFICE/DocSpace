@@ -32,6 +32,7 @@ using System.Linq;
 using System.Net;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -145,7 +146,8 @@ namespace ASC.Data.Storage
 
         public WebPathSettings WebPathSettings { get; }
         public StaticUploader StaticUploader { get; }
-        public CdnStorageSettings CdnStorageSettings { get; }
+        public SettingsManager SettingsManager { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
         public IHostEnvironment HostEnvironment { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
@@ -154,7 +156,8 @@ namespace ASC.Data.Storage
         public WebPath(
             WebPathSettings webPathSettings,
             StaticUploader staticUploader,
-            CdnStorageSettings cdnStorageSettings,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
             IHttpContextAccessor httpContextAccessor,
             IHostEnvironment hostEnvironment,
             CoreBaseSettings coreBaseSettings,
@@ -162,7 +165,8 @@ namespace ASC.Data.Storage
         {
             WebPathSettings = webPathSettings;
             StaticUploader = staticUploader;
-            CdnStorageSettings = cdnStorageSettings;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
             HostEnvironment = hostEnvironment;
             CoreBaseSettings = coreBaseSettings;
@@ -180,7 +184,7 @@ namespace ASC.Data.Storage
             {
                 try
                 {
-                    var result = CdnStorageSettings.Load().DataStore.GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    var result = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
                     if (!string.IsNullOrEmpty(result)) return result;
                 }
                 catch (Exception)

@@ -42,29 +42,29 @@ namespace ASC.Web.Studio.Core.SMS
         public TenantExtra TenantExtra { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public StudioSmsNotificationSettings StudioSmsNotificationSettings { get; }
         public SmsKeyStorage SmsKeyStorage { get; }
         public IConfiguration Configuration { get; }
         public SmsSender SmsSender { get; }
+        public StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
 
         public SmsManager(
             UserManager userManager,
             TenantExtra tenantExtra,
             SecurityContext securityContext,
             TenantManager tenantManager,
-            StudioSmsNotificationSettings studioSmsNotificationSettings,
             SmsKeyStorage smsKeyStorage,
             IConfiguration configuration,
-            SmsSender smsSender)
+            SmsSender smsSender,
+            StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper)
         {
             UserManager = userManager;
             TenantExtra = tenantExtra;
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            StudioSmsNotificationSettings = studioSmsNotificationSettings;
             SmsKeyStorage = smsKeyStorage;
             Configuration = configuration;
             SmsSender = smsSender;
+            StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         }
 
         public string SaveMobilePhone(UserInfo user, string mobilePhone)
@@ -94,7 +94,7 @@ namespace ASC.Web.Studio.Core.SMS
                 }
             }
 
-            if (StudioSmsNotificationSettings.Enable)
+            if (StudioSmsNotificationSettingsHelper.Enable)
             {
                 PutAuthCode(user, false);
             }
@@ -106,7 +106,7 @@ namespace ASC.Web.Studio.Core.SMS
         {
             if (user == null || Equals(user, Constants.LostUser)) throw new Exception(Resource.ErrorUserNotFound);
 
-            if (!StudioSmsNotificationSettings.IsVisibleSettings() || !StudioSmsNotificationSettings.Enable) throw new MethodAccessException();
+            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings() || !StudioSmsNotificationSettingsHelper.Enable) throw new MethodAccessException();
 
             var mobilePhone = SmsSender.GetPhoneValueDigits(user.MobilePhone);
 
@@ -121,8 +121,8 @@ namespace ASC.Web.Studio.Core.SMS
 
         public void ValidateSmsCode(UserInfo user, string code)
         {
-            if (!StudioSmsNotificationSettings.IsVisibleSettings()
-                || !StudioSmsNotificationSettings.Enable)
+            if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings()
+                || !StudioSmsNotificationSettingsHelper.Enable)
             {
                 return;
             }

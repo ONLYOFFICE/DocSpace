@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
@@ -59,13 +60,14 @@ namespace ASC.Web.Studio.Core.Notify
         public StudioNotifyHelper(
             StudioNotifySource studioNotifySource,
             UserManager userManager,
-            AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
+            SettingsManager settingsManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> option)
         {
-            Helplink = commonLinkUtility.GetHelpLink(additionalWhiteLabelSettings, false);
+            Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
             NotifySource = studioNotifySource;
             UserManager = userManager;
             SetupInfo = setupInfo;

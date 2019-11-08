@@ -68,10 +68,10 @@ namespace ASC.Core
         private UserManager UserManager { get; }
         private AuthManager Authentication { get; }
         private AuthContext AuthContext { get; }
-        private TenantCookieSettings TenantCookieSettings { get; }
         private TenantManager TenantManager { get; }
         private UserFormatter UserFormatter { get; }
         private CookieStorage CookieStorage { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
 
         public SecurityContext(
@@ -79,10 +79,10 @@ namespace ASC.Core
             UserManager userManager,
             AuthManager authentication,
             AuthContext authContext,
-            TenantCookieSettings tenantCookieSettings,
             TenantManager tenantManager,
             UserFormatter userFormatter,
             CookieStorage cookieStorage,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
             IOptionsMonitor<ILog> options
             )
         {
@@ -90,10 +90,10 @@ namespace ASC.Core
             UserManager = userManager;
             Authentication = authentication;
             AuthContext = authContext;
-            TenantCookieSettings = tenantCookieSettings;
             TenantManager = tenantManager;
             UserFormatter = userFormatter;
             CookieStorage = cookieStorage;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
         }
 
@@ -133,7 +133,7 @@ namespace ASC.Core
                         return false;
                     }
 
-                    var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
+                    var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
                     if (indexTenant != settingsTenant.Index)
                     {
                         return false;
@@ -148,7 +148,7 @@ namespace ASC.Core
                     {
                         if (userid != Guid.Empty)
                         {
-                            var settingsUser = TenantCookieSettings.GetForUser(userid);
+                            var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
                             if (indexUser != settingsUser.Index)
                             {
                                 return false;

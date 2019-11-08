@@ -52,20 +52,20 @@ namespace ASC.Web.Core
         public IHttpContextAccessor HttpContextAccessor { get; }
         public UserManager UserManager { get; }
         public SecurityContext SecurityContext { get; }
-        public TenantCookieSettings TenantCookieSettings { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
         public TenantManager TenantManager { get; }
 
         public CookiesManager(
             IHttpContextAccessor httpContextAccessor,
             UserManager userManager,
             SecurityContext securityContext,
-            TenantCookieSettings tenantCookieSettings,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
             TenantManager tenantManager)
         {
             HttpContextAccessor = httpContextAccessor;
             UserManager = userManager;
             SecurityContext = securityContext;
-            TenantCookieSettings = tenantCookieSettings;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
             TenantManager = tenantManager;
         }
 
@@ -163,7 +163,7 @@ namespace ASC.Web.Core
             if (!session)
             {
                 var tenant = TenantManager.GetCurrentTenant().TenantId;
-                expires = TenantCookieSettings.GetExpiresTime(tenant);
+                expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
             }
 
             return expires;
@@ -177,7 +177,7 @@ namespace ASC.Web.Core
                 throw new SecurityException();
             }
 
-            var settings = TenantCookieSettings.GetForTenant(tenant.TenantId);
+            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.TenantId);
 
             if (lifeTime > 0)
             {
@@ -189,7 +189,7 @@ namespace ASC.Web.Core
                 settings.LifeTime = 0;
             }
 
-            TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
+            TenantCookieSettingsHelper.SetForTenant(tenant.TenantId, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
 
@@ -198,14 +198,14 @@ namespace ASC.Web.Core
 
         public int GetLifeTime(int tenantId)
         {
-            return TenantCookieSettings.GetForTenant(tenantId).LifeTime;
+            return TenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
         }
 
         public void ResetUserCookie(Guid? userId = null)
         {
-            var settings = TenantCookieSettings.GetForUser(userId ?? SecurityContext.CurrentAccount.ID);
+            var settings = TenantCookieSettingsHelper.GetForUser(userId ?? SecurityContext.CurrentAccount.ID);
             settings.Index += 1;
-            TenantCookieSettings.SetForUser(userId ?? SecurityContext.CurrentAccount.ID, settings);
+            TenantCookieSettingsHelper.SetForUser(userId ?? SecurityContext.CurrentAccount.ID, settings);
 
             if (!userId.HasValue)
             {
@@ -224,9 +224,9 @@ namespace ASC.Web.Core
                 throw new SecurityException();
             }
 
-            var settings = TenantCookieSettings.GetForTenant(tenant.TenantId);
+            var settings = TenantCookieSettingsHelper.GetForTenant(tenant.TenantId);
             settings.Index += 1;
-            TenantCookieSettings.SetForTenant(tenant.TenantId, settings);
+            TenantCookieSettingsHelper.SetForTenant(tenant.TenantId, settings);
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
             SetCookies(CookiesType.AuthKey, cookie);

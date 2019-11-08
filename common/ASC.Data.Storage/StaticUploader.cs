@@ -36,6 +36,7 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,8 @@ namespace ASC.Data.Storage
 
         public IServiceProvider ServiceProvider { get; }
         public TenantManager TenantManager { get; }
-        public CdnStorageSettings CdnStorageSettings { get; }
+        public SettingsManager SettingsManager { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
 
         static StaticUploader()
         {
@@ -64,11 +66,16 @@ namespace ASC.Data.Storage
             TokenSource = new CancellationTokenSource();
         }
 
-        public StaticUploader(IServiceProvider serviceProvider, TenantManager tenantManager, CdnStorageSettings cdnStorageSettings)
+        public StaticUploader(
+            IServiceProvider serviceProvider,
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper)
         {
             ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
-            CdnStorageSettings = cdnStorageSettings;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
         }
 
         public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
@@ -148,7 +155,7 @@ namespace ASC.Data.Storage
 
         public bool CanUpload()
         {
-            var current = CdnStorageSettings.Load().DataStoreConsumer;
+            var current = StorageSettingsHelper.DataStoreConsumer(SettingsManager.Load<CdnStorageSettings>());
             if (current == null || !current.IsSet || (string.IsNullOrEmpty(current["cnamessl"]) && string.IsNullOrEmpty(current["cname"])))
             {
                 return false;
@@ -206,10 +213,11 @@ namespace ASC.Data.Storage
                 tenantManager.SetCurrentTenant(tenant);
 
                 var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var CdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
+                var SettingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+                var StorageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
                 SecurityContext.AuthenticateMe(tenant.OwnerId);
 
-                var dataStore = CdnStorageSettings.Load().DataStore;
+                var dataStore = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {

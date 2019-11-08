@@ -32,26 +32,17 @@ namespace ASC.Core.Tenants
 {
     [Serializable]
     [DataContract]
-    public class TenantAnalyticsSettings : BaseSettings<TenantAnalyticsSettings>
+    public class TenantAnalyticsSettings : ISettings
     {
         [DataMember(Name = "Analytics")]
         public bool Analytics { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{02943039-F399-421E-A552-23D70651AEBD}"); }
         }
 
-        public TenantAnalyticsSettings()
-        {
-                
-        }
-
-        public TenantAnalyticsSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TenantAnalyticsSettings
             {

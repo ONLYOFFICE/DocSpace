@@ -37,6 +37,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
@@ -197,10 +198,10 @@ namespace ASC.Web.Core.Users
 
         public UserManager UserManager { get; }
         public WebImageSupplier WebImageSupplier { get; }
-        public UserPhotoThumbnailSettings UserPhotoThumbnailSettings { get; }
         public TenantManager TenantManager { get; }
         public StorageFactory StorageFactory { get; }
         public UserPhotoManagerCache UserPhotoManagerCache { get; }
+        public SettingsManager SettingsManager { get; }
         public ILog Log { get; }
 
         private Tenant tenant;
@@ -212,20 +213,20 @@ namespace ASC.Web.Core.Users
         public UserPhotoManager(
             UserManager userManager,
             WebImageSupplier webImageSupplier,
-            UserPhotoThumbnailSettings userPhotoThumbnailSettings,
             TenantManager tenantManager,
             StorageFactory storageFactory,
             UserPhotoManagerCache userPhotoManagerCache,
             IOptionsMonitor<ILog> options,
-            WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue)
+            WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue,
+            SettingsManager settingsManager)
         {
             ResizeQueue = optionsQueue.Value;
             UserManager = userManager;
             WebImageSupplier = webImageSupplier;
-            UserPhotoThumbnailSettings = userPhotoThumbnailSettings;
             TenantManager = tenantManager;
             StorageFactory = storageFactory;
             UserPhotoManagerCache = userPhotoManagerCache;
+            SettingsManager = settingsManager;
             Log = options.Get("ASC.Web.Photo");
         }
 
@@ -502,10 +503,10 @@ namespace ASC.Web.Core.Users
                 }
             }
         }
-        public static void ResetThumbnailSettings(Guid userId)
+        public void ResetThumbnailSettings(Guid userId)
         {
             var thumbSettings = new UserPhotoThumbnailSettings().GetDefault() as UserPhotoThumbnailSettings;
-            thumbSettings.SaveForUser(userId);
+            SettingsManager.SaveForUser(thumbSettings, userId);
         }
 
         public string SaveOrUpdatePhoto(Guid userID, byte[] data)
@@ -579,7 +580,7 @@ namespace ASC.Web.Core.Users
                     width >= height ? new Point(pos, 0) : new Point(0, pos),
                     new Size(min, min));
 
-                settings.SaveForUser(userID);
+                SettingsManager.SaveForUser(settings, userID);
 
                 UserPhotoManagerCache.ClearCache(userID);
             }
@@ -605,7 +606,7 @@ namespace ASC.Web.Core.Users
 
         private void SetUserPhotoThumbnailSettings(Guid userId, int width, int height)
         {
-            var settings = UserPhotoThumbnailSettings.LoadForUser(userId);
+            var settings = SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userId);
 
             if (!settings.IsDefault) return;
 
@@ -618,7 +619,7 @@ namespace ASC.Web.Core.Users
                 width >= height ? new Point(pos, 0) : new Point(0, pos),
                 new Size(min, min));
 
-            settings.SaveForUser(userId);
+            SettingsManager.SaveForUser(settings, userId);
         }
 
         private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out ImageFormat imgFormat, out int width, out int height)
@@ -702,7 +703,7 @@ namespace ASC.Web.Core.Users
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();
             if (maxFileSize != -1 && data.Length > maxFileSize) throw new ImageWeightLimitException();
 
-            var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), UserPhotoThumbnailSettings.LoadForUser(userID));
+            var resizeTask = new ResizeWorkerItem(userID, data, maxFileSize, size, GetDataStore(), SettingsManager.LoadForUser<UserPhotoThumbnailSettings>(userID));
 
             if (now)
             {
@@ -1067,7 +1068,7 @@ namespace ASC.Web.Core.Users
 
             return services
                 .AddStorageFactoryService()
-                .AddUserPhotoThumbnailSettingsService()
+                .AddSettingsManagerService()
                 .AddWebImageSupplierService()
                 .AddUserManagerService()
                 .AddTenantManagerService()

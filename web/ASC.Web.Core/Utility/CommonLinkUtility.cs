@@ -32,6 +32,7 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
@@ -453,12 +454,12 @@ namespace ASC.Web.Studio.Utility
 
         #region Help Centr
 
-        public string GetHelpLink(AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings, bool inCurrentCulture = true)
+        public string GetHelpLink(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper, bool inCurrentCulture = true)
         {
-            if (!AdditionalWhiteLabelSettings.Instance.HelpCenterEnabled)
+            if (!AdditionalWhiteLabelSettings.Instance(settingsManager).HelpCenterEnabled)
                 return string.Empty;
 
-            var url = AdditionalWhiteLabelSettings.DefaultHelpCenterUrl;
+            var url = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl;
 
             if (string.IsNullOrEmpty(url))
                 return string.Empty;

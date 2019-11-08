@@ -26,17 +26,17 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class MailWhiteLabelSettings : BaseSettings<MailWhiteLabelSettings>
+    public class MailWhiteLabelSettings : ISettingsExt
     {
         [DataMember(Name = "FooterEnabled")]
         public bool FooterEnabled { get; set; }
@@ -59,61 +59,70 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "SiteUrl")]
         public string SiteUrl { get; set; }
 
-        public bool IsDefault
-        {
-            get
-            {
-                if (!(GetDefault() is MailWhiteLabelSettings defaultSettings)) return false;
-
-                return FooterEnabled == defaultSettings.FooterEnabled &&
-                       FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
-                       SupportUrl == defaultSettings.SupportUrl &&
-                       SupportEmail == defaultSettings.SupportEmail &&
-                       SalesEmail == defaultSettings.SalesEmail &&
-                       DemotUrl == defaultSettings.DemotUrl &&
-                       SiteUrl == defaultSettings.SiteUrl;
-            }
-        }
-
-        public MailWhiteLabelSettings()
-        {
-
-        }
-
-        public MailWhiteLabelSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            IConfiguration configuration) :
-            base(authContext, settingsManager, tenantManager)
-        {
-            Configuration = configuration;
-        }
-
-        #region ISettings Members
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C3602052-5BA2-452A-BD2A-ADD0FAF8EB88}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new MailWhiteLabelSettings
             {
                 FooterEnabled = true,
-                FooterSocialEnabled = true,
-                SupportUrl = DefaultMailSupportUrl,
-                SupportEmail = DefaultMailSupportEmail,
-                SalesEmail = DefaultMailSalesEmail,
-                DemotUrl = DefaultMailDemotUrl,
-                SiteUrl = DefaultMailSiteUrl
+                FooterSocialEnabled = true
             };
         }
 
-        #endregion
+        public ISettings GetDefault(IConfiguration configuration)
+        {
+            var mailWhiteLabelSettingsHelper = new MailWhiteLabelSettingsHelper(configuration);
 
-        #region Default values
+            return new MailWhiteLabelSettings
+            {
+                FooterEnabled = true,
+                FooterSocialEnabled = true,
+                SupportUrl = mailWhiteLabelSettingsHelper.DefaultMailSupportUrl,
+                SupportEmail = mailWhiteLabelSettingsHelper.DefaultMailSupportEmail,
+                SalesEmail = mailWhiteLabelSettingsHelper.DefaultMailSalesEmail,
+                DemotUrl = mailWhiteLabelSettingsHelper.DefaultMailDemotUrl,
+                SiteUrl = mailWhiteLabelSettingsHelper.DefaultMailSiteUrl
+            };
+        }
+
+        public bool IsDefault(IConfiguration configuration)
+        {
+            if (!(GetDefault(configuration) is MailWhiteLabelSettings defaultSettings)) return false;
+
+            return FooterEnabled == defaultSettings.FooterEnabled &&
+                    FooterSocialEnabled == defaultSettings.FooterSocialEnabled &&
+                    SupportUrl == defaultSettings.SupportUrl &&
+                    SupportEmail == defaultSettings.SupportEmail &&
+                    SalesEmail == defaultSettings.SalesEmail &&
+                    DemotUrl == defaultSettings.DemotUrl &&
+                    SiteUrl == defaultSettings.SiteUrl;
+        }
+
+        public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
+        {
+            return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+        }
+        public static bool IsDefault(SettingsManager settingsManager, IConfiguration configuration)
+        {
+            return Instance(settingsManager).IsDefault(configuration);
+        }
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return GetDefault(serviceProvider.GetService<IConfiguration>());
+        }
+    }
+
+    public class MailWhiteLabelSettingsHelper
+    {
+        public MailWhiteLabelSettingsHelper(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
         public string DefaultMailSupportUrl
         {
@@ -160,16 +169,6 @@ namespace ASC.Web.Core.WhiteLabel
             }
         }
 
-        #endregion
-
-        public MailWhiteLabelSettings Instance
-        {
-            get
-            {
-                return LoadForDefaultTenant();
-            }
-        }
-
         public IConfiguration Configuration { get; }
     }
 
@@ -177,7 +176,8 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static IServiceCollection AddMailWhiteLabelSettingsService(this IServiceCollection services)
         {
-            return services.AddSettingsService<MailWhiteLabelSettings>();
+            services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
+            return services.AddSettingsManagerService();
         }
     }
 }

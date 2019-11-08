@@ -53,39 +53,39 @@ namespace ASC.Web.Core.Users
         public SecurityContext SecurityContext { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
-        public PasswordSettings PasswordSettings { get; }
         public MessageService MessageService { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IPSecurity.IPSecurity IPSecurity { get; }
-        public DisplayUserSettings DisplayUserSettings { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SettingsManager SettingsManager { get; }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService,
             UserManager userManager,
             SecurityContext securityContext,
             AuthContext authContext,
-            PasswordSettings passwordSettings,
             MessageService messageService,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
             CoreBaseSettings coreBaseSettings,
             IPSecurity.IPSecurity iPSecurity,
-            DisplayUserSettings displayUserSettings
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            SettingsManager settingsManager
             )
         {
             StudioNotifyService = studioNotifyService;
             UserManager = userManager;
             SecurityContext = securityContext;
             AuthContext = authContext;
-            PasswordSettings = passwordSettings;
             MessageService = messageService;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
             CoreBaseSettings = coreBaseSettings;
             IPSecurity = iPSecurity;
-            DisplayUserSettings = displayUserSettings;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            SettingsManager = settingsManager;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -199,7 +199,7 @@ namespace ASC.Web.Core.Users
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception(Resource.ErrorPasswordEmpty);
 
-            var passwordSettingsObj = PasswordSettings.Load();
+            var passwordSettingsObj = SettingsManager.Load<PasswordSettings>();
 
             if (!CheckPasswordRegex(passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
@@ -278,7 +278,7 @@ namespace ASC.Web.Core.Users
 
             StudioNotifyService.UserPasswordChange(userInfo);
 
-            var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettings);
+            var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
             MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;
@@ -288,7 +288,7 @@ namespace ASC.Web.Core.Users
 
         public string GeneratePassword()
         {
-            var ps = PasswordSettings.Load();
+            var ps = SettingsManager.Load<PasswordSettings>();
 
             var maxLength = PasswordSettings.MaxLength
                             - (ps.Digits ? 1 : 0)
@@ -333,10 +333,10 @@ namespace ASC.Web.Core.Users
             return error.ToString();
         }
 
-        public static string GetPasswordHelpMessage(PasswordSettings PasswordSettings)
+        public string GetPasswordHelpMessage()
         {
             var info = new StringBuilder();
-            var passwordSettings = PasswordSettings.Load();
+            var passwordSettings = SettingsManager.Load<PasswordSettings>();
             info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
             info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
@@ -370,7 +370,7 @@ namespace ASC.Web.Core.Users
                 .AddIPSecurityService()
                 .AddTenantUtilService()
                 .AddCustomNamingPeopleService()
-                .AddSettingsService<PasswordSettings>()
+                .AddSettingsManagerService()
                 .AddStudioNotifyServiceService()
                 .AddUserManagerService()
                 .AddSecurityContextService()

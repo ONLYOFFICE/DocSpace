@@ -29,6 +29,7 @@ using System.Reflection;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,9 +97,10 @@ namespace ASC.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenantWhiteLabelSettings = scope.ServiceProvider.GetService<TenantWhiteLabelSettings>();
+            var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
+            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
             tenantManager.SetCurrentTenant(tenant);
-            tenantWhiteLabelSettings.Apply(tenant);
+            tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
         }
 

@@ -49,18 +49,19 @@ namespace ASC.Data.Storage.Configuration
             {
                 var scope = ServiceProvider.CreateScope();
 
-                var storageSettings = scope.ServiceProvider.GetService<StorageSettings>();
-                var settings = storageSettings.LoadForTenant(i.TenantId);
+                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
+                var storageSettings = scope.ServiceProvider.GetService<SettingsManager>();
+                var settings = storageSettings.LoadForTenant<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
-                    settings.Clear();
+                    storageSettingsHelper.Clear(settings);
                 }
 
                 var cdnStorageSettings = scope.ServiceProvider.GetService<CdnStorageSettings>();
-                var cdnSettings = cdnStorageSettings.LoadForTenant(i.TenantId);
+                var cdnSettings = storageSettings.LoadForTenant<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
-                    cdnSettings.Clear();
+                    storageSettingsHelper.Clear(cdnSettings);
                 }
             }, CacheNotifyAction.Remove);
         }
@@ -70,7 +71,7 @@ namespace ASC.Data.Storage.Configuration
 
     [Serializable]
     [DataContract]
-    public abstract class BaseStorageSettings<T> : BaseSettings<T> where T : class, ISettings, new()
+    public abstract class BaseStorageSettings<T> : ISettings where T : class, ISettings, new()
     {
         [DataMember(Name = "Module")]
         public string Module { get; set; }
@@ -78,23 +79,58 @@ namespace ASC.Data.Storage.Configuration
         [DataMember(Name = "Props")]
         public Dictionary<string, string> Props { get; set; }
 
-        public BaseStorageSettings()
-        {
+        public ISettings GetDefault() => new T();
+        public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
 
+        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
+
+        public abstract Guid ID { get; }
+    }
+
+    [Serializable]
+    [DataContract]
+    public class StorageSettings : BaseStorageSettings<StorageSettings>
+    {
+        public override Guid ID
+        {
+            get { return new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B"); }
+        }
+    }
+
+    [Serializable]
+    [DataContract]
+    public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
+    {
+        public override Guid ID
+        {
+            get { return new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2"); }
         }
 
-        public BaseStorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
+        public override Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d.Cdn; } }
+    }
+
+    public class StorageSettingsHelper
+    {
+        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
+        public PathUtils PathUtils { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public ICacheNotify<DataStoreCacheItem> Cache { get; }
+        public IOptionsMonitor<ILog> Options { get; }
+        public TenantManager TenantManager { get; }
+        public SettingsManager SettingsManager { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+
+        public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             ICacheNotify<DataStoreCacheItem> cache,
             IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor) :
-            base(authContext, settingsManager, tenantManager)
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            IHttpContextAccessor httpContextAccessor)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
@@ -102,32 +138,16 @@ namespace ASC.Data.Storage.Configuration
             EmailValidationKeyProvider = emailValidationKeyProvider;
             Cache = cache;
             Options = options;
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
             HttpContextAccessor = httpContextAccessor;
         }
-        public BaseStorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<ILog> options) :
-            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
-        {
-        }
 
-        public override ISettings GetDefault()
-        {
-            return new T();
-        }
-
-        public override bool Save()
+        public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
             ClearDataStoreCache();
             dataStoreConsumer = null;
-            return base.Save();
+            return SettingsManager.Save(baseStorageSettings);
         }
 
         internal void ClearDataStoreCache()
@@ -140,154 +160,42 @@ namespace ASC.Data.Storage.Configuration
             }
         }
 
-        public virtual void Clear()
+        public void Clear<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            Module = null;
-            Props = null;
-            Save();
+            baseStorageSettings.Module = null;
+            baseStorageSettings.Props = null;
+            Save(baseStorageSettings);
         }
 
         private DataStoreConsumer dataStoreConsumer;
-        public DataStoreConsumer DataStoreConsumer
+        public DataStoreConsumer DataStoreConsumer<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            get
+            if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
+
+            var consumer = ConsumerFactory.GetByName<DataStoreConsumer>(baseStorageSettings.Module);
+
+            if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
+
+            dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
+
+            foreach (var prop in baseStorageSettings.Props)
             {
-                if (string.IsNullOrEmpty(Module) || Props == null) return dataStoreConsumer = new DataStoreConsumer();
-
-                var consumer = ConsumerFactory.GetByName<DataStoreConsumer>(Module);
-
-                if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
-
-                dataStoreConsumer = (DataStoreConsumer)consumer.Clone();
-
-                foreach (var prop in Props)
-                {
-                    dataStoreConsumer[prop.Key] = prop.Value;
-                }
-
-                return dataStoreConsumer;
+                dataStoreConsumer[prop.Key] = prop.Value;
             }
+
+            return dataStoreConsumer;
         }
 
         private IDataStore dataStore;
-        public IDataStore DataStore
+        public IDataStore DataStore<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
         {
-            get
-            {
-                if (dataStore != null) return dataStore;
+            if (dataStore != null) return dataStore;
 
-                if (DataStoreConsumer.HandlerType == null) return null;
+            if (DataStoreConsumer(baseStorageSettings).HandlerType == null) return null;
 
-                return dataStore = ((IDataStore)
-                    Activator.CreateInstance(DataStoreConsumer.HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
-                    .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer);
-            }
-        }
-
-        public virtual Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d; } }
-
-        public BaseStorageSettingsListener BaseStorageSettingsListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-
-        public ICacheNotify<DataStoreCacheItem> Cache { get; internal set; }
-    }
-
-    [Serializable]
-    [DataContract]
-    public class StorageSettings : BaseStorageSettings<StorageSettings>
-    {
-        public StorageSettings()
-        {
-
-        }
-
-        public StorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<ILog> options) :
-            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
-        {
-        }
-        public StorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
-        {
-        }
-
-        public override Guid ID
-        {
-            get { return new Guid("F13EAF2D-FA53-44F1-A6D6-A5AEDA46FA2B"); }
-        }
-    }
-
-    [Serializable]
-    [DataContract]
-    public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
-    {
-        public CdnStorageSettings()
-        {
-
-        }
-
-        public CdnStorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<ILog> options) :
-            this(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, null)
-        {
-        }
-
-        public CdnStorageSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            BaseStorageSettingsListener baseStorageSettingsListener,
-            StorageFactoryConfig storageFactoryConfig,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            ICacheNotify<DataStoreCacheItem> cache,
-            IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor) :
-            base(authContext, settingsManager, tenantManager, baseStorageSettingsListener, storageFactoryConfig, pathUtils, emailValidationKeyProvider, cache, options, httpContextAccessor)
-        {
-        }
-
-        public override Guid ID
-        {
-            get { return new Guid("0E9AE034-F398-42FE-B5EE-F86D954E9FB2"); }
-        }
-
-        public override Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d.Cdn; } }
-
-        public override void Clear()
-        {
-            base.Clear();
-            //BundleTable.Bundles.Clear();
+            return dataStore = ((IDataStore)
+                Activator.CreateInstance(DataStoreConsumer(baseStorageSettings).HandlerType, TenantManager, PathUtils, HttpContextAccessor, Options))
+                .Configure(TenantManager.GetCurrentTenant().TenantId.ToString(), null, null, DataStoreConsumer(baseStorageSettings));
         }
     }
 
@@ -307,16 +215,20 @@ namespace ASC.Data.Storage.Configuration
 
         public static IServiceCollection AddCdnStorageSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<CdnStorageSettings>();
+            services.TryAddScoped<StorageSettingsHelper>();
 
-            return services.AddBaseStorageSettingsService();
+            return services
+                .AddSettingsManagerService()
+                .AddBaseStorageSettingsService();
         }
 
         public static IServiceCollection AddStorageSettingsService(this IServiceCollection services)
         {
-            services.TryAddScoped<StorageSettings>();
+            services.TryAddScoped<StorageSettingsHelper>();
 
-            return services.AddBaseStorageSettingsService();
+            return services
+                .AddSettingsManagerService()
+                .AddBaseStorageSettingsService();
         }
     }
 }

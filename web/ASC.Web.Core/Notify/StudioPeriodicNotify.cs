@@ -36,6 +36,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Billing;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Model;
@@ -45,6 +46,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -557,8 +559,9 @@ namespace ASC.Web.Studio.Core.Notify
                 {
                     using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    var defaultRebranding = scope.ServiceProvider.GetService<MailWhiteLabelSettings>().Instance.IsDefault;
-
+                    var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+                    var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
                     tenantManager.SetCurrentTenant(tenant.TenantId);
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
@@ -955,7 +958,7 @@ namespace ASC.Web.Studio.Core.Notify
                     tenantManager.SetCurrentTenant(tenant.TenantId);
 
                     var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
+                    var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
@@ -1088,7 +1091,7 @@ namespace ASC.Web.Studio.Core.Notify
                             action,
                             new[] { studioNotifyHelper.ToRecipient(u.ID) },
                             new[] { senderName },
-                            new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettings)),
+                            new TagValue(Tags.UserName, u.DisplayUserName(displayUserSettingsHelper)),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
                             TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),

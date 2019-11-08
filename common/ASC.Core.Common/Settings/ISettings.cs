@@ -25,12 +25,6 @@
 
 
 using System;
-using System.Reflection;
-using System.Runtime.Serialization;
-using ASC.Core.Tenants;
-using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Common.Settings
 {
@@ -40,144 +34,8 @@ namespace ASC.Core.Common.Settings
         ISettings GetDefault();
     }
 
-    [Serializable]
-    [DataContract]
-    public abstract class BaseSettings<T> : ISettings where T : class, ISettings
+    public interface ISettingsExt : ISettings
     {
-        public BaseSettings()
-        {
-
-        }
-
-        public BaseSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager)
-        {
-            AuthContext = authContext;
-            SettingsManager = settingsManager;
-            TenantManager = tenantManager;
-        }
-
-        private int TenantID
-        {
-            get { return TenantManager.GetCurrentTenant().TenantId; }
-        }
-        //
-        private Guid CurrentUserID
-        {
-            get { return AuthContext.CurrentAccount.ID; }
-        }
-
-        public T Load()
-        {
-            return SettingsManager.LoadSettings<T>(TenantID);
-        }
-
-        public T LoadForCurrentUser()
-        {
-            return LoadForUser(CurrentUserID);
-        }
-
-        public T LoadForUser(Guid userId)
-        {
-            return SettingsManager.LoadSettingsFor<T>(TenantID, userId);
-        }
-
-        public T LoadForDefaultTenant()
-        {
-            return LoadForTenant(Tenant.DEFAULT_TENANT);
-        }
-
-        public T LoadForTenant(int tenantId)
-        {
-            return SettingsManager.LoadSettings<T>(tenantId);
-        }
-
-        public virtual bool Save()
-        {
-            return SettingsManager.SaveSettings(this, TenantID);
-        }
-
-        public bool SaveForCurrentUser()
-        {
-            return SaveForUser(CurrentUserID);
-        }
-
-        public bool SaveForUser(Guid userId)
-        {
-            return SettingsManager.SaveSettingsFor(this, TenantID, userId);
-        }
-
-        public bool SaveForDefaultTenant()
-        {
-            return SaveForTenant(Tenant.DEFAULT_TENANT);
-        }
-
-        public bool SaveForTenant(int tenantId)
-        {
-            return SettingsManager.SaveSettings(this, tenantId);
-        }
-
-        public void ClearCache()
-        {
-            SettingsManager.ClearCache<T>(TenantID);
-        }
-
-        public abstract Guid ID { get; }
-        public AuthContext AuthContext { get; internal set; }
-        public SettingsManager SettingsManager { get; internal set; }
-        public TenantManager TenantManager { get; internal set; }
-
-        public abstract ISettings GetDefault();
-    }
-
-    public static class BaseSettingsFactory
-    {
-        public static IServiceCollection AddBaseSettingsService(this IServiceCollection services)
-        {
-            return services
-                .AddAuthContextService()
-                .AddSettingsManagerService()
-                .AddTenantManagerService();
-        }
-
-        public static IServiceCollection AddSettingsService<T>(this IServiceCollection services) where T : BaseSettings<T>
-        {
-            services.AddAutoMapper(r =>
-            {
-                r.ShouldMapField = (a) => true;
-                r.ShouldMapProperty = (a) =>
-                {
-                    return true;
-                };
-                r.CreateMap<T, T>().ForAllMembers(o => o.IgnoreSourceWhenDefault());
-
-            }, typeof(T));
-            services.TryAddScoped<T>();
-            return services.AddBaseSettingsService();
-        }
-    }
-
-    public static class Extensions
-    {
-        public static void IgnoreSourceWhenDefault<TSource, TDestination>(this IMemberConfigurationExpression<TSource, TDestination, object> opt)
-        {
-            var destinationType = opt.DestinationMember.GetMemberType();
-            var defaultValue = destinationType.GetTypeInfo().IsValueType ? Activator.CreateInstance(destinationType) : null;
-            opt.Condition((src, dest, srcValue) =>
-            {
-                var a = opt.DestinationMember;
-                return !Equals(srcValue, defaultValue);
-            });
-        }
-
-        public static Type GetMemberType(this MemberInfo memberInfo)
-        {
-            if (memberInfo is MethodInfo)
-                return ((MethodInfo)memberInfo).ReturnType;
-            if (memberInfo is PropertyInfo)
-                return ((PropertyInfo)memberInfo).PropertyType;
-            if (memberInfo is FieldInfo)
-                return ((FieldInfo)memberInfo).FieldType;
-            return null;
-        }
+        ISettings GetDefault(IServiceProvider serviceProvider);
     }
 }

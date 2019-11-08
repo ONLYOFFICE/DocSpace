@@ -30,12 +30,13 @@ using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
     [Serializable]
     [DataContract]
-    public class TenantCookieSettings : BaseSettings<TenantCookieSettings>
+    public class TenantCookieSettings : ISettings
     {
         [DataMember(Name = "Index")]
         public int Index { get; set; }
@@ -43,38 +44,11 @@ namespace ASC.Core.Tenants
         [DataMember(Name = "LifeTime")]
         public int LifeTime { get; set; }
 
-        public bool IsVisibleSettings { get; internal set; }
 
-        public TenantCookieSettings()
-        {
-        }
-        public TenantCookieSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            IConfiguration configuration) :
-            base(authContext, settingsManager, tenantManager)
-        {
-            IsVisibleSettings = !(configuration["web:hide-settings"] ?? string.Empty)
-            .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
-            .Contains("CookieSettings", StringComparer.CurrentCultureIgnoreCase);
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return GetInstance();
         }
-
-        public static TenantCookieSettings GetInstance()
-        {
-            return new TenantCookieSettings();
-        }
-
-        public override Guid ID
-        {
-            get { return new Guid("{16FB8E67-E96D-4B22-B217-C80F25C5DE1B}"); }
-        }
-
 
         public bool IsDefault()
         {
@@ -83,38 +57,63 @@ namespace ASC.Core.Tenants
             return LifeTime == defaultSettings.LifeTime;
         }
 
+        public static TenantCookieSettings GetInstance()
+        {
+            return new TenantCookieSettings();
+        }
+
+        public Guid ID
+        {
+            get { return new Guid("{16FB8E67-E96D-4B22-B217-C80F25C5DE1B}"); }
+        }
+    }
+
+    public class TenantCookieSettingsHelper
+    {
+        public bool IsVisibleSettings { get; internal set; }
+        public SettingsManager SettingsManager { get; }
+
+        public TenantCookieSettingsHelper(IConfiguration configuration, SettingsManager settingsManager)
+        {
+            IsVisibleSettings = !(configuration["web:hide-settings"] ?? string.Empty)
+            .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Contains("CookieSettings", StringComparer.CurrentCultureIgnoreCase);
+
+            SettingsManager = settingsManager;
+        }
+
 
         public TenantCookieSettings GetForTenant(int tenantId)
         {
             return IsVisibleSettings
-                       ? LoadForTenant(tenantId)
-                       : GetInstance();
+                       ? SettingsManager.LoadForTenant<TenantCookieSettings>(tenantId)
+                       : TenantCookieSettings.GetInstance();
         }
 
         public void SetForTenant(int tenantId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
-            (settings ?? GetInstance()).SaveForTenant(tenantId);
+            SettingsManager.SaveForTenant((settings ?? TenantCookieSettings.GetInstance()), tenantId);
         }
 
         public TenantCookieSettings GetForUser(Guid userId)
         {
             return IsVisibleSettings
-                       ? LoadForUser(userId)
-                       : GetInstance();
+                       ? SettingsManager.LoadForUser<TenantCookieSettings>(userId)
+                       : TenantCookieSettings.GetInstance();
         }
 
         public TenantCookieSettings GetForUser(int tenantId, Guid userId)
         {
             return IsVisibleSettings
                        ? SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId)
-                       : GetInstance();
+                       : TenantCookieSettings.GetInstance();
         }
 
         public void SetForUser(Guid userId, TenantCookieSettings settings = null)
         {
             if (!IsVisibleSettings) return;
-            (settings ?? GetInstance()).SaveForUser(userId);
+            SettingsManager.SaveForUser((settings ?? TenantCookieSettings.GetInstance()), userId);
         }
 
         public DateTime GetExpiresTime(int tenantId)
@@ -129,8 +128,8 @@ namespace ASC.Core.Tenants
     {
         public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
         {
-            return services
-                .AddSettingsService<TenantCookieSettings>();
+            services.TryAddScoped<TenantCookieSettingsHelper>();
+            return services.AddSettingsManagerService();
         }
     }
 }

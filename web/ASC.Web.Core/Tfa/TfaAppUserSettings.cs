@@ -28,16 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
     [DataContract]
-    public class TfaAppUserSettings : BaseSettings<TfaAppUserSettings>
+    public class TfaAppUserSettings : ISettings
     {
         [DataMember(Name = "BackupCodes")]
         public IEnumerable<BackupCode> CodesSetting { get; set; }
@@ -45,26 +42,12 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "Salt")]
         public long SaltSetting { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{EAF10611-BE1E-4634-B7A1-57F913042F78}"); }
         }
 
-        public TfaAppUserSettings()
-        {
-
-        }
-
-        public TfaAppUserSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings) : base(authContext, settingsManager, tenantManager)
-        {
-            CoreBaseSettings = coreBaseSettings;
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TfaAppUserSettings
             {
@@ -73,80 +56,49 @@ namespace ASC.Web.Studio.Core.TFA
             };
         }
 
-        public long GetSalt(Guid userId)
+        public static long GetSalt(SettingsManager settingsManager, Guid userId)
         {
-            var settings = LoadForUser(userId);
+            var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var salt = settings.SaltSetting;
             if (salt == 0)
             {
                 var from = new DateTime(2018, 07, 07, 0, 0, 0, DateTimeKind.Utc);
                 settings.SaltSetting = salt = (long)(DateTime.UtcNow - from).TotalMilliseconds;
 
-                settings.SaveForUser(userId);
+                settingsManager.SaveForUser<TfaAppUserSettings>(settings, userId);
             }
             return salt;
         }
 
-        public IEnumerable<BackupCode> BackupCodes
+        public static IEnumerable<BackupCode> BackupCodesForUser(SettingsManager settingsManager, Guid userId)
         {
-            get { return LoadForCurrentUser().CodesSetting; }
-            set
-            {
-                var settings = LoadForCurrentUser();
-                settings.CodesSetting = value;
-                settings.SaveForCurrentUser();
-            }
+            return settingsManager.LoadForUser<TfaAppUserSettings>(userId).CodesSetting;
         }
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-
-        public IEnumerable<BackupCode> BackupCodesForUser(Guid userId)
+        public static void DisableCodeForUser(SettingsManager settingsManager, Guid userId, string code)
         {
-            return LoadForUser(userId).CodesSetting;
-        }
-
-        public void DisableCodeForUser(Guid userId, string code)
-        {
-            var settings = LoadForUser(userId);
+            var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var query = settings.CodesSetting.Where(x => x.Code == code).ToList();
 
             if (query.Any())
                 query.First().IsUsed = true;
 
-            settings.SaveForUser(userId);
+            settingsManager.SaveForUser(settings, userId);
         }
 
-        public bool EnableForUser(Guid guid)
+        public static bool EnableForUser(SettingsManager settingsManager, Guid guid)
         {
-            return LoadForUser(guid).CodesSetting.Any();
+            return settingsManager.LoadForUser<TfaAppUserSettings>(guid).CodesSetting.Any();
         }
 
-        public static void DisableForUser(Guid guid)
+        public static void DisableForUser(SettingsManager settingsManager, Guid guid)
         {
             if (new TfaAppUserSettings().GetDefault() is TfaAppUserSettings defaultSettings)
             {
-                defaultSettings.SaveForUser(guid);
+                settingsManager.SaveForUser(defaultSettings, guid);
             }
         }
 
-        public bool IsVisibleSettings(TenantExtra tenantExtra)
-        {
-            var quota = tenantExtra.GetTenantQuota();
-            return CoreBaseSettings.Standalone
-                    || (!quota.Trial
-                        && !quota.NonProfit
-                        && !quota.Free
-                        && !quota.Open);
-        }
-    }
 
-    public static class TfaAppUserSettingsFactory
-    {
-        public static IServiceCollection AddTfaAppUserSettingsService(this IServiceCollection services)
-        {
-            return services
-                .AddCoreBaseSettingsService()
-                .AddSettingsService<TfaAppUserSettings>();
-        }
     }
 }

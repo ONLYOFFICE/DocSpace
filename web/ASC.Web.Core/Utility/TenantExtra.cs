@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
@@ -46,33 +47,33 @@ namespace ASC.Web.Studio.Utility
         public UserManager UserManager { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
         public AuthContext AuthContext { get; }
-        public TenantAccessSettings TenantAccessSettings { get; }
         public TenantManager TenantManager { get; }
         public PaymentManager PaymentManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public LicenseReader LicenseReader { get; }
         public SetupInfo SetupInfo { get; }
+        public SettingsManager SettingsManager { get; }
 
         public TenantExtra(
             UserManager userManager,
             TenantStatisticsProvider tenantStatisticsProvider,
             AuthContext authContext,
-            TenantAccessSettings tenantAccessSettings,
             TenantManager tenantManager,
             PaymentManager paymentManager,
             CoreBaseSettings coreBaseSettings,
             LicenseReader licenseReader,
-            SetupInfo setupInfo)
+            SetupInfo setupInfo,
+            SettingsManager settingsManager)
         {
             UserManager = userManager;
             TenantStatisticsProvider = tenantStatisticsProvider;
             AuthContext = authContext;
-            TenantAccessSettings = tenantAccessSettings;
             TenantManager = tenantManager;
             PaymentManager = paymentManager;
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
             SetupInfo = setupInfo;
+            SettingsManager = settingsManager;
         }
 
         public bool EnableTarrifSettings
@@ -81,7 +82,7 @@ namespace ASC.Web.Studio.Utility
             {
                 return
                     SetupInfo.IsVisibleSettings<TariffSettings>()
-                    && !TenantAccessSettings.Load().Anyone
+                    && !SettingsManager.Load<TenantAccessSettings>().Anyone
                     && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(SetupInfo.ControlPanelUrl));
             }
         }
@@ -266,7 +267,7 @@ namespace ASC.Web.Studio.Utility
                 .AddPaymentManagerService()
                 .AddLicenseReaderService()
                 .AddTenantStatisticsProviderService()
-                .AddTenantAccessSettingsService();
+                .AddSettingsManagerService();
         }
     }
 }

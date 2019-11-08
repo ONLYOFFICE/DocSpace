@@ -76,23 +76,20 @@ namespace ASC.Web.Studio.Core.TFA
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
         private static readonly ICache Cache = AscCache.Memory;
 
-        public TfaAppUserSettings TfaAppUserSettings { get; }
-        public TfaAppAuthSettings TfaAppAuthSettings { get; }
+        public SettingsManager SettingsManager { get; }
         public SecurityContext SecurityContext { get; }
         public CookiesManager CookiesManager { get; }
         public SetupInfo SetupInfo { get; }
         public Signature Signature { get; }
 
         public TfaManager(
-            TfaAppUserSettings tfaAppUserSettings,
-            TfaAppAuthSettings tfaAppAuthSettings,
+            SettingsManager settingsManager,
             SecurityContext securityContext,
             CookiesManager cookiesManager,
             SetupInfo setupInfo,
             Signature signature)
         {
-            TfaAppUserSettings = tfaAppUserSettings;
-            TfaAppAuthSettings = tfaAppAuthSettings;
+            SettingsManager = settingsManager;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;
             SetupInfo = setupInfo;
@@ -107,7 +104,7 @@ namespace ASC.Web.Studio.Core.TFA
         public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
-                || !TfaAppAuthSettings.Enable)
+                || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
             {
                 return false;
             }
@@ -127,9 +124,9 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!Tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
             {
-                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(user.ID).Any(x => x.Code == code && !x.IsUsed))
+                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.ID).Any(x => x.Code == code && !x.IsUsed))
                 {
-                    TfaAppUserSettings.DisableCodeForUser(user.ID, code);
+                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, user.ID, code);
                 }
                 else
                 {
@@ -145,7 +142,7 @@ namespace ASC.Web.Studio.Core.TFA
                 CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 
-            if (!TfaAppUserSettings.EnableForUser(user.ID))
+            if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
                 GenerateBackupCodes(user);
                 return true;
@@ -180,14 +177,16 @@ namespace ASC.Web.Studio.Core.TFA
                     list.Add(new BackupCode(Signature, result.ToString()));
                 }
             }
+            var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
+            settings.CodesSetting = list;
+            SettingsManager.SaveForCurrentUser(settings);
 
-            TfaAppUserSettings.BackupCodes = list;
             return list;
         }
 
         private string GenerateAccessToken(UserInfo user)
         {
-            return Signature.Create(TfaAppUserSettings.GetSalt(user.ID)).Substring(0, 10);
+            return Signature.Create(TfaAppUserSettings.GetSalt(SettingsManager, user.ID)).Substring(0, 10);
         }
     }
 
@@ -198,8 +197,7 @@ namespace ASC.Web.Studio.Core.TFA
             services.TryAddScoped<TfaManager>();
 
             return services
-                .AddSettingsService<TfaAppAuthSettings>()
-                .AddTfaAppUserSettingsService()
+                .AddSettingsManagerService()
                 .AddSetupInfo()
                 .AddSignatureService()
                 .AddCookiesManagerService()

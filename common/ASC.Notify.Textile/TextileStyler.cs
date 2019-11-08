@@ -51,6 +51,7 @@ namespace ASC.Notify.Textile
         public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
         static TextileStyler()
         {
@@ -60,11 +61,16 @@ namespace ASC.Notify.Textile
             BlockAttributesParser.Styler = new StyleReader(reader.ReadToEnd().Replace("\n", "").Replace("\r", ""));
         }
 
-        public TextileStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration, InstanceCrypto instanceCrypto)
+        public TextileStyler(
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration,
+            InstanceCrypto instanceCrypto,
+            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
         {
             CoreBaseSettings = coreBaseSettings;
             Configuration = configuration;
             InstanceCrypto = instanceCrypto;
+            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -95,7 +101,7 @@ namespace ASC.Notify.Textile
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
-                                   .Replace("%SITEURL%", mailSettings == null ? mailSettings.DefaultMailSiteUrl : mailSettings.SiteUrl)
+                                   .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
                                    .Replace("%FOOTER%", footerContent)
                                    .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                    .Replace("%TEXTFOOTER%", unsubscribeText);
@@ -180,7 +186,7 @@ namespace ASC.Notify.Textile
             return mailWhiteLabelTag == null ? null : mailWhiteLabelTag.Value as MailWhiteLabelSettings;
         }
 
-        private static void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
+        private void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
         {
             footerContent = string.Empty;
             footerSocialContent = string.Empty;
@@ -213,7 +219,7 @@ namespace ASC.Notify.Textile
             }
         }
 
-        private static void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
+        private void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
         {
             footerContent = string.Empty;
             footerSocialContent = string.Empty;
@@ -222,9 +228,9 @@ namespace ASC.Notify.Textile
             {
                 footerContent =
                     NotifyTemplateResource.FooterCommon
-                                          .Replace("%SUPPORTURL%", settings.DefaultMailSupportUrl)
-                                          .Replace("%SALESEMAIL%", settings.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", settings.DefaultMailDemotUrl);
+                                          .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
+                                          .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
+                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
 
             }
@@ -297,7 +303,7 @@ namespace ASC.Notify.Textile
                              : "{0}/Unsubscribe.aspx?id={1}";
 
             var site = settings == null
-                           ? settings.DefaultMailSiteUrl
+                           ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl
                            : settings.SiteUrl;
 
             return string.Format(format,

@@ -59,7 +59,7 @@ namespace ASC.Notify.Textile
         public void TestTextileStyler()
         {
             var message = new NoticeMessage() { Body = pattern };
-            new TextileStyler(CoreBaseSettings, Configuration, InstanceCrypto).ApplyFormating(message);
+            new TextileStyler(CoreBaseSettings, Configuration, InstanceCrypto, null).ApplyFormating(message);
         }
     }
 }

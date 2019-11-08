@@ -26,19 +26,18 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class StudioDefaultPageSettings : BaseSettings<StudioDefaultPageSettings>
+    public class StudioDefaultPageSettings : ISettings
     {
         [DataMember(Name = "DefaultProductID")]
         public Guid DefaultProductID { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{F3FF27C5-BDE3-43ae-8DD0-2E8E0D7044F1}"); }
         }
@@ -48,16 +47,7 @@ namespace ASC.Web.Studio.Core
             get { return new Guid("{48328C27-4C85-4987-BA0E-D6BB17356B10}"); }
         }
 
-        public StudioDefaultPageSettings()
-        {
-
-        }
-
-        public StudioDefaultPageSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new StudioDefaultPageSettings { DefaultProductID = Guid.Empty };
         }

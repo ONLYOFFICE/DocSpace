@@ -26,34 +26,23 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class CollaboratorSettings : BaseSettings<CollaboratorSettings>
+    public class CollaboratorSettings : ISettings
     {
         [DataMember(Name = "FirstVisit")]
         public bool FirstVisit { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{73537E08-17F6-4706-BFDA-1414108AA7D2}"); }
         }
 
-        public CollaboratorSettings()
-        {
-
-        }
-
-        public CollaboratorSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : 
-            base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new CollaboratorSettings()
             {

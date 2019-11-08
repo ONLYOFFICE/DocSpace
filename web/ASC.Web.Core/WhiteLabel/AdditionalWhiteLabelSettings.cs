@@ -27,16 +27,16 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class AdditionalWhiteLabelSettings : BaseSettings<AdditionalWhiteLabelSettings>
+    public class AdditionalWhiteLabelSettings : ISettingsExt
     {
         [DataMember(Name = "StartDocsEnabled")]
         public bool StartDocsEnabled { get; set; }
@@ -74,70 +74,86 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "LicenseAgreementsUrl")]
         public string LicenseAgreementsUrl { get; set; }
 
-        public bool IsDefault
+        public bool IsDefault(IConfiguration configuration)
         {
-            get
-            {
-                if (!(GetDefault() is AdditionalWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(configuration) is AdditionalWhiteLabelSettings defaultSettings)) return false;
 
-                return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
-                       HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
-                       FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
-                       FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
-                       UserForumEnabled == defaultSettings.UserForumEnabled &&
-                       UserForumUrl == defaultSettings.UserForumUrl &&
-                       VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
-                       VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
-                       SalesEmail == defaultSettings.SalesEmail &&
-                       BuyUrl == defaultSettings.BuyUrl &&
-                       LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
-                       LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
-            }
+            return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
+                    HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
+                    FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
+                    FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
+                    UserForumEnabled == defaultSettings.UserForumEnabled &&
+                    UserForumUrl == defaultSettings.UserForumUrl &&
+                    VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
+                    VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
+                    SalesEmail == defaultSettings.SalesEmail &&
+                    BuyUrl == defaultSettings.BuyUrl &&
+                    LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
+                    LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
         }
 
-        public AdditionalWhiteLabelSettings()
-        {
-
-        }
-
-        public AdditionalWhiteLabelSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            TenantManager tenantManager,
-            IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
-        {
-            Configuration = configuration;
-        }
-
-        #region ISettings Members
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{0108422F-C05D-488E-B271-30C4032494DA}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new AdditionalWhiteLabelSettings
             {
                 StartDocsEnabled = true,
-                HelpCenterEnabled = DefaultHelpCenterUrl != null,
-                FeedbackAndSupportEnabled = DefaultFeedbackAndSupportUrl != null,
-                FeedbackAndSupportUrl = DefaultFeedbackAndSupportUrl,
-                UserForumEnabled = DefaultUserForumUrl != null,
-                UserForumUrl = DefaultUserForumUrl,
-                VideoGuidesEnabled = DefaultVideoGuidesUrl != null,
-                VideoGuidesUrl = DefaultVideoGuidesUrl,
-                SalesEmail = DefaultMailSalesEmail,
-                BuyUrl = DefaultBuyUrl,
                 LicenseAgreementsEnabled = true,
                 LicenseAgreementsUrl = DefaultLicenseAgreements
             };
         }
 
-        #endregion
+        public ISettings GetDefault(IConfiguration configuration)
+        {
+            var additionalWhiteLabelSettingsHelper = new AdditionalWhiteLabelSettingsHelper(configuration);
+            return new AdditionalWhiteLabelSettings
+            {
+                StartDocsEnabled = true,
+                HelpCenterEnabled = additionalWhiteLabelSettingsHelper.DefaultHelpCenterUrl != null,
+                FeedbackAndSupportEnabled = additionalWhiteLabelSettingsHelper.DefaultFeedbackAndSupportUrl != null,
+                FeedbackAndSupportUrl = additionalWhiteLabelSettingsHelper.DefaultFeedbackAndSupportUrl,
+                UserForumEnabled = additionalWhiteLabelSettingsHelper.DefaultUserForumUrl != null,
+                UserForumUrl = additionalWhiteLabelSettingsHelper.DefaultUserForumUrl,
+                VideoGuidesEnabled = additionalWhiteLabelSettingsHelper.DefaultVideoGuidesUrl != null,
+                VideoGuidesUrl = additionalWhiteLabelSettingsHelper.DefaultVideoGuidesUrl,
+                SalesEmail = additionalWhiteLabelSettingsHelper.DefaultMailSalesEmail,
+                BuyUrl = additionalWhiteLabelSettingsHelper.DefaultBuyUrl,
+                LicenseAgreementsEnabled = true,
+                LicenseAgreementsUrl = DefaultLicenseAgreements
+            };
+        }
 
-        #region Default values
+        public static string DefaultLicenseAgreements
+        {
+            get
+            {
+                return CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4522572&doc=VzZXY2FQb29EdjZmTnhlZkFYZS9XYzFPK3JTaC9zcC9mNHEvTTZXSXNLUT0_IjQ1MjI1NzIi0" : "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4485697&doc=R29zSHZNRi9LYnRTb3JDditmVGpXQThVVXhMTWdja0xwemlYZXpiaDBYdz0_IjQ0ODU2OTci0";
+            }
+        }
+
+        public static AdditionalWhiteLabelSettings Instance(SettingsManager settingsManager)
+        {
+            return settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+        }
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return GetDefault(serviceProvider.GetService<IConfiguration>());
+        }
+    }
+
+    public class AdditionalWhiteLabelSettingsHelper
+    {
+        public IConfiguration Configuration { get; }
+
+        public AdditionalWhiteLabelSettingsHelper(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
         public string DefaultHelpCenterUrl
         {
@@ -192,33 +208,14 @@ namespace ASC.Web.Core.WhiteLabel
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
         }
-
-        public static string DefaultLicenseAgreements
-        {
-            get
-            {
-                return CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ru" ? "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4522572&doc=VzZXY2FQb29EdjZmTnhlZkFYZS9XYzFPK3JTaC9zcC9mNHEvTTZXSXNLUT0_IjQ1MjI1NzIi0" : "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=4485697&doc=R29zSHZNRi9LYnRTb3JDditmVGpXQThVVXhMTWdja0xwemlYZXpiaDBYdz0_IjQ0ODU2OTci0";
-            }
-        }
-
-        #endregion
-
-        public AdditionalWhiteLabelSettings Instance
-        {
-            get
-            {
-                return LoadForDefaultTenant();
-            }
-        }
-
-        public IConfiguration Configuration { get; }
     }
 
     public static class AdditionalWhiteLabelSettingsFactory
     {
         public static IServiceCollection AddAdditionalWhiteLabelSettingsService(this IServiceCollection services)
         {
-            return services.AddSettingsService<AdditionalWhiteLabelSettings>();
+            services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
+            return services;
         }
     }
 }

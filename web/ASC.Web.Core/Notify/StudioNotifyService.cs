@@ -33,6 +33,7 @@ using System.Web;
 
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Model;
@@ -44,6 +45,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -61,14 +63,14 @@ namespace ASC.Web.Studio.Core.Notify
         private TenantExtra TenantExtra { get; }
         private AuthManager Authentication { get; }
         private AuthContext AuthContext { get; }
-        private MailWhiteLabelSettings MailWhiteLabelSettings { get; }
-        private AdditionalWhiteLabelSettings AdditionalWhiteLabelSettings { get; }
+        public IConfiguration Configuration { get; }
         private TenantManager TenantManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private SetupInfo SetupInfo { get; }
         private IServiceProvider ServiceProvider { get; }
-        private DisplayUserSettings DisplayUserSettings { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SettingsManager SettingsManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -78,14 +80,14 @@ namespace ASC.Web.Studio.Core.Notify
             TenantExtra tenantExtra,
             AuthManager authentication,
             AuthContext authContext,
-            MailWhiteLabelSettings mailWhiteLabelSettings,
-            AdditionalWhiteLabelSettings additionalWhiteLabelSettings,
+            IConfiguration configuration,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             IServiceProvider serviceProvider,
-            DisplayUserSettings displayUserSettings,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            SettingsManager settingsManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -93,14 +95,14 @@ namespace ASC.Web.Studio.Core.Notify
             TenantExtra = tenantExtra;
             Authentication = authentication;
             AuthContext = authContext;
-            MailWhiteLabelSettings = mailWhiteLabelSettings;
-            AdditionalWhiteLabelSettings = additionalWhiteLabelSettings;
+            Configuration = configuration;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CommonLinkUtility = commonLinkUtility;
             SetupInfo = setupInfo;
             ServiceProvider = serviceProvider;
-            DisplayUserSettings = displayUserSettings;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            SettingsManager = settingsManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -134,7 +136,7 @@ namespace ASC.Web.Studio.Core.Notify
             if (string.IsNullOrEmpty(site)) throw new ArgumentNullException("site");
             message = (message ?? "").Trim();
 
-            var salesEmail = AdditionalWhiteLabelSettings.Instance.SalesEmail ?? SetupInfo.SalesEmail;
+            var salesEmail = AdditionalWhiteLabelSettings.Instance(SettingsManager).SalesEmail ?? SetupInfo.SalesEmail;
 
             var recipient = (IRecipient)(new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false));
 
@@ -220,7 +222,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, confirmationUrl),
                         TagValues.GreenButton(greenButtonText, confirmationUrl),
-                        new TagValue(Tags.UserDisplayName, (user.DisplayUserName(DisplayUserSettings) ?? string.Empty).Trim()));
+                        new TagValue(Tags.UserDisplayName, (user.DisplayUserName(DisplayUserSettingsHelper) ?? string.Empty).Trim()));
         }
 
         #endregion
@@ -328,7 +330,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, inviteUrl),
                         TagValues.GreenButton(greenButtonText, inviteUrl),
-                        TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
+                        TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
         }
 
         public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
@@ -354,7 +356,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
             else if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding
                                    ? Actions.EnterpriseUserWelcomeV10
                                    : CoreBaseSettings.CustomMode
@@ -394,7 +396,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
                 footer = null;
             }
@@ -431,7 +433,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
                 footer = null;
             }
@@ -452,7 +454,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -467,7 +469,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestActivationV10 : Actions.EnterpriseWhitelabelGuestActivationV10;
                 footer = null;
             }
@@ -488,7 +490,7 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings),
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -516,10 +518,10 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.ReassignsCompleted,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
-                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettings)),
+                new TagValue(Tags.UserName, DisplayUserSettingsHelper.GetFullUserName(recipientId)),
+                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
-                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettings)),
+                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)));
         }
 
@@ -529,10 +531,10 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.ReassignsFailed,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
-                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettings)),
+                new TagValue(Tags.UserName, DisplayUserSettingsHelper.GetFullUserName(recipientId)),
+                new TagValue(Tags.FromUserName, fromUser.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
-                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettings)),
+                new TagValue(Tags.ToUserName, toUser.DisplayUserName(DisplayUserSettingsHelper)),
                 new TagValue(Tags.ToUserLink, GetUserProfileLink(toUser)),
                 new TagValue(Tags.Message, message));
         }
@@ -543,7 +545,7 @@ namespace ASC.Web.Studio.Core.Notify
                 CoreBaseSettings.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettingsHelper.GetFullUserName(recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
@@ -558,7 +560,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.RemoveUserDataFailed,
                 new[] { StudioNotifyHelper.ToRecipient(recipientId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.UserName, DisplayUserSettings.GetFullUserName(recipientId)),
+                new TagValue(Tags.UserName, DisplayUserSettingsHelper.GetFullUserName(recipientId)),
                 new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
                 new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
                 new TagValue(Tags.Message, message));
@@ -576,7 +578,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (TenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
 
                 tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, CommonLinkUtility.GetFullAbsolutePath("~" + SetupInfo.ControlPanelUrl)));
@@ -605,7 +607,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
-            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
+            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -622,7 +624,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.BackupCreated,
                 new[] { StudioNotifyHelper.ToRecipient(userId) },
                 new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettings)));
+                new TagValue(Tags.OwnerName, UserManager.GetUsers(userId).DisplayUserName(DisplayUserSettingsHelper)));
         }
 
         public void SendMsgRestoreStarted(Tenant tenant, bool notifyAllUsers)
@@ -652,7 +654,7 @@ namespace ASC.Web.Studio.Core.Notify
                 Actions.RestoreCompleted,
                 users,
                 new[] { EMailSenderName },
-                new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettings)));
+                new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
         #endregion
@@ -671,7 +673,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         new TagValue(Tags.ActivateUrl, activateUrl),
                         TagValues.GreenButton(greenButtonText, deactivateUrl),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
         public void SendMsgPortalDeletion(Tenant t, string url, bool showAutoRenewText)
@@ -686,7 +688,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, url),
                         new TagValue(Tags.AutoRenew, showAutoRenewText.ToString()),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
         public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
@@ -698,7 +700,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new IRecipient[] { owner },
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, url),
-                        new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettings)));
+                        new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
         #endregion
@@ -716,7 +718,7 @@ namespace ASC.Web.Studio.Core.Notify
                         TagValues.GreenButton(greenButtonText, confirmDnsUpdateUrl),
                         new TagValue("PortalAddress", AddHttpToUrl(portalAddress)),
                         new TagValue("PortalDns", AddHttpToUrl(portalDns ?? string.Empty)),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
 
@@ -732,7 +734,7 @@ namespace ASC.Web.Studio.Core.Notify
                         new[] { EMailSenderName },
                         TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
                         new TagValue(Tags.UserName, newOwnerName),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettings)));
+                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
 
@@ -746,7 +748,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                 if (TenantExtra.Enterprise)
                 {
-                    var defaultRebranding = MailWhiteLabelSettings.Instance.IsDefault;
+                    var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                     notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV10 : Actions.EnterpriseWhitelabelAdminActivationV10;
                     footer = null;
                 }
@@ -817,7 +819,7 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
                 new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettings));
+                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
         }
 
         #endregion
@@ -883,7 +885,7 @@ namespace ASC.Web.Studio.Core.Notify
                             new[] { StudioNotifyHelper.ToRecipient(u.ID) },
                             new[] { EMailSenderName },
                             new TagValue(Tags.PortalUrl, oldVirtualRootPath),
-                            new TagValue(Tags.UserDisplayName, u.DisplayUserName(DisplayUserSettings)));
+                            new TagValue(Tags.UserDisplayName, u.DisplayUserName(DisplayUserSettingsHelper)));
                     }
                 }
                 catch (Exception ex)

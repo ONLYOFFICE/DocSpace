@@ -32,7 +32,7 @@ namespace ASC.Core.Tenants
 {
     [Serializable]
     [DataContract]
-    public class TenantAuditSettings : BaseSettings<TenantAuditSettings>
+    public class TenantAuditSettings : ISettings
     {
         [DataMember(Name = "MaxLifeTime")]
         public const int MaxLifeTime = 180;
@@ -44,21 +44,12 @@ namespace ASC.Core.Tenants
         public int AuditTrailLifeTime { get; set; }
 
         public static Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");
-        public override Guid ID
+        public Guid ID
         {
             get { return Guid; }
         }
 
-        public TenantAuditSettings()
-        {
-
-        }
-
-        public TenantAuditSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TenantAuditSettings
             {

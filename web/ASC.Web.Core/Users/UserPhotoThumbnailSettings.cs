@@ -27,23 +27,21 @@
 using System;
 using System.Drawing;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class UserPhotoThumbnailSettings : BaseSettings<UserPhotoThumbnailSettings>
+    public class UserPhotoThumbnailSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{CC3AA821-43CA-421B-BDCD-81FB6D3361CF}"); }
         }
-
         public UserPhotoThumbnailSettings()
         {
+
         }
 
         public UserPhotoThumbnailSettings(Point point, Size size)
@@ -67,11 +65,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsDefault")]
         public bool IsDefault { get; private set; }
 
-        public UserPhotoThumbnailSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new UserPhotoThumbnailSettings
             {
@@ -79,14 +73,6 @@ namespace ASC.Web.Core.Users
                 Size = new Size(UserPhotoManager.MaxFotoSize.Width, UserPhotoManager.MaxFotoSize.Height),
                 IsDefault = true
             };
-        }
-    }
-
-    public static class UserPhotoThumbnailSettingsFactory
-    {
-        public static IServiceCollection AddUserPhotoThumbnailSettingsService(this IServiceCollection services)
-        {
-            return services.AddSettingsService<UserPhotoThumbnailSettings>();
         }
     }
 }

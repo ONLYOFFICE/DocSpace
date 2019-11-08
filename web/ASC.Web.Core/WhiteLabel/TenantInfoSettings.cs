@@ -35,40 +35,23 @@ using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class TenantInfoSettings : BaseSettings<TenantInfoSettings>
+    public class TenantInfoSettings : ISettings
     {
         [DataMember(Name = "LogoSize")]
-        public Size CompanyLogoSize { get; private set; }
+        public Size CompanyLogoSize { get; internal set; }
 
-        [DataMember(Name = "LogoFileName")] private string _companyLogoFileName;
+        [DataMember(Name = "LogoFileName")] public string _companyLogoFileName;
 
         [DataMember(Name = "Default")]
-        private bool _isDefault { get; set; }
+        internal bool _isDefault { get; set; }
 
-        public TenantInfoSettings()
-        {
-        }
-        public TenantInfoSettings(
-            AuthContext authContext,
-            SettingsManager settingsManager,
-            WebImageSupplier webImageSupplier,
-            TenantManager tenantManager,
-            StorageFactory storageFactory,
-            IConfiguration configuration) : base(authContext, settingsManager, tenantManager)
-        {
-            WebImageSupplier = webImageSupplier;
-            StorageFactory = storageFactory;
-            Configuration = configuration;
-        }
-
-        #region ISettings Members
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new TenantInfoSettings()
             {
@@ -76,10 +59,34 @@ namespace ASC.Web.Core.WhiteLabel
             };
         }
 
-        public void RestoreDefault(TenantLogoManager tenantLogoManager)
+        public Guid ID
+        {
+            get { return new Guid("{5116B892-CCDD-4406-98CD-4F18297C0C0A}"); }
+        }
+    }
+
+    public class TenantInfoSettingsHelper
+    {
+        public WebImageSupplier WebImageSupplier { get; }
+        public StorageFactory StorageFactory { get; }
+        public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
+
+        public TenantInfoSettingsHelper(
+            WebImageSupplier webImageSupplier,
+            StorageFactory storageFactory,
+            TenantManager tenantManager,
+            IConfiguration configuration)
+        {
+            WebImageSupplier = webImageSupplier;
+            StorageFactory = storageFactory;
+            TenantManager = tenantManager;
+            Configuration = configuration;
+        }
+        public void RestoreDefault(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
         {
             RestoreDefaultTenantName();
-            RestoreDefaultLogo(tenantLogoManager);
+            RestoreDefaultLogo(tenantInfoSettings, tenantLogoManager);
         }
 
         public void RestoreDefaultTenantName()
@@ -89,9 +96,9 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager.SaveTenant(currentTenant);
         }
 
-        public void RestoreDefaultLogo(TenantLogoManager tenantLogoManager)
+        public void RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
         {
-            _isDefault = true;
+            tenantInfoSettings._isDefault = true;
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
             try
@@ -101,16 +108,16 @@ namespace ASC.Web.Core.WhiteLabel
             catch
             {
             }
-            CompanyLogoSize = default;
+            tenantInfoSettings.CompanyLogoSize = default;
 
             tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
-        public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantLogoManager tenantLogoManager)
+        public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
         {
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
 
-            if (!_isDefault)
+            if (!tenantInfoSettings._isDefault)
             {
                 try
                 {
@@ -123,63 +130,56 @@ namespace ASC.Web.Core.WhiteLabel
             using (var memory = new MemoryStream(data))
             using (var image = Image.FromStream(memory))
             {
-                CompanyLogoSize = image.Size;
+                tenantInfoSettings.CompanyLogoSize = image.Size;
                 memory.Seek(0, SeekOrigin.Begin);
                 store.Save(companyLogoFileName, memory);
-                _companyLogoFileName = companyLogoFileName;
+                tenantInfoSettings._companyLogoFileName = companyLogoFileName;
             }
-            _isDefault = false;
+            tenantInfoSettings._isDefault = false;
 
             tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
-        public string GetAbsoluteCompanyLogoPath()
+        public string GetAbsoluteCompanyLogoPath(TenantInfoSettings tenantInfoSettings)
         {
-            if (_isDefault)
+            if (tenantInfoSettings._isDefault)
             {
                 return WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark_general.png");
             }
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
-            return store.GetUri(_companyLogoFileName ?? "").ToString();
+            return store.GetUri(tenantInfoSettings._companyLogoFileName ?? "").ToString();
         }
 
         /// <summary>
         /// Get logo stream or null in case of default logo
         /// </summary>
-        public Stream GetStorageLogoData()
+        public Stream GetStorageLogoData(TenantInfoSettings tenantInfoSettings)
         {
-            if (_isDefault) return null;
+            if (tenantInfoSettings._isDefault) return null;
 
             var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), "logo");
 
             if (storage == null) return null;
 
-            var fileName = _companyLogoFileName ?? "";
+            var fileName = tenantInfoSettings._companyLogoFileName ?? "";
 
             return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
         }
-
-        public override Guid ID
-        {
-            get { return new Guid("{5116B892-CCDD-4406-98CD-4F18297C0C0A}"); }
-        }
-
-        public WebImageSupplier WebImageSupplier { get; }
-        public StorageFactory StorageFactory { get; }
-        public IConfiguration Configuration { get; }
-
-        #endregion
     }
 
     public static class TenantInfoSettingsFactory
     {
         public static IServiceCollection AddTenantInfoSettingsService(this IServiceCollection services)
         {
+            services.TryAddScoped<TenantInfoSettingsHelper>();
+
             return services
                 .AddWebImageSupplierService()
                 .AddStorageFactoryService()
-                .AddSettingsService<TenantInfoSettings>();
+                .AddTenantManagerService()
+                .AddTenantLogoManagerService()
+                .AddSettingsManagerService();
         }
     }
 }

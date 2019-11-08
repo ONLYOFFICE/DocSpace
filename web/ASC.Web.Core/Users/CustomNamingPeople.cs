@@ -30,7 +30,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.PublicResources;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,9 +39,9 @@ namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class PeopleNamesSettings : BaseSettings<PeopleNamesSettings>
+    public class PeopleNamesSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("47F34957-6A70-4236-9681-C8281FB762FA"); }
         }
@@ -54,16 +53,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "ItemId")]
         public string ItemID { get; set; }
 
-        public PeopleNamesSettings()
-        {
-
-        }
-
-        public PeopleNamesSettings(AuthContext authContext, SettingsManager settingsManager, TenantManager tenantManager) : base(authContext, settingsManager, tenantManager)
-        {
-        }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault()
         {
             return new PeopleNamesSettings { ItemID = PeopleNamesItem.DefaultID };
         }
@@ -194,16 +184,16 @@ namespace ASC.Web.Core.Users
 
         private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
 
-        public CustomNamingPeople(PeopleNamesSettings peopleNamesSettings)
+        public CustomNamingPeople(SettingsManager settingsManager)
         {
-            PeopleNamesSettings = peopleNamesSettings;
+            SettingsManager = settingsManager;
         }
 
         public PeopleNamesItem Current
         {
             get
             {
-                var settings = PeopleNamesSettings.Load();
+                var settings = SettingsManager.Load<PeopleNamesSettings>();
                 return PeopleNamesItem.CustomID.Equals(settings.ItemID, StringComparison.InvariantCultureIgnoreCase) && settings.Item != null ?
                     settings.Item :
                     GetPeopleNames(settings.ItemID);
@@ -211,6 +201,7 @@ namespace ASC.Web.Core.Users
         }
 
         public PeopleNamesSettings PeopleNamesSettings { get; }
+        public SettingsManager SettingsManager { get; }
 
         public string Substitute<T>(string resourceKey) where T : class
         {
@@ -236,7 +227,7 @@ namespace ASC.Web.Core.Users
         {
             if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
             {
-                var settings = PeopleNamesSettings.Load();
+                var settings = SettingsManager.Load<PeopleNamesSettings>();
                 return settings.Item ??
                     new PeopleNamesItem
                     {
@@ -261,18 +252,18 @@ namespace ASC.Web.Core.Users
 
         public void SetPeopleNames(string schemaId)
         {
-            var settings = PeopleNamesSettings.Load();
+            var settings = SettingsManager.Load<PeopleNamesSettings>();
             settings.ItemID = schemaId;
-            settings.Save();
+            SettingsManager.Save(settings);
         }
 
         public void SetPeopleNames(PeopleNamesItem custom)
         {
-            var settings = PeopleNamesSettings.Load();
+            var settings = SettingsManager.Load<PeopleNamesSettings>();
             custom.Id = PeopleNamesItem.CustomID;
             settings.ItemID = PeopleNamesItem.CustomID;
             settings.Item = custom;
-            settings.Save();
+            SettingsManager.Save(settings);
         }
 
 
@@ -405,12 +396,7 @@ namespace ASC.Web.Core.Users
         {
             services.TryAddScoped<CustomNamingPeople>();
 
-            return services.AddPeopleNamesSettingsService();
-        }
-
-        public static IServiceCollection AddPeopleNamesSettingsService(this IServiceCollection services)
-        {
-            return services.AddSettingsService<PeopleNamesSettings>();
+            return services.AddSettingsManagerService();
         }
     }
 }
