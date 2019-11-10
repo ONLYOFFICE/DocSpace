@@ -10,11 +10,11 @@ export const LOGOUT = 'LOGOUT';
 export const SET_PASSWORD_SETTINGS = 'SET_PASSWORD_SETTINGS';
 export const SET_IS_CONFIRM_LOADED = 'SET_IS_CONFIRM_LOADED';
 export const SET_NEW_EMAIL = 'SET_NEW_EMAIL';
-export const SET_NEW_SETTING_NODE = 'SET_NEW_SETTING_NODE';
 export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
 export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
 export const GET_TIMEZONES = 'GET_TIMEZONES';
 export const SET_CURRENT_PRODUCT_ID = 'SET_CURRENT_PRODUCT_ID';
+export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 
 export function setCurrentUser(user) {
     return {
@@ -71,13 +71,6 @@ export function setNewEmail(email) {
     };
 };
 
-export function setNewSelectedNode(selectedNodeLink) {
-    return {
-        type: SET_NEW_SETTING_NODE,
-        selectedNodeLink
-    };
-};
-
 export function getPortalCultures(cultures) {
     return {
         type: GET_PORTAL_CULTURES,
@@ -103,6 +96,13 @@ export function setCurrentProductId(currentProductId) {
     return {
         type: SET_CURRENT_PRODUCT_ID,
         currentProductId
+    };
+};
+
+export function setGreetingSettings(title) {
+    return {
+        type: SET_GREETING_SETTINGS,
+        title
     };
 };
 
@@ -227,8 +227,35 @@ export function setLanguageAndTime(lng, timeZoneID) {
 export function getPortalTimezones() {
     return dispatch => {
         return api.getPortalTimezones()
-        .then((timezones) => {
-            dispatch(getTimezones(timezones))
-        });
+            .then((timezones) => {
+                dispatch(getTimezones(timezones))
+            });
     };
 };
+
+
+/* export function getGreetingTitle() {
+    return dispatch => {
+        return api.getGreetingSettings()
+            .then(greetingTitle => dispatch(setGreetingSettings(greetingTitle)));
+    };
+} */
+
+export function setGreetingTitle(greetingTitle) {
+    return dispatch => {
+        return api.setGreetingSettings(greetingTitle)
+            .then((res) => {
+                dispatch(setGreetingSettings(greetingTitle))
+            });
+    };
+}
+
+export function restoreGreetingTitle() {
+    return dispatch => {
+        return api.restoreGreetingSettings()
+            .then((res) => {
+                dispatch(setGreetingSettings(res.companyName))
+            });
+    };
+}
+

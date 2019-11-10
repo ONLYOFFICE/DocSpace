@@ -20,9 +20,11 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
+
     const queryParams = this.state.queryString.split('&');
     const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
     const linkParams = Object.fromEntries(arrayOfQueryParams);
+    
     if (linkParams.email_change && linkParams.email_change === "success"){
       toastr.success(t('ChangeEmailSuccess'));
     }
@@ -35,13 +37,13 @@ class PureProfile extends React.Component {
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
-    if (userId !== prevUserId) {
+    if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
     }
   }
 
   render() {
-    console.log("Profile render")
+    //console.log("Profile render")
 
     const { profile, isVisitor } = this.props;
 
@@ -52,8 +54,8 @@ class PureProfile extends React.Component {
     };
 
     const sectionProps = profile ? {
-      sectionHeaderContent: <SectionHeaderContent profile={profile} />,
-      sectionBodyContent: <SectionBodyContent profile={profile} />
+      sectionHeaderContent: <SectionHeaderContent />,
+      sectionBodyContent: <SectionBodyContent />
     } : {
       sectionBodyContent: <Loader className="pageLoader" type="rombs" size={40} />
     };

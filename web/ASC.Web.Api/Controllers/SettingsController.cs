@@ -104,7 +104,6 @@ namespace ASC.Api.Settings
         public StudioNotifyHelper StudioNotifyHelper { get; }
         public LicenseReader LicenseReader { get; }
         public PermissionContext PermissionContext { get; }
-        public TfaAppUserSettings TfaAppUserSettings { get; }
         public SettingsManager SettingsManager { get; }
         public TfaManager TfaManager { get; }
         public WebItemManager WebItemManager { get; }
@@ -146,7 +145,6 @@ namespace ASC.Api.Settings
             StudioNotifyHelper studioNotifyHelper,
             LicenseReader licenseReader,
             PermissionContext permissionContext,
-            TfaAppUserSettings tfaAppUserSettings,
             SettingsManager settingsManager,
             TfaManager tfaManager,
             WebItemManager webItemManager,
@@ -190,7 +188,6 @@ namespace ASC.Api.Settings
             StudioNotifyHelper = studioNotifyHelper;
             LicenseReader = licenseReader;
             PermissionContext = permissionContext;
-            TfaAppUserSettings = tfaAppUserSettings;
             SettingsManager = settingsManager;
             TfaManager = tfaManager;
             WebItemManager = webItemManager;
@@ -222,7 +219,8 @@ namespace ASC.Api.Settings
         {
             var settings = new SettingsWrapper
             {
-                Culture = Tenant.GetCulture().ToString()
+                Culture = Tenant.GetCulture().ToString(),
+                GreetingSettings = Tenant.Name
             };
 
             if (AuthContext.IsAuthenticated)
@@ -233,7 +231,6 @@ namespace ASC.Api.Settings
                 settings.Timezone = timeZone.Id;
                 settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
-                settings.OwnerId = Tenant.OwnerId;
             }
 
             return settings;
@@ -280,10 +277,58 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
+        /*        [Read("greetingsettings")]
+                public string GetGreetingSettings()
+                {
+                    return Tenant.Name;
+                }*/
+
+        [Create("greetingsettings")]
+        public object SaveGreetingSettings(GreetingSettingsModel model)
+        {
+            try
+            {
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+                Tenant.Name = model.Title;
+                TenantManager.SaveTenant(Tenant);
+
+                MessageService.Send(MessageAction.GreetingSettingsUpdated);
+
+                return new { Status = 1, Message = Resource.SuccessfullySaveGreetingSettingsMessage };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
+        }
+
+        [Create("greetingsettings/restore")]
+        public object RestoreGreetingSettings()
+        {
+            try
+            {
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+                TenantInfoSettingsHelper.RestoreDefaultTenantName();
+
+                return new
+                {
+                    Status = 1,
+                    Message = Resource.SuccessfullySaveGreetingSettingsMessage,
+                    CompanyName = Tenant.Name
+                };
+            }
+            catch (Exception e)
+            {
+                return new { Status = 0, Message = e.Message.HtmlEncode() };
+            }
+        }
+
         //[Read("recalculatequota")]
         //public void RecalculateQuota()
         //{
-        //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
         //    var operations = quotaTasks.GetTasks()
         //        .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
