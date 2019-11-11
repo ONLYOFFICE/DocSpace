@@ -7,6 +7,7 @@ import { Icons } from "../../icons";
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;
   height: 56px;
+  min-height: 56px;
   display: none;
 
   @media ${tablet} {
