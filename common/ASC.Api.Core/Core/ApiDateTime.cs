@@ -234,9 +234,9 @@ namespace ASC.Api.Core
             return d.UtcTime;
         }
 
-        public int CompareTo(DateTime other, TenantManager tenantManager)
+        public int CompareTo(DateTime other)
         {
-            return this.CompareTo(new ApiDateTime(tenantManager, other));
+            return CompareTo(new ApiDateTime(TenantManager, other));
         }
 
         public int CompareTo(ApiDateTime other)
@@ -271,7 +271,7 @@ namespace ASC.Api.Core
         public int CompareTo(object obj)
         {
             if (obj is DateTime)
-                return CompareTo((DateTime)obj, TenantManager);
+                return CompareTo((DateTime)obj);
             return obj is ApiDateTime ? CompareTo((ApiDateTime)obj) : 0;
         }
 
