@@ -30,39 +30,14 @@ using ASC.Api.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
     [DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraper
     {
-        protected EmployeeWraper()
-        {
-        }
-
-        public EmployeeWraper(UserInfo userInfo, ApiContext httpContext, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
-        {
-            Id = userInfo.ID;
-            DisplayName = displayUserSettingsHelper.GetFullUserName(userInfo);
-            if (!string.IsNullOrEmpty(userInfo.Title))
-            {
-                Title = userInfo.Title;
-            }
-
-            var userInfoLM = userInfo.LastModified.GetHashCode();
-
-            if (httpContext.Check("avatarSmall"))
-            {
-                AvatarSmall = userPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
-            }
-
-            if (Id != Guid.Empty)
-            {
-                var profileUrl = commonLinkUtility.GetUserProfile(userInfo, false);
-                ProfileUrl = commonLinkUtility.GetFullAbsolutePath(profileUrl);
-            }
-        }
-
         [DataMember(Order = 1)]
         public Guid Id { get; set; }
 
@@ -78,11 +53,6 @@ namespace ASC.Web.Api.Models
         [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
-        public static EmployeeWraper Get(UserInfo userInfo, ApiContext context, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
-        {
-            return new EmployeeWraper(userInfo, context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility);
-        }
-
         public static EmployeeWraper GetSample()
         {
             return new EmployeeWraper
@@ -92,6 +62,67 @@ namespace ASC.Web.Api.Models
                 Title = "Manager",
                 AvatarSmall = "url to small avatar",
             };
+        }
+    }
+
+    public class EmployeeWraperHelper
+    {
+        public UserInfo UserInfo { get; set; }
+        public ApiContext HttpContext { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public UserPhotoManager UserPhotoManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+
+        public EmployeeWraperHelper(ApiContext httpContext, DisplayUserSettingsHelper displayUserSettingsHelper, UserPhotoManager userPhotoManager, CommonLinkUtility commonLinkUtility)
+        {
+            HttpContext = httpContext;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            UserPhotoManager = userPhotoManager;
+            CommonLinkUtility = commonLinkUtility;
+        }
+
+        public EmployeeWraper Get(UserInfo userInfo)
+        {
+            return Init(new EmployeeWraper(), userInfo);
+        }
+
+        protected EmployeeWraper Init(EmployeeWraper result, UserInfo userInfo)
+        {
+            result.Id = userInfo.ID;
+            result.DisplayName = DisplayUserSettingsHelper.GetFullUserName(userInfo);
+            if (!string.IsNullOrEmpty(userInfo.Title))
+            {
+                result.Title = userInfo.Title;
+            }
+
+            var userInfoLM = userInfo.LastModified.GetHashCode();
+
+            if (HttpContext.Check("avatarSmall"))
+            {
+                result.AvatarSmall = UserPhotoManager.GetSmallPhotoURL(userInfo.ID, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            }
+
+            if (result.Id != Guid.Empty)
+            {
+                var profileUrl = CommonLinkUtility.GetUserProfile(userInfo, false);
+                result.ProfileUrl = CommonLinkUtility.GetFullAbsolutePath(profileUrl);
+            }
+
+            return result;
+        }
+    }
+
+    public static class EmployeeWraperExtension
+    {
+        public static IServiceCollection AddEmployeeWraper(this IServiceCollection services)
+        {
+            services.TryAddScoped<EmployeeWraperHelper>();
+
+            return services
+                .AddApiContextService()
+                .AddDisplayUserSettingsService()
+                .AddUserPhotoManagerService()
+                .AddCommonLinkUtilityService();
         }
     }
 }

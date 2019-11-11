@@ -14,7 +14,6 @@ using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
@@ -22,37 +21,25 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        public ApiContext ApiContext { get; }
         public MessageService MessageService { get; }
 
         public UserManager UserManager { get; }
-        public UserPhotoManager UserPhotoManager { get; }
-        public SecurityContext SecurityContext { get; }
         public PermissionContext PermissionContext { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public MessageTarget MessageTarget { get; }
+        public GroupWraperFullHelper GroupWraperFullHelper { get; }
 
         public GroupController(
             MessageService messageService,
-            ApiContext apiContext,
             UserManager userManager,
-            UserPhotoManager userPhotoManager,
-            SecurityContext securityContext,
             PermissionContext permissionContext,
-            CommonLinkUtility commonLinkUtility,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            MessageTarget messageTarget)
+            MessageTarget messageTarget,
+            GroupWraperFullHelper groupWraperFullHelper)
         {
             MessageService = messageService;
-            ApiContext = apiContext;
             UserManager = userManager;
-            UserPhotoManager = userPhotoManager;
-            SecurityContext = securityContext;
             PermissionContext = permissionContext;
-            CommonLinkUtility = commonLinkUtility;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
             MessageTarget = messageTarget;
+            GroupWraperFullHelper = groupWraperFullHelper;
         }
 
         [Read]
@@ -64,7 +51,7 @@ namespace ASC.Employee.Core.Controllers
         [Read("{groupid}")]
         public GroupWrapperFull GetById(Guid groupid)
         {
-            return new GroupWrapperFull(GetGroupInfo(groupid), true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return GroupWraperFullHelper.Get(GetGroupInfo(groupid), true);
         }
 
         [Read("user/{userid}")]
@@ -91,7 +78,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.GroupCreated, MessageTarget.Create(group.ID), group.Name);
 
-            return new GroupWrapperFull(group, true, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return GroupWraperFullHelper.Get(group, true);
         }
 
         [Update("{groupid}")]
@@ -128,7 +115,7 @@ namespace ASC.Employee.Core.Controllers
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var @group = GetGroupInfo(groupid);
-            var groupWrapperFull = new GroupWrapperFull(group, false, ApiContext, UserManager, UserPhotoManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            var groupWrapperFull = GroupWraperFullHelper.Get(group, false);
 
             UserManager.DeleteGroup(groupid);
 
@@ -236,6 +223,7 @@ namespace ASC.Employee.Core.Controllers
         public static IServiceCollection AddGroupController(this IServiceCollection services)
         {
             return services
+                .AddGroupWraperFull()
                 .AddMessageServiceService()
                 .AddApiContextService()
                 .AddUserManagerService()

@@ -69,9 +69,7 @@ namespace ASC.Employee.Core.Controllers
         public WebItemManager WebItemManager { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public TenantUtil TenantUtil { get; }
-        public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
         public SetupInfo SetupInfo { get; }
         public FileSizeComment FileSizeComment { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
@@ -82,6 +80,8 @@ namespace ASC.Employee.Core.Controllers
         public WebItemSecurityCache WebItemSecurityCache { get; }
         public MessageTarget MessageTarget { get; }
         public SettingsManager SettingsManager { get; }
+        public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -103,9 +103,7 @@ namespace ASC.Employee.Core.Controllers
             WebItemManager webItemManager,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
-            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
-            CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             FileSizeComment fileSizeComment,
             DisplayUserSettingsHelper displayUserSettingsHelper,
@@ -116,7 +114,9 @@ namespace ASC.Employee.Core.Controllers
             WebItemSecurityCache webItemSecurityCache,
             MessageTarget messageTarget,
             SettingsManager settingsManager,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            EmployeeWraperFullHelper employeeWraperFullHelper,
+            EmployeeWraperHelper employeeWraperHelper)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -137,9 +137,7 @@ namespace ASC.Employee.Core.Controllers
             WebItemManager = webItemManager;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
-            TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
-            CommonLinkUtility = commonLinkUtility;
             SetupInfo = setupInfo;
             FileSizeComment = fileSizeComment;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
@@ -150,6 +148,8 @@ namespace ASC.Employee.Core.Controllers
             WebItemSecurityCache = webItemSecurityCache;
             MessageTarget = messageTarget;
             SettingsManager = settingsManager;
+            EmployeeWraperFullHelper = employeeWraperFullHelper;
+            EmployeeWraperHelper = employeeWraperHelper;
         }
 
         [Read("info")]
@@ -178,13 +178,13 @@ namespace ASC.Employee.Core.Controllers
                 query = query.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
                 ApiContext.SetDataFiltered();
             }
-            return query.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return query.Select(EmployeeWraperFullHelper.GetFull);
         }
 
         [Read("@self")]
         public EmployeeWraper Self()
         {
-            return new EmployeeWraperFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(UserManager.GetUsers(SecurityContext.CurrentAccount.ID));
         }
 
         [Read("email")]
@@ -198,7 +198,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new ItemNotFoundException("User not found");
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Read("{username}", order: int.MaxValue)]
@@ -223,7 +223,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new ItemNotFoundException("User not found");
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Read("@search/{query}")]
@@ -238,7 +238,7 @@ namespace ASC.Employee.Core.Controllers
                     groupId = new Guid(ApiContext.FilterValue);
                 }
 
-                return UserManager.Search(query, EmployeeStatus.Active, groupId).Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+                return UserManager.Search(query, EmployeeStatus.Active, groupId).Select(EmployeeWraperFullHelper.GetFull);
             }
             catch (Exception error)
             {
@@ -272,7 +272,7 @@ namespace ASC.Employee.Core.Controllers
                 list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
                                        (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Contacts != null && x.Contacts.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
-                return list.Select(x => new EmployeeWraperFull(x, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+                return list.Select(EmployeeWraperFullHelper.GetFull);
             }
             catch (Exception error)
             {
@@ -338,7 +338,7 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-            return users.Select(u => new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
         [Read("simple/filter")]
@@ -346,7 +346,7 @@ namespace ASC.Employee.Core.Controllers
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
 
-            return users.Select(u => new EmployeeWraper(u, ApiContext, DisplayUserSettingsHelper, UserPhotoManager, CommonLinkUtility));
+            return users.Select(EmployeeWraperHelper.Get);
         }
 
         private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
@@ -442,7 +442,7 @@ namespace ASC.Employee.Core.Controllers
                 UpdatePhotoUrl(memberModel.Files, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Create("active")]
@@ -484,7 +484,7 @@ namespace ASC.Employee.Core.Controllers
                 UpdatePhotoUrl(memberModel.Files, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Update("{userid}/culture")]
@@ -520,7 +520,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper); ;
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Update("{userid}")]
@@ -629,7 +629,7 @@ namespace ASC.Employee.Core.Controllers
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Delete("{userid}")]
@@ -655,7 +655,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Delete("@self")]
@@ -699,7 +699,7 @@ namespace ASC.Employee.Core.Controllers
                 //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
             }
 
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Update("{userid}/contacts")]
@@ -712,7 +712,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Create("{userid}/contacts")]
@@ -725,7 +725,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Delete("{userid}/contacts")]
@@ -738,7 +738,7 @@ namespace ASC.Employee.Core.Controllers
 
             DeleteContacts(memberModel.Contacts, user);
             UserManager.SaveUserInfo(user);
-            return new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(user);
         }
 
         [Read("{userid}/photo")]
@@ -1065,7 +1065,7 @@ namespace ASC.Employee.Core.Controllers
                 MessageService.Send(MessageAction.CookieSettingsUpdated);
             }
 
-            return new EmployeeWraperFull(GetUserInfo(userid.ToString()), ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper);
+            return EmployeeWraperFullHelper.GetFull(GetUserInfo(userid.ToString()));
         }
 
 
@@ -1148,7 +1148,7 @@ namespace ASC.Employee.Core.Controllers
 
                 u.ActivationStatus = activationstatus;
                 UserManager.SaveUserInfo(u);
-                retuls.Add(new EmployeeWraperFull(u, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+                retuls.Add(EmployeeWraperFullHelper.GetFull(u));
             }
 
             return retuls;
@@ -1189,7 +1189,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UsersUpdatedType, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
         [Update("status/{status}")]
@@ -1230,7 +1230,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
 
@@ -1265,7 +1265,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UsersSentActivationInstructions, MessageTarget.Create(users.Select(x => x.ID)), users.Select(x => x.DisplayUserName(false, DisplayUserSettingsHelper)));
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
         [Update("delete", Order = -1)]
@@ -1292,7 +1292,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
 
-            return users.Select(user => new EmployeeWraperFull(user, ApiContext, UserManager, UserPhotoManager, WebItemSecurity, TenantManager, CommonLinkUtility, DisplayUserSettingsHelper));
+            return users.Select(EmployeeWraperFullHelper.GetFull);
         }
 
 
@@ -1611,7 +1611,9 @@ namespace ASC.Employee.Core.Controllers
                 .AddQueueWorkerReassignService()
                 .AddStudioNotifyServiceService()
                 .AddUserManagerService()
-                .AddSettingsManagerService();
+                .AddSettingsManagerService()
+                .AddEmployeeWraperFull()
+                .AddEmployeeWraper();
         }
     }
 }

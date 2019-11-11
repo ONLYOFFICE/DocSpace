@@ -93,11 +93,11 @@ namespace ASC.Api.Settings
         public StudioNotifyService StudioNotifyService { get; }
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IServiceProvider ServiceProvider { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public UserPhotoManager UserPhotoManager { get; }
         public AuthContext AuthContext { get; }
         public CookiesManager CookiesManager { get; }
         public WebItemSecurity WebItemSecurity { get; }
@@ -138,7 +138,6 @@ namespace ASC.Api.Settings
             TenantManager tenantManager,
             TenantExtra tenantExtra,
             TenantStatisticsProvider tenantStatisticsProvider,
-            UserPhotoManager userPhotoManager,
             AuthContext authContext,
             CookiesManager cookiesManager,
             WebItemSecurity webItemSecurity,
@@ -169,11 +168,13 @@ namespace ASC.Api.Settings
             CoreSettings coreSettings,
             StorageSettingsHelper storageSettingsHelper,
             IWebHostEnvironment webHostEnvironment,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            EmployeeWraperHelper employeeWraperHelper)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
             ServiceProvider = serviceProvider;
+            EmployeeWraperHelper = employeeWraperHelper;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -181,7 +182,6 @@ namespace ASC.Api.Settings
             TenantManager = tenantManager;
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
-            UserPhotoManager = userPhotoManager;
             AuthContext = authContext;
             CookiesManager = cookiesManager;
             WebItemSecurity = webItemSecurity;
@@ -398,7 +398,7 @@ namespace ASC.Api.Settings
                       {
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
-                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext, DisplayUserSettingsHelper, UserPhotoManager, CommonLinkUtility)),
+                          Users = i.Users.Select(EmployeeWraperHelper.Get),
                           Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
@@ -521,7 +521,7 @@ namespace ASC.Api.Settings
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
             return WebItemSecurity.GetProductAdministrators(productid)
-                                  .Select(r => EmployeeWraper.Get(r, ApiContext, DisplayUserSettingsHelper, UserPhotoManager, CommonLinkUtility))
+                                  .Select(EmployeeWraperHelper.Get)
                                   .ToList();
         }
 
