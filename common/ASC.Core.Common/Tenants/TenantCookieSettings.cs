@@ -124,7 +124,7 @@ namespace ASC.Core.Tenants
         }
     }
 
-    public static class TenantCookieSettingsFactory
+    public static class TenantCookieSettingsExtention
     {
         public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
         {

@@ -1576,7 +1576,7 @@ namespace ASC.Employee.Core.Controllers
         }
     }
 
-    public static class PeopleControllerFactory
+    public static class PeopleControllerExtention
     {
         public static IServiceCollection AddPeopleController(this IServiceCollection services)
         {

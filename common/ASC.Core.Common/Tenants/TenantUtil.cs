@@ -95,7 +95,7 @@ namespace ASC.Core.Tenants
         }
     }
 
-    public static class TenantUtilFactory
+    public static class TenantUtilExtention
     {
         public static IServiceCollection AddTenantUtilService(this IServiceCollection services)
         {

@@ -96,7 +96,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    public static class DisplayUserSettingsFactory
+    public static class DisplayUserSettingsExtention
     {
         public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
         {

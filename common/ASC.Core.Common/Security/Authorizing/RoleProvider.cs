@@ -84,7 +84,7 @@ namespace ASC.Core.Security.Authorizing
         }
     }
 
-    public static class RoleProviderConfigFactory
+    public static class RoleProviderConfigExtention
     {
         public static IServiceCollection AddRoleProviderService(this IServiceCollection services)
         {

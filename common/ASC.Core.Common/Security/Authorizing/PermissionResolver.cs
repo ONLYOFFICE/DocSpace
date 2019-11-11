@@ -123,7 +123,7 @@ namespace ASC.Core.Security.Authorizing
         }
     }
 
-    public static class PermissionResolverConfigFactory
+    public static class PermissionResolverConfigExtention
     {
         public static IServiceCollection AddPermissionResolverService(this IServiceCollection services)
         {

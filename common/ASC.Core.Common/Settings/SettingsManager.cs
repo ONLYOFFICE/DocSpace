@@ -49,7 +49,7 @@ namespace ASC.Core.Common.Settings
         }
     }
 
-    public static class SettingsManagerFactory
+    public static class SettingsManagerExtention
     {
         public static IServiceCollection AddSettingsManagerService(this IServiceCollection services)
         {

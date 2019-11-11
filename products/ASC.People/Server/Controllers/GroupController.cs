@@ -231,7 +231,7 @@ namespace ASC.Employee.Core.Controllers
         }
     }
 
-    public static class GroupControllerFactory
+    public static class GroupControllerExtention
     {
         public static IServiceCollection AddGroupController(this IServiceCollection services)
         {

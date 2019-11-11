@@ -163,7 +163,7 @@ namespace ASC.Web.Core.WhiteLabel
         public IConfiguration Configuration { get; }
     }
 
-    public static class MailWhiteLabelSettingsFactory
+    public static class MailWhiteLabelSettingsExtention
     {
         public static IServiceCollection AddMailWhiteLabelSettingsService(this IServiceCollection services)
         {
