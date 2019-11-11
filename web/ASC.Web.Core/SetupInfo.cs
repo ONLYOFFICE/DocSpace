@@ -218,7 +218,7 @@ namespace ASC.Web.Studio.Core
         }
     }
 
-    public static class SetupInfoFactory
+    public static class SetupInfoExtension
     {
         public static IServiceCollection AddSetupInfo(this IServiceCollection services)
         {

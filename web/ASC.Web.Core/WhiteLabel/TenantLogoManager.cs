@@ -203,7 +203,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
-    public static class TenantLogoManagerFactory
+    public static class TenantLogoManagerExtension
     {
         public static IServiceCollection AddTenantLogoManagerService(this IServiceCollection services)
         {

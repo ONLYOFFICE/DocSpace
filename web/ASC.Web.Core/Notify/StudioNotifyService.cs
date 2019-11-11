@@ -925,7 +925,7 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
     }
 
-    public static class StudioNotifyServiceFactory
+    public static class StudioNotifyServiceExtension
     {
         public static IServiceCollection AddStudioNotifyServiceService(this IServiceCollection services)
         {

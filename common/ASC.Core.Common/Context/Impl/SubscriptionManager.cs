@@ -149,7 +149,7 @@ namespace ASC.Core
         }
     }
 
-    public static class SubscriptionConfigFactory
+    public static class SubscriptionConfigExtension
     {
         public static IServiceCollection AddSubscriptionManagerService(this IServiceCollection services)
         {

@@ -118,7 +118,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public static class AzConfigFactory
+    public static class AzConfigExtension
     {
         public static IServiceCollection AddAzService(this IServiceCollection services)
         {

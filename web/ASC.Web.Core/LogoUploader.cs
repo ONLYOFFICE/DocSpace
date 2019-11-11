@@ -186,7 +186,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
         }
     }
 
-    public static class StorageHelperFactory
+    public static class StorageHelperExtension
     {
         public static IServiceCollection AddStorageHelperService(this IServiceCollection services)
         {

@@ -79,7 +79,7 @@ namespace ASC.IPSecurity
             return ipsList;
         }
     }
-    public static class IPRestrictionsRepositoryFactory
+    public static class IPRestrictionsRepositoryExtension
     {
         public static IServiceCollection AddIPRestrictionsRepositoryService(this IServiceCollection services)
         {

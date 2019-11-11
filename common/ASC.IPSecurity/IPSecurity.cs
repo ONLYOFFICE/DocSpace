@@ -141,7 +141,7 @@ namespace ASC.IPSecurity
         }
     }
 
-    public static class IPSecurityFactory
+    public static class IPSecurityExtension
     {
         public static IServiceCollection AddIPSecurityService(this IServiceCollection services)
         {

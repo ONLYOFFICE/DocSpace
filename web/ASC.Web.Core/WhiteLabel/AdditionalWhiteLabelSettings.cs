@@ -210,7 +210,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
-    public static class AdditionalWhiteLabelSettingsFactory
+    public static class AdditionalWhiteLabelSettingsExtension
     {
         public static IServiceCollection AddAdditionalWhiteLabelSettingsService(this IServiceCollection services)
         {

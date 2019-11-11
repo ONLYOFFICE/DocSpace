@@ -285,7 +285,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public static class SubscriptionConfigFactory
+    public static class SubscriptionConfigExtension
     {
         public static IServiceCollection AddSubscriptionService(this IServiceCollection services)
         {

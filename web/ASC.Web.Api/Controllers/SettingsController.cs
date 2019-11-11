@@ -1362,7 +1362,7 @@ namespace ASC.Api.Settings
         }
     }
 
-    public static class SettingsControllerFactory
+    public static class SettingsControllerExtension
     {
         public static IServiceCollection AddSettingsController(this IServiceCollection services)
         {

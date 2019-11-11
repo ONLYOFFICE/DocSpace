@@ -127,7 +127,7 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyServiceLauncherFactory
+    public static class NotifyServiceLauncherExtension
     {
         public static IServiceCollection AddNotifyServiceLauncher(this IServiceCollection services)
         {

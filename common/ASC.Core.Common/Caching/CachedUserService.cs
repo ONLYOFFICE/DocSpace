@@ -457,7 +457,7 @@ namespace ASC.Core.Caching
             public string Key { get; set; }
         }
     }
-    public static class UserConfigFactory
+    public static class UserConfigExtension
     {
         public static IServiceCollection AddUserService(this IServiceCollection services)
         {

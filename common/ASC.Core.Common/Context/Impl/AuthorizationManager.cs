@@ -129,7 +129,7 @@ namespace ASC.Core
         }
     }
 
-    public static class AuthorizationManagerConfigFactory
+    public static class AuthorizationManagerConfigExtension
     {
         public static IServiceCollection AddAuthorizationManagerService(this IServiceCollection services)
         {

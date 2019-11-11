@@ -287,7 +287,7 @@ namespace ASC.MessagingSystem
         }
     }
 
-    public static class MessageServiceFactory
+    public static class MessageServiceExtension
     {
         public static IServiceCollection AddMessageServiceService(this IServiceCollection services)
         {

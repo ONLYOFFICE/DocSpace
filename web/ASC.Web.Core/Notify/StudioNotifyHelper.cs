@@ -189,7 +189,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class StudioNotifyHelperFactory
+    public static class StudioNotifyHelperExtension
     {
         public static IServiceCollection AddStudioNotifyHelperService(this IServiceCollection services)
         {

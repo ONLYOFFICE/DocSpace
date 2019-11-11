@@ -199,7 +199,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public static class StorageSettingsFactory
+    public static class StorageSettingsExtension
     {
         public static IServiceCollection AddBaseStorageSettingsService(this IServiceCollection services)
         {

@@ -337,7 +337,7 @@ namespace ASC.Core.Billing
         public IConfiguration Configuration { get; }
     }
 
-    public static class LicenseReaderFactory
+    public static class LicenseReaderExtension
     {
         public static IServiceCollection AddLicenseReaderService(this IServiceCollection services)
         {

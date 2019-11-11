@@ -75,7 +75,7 @@ namespace ASC.Security.Cryptography
             return buff;
         }
     }
-    public static class MachinePseudoKeysFactory
+    public static class MachinePseudoKeysExtension
     {
         public static IServiceCollection AddMachinePseudoKeysService(this IServiceCollection services)
         {

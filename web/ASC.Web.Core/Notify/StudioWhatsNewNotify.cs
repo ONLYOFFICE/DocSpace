@@ -303,7 +303,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class StudioWhatsNewNotifyFactory
+    public static class StudioWhatsNewNotifyExtension
     {
         public static IServiceCollection AddStudioWhatsNewNotify(this IServiceCollection services)
         {

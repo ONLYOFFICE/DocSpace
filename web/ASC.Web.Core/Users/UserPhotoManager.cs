@@ -1042,7 +1042,7 @@ namespace ASC.Web.Core.Users
             (w, h) = (size.Width, size.Height);
     }
 
-    public static class ResizeWorkerItemFactory
+    public static class ResizeWorkerItemExtension
     {
         public static IServiceCollection AddResizeWorkerItemService(this IServiceCollection services)
         {

@@ -295,7 +295,7 @@ namespace ASC.Core.Data
         }
     }
 
-    public static class DbSettingsManagerFactory
+    public static class DbSettingsManagerExtension
     {
         public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
         {

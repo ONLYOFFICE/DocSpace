@@ -171,7 +171,7 @@ namespace ASC.Notify
         }
     }
 
-    public static class DbWorkerFactory
+    public static class DbWorkerExtension
     {
         public static IServiceCollection AddDbWorker(this IServiceCollection services)
         {

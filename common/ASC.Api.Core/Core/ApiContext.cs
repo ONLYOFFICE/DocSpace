@@ -268,7 +268,7 @@ namespace ASC.Api.Core
         }
     }
 
-    public static class ApiContextConfigFactory
+    public static class ApiContextConfigExtension
     {
         public static IServiceCollection AddApiContextService(this IServiceCollection services)
         {

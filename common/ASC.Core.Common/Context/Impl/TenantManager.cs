@@ -283,7 +283,7 @@ namespace ASC.Core
         }
     }
 
-    public static class TenantManagerConfigFactory
+    public static class TenantManagerConfigExtension
     {
         public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
         {

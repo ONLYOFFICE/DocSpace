@@ -86,7 +86,7 @@ namespace ASC.Security.Cryptography
             return MachinePseudoKeys.GetMachineConstant(32);
         }
     }
-    public static class InstanceCryptoFactory
+    public static class InstanceCryptoExtension
     {
         public static IServiceCollection AddInstanceCryptoService(this IServiceCollection services)
         {

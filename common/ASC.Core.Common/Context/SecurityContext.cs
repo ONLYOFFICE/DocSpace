@@ -344,7 +344,7 @@ namespace ASC.Core
         }
     }
 
-    public static class AuthContextConfigFactory
+    public static class AuthContextConfigExtension
     {
         public static IServiceCollection AddSecurityContextService(this IServiceCollection services)
         {

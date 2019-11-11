@@ -252,7 +252,7 @@ namespace ASC.Web.Studio.Utility
         }
     }
 
-    public static class TenantExtraFactory
+    public static class TenantExtraExtension
     {
         public static IServiceCollection AddTenantExtraService(this IServiceCollection services)
         {

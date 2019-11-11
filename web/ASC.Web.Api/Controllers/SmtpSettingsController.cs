@@ -249,7 +249,7 @@ namespace ASC.Api.Settings
         }
     }
 
-    public static class SmtpSettingsControllerFactory
+    public static class SmtpSettingsControllerExtension
     {
         public static IServiceCollection AddSmtpSettingsController(this IServiceCollection services)
         {

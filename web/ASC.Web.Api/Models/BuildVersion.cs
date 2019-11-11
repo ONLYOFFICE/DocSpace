@@ -97,7 +97,7 @@ namespace ASC.Api.Settings
         }
     }
 
-    public static class BuildVersionFactory
+    public static class BuildVersionExtension
     {
         public static IServiceCollection AddBuildVersionService(this IServiceCollection services)
         {

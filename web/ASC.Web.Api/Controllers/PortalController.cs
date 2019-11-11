@@ -153,7 +153,7 @@ namespace ASC.Web.Api.Controllers
         }
     }
 
-    public static class PortalControllerFactory
+    public static class PortalControllerExtension
     {
         public static IServiceCollection AddPortalController(this IServiceCollection services)
         {

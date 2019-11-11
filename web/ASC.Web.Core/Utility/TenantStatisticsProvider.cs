@@ -73,7 +73,7 @@ namespace ASC.Web.Studio.UserControls.Statistics
         }
     }
 
-    public static class TenantStatisticsProviderFactory
+    public static class TenantStatisticsProviderExtension
     {
         public static IServiceCollection AddTenantStatisticsProviderService(this IServiceCollection services)
         {

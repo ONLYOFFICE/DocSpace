@@ -190,7 +190,7 @@ namespace ASC.Web.Studio.Core.TFA
         }
     }
 
-    public static class TfaManagerFactory
+    public static class TfaManagerExtension
     {
         public static IServiceCollection AddTfaManagerService(this IServiceCollection services)
         {

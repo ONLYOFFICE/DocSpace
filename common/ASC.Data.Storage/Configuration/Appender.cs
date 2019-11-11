@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Data.Storage.Configuration
 {
-    public static class StorageConfigFactory
+    public static class StorageConfigExtension
     {
         public static IServiceCollection AddStorage(this IServiceCollection services)
         {

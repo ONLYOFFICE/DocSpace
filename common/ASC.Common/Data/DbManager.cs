@@ -369,7 +369,7 @@ namespace ASC.Common.Data
         }
     }
 
-    public static class DbManagerFactory
+    public static class DbManagerExtension
     {
         public static IServiceCollection AddDbManagerService(this IServiceCollection services)
         {

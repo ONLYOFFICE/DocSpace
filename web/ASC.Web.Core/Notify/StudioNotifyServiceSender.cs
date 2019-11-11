@@ -175,7 +175,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class ServiceLauncherFactory
+    public static class ServiceLauncherExtension
     {
         public static IServiceCollection AddStudioNotifyServiceSender(this IServiceCollection services)
         {

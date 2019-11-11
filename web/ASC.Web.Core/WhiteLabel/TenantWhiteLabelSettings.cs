@@ -593,7 +593,7 @@ namespace ASC.Web.Core.WhiteLabel
         #endregion
     }
 
-    public static class TenantWhiteLabelSettingsFactory
+    public static class TenantWhiteLabelSettingsExtension
     {
         public static IServiceCollection AddTenantWhiteLabelSettingsService(this IServiceCollection services)
         {

@@ -270,7 +270,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public static class TenantConfigFactory
+    public static class TenantConfigExtension
     {
         public static IServiceCollection AddTenantService(this IServiceCollection services)
         {

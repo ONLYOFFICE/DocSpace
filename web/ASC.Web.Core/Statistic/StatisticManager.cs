@@ -177,7 +177,7 @@ new UserVisit
         }
     }
 
-    public static class StatisticManagerFactory
+    public static class StatisticManagerExtension
     {
         public static IServiceCollection AddStatisticManagerService(this IServiceCollection services)
         {

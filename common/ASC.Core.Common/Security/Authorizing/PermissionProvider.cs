@@ -54,7 +54,7 @@ namespace ASC.Core.Security.Authorizing
         }
     }
 
-    public static class PermissionProviderConfigFactory
+    public static class PermissionProviderConfigExtension
     {
         public static IServiceCollection AddPermissionProviderService(this IServiceCollection services)
         {

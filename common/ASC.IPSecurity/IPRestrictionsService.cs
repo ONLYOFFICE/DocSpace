@@ -87,7 +87,7 @@ namespace ASC.IPSecurity
         }
     }
 
-    public static class IPRestrictionsServiceFactory
+    public static class IPRestrictionsServiceExtension
     {
         public static IServiceCollection AddIPRestrictionsService(this IServiceCollection services)
         {

@@ -1253,7 +1253,7 @@ namespace ASC.Web.Studio.Core.Notify
             return !isSubscribe;
         }
     }
-    public static class StudioPeriodicNotifyFactory
+    public static class StudioPeriodicNotifyExtension
     {
         public static IServiceCollection AddStudioPeriodicNotify(this IServiceCollection services)
         {

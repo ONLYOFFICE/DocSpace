@@ -64,7 +64,7 @@ namespace ASC.Notify
         }
     }
 
-    public static class ServiceLauncherFactory
+    public static class ServiceLauncherExtension
     {
         public static IServiceCollection AddServiceLauncher(this IServiceCollection services)
         {

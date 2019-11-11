@@ -63,7 +63,7 @@ namespace ASC.MessagingSystem
         }
     }
 
-    public static class MessagePolicyFactory
+    public static class MessagePolicyExtension
     {
         public static IServiceCollection AddMessagePolicyService(this IServiceCollection services)
         {

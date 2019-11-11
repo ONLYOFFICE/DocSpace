@@ -360,7 +360,7 @@ namespace TMResourceData
         }
     }
 
-    public static class WhiteLabelHelperFactory
+    public static class WhiteLabelHelperExtension
     {
         public static IServiceCollection AddWhiteLabelHelperService(this IServiceCollection services)
         {

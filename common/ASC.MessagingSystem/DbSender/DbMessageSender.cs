@@ -66,7 +66,7 @@ namespace ASC.MessagingSystem.DbSender
         }
     }
 
-    public static class DbMessageSenderFactory
+    public static class DbMessageSenderExtension
     {
         public static IServiceCollection AddDbMessageSenderService(this IServiceCollection services)
         {

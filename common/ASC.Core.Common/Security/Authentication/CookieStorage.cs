@@ -139,7 +139,7 @@ namespace ASC.Core.Security.Authentication
         }
     }
 
-    public static class CookieStorageFactory
+    public static class CookieStorageExtension
     {
         public static IServiceCollection AddCookieStorageService(this IServiceCollection services)
         {

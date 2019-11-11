@@ -158,7 +158,7 @@ namespace ASC.Core.Notify
         }
     }
 
-    public static class RecipientProviderImplFactory
+    public static class RecipientProviderImplExtension
     {
         public static IServiceCollection AddRecipientProviderImplService(this IServiceCollection services)
         {

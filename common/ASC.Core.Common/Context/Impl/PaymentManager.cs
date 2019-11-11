@@ -218,7 +218,7 @@ namespace ASC.Core
         }
     }
 
-    public static class PaymentManagerFactory
+    public static class PaymentManagerExtension
     {
         public static IServiceCollection AddPaymentManagerService(this IServiceCollection services)
         {

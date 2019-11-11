@@ -204,7 +204,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public static class QuotaConfigFactory
+    public static class QuotaConfigExtension
     {
         public static IServiceCollection AddQuotaService(this IServiceCollection services)
         {

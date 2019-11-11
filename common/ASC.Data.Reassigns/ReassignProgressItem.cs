@@ -216,7 +216,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class ReassignProgressItemFactory
+    public static class ReassignProgressItemExtension
     {
         public static IServiceCollection AddReassignProgressItemService(this IServiceCollection services)
         {

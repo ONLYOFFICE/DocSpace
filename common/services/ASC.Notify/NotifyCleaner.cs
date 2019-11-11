@@ -100,7 +100,7 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyCleanerFactory
+    public static class NotifyCleanerExtension
     {
         public static IServiceCollection AddNotifyCleaner(this IServiceCollection services)
         {

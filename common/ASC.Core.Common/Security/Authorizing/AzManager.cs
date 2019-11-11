@@ -148,7 +148,7 @@ namespace ASC.Common.Security.Authorizing
         #endregion
     }
 
-    public static class AzManagerConfigFactory
+    public static class AzManagerConfigExtension
     {
         public static IServiceCollection AddAzManagerService(this IServiceCollection services)
         {

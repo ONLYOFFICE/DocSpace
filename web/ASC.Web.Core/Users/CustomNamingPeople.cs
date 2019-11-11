@@ -390,7 +390,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    public static class CustomNamingPeopleFactory
+    public static class CustomNamingPeopleExtension
     {
         public static IServiceCollection AddCustomNamingPeopleService(this IServiceCollection services)
         {

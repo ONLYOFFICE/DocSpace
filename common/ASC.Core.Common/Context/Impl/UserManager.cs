@@ -613,7 +613,7 @@ namespace ASC.Core
         }
     }
 
-    public static class UserManagerConfigFactory
+    public static class UserManagerConfigExtension
     {
         public static IServiceCollection AddUserManagerService(this IServiceCollection services)
         {

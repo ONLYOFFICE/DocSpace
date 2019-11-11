@@ -609,7 +609,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         }
     }
 
-    public static class TariffConfigFactory
+    public static class TariffConfigExtension
     {
         public static IServiceCollection AddTariffService(this IServiceCollection services)
         {

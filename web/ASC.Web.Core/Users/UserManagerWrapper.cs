@@ -360,7 +360,7 @@ namespace ASC.Web.Core.Users
             return new Regex(pattern, options).IsMatch(email);
         }
     }
-    public static class UserManagerWrapperFactory
+    public static class UserManagerWrapperExtension
     {
         public static IServiceCollection AddUserManagerWrapperService(this IServiceCollection services)
         {

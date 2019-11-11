@@ -252,7 +252,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class RemoveProgressItemFactory
+    public static class RemoveProgressItemExtension
     {
         public static IServiceCollection AddRemoveProgressItemService(this IServiceCollection services)
         {

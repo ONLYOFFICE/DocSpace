@@ -139,7 +139,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class QueueFactory
+    public static class QueueExtension
     {
         public static IServiceCollection AddQueueWorkerRemoveService(this IServiceCollection services)
         {

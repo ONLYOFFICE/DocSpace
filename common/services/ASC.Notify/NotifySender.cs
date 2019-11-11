@@ -148,7 +148,7 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifySenderFactory
+    public static class NotifySenderExtension
     {
         public static IServiceCollection AddNotifySender(this IServiceCollection services)
         {

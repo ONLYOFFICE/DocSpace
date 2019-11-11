@@ -388,7 +388,7 @@ namespace ASC.Feed.Data
         }
     }
 
-    public static class FeedAggregateDataProviderFactory
+    public static class FeedAggregateDataProviderExtension
     {
         public static IServiceCollection AddFeedAggregateDataProvider(this IServiceCollection services)
         {

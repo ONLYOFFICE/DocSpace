@@ -516,7 +516,7 @@ namespace ASC.Web.Studio.Utility
 
     }
 
-    public static class CommonLinkUtilityFactory
+    public static class CommonLinkUtilityExtension
     {
         public static IServiceCollection AddCommonLinkUtilityService(this IServiceCollection services)
         {

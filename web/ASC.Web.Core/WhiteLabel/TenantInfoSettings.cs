@@ -168,7 +168,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
-    public static class TenantInfoSettingsFactory
+    public static class TenantInfoSettingsExtension
     {
         public static IServiceCollection AddTenantInfoSettingsService(this IServiceCollection services)
         {

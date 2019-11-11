@@ -94,7 +94,7 @@ namespace ASC.Web.Studio.Core.SMS
         }
     }
 
-    public static class StudioSmsNotificationSettingsFactory
+    public static class StudioSmsNotificationSettingsExtension
     {
         public static IServiceCollection AddStudioSmsNotificationSettingsService(this IServiceCollection services)
         {

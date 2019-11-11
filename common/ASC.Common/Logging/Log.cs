@@ -798,7 +798,7 @@ namespace ASC.Common.Logging
         }
     }
 
-    public static class StudioNotifyHelperFactory
+    public static class StudioNotifyHelperExtension
     {
         public static IServiceCollection AddLogManager<T>(this IServiceCollection services, params string[] additionalLoggers) where T : class, ILog, new()
         {

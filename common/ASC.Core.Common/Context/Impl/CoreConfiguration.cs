@@ -313,7 +313,7 @@ namespace ASC.Core
         #endregion
     }
 
-    public static class CoreSettingsConfigFactory
+    public static class CoreSettingsConfigExtension
     {
         public static IServiceCollection AddCoreBaseSettingsService(this IServiceCollection services)
         {

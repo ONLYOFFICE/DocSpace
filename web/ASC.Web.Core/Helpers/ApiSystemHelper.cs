@@ -168,7 +168,7 @@ namespace ASC.Web.Core.Helpers
         }
     }
 
-    public static class ApiSystemHelperFactory
+    public static class ApiSystemHelperExtension
     {
         public static IServiceCollection AddApiSystemHelper(this IServiceCollection services)
         {
