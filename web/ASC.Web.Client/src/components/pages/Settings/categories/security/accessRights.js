@@ -134,12 +134,15 @@ class PureAccessRights extends Component {
 
   componentDidMount() {
     const { fetchPeople } = this.props;
+    this.onLoading(true);
 
     const newFilter = this.onAdminsFilter();
 
-    fetchPeople(newFilter).catch(error => {
-      toastr.error(error);
-    });
+    fetchPeople(newFilter)
+      .catch(error => {
+        toastr.error(error);
+      })
+      .finally(() => this.onLoading(false));
   }
 
   onChangeAdmin = (userIds, isAdmin) => {
@@ -170,54 +173,8 @@ class PureAccessRights extends Component {
   };
 
   onSearchUsers = template => {
-    this.onLoading(true);
     this.setState({
       options: this.filterUserSelectorOptions(this.props.options, template)
-    });
-    this.onLoading(false);
-  };
-
-  filterUserSelectorOptions = (options, template) =>
-    options.filter(option => option.label.indexOf(template) > -1);
-
-  onLoading = status => {
-    this.setState({ isLoading: status });
-  };
-
-  onAdminsFilter = () => {
-    const { filter } = this.props;
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.role = "admin";
-
-    return newFilter;
-  };
-
-  onFilter = data => {
-    const { filter, fetchPeople } = this.props;
-
-    const search = data.inputValue || null;
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.role = "admin";
-    newFilter.search = search;
-    this.onLoading(true);
-    fetchPeople(newFilter)
-      .catch(res => console.log(res))
-      .finally(this.onLoading(false));
-  };
-
-  pageItems = () => {
-    const { t, filter } = this.props;
-    if (filter.total < filter.pageCount) return [];
-    const totalPages = Math.ceil(filter.total / filter.pageCount);
-    return [...Array(totalPages).keys()].map(item => {
-      return {
-        key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
-      };
     });
   };
 
@@ -272,6 +229,50 @@ class PureAccessRights extends Component {
     fetchPeople(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
+  };
+
+  onLoading = status => {
+    this.setState({ isLoading: status });
+  };
+
+  onAdminsFilter = () => {
+    const { filter } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.role = "admin";
+
+    return newFilter;
+  };
+
+  onFilter = data => {
+    const { filter, fetchPeople } = this.props;
+
+    const search = data.inputValue || null;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.role = "admin";
+    newFilter.search = search;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(this.onLoading(false));
+  };
+
+  filterUserSelectorOptions = (options, template) =>
+    options.filter(option => option.label.indexOf(template) > -1);
+
+  pageItems = () => {
+    const { t, filter } = this.props;
+    if (filter.total < filter.pageCount) return [];
+    const totalPages = Math.ceil(filter.total / filter.pageCount);
+    return [...Array(totalPages).keys()].map(item => {
+      return {
+        key: item,
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
+      };
+    });
   };
 
   countItems = () => [
