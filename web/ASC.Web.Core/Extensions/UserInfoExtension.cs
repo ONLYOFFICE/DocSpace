@@ -40,7 +40,6 @@ namespace ASC.Core.Users
             return DisplayUserName(userInfo, true, displayUserSettingsHelper);
         }
 
-        //fix
         public static string DisplayUserName(this UserInfo userInfo, bool withHtmlEncode, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             return displayUserSettingsHelper.GetFullUserName(userInfo, withHtmlEncode);

@@ -65,6 +65,7 @@ namespace ASC.Web.Studio.UserControls.Management
             get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
         }
 
+        //TODO: Need to be returned when needed
         //public bool HideRecommendation
         //{
         //    get { return LoadForCurrentUser().HideBuyRecommendationSetting; }
