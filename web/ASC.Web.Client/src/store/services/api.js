@@ -158,17 +158,24 @@ export function getUserList() {
 }
 
 export function getListAdmins(filter = Filter.getDefault()) {
-  const params = filter.toUrlParams();
+  const filterParams = filter.toUrlParams();
+  const params =
+    "fields=id,displayName,groups,name,avatarSmall,isOwner,profileUrl,listAdminModules";
   return request({
     method: "get",
-    url: `/people/filter.json?${params}`
+    url: `/people/filter.json?${filterParams}&${params}`
   });
 }
 
-export function getAdmins() {
+export function getAdmins(isParams) {
+  let params = "&fields";
+  if (isParams) {
+    params =
+      "fields=id,displayName,groups,name,avatarSmall,isOwner,profileUrl,listAdminModules";
+  }
   return request({
     method: "get",
-    url: `/people/filter.json?isadministrator=true`
+    url: `/people/filter.json?isadministrator=true&${params}`
   });
 }
 

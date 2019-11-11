@@ -68,5 +68,7 @@
   "Culture_ru-RU": "Русский (Россия)",
   "LearnMore":  "Подробнее...",
   "CountPerPage": "{{count}} на странице",
-  "PageOfTotalPage": "{{page}} из {{totalPage}}"
+  "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "ByFirstNameSorting": "По имени",
+  "ByLastNameSorting": "По фамилии"
 }
