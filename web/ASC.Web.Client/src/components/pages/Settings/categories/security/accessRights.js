@@ -24,12 +24,14 @@ import {
   toastr,
   RequestLoader,
   FilterInput,
-  Button
+  Button,
+  TabContainer
 } from "asc-web-components";
 import { getUserRole } from "../../../../../store/settings/selectors";
 
 const MainContainer = styled.div`
-  padding: 16px 16px 16px 24px;
+  /*padding: 16px 16px 16px 24px;*/
+  padding-bottom: 16px;
   width: 100%;
 
   .page_loader {
@@ -60,7 +62,7 @@ const RadioButtonContainer = styled.div`
 `;
 
 const HeaderContainer = styled.div`
-  margin-bottom: 16px;
+  margin: 40px 0 16px 0;
 `;
 
 const BodyContainer = styled.div`
@@ -335,61 +337,64 @@ class PureAccessRights extends Component {
     const countElements = filter.total;
     //console.log("accessRight render");
 
-    return (
-      <MainContainer>
-        <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize={16}
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize={12}
-          fontColor={"#999"}
-          className="page_loader"
-        />
-        <HeaderContainer>
-          <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
-        </HeaderContainer>
+    const array_items = [
+      {
+        key: "0",
+        title: "Owner settings",
+        content: (
+          <>
+            <HeaderContainer>
+              <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
+            </HeaderContainer>
 
-        <BodyContainer>
-          <AvatarContainer>
-            <Avatar
-              className="avatar_wrapper"
-              size="big"
-              role="owner"
-              userName={owner.userName}
-              source={owner.avatar}
-            />
-            <div className="avatar_body">
-              <Text.Body className="avatar_text" fontSize={16} isBold={true}>
-                {owner.displayName}
-              </Text.Body>
-              {owner.groups &&
-                owner.groups.map(group => (
-                  <Link fontSize={12} key={group.id} href={owner.profileUrl}>
-                    {group.name}
-                  </Link>
-                ))}
-            </div>
-          </AvatarContainer>
-          <ProjectsBody>
-            <Text.Body className="portal_owner" fontSize={12}>
-              {t("AccessRightsOwnerCan")}:
-            </Text.Body>
-            <Text.Body fontSize={12}>
-              {OwnerOpportunities.map((item, key) => (
-                <li key={key}>{item};</li>
-              ))}
-            </Text.Body>
-          </ProjectsBody>
-        </BodyContainer>
-
-        <ToggleContentContainer>
-          <ToggleContent
-            className="toggle_content"
-            label={t("AdminSettings")}
-            isOpen={true}
-          >
+            <BodyContainer>
+              <AvatarContainer>
+                <Avatar
+                  className="avatar_wrapper"
+                  size="big"
+                  role="owner"
+                  userName={owner.userName}
+                  source={owner.avatar}
+                />
+                <div className="avatar_body">
+                  <Text.Body
+                    className="avatar_text"
+                    fontSize={16}
+                    isBold={true}
+                  >
+                    {owner.displayName}
+                  </Text.Body>
+                  {owner.groups &&
+                    owner.groups.map(group => (
+                      <Link
+                        fontSize={12}
+                        key={group.id}
+                        href={owner.profileUrl}
+                      >
+                        {group.name}
+                      </Link>
+                    ))}
+                </div>
+              </AvatarContainer>
+              <ProjectsBody>
+                <Text.Body className="portal_owner" fontSize={12}>
+                  {t("AccessRightsOwnerCan")}:
+                </Text.Body>
+                <Text.Body fontSize={12}>
+                  {OwnerOpportunities.map((item, key) => (
+                    <li key={key}>{item};</li>
+                  ))}
+                </Text.Body>
+              </ProjectsBody>
+            </BodyContainer>
+          </>
+        )
+      },
+      {
+        key: "1",
+        title: "Admins settings",
+        content: (
+          <ToggleContentContainer>
             <Button
               className="button_style"
               size="medium"
@@ -510,51 +515,75 @@ class PureAccessRights extends Component {
                 />
               </div>
             ) : null}
-          </ToggleContent>
+          </ToggleContentContainer>
+        )
+      },
+      {
+        key: "2",
+        title: "Portals settings",
+        content: (
+          <ToggleContentContainer>
+            <ToggleContent
+              className="toggle_content"
+              label={t("People")}
+              isOpen={true}
+            >
+              <ProjectsContainer>
+                <RadioButtonContainer>
+                  <Text.Body>
+                    {t("AccessRightsAccessToProduct", { product: t("People") })}
+                    :
+                  </Text.Body>
+                  <RadioButtonGroup
+                    name="selectGroup"
+                    selected="allUsers"
+                    options={[
+                      {
+                        value: "allUsers",
+                        label: t("AccessRightsAllUsers", {
+                          users: t("Employees")
+                        })
+                      },
+                      {
+                        value: "usersFromTheList",
+                        label: t("AccessRightsUsersFromList", {
+                          users: t("Employees")
+                        })
+                      }
+                    ]}
+                    className="display-block"
+                  />
+                </RadioButtonContainer>
+                <ProjectsBody>
+                  <Text.Body className="projects_margin" fontSize={12}>
+                    {t("AccessRightsProductUsersCan", {
+                      category: t("People")
+                    })}
+                  </Text.Body>
+                  <Text.Body fontSize={12}>
+                    <li>{t("ViewProfilesAndGroups")}</li>
+                  </Text.Body>
+                </ProjectsBody>
+              </ProjectsContainer>
+            </ToggleContent>
+          </ToggleContentContainer>
+        )
+      }
+    ];
 
-          <ToggleContent
-            className="toggle_content"
-            label={t("People")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", { product: t("People") })}:
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
-                />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", {
-                    category: t("People")
-                  })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("ViewProfilesAndGroups")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
-          </ToggleContent>
-        </ToggleContentContainer>
+    return (
+      <MainContainer>
+        <TabContainer isDisabled={isLoading}>{array_items}</TabContainer>
+        <RequestLoader
+          visible={isLoading}
+          zIndex={256}
+          loaderSize={16}
+          loaderColor={"#999"}
+          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+          fontSize={12}
+          fontColor={"#999"}
+          className="page_loader"
+        />
       </MainContainer>
     );
   }
