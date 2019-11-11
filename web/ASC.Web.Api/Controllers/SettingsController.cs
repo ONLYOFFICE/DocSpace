@@ -127,7 +127,6 @@ namespace ASC.Api.Settings
                 settings.Timezone = timeZone.Id;
                 settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
-                settings.OwnerId = Tenant.OwnerId;
             }
 
             return settings;

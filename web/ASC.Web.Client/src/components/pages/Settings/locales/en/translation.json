@@ -68,5 +68,6 @@
     "Culture_en-US": "English (United States)",
     "Culture_ru-RU": "Russian (Russia)",
     "LearnMore": "Learn more...",
-    "CountPerPage": "{{count}} per page"
+    "CountPerPage": "{{count}} per page",
+    "PageOfTotalPage": "{{page}} of {{totalPage}}"
 }

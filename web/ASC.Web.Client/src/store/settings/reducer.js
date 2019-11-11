@@ -1,4 +1,6 @@
-import { SET_USERS, SET_ADMINS, SET_OWNER } from "./actions";
+
+import { SET_USERS, SET_ADMINS, SET_OWNER, SET_GREETING_SETTINGS, SET_FILTER } from "./actions";
+import Filter from "./filter";
 
 const initialState = {
 
@@ -7,6 +9,9 @@ const initialState = {
     admins: [],
     owner: {}
   },
+  
+  filter: Filter.getDefault(),
+  greetingSettings: ''
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -29,16 +34,19 @@ const peopleReducer = (state = initialState, action) => {
           owner: action.owner
         })
       });
+
+      case SET_FILTER:
+          return Object.assign({}, state, {
+            filter: action.filter
+          });
+    case SET_GREETING_SETTINGS:
+      return Object.assign({}, state, {
+        greetingSettings: action.title
+      });
     default:
       return state;
   }
 };
 
+
 export default peopleReducer;
-/*
-      return Object.assign({}, state, {
-        selector: Object.assign({}, state.selector, { 
-          users: action.users
-        })
-      });
-*/

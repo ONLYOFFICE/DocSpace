@@ -26,12 +26,11 @@ const colorCss = css`
 
 const hoveredCss = css`
   ${colorCss};
-  border-bottom: ${props => (props.type === 'action' ? '1px dashed;' : 'none')};
-  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'none')};
+  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
 `;
 
 const StyledLink = styled(SimpleLink)`
-  text-decoration: none;
+  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
   user-select: none;
   cursor: pointer;
   opacity: ${props => props.isSemitransparent && "0.5"};
@@ -40,7 +39,6 @@ const StyledLink = styled(SimpleLink)`
   ${colorCss};
 
   &:hover {
-    cursor: pointer;
     ${hoveredCss};
   }
 
