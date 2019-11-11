@@ -19,12 +19,12 @@ import {
   Link,
   RadioButtonGroup,
   Paging,
-  SelectorAddButton,
   IconButton,
   AdvancedSelector,
   toastr,
   RequestLoader,
-  FilterInput
+  FilterInput,
+  Button
 } from "asc-web-components";
 import { getUserRole } from "../../../../../store/settings/selectors";
 
@@ -102,12 +102,16 @@ const ToggleContentContainer = styled.div`
     margin-top: 16px;
   }
 
-  .advanced-selector {
-    position: relative;
+  .remove_icon {
+    margin-left: 120px;
   }
 
-  .selector-button {
-    max-width: 34px;
+  .button_style {
+    margin-right: 16px;
+  }
+
+  .advanced-selector {
+    position: relative;
   }
 
   .filter_container {
@@ -249,8 +253,14 @@ class PureAccessRights extends Component {
     const { filter, fetchPeople } = this.props;
 
     const search = data.inputValue || null;
+    const sortBy = data.sortId;
+    const sortOrder =
+      data.sortDirection === "desc" ? "descending" : "ascending";
 
     const newFilter = filter.clone();
+
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
     newFilter.page = 0;
     newFilter.role = "admin";
     newFilter.search = search;
@@ -308,11 +318,21 @@ class PureAccessRights extends Component {
     );
   };
 
+  getSortData = () => {
+    const { t } = this.props;
+
+    return [
+      { key: "firstname", label: t("ByFirstNameSorting") },
+      { key: "lastname", label: t("ByLastNameSorting") }
+    ];
+  };
+
   render() {
     const { t, owner, admins, filter } = this.props;
     const { showSelector, options, selectedOptions, isLoading } = this.state;
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
+    const countElements = filter.total;
     //console.log("accessRight render");
 
     return (
@@ -370,30 +390,30 @@ class PureAccessRights extends Component {
             label={t("AdminSettings")}
             isOpen={true}
           >
-            <SelectorAddButton
-              className="selector-button"
+            <Button
+              className="button_style"
+              size="medium"
+              primary={true}
+              label="Set people admin"
               isDisabled={isLoading}
-              //title={showGroupSelectorButtonTitle}
               onClick={this.onShowGroupSelector}
             />
-
-            <FilterInput
-              className="filter_container"
-              getFilterData={() => [
-                {
-                  key: "filter-example",
-                  group: "filter-example",
-                  label: "example group",
-                  isHeader: true
-                },
-                { key: "0", group: "filter-example", label: "Test" }
-              ]}
-              getSortData={() => [
-                { key: "name", label: "Name" },
-                { key: "surname", label: "Surname" }
-              ]}
-              onFilter={this.onFilter}
+            <Button
+              size="medium"
+              primary={true}
+              label="Set portal admin"
+              isDisabled={isLoading}
+              onClick={() => toastr.info("Set portal admin")}
             />
+
+            {countElements > 25 ? (
+              <FilterInput
+                className="filter_container"
+                getFilterData={() => []}
+                getSortData={this.getSortData}
+                onFilter={this.onFilter}
+              />
+            ) : null}
 
             <div className="advanced-selector">
               <AdvancedSelector
@@ -447,20 +467,19 @@ class PureAccessRights extends Component {
                         </Link>
                         <div style={{ maxWidth: 120 }} />
                         {!user.isOwner ? (
-                          <div style={{ marginLeft: "60px" }}>
-                            <IconButton
-                              size="16"
-                              isDisabled={isLoading}
-                              onClick={this.onChangeAdmin.bind(
-                                this,
-                                [user.id],
-                                false
-                              )}
-                              iconName={"CatalogTrashIcon"}
-                              isFill={true}
-                              isClickable={false}
-                            />
-                          </div>
+                          <IconButton
+                            className="remove_icon"
+                            size="16"
+                            isDisabled={isLoading}
+                            onClick={this.onChangeAdmin.bind(
+                              this,
+                              [user.id],
+                              false
+                            )}
+                            iconName={"CatalogTrashIcon"}
+                            isFill={true}
+                            isClickable={false}
+                          />
                         ) : (
                           <div />
                         )}
@@ -471,24 +490,26 @@ class PureAccessRights extends Component {
               </RowContainer>
             </div>
 
-            <div className="wrapper">
-              <Paging
-                previousLabel={t("PreviousPage")}
-                nextLabel={t("NextPage")}
-                openDirection="top"
-                countItems={this.countItems()}
-                pageItems={this.pageItems()}
-                displayItems={false}
-                selectedPageItem={this.selectedPageItem()}
-                selectedCountItem={this.selectedCountItem()}
-                onSelectPage={this.onChangePage}
-                onSelectCount={this.onChangePageSize}
-                previousAction={this.onPrevClick}
-                nextAction={this.onNextClick}
-                disablePrevious={!filter.hasPrev()}
-                disableNext={!filter.hasNext()}
-              />
-            </div>
+            {countElements > 25 ? (
+              <div className="wrapper">
+                <Paging
+                  previousLabel={t("PreviousPage")}
+                  nextLabel={t("NextPage")}
+                  openDirection="top"
+                  countItems={this.countItems()}
+                  pageItems={this.pageItems()}
+                  displayItems={false}
+                  selectedPageItem={this.selectedPageItem()}
+                  selectedCountItem={this.selectedCountItem()}
+                  onSelectPage={this.onChangePage}
+                  onSelectCount={this.onChangePageSize}
+                  previousAction={this.onPrevClick}
+                  nextAction={this.onNextClick}
+                  disablePrevious={!filter.hasPrev()}
+                  disableNext={!filter.hasNext()}
+                />
+              </div>
+            ) : null}
           </ToggleContent>
 
           <ToggleContent

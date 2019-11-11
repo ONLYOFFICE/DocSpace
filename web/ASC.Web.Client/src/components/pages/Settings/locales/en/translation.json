@@ -69,5 +69,7 @@
     "Culture_ru-RU": "Russian (Russia)",
     "LearnMore": "Learn more...",
     "CountPerPage": "{{count}} per page",
-    "PageOfTotalPage": "{{page}} of {{totalPage}}"
+    "PageOfTotalPage": "{{page}} of {{totalPage}}",
+    "ByFirstNameSorting": "By first name",
+    "ByLastNameSorting": "By last name"
 }
