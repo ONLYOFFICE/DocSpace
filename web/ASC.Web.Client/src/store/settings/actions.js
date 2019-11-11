@@ -6,7 +6,6 @@ import Filter from "./filter";
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
 export const SET_OWNER = "SET_OWNER";
-
 export const SET_FILTER = "SET_FILTER";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 
@@ -61,7 +60,7 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
         axios.all([
           api.getUserList(filterData),
           api.getListAdmins(filterData),
-          api.getAdmins()
+          api.getAdmins(false)
         ])
       )
       .then(
@@ -89,7 +88,7 @@ export function fetchPeople(filter) {
       .all([
         api.getUserList(filterData),
         api.getListAdmins(filterData),
-        api.getAdmins()
+        api.getAdmins(true)
       ])
       .then(
         axios.spread((users, filterAdmins, admins) => {
