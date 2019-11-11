@@ -146,14 +146,14 @@ class ModalDialog extends React.Component {
     ) : (
       <>
         <Backdrop visible={visible} onClick={onClose} zIndex={zIndex}/>
-        <Aside visible={visible} scale={scale} zIndex={zIndex}>
+        <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
           <Content>
             <Header>
               <HeaderText>{headerContent}</HeaderText>
               {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
             </Header>
             <Body>{bodyContent}</Body>
-            <Footer>{footerContent}</Footer>
+            <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
           </Content>
         </Aside>
       </>
