@@ -81,7 +81,7 @@ class ArticleBodyContent extends React.Component {
     const arrayOfParams = resultPath.split('/');
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const rightKey = selectKeyOfTreeElement(key[0], settingsTree)
+    const rightKey = selectKeyOfTreeElement([key], settingsTree)
     const link = getSelectedLinkByKey(rightKey[0], settingsTree);
 
     const path = match.path + link;
