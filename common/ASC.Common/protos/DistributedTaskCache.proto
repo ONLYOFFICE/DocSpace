@@ -4,7 +4,7 @@ package ASC.Common.Threading;
 
 message DistributedTaskCache {
     string Id = 1;
-    string InstanseId = 2;
+    string InstanceId = 2;
 	string Status = 3;
 	string Exception = 4;
 	repeated DistributedTaskCacheProp Props = 5;

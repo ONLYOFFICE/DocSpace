@@ -233,7 +233,7 @@ namespace ASC.Core.Common
         }
     }
 
-    public static class BaseCommonLinkUtilityFactory
+    public static class BaseCommonLinkUtilityExtension
     {
         public static IServiceCollection AddBaseCommonLinkUtilityService(this IServiceCollection services)
         {

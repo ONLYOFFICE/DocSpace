@@ -86,7 +86,7 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly string InstanseId;
+        public static readonly string InstanceId;
 
         private readonly string key;
         private readonly ICache cache;
@@ -97,7 +97,7 @@ namespace ASC.Common.Threading
 
         static DistributedTaskQueue()
         {
-            InstanseId = Process.GetCurrentProcess().Id.ToString();
+            InstanceId = Process.GetCurrentProcess().Id.ToString();
         }
 
 
@@ -130,7 +130,7 @@ namespace ASC.Common.Threading
                 distributedTask = new DistributedTask();
             }
 
-            distributedTask.InstanseId = InstanseId;
+            distributedTask.InstanceId = InstanceId;
 
             var cancelation = new CancellationTokenSource();
             var token = cancelation.Token;
