@@ -1405,7 +1405,8 @@ namespace ASC.Api.Settings
                 .AddStorageHelperService()
                 .AddTenantLogoManagerService()
                 .AddBuildVersionService()
-                .AddStatisticManagerService();
+                .AddStatisticManagerService()
+                .AddEmployeeWraper();
         }
     }
 }

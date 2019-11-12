@@ -93,6 +93,8 @@ namespace ASC.Core.Common.Configuration
 
         public Consumer()
         {
+            Props = new Dictionary<string, string>();
+            Additional = new Dictionary<string, string>();
         }
 
         public Consumer(
@@ -100,7 +102,7 @@ namespace ASC.Core.Common.Configuration
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            ICacheNotify<ConsumerCacheItem> cache)
+            ICacheNotify<ConsumerCacheItem> cache) : this()
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
@@ -110,8 +112,6 @@ namespace ASC.Core.Common.Configuration
             OnlyDefault = configuration["core:default-consumers"] == "true";
             Name = "";
             Order = int.MaxValue;
-            Props = new Dictionary<string, string>();
-            Additional = new Dictionary<string, string>();
         }
 
         public Consumer(
@@ -285,7 +285,7 @@ namespace ASC.Core.Common.Configuration
         public const string HandlerTypeKey = "handlerType";
         public const string CdnKey = "cdn";
 
-        public DataStoreConsumer()
+        public DataStoreConsumer() : base()
         {
 
         }
