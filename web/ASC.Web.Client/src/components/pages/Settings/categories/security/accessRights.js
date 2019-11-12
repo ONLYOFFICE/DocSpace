@@ -30,13 +30,12 @@ import {
 import { getUserRole } from "../../../../../store/settings/selectors";
 
 const MainContainer = styled.div`
-  /*padding: 16px 16px 16px 24px;*/
   padding-bottom: 16px;
   width: 100%;
 
   .page_loader {
     position: fixed;
-    left: 48%;
+    left: 50%;
   }
 `;
 
@@ -332,248 +331,255 @@ class PureAccessRights extends Component {
   render() {
     const { t, owner, admins, filter } = this.props;
     const { showSelector, options, selectedOptions, isLoading } = this.state;
+
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
-
     const countElements = filter.total;
+
     //console.log("accessRight render");
-
-    const array_items = [
-      {
-        key: "0",
-        title: "Owner settings",
-        content: (
-          <>
-            <HeaderContainer>
-              <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
-            </HeaderContainer>
-
-            <BodyContainer>
-              <AvatarContainer>
-                <Avatar
-                  className="avatar_wrapper"
-                  size="big"
-                  role="owner"
-                  userName={owner.userName}
-                  source={owner.avatar}
-                />
-                <div className="avatar_body">
-                  <Text.Body
-                    className="avatar_text"
-                    fontSize={16}
-                    isBold={true}
-                  >
-                    {owner.displayName}
-                  </Text.Body>
-                  {owner.groups &&
-                    owner.groups.map(group => (
-                      <Link
-                        fontSize={12}
-                        key={group.id}
-                        href={owner.profileUrl}
-                      >
-                        {group.name}
-                      </Link>
-                    ))}
-                </div>
-              </AvatarContainer>
-              <ProjectsBody>
-                <Text.Body className="portal_owner" fontSize={12}>
-                  {t("AccessRightsOwnerCan")}:
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  {OwnerOpportunities.map((item, key) => (
-                    <li key={key}>{item};</li>
-                  ))}
-                </Text.Body>
-              </ProjectsBody>
-            </BodyContainer>
-          </>
-        )
-      },
-      {
-        key: "1",
-        title: "Admins settings",
-        content: (
-          <ToggleContentContainer>
-            <Button
-              className="button_style"
-              size="medium"
-              primary={true}
-              label="Set people admin"
-              isDisabled={isLoading}
-              onClick={this.onShowGroupSelector}
-            />
-            <Button
-              size="medium"
-              primary={true}
-              label="Set portal admin"
-              isDisabled={isLoading}
-              onClick={() => toastr.info("Set portal admin")}
-            />
-
-            {countElements > 25 ? (
-              <FilterInput
-                className="filter_container"
-                getFilterData={() => []}
-                getSortData={this.getSortData}
-                onFilter={this.onFilter}
-              />
-            ) : null}
-
-            <div className="advanced-selector">
-              <AdvancedSelector
-                displayType="dropdown"
-                isOpen={showSelector}
-                placeholder="placeholder"
-                options={options}
-                onSearchChanged={this.onSearchUsers}
-                //groups={groups}
-                isMultiSelect={true}
-                buttonLabel="Add members"
-                onSelect={this.onSelect}
-                onCancel={this.onShowGroupSelector}
-                onAddNewClick={() => console.log("onAddNewClick")}
-                selectAllLabel="selectorSelectAllText"
-                selectedOptions={selectedOptions}
-              />
-            </div>
-            <div className="wrapper">
-              <RowContainer manualHeight={`${admins.length * 50}px`}>
-                {admins.map(user => {
-                  const element = (
-                    <Avatar
-                      size="small"
-                      role={getUserRole(user)}
-                      userName={user.displayName}
-                      source={user.avatarSmall}
-                    />
-                  );
-                  const nameColor =
-                    user.status === "pending" ? "#A3A9AE" : "#333333";
-
-                  return (
-                    <Row
-                      key={user.id}
-                      status={user.status}
-                      data={user}
-                      element={element}
-                    >
-                      <RowContent disableSideInfo={true}>
-                        <Link
-                          containerWidth="120px"
-                          type="page"
-                          title={user.displayName}
-                          isBold={true}
-                          fontSize={15}
-                          color={nameColor}
-                          href={user.profileUrl}
-                        >
-                          {user.displayName}
-                        </Link>
-                        <div style={{ maxWidth: 120 }} />
-                        {!user.isOwner ? (
-                          <IconButton
-                            className="remove_icon"
-                            size="16"
-                            isDisabled={isLoading}
-                            onClick={this.onChangeAdmin.bind(
-                              this,
-                              [user.id],
-                              false
-                            )}
-                            iconName={"CatalogTrashIcon"}
-                            isFill={true}
-                            isClickable={false}
-                          />
-                        ) : (
-                          <div />
-                        )}
-                      </RowContent>
-                    </Row>
-                  );
-                })}
-              </RowContainer>
-            </div>
-
-            {countElements > 25 ? (
-              <div className="wrapper">
-                <Paging
-                  previousLabel={t("PreviousPage")}
-                  nextLabel={t("NextPage")}
-                  openDirection="top"
-                  countItems={this.countItems()}
-                  pageItems={this.pageItems()}
-                  displayItems={false}
-                  selectedPageItem={this.selectedPageItem()}
-                  selectedCountItem={this.selectedCountItem()}
-                  onSelectPage={this.onChangePage}
-                  onSelectCount={this.onChangePageSize}
-                  previousAction={this.onPrevClick}
-                  nextAction={this.onNextClick}
-                  disablePrevious={!filter.hasPrev()}
-                  disableNext={!filter.hasNext()}
-                />
-              </div>
-            ) : null}
-          </ToggleContentContainer>
-        )
-      },
-      {
-        key: "2",
-        title: "Portals settings",
-        content: (
-          <ToggleContentContainer>
-            <ToggleContent
-              className="toggle_content"
-              label={t("People")}
-              isOpen={true}
-            >
-              <ProjectsContainer>
-                <RadioButtonContainer>
-                  <Text.Body>
-                    {t("AccessRightsAccessToProduct", { product: t("People") })}
-                    :
-                  </Text.Body>
-                  <RadioButtonGroup
-                    name="selectGroup"
-                    selected="allUsers"
-                    options={[
-                      {
-                        value: "allUsers",
-                        label: t("AccessRightsAllUsers", {
-                          users: t("Employees")
-                        })
-                      },
-                      {
-                        value: "usersFromTheList",
-                        label: t("AccessRightsUsersFromList", {
-                          users: t("Employees")
-                        })
-                      }
-                    ]}
-                    className="display-block"
-                  />
-                </RadioButtonContainer>
-                <ProjectsBody>
-                  <Text.Body className="projects_margin" fontSize={12}>
-                    {t("AccessRightsProductUsersCan", {
-                      category: t("People")
-                    })}
-                  </Text.Body>
-                  <Text.Body fontSize={12}>
-                    <li>{t("ViewProfilesAndGroups")}</li>
-                  </Text.Body>
-                </ProjectsBody>
-              </ProjectsContainer>
-            </ToggleContent>
-          </ToggleContentContainer>
-        )
-      }
-    ];
 
     return (
       <MainContainer>
-        <TabContainer isDisabled={isLoading}>{array_items}</TabContainer>
+        <TabContainer isDisabled={isLoading}>
+          {[
+            {
+              key: "0",
+              title: "Owner settings",
+              content: (
+                <>
+                  <HeaderContainer>
+                    <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
+                  </HeaderContainer>
+
+                  <BodyContainer>
+                    <AvatarContainer>
+                      <Avatar
+                        className="avatar_wrapper"
+                        size="big"
+                        role="owner"
+                        userName={owner.userName}
+                        source={owner.avatarSmall}
+                      />
+                      <div className="avatar_body">
+                        <Text.Body
+                          className="avatar_text"
+                          fontSize={16}
+                          isBold={true}
+                        >
+                          {owner.displayName}
+                        </Text.Body>
+                        {owner.groups &&
+                          owner.groups.map(group => (
+                            <Link
+                              fontSize={12}
+                              key={group.id}
+                              href={owner.profileUrl}
+                            >
+                              {group.name}
+                            </Link>
+                          ))}
+                      </div>
+                    </AvatarContainer>
+                    <ProjectsBody>
+                      <Text.Body className="portal_owner" fontSize={12}>
+                        {t("AccessRightsOwnerCan")}:
+                      </Text.Body>
+                      <Text.Body fontSize={12}>
+                        {OwnerOpportunities.map((item, key) => (
+                          <li key={key}>{item};</li>
+                        ))}
+                      </Text.Body>
+                    </ProjectsBody>
+                  </BodyContainer>
+                </>
+              )
+            },
+            {
+              key: "1",
+              title: "Admins settings",
+              content: (
+                <ToggleContentContainer>
+                  <div style={{ display: "flex" }}>
+                    <Button
+                      className="button_style"
+                      size="medium"
+                      primary={true}
+                      label="Set people admin"
+                      isDisabled={isLoading}
+                      onClick={this.onShowGroupSelector}
+                    />
+                    <Button
+                      size="medium"
+                      primary={true}
+                      label="Set portal admin"
+                      isDisabled={isLoading}
+                      onClick={() => toastr.info("Set portal admin")}
+                    />
+                  </div>
+
+                  {countElements > 25 ? (
+                    <FilterInput
+                      className="filter_container"
+                      getFilterData={() => []}
+                      getSortData={this.getSortData}
+                      onFilter={this.onFilter}
+                    />
+                  ) : null}
+
+                  <div className="advanced-selector">
+                    <AdvancedSelector
+                      displayType="dropdown"
+                      isOpen={showSelector}
+                      placeholder="placeholder"
+                      options={options}
+                      onSearchChanged={this.onSearchUsers}
+                      //groups={groups}
+                      isMultiSelect={true}
+                      buttonLabel="Add members"
+                      onSelect={this.onSelect}
+                      onCancel={this.onShowGroupSelector}
+                      onAddNewClick={() => console.log("onAddNewClick")}
+                      selectAllLabel="selectorSelectAllText"
+                      selectedOptions={selectedOptions}
+                    />
+                  </div>
+                  <div className="wrapper">
+                    <div className="height">
+                      <RowContainer manualHeight={`${admins.length * 50}px`}>
+                        {admins.map(user => {
+                          const element = (
+                            <Avatar
+                              size="small"
+                              role={getUserRole(user)}
+                              userName={user.displayName}
+                              source={user.avatarSmall}
+                            />
+                          );
+                          const nameColor =
+                            user.status === "pending" ? "#A3A9AE" : "#333333";
+
+                          return (
+                            <Row
+                              key={user.id}
+                              status={user.status}
+                              data={user}
+                              element={element}
+                            >
+                              <RowContent disableSideInfo={true}>
+                                <Link
+                                  containerWidth="120px"
+                                  type="page"
+                                  title={user.displayName}
+                                  isBold={true}
+                                  fontSize={15}
+                                  color={nameColor}
+                                  href={user.profileUrl}
+                                >
+                                  {user.displayName}
+                                </Link>
+                                <div style={{ maxWidth: 120 }} />
+                                {!user.isOwner ? (
+                                  <IconButton
+                                    className="remove_icon"
+                                    size="16"
+                                    isDisabled={isLoading}
+                                    onClick={this.onChangeAdmin.bind(
+                                      this,
+                                      [user.id],
+                                      false
+                                    )}
+                                    iconName={"CatalogTrashIcon"}
+                                    isFill={true}
+                                    isClickable={false}
+                                  />
+                                ) : (
+                                  <div />
+                                )}
+                              </RowContent>
+                            </Row>
+                          );
+                        })}
+                      </RowContainer>
+                    </div>
+                  </div>
+
+                  {countElements > 25 ? (
+                    <div className="wrapper">
+                      <Paging
+                        previousLabel={t("PreviousPage")}
+                        nextLabel={t("NextPage")}
+                        openDirection="top"
+                        countItems={this.countItems()}
+                        pageItems={this.pageItems()}
+                        displayItems={false}
+                        selectedPageItem={this.selectedPageItem()}
+                        selectedCountItem={this.selectedCountItem()}
+                        onSelectPage={this.onChangePage}
+                        onSelectCount={this.onChangePageSize}
+                        previousAction={this.onPrevClick}
+                        nextAction={this.onNextClick}
+                        disablePrevious={!filter.hasPrev()}
+                        disableNext={!filter.hasNext()}
+                      />
+                    </div>
+                  ) : null}
+                </ToggleContentContainer>
+              )
+            },
+            {
+              key: "2",
+              title: "Portals settings",
+              content: (
+                <ToggleContentContainer>
+                  <ToggleContent
+                    className="toggle_content"
+                    label={t("People")}
+                    isOpen={true}
+                  >
+                    <ProjectsContainer>
+                      <RadioButtonContainer>
+                        <Text.Body>
+                          {t("AccessRightsAccessToProduct", {
+                            product: t("People")
+                          })}
+                          :
+                        </Text.Body>
+                        <RadioButtonGroup
+                          name="selectGroup"
+                          selected="allUsers"
+                          options={[
+                            {
+                              value: "allUsers",
+                              label: t("AccessRightsAllUsers", {
+                                users: t("Employees")
+                              })
+                            },
+                            {
+                              value: "usersFromTheList",
+                              label: t("AccessRightsUsersFromList", {
+                                users: t("Employees")
+                              })
+                            }
+                          ]}
+                          className="display-block"
+                        />
+                      </RadioButtonContainer>
+                      <ProjectsBody>
+                        <Text.Body className="projects_margin" fontSize={12}>
+                          {t("AccessRightsProductUsersCan", {
+                            category: t("People")
+                          })}
+                        </Text.Body>
+                        <Text.Body fontSize={12}>
+                          <li>{t("ViewProfilesAndGroups")}</li>
+                        </Text.Body>
+                      </ProjectsBody>
+                    </ProjectsContainer>
+                  </ToggleContent>
+                </ToggleContentContainer>
+              )
+            }
+          ]}
+        </TabContainer>
         <RequestLoader
           visible={isLoading}
           zIndex={256}
