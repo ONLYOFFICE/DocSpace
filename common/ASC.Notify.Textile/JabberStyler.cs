@@ -31,7 +31,11 @@ using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using ASC.Security.Cryptography;
+using ASC.Web.Core.WhiteLabel;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Notify.Textile
 {
@@ -47,11 +51,19 @@ namespace ASC.Notify.Textile
 
         public CoreBaseSettings CoreBaseSettings { get; }
         public IConfiguration Configuration { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
-        public JabberStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        public JabberStyler(
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration,
+            InstanceCrypto instanceCrypto,
+            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
         {
             CoreBaseSettings = coreBaseSettings;
             Configuration = configuration;
+            InstanceCrypto = instanceCrypto;
+            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -99,6 +111,23 @@ namespace ASC.Notify.Textile
         private static string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
+        }
+    }
+
+    public static class StylerExtension
+    {
+        public static IServiceCollection AddStylerService(this IServiceCollection services)
+        {
+            return services
+                .AddCoreBaseSettingsService()
+                .AddInstanceCryptoService()
+                .AddMailWhiteLabelSettingsService()
+                ;
+        }
+        public static IServiceCollection AddJabberStylerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<JabberStyler>();
+            return services.AddStylerService();
         }
     }
 }

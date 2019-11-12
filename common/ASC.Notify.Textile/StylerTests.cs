@@ -52,7 +52,7 @@ namespace ASC.Notify.Textile
         public void TestJabberStyler()
         {
             var message = new NoticeMessage() { Body = pattern };
-            new JabberStyler(CoreBaseSettings, Configuration).ApplyFormating(message);
+            new JabberStyler(CoreBaseSettings, Configuration, null, null).ApplyFormating(message);
         }
 
         [Test]

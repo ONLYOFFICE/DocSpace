@@ -39,6 +39,8 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Textile;
 using Textile.Blocks;
 
@@ -311,6 +313,15 @@ namespace ASC.Notify.Textile
                                  WebEncoders.Base64UrlEncode(
                                      InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
+        }
+    }
+
+    public static class TextileStylerExtension
+    {
+        public static IServiceCollection AddTextileStylerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TextileStyler>();
+            return services.AddStylerService();
         }
     }
 }

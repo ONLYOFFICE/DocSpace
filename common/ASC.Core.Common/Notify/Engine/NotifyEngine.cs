@@ -31,14 +31,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Patterns;
-using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Notify.Channels;
 using ASC.Notify.Cron;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -68,8 +65,6 @@ namespace ASC.Notify.Engine
 
         private readonly TimeSpan defaultSleep = TimeSpan.FromSeconds(10);
 
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
@@ -80,8 +75,6 @@ namespace ASC.Notify.Engine
         public NotifyEngine(Context context, IServiceProvider serviceProvider)
         {
             this.context = context ?? throw new ArgumentNullException("context");
-            CoreBaseSettings = serviceProvider.GetService<CoreBaseSettings>();
-            Configuration = serviceProvider.GetService<IConfiguration>();
             log = serviceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
             ServiceProvider = serviceProvider;
             notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
@@ -218,11 +211,10 @@ namespace ASC.Notify.Engine
                     if (request != null)
                     {
                         using var scope = ServiceProvider.CreateScope();
-                        var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                         AfterTransferRequest?.Invoke(this, request, scope);
                         try
                         {
-                            SendNotify(tenantManager.GetCurrentTenant(), request, scope);
+                            SendNotify(request, scope);
                         }
                         catch (Exception e)
                         {
@@ -246,7 +238,7 @@ namespace ASC.Notify.Engine
         }
 
 
-        private NotifyResult SendNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
+        private NotifyResult SendNotify(NotifyRequest request, IServiceScope serviceScope)
         {
             var sendResponces = new List<SendResponse>();
 
@@ -257,7 +249,7 @@ namespace ASC.Notify.Engine
             }
             else
             {
-                sendResponces.AddRange(SendGroupNotify(tenant, request, serviceScope));
+                sendResponces.AddRange(SendGroupNotify(request, serviceScope));
             }
 
             NotifyResult result = null;
@@ -278,14 +270,14 @@ namespace ASC.Notify.Engine
             return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
         }
 
-        private List<SendResponse> SendGroupNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
+        private List<SendResponse> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
         {
             var responces = new List<SendResponse>();
-            SendGroupNotify(tenant, request, responces, serviceScope);
+            SendGroupNotify(request, responces, serviceScope);
             return responces;
         }
 
-        private void SendGroupNotify(Tenant tenant, NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
+        private void SendGroupNotify(NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
         {
             if (request.Recipient is IDirectRecipient)
             {
@@ -295,7 +287,7 @@ namespace ASC.Notify.Engine
                     var directresponses = new List<SendResponse>(1);
                     try
                     {
-                        directresponses = SendDirectNotify(tenant, request, serviceScope);
+                        directresponses = SendDirectNotify(request, serviceScope);
                     }
                     catch (Exception exc)
                     {
@@ -325,7 +317,7 @@ namespace ASC.Notify.Engine
                                 try
                                 {
                                     var newRequest = request.Split(recipient);
-                                    SendGroupNotify(tenant, newRequest, responces, serviceScope);
+                                    SendGroupNotify(newRequest, responces, serviceScope);
                                 }
                                 catch (Exception exc)
                                 {
@@ -350,7 +342,7 @@ namespace ASC.Notify.Engine
             }
         }
 
-        private List<SendResponse> SendDirectNotify(Tenant tenant, NotifyRequest request, IServiceScope serviceScope)
+        private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
         {
             if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
@@ -382,7 +374,7 @@ namespace ASC.Notify.Engine
                     {
                         try
                         {
-                            response = SendDirectNotify(tenant.TenantId, request, channel, serviceScope);
+                            response = SendDirectNotify(request, channel, serviceScope);
                         }
                         catch (Exception exc)
                         {
@@ -404,13 +396,13 @@ namespace ASC.Notify.Engine
             return responses;
         }
 
-        private SendResponse SendDirectNotify(int tenantId, NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
+        private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
         {
             if (!(request.Recipient is IDirectRecipient)) throw new ArgumentException("request.Recipient not IDirectRecipient", "request");
 
             request.CurrentSender = channel.SenderName;
 
-            var oops = CreateNoticeMessageFromNotifyRequest(tenantId, request, channel.SenderName, out var noticeMessage);
+            var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
             if (oops != null) return oops;
 
             request.CurrentMessage = noticeMessage;
@@ -422,7 +414,7 @@ namespace ASC.Notify.Engine
             return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
         }
 
-        private SendResponse CreateNoticeMessageFromNotifyRequest(int tenantId, NotifyRequest request, string sender, out NoticeMessage noticeMessage)
+        private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
         {
             if (request == null) throw new ArgumentNullException("request");
 
@@ -476,7 +468,7 @@ namespace ASC.Notify.Engine
                 if (!string.IsNullOrEmpty(pattern.Styler))
                 {
                     //We need to run through styler before templating
-                    StyleMessage(noticeMessage);
+                    StyleMessage(serviceScope, noticeMessage);
                 }
             }
             catch (Exception exc)
@@ -486,13 +478,13 @@ namespace ASC.Notify.Engine
             return null;
         }
 
-        private void StyleMessage(NoticeMessage message)
+        private void StyleMessage(IServiceScope scope, NoticeMessage message)
         {
             try
             {
                 if (!stylers.ContainsKey(message.Pattern.Styler))
                 {
-                    if (Activator.CreateInstance(Type.GetType(message.Pattern.Styler, true), CoreBaseSettings, Configuration) is IPatternStyler styler)
+                    if (scope.ServiceProvider.GetService(Type.GetType(message.Pattern.Styler, true)) is IPatternStyler styler)
                     {
                         stylers.Add(message.Pattern.Styler, styler);
                     }
